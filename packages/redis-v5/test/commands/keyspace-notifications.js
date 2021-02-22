@@ -19,7 +19,7 @@ describe('heroku redis:keyspace-notifications', function () {
     exit.mock()
   })
 
-  it('# sets the keyspace notify events', function () {
+  it('# sets the keyspace notify events', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
@@ -30,18 +30,23 @@ describe('heroku redis:keyspace-notifications', function () {
         notify_keyspace_events: { value: 'AKE', values: { 'AKE': '' } }
       })
 
-    return command.run({ app: 'example', flags: { config: 'AKE' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal(
+    await command.run({ app: 'example', flags: { config: 'AKE' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    redis.done();
+
+    expect(cli.stdout).to.equal(
         `Keyspace notifications for redis-haiku (REDIS_FOO, REDIS_BAR) set to 'AKE'.\n`
-      ))
-      .then(() => expect(cli.stderr).to.equal(''))
+      );
+
+    return expect(cli.stderr).to.equal('')
   })
 
-  it('# errors on missing eviction policy', function () {
-    return expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a valid keyspace notification configuration.\n'))
+  it('# errors on missing eviction policy', async function() {
+    await expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(unwrap(cli.stderr)).to.equal('Please specify a valid keyspace notification configuration.\n')
   })
 })

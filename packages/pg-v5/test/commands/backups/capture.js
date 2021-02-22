@@ -27,7 +27,7 @@ const shouldCapture = function (cmdRun) {
     api.done()
   })
 
-  it('captures a db', () => {
+  it('captures a db', async () => {
     addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
@@ -53,18 +53,21 @@ const shouldCapture = function (cmdRun) {
 
     cli.mockConsole()
 
-    return cmdRun({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`
+    await cmdRun({ app: 'myapp', args: {}, flags: {} })
+
+    expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
 
-`))
-      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done\n${captureText()}`)))
-      .then(() => expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`)))
+`);
+
+    expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done\n${captureText()}`));
+
+    return expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`))
   })
 
-  it('captures a db (verbose)', () => {
+  it('captures a db (verbose)', async () => {
     addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
@@ -92,20 +95,24 @@ Stop a running backup with heroku pg:backups:cancel.
 
     cli.mockConsole()
 
-    return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
-      .then(() => expect(cli.stdout).to.equal(`
+    await cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
+
+    expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
 
 Backing up DATABASE to b005...
 100 log message 1
-`))
-      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
-`))).then(() => expect(cli.stderr, 'not to match', new RegExp(`backups of large databases are likely to fail`)))
+`);
+
+    expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+`));
+
+    return expect(cli.stderr, 'not to match', new RegExp(`backups of large databases are likely to fail`))
   })
 
-  it('captures a db (verbose) with non billing app', () => {
+  it('captures a db (verbose) with non billing app', async () => {
     addon.app.name = 'mybillingapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
@@ -133,8 +140,9 @@ Backing up DATABASE to b005...
 
     cli.mockConsole()
 
-    return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
-      .then(() => expect(cli.stdout).to.equal(`
+    await cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
+
+    expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -144,12 +152,15 @@ Use heroku pg:backups -a mybillingapp to check the list of backups.
 
 Backing up DATABASE to b005...
 100 log message 1
-`))
-      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
-`))).then(() => expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`)))
+`);
+
+    expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+`));
+
+    return expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`))
   })
 
-  it('captures a snapshot if called with the --snapshot flag', () => {
+  it('captures a snapshot if called with the --snapshot flag', async () => {
     addon.app.name = 'mybillingapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
@@ -163,9 +174,10 @@ Backing up DATABASE to b005...
 
     cli.mockConsole()
 
-    return cmdRun({ app: 'myapp', args: {}, flags: { snapshot: true } })
-      .then(() => expect(cli.stderr).to.equal(`Taking snapshot of postgres-1... done
-`))
+    await cmdRun({ app: 'myapp', args: {}, flags: { snapshot: true } })
+
+    return expect(cli.stderr).to.equal(`Taking snapshot of postgres-1... done
+`)
   })
 }
 

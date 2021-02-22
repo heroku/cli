@@ -22,9 +22,9 @@ const shouldDelete = function (cmdRun) {
     pg.done()
   })
 
-  it('shows URL', () => {
-    return cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stderr).to.equal('Deleting backup b003 on myapp... done\n'))
+  it('shows URL', async () => {
+    await cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { confirm: 'myapp' } })
+    return expect(cli.stderr).to.equal('Deleting backup b003 on myapp... done\n')
   })
 }
 

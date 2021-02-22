@@ -106,153 +106,142 @@ describe('heroku apps:list', function () {
   afterEach(() => nock.cleanAll())
 
   describe('with no args', function () {
-    it('displays a message when the user has no apps', function () {
+    it('displays a message when the user has no apps', async function() {
       let mock = stubUserApps([])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal('You have no apps.\n')
-      })
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal('You have no apps.\n')
     })
 
-    it('list all user apps', function () {
+    it('list all user apps', async function() {
       let mock = stubUserApps([example, collabApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== foo@bar.com Apps
 example
 
 === Collaborated Apps
 collab-app  someone-else@bar.com
 `)
-      })
     })
 
-    it('lists all apps', function () {
+    it('lists all apps', async function() {
       let mock = stubApps([example, collabApp, teamApp1])
-      return apps.run({ flags: { all: true }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== foo@bar.com Apps
+      await apps.run({ flags: { all: true }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== foo@bar.com Apps
 example
 
 === Collaborated Apps
 collab-app  someone-else@bar.com
 team-app-1  test-team@herokumanager.com
 `)
-      })
     })
 
-    it('shows as json', function () {
+    it('shows as json', async function() {
       let mock = stubUserApps([example, collabApp])
-      return apps.run({ flags: { json: true }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(JSON.parse(cli.stdout)[0].name).to.equal('collab-app')
-      })
+      await apps.run({ flags: { json: true }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(JSON.parse(cli.stdout)[0].name).to.equal('collab-app')
     })
 
-    it('shows region if not us', function () {
+    it('shows region if not us', async function() {
       let mock = stubUserApps([example, euApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 
 `)
-      })
     })
 
-    it('shows locked app', function () {
+    it('shows locked app', async function() {
       let mock = stubUserApps([example, euApp, lockedApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 locked-app [locked]
 
 `)
-      })
     })
 
-    it('shows locked eu app', function () {
+    it('shows locked eu app', async function() {
       let euLockedApp = Object.assign(lockedApp, { region: { name: 'eu' } })
       let mock = stubUserApps([example, euApp, euLockedApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 locked-app [locked] (eu)
 
 `)
-      })
     })
 
-    it('shows internal app', function () {
+    it('shows internal app', async function() {
       let mock = stubUserApps([example, euApp, internalApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 internal-app [internal]
 
 `)
-      })
     })
 
-    it('shows internal locked app', function () {
+    it('shows internal locked app', async function() {
       let mock = stubUserApps([example, euApp, internalLockedApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 internal-app [internal/locked]
 
 `)
-      })
     })
 
-    it('shows internal eu app', function () {
+    it('shows internal eu app', async function() {
       let euInternalApp = Object.assign(internalApp, { region: { name: 'eu' } })
       let mock = stubUserApps([example, euApp, euInternalApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 internal-app [internal] (eu)
 
 `)
-      })
     })
 
-    it('shows internal locked eu app', function () {
+    it('shows internal locked eu app', async function() {
       let euInternalLockedApp = Object.assign(internalLockedApp, { region: { name: 'eu' } })
       let mock = stubUserApps([example, euApp, euInternalLockedApp])
-      return apps.run({ flags: {}, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+      await apps.run({ flags: {}, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
 internal-app [internal/locked] (eu)
 
 `)
-      })
     })
   })
 
@@ -261,54 +250,50 @@ internal-app [internal/locked] (eu)
       expect(apps).to.have.own.property('wantsOrg', true)
     })
 
-    it('displays a message when the team has no apps', function () {
+    it('displays a message when the team has no apps', async function() {
       let mock = stubteamApps('test-team', [])
-      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`There are no apps in team test-team.
+      await apps.run({ flags: { team: 'test-team' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`There are no apps in team test-team.
 `)
-      })
     })
 
-    it('list all in a team', function () {
+    it('list all in a team', async function() {
       let mock = stubteamApps('test-team', [teamApp1, teamApp2])
-      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== Apps in team test-team
+      await apps.run({ flags: { team: 'test-team' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== Apps in team test-team
 team-app-1
 team-app-2
 
 `)
-      })
     })
   })
 
   describe('with team', function () {
-    it('displays a message when the team has no apps', function () {
+    it('displays a message when the team has no apps', async function() {
       let mock = stubteamApps('test-team', [])
-      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`There are no apps in team test-team.
+      await apps.run({ flags: { team: 'test-team' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`There are no apps in team test-team.
 `)
-      })
     })
 
-    it('list all in an team', function () {
+    it('list all in an team', async function() {
       let mock = stubteamApps('test-team', [teamApp1, teamApp2])
-      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== Apps in team test-team
+      await apps.run({ flags: { team: 'test-team' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== Apps in team test-team
 team-app-1
 team-app-2
 
 `)
-      })
     })
   })
 
@@ -319,43 +304,40 @@ team-app-2
         .reply(200, { team: { name: 'test-team' } })
     })
 
-    it('displays a message when the space has no apps', function () {
+    it('displays a message when the space has no apps', async function() {
       let mock = stubteamApps('test-team', [])
-      return apps.run({ flags: { space: 'test-space' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`There are no apps in space test-space.
+      await apps.run({ flags: { space: 'test-space' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`There are no apps in space test-space.
 `)
-      })
     })
 
-    it('lists only apps in spaces by name', function () {
+    it('lists only apps in spaces by name', async function() {
       let mock = stubteamApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1])
-      return apps.run({ flags: { space: 'test-space' }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== Apps in space test-space
+      await apps.run({ flags: { space: 'test-space' }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== Apps in space test-space
 space-app-1
 space-app-2
 
 `
-        )
-      })
+      )
     })
 
-    it('lists only internal apps in spaces by name', function () {
+    it('lists only internal apps in spaces by name', async function() {
       let mock = stubteamApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
-      return apps.run({ flags: { space: 'test-space', 'internal-routing': true }, args: {} }).then(function () {
-        mock.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(
-          `=== Apps in space test-space
+      await apps.run({ flags: { space: 'test-space', 'internal-routing': true }, args: {} })
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+        `=== Apps in space test-space
 space-internal-app [internal]
 
 `
-        )
-      })
+      )
     })
   })
 })

@@ -45,7 +45,7 @@ describe('pg:credentials:url', () => {
     api.done()
   })
 
-  it('shows the correct credentials', () => {
+  it('shows the correct credentials', async () => {
     let roleInfo = {
       uuid: 'aaaa',
       name: 'jeff',
@@ -68,12 +68,13 @@ describe('pg:credentials:url', () => {
     }
     pg.get('/postgres/v0/databases/postgres-1/credentials/jeff').reply(200, roleInfo)
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout).to.equal(`Connection information for jeff credential.\nConnection info string:
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
+
+    return expect(cli.stdout).to.equal(`Connection information for jeff credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=jeff password=hunter2 sslmode=require"
 Connection URL:
    postgres://jeff:hunter2@localhost:5442/d123
-`))
+`)
   })
 
   it('throws an error when the db is starter plan but the name is specified', () => {
@@ -97,7 +98,7 @@ Connection URL:
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
-  it('shows the correct credentials with starter plan', () => {
+  it('shows the correct credentials with starter plan', async () => {
     const hobbyAddon = {
       name: 'postgres-1',
       plan: { name: 'heroku-postgresql:hobby-dev' }
@@ -131,11 +132,12 @@ Connection URL:
     }
     starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+
+    return expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
 Connection URL:
    postgres://abcdef:hunter2@localhost:5442/d123
-`))
+`)
   })
 })

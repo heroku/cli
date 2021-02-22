@@ -8,7 +8,7 @@ let cli = require('heroku-cli-util')
 describe('outbound-rules:remove', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('removes a rule entry from the outbound rules', function () {
+  it('removes a rule entry from the outbound rules', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, {
@@ -26,7 +26,7 @@ describe('outbound-rules:remove', function () {
         ]
       })
       .reply(200, { rules: [] })
-    return cmd.run({ args: { ruleNumber: 2 }, flags: { space: 'my-space', confirm: 'my-space' } })
-      .then(() => api.done())
+    await cmd.run({ args: { ruleNumber: 2 }, flags: { space: 'my-space', confirm: 'my-space' } })
+    return api.done()
   })
 })

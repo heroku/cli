@@ -25,9 +25,10 @@ describe('pg:backups', () => {
       transfers = []
     })
 
-    it('shows empty message', () => {
-      return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout).to.equal(`=== Backups
+    it('shows empty message', async () => {
+      await cmd.run({ app: 'myapp', args: [] })
+
+      return expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -36,7 +37,7 @@ No restores found. Use heroku pg:backups:restore to restore a backup
 === Copies
 No copies found. Use heroku pg:copy to copy a database to another
 
-`))
+`)
     })
   })
 
@@ -96,9 +97,10 @@ No copies found. Use heroku pg:copy to copy a database to another
       ]
     })
 
-    it('shows backups', () => {
-      return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout).to.equal(`=== Backups
+    it('shows backups', async () => {
+      await cmd.run({ app: 'myapp', args: [] })
+
+      return expect(cli.stdout).to.equal(`=== Backups
 ID    Created at                 Status                               Size    Database
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────────
 b006  2016-10-08 00:42:54 +0000  Running (processed 1.40KB)           1.40KB  DATABASE
@@ -113,7 +115,7 @@ No restores found. Use heroku pg:backups:restore to restore a backup
 === Copies
 No copies found. Use heroku pg:copy to copy a database to another
 
-`))
+`)
     })
   })
 
@@ -134,9 +136,10 @@ No copies found. Use heroku pg:copy to copy a database to another
       ]
     })
 
-    it('shows restore', () => {
-      return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout).to.equal(`=== Backups
+    it('shows restore', async () => {
+      await cmd.run({ app: 'myapp', args: [] })
+
+      return expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -147,7 +150,7 @@ r003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40KB  IV
 === Copies
 No copies found. Use heroku pg:copy to copy a database to another
 
-`))
+`)
     })
   })
 
@@ -170,9 +173,10 @@ No copies found. Use heroku pg:copy to copy a database to another
       ]
     })
 
-    it('shows copy', () => {
-      return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout).to.equal(`=== Backups
+    it('shows copy', async () => {
+      await cmd.run({ app: 'myapp', args: [] })
+
+      return expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -183,7 +187,7 @@ ID    Started at                 Status                               Size    Fr
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────  ─────
 c003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40KB  RED   IVORY
 
-`))
+`)
     })
   })
 })

@@ -17,7 +17,7 @@ describe('ps:type', function () {
     nock.cleanAll()
   })
 
-  it('switches to hobby dynos', function () {
+  it('switches to hobby dynos', async function() {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, app())
@@ -28,17 +28,20 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
 
-    return cmd.run({ app: 'myapp', args: ['hobby'] })
-      .then(() => expect(cli.stdout).to.eq(`type    size   qty  cost/mo
+    await cmd.run({ app: 'myapp', args: ['hobby'] })
+
+    expect(cli.stdout).to.eq(`type    size   qty  cost/mo
 ──────  ─────  ───  ───────
 web     Hobby  1    7
 worker  Hobby  2    14
-`))
-      .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n');
+
+    return api.done()
   })
 
-  it('switches to standard-1x and standard-2x dynos', function () {
+  it('switches to standard-1x and standard-2x dynos', async function() {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, app())
@@ -49,29 +52,34 @@ worker  Hobby  2    14
       .get('/apps/myapp/formation')
       .reply(200, [{ type: 'web', quantity: 1, size: 'Standard-1X' }, { type: 'worker', quantity: 2, size: 'Standard-2X' }])
 
-    return cmd.run({ app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x'] })
-      .then(() => expect(cli.stdout).to.eq(`type    size         qty  cost/mo
+    await cmd.run({ app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x'] })
+
+    expect(cli.stdout).to.eq(`type    size         qty  cost/mo
 ──────  ───────────  ───  ───────
 web     Standard-1X  1    25
 worker  Standard-2X  2    100
-`))
-      .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n');
+
+    return api.done()
   })
 
-  it('displays Shield dynos for apps in shielded spaces', function () {
+  it('displays Shield dynos for apps in shielded spaces', async function() {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, app({ space: { shield: true } }))
       .get('/apps/myapp/formation')
       .reply(200, [{ type: 'web', quantity: 0, size: 'Private-M' }, { type: 'web', quantity: 0, size: 'Private-L' }])
 
-    return cmd.run({ app: 'myapp', args: [] })
-      .then(() => expect(cli.stdout).to.eq(`type  size      qty  cost/mo
+    await cmd.run({ app: 'myapp', args: [] })
+
+    expect(cli.stdout).to.eq(`type  size      qty  cost/mo
 ────  ────────  ───  ───────
 web   Shield-M  0
 web   Shield-L  0
-`))
-      .then(() => api.done())
+`);
+
+    return api.done()
   })
 })

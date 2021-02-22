@@ -26,8 +26,8 @@ describe('authorizations:create', () => {
     return cmd.run({ flags: { description: 'awesome' } })
   })
 
-  it('creates the authorization and just shows the token', () => {
-    return cmd.run({ flags: { description: 'awesome', short: true } })
-      .then(() => expect(cli.stdout).to.equal('secrettoken\n'))
+  it('creates the authorization and just shows the token', async () => {
+    await cmd.run({ flags: { description: 'awesome', short: true } })
+    return expect(cli.stdout).to.equal('secrettoken\n')
   })
 })

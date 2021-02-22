@@ -16,13 +16,15 @@ describe('container logout', () => {
   })
   afterEach(() => sandbox.restore())
 
-  it('logs out of the docker registry', () => {
+  it('logs out of the docker registry', async () => {
     let logout = sandbox.stub(Sanbashi, 'cmd')
       .withArgs('docker', ['logout', 'registry.heroku.com'])
 
-    return cmd.run({ flags: {} })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(logout))
+    await cmd.run({ flags: {} })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr, 'to be empty');
+
+    return sandbox.assert.calledOnce(logout)
   })
 })

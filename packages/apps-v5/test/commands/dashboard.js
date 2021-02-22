@@ -53,7 +53,7 @@ runtest('Dashboard', () => {
     }
 
     describe('with no favorites', () => {
-      it('shows the dashboard', () => {
+      it('shows the dashboard', async () => {
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [])
         let heroku = nock('https://api.heroku.com:443')
@@ -61,22 +61,25 @@ runtest('Dashboard', () => {
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications').reply(200, [])
 
-        return cmd.run({})
-          .then(() => expect(cli.stdout, 'to be', `See all add-ons with heroku addons
+        await cmd.run({})
+
+        expect(cli.stdout, 'to be', `See all add-ons with heroku addons
 See all apps with heroku apps --all
 
 See other CLI commands with heroku help
 
-`))
-          .then(() => expect(unwrap(cli.stderr), 'to be', 'Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
-          .then(() => longboard.done())
-          .then(() => telex.done())
-          .then(() => heroku.done())
+`);
+
+        expect(unwrap(cli.stderr), 'to be', 'Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n');
+        longboard.done();
+        telex.done();
+
+        return heroku.done()
       })
     })
 
     describe('with no telex', () => {
-      it('shows the dashboard', () => {
+      it('shows the dashboard', async () => {
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [])
         let heroku = nock('https://api.heroku.com:443')
@@ -84,22 +87,25 @@ See other CLI commands with heroku help
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications').reply(401, [])
 
-        return cmd.run({})
-          .then(() => expect(cli.stdout, 'to be', `See all add-ons with heroku addons
+        await cmd.run({})
+
+        expect(cli.stdout, 'to be', `See all add-ons with heroku addons
 See all apps with heroku apps --all
 
 See other CLI commands with heroku help
 
-`))
-          .then(() => expect(unwrap(cli.stderr), 'to be', 'Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
-          .then(() => longboard.done())
-          .then(() => telex.done())
-          .then(() => heroku.done())
+`);
+
+        expect(unwrap(cli.stderr), 'to be', 'Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n');
+        longboard.done();
+        telex.done();
+
+        return heroku.done()
       })
     })
 
     describe('with a favorite app', () => {
-      it('shows the dashboard', () => {
+      it('shows the dashboard', async () => {
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [{ app_name: 'myapp' }])
         let heroku = nock('https://api.heroku.com:443')
@@ -124,8 +130,9 @@ See other CLI commands with heroku help
           .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
           .reply(200, { data: {} })
 
-        return cmd.run({})
-          .then(() => expect(cli.stdout, 'to be', `myapp
+        await cmd.run({})
+
+        expect(cli.stdout, 'to be', `myapp
   Owner: foo@bar.com
   Dynos: 1 | Standard-1X
   Last release: ${time.ago(now)}
@@ -137,12 +144,14 @@ See all apps with heroku apps --all
 
 See other CLI commands with heroku help
 
-`))
-          .then(() => expect(cli.stderr, 'to be', 'Loading... done\n'))
-          .then(() => metrics.done())
-          .then(() => longboard.done())
-          .then(() => telex.done())
-          .then(() => heroku.done())
+`);
+
+        expect(cli.stderr, 'to be', 'Loading... done\n');
+        metrics.done();
+        longboard.done();
+        telex.done();
+
+        return heroku.done()
       })
     })
   })

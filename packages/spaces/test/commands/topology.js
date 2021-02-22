@@ -38,39 +38,45 @@ const app = {
 describe('spaces:toplogy', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows space topology', function () {
+  it('shows space topology', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== app-name (web)
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== app-name (web)
 Domains: example.com
          example.net
 Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
 
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows space toplogy  --json', function () {
+  it('shows space toplogy  --json', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(topo)
+
+    return api.done()
   })
 
-  it('shows space toplology --json', function () {
+  it('shows space toplology --json', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(topo)
+
+    return api.done()
   })
 })

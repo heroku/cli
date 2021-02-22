@@ -36,10 +36,13 @@ describe('pg:maintenance', () => {
     pg.done()
   })
 
-  it('sets maintenance window', () => {
+  it('sets maintenance window', async () => {
     pg.put('/client/v11/databases/1/maintenance_window', { description: 'Sunday 06:30' }).reply(200)
-    return cmd.run({ app: 'myapp', args: { window: 'Sunday 06:30' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
+
+    await cmd.run({ app: 'myapp', args: { window: 'Sunday 06:30' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Setting maintenance window for postgres-1 to Sunday 06:30... done\n')
   })
 })

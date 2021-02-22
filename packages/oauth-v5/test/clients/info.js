@@ -20,25 +20,27 @@ describe('clients:info', function () {
   })
   afterEach(() => api.done())
 
-  it('gets the client info', function () {
-    return cmd.run({ args: { id }, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== awesome
+  it('gets the client info', async function() {
+    await cmd.run({ args: { id }, flags: {} })
+
+    return expect(cli.stdout).to.equal(`=== awesome
 id:           f6e8d969-129f-42d2-854b-c2eca9d5a42e
 name:         awesome
 redirect_uri: https://myapp.com
 secret:       supersecretkey
-`))
+`)
   })
 
-  it('gets the client info as json', function () {
-    return cmd.run({ args: { id }, flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'awesome' }))
+  it('gets the client info as json', async function() {
+    await cmd.run({ args: { id }, flags: { json: true } })
+    return expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'awesome' })
   })
 
-  it('gets the client info as shell', function () {
-    return cmd.run({ args: { id }, flags: { shell: true } })
-      .then(() => expect(cli.stdout).to.equal(`HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e
+  it('gets the client info as shell', async function() {
+    await cmd.run({ args: { id }, flags: { shell: true } })
+
+    return expect(cli.stdout).to.equal(`HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e
 HEROKU_OAUTH_SECRET=supersecretkey
-`))
+`)
   })
 })

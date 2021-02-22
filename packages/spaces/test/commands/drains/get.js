@@ -9,7 +9,7 @@ let cli = require('heroku-cli-util')
 describe('drains:get', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows the log drain', function () {
+  it('shows the log drain', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/log-drain')
       .reply(200, {
@@ -20,14 +20,18 @@ describe('drains:get', function () {
         updated_at: '2016-03-23T18:31:50Z',
         url: 'https://example.com'
       })
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)
 `
-      )).then(() => api.done())
+    )
+
+    return api.done()
   })
 
-  it('shows the log drain --json', function () {
+  it('shows the log drain --json', async function () {
     let drain = {
       addon: null,
       created_at: '2016-03-23T18:31:50Z',
@@ -40,8 +44,11 @@ describe('drains:get', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/log-drain')
       .reply(200, drain)
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(drain))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(drain)
+
+    return api.done()
   })
 })

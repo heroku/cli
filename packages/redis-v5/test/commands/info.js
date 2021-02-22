@@ -17,17 +17,19 @@ commands.forEach((cmd) => {
       nock.cleanAll()
     })
 
-    it('# prints out nothing when there is no redis DB', function () {
+    it('# prints out nothing when there is no redis DB', async function() {
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons').reply(200, [])
 
-      return command.run({ app: 'example', args: {} })
-        .then(() => app.done())
-        .then(() => expect(cli.stdout).to.equal(''))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await command.run({ app: 'example', args: {} })
+
+      app.done();
+      expect(cli.stdout).to.equal('');
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('# prints out redis info', function () {
+    it('# prints out redis info', async function() {
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons').reply(200, [
           { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
@@ -38,18 +40,21 @@ commands.forEach((cmd) => {
           { name: 'Foo', values: ['Bar', 'Biz'] }
         ] })
 
-      return command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })
-        .then(() => app.done())
-        .then(() => redis.done())
-        .then(() => expect(cli.stdout).to.equal(
+      await command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })
+
+      app.done();
+      redis.done();
+
+      expect(cli.stdout).to.equal(
           `=== redis-haiku (REDIS_FOO, REDIS_BAR)
 Foo: Bar
      Biz
-`))
-        .then(() => expect(cli.stderr).to.equal(''))
+`);
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('# prints out redis info when not found', function () {
+    it('# prints out redis info when not found', async function() {
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons').reply(200, [
           { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
@@ -58,11 +63,13 @@ Foo: Bar
       let redis = nock('https://redis-api.heroku.com:443')
         .get('/redis/v0/databases/redis-haiku').reply(404, {})
 
-      return command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })
-        .then(() => app.done())
-        .then(() => redis.done())
-        .then(() => expect(cli.stdout).to.equal(''))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })
+
+      app.done();
+      redis.done();
+      expect(cli.stdout).to.equal('');
+
+      return expect(cli.stderr).to.equal('')
     })
 
     it('# prints out redis info when error', function () {

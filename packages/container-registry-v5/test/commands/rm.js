@@ -10,29 +10,33 @@ const sinon = require('sinon')
 describe('container removal', () => {
   beforeEach(() => cli.mockConsole())
 
-  it('removes one container', () => {
+  it('removes one container', async () => {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
 
-    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr).to.contain('Removing container web for testapp... done'))
-      .then(() => api.done())
+    await cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr).to.contain('Removing container web for testapp... done');
+
+    return api.done()
   })
 
-  it('removes two containers', () => {
+  it('removes two containers', async () => {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
       .patch('/apps/testapp/formation/worker')
       .reply(200, {})
 
-    return cmd.run({ app: 'testapp', args: ['web', 'worker'], flags: {} })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr).to.contain('Removing container web for testapp... done'))
-      .then(() => expect(cli.stderr).to.contain('Removing container worker for testapp... done'))
-      .then(() => api.done())
+    await cmd.run({ app: 'testapp', args: ['web', 'worker'], flags: {} })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr).to.contain('Removing container web for testapp... done');
+    expect(cli.stderr).to.contain('Removing container worker for testapp... done');
+
+    return api.done()
   })
 
   it('requires a container to be specified', () => {

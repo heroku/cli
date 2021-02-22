@@ -36,13 +36,15 @@ describe('pg', () => {
   })
 
   context('with 0 dbs', () => {
-    it('shows empty state', () => {
+    it('shows empty state', async () => {
       all = []
       api.get('/apps/myapp/config-vars').reply(200, {})
 
-      return cmd.run({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal('myapp has no heroku-postgresql databases.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await cmd.run({ app: 'myapp', args: {} })
+
+      expect(cli.stdout).to.equal('myapp has no heroku-postgresql databases.\n');
+
+      return expect(cli.stderr).to.equal('')
     })
   })
 
@@ -71,7 +73,7 @@ describe('pg', () => {
     resource_url: config.HEROKU_POSTGRESQL_PURPLE_URL
     }
 
-    it('shows postgres info', () => {
+    it('shows postgres info', async () => {
       all = addons
 
       api.get('/apps/myapp/config-vars').reply(200, config)
@@ -79,8 +81,9 @@ describe('pg', () => {
         .get('/client/v11/databases/1').reply(200, dbA)
         .get('/client/v11/databases/2').reply(200, dbB)
 
-      return cmd.run({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
+      await cmd.run({ app: 'myapp', args: {} })
+
+      expect(cli.stdout).to.equal(`=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
 Plan:        Hobby-dev
 Following:   HEROKU_POSTGRESQL_COBALT
 Billing App: myapp2
@@ -91,11 +94,12 @@ Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
-`))
-        .then(() => expect(cli.stderr).to.equal(''))
+`);
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('shows postgres info using attachment names', () => {
+    it('shows postgres info using attachment names', async () => {
       all = [
         { id: 1, name: 'postgres-1', plan, app: { name: 'myapp2' }, attachment_names: ['DATABASE', 'ATTACHMENT_NAME'] },
         { id: 2, name: 'postgres-2', plan, app: { name: 'myapp' }, attachment_names: ['HEROKU_POSTGRESQL_PURPLE'] }
@@ -106,8 +110,9 @@ Add-on:    postgres-2
         .get('/client/v11/databases/1').reply(200, dbA)
         .get('/client/v11/databases/2').reply(200, dbB)
 
-      return cmd.run({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, ATTACHMENT_NAME_URL
+      await cmd.run({ app: 'myapp', args: {} })
+
+      return expect(cli.stdout).to.equal(`=== DATABASE_URL, ATTACHMENT_NAME_URL
 Plan:        Hobby-dev
 Following:   HEROKU_POSTGRESQL_COBALT
 Billing App: myapp2
@@ -118,27 +123,30 @@ Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
-`))
+`)
     })
 
-    it('shows postgres info for single database when arg sent in', () => {
+    it('shows postgres info for single database when arg sent in', async () => {
       addon = addons[1]
       api.get('/apps/myapp/config-vars').reply(200, config)
 
       pg
         .get('/client/v11/databases/2')
         .reply(200, dbB)
-      return cmd.run({ app: 'myapp', args: { database: 'postgres-2' } })
-        .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
+
+      await cmd.run({ app: 'myapp', args: { database: 'postgres-2' } })
+
+      expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
 Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
-`))
-        .then(() => expect(cli.stderr).to.equal(''))
+`);
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('shows warning for 404', () => {
+    it('shows warning for 404', async () => {
       all = addons
 
       api.get('/apps/myapp/config-vars').reply(200, config)
@@ -146,16 +154,18 @@ Add-on:    postgres-2
         .get('/client/v11/databases/1').reply(404)
         .get('/client/v11/databases/2').reply(200, dbB)
 
-      return cmd.run({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
+      await cmd.run({ app: 'myapp', args: {} })
+
+      expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
 Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
-`))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`postgres-1 is not yet provisioned. \
+`);
+
+      return expect(unwrap(cli.stderr)).to.equal(`postgres-1 is not yet provisioned. \
 Run heroku addons:wait to wait until the db is provisioned.
-`))
+`)
     })
   })
 })

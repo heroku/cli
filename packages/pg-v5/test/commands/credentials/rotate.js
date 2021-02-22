@@ -74,25 +74,34 @@ describe('pg:credentials:rotate', () => {
     api.done()
   })
 
-  it('rotates credentials for a specific role with --name', () => {
+  it('rotates credentials for a specific role with --name', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n')
   })
 
-  it('rotates credentials for all roles with --all', () => {
+  it('rotates credentials for all roles with --all', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n')
   })
 
-  it('rotates credentials for a specific role with --name and --force', () => {
+  it('rotates credentials for a specific role with --name and --force', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp', force: true } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp', force: true } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n')
   })
 
   it('fails with an error if both --all and --name are included', () => {
@@ -121,7 +130,7 @@ describe('pg:credentials:rotate', () => {
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
-  it('rotates credentials with no --name with starter plan', () => {
+  it('rotates credentials with no --name with starter plan', async () => {
     const hobbyAddon = {
       name: 'postgres-1',
       plan: { name: 'heroku-postgresql:hobby-dev' }
@@ -139,12 +148,15 @@ describe('pg:credentials:rotate', () => {
     })
 
     starter.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Rotating default on postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Rotating default on postgres-1... done\n')
   })
 
-  it('rotates credentials with --all with starter plan', () => {
+  it('rotates credentials with --all with starter plan', async () => {
     const hobbyAddon = {
       name: 'postgres-1',
       plan: { name: 'heroku-postgresql:hobby-dev' }
@@ -162,29 +174,31 @@ describe('pg:credentials:rotate', () => {
     })
 
     starter.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n')
   })
 
-  it('requires app confirmation for rotating all roles with --all', () => {
+  it('requires app confirmation for rotating all roles with --all', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
 
     const message = `WARNING: Destructive Action
 Connections will be reset and applications will be restarted.
 This command will affect the apps appname_1, appname_2, appname_3.`
 
-    return cmd.run({ app: 'myapp',
+    await cmd.run({ app: 'myapp',
       args: {},
       flags: { all: true, confirm: 'myapp' } })
-      .then(() => {
-        expect(lastApp).to.equal('myapp')
-        expect(lastConfirm).to.equal('myapp')
-        expect(lastMsg).to.equal(message)
-      })
+
+    expect(lastApp).to.equal('myapp')
+    expect(lastConfirm).to.equal('myapp')
+    expect(lastMsg).to.equal(message)
   })
 
-  it('requires app confirmation for rotating all roles with --all and --force', () => {
+  it('requires app confirmation for rotating all roles with --all and --force', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
 
     const message = `WARNING: Destructive Action
@@ -193,17 +207,16 @@ Connections will be reset and applications will be restarted.
 Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2, appname_3.`
 
-    return cmd.run({ app: 'myapp',
+    await cmd.run({ app: 'myapp',
       args: {},
       flags: { all: true, force: true, confirm: 'myapp' } })
-      .then(() => {
-        expect(lastApp).to.equal('myapp')
-        expect(lastConfirm).to.equal('myapp')
-        expect(lastMsg).to.equal(message)
-      })
+
+    expect(lastApp).to.equal('myapp')
+    expect(lastConfirm).to.equal('myapp')
+    expect(lastMsg).to.equal(message)
   })
 
-  it('requires app confirmation for rotating a specific role with --name', () => {
+  it('requires app confirmation for rotating a specific role with --name', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
 
     const message = `WARNING: Destructive Action
@@ -211,17 +224,16 @@ The password for the my_role credential will rotate.
 Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.
 This command will affect the apps appname_1, appname_2.`
 
-    return cmd.run({ app: 'myapp',
+    await cmd.run({ app: 'myapp',
       args: {},
       flags: { name: 'my_role', confirm: 'myapp' } })
-      .then(() => {
-        expect(lastApp).to.equal('myapp')
-        expect(lastConfirm).to.equal('myapp')
-        expect(lastMsg).to.equal(message)
-      })
+
+    expect(lastApp).to.equal('myapp')
+    expect(lastConfirm).to.equal('myapp')
+    expect(lastMsg).to.equal(message)
   })
 
-  it('requires app confirmation for force rotating a specific role with --name and --force', () => {
+  it('requires app confirmation for force rotating a specific role with --name and --force', async () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
 
     const message = `WARNING: Destructive Action
@@ -230,13 +242,12 @@ Connections will be reset and applications will be restarted.
 Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2.`
 
-    return cmd.run({ app: 'myapp',
+    await cmd.run({ app: 'myapp',
       args: {},
       flags: { name: 'my_role', force: true, confirm: 'myapp' } })
-      .then(() => {
-        expect(lastApp).to.equal('myapp')
-        expect(lastConfirm).to.equal('myapp')
-        expect(lastMsg).to.equal(message)
-      })
+
+    expect(lastApp).to.equal('myapp')
+    expect(lastConfirm).to.equal('myapp')
+    expect(lastMsg).to.equal(message)
   })
 })

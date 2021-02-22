@@ -19,59 +19,79 @@ describe('heroku members', () => {
       stubGet.teamInfo('enterprise')
     })
 
-    it('shows there are not team members if it is an orphan team', () => {
+    it('shows there are not team members if it is an orphan team', async () => {
       apiGetOrgMembers = stubGet.teamMembers([])
-      return cmd.run({ flags: { team: 'myteam' } })
-        .then(() => expect(
+
+      await cmd.run({ flags: { team: 'myteam' } })
+
+      expect(
           `No members in myteam
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+
+      return apiGetOrgMembers.done()
     })
 
-    it('shows all the team members', () => {
+    it('shows all the team members', async () => {
       apiGetOrgMembers = stubGet.teamMembers([
         { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
       ])
-      return cmd.run({ flags: { team: 'myteam' } })
-        .then(() => expect(
+
+      await cmd.run({ flags: { team: 'myteam' } })
+
+      expect(
           `a@heroku.com  admin
 b@heroku.com  collaborator
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+
+      return apiGetOrgMembers.done()
     })
 
     let expectedOrgMembers = [{ email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'member' }]
 
-    it('filters members by role', () => {
+    it('filters members by role', async () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
-        .then(() => expect(
+
+      await cmd.run({ flags: { team: 'myteam', role: 'member' } })
+
+      expect(
           `b@heroku.com  member
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+
+      return apiGetOrgMembers.done()
     })
 
-    it("shows the right message when filter doesn't return results", () => {
+    it("shows the right message when filter doesn't return results", async () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'collaborator' } })
-        .then(() => expect(
+
+      await cmd.run({ flags: { team: 'myteam', role: 'collaborator' } })
+
+      expect(
           `No members in myteam with role collaborator
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+
+      return apiGetOrgMembers.done()
     })
 
-    it('filters members by role', () => {
+    it('filters members by role', async () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
-        .then(() => expect(
+
+      await cmd.run({ flags: { team: 'myteam', role: 'member' } })
+
+      expect(
           `b@heroku.com  member
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+
+      return apiGetOrgMembers.done()
     })
   })
 
@@ -91,38 +111,44 @@ b@heroku.com  collaborator
         stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
       })
 
-      it('shows all members including those with pending invites', () => {
+      it('shows all members including those with pending invites', async () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
         apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
-        return cmd.run({ flags: { team: 'myteam' } })
-          .then(() => expect(
+        await cmd.run({ flags: { team: 'myteam' } })
+
+        expect(
             `a@heroku.com           admin
 b@heroku.com           collaborator
 invited-user@mail.com  admin         pending
-`).to.eq(cli.stdout))
-          .then(() => expect('').to.eq(cli.stderr))
-          .then(() => apiGetTeamInvites.done())
-          .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+        expect('').to.eq(cli.stderr);
+        apiGetTeamInvites.done();
+
+        return apiGetOrgMembers.done()
       })
 
-      it('filters members by pending invites', () => {
+      it('filters members by pending invites', async () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
         apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
-        return cmd.run({ flags: { team: 'myteam', pending: true } })
-          .then(() => expect(
+        await cmd.run({ flags: { team: 'myteam', pending: true } })
+
+        expect(
             `invited-user@mail.com  admin  pending
-`).to.eq(cli.stdout))
-          .then(() => expect('').to.eq(cli.stderr))
-          .then(() => apiGetTeamInvites.done())
-          .then(() => apiGetOrgMembers.done())
+`).to.eq(cli.stdout);
+
+        expect('').to.eq(cli.stderr);
+        apiGetTeamInvites.done();
+
+        return apiGetOrgMembers.done()
       })
     })
   })

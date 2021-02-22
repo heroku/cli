@@ -10,7 +10,7 @@ const unwrap = require('../../unwrap')
 describe('spaces:vpn:connect', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('creates VPN', function () {
+  it('creates VPN', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces/my-space/vpn-connections', {
         name: 'office',
@@ -18,14 +18,17 @@ describe('spaces:vpn:connect', function () {
         routable_cidrs: [ '192.168.0.1/16', '192.168.0.2/16' ]
       })
       .reply(201)
-    return cmd.run({ flags: {
+
+    await cmd.run({ flags: {
       name: 'office',
       space: 'my-space',
       ip: '192.168.0.1',
       cidrs: '192.168.0.1/16,192.168.0.2/16'
     } })
-      .then(() => expect(unwrap(cli.stderr)).to.equal(
-        'Creating VPN Connection in space my-space... done Use spaces:vpn:wait to track allocation.\n'))
-      .then(() => api.done())
+
+    expect(unwrap(cli.stderr)).to.equal(
+      'Creating VPN Connection in space my-space... done Use spaces:vpn:wait to track allocation.\n')
+
+    return api.done()
   })
 })

@@ -11,7 +11,7 @@ let now = new Date()
 describe('outbound-rules', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows the outbound rules', function () {
+  it('shows the outbound rules', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, {
@@ -22,17 +22,20 @@ describe('outbound-rules', function () {
           { target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp' }
         ]
       })
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== Outbound Rules
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== Outbound Rules
 Rule Number  Destination   From Port  To Port  Protocol
 ───────────  ────────────  ─────────  ───────  ────────
 1            128.0.0.1/20  80         80       tcp
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows the empty ruleset message when empty', function () {
+  it('shows the empty ruleset message when empty', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, {
@@ -42,14 +45,17 @@ Rule Number  Destination   From Port  To Port  Protocol
         created_by: 'dickeyxxx',
         rules: []
       })
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space has no Outbound Rules. Your Dynos cannot communicate with hosts outside of my-space.
-`))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space has no Outbound Rules. Your Dynos cannot communicate with hosts outside of my-space.
+`)
+
+    return api.done()
   })
 
-  it('shows the outbound rules via JSON when --json is passed', function () {
+  it('shows the outbound rules via JSON when --json is passed', async function () {
     let ruleSet = {
       version: '1',
       default_action: 'allow',
@@ -64,8 +70,10 @@ Rule Number  Destination   From Port  To Port  Protocol
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, ruleSet)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(ruleSet))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(ruleSet)
+
+    return api.done()
   })
 })

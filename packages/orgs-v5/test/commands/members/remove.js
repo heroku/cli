@@ -18,12 +18,15 @@ describe('heroku members:remove', () => {
       stubGet.teamInfo('enterprise')
     })
 
-    it('removes a member from an org', () => {
+    it('removes a member from an org', async () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-      return cmd.run({ flags: { team: 'myteam' }, args: { email: 'foo@foo.com' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
-        .then(() => apiRemoveMemberFromOrg.done())
+
+      await cmd.run({ flags: { team: 'myteam' }, args: { email: 'foo@foo.com' } })
+
+      expect('').to.eq(cli.stdout);
+      expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr);
+
+      return apiRemoveMemberFromOrg.done()
     })
   })
 
@@ -37,12 +40,15 @@ describe('heroku members:remove', () => {
         stubGet.teamFeatures([])
       })
 
-      it('removes a member from an org', () => {
+      it('removes a member from an org', async () => {
         let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-        return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
-          .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
-          .then(() => apiRemoveMemberFromOrg.done())
+
+        await cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+
+        expect('').to.eq(cli.stdout);
+        expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr);
+
+        return apiRemoveMemberFromOrg.done()
       })
     })
 
@@ -58,13 +64,16 @@ describe('heroku members:remove', () => {
           apiGetTeamInvites = stubGet.teamInvites([])
         })
 
-        it('removes a member', () => {
+        it('removes a member', async () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
-            .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
-            .then(() => apiGetTeamInvites.done())
-            .then(() => apiRemoveMemberFromOrg.done())
+
+          await cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+
+          expect('').to.eq(cli.stdout);
+          expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr);
+          apiGetTeamInvites.done();
+
+          return apiRemoveMemberFromOrg.done()
         })
       })
 
@@ -75,14 +84,16 @@ describe('heroku members:remove', () => {
           ])
         })
 
-        it('revokes the invite', () => {
+        it('revokes the invite', async () => {
           let apiRevokeTeamInvite = stubDelete.teamInvite('foo@foo.com')
 
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
-            .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Revoking invite for foo@foo.com in myteam... done\n`).to.eq(cli.stderr))
-            .then(() => apiGetTeamInvites.done())
-            .then(() => apiRevokeTeamInvite.done())
+          await cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+
+          expect('').to.eq(cli.stdout);
+          expect(`Revoking invite for foo@foo.com in myteam... done\n`).to.eq(cli.stderr);
+          apiGetTeamInvites.done();
+
+          return apiRevokeTeamInvite.done()
         })
       })
     })

@@ -45,7 +45,7 @@ describe('pg:credentials', () => {
     api.done()
   })
 
-  it('shows the correct credentials', () => {
+  it('shows the correct credentials', async () => {
     let credentials = [
       { uuid: 'aaaa',
         name: 'ransom',
@@ -119,11 +119,11 @@ ransom                                                                         a
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout).to.equal(displayed))
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
+    return expect(cli.stdout).to.equal(displayed)
   })
 
-  it('shows the correct rotation information if no connection information is available yet', () => {
+  it('shows the correct rotation information if no connection information is available yet', async () => {
     let credentials = [
       { uuid: 'aaaa',
         name: 'ransom',
@@ -192,7 +192,7 @@ ransom                                                active
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout).to.equal(displayed))
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
+    return expect(cli.stdout).to.equal(displayed)
   })
 })

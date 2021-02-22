@@ -37,10 +37,13 @@ describe('pg:links:create', () => {
     pg.done()
   })
 
-  it('creates a link', () => {
+  it('creates a link', async () => {
     pg.post('/client/v11/databases/1/links', { target: 'postgres-1', as: 'foobar' }).reply(200, { name: 'foobar' })
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp', as: 'foobar' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Adding link from postgres-1 to postgres-1... done, foobar\n'))
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp', as: 'foobar' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Adding link from postgres-1 to postgres-1... done, foobar\n')
   })
 })

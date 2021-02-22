@@ -38,25 +38,24 @@ const shouldSchedules = function (cmdRun) {
       ])
     })
 
-    it('shows empty message with no schedules', () => {
+    it('shows empty message with no schedules', async () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
-      return cmd.run({ app: 'myapp' }).then(() => {
-        expect(cli.stderr).to.contain('No backup schedules found on myapp\n')
+      await cmd.run({ app: 'myapp' })
+      expect(cli.stderr).to.contain('No backup schedules found on myapp\n')
 
-        expect(cli.stderr).to.contain('Use heroku pg:backups:schedule to set one up\n')
-      })
+      expect(cli.stderr).to.contain('Use heroku pg:backups:schedule to set one up\n')
     })
 
-    it('shows schedule', () => {
+    it('shows schedule', async () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [
         { name: 'DATABASE_URL', hour: 5, timezone: 'UTC' }
       ])
-      return cmdRun({ app: 'myapp' }).then(() =>
-        expect(cli.stdout).to.equal(
-          `=== Backup Schedules
+      await cmdRun({ app: 'myapp' })
+
+      return expect(cli.stdout).to.equal(
+        `=== Backup Schedules
 DATABASE_URL: daily at 5:00 UTC
 `
-        )
       )
     })
   })

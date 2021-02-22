@@ -20,18 +20,20 @@ describe('container pull', () => {
     sandbox.stub(process, 'exit')
 
     await cmd.run({ app: 'testapp', args: [], flags: {} })
-      .then(() => expect(cli.stderr).to.contain('Requires one or more process types'))
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(process.exit.calledWith(1)).to.equal(true))
+    expect(cli.stderr).to.contain('Requires one or more process types');
+    expect(cli.stdout, 'to be empty');
+    expect(process.exit.calledWith(1)).to.equal(true);
   })
 
-  it('pulls from the docker registry', () => {
+  it('pulls from the docker registry', async () => {
     let pull = sandbox.stub(Sanbashi, 'pullImage')
       .withArgs('registry.heroku.com/testapp/web')
 
-    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => expect(cli.stdout).to.contain('Pulling web as registry.heroku.com/testapp/web'))
-      .then(() => sandbox.assert.calledOnce(pull))
+    await cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+
+    expect(cli.stderr, 'to be empty');
+    expect(cli.stdout).to.contain('Pulling web as registry.heroku.com/testapp/web');
+
+    return sandbox.assert.calledOnce(pull)
   })
 })

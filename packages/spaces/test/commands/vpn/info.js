@@ -9,7 +9,7 @@ const cli = require('heroku-cli-util')
 describe('spaces:vpn:info', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('gets VPN info', function () {
+  it('gets VPN info', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name')
       .reply(200, {
@@ -37,12 +37,14 @@ describe('spaces:vpn:info', function () {
           }
         ]
       })
-    return cmd.run({ flags: {
+
+    await cmd.run({ flags: {
       space: 'my-space',
       name: 'vpn-connection-name'
     } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== vpn-connection-name VPN Info
+
+    expect(cli.stdout).to.equal(
+      `=== vpn-connection-name VPN Info
 Name:           vpn-connection-name
 ID:             123456789012
 Public IP:      35.161.69.30
@@ -54,11 +56,12 @@ VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────
 Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
 Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
-      ))
-      .then(() => api.done())
+    )
+
+    return api.done()
   })
 
-  it('gets VPN info in JSON', function () {
+  it('gets VPN info in JSON', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name')
       .reply(200, {
@@ -85,13 +88,15 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
           }
         ]
       })
-    return cmd.run({ flags: {
+
+    await cmd.run({ flags: {
       space: 'my-space',
       name: 'vpn-connection-name',
       json: true
     } })
-      .then(() => expect(cli.stdout).to.equal(
-        `{
+
+    expect(cli.stdout).to.equal(
+      `{
   "id": "123456789012",
   "public_ip": "35.161.69.30",
   "routable_cidrs": [
@@ -116,10 +121,11 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
       "status_message": "status message"
     }
   ]
-}\n`))
-      .then(() => api.done())
+}\n`)
+
+    return api.done()
   })
-  it('gets VPN info with id', function () {
+  it('gets VPN info with id', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/123456789012')
       .reply(200, {
@@ -147,12 +153,14 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
           }
         ]
       })
-    return cmd.run({ flags: {
+
+    await cmd.run({ flags: {
       space: 'my-space',
       name: '123456789012'
     } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== vpn-connection-name VPN Info
+
+    expect(cli.stdout).to.equal(
+      `=== vpn-connection-name VPN Info
 Name:           vpn-connection-name
 ID:             123456789012
 Public IP:      35.161.69.30
@@ -164,7 +172,8 @@ VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────
 Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
 Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
-      ))
-      .then(() => api.done())
+    )
+
+    return api.done()
   })
 })

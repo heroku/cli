@@ -54,7 +54,7 @@ describe('ps', function () {
     nock.cleanAll()
   })
 
-  it('shows dyno list', function () {
+  it('shows dyno list', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [
@@ -64,19 +64,22 @@ describe('ps', function () {
 
     stubAppAndAccount()
 
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== run: one-off processes (1)
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(`=== run: one-off processes (1)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 === web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows shield dynos in dyno list for apps in a shielded private space', function () {
+  it('shows shield dynos in dyno list for apps in a shielded private space', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp')
       .reply(200, { space: { shield: true } })
@@ -88,16 +91,19 @@ web.1: up ${hourAgoStr} (~ 1h ago)
 
     stubAppAndAccount()
 
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== run: one-off processes (1)
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(`=== run: one-off processes (1)
 run.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash
 
 === web (Shield-M): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
   it('errors when no dynos found', function () {
@@ -113,7 +119,7 @@ web.1: up ${hourAgoStr} (~ 1h ago)
     return expect(cmd.run({ app: 'myapp', args: ['foo'], flags: {} })).to.be.rejectedWith('No foo dynos on myapp')
   })
 
-  it('shows dyno list as json', function () {
+  it('shows dyno list as json', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { id: '1234' })
@@ -124,13 +130,15 @@ web.1: up ${hourAgoStr} (~ 1h ago)
         { command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up' }
       ])
 
-    return cmd.run({ app: 'myapp', args: [], flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', { command: 'npm start' }))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: [], flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout)[0], 'to satisfy', { command: 'npm start' });
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows extended info', function () {
+  it('shows extended info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { id: '1234' })
@@ -142,17 +150,20 @@ web.1: up ${hourAgoStr} (~ 1h ago)
         { id: 101, command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route' } }
       ])
 
-    return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
+    await cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
+
+    expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.2  8000  us-east           bash       da route  Free
 100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.1  8000  us-east           npm start  da route  Free
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows shield dynos in extended info if app is in a shielded private space', function () {
+  it('shows shield dynos in extended info if app is in a shielded private space', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { id: '1234' })
@@ -164,17 +175,20 @@ web.1: up ${hourAgoStr} (~ 1h ago)
         { id: 101, command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route' } }
       ])
 
-    return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
+    await cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
+
+    expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.2  8000  us-east           bash       da route  Shield-L
 100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.1  8000  us-east           npm start  da route  Shield-M
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows free quota remaining', function () {
+  it('shows free quota remaining', async function() {
     stubAccountQuota(200, { account_quota: 1000, quota_used: 1, apps: [] })
 
     let freeExpression =
@@ -187,12 +201,15 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('shows free quota remaining in hours and minutes', function () {
+  it('shows free quota remaining in hours and minutes', async function() {
     stubAccountQuota(200, { account_quota: 3600000, quota_used: 178200, apps: [] })
 
     let freeExpression =
@@ -205,12 +222,15 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('shows free quota usage of free apps', function () {
+  it('shows free quota usage of free apps', async function() {
     stubAccountQuota(200, { account_quota: 3600000, quota_used: 178200, apps: [{ app_uuid: '6789', quota_used: 178200 }] })
 
     let freeExpression =
@@ -223,12 +243,15 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('shows free quota remaining even when account_quota is zero', function () {
+  it('shows free quota remaining even when account_quota is zero', async function() {
     stubAccountQuota(200, { account_quota: 0, quota_used: 0, apps: [] })
 
     let freeExpression =
@@ -241,12 +264,15 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('handles quota 404 properly', function () {
+  it('handles quota 404 properly', async function() {
     stubAccountQuota(404, { id: 'not_found' })
 
     let freeExpression = `=== run: one-off processes (1)
@@ -254,24 +280,29 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
 
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('handles quota 200 not_found properly', function () {
+  it('handles quota 200 not_found properly', async function() {
     stubAccountQuota(200, { id: 'not_found' })
 
     let freeExpression = `=== run: one-off processes (1)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('does not print out for apps that are not owned', function () {
+  it('does not print out for apps that are not owned', async function() {
     nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { id: '1234' })
@@ -299,13 +330,16 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => dynos.done())
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+    expect(cli.stderr, 'to be empty');
+
+    return dynos.done()
   })
 
-  it('does not print out for non-free apps', function () {
+  it('does not print out for non-free apps', async function() {
     nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { id: '1234' })
@@ -324,13 +358,16 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => dynos.done())
+
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+    expect(cli.stderr, 'to be empty');
+
+    return dynos.done()
   })
 
-  it('traps errors properly', function () {
+  it('traps errors properly', async function() {
     stubAccountQuota(503, { id: 'server_error' })
 
     let freeExpression = `=== run: one-off processes (1)
@@ -338,21 +375,25 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
 
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal(freeExpression))
-      .then(() => expect(cli.stderr, 'to be empty'))
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal(freeExpression);
+
+    return expect(cli.stderr, 'to be empty')
   })
 
-  it('logs to stdout and exits zero when no dynos', function () {
+  it('logs to stdout and exits zero when no dynos', async function() {
     let dynos = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [])
 
     stubAppAndAccount()
 
-    return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout).to.equal('No dynos on myapp\n'))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => dynos.done())
+    await cmd.run({ app: 'myapp', args: [], flags: {} })
+
+    expect(cli.stdout).to.equal('No dynos on myapp\n');
+    expect(cli.stderr, 'to be empty');
+
+    return dynos.done()
   })
 })

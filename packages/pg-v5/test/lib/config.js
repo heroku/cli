@@ -20,13 +20,13 @@ describe('config', () => {
     api.done()
   })
 
-  it('caches the config vars', () => {
+  it('caches the config vars', async () => {
     let expectedMyapp = { 'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb' }
     let expectedFooapp = { 'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb' }
 
     api.get('/apps/myapp/config-vars').reply(200, expectedMyapp)
 
-    return getConfig(new Heroku(), 'myapp')
+    const config = await getConfig(new Heroku(), 'myapp')
       .then(config => expect(config).to.deep.equal(expectedMyapp))
       .then(() => {
         api.get('/apps/fooapp/config-vars').reply(200, expectedFooapp)
@@ -37,6 +37,7 @@ describe('config', () => {
       .then(() => {
         return getConfig(new Heroku(), 'myapp')
       })
-      .then(config => expect(config).to.deep.equal(expectedMyapp))
+
+    return expect(config).to.deep.equal(expectedMyapp)
   })
 })

@@ -38,7 +38,7 @@ describe('apps:errors', () => {
     }
   }
 
-  it('shows no errors', () => {
+  it('shows no errors', async () => {
     const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
@@ -50,15 +50,18 @@ describe('apps:errors', () => {
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, { data: {} })
 
-    return cmd.run({ app: 'myapp', flags: { json: false } })
-      .then(() => expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => metrics.done())
-      .then(() => heroku.done())
+    await cmd.run({ app: 'myapp', flags: { json: false } })
+
+    expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
+`);
+
+    expect(cli.stderr, 'to be empty');
+    metrics.done();
+
+    return heroku.done()
   })
 
-  it('traps bad request', () => {
+  it('traps bad request', async () => {
     const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
@@ -70,12 +73,15 @@ describe('apps:errors', () => {
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(400, { id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); ' })
 
-    return cmd.run({ app: 'myapp', flags: { json: false } })
-      .then(() => expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => metrics.done())
-      .then(() => heroku.done())
+    await cmd.run({ app: 'myapp', flags: { json: false } })
+
+    expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
+`);
+
+    expect(cli.stderr, 'to be empty');
+    metrics.done();
+
+    return heroku.done()
   })
 
   it('propagates other bad request', () => {
@@ -93,7 +99,7 @@ describe('apps:errors', () => {
     return expect(cmd.run({ app: 'myapp', flags: { json: false } })).to.be.rejected
   })
 
-  it('shows errors', () => {
+  it('shows errors', async () => {
     const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
@@ -105,21 +111,24 @@ describe('apps:errors', () => {
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, { data: { R14: [1] } })
 
-    return cmd.run({ app: 'myapp', flags: { json: false } })
-      .then(() => expect(cli.stdout, 'to be', `=== Errors on myapp in the last 24 hours
+    await cmd.run({ app: 'myapp', flags: { json: false } })
+
+    expect(cli.stdout, 'to be', `=== Errors on myapp in the last 24 hours
 source  name  level     desc                        count
 ──────  ────  ────────  ──────────────────────────  ─────
 router  H12   critical  Request Timeout             2
 router  H25   critical  HTTP Restriction            3
 router  H27   info      Client Request Interrupted  9
 web     R14   critical  Memory quota exceeded       1
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => metrics.done())
-      .then(() => heroku.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+    metrics.done();
+
+    return heroku.done()
   })
 
-  it('shows errors as json', () => {
+  it('shows errors as json', async () => {
     const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
@@ -131,10 +140,12 @@ web     R14   critical  Memory quota exceeded       1
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, { data: {} })
 
-    return cmd.run({ app: 'myapp', flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { router: { H12: 2 } }))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => metrics.done())
-      .then(() => heroku.done())
+    await cmd.run({ app: 'myapp', flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout), 'to satisfy', { router: { H12: 2 } });
+    expect(cli.stderr, 'to be empty');
+    metrics.done();
+
+    return heroku.done()
   })
 })

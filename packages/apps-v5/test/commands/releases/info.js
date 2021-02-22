@@ -23,14 +23,16 @@ describe('releases:info', function () {
   }
   let configVars = { FOO: 'foo', BAR: 'bar' }
 
-  it('shows most recent release info', function () {
+  it('shows most recent release info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== Release v10
+
+    await cmd.run({ app: 'myapp', flags: {}, args: {} })
+
+    expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -40,19 +42,23 @@ When:    ${d.toISOString()}
 === v10 Config vars
 BAR: bar
 FOO: foo
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows most recent release info config vars as shell', function () {
+  it('shows most recent release info config vars as shell', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: { shell: true }, args: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== Release v10
+
+    await cmd.run({ app: 'myapp', flags: { shell: true }, args: {} })
+
+    expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -62,19 +68,23 @@ When:    ${d.toISOString()}
 === v10 Config vars
 FOO=foo
 BAR=bar
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows release info by id', function () {
+  it('shows release info by id', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: { release: 'v10' } })
-      .then(() => expect(cli.stdout).to.equal(`=== Release v10
+
+    await cmd.run({ app: 'myapp', flags: {}, args: { release: 'v10' } })
+
+    expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -84,24 +94,29 @@ When:    ${d.toISOString()}
 === v10 Config vars
 BAR: bar
 FOO: foo
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows recent release as json', function () {
+  it('shows recent release as json', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: { json: true }, args: { release: 'v10' } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { version: 10 }))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+
+    await cmd.run({ app: 'myapp', flags: { json: true }, args: { release: 'v10' } })
+
+    expect(JSON.parse(cli.stdout), 'to satisfy', { version: 10 });
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows a failed release info', function () {
+  it('shows a failed release info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [{
@@ -113,8 +128,10 @@ FOO: foo
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== Release v10
+
+    await cmd.run({ app: 'myapp', flags: {}, args: {} })
+
+    expect(cli.stdout).to.equal(`=== Release v10
 By:      foo@foo.com
 Change:  something changed (release command failed)
 When:    ${d.toISOString()}
@@ -122,12 +139,14 @@ When:    ${d.toISOString()}
 === v10 Config vars
 BAR: bar
 FOO: foo
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows a pending release info', function () {
+  it('shows a pending release info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [{
@@ -140,8 +159,10 @@ FOO: foo
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== Release v10
+
+    await cmd.run({ app: 'myapp', flags: {}, args: {} })
+
+    expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -151,8 +172,10 @@ When:    ${d.toISOString()}
 === v10 Config vars
 BAR: bar
 FOO: foo
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 })

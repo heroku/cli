@@ -24,41 +24,50 @@ describe('heroku members:set', () => {
       stubGet.teamInfo('team')
     })
 
-    it('does not warn the user when under the free org limit', () => {
+    it('does not warn the user when under the free org limit', async () => {
       stubGet.variableSizeTeamMembers(1)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
-      return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+      await cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Adding foo@foo.com to myteam as admin... done
+`).to.eq(cli.stderr);
+
+      return apiUpdateMemberRole.done()
     })
 
-    it('does not warn the user when over the free org limit', () => {
+    it('does not warn the user when over the free org limit', async () => {
       stubGet.variableSizeTeamMembers(7)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
-      return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+      await cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Adding foo@foo.com to myteam as admin... done
+`).to.eq(cli.stderr);
+
+      return apiUpdateMemberRole.done()
     })
 
-    it('does warn the user when at the free org limit', () => {
+    it('does warn the user when at the free org limit', async () => {
       stubGet.variableSizeTeamMembers(6)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
-      return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done \
+      await cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myteam' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done \
 You'll be billed monthly for teams over 5 members.
-`))
-        .then(() => apiUpdateMemberRole.done())
+`);
+
+      return apiUpdateMemberRole.done()
     })
   })
 
@@ -68,14 +77,17 @@ You'll be billed monthly for teams over 5 members.
       stubGet.variableSizeTeamMembers(1)
     })
 
-    it('adds a member to an org', () => {
+    it('adds a member to an org', async () => {
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
-      return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam', role: 'admin' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+      await cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam', role: 'admin' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Adding foo@foo.com to myteam as admin... done
+`).to.eq(cli.stderr);
+
+      return apiUpdateMemberRole.done()
     })
   })
 })

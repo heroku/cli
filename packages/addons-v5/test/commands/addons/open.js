@@ -8,7 +8,7 @@ let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'open')
 describe('addons:open', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('only prints the URL when --show-url passed', function () {
+  it('only prints the URL when --show-url passed', async function() {
     let api = nock('https://api.heroku.com:443')
 
     api.post('/actions/addons/resolve', { 'app': 'myapp', 'addon': 'db2' })
@@ -17,12 +17,14 @@ describe('addons:open', function () {
     api.get('/addons/db2/addon-attachments')
       .reply(200, [])
 
-    return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
-      .then(() => expect(cli.stdout).to.equal('http://db2\n'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
+
+    expect(cli.stdout).to.equal('http://db2\n');
+
+    return api.done()
   })
 
-  it('opens the addon dashboard in a browser by default', function () {
+  it('opens the addon dashboard in a browser by default', async function() {
     let api = nock('https://api.heroku.com:443')
 
     api.post('/actions/addons/resolve', { 'app': 'myapp', 'addon': 'slowdb' })
@@ -31,13 +33,15 @@ describe('addons:open', function () {
     api.get('/addons/slowdb/addon-attachments')
       .reply(200, [])
 
-    return cmd.run({ app: 'myapp', args: { addon: 'slowdb' }, flags: { 'show-url': false } })
-      .then(() => expect(cli.open.url).to.equal('http://slowdb'))
-      .then(() => expect(cli.stdout).to.equal('Opening http://slowdb...\n'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: { addon: 'slowdb' }, flags: { 'show-url': false } })
+
+    expect(cli.open.url).to.equal('http://slowdb');
+    expect(cli.stdout).to.equal('Opening http://slowdb...\n');
+
+    return api.done()
   })
 
-  it('opens an attached addon, by slug, with the correct `context_app`', function () {
+  it('opens an attached addon, by slug, with the correct `context_app`', async function() {
     let api = nock('https://api.heroku.com:443')
 
     api.post('/actions/addon-attachments/resolve', { 'app': 'myapp-2', 'addon_attachment': 'slowdb' })
@@ -54,9 +58,11 @@ describe('addons:open', function () {
         { app: { name: 'myapp' }, web_url: 'http://myapp-slowdb' },
         { app: { name: 'myapp-2' }, web_url: 'http://myapp-2-slowdb' }])
 
-    return cmd.run({ app: 'myapp-2', args: { addon: 'slowdb' }, flags: { 'show-url': false } })
-      .then(() => expect(cli.open.url).to.equal('http://myapp-2-slowdb'))
-      .then(() => expect(cli.stdout).to.equal('Opening http://myapp-2-slowdb...\n'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp-2', args: { addon: 'slowdb' }, flags: { 'show-url': false } })
+
+    expect(cli.open.url).to.equal('http://myapp-2-slowdb');
+    expect(cli.stdout).to.equal('Opening http://myapp-2-slowdb...\n');
+
+    return api.done()
   })
 })

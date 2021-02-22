@@ -36,9 +36,9 @@ describe('pg:reset', () => {
     api.done()
   })
 
-  it('reset db', () => {
+  it('reset db', async () => {
     pg.put('/client/v11/databases/1/reset').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
+    await cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+    return expect(cli.stderr).to.equal('Resetting postgres-1... done\n')
   })
 })

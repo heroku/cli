@@ -37,10 +37,13 @@ describe('pg:links:destroy', () => {
     pg.done()
   })
 
-  it('destroys a link', () => {
+  it('destroys a link', async () => {
     pg.delete('/client/v11/databases/1/links/redis').reply(200)
-    return cmd.run({ app: 'myapp', args: { link: 'redis' }, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Destroying link redis from postgres-1... done\n'))
+
+    await cmd.run({ app: 'myapp', args: { link: 'redis' }, flags: { confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Destroying link redis from postgres-1... done\n')
   })
 })

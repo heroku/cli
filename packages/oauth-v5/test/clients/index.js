@@ -24,14 +24,14 @@ describe('clients', () => {
         .reply(200, [{ name: 'awesome', id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e', redirect_uri: 'https://myapp.com' }])
     })
 
-    it('lists the clients', () => {
-      return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout).to.equal('awesome  f6e8d969-129f-42d2-854b-c2eca9d5a42e  https://myapp.com\n'))
+    it('lists the clients', async () => {
+      await cmd.run({ flags: {} })
+      return expect(cli.stdout).to.equal('awesome  f6e8d969-129f-42d2-854b-c2eca9d5a42e  https://myapp.com\n')
     })
 
-    it('lists the clients as json', () => {
-      return cmd.run({ flags: { json: true } })
-        .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', { name: 'awesome' }))
+    it('lists the clients as json', async () => {
+      await cmd.run({ flags: { json: true } })
+      return expect(JSON.parse(cli.stdout)[0], 'to satisfy', { name: 'awesome' })
     })
   })
 
@@ -42,9 +42,9 @@ describe('clients', () => {
         .reply(200, [])
     })
 
-    it('shows no clients message', () => {
-      return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout).to.equal('No OAuth clients.\n'))
+    it('shows no clients message', async () => {
+      await cmd.run({ flags: {} })
+      return expect(cli.stdout).to.equal('No OAuth clients.\n')
     })
   })
 })

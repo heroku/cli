@@ -8,11 +8,11 @@ const cmd = require('../../../src/commands/maintenance/off')
 describe('maintenance:off', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('turns maintenance mode off', function () {
+  it('turns maintenance mode off', async function() {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp', { maintenance: false })
       .reply(200)
-    return cmd.run({ app: 'myapp' })
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp' })
+    return api.done()
   })
 })

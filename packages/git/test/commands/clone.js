@@ -14,7 +14,7 @@ describe('git:clone', function () {
       .to.be.rejectedWith(Error, 'Specify an app with --app')
   })
 
-  it('clones the repo', function () {
+  it('clones the repo', async function() {
     let git = require('../mock/git')
     let mock = sinon.mock(git)
     mock.expects('spawn').withExactArgs(['clone', '-o', 'heroku', 'https://git.heroku.com/myapp.git', 'myapp']).returns(Promise.resolve()).once()
@@ -23,11 +23,9 @@ describe('git:clone', function () {
       .get('/apps/myapp')
       .reply(200, { name: 'myapp' })
 
-    return clone.run({ flags: { app: 'myapp' }, args: [] })
-      .then(() => {
-        mock.verify()
-        mock.restore()
-        api.done()
-      })
+    await clone.run({ flags: { app: 'myapp' }, args: [] })
+    mock.verify()
+    mock.restore()
+    api.done()
   })
 })

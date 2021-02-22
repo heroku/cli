@@ -44,18 +44,18 @@ describe('setter', () => {
     settings.forEach(([name, value, convert]) => {
       let fn = setter.generate(name, convert, () => '')
 
-      it(`shows the current value for ${name}`, () => {
+      it(`shows the current value for ${name}`, async () => {
         pg.get('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
-        return cli.command(fn)({ app: 'myapp', args: {}, flags: {} })
-          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
+        await cli.command(fn)({ app: 'myapp', args: {}, flags: {} })
+        return expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`)
       })
 
-      it(`change the value for ${name}`, () => {
+      it(`change the value for ${name}`, async () => {
         pg.patch('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
-        return cli.command(fn)({ app: 'myapp', args: { value: value }, flags: {} })
-          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
+        await cli.command(fn)({ app: 'myapp', args: { value: value }, flags: {} })
+        return expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`)
       })
     })
   })

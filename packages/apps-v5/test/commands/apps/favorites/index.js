@@ -10,28 +10,33 @@ describe('apps:favorites:remove', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('shows all favorite apps', () => {
+  it('shows all favorite apps', async () => {
     let api = nock('https://particleboard.heroku.com:443')
       .get('/favorites?type=app')
       .reply(200, [{ resource_name: 'myapp' }, { resource_name: 'myotherapp' }])
 
-    return cmd.run({ app: 'myapp', flags: { json: false } })
-      .then(() => expect(cli.stdout).to.equal(`=== Favorited Apps
+    await cmd.run({ app: 'myapp', flags: { json: false } })
+
+    expect(cli.stdout).to.equal(`=== Favorited Apps
 myapp
 myotherapp
-`))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr).to.equal('');
+
+    return api.done()
   })
 
-  it('shows all favorite apps as json', () => {
+  it('shows all favorite apps as json', async () => {
     let api = nock('https://particleboard.heroku.com:443')
       .get('/favorites?type=app')
       .reply(200, [{ resource_name: 'myapp' }, { resource_name: 'myotherapp' }])
 
-    return cmd.run({ app: 'myapp', flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)[0].resource_name).to.equal('myapp'))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout)[0].resource_name).to.equal('myapp');
+    expect(cli.stderr).to.equal('');
+
+    return api.done()
   })
 })

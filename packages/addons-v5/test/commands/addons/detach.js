@@ -8,7 +8,7 @@ describe('addons:detach', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('detaches an add-on', function () {
+  it('detaches an add-on', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/addon-attachments/redis-123')
       .reply(200, { id: 100, name: 'redis-123', addon: { name: 'redis' } })
@@ -16,11 +16,15 @@ describe('addons:detach', () => {
       .reply(200)
       .get('/apps/myapp/releases')
       .reply(200, [{ version: 10 }])
-    return cmd.run({ app: 'myapp', args: { attachment_name: 'redis-123' } })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr).to.equal(`Detaching redis-123 to redis from myapp... done
+
+    await cmd.run({ app: 'myapp', args: { attachment_name: 'redis-123' } })
+
+    expect(cli.stdout, 'to be empty');
+
+    expect(cli.stderr).to.equal(`Detaching redis-123 to redis from myapp... done
 Unsetting redis-123 config vars and restarting myapp... done, v10
-`))
-      .then(() => api.done())
+`);
+
+    return api.done()
   })
 })

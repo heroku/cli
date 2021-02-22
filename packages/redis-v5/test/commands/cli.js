@@ -51,7 +51,7 @@ describe('heroku redis:cli', function () {
     command = proxyquire('../../commands/cli.js', { net, tls, ssh2 })
   })
 
-  it('# for hobby it uses net.connect', function () {
+  it('# for hobby it uses net.connect', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {
@@ -74,16 +74,19 @@ describe('heroku redis:cli', function () {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'hobby'
       })
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => configVars.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(net.connect.called).to.equal(true))
+
+    await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    configVars.done();
+    redis.done();
+    expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n');
+    expect(cli.stderr).to.equal('');
+
+    return expect(net.connect.called).to.equal(true)
   })
 
-  it('# for hobby it uses TLS if prefer_native_tls', function () {
+  it('# for hobby it uses TLS if prefer_native_tls', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {
@@ -107,16 +110,19 @@ describe('heroku redis:cli', function () {
         plan: 'hobby',
         prefer_native_tls: true
       })
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => configVars.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(tls.connect.called).to.equal(true))
+
+    await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    configVars.done();
+    redis.done();
+    expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):\n');
+    expect(cli.stderr).to.equal('');
+
+    return expect(tls.connect.called).to.equal(true)
   })
 
-  it('# for premium it uses tls.connect', function () {
+  it('# for premium it uses tls.connect', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {
@@ -140,16 +146,18 @@ describe('heroku redis:cli', function () {
         plan: 'premium-0'
       })
 
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => configVars.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(tls.connect.called).to.equal(true))
+    await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    configVars.done();
+    redis.done();
+    expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n');
+    expect(cli.stderr).to.equal('');
+
+    return expect(tls.connect.called).to.equal(true)
   })
 
-  it('# for bastion it uses tunnel.connect', function () {
+  it('# for bastion it uses tunnel.connect', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {
@@ -173,15 +181,17 @@ describe('heroku redis:cli', function () {
         plan: 'premium-0'
       })
 
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => configVars.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
+    await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    configVars.done();
+    redis.done();
+    expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n');
+
+    return expect(cli.stderr).to.equal('')
   })
 
-  it('# for private spaces bastion with prefer_native_tls, it uses tls.connect', function () {
+  it('# for private spaces bastion with prefer_native_tls, it uses tls.connect', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         { id: addonId,
@@ -205,13 +215,15 @@ describe('heroku redis:cli', function () {
         prefer_native_tls: true
       })
 
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => configVars.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(tls.connect.called).to.equal(true))
+    await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    configVars.done();
+    redis.done();
+    expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n');
+    expect(cli.stderr).to.equal('');
+
+    return expect(tls.connect.called).to.equal(true)
   })
 
   it('# selects correct connection information when multiple redises are present across multiple apps', async () => {

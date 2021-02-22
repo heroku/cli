@@ -107,7 +107,7 @@ describe('pg', () => {
       delete dumpOpts.env.PGPORT
     })
 
-    it('pushes out a db', () => {
+    it('pushes out a db', async () => {
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
@@ -124,13 +124,15 @@ describe('pg', () => {
         on: exitHandler
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
+
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n');
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('pushes out a db using url port', () => {
+    it('pushes out a db using url port', async () => {
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
@@ -147,13 +149,15 @@ describe('pg', () => {
         on: exitHandler
       })
 
-      return push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
+
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n');
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('pushes out a db using PGPORT', () => {
+    it('pushes out a db using PGPORT', async () => {
       env.PGPORT = dumpOpts.env.PGPORT = '5433'
       restoreOpts.env.PGPORT = '5433'
 
@@ -173,13 +177,15 @@ describe('pg', () => {
         on: exitHandler
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      await push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
+
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n');
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
+    it('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
       db.bastionHost = 'bastion-host'
       db.bastionKey = 'super-private-key'
 
@@ -209,11 +215,13 @@ describe('pg', () => {
         on: exitHandler
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
+      await push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
+
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n');
+      expect(cli.stderr).to.equal('');
+
+      return expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)
     })
 
     it('exits non-zero when there is an error', () => {
@@ -295,16 +303,18 @@ describe('pg', () => {
       spawnStub.restore()
     })
 
-    it('pulls a db in', () => {
-      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce).to.equal(true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+    it('pulls a db in', async () => {
+      await pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
+
+      expect(createDbStub.calledOnce).to.equal(true);
+      expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true);
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n');
+
+      return expect(cli.stderr).to.equal('')
     })
 
-    it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
+    it('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
       db.bastionHost = 'bastion-host'
       db.bastionKey = 'super-private-key'
 
@@ -318,13 +328,15 @@ describe('pg', () => {
         localPort: 49152
       }
 
-      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce).to.equal(true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
+      await pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
+
+      expect(createDbStub.calledOnce).to.equal(true);
+      expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true);
+      expect(spawnStub.callCount).to.equal(2);
+      expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n');
+      expect(cli.stderr).to.equal('');
+
+      return expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)
     })
   })
 })

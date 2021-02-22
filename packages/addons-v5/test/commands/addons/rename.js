@@ -16,7 +16,7 @@ describe('addons:rename', () => {
   let redis = fixtures.addons['www-redis']
 
   context('when the add-on exists', () => {
-    it('renames the add-on', () => {
+    it('renames the add-on', async () => {
       nock('https://api.heroku.com')
         .get(`/addons/${redis.name}`)
         .reply(200, redis)
@@ -25,22 +25,24 @@ describe('addons:rename', () => {
         .patch(`/apps/${redis.app.id}/addons/${redis.id}`, { name: 'cache-redis' })
         .reply(201, '')
 
-      return cmd.run({ flags: {}, args: { addon: redis.name, name: 'cache-redis' } }).then(() => {
-        expect(renameRequest.isDone()).to.equal(true)
-        util.expectOutput(cli.stdout, `${redis.name} successfully renamed to cache-redis.`)
-      })
+      await cmd.run({ flags: {}, args: { addon: redis.name, name: 'cache-redis' } })
+      expect(renameRequest.isDone()).to.equal(true)
+      util.expectOutput(cli.stdout, `${redis.name} successfully renamed to cache-redis.`)
     })
   })
 
   context('when the add-on does not exist', () => {
-    it('displays an appropriate error', () => {
+    it('displays an appropriate error', async () => {
       nock('https://api.heroku.com')
         .get('/addons/not-an-addon')
         .reply(404, { message: "Couldn't find that add-on.", id: 'not_found', resource: 'addon' })
 
-      return cmd.run({ flags: {}, args: { addon: 'not-an-addon', name: 'cache-redis' } })
-        .then(() => { throw new Error('unreachable') })
-        .catch((err) => expect(err, 'to satisfy', { body: { message: "Couldn't find that add-on." } }))
+      try {
+        await cmd.run({ flags: {}, args: { addon: 'not-an-addon', name: 'cache-redis' } })
+        throw new Error('unreachable')
+      } catch (err) {
+        return expect(err, 'to satisfy', { body: { message: "Couldn't find that add-on." } })
+      }
     })
   })
 })

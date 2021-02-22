@@ -15,41 +15,53 @@ describe('heroku access:update', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
-    it('updates the app permissions, view being implicit', () => {
+    it('updates the app permissions, view being implicit', async () => {
       apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
-`).to.eq(cli.stderr))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+      await cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+`).to.eq(cli.stderr);
+
+      apiGetApp.done();
+
+      return apiPatchAppCollaborators.done()
     })
 
-    it('updates the app permissions, even specifying view as a permission', () => {
+    it('updates the app permissions, even specifying view as a permission', async () => {
       apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy,view' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
-`).to.eq(cli.stderr))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+      await cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy,view' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+`).to.eq(cli.stderr);
+
+      apiGetApp.done();
+
+      return apiPatchAppCollaborators.done()
     })
 
-    it('supports --privileges, but shows deprecation warning', () => {
+    it('supports --privileges, but shows deprecation warning', async () => {
       apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+      await cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
 Updating raulb@heroku.com in application myapp with deploy,view permissions... done
-`))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+`);
+
+      apiGetApp.done();
+
+      return apiPatchAppCollaborators.done()
     })
   })
 
@@ -60,16 +72,18 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
     })
     afterEach(() => nock.cleanAll())
 
-    it('returns an error when passing permissions', () => {
+    it('returns an error when passing permissions', async () => {
       apiGetApp = stubGet.personalApp()
 
-      return assertExit(1, cmd.run({
+      await assertExit(1, cmd.run({
         app: 'myapp',
         args: { email: 'raulb@heroku.com' },
         flags: { permissions: 'view,deploy' }
-      }).then(() => apiGetApp.done())).then(function () {
-        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by a team\n')
-      })
+      }))
+
+      apiGetApp.done();
+
+      expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by a team\n')
     })
   })
 })

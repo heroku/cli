@@ -26,8 +26,9 @@ describe('addons --app', function () {
 
   beforeEach(() => cli.mockConsole())
 
-  function run (app, cb) {
-    return cmd.run({ flags: {}, app: app }).then(cb)
+  async function run(app, cb) {
+    const runResult = await cmd.run({ flags: {}, app: app })
+    return cb(runResult)
   }
 
   it('prints message when there are no add-ons', function () {

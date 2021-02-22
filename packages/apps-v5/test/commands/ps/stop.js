@@ -11,19 +11,19 @@ describe('ps:stop', function () {
     nock.cleanAll()
   })
 
-  it('stops all web dynos', function () {
+  it('stops all web dynos', async function() {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/web/actions/stop').reply(200)
 
-    return cmd.run({ app: 'myapp', args: { dyno: 'web' } })
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: { dyno: 'web' } })
+    return api.done()
   })
 
-  it('stops run.10 dyno', function () {
+  it('stops run.10 dyno', async function() {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/run.10/actions/stop').reply(200)
 
-    return cmd.run({ app: 'myapp', args: { dyno: 'run.10' } })
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: { dyno: 'run.10' } })
+    return api.done()
   })
 })

@@ -32,10 +32,10 @@ describe('addons:info', function () {
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
-    it('prints add-ons in a table', function () {
-      return cmd.run({ flags: {}, args: { addon: 'www-db' } }).then(function () {
-        util.expectOutput(cli.stdout,
-          `=== www-db
+    it('prints add-ons in a table', async function() {
+      await cmd.run({ flags: {}, args: { addon: 'www-db' } })
+      util.expectOutput(cli.stdout,
+        `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -43,7 +43,6 @@ Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)
-      })
     })
   })
 
@@ -64,10 +63,10 @@ State:        created
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
-    it('prints add-ons in a table', function () {
-      return cmd.run({ flags: {}, args: { addon: 'www-db' }, app: 'example' }).then(function () {
-        util.expectOutput(cli.stdout,
-          `=== www-db
+    it('prints add-ons in a table', async function() {
+      await cmd.run({ flags: {}, args: { addon: 'www-db' }, app: 'example' })
+      util.expectOutput(cli.stdout,
+        `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -75,7 +74,6 @@ Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)
-      })
     })
   })
 
@@ -102,10 +100,10 @@ State:        created
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
-    it('prints add-ons in a table', function () {
-      return cmd.run({ flags: {}, args: { addon: 'www-db' }, app: 'example' }).then(function () {
-        util.expectOutput(cli.stdout,
-          `=== www-db
+    it('prints add-ons in a table', async function() {
+      await cmd.run({ flags: {}, args: { addon: 'www-db' }, app: 'example' })
+      util.expectOutput(cli.stdout,
+        `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -113,7 +111,6 @@ Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)
-      })
     })
   })
 
@@ -137,10 +134,10 @@ State:        created
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
 
-    it('prints add-ons in a table with grandfathered price', function () {
-      return cmd.run({ flags: {}, args: { addon: 'dwh-db' } }).then(function () {
-        util.expectOutput(cli.stdout,
-          `=== dwh-db
+    it('prints add-ons in a table with grandfathered price', async function() {
+      await cmd.run({ flags: {}, args: { addon: 'dwh-db' } })
+      util.expectOutput(cli.stdout,
+        `=== dwh-db
 Attachments:  acme-inc-dwh::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-dwh
@@ -148,7 +145,6 @@ Plan:         heroku-postgresql:standard-2
 Price:        $100/month
 State:        created
 `)
-      })
     })
   })
 
@@ -172,10 +168,10 @@ State:        created
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
 
-    it('prints add-ons in a table with contract', function () {
-      return cmd.run({ flags: {}, args: { addon: 'dwh-db' } }).then(function () {
-        util.expectOutput(cli.stdout,
-          `=== dwh-db
+    it('prints add-ons in a table with contract', async function() {
+      await cmd.run({ flags: {}, args: { addon: 'dwh-db' } })
+      util.expectOutput(cli.stdout,
+        `=== dwh-db
 Attachments:  acme-inc-dwh::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-dwh
@@ -183,7 +179,6 @@ Plan:         heroku-postgresql:standard-2
 Price:        contract
 State:        created
 `)
-      })
     })
   })
 })

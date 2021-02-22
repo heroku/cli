@@ -231,7 +231,7 @@ describe('releases', () => {
     }
   }
 
-  it('shows releases', () => {
+  it('shows releases', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
@@ -239,39 +239,47 @@ describe('releases', () => {
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows successful releases', () => {
+  it('shows successful releases', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KEY c…  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  second commit                    jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows releases in wider terminal', () => {
+  it('shows releases in wider terminal', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
@@ -279,39 +287,47 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit release command executing               jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                                  jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KE… release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  second commit release command executing              jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                                         jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 100))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 100);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows successful releases in wider terminal', () => {
+  it('shows successful releases in wider terminal', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit                              jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                       jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KEY config vars  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  second commit                             jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                              jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 89))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 89);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows releases in narrow terminal', () => {
+  it('shows releases in narrow terminal', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 65
     let api = nock('https://api.heroku.com:443')
@@ -319,20 +335,24 @@ v37  first commit                              jeff@heroku.com  2015/11/18 01:36
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows pending releases without release phase', () => {
+  it('shows pending releases without release phase', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
@@ -340,83 +360,105 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, {})
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows pending releases without a slug', () => {
+  it('shows pending releases without a slug', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releasesNoSlug)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases
 v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows releases as json', () => {
+  it('shows releases as json', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({ app: 'myapp', flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', { version: 41 }))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+
+    await cmd.run({ app: 'myapp', flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout)[0], 'to satisfy', { version: 41 });
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows message if no releases', () => {
+  it('shows message if no releases', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [])
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal('myapp has no releases.\n'))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal('myapp has no releases.\n');
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows extended info', () => {
+  it('shows extended info', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
-    return cmd.run({ app: 'myapp', flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
+
+    await cmd.run({ app: 'myapp', flags: { extended: true } })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows extended info in wider terminal', () => {
+  it('shows extended info in wider terminal', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
-    return cmd.run({ app: 'myapp', flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
+
+    await cmd.run({ app: 'myapp', flags: { extended: true } })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows no current release', () => {
+  it('shows no current release', async () => {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     releases[releases.length - 1].current = false
@@ -426,16 +468,20 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Releases
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(cli.stdout, 80))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    assertLineWidths(cli.stdout, 80);
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 })
