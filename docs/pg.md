@@ -399,6 +399,7 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 
 DESCRIPTION
   defaults to DATABASE_URL database if no DATABASE is specified
