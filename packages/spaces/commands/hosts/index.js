@@ -1,17 +1,16 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
 function displayJSON (hosts) {
   cli.log(JSON.stringify(hosts, null, 2))
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/hosts')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:hosts --space my-space')
-  let hosts = yield lib.getHosts(space)
+  let hosts = await lib.getHosts(space)
   if (context.flags.json) displayJSON(hosts)
   else lib.displayHosts(space, hosts)
 }
@@ -28,5 +27,5 @@ module.exports = {
     { name: 'space', char: 's', hasValue: true, description: 'space to get host list from' },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

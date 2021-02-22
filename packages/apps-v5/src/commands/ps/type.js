@@ -1,7 +1,6 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 const { sortBy, compact } = require('lodash')
 
 const costs = { 'Free': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
@@ -12,12 +11,12 @@ Upload a Procfile to add process types.
 https://devcenter.heroku.com/articles/procfile`)
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
 
-  let parse = co.wrap(function * (args) {
+  let parse = async function (args) {
     if (args.length === 0) return []
-    let formation = yield heroku.get(`/apps/${app}/formation`)
+    let formation = await heroku.get(`/apps/${app}/formation`)
     if (args.find((a) => a.match(/=/))) {
       return compact(args.map((arg) => {
         let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
@@ -32,11 +31,11 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     } else {
       return formation.map((p) => ({ type: p.type, size: args[0] }))
     }
-  })
+  }
 
-  let displayFormation = co.wrap(function * () {
-    let formation = yield heroku.get(`/apps/${app}/formation`)
-    const appProps = yield heroku.get(`/apps/${app}`)
+  let displayFormation = async function () {
+    let formation = await heroku.get(`/apps/${app}/formation`)
+    const appProps = await heroku.get(`/apps/${app}`)
     const shielded = appProps.space && appProps.space.shield
 
     formation = sortBy(formation, 'type')
@@ -63,15 +62,15 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
         { key: 'cost/mo' }
       ]
     })
-  })
+  }
 
-  let changes = yield parse(context.args)
+  let changes = await parse(context.args)
   if (changes.length > 0) {
-    yield cli.action(`Scaling dynos on ${cli.color.app(app)}`,
+    await cli.action(`Scaling dynos on ${cli.color.app(app)}`,
       heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
     )
   }
-  yield displayFormation()
+  await displayFormation()
 }
 
 let cmd = {
@@ -87,7 +86,7 @@ Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 `,
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [

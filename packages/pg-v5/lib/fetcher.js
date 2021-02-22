@@ -1,6 +1,5 @@
 'use strict'
 
-const co = require('co')
 const debug = require('./debug')
 const pgUtil = require('./util')
 const getConfig = require('./config')
@@ -8,7 +7,7 @@ const cli = require('heroku-cli-util')
 const bastion = require('./bastion')
 
 module.exports = heroku => {
-  function * attachment (app, passedDb, namespace = null) {
+  async function attachment(app, passedDb, namespace = null) {
     let db = passedDb || 'DATABASE_URL'
 
     function matchesHelper (app, db) {
@@ -31,7 +30,7 @@ module.exports = heroku => {
         })
     }
 
-    let { matches, err } = yield matchesHelper(app, db)
+    let { matches, err } = await matchesHelper(app, db)
 
     // happy path where the resolver matches just one
     if (matches && matches.length === 1) {
@@ -50,10 +49,10 @@ module.exports = heroku => {
         db = db + '_URL'
       }
 
-      let [config, attachments] = yield [
+      let [config, attachments] = await Promise.all([
         getConfig(heroku, app),
         allAttachments(app)
-      ]
+      ])
 
       if (attachments.length === 0) {
         throw new Error(`${cli.color.app(app)} has no databases`)
@@ -72,7 +71,7 @@ module.exports = heroku => {
 
     // case for 422 where there are ambiguous attachments that are equivalent
     if (matches.every((match) => first.addon.id === match.addon.id && first.app.id === match.app.id)) {
-      let config = yield getConfig(heroku, first.app.name)
+      let config = await getConfig(heroku, first.app.name)
 
       if (matches.every((match) => config[pgUtil.getConfigVarName(first.config_vars)] === config[pgUtil.getConfigVarName(match.config_vars)])) {
         return first
@@ -82,21 +81,21 @@ module.exports = heroku => {
     throw err
   }
 
-  function * addon (app, db) {
-    return (yield attachment(app, db)).addon
+  async function addon(app, db) {
+    return ((await attachment(app, db))).addon;
   }
 
-  function * database (app, db, namespace) {
-    let attached = yield attachment(app, db, namespace)
+  async function database(app, db, namespace) {
+    let attached = await attachment(app, db, namespace)
 
     // would inline this as well but in some cases attachment pulls down config
     // as well and we would request twice at the same time but I did not want
     // to push this down into attachment because we do not always need config
-    let config = yield getConfig(heroku, attached.app.name)
+    let config = await getConfig(heroku, attached.app.name)
 
     let database = pgUtil.getConnectionDetails(attached, config)
     if (pgUtil.bastionKeyPlan(attached.addon) && !database.bastionKey) {
-      let bastionConfig = yield bastion.fetchConfig(heroku, attached.addon)
+      let bastionConfig = await bastion.fetchConfig(heroku, attached.addon)
       let bastionHost = bastionConfig.host
       let bastionKey = bastionConfig.private_key
 
@@ -106,8 +105,8 @@ module.exports = heroku => {
     return database
   }
 
-  function * allAttachments (app) {
-    let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
+  async function allAttachments(app) {
+    let attachments = await heroku.get(`/apps/${app}/addon-attachments`, {
       headers: { 'Accept-Inclusion': 'addon:plan,config_vars' }
     })
     return attachments.filter(a => a.addon.plan.name.startsWith('heroku-postgresql'))
@@ -120,12 +119,12 @@ module.exports = heroku => {
     }, {})
   }
 
-  function * all (app) {
+  async function all(app) {
     const { uniqBy } = require('lodash')
 
     debug(`fetching all DBs on ${app}`)
 
-    let attachments = yield allAttachments(app)
+    let attachments = await allAttachments(app)
     let addons = attachments.map(a => a.addon)
 
     // Get the list of attachment names per addon here and add to each addon obj
@@ -138,28 +137,28 @@ module.exports = heroku => {
     return addons
   }
 
-  function * arbitraryAppDB (app) {
+  async function arbitraryAppDB(app) {
     // Since Postgres backups are tied to the app and not the add-on, but
     // we require *an* add-on to interact with, make sure that that add-on
     // is attached to the right app.
 
     debug(`fetching arbitrary app db on ${app}`)
-    let addons = yield heroku.get(`/apps/${app}/addons`)
+    let addons = await heroku.get(`/apps/${app}/addons`)
     let addon = addons.find(a => a.app.name === app && a.plan.name.startsWith('heroku-postgresql'))
     if (!addon) throw new Error(`No heroku-postgresql databases on ${app}`)
     return addon
   }
 
-  function * release (appName, id) {
-    return yield heroku.get(`/apps/${appName}/releases/${id}`)
+  async function release(appName, id) {
+    return await heroku.get(`/apps/${appName}/releases/${id}`);
   }
 
   return {
-    addon: co.wrap(addon),
-    attachment: co.wrap(attachment),
-    all: co.wrap(all),
-    database: co.wrap(database),
-    arbitraryAppDB: co.wrap(arbitraryAppDB),
-    release: co.wrap(release)
-  }
+    addon: addon,
+    attachment: attachment,
+    all: all,
+    database: database,
+    arbitraryAppDB: arbitraryAppDB,
+    release: release
+  };
 }

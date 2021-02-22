@@ -1,10 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
-  let services = yield heroku.get('/addon-services')
+async function run(context, heroku) {
+  let services = await heroku.get('/addon-services')
 
   if (context.flags.json) {
     cli.styledJSON(services)
@@ -28,5 +27,5 @@ module.exports = {
   flags: [
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

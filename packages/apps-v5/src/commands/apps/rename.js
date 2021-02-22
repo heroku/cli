@@ -1,9 +1,8 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const _ = require('lodash')
 
   let git = require('../../git')(context)
@@ -16,13 +15,13 @@ function * run (context, heroku) {
     path: `/apps/${oldApp}`,
     body: { name: newApp }
   })
-  let app = yield cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
+  let app = await cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
   let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
   cli.log(`${app.web_url} | ${gitUrl}`)
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
-    yield _(yield git.listRemotes())
+    await _(await git.listRemotes())
       .filter((r) => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
       .map((r) => r[0])
       .uniq()
@@ -48,7 +47,7 @@ Git remote heroku updated`,
   flags: [
     { name: 'ssh-git', description: 'use ssh git protocol instead of https' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [

@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const configCmd = require('./config')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -9,7 +8,7 @@ function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait --space my-space vpn-connection-name`)
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   const space = context.flags.space
   check(space, 'Space name required')
   const name = context.flags.name || context.args.name
@@ -20,7 +19,7 @@ function * run (context, heroku) {
   const deadline = new Date(new Date().getTime() + timeout)
 
   let lib = require('../../lib/vpn-connections')(heroku)
-  let info = yield lib.getVPNConnection(space, name)
+  let info = await lib.getVPNConnection(space, name)
   if (info.status === 'active') {
     cli.log('VPN has been allocated.')
     return
@@ -39,13 +38,13 @@ function * run (context, heroku) {
       throw new Error(info.status_message)
     }
 
-    yield wait(interval)
-    info = yield lib.getVPNConnection(space, name)
+    await wait(interval)
+    info = await lib.getVPNConnection(space, name)
   } while (info.status !== 'active')
 
   spinner.stop('done\n')
 
-  var config = yield lib.getVPNConnection(space, name)
+  var config = await lib.getVPNConnection(space, name)
   configCmd.displayVPNConfigInfo(space, name, config)
 }
 
@@ -63,5 +62,5 @@ module.exports = {
     { name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals' },
     { name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

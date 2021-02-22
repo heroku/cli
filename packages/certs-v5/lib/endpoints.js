@@ -56,30 +56,26 @@ function tagAndSort (app, allCerts) {
   })
 }
 
-function * all (appName, heroku) {
-  const featureList = yield heroku.get(`/apps/${appName}/features`)
+async function all(appName, heroku) {
+  const featureList = await heroku.get(`/apps/${appName}/features`)
   const privateSniFeatureEnabled = checkPrivateSniFeature(featureList)
 
-  let allCerts;
-
-  if (privateSniFeatureEnabled) {
+  let [ssl_certs, sni_certs] = await Promise.all([
     // use SNI endpoints only
-    allCerts = yield {
-      ssl_certs: [],
-      sni_certs: sniCertsPromise(appName, heroku),
-    }
-  } else {
-    allCerts = yield {
-      ssl_certs: sslCertsPromise(appName, heroku),
-      sni_certs: sniCertsPromise(appName, heroku)
-    }
+    privateSniFeatureEnabled ? [] : sslCertsPromise(appName, heroku),
+    sniCertsPromise(appName, heroku)
+  ])
+
+  let allCerts = {
+    ssl_certs,
+    sni_certs
   }
 
   return tagAndSort(appName, allCerts)
 }
 
-function * hasAddon (app, heroku) {
-  return yield heroku.request({
+async function hasAddon(app, heroku) {
+  return await heroku.request({
     path: `/apps/${app}/addons/ssl%3Aendpoint`
   }).then(function () {
     return true
@@ -89,15 +85,15 @@ function * hasAddon (app, heroku) {
     } else {
       throw err
     }
-  })
+  });
 }
 
-function * hasSpace (app, heroku) {
-  return yield heroku.request({
+async function hasSpace(app, heroku) {
+  return await heroku.request({
     path: `/apps/${app}`
   }).then(function (data) {
     return !!data.space
-  })
+  });
 }
 
 module.exports = {

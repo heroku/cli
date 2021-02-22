@@ -1,9 +1,8 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = cli.color.app(context.app)
   let warning = `This command will disable Automatic Certificate Management from ${app}.
 This will cause the certificate to be removed from ${app} causing SSL
@@ -14,9 +13,9 @@ are preferred which will also disable Automatic Certificate Management.
 2) heroku certs:update CRT KEY
 `
 
-  yield cli.confirmApp(context.app, context.flags.confirm, warning)
+  await cli.confirmApp(context.app, context.flags.confirm, warning)
 
-  yield cli.action('Disabling Automatic Certificate Management', heroku.request({
+  await cli.action('Disabling Automatic Certificate Management', heroku.request({
     method: 'DELETE',
     path: `/apps/${context.app}/acm`,
     headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
@@ -32,5 +31,5 @@ module.exports = {
   ],
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

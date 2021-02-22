@@ -1,6 +1,5 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
 let colorize = (level, s) => {
@@ -26,13 +25,21 @@ function buildErrorTable (errors, source) {
   })
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const { sum, fromPairs } = require('lodash')
 
   const hours = parseInt(context.flags.hours) || 24
   const NOW = new Date().toISOString()
   const YESTERDAY = new Date(new Date().getTime() - (hours * 60 * 60 * 1000)).toISOString()
   const DATE = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
+
+  async function getAllDynoErrors(types) {
+    const values = await Promise.all(types.map(dynoErrors));
+    return types.reduce((memo, key, index) => {
+      memo[key] = values[index];
+      return memo;
+    }, {})
+  }
 
   function routerErrors () {
     return heroku.request({
@@ -62,13 +69,19 @@ function * run (context, heroku) {
     })
   }
 
-  let formation = yield heroku.get(`/apps/${context.app}/formation`)
+  let formation = await heroku.get(`/apps/${context.app}/formation`)
   let types = formation.map((p) => p.type)
   let showDyno = context.flags.dyno || !context.flags.router
   let showRouter = context.flags.router || !context.flags.dyno
-  let errors = yield {
-    dyno: showDyno ? fromPairs(types.map((type) => [type, dynoErrors(type)])) : {},
-    router: showRouter ? routerErrors() : {}
+
+  let [dyno, router] = await Promise.all([
+    showDyno ? getAllDynoErrors(types) : {},
+    showRouter ? routerErrors() : {}
+  ])
+
+  let errors = {
+    dyno,
+    router
   }
 
   if (context.flags.json) {
@@ -105,5 +118,5 @@ module.exports = {
     { name: 'router', description: 'show only router errors' },
     { name: 'dyno', description: 'show only dyno errors' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

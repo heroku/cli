@@ -1,7 +1,6 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
 let grandfatheredPrice = require('../../lib/util').grandfatheredPrice
 let formatPrice = require('../../lib/util').formatPrice
@@ -10,14 +9,12 @@ let style = require('../../lib/util').style
 
 let run = cli.command({ preauth: true }, function (ctx, api) {
   const resolve = require('../../lib/resolve')
-  return co(function * () {
-    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
-    let [attachments] = yield [
-      api.request({
-        method: 'GET',
-        path: `/addons/${addon.id}/addon-attachments`
-      })
-    ]
+  return async function () {
+    let addon = await resolve.addon(api, ctx.app, ctx.args.addon)
+    let attachments = await api.request({
+      method: 'GET',
+      path: `/addons/${addon.id}/addon-attachments`
+    })
 
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
@@ -36,7 +33,7 @@ let run = cli.command({ preauth: true }, function (ctx, api) {
       'Installed at': (new Date(addon.created_at)).toString(),
       'State': formatState(addon.state)
     })
-  })
+  }();
 })
 
 let topic = 'addons'

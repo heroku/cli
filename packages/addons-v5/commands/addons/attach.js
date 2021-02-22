@@ -1,13 +1,12 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const util = require('../../lib/util')
 
   let app = context.app
-  let addon = yield heroku.get(`/addons/${encodeURIComponent(context.args.addon_name)}`)
+  let addon = await heroku.get(`/addons/${encodeURIComponent(context.args.addon_name)}`)
 
   function createAttachment (app, as, confirm, credential) {
     let body = {
@@ -30,24 +29,24 @@ function * run (context, heroku) {
   }
 
   if (context.flags.credential && context.flags.credential !== 'default') {
-    let credentialConfig = yield heroku.get(`/addons/${addon.name}/config/credential:${encodeURIComponent(context.flags.credential)}`)
+    let credentialConfig = await heroku.get(`/addons/${addon.name}/config/credential:${encodeURIComponent(context.flags.credential)}`)
     if (credentialConfig.length === 0) {
       throw new Error(`Could not find credential ${context.flags.credential} for database ${addon.name}`)
     }
   }
 
-  let attachment = yield util.trapConfirmationRequired(context.app, context.flags.confirm, (confirm) => createAttachment(app, context.flags.as, confirm, context.flags.credential))
+  let attachment = await util.trapConfirmationRequired(context.app, context.flags.confirm, (confirm) => createAttachment(app, context.flags.as, confirm, context.flags.credential))
 
-  yield cli.action(
+  await cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
     { success: false },
-    co(function * () {
-      let releases = yield heroku.get(`/apps/${app}/releases`, {
+    async function () {
+      let releases = await heroku.get(`/apps/${app}/releases`, {
         partial: true,
         headers: { 'Range': 'version ..; max=1, order=desc' }
       })
       cli.action.done(`done, v${releases[0].version}`)
-    })
+    }()
   )
 }
 
@@ -63,5 +62,5 @@ module.exports = {
     { name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true }
   ],
   args: [{ name: 'addon_name' }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

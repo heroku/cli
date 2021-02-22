@@ -1,14 +1,13 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
   let dyno = context.args.dyno
   let type = dyno.indexOf('.') !== -1 ? 'ps' : 'type'
 
-  yield cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`,
+  await cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`,
     heroku.post(`/apps/${app}/dynos/${dyno}/actions/stop`))
 }
 
@@ -24,7 +23,7 @@ Stopping run dynos... done`,
   needsAuth: true,
   needsApp: true,
   args: [{ name: 'dyno' }],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [

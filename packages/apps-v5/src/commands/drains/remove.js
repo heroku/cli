@@ -1,10 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
-  let drain = yield heroku.request({
+async function run(context, heroku) {
+  let drain = await heroku.request({
     method: 'delete',
     path: `/apps/${context.app}/log-drains/${encodeURIComponent(context.args.url)}`
   })
@@ -19,5 +18,5 @@ module.exports = {
   needsAuth: true,
   args: [{ name: 'url' }],
   usage: 'drains:remove [URL|TOKEN]',
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

@@ -1,9 +1,8 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   const space = context.flags.space
   const team = context.flags.team
   const request = heroku.request({
@@ -12,7 +11,7 @@ function * run (context, heroku) {
     body: { 'new_owner': team }
   })
   try {
-    yield cli.action(`Transferring space ${cli.color.yellow(space)} to team ${cli.color.green(team)}`, request)
+    await cli.action(`Transferring space ${cli.color.yellow(space)} to team ${cli.color.green(team)}`, request)
   } catch (err) {
     cli.error(err.body.message)
   }
@@ -33,5 +32,5 @@ module.exports = {
     { name: 'space', hasValue: true, required: true, description: 'name of space' },
     { name: 'team', hasValue: true, required: true, description: 'desired owner of space' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

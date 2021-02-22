@@ -1,16 +1,15 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 let time = require('../../time')
 
-function * run (context, heroku) {
-  let app = context.app && !context.flags.all ? yield heroku.get(`/apps/${context.app}`) : null
-  let notifications = yield heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' })
+async function run(context, heroku) {
+  let app = context.app && !context.flags.all ? await heroku.get(`/apps/${context.app}`) : null
+  let notifications = await heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' })
   if (app) notifications = notifications.filter((n) => n.target.id === app.id)
   if (!context.flags.read) {
     notifications = notifications.filter((n) => !n.read)
-    yield Promise.all(notifications.map((n) => heroku.request({ host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: { read: true } })))
+    await Promise.all(notifications.map((n) => heroku.request({ host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: { read: true } })))
   }
 
   function displayNotifications (notifications) {
@@ -49,5 +48,5 @@ module.exports = {
     { name: 'json', description: 'output in json format' },
     { name: 'read', description: 'show notifications already read' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

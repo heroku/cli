@@ -1,11 +1,10 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let authorizations = require('../../authorizations')
 
-function * run (context, heroku) {
-  let auth = yield heroku.get(`/oauth/authorizations/${encodeURIComponent(context.args.id)}`)
+async function run(context, heroku) {
+  let auth = await heroku.get(`/oauth/authorizations/${encodeURIComponent(context.args.id)}`)
   if (context.flags.json) {
     cli.styledJSON(auth)
   } else {
@@ -22,5 +21,5 @@ module.exports = {
     {char: 'j', name: 'json', description: 'output in json format'}
   ],
   args: [{name: 'id'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

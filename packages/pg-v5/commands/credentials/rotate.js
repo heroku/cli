@@ -1,14 +1,13 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
   const util = require('../../lib/util')
   const { app, args, flags } = context
-  let db = yield fetcher.addon(app, args.database)
+  let db = await fetcher.addon(app, args.database)
   let all = flags.all
   let warnings = []
   let cred = flags.name || 'default'
@@ -22,7 +21,7 @@ function * run (context, heroku) {
   if (all && flags.force) {
     warnings.push('This forces rotation on all credentials including the default credential.')
   }
-  let attachments = yield heroku.get(`/addons/${db.name}/addon-attachments`)
+  let attachments = await heroku.get(`/addons/${db.name}/addon-attachments`)
   if (flags.name) {
     attachments = attachments.filter(a => a.namespace === `credential:${cred}`)
   }
@@ -42,20 +41,20 @@ function * run (context, heroku) {
     warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${[...new Set(attachments.map(c => cli.color.app(c.app.name)))].sort().join(', ')}.`)
   }
 
-  yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive Action
+  await cli.confirmApp(app, flags.confirm, `WARNING: Destructive Action
 ${warnings.join('\n')}`)
 
   let body = flags.force ? { host: host(db), forced: true } : { host: host(db) }
   if (all) {
-    yield cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,
+    await cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, async function () {
+      await heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,
         body)
-    }))
+    }())
   } else {
-    yield cli.action(`Rotating ${cred} on ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`,
+    await cli.action(`Rotating ${cred} on ${cli.color.addon(db.name)}`, async function () {
+      await heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`,
         body)
-    }))
+    }())
   }
 }
 
@@ -72,5 +71,5 @@ module.exports = {
     { name: 'force', description: 'forces rotating the targeted credentials', hasValue: false }
   ],
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

@@ -1,5 +1,4 @@
 const cli = require('heroku-cli-util')
-const co = require('co')
 const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
@@ -18,7 +17,7 @@ function validateInput (str) {
   return true
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   validateArgs(context.args)
 
   const vars = context.args.reduce((memo, str) => {
@@ -28,9 +27,9 @@ function * run (context, heroku) {
     return memo
   }, {})
 
-  const pipeline = yield Utils.getPipeline(context, heroku)
+  const pipeline = await Utils.getPipeline(context, heroku)
 
-  yield cli.action(
+  await cli.action(
     `Setting ${Object.keys(vars).join(', ')}`,
     api.setConfigVars(heroku, pipeline.id, vars)
   )
@@ -64,5 +63,5 @@ module.exports = {
 
     RAILS_ENV: test
 `,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

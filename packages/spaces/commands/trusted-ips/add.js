@@ -1,16 +1,15 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/trusted-ips')(heroku)
   let space = context.flags.space
-  let ruleset = yield lib.getRules(space)
+  let ruleset = await lib.getRules(space)
   ruleset.rules = ruleset.rules || []
   if (ruleset.rules.find((rs) => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`)
   ruleset.rules.push({ action: 'allow', source: context.args.source })
-  ruleset = yield lib.putRules(space, ruleset)
+  ruleset = await lib.putRules(space, ruleset)
   cli.log(`Added ${cli.color.cyan.bold(context.args.source)} to trusted IP ranges on ${cli.color.cyan.bold(space)}`)
   cli.warn('It may take a few moments for the changes to take effect.')
 }
@@ -36,5 +35,5 @@ Example:
     { name: 'space', char: 's', hasValue: true, description: 'space to add rule to' },
     { name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

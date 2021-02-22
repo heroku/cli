@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const path = require('path')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -91,5 +90,5 @@ module.exports = {
     { name: 'wait-interval', description: 'how frequently to poll in seconds (to avoid rate limiting)', hasValue: true },
     { name: 'no-notify', description: 'do not show OS notification' }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

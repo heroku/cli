@@ -41,13 +41,13 @@ module.exports = {
     return printf(fmt, price.cents / 100, price.unit)
   },
 
-  trapConfirmationRequired: function * (app, confirm, fn) {
-    return yield fn(confirm)
+  trapConfirmationRequired: async function (app, confirm, fn) {
+    return await fn(confirm)
       .catch((err) => {
         if (!err.body || err.body.id !== 'confirmation_required') throw err
         return cli.confirmApp(app, confirm, err.body.message)
           .then(() => fn(app))
-      })
+      });
   },
 
   formatState: function (state) {

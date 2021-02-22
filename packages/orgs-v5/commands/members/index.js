@@ -2,21 +2,20 @@
 
 let _ = require('lodash')
 let cli = require('heroku-cli-util')
-let co = require('co')
 let Utils = require('../../lib/utils')
 const { flags } = require('@heroku-cli/command')
 const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
-function * run (context, heroku) {
-  let teamInfo = yield Utils.teamInfo(context, heroku)
+async function run(context, heroku) {
+  let teamInfo = await Utils.teamInfo(context, heroku)
   let groupName = context.flags.team
   let teamInvites = []
 
   if (teamInfo.type === 'team') {
-    let orgFeatures = yield heroku.get(`/teams/${groupName}/features`)
+    let orgFeatures = await heroku.get(`/teams/${groupName}/features`)
 
     if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
-      teamInvites = yield heroku.request({
+      teamInvites = await heroku.request({
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.team-invitations'
         },
@@ -29,7 +28,7 @@ function * run (context, heroku) {
     }
   }
 
-  let members = yield heroku.get(`/teams/${groupName}/members`)
+  let members = await heroku.get(`/teams/${groupName}/members`)
   // Set status '' to all existing members
   _.map(members, (member) => { member.status = '' })
   members = _.sortBy(_.union(members, teamInvites), 'email')
@@ -64,5 +63,5 @@ module.exports = {
     { name: 'json', description: 'output in json format' },
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
