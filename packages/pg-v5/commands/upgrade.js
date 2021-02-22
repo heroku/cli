@@ -1,21 +1,20 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const host = require('../lib/host')
   const util = require('../lib/util')
   const fetcher = require('../lib/fetcher')(heroku)
   let { app, args, flags } = context
-  let db = yield fetcher.addon(app, args.database)
+  let db = await fetcher.addon(app, args.database)
 
   if (util.starterPlan(db)) throw new Error('pg:upgrade is only available for follower production databases')
 
-  let [replica, status] = yield [
+  let [replica, status] = await Promise.all([
     heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) }),
     heroku.get(`/client/v11/databases/${db.id}/upgrade_status`, { host: host(db) })
-  ]
+  ])
 
   if (status.error) throw new Error(status.error)
 
@@ -23,19 +22,19 @@ function * run (context, heroku) {
     throw new Error('pg:upgrade is only available for follower production databases')
   }
 
-  let origin = util.databaseNameFromUrl(replica.following, yield heroku.get(`/apps/${app}/config-vars`))
+  let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
 
-  yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
+  await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
 ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
 
 This cannot be undone.`)
 
   let data = { version: flags.version }
 
-  yield cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, co(function * () {
-    yield heroku.post(`/client/v11/databases/${db.id}/upgrade`, { host: host(db), body: data })
+  await cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, async function () {
+    await heroku.post(`/client/v11/databases/${db.id}/upgrade`, { host: host(db), body: data })
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
-  }))
+  }())
 }
 
 module.exports = {
@@ -50,5 +49,5 @@ module.exports = {
     { name: 'confirm', char: 'c', hasValue: true },
     { name: 'version', char: 'v', description: 'PostgreSQL version to upgrade to', hasValue: true }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

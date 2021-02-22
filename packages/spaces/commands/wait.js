@@ -1,11 +1,10 @@
 // -*- mode: js; js-indent-level: 2; -*-
 'use strict'
 let cli = require('heroku-cli-util')
-let co = require('co')
 let info = require('./info')
 let wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   const spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:wait my-space')
 
@@ -21,16 +20,16 @@ function * run (context, heroku) {
     headers = { 'Accept-Expansion': 'region' }
   }
 
-  let space = yield heroku.get(`/spaces/${spaceName}`, { headers })
+  let space = await heroku.get(`/spaces/${spaceName}`, { headers })
   while (space.state === 'allocating') {
     if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for space to become allocated.')
     }
-    yield wait(interval)
-    space = yield heroku.get(`/spaces/${spaceName}`, { headers })
+    await wait(interval)
+    space = await heroku.get(`/spaces/${spaceName}`, { headers })
   }
 
-  space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
+  space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
   spinner.stop('done\n')
 
   info.render(space, context.flags)
@@ -63,5 +62,5 @@ module.exports = {
     { name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals' },
     { name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

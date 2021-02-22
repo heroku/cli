@@ -1,9 +1,8 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   if (context.args.length > 0) {
     // backwards compatible for executing commands like
     // `heroku pg:backups info` instead of `heroku pg:backups:info`
@@ -27,13 +26,13 @@ function * run (context, heroku) {
 
     context = Object.assign(context, { args })
 
-    yield cmd.run(context, heroku)
+    await cmd.run(context, heroku)
   } else {
-    yield list(context, heroku)
+    await list(context, heroku)
   }
 }
 
-function * list (context, heroku) {
+async function list(context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const { sortBy } = require('lodash')
   const host = require('../../lib/host')()
@@ -96,7 +95,7 @@ function * list (context, heroku) {
     cli.log()
   }
 
-  let transfers = yield heroku.get(`/client/v11/apps/${app}/transfers`, { host })
+  let transfers = await heroku.get(`/client/v11/apps/${app}/transfers`, { host })
   transfers = sortBy(transfers, 'created_at').reverse()
 
   let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
@@ -124,5 +123,5 @@ module.exports = {
     { name: 'at', hasValue: true, hidden: true },
     { name: 'quiet', char: 'q', hidden: true }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

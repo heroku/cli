@@ -1,10 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
-  let app = yield heroku.get(`/apps/${context.app}`)
+async function run(context, heroku) {
+  let app = await heroku.get(`/apps/${context.app}`)
   cli.log(app.maintenance ? 'on' : 'off')
 }
 
@@ -13,5 +12,5 @@ module.exports = {
   description: 'display the current maintenance status of app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

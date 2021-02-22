@@ -1,13 +1,12 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
 const { flags } = require('@heroku-cli/command')
 const { RegionCompletion } = require('@heroku-cli/command/lib/completions')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let space = context.flags.space || context.args.space
   let dollarAmount = '$1000'
   let spaceType = 'Standard'
@@ -32,7 +31,7 @@ function * run (context, heroku) {
     }
   })
 
-  space = yield cli.action(`Creating space ${cli.color.green(space)} in team ${cli.color.cyan(team)}`, request)
+  space = await cli.action(`Creating space ${cli.color.green(space)} in team ${cli.color.cyan(team)}`, request)
   cli.warn(`${cli.color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ${dollarAmount} in Add-on Credits/month (pro-rated to the second).`)
   cli.warn('Use spaces:wait to track allocation.')
   cli.styledHeader(space.name)
@@ -82,5 +81,5 @@ module.exports = {
     { name: 'data-cidr', hasValue: true, description: 'RFC-1918 CIDR used by Heroku Data resources for the space' },
     flags.team({ name: 'team', hasValue: true })
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

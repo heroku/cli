@@ -3,7 +3,6 @@
 let _ = require('lodash')
 let AppTransfer = require('../../lib/app_transfer')
 let cli = require('heroku-cli-util')
-let co = require('co')
 let inquirer = require('inquirer')
 let lock = require('./lock.js')[0]
 let Utils = require('../../lib/utils')
@@ -23,14 +22,14 @@ function getAppsToTransfer (apps) {
   }])
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
   let recipient = context.args.recipient
 
   // App transfers in bulk
   if (context.flags.bulk) {
-    let allApps = yield heroku.get('/apps')
-    let selectedApps = yield getAppsToTransfer(_.sortBy(allApps, 'name'))
+    let allApps = await heroku.get('/apps')
+    let selectedApps = await getAppsToTransfer(_.sortBy(allApps, 'name'))
     cli.console.error(`Transferring applications to ${cli.color.magenta(recipient)}...
 `)
 
@@ -43,17 +42,17 @@ function * run (context, heroku) {
           personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(app.owner),
           bulk: true
         })
-        yield appTransfer.start()
+        await appTransfer.start()
       } catch (err) {
         cli.error(err)
       }
     }
   } else { // Single app transfer
-    let appInfo = yield heroku.get(`/apps/${app}`)
+    let appInfo = await heroku.get(`/apps/${app}`)
 
     // Shows warning when app is transferred from a team/org to a personal account
     if (Utils.isValidEmail(recipient) && Utils.isteamApp(appInfo.owner.email)) {
-      yield cli.confirmApp(app, context.flags.confirm, 'All collaborators will be removed from this app')
+      await cli.confirmApp(app, context.flags.confirm, 'All collaborators will be removed from this app')
     }
 
     let appTransfer = new AppTransfer({
@@ -62,10 +61,10 @@ function * run (context, heroku) {
       recipient: recipient,
       personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(appInfo.owner.email)
     })
-    yield appTransfer.start()
+    await appTransfer.start()
 
     if (context.flags.locked) {
-      yield lock.run(context)
+      await lock.run(context)
     }
   }
 }
@@ -76,7 +75,7 @@ let cmd = {
   description: 'transfer applications to another user or team',
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(co.wrap(run)),
+  run: cli.command(run),
   args: [
     { name: 'recipient', description: 'user or team to transfer applications to' }
   ],

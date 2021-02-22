@@ -1,10 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
-  let app = yield heroku.get(`/teams/apps/${context.app}`)
+async function run(context, heroku) {
+  let app = await heroku.get(`/teams/apps/${context.app}`)
   if (!app.locked) {
     throw new Error(`Error: cannot unlock ${cli.color.cyan(app.name)}
 This app is not locked.`)
@@ -14,7 +13,7 @@ This app is not locked.`)
     path: `/teams/apps/${app.name}`,
     body: { locked: false }
   })
-  yield cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request)
+  await cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request)
 }
 
 let cmd = {
@@ -23,7 +22,7 @@ let cmd = {
   description: 'unlock an app so any team member can join',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 let root = Object.assign({}, cmd, { topic: 'unlock', command: null })

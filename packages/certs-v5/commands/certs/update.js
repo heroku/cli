@@ -1,6 +1,5 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 
 let flags = require('../../lib/flags.js')
@@ -9,16 +8,16 @@ let formatEndpoint = require('../../lib/format_endpoint.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 
-function * run (context, heroku) {
-  let endpoint = yield flags(context, heroku)
+async function run(context, heroku) {
+  let endpoint = await flags(context, heroku)
 
-  let files = yield getCertAndKey(context)
+  let files = await getCertAndKey(context)
 
   let formattedEndpoint = formatEndpoint(endpoint)
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
+  await cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
 
-  let cert = yield cli.action(`Updating SSL certificate ${formattedEndpoint} for ${cli.color.app(context.app)}`, {}, heroku.request({
+  let cert = await cli.action(`Updating SSL certificate ${formattedEndpoint} for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     method: 'PATCH',
     headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` },
@@ -51,5 +50,5 @@ Certificate Intermediary:
 $ heroku certs:update intermediary.crt example.com.crt example.com.key`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

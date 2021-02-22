@@ -1,16 +1,17 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const resolve = require('../../lib/resolve')
   const { groupBy, toPairs } = require('lodash')
 
   let force = context.flags.force || process.env.HEROKU_FORCE === '1'
   if (context.args.length === 0) throw new Error('Missing add-on name')
 
-  let addons = yield context.args.map(name => resolve.addon(heroku, context.app, name))
+  let addons = await Promise.all(
+    context.args.map(name => resolve.addon(heroku, context.app, name))
+  )
   for (let addon of addons) {
     // prevent deletion of app when context.app is set but the addon is attached to a different app
     let app = addon.app.name
@@ -19,10 +20,10 @@ function * run (context, heroku) {
   for (let app of toPairs(groupBy(addons, 'app.name'))) {
     addons = app[1]
     app = app[0]
-    yield cli.confirmApp(app, context.flags.confirm)
+    await cli.confirmApp(app, context.flags.confirm)
     for (let addon of addons) {
       let msg = `Destroying ${cli.color.addon(addon.name)} on ${cli.color.app(addon.app.name)}`
-      yield cli.action(msg, heroku.request({
+      await cli.action(msg, heroku.request({
         method: 'DELETE',
         path: `/apps/${addon.app.id}/addons/${addon.id}`,
         headers: { 'Accept-Expansion': 'plan' },
@@ -43,7 +44,7 @@ let cmd = {
     { name: 'confirm', char: 'c', hasValue: true }
   ],
   variableArgs: true,
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

@@ -1,11 +1,10 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
-function* run(context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
@@ -14,7 +13,7 @@ function* run(context, heroku) {
 
   const { app, args, flags } = context
 
-  let generateParams = co.wrap(function* (url, db, dbName) {
+  let generateParams = async function (url, db, dbName) {
     let base_params = {
       url: URL.format(url),
       plan: db.plan.name.split(':')[1],
@@ -23,8 +22,8 @@ function* run(context, heroku) {
     }
 
     if (!util.starterPlan(db)) {
-      base_params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
-      let burstData = yield heroku.get(`/client/v11/databases/${db.id}/burst_status`, { host: host(db) })
+      base_params.metrics = await heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
+      let burstData = await heroku.get(`/client/v11/databases/${db.id}/burst_status`, { host: host(db) })
       if (burstData && Object.keys(burstData).length !== 0) {
         base_params.burst_data_present = true
         base_params.burst_status = burstData.burst_status
@@ -32,22 +31,22 @@ function* run(context, heroku) {
     }
 
     return base_params
-  })
+  }
 
-  let generateReport = co.wrap(function* (database) {
-    let attachment = yield fetcher.attachment(app, database)
+  let generateReport = async function (database) {
+    let attachment = await fetcher.attachment(app, database)
     const { addon: db } = attachment
-    let config = yield heroku.get(`/apps/${app}/config-vars`)
+    let config = await heroku.get(`/apps/${app}/config-vars`)
 
     const { url } = util.getConnectionDetails(attachment, config)
     const dbName = util.getConfigVarNameFromAttachment(attachment, config)
 
-    let params = yield generateParams(url, db, dbName)
-    return yield heroku.post('/reports', {
+    let params = await generateParams(url, db, dbName)
+    return await heroku.post('/reports', {
       host: PGDIAGNOSE_HOST,
       body: params,
-    })
-  })
+    });
+  }
 
   let displayReport = (report) => {
     if (flags.json) {
@@ -95,9 +94,9 @@ available for one month after creation on ${report.created_at}
   let report
   let id = args['DATABASE|REPORT_ID']
   if (id && uuid.validate(id)) {
-    report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
+    report = await heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
   } else {
-    report = yield generateReport(id)
+    report = await generateReport(id)
   }
 
   displayReport(report)
@@ -115,5 +114,5 @@ if REPORT_ID is specified instead, a previous report is displayed
   needsAuth: true,
   args: [{ name: 'DATABASE|REPORT_ID', optional: true }],
   flags: [{ name: 'json', description: "format output as JSON", hasValue: false }],
-  run: cli.command({ preauth: true }, co.wrap(run)),
+  run: cli.command({ preauth: true }, run),
 }

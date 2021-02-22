@@ -1,6 +1,5 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let inquirer = require('inquirer')
@@ -26,7 +25,7 @@ function Domains (domains) {
   this.hasFailed = this.failed.length > 0
 }
 
-function * getMeta (context, heroku) {
+async function getMeta(context, heroku) {
   let type = context.flags.type
 
   if (type) {
@@ -40,10 +39,10 @@ function * getMeta (context, heroku) {
     }
   }
 
-  let { hasSpace, hasAddon } = yield {
-    hasSpace: endpoints.hasSpace(context.app, heroku),
-    hasAddon: endpoints.hasAddon(context.app, heroku)
-  }
+  let [ hasSpace, hasAddon ] = await Promise.all([
+    endpoints.hasSpace(context.app, heroku),
+    endpoints.hasAddon(context.app, heroku)
+  ])
 
   if (hasSpace && !context.canMultiSni) {
     return endpoints.meta(context.app, 'ssl')
@@ -87,22 +86,22 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   }])
 }
 
-function * getChoices (certDomains, newDomains, existingDomains, context) {
+async function getChoices(certDomains, newDomains, existingDomains, context) {
   if (newDomains.length === 0) {
     return []
   } else {
     if (context.flags.domains !== undefined) {
       return getFlagChoices(context, certDomains, existingDomains)
     } else {
-      return (yield getPromptChoices(context, certDomains, existingDomains, newDomains)).domains
+      return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
     }
   }
 }
 
-function * addDomains (context, heroku, meta, cert) {
+async function addDomains(context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
 
-  let apiDomains = yield waitForDomains(context, heroku)
+  let apiDomains = await waitForDomains(context, heroku)
 
   let existingDomains = []
   let newDomains = []
@@ -133,7 +132,7 @@ function * addDomains (context, heroku, meta, cert) {
     existingDomains.forEach((domain) => cli.log(domain))
   }
 
-  let choices = yield getChoices(certDomains, newDomains, existingDomains, context)
+  let choices = await getChoices(certDomains, newDomains, existingDomains, context)
   let domains
 
   if (choices.length === 0) {
@@ -160,7 +159,7 @@ function * addDomains (context, heroku, meta, cert) {
 
     let label = choices.length > 1 ? 'domains' : 'domain'
     let message = `Adding ${label} ${choices.map((choice) => cli.color.green(choice)).join(', ')} to ${cli.color.app(context.app)}`
-    domains = yield cli.action(message, {}, promise).catch(function (err) {
+    domains = await cli.action(message, {}, promise).catch(function (err) {
       if (err instanceof Domains) {
         return err
       }
@@ -200,24 +199,24 @@ function * addDomains (context, heroku, meta, cert) {
   }
 }
 
-function * configureDomains (context, heroku, meta, cert) {
+async function configureDomains(context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
-  let apiDomains = yield waitForDomains(context, heroku)
+  let apiDomains = await waitForDomains(context, heroku)
   let appDomains = apiDomains.map(domain => domain.hostname)
   let matchedDomains = matchDomains(certDomains, appDomains)
 
   if (matchedDomains.length > 0) {
     cli.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
 
-    let selectedDomains = (yield inquirer.prompt([{
+    let selectedDomains = ((await inquirer.prompt([{
       type: 'checkbox',
       name: 'domains',
       message: 'Select domains',
       choices: matchedDomains
-    }])).domains
+    }]))).domains
 
     if (selectedDomains.length > 0) {
-      yield Promise.all(selectedDomains.map(domain => {
+      await Promise.all(selectedDomains.map(domain => {
         return heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
@@ -228,16 +227,16 @@ function * configureDomains (context, heroku, meta, cert) {
   }
 }
 
-function * run (context, heroku) {
-  let features = yield heroku.get(`/apps/${context.app}/features`)
+async function run(context, heroku) {
+  let features = await heroku.get(`/apps/${context.app}/features`)
   let canMultiSni = checkMultiSniFeature(features)
   context.canMultiSni = canMultiSni
 
-  let meta = yield getMeta(context, heroku)
+  let meta = await getMeta(context, heroku)
 
-  let files = yield getCertAndKey(context)
+  let files = await getCertAndKey(context)
 
-  let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
+  let cert = await cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
     body: { certificate_chain: files.crt, private_key: files.key },
@@ -258,9 +257,9 @@ function * run (context, heroku) {
   certificateDetails(cert)
 
   if (canMultiSni) {
-    yield configureDomains(context, heroku, meta, cert)
+    await configureDomains(context, heroku, meta, cert)
   } else {
-    yield addDomains(context, heroku, meta, cert)
+    await addDomains(context, heroku, meta, cert)
   }
 
   displayWarnings(cert)
@@ -294,5 +293,5 @@ Certificate Intermediary:
 $ heroku certs:add intermediary.crt example.com.crt example.com.key`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

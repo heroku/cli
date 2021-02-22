@@ -1,14 +1,13 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const parsers = require('../../lib/parsers')()
 
 function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space example-space`)
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/vpn-connections')(heroku)
 
   let space = context.flags.space
@@ -24,7 +23,7 @@ function * run (context, heroku) {
   check(cidrs, 'CIDRs required')
   cidrs = parsers.splitCsv(cidrs)
 
-  yield cli.action(`Creating VPN Connection in space ${cli.color.green(space)}`, lib.postVPNConnections(space, name, ip, cidrs))
+  await cli.action(`Creating VPN Connection in space ${cli.color.green(space)}`, lib.postVPNConnections(space, name, ip, cidrs))
   cli.warn('Use spaces:vpn:wait to track allocation.')
 }
 
@@ -49,5 +48,5 @@ The connection is established over the public Internet but all traffic is encryp
     { name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas' },
     { name: 'space', char: 's', hasValue: true, description: 'space name' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

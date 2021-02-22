@@ -1,6 +1,5 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 const { round, flatten, mean, groupBy, map, sum, sumBy, toPairs, sortBy, zip } = require('lodash')
 
@@ -86,7 +85,7 @@ function displayApps (apps, appsMetrics) {
   }
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const img = require('term-img')
   const path = require('path')
 
@@ -109,13 +108,21 @@ function * run (context, heroku) {
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(new Date().getTime() - (24 * 60 * 60 * 1000)).toISOString()
     let date = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
-    return apps.map((app) => {
+    return apps.map(async (app) => {
       let types = app.formation.map((p) => p.type)
+
+      let [dynoErrors, routerLatency, routerErrors, routerStatus] = await Promise.all([
+        Promise.all(types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null))),
+        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
+      ])
+
       return {
-        dynoErrors: types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null)),
-        routerLatency: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        routerErrors: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        routerStatus: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
+        dynoErrors,
+        routerLatency,
+        routerErrors,
+        routerStatus
       }
     })
   }
@@ -126,20 +133,34 @@ function * run (context, heroku) {
     img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), { fallback: () => {} })
   } catch (err) { }
 
-  yield cli.action('Loading', { clear: true }, co(function * () {
-    apps = yield favoriteApps()
+  await cli.action('Loading', { clear: true }, async function () {
+    apps = await favoriteApps()
 
-    data = yield {
-      teams: heroku.request({ path: '/teams' }),
-      notifications: heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' }).catch(() => null),
-      apps: apps.map((app) => ({
-        app: heroku.get(`/apps/${app}`),
-        formation: heroku.get(`/apps/${app}/formation`),
-        pipeline: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+    let [ teams, notifications, appsWithMoreInfo ] = await Promise.all([
+      heroku.request({ path: '/teams' }),
+      heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' }).catch(() => null),
+      Promise.all(apps.map(async (appID) => {
+        let [app, formation, pipeline] = await Promise.all([
+          heroku.get(`/apps/${appID}`),
+          heroku.get(`/apps/${appID}/formation`),
+          heroku.get(`/apps/${appID}/pipeline-couplings`).catch(() => null)
+        ])
+        return {
+          app,
+          formation,
+          pipeline
+        }
       }))
+    ])
+
+    data = {
+      teams,
+      notifications,
+      apps: appsWithMoreInfo
     }
-    metrics = yield fetchMetrics(data.apps)
-  }))
+
+    metrics = await fetchMetrics(data.apps)
+  }())
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)
@@ -159,5 +180,5 @@ module.exports = {
   description: 'display information about favorite apps',
   hidden: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

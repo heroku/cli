@@ -1,10 +1,9 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let lib = require('../../clients')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let url = context.args['redirect_uri']
   lib.validateURL(url)
   let request = heroku.request({
@@ -17,9 +16,9 @@ function * run (context, heroku) {
   })
   let client
   if (context.flags.shell || context.flags.json) {
-    client = yield request
+    client = await request
   } else {
-    client = yield cli.action(`Creating ${context.args.name}`, request)
+    client = await cli.action(`Creating ${context.args.name}`, request)
   }
 
   if (context.flags.json) {
@@ -40,5 +39,5 @@ module.exports = {
     {name: 'shell', char: 's', description: 'output in shell format'},
     {char: 'j', name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

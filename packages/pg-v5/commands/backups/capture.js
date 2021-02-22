@@ -1,23 +1,22 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
 
   const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
-  const db = yield fetcher.addon(app, args.database)
+  const db = await fetcher.addon(app, args.database)
 
   if (flags.snapshot) {
-    yield cli.action(`Taking snapshot of ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/postgres/v0/databases/${db.id}/snapshots`, { host: host(db) })
-    }))
+    await cli.action(`Taking snapshot of ${cli.color.addon(db.name)}`, async function () {
+      await heroku.post(`/postgres/v0/databases/${db.id}/snapshots`, { host: host(db) })
+    }())
   } else {
-    let dbInfo = yield heroku.request({
+    let dbInfo = await heroku.request({
       host: host(db),
       method: 'get',
       path: `/client/v11/databases/${db.id}`
@@ -33,9 +32,9 @@ function * run (context, heroku) {
       }
     }
     let backup
-    yield cli.action(`Starting backup of ${cli.color.addon(db.name)}`, co(function * () {
-      backup = yield heroku.post(`/client/v11/databases/${db.id}/backups`, { host: host(db) })
-    }))
+    await cli.action(`Starting backup of ${cli.color.addon(db.name)}`, async function () {
+      backup = await heroku.post(`/client/v11/databases/${db.id}/backups`, { host: host(db) })
+    }())
     cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use ${cli.color.cmd('heroku pg:backups:info')} to check progress.
@@ -46,7 +45,7 @@ Stop a running backup with ${cli.color.cmd('heroku pg:backups:cancel')}.
 Use ${cli.color.cmd('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
 `)
     }
-    yield pgbackups.wait(`Backing up ${cli.color.configVar(backup.from_name)} to ${cli.color.cyan(pgbackups.transfer.name(backup))}`, backup.uuid, interval, flags.verbose, db.app.name)
+    await pgbackups.wait(`Backing up ${cli.color.configVar(backup.from_name)} to ${cli.color.cyan(pgbackups.transfer.name(backup))}`, backup.uuid, interval, flags.verbose, db.app.name)
   }
 }
 
@@ -62,5 +61,5 @@ module.exports = {
     { name: 'snapshot', hidden: true },
     { name: 'verbose', char: 'v' }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

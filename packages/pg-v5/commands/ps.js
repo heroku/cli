@@ -1,9 +1,8 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
@@ -11,7 +10,7 @@ function * run (context, heroku) {
   const { database } = args
   const { verbose } = flags
 
-  let db = yield fetcher.database(app, database)
+  let db = await fetcher.database(app, database)
 
   const num = Math.random()
   const waitingMarker = `${num}${num}`
@@ -23,7 +22,7 @@ SELECT '${num}' || '${num}' WHERE EXISTS (
     AND column_name = 'waiting'
 )
 `
-  let waitingOutput = yield psql.exec(db, waitingQuery)
+  let waitingOutput = await psql.exec(db, waitingQuery)
   let waiting = waitingOutput.includes(waitingMarker)
     ? 'waiting'
     : 'wait_event IS NOT NULL AS waiting'
@@ -45,7 +44,7 @@ WHERE
   ORDER BY query_start DESC
   `
 
-  const output = yield psql.exec(db, query)
+  const output = await psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -57,5 +56,5 @@ module.exports = {
   needsAuth: true,
   flags: [{ name: 'verbose', char: 'v' }],
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

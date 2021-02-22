@@ -1,17 +1,16 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 let releases = require('../../releases')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const shellescape = require('shell-escape')
   const statusHelper = require('../../status_helper')
   const { forEach } = require('lodash')
 
-  let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
+  let release = await releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
-  let config = yield heroku.get(`/apps/${context.app}/releases/${release.version}/config-vars`)
+  let config = await heroku.get(`/apps/${context.app}/releases/${release.version}/config-vars`)
 
   if (context.flags.json) {
     cli.styledJSON(release)
@@ -52,5 +51,5 @@ module.exports = {
     { name: 'json', description: 'output in json format' },
     { name: 'shell', char: 's', description: 'output in shell format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

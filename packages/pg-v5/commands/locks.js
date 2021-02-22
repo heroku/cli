@@ -1,13 +1,12 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  let db = yield fetcher.database(context.app, context.args.database)
+  let db = await fetcher.database(context.app, context.args.database)
 
   let truncatedQueryString = prefix => {
     let column = `${prefix}query`
@@ -35,7 +34,7 @@ function * run (context, heroku) {
     AND pg_stat_activity.pid <> pg_backend_pid() order by query_start;
   `
 
-  let output = yield psql.exec(db, query)
+  let output = await psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -46,7 +45,7 @@ const cmd = {
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
   flags: [{ name: 'truncate', char: 't', description: 'truncates queries to 40 charaters' }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

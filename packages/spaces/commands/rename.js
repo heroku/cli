@@ -1,9 +1,8 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let to = context.flags.to
   let from = context.flags.from
   let request = heroku.request({
@@ -11,7 +10,7 @@ function * run (context, heroku) {
     path: `/spaces/${from}`,
     body: { name: to }
   })
-  yield cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request)
+  await cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request)
 }
 
 module.exports = {
@@ -29,5 +28,5 @@ module.exports = {
     { name: 'from', hasValue: true, required: true, description: 'current name of space' },
     { name: 'to', hasValue: true, required: true, description: 'desired name of space' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

@@ -1,11 +1,10 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let authorizations = require('../../authorizations')
 
-function * run (context, heroku) {
-  let auth = yield cli.action('Rotating OAuth Authorization', heroku.request({
+async function run(context, heroku) {
+  let auth = await cli.action('Rotating OAuth Authorization', heroku.request({
     method: 'POST',
     path: `/oauth/authorizations/${encodeURIComponent(context.args.id)}/actions/regenerate-tokens`
   }))
@@ -20,5 +19,5 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'id'}],
   flags: [],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

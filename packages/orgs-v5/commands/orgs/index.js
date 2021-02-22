@@ -1,11 +1,10 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 let Utils = require('../../lib/utils')
 
-function * run (context, heroku) {
-  let orgs = yield heroku.get('/teams')
+async function run(context, heroku) {
+  let orgs = await heroku.get('/teams')
 
   if (context.flags.enterprise) {
     orgs = orgs.filter(o => o.type === 'enterprise')
@@ -27,5 +26,5 @@ module.exports = {
     { name: 'enterprise', hasValue: false, description: 'filter by enterprise teams' },
     { name: 'teams', hasValue: false, description: 'filter by teams', hidden: true }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

@@ -1,7 +1,6 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 const { compact } = require('lodash')
 
 let emptyFormationErr = (app) => {
@@ -10,7 +9,7 @@ Upload a Procfile to add process types.
 https://devcenter.heroku.com/articles/procfile`)
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
 
   function parse (args) {
@@ -25,9 +24,9 @@ function * run (context, heroku) {
 
   let changes = parse(context.args)
   if (changes.length === 0) {
-    let formation = yield heroku.get(`/apps/${app}/formation`)
+    let formation = await heroku.get(`/apps/${app}/formation`)
 
-    const appProps = yield heroku.get(`/apps/${app}`)
+    const appProps = await heroku.get(`/apps/${app}`)
     const shielded = appProps.space && appProps.space.shield
     if (shielded) {
       formation.forEach((d) => {
@@ -38,9 +37,9 @@ function * run (context, heroku) {
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map((d) => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
-    yield cli.action('Scaling dynos', { success: false }, co(function * () {
-      let formation = yield heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
-      const appProps = yield heroku.get(`/apps/${app}`)
+    await cli.action('Scaling dynos', { success: false }, async function () {
+      let formation = await heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
+      const appProps = await heroku.get(`/apps/${app}`)
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
         formation.forEach((d) => {
@@ -50,7 +49,7 @@ function * run (context, heroku) {
       let output = formation.filter((f) => changes.find((c) => c.type === f.type))
         .map((d) => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
       cli.action.done(`done, now running ${output.join(', ')}`)
-    }))
+    }())
   }
 }
 
@@ -68,7 +67,7 @@ $ heroku ps:scale
 web=3:Standard-2X worker=1:Standard-1X`,
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [

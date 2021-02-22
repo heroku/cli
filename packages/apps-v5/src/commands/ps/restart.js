@@ -1,9 +1,8 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
   let dyno = context.args.dyno
 
@@ -12,9 +11,9 @@ function * run (context, heroku) {
   msg += (dyno && dyno.indexOf('.') !== -1) ? ' dyno' : ' dynos'
   msg += ` on ${cli.color.app(app)}`
 
-  yield cli.action(msg, co(function * () {
-    yield heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
-  }))
+  await cli.action(msg, async function () {
+    await heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
+  }())
 }
 
 let cmd = {
@@ -31,7 +30,7 @@ Restarting dynos... done`,
   needsAuth: true,
   needsApp: true,
   args: [{ name: 'dyno', optional: true }],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [
