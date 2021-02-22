@@ -3,7 +3,7 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
 import assert from 'assert'
 import cli from 'cli-ux'
-import got from 'got'
+import fetch from 'node-fetch'
 
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
@@ -109,6 +109,10 @@ async function getRelease(heroku: APIClient, app: string, releaseId: string): Pr
   return release
 }
 
+function sleep (time: number) {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
 async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
   if (targets.length !== 1 || targets.every(isComplete)) {
     return pollPromotionStatus(heroku, promotion.id, false)
@@ -121,19 +125,38 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
   }
 
   cli.log('Running release command...')
-  const fetch = (retry = 100) => new Promise((resolve, reject) => {
-    const stream = got.stream(release.output_stream_url!)
-    stream.on('error', async err => {
-      await wait(100)
-      if (retry && err.code === '404') {
-        fetch(retry - 1).then(resolve).catch(reject)
-      } else reject(err)
-    })
-    stream.on('end', resolve)
-    const piped = stream.pipe(process.stdout)
-    piped.on('error', reject)
+
+  async function streamReleaseOutput(releaseStreamUrl: string) {
+    const fetchResponse = await fetch(releaseStreamUrl)
+    const fetchResponseBody = await fetchResponse.text()
+    
+    if (fetchResponse.status >= 400) {
+      throw new Error('stream release output not available')
+    }
+    
+    console.log((fetchResponseBody))
+  }
+
+  async function retry(maxAttempts: number, fn: () => Promise<void>) {
+    let currentAttempt = 0
+
+    while(true) {
+      try {
+        await fn()
+        return
+      } catch (err) {
+        if (++currentAttempt === maxAttempts) {
+          throw err
+        }
+        // await sleep(1000)
+      }
+    }
+  }
+
+      // const piped = stream.pipe(process.stdout)
+  await retry(100, () => {
+    return streamReleaseOutput(release.output_stream_url!)
   })
-  await fetch()
 
   return pollPromotionStatus(heroku, promotion.id, false)
 }
@@ -204,7 +227,13 @@ export default class Promote extends Command {
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
     cli.log('Waiting for promotion to complete...')
     let promotionTargets = await pollLoop
-    promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
+
+    try {
+      promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
+    } catch (err) {
+      // process.stderr.write(err.message)
+      cli.error(err)
+    }
 
     const appsByID = keyBy(allApps, 'id')
 

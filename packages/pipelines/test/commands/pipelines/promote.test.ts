@@ -207,4 +207,52 @@ describe('pipelines:promote', () => {
       expect(ctx.stdout).to.contain('successful')
     })
   })
+
+  context.only('with release phase', function () {
+    function mockPromotionTargetsWithRelease(testInstance: typeof test, release: any) {
+      let pollCount = 0
+
+      return testInstance
+      .nock(apiUrl, api => {
+        api
+        .post('/pipeline-promotions', {
+          pipeline: {id: pipeline.id},
+          source: {app: {id: sourceApp.id}},
+          targets: [
+            {app: {id: targetApp1.id}},
+            {app: {id: targetApp2.id}},
+          ],
+        })
+        .reply(201, promotion)
+        .get(`/apps/${targetApp1.id}/releases/${release.id}`)
+        .reply(200, targetReleaseWithOutput)
+        .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+        .reply(200, function () {
+          pollCount++
+
+          return [{
+            app: {id: targetApp1.id},
+            release: {id: release.id},
+            status: pollCount > 1 ? 'successful' : 'pending',
+            error_message: null,
+          }]
+        })
+      })
+      .nock('https://busl.example', api => {
+        api
+        .get('/release')
+        .times(100)
+        .reply(404, 'Release Command Output')
+      })
+    }
+
+    mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
+    .stdout({print: true})
+    .stderr({print: true})
+    .command(['pipelines:promote', `--app=${sourceApp.name}`])
+    .exit(2)
+    .it('attempts stream and returns error', ctx => {
+      expect(ctx.stderr).to.contain('stream release output not available')
+    })
+  })
 })
