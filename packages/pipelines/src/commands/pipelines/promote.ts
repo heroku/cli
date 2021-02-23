@@ -4,6 +4,9 @@ import Heroku from '@heroku-cli/schema'
 import assert from 'assert'
 import cli from 'cli-ux'
 import fetch from 'node-fetch'
+import util from 'util'
+import Stream from 'stream'
+
 
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
@@ -127,17 +130,28 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
   cli.log('Running release command...')
 
   async function streamReleaseOutput(releaseStreamUrl: string) {
+    const finished = util.promisify(Stream.finished)
     const fetchResponse = await fetch(releaseStreamUrl)
-    const fetchResponseBody = await fetchResponse.text()
-    
+
     if (fetchResponse.status >= 400) {
       throw new Error('stream release output not available')
     }
-    
-    console.log((fetchResponseBody))
+
+    fetchResponse.body.pipe(process.stdout)
+
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        await finished(fetchResponse.body)
+        resolve('')
+      } catch (err) {
+        reject(err)
+      }
+    })
+
+    return promise
   }
 
-  async function retry(maxAttempts: number, fn: () => Promise<void>) {
+  async function retry(maxAttempts: number, fn: () => Promise<any>) {
     let currentAttempt = 0
 
     while(true) {

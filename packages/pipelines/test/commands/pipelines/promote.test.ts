@@ -1,4 +1,3 @@
-
 import {expect, test} from '@oclif/test'
 import * as PromoteCmd from '../../../src/commands/pipelines/promote'
 
@@ -202,11 +201,12 @@ describe('pipelines:promote', () => {
     }
 
     mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
-    .stdout()
-    .stderr()
+    .stdout({print: true})
+    .stderr({print: true})
     .command(['pipelines:promote', `--app=${sourceApp.name}`])
     .it('streams the release command output', ctx => {
       expect(ctx.stdout).to.contain('Running release command')
+      expect(ctx.stdout).to.contain('Release Command Output')
       expect(ctx.stdout).to.contain('successful')
     })
   })
