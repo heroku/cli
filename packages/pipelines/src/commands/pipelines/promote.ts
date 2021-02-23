@@ -8,6 +8,10 @@ import fetch from 'node-fetch'
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
 
+export const sleep  = (time: number) => {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
 }
@@ -109,10 +113,6 @@ async function getRelease(heroku: APIClient, app: string, releaseId: string): Pr
   return release
 }
 
-function sleep (time: number) {
-  return new Promise(resolve => setTimeout(resolve, time))
-}
-
 async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
   if (targets.length !== 1 || targets.every(isComplete)) {
     return pollPromotionStatus(heroku, promotion.id, false)
@@ -148,12 +148,11 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
         if (++currentAttempt === maxAttempts) {
           throw err
         }
-        // await sleep(1000)
+        await sleep(1000)
       }
     }
   }
 
-      // const piped = stream.pipe(process.stdout)
   await retry(100, () => {
     return streamReleaseOutput(release.output_stream_url!)
   })
@@ -231,7 +230,6 @@ export default class Promote extends Command {
     try {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
     } catch (err) {
-      // process.stderr.write(err.message)
       cli.error(err)
     }
 

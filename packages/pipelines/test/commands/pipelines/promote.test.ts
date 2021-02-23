@@ -1,4 +1,7 @@
+
 import {expect, test} from '@oclif/test'
+import * as PromoteCmd from '../../../src/commands/pipelines/promote'
+
 
 describe('pipelines:promote', () => {
   const apiUrl = 'https://api.heroku.com'
@@ -208,7 +211,7 @@ describe('pipelines:promote', () => {
     })
   })
 
-  context.only('with release phase', function () {
+  context('with release phase that errors', function () {
     function mockPromotionTargetsWithRelease(testInstance: typeof test, release: any) {
       let pollCount = 0
 
@@ -247,12 +250,16 @@ describe('pipelines:promote', () => {
     }
 
     mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
-    .stdout({print: true})
-    .stderr({print: true})
-    .command(['pipelines:promote', `--app=${sourceApp.name}`])
-    .exit(2)
-    .it('attempts stream and returns error', ctx => {
-      expect(ctx.stderr).to.contain('stream release output not available')
+    .stderr()
+    .stdout()
+    .stub(PromoteCmd, 'sleep', () => {
+      return Promise.resolve()
     })
+    .command(['pipelines:promote', `--app=${sourceApp.name}`])
+    .catch((error: any) => {
+      expect(error.oclif.exit).to.equal(2)
+      expect(error.message).to.equal("stream release output not available")
+    })
+    .it('attempts stream and returns error')
   })
 })
