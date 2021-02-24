@@ -1,13 +1,14 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let id = context.args.id
 
   cli.log(`Updating ${cli.color.cyan(id)}`)
 
-  let client = await heroku.request({
+  let client = yield heroku.request({
     method: 'POST',
     path: `/oauth/clients/${encodeURIComponent(id)}/actions/rotate-credentials`
   })
@@ -33,5 +34,5 @@ module.exports = {
     {name: 'shell', char: 's', description: 'output in shell format'}
   ],
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

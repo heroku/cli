@@ -1,12 +1,13 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:destroy --space example-space vpn-connection-name`)
 }
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let space = context.flags.space
   check(space, 'Space name required')
 
@@ -15,9 +16,9 @@ async function run (context, heroku) {
 
   let lib = require('../../lib/vpn-connections')(heroku)
 
-  await cli.confirmApp(name, context.flags.confirm, `Destructive Action
+  yield cli.confirmApp(name, context.flags.confirm, `Destructive Action
 This command will attempt to destroy the specified VPN Connection in space ${cli.color.green(space)}`)
-  await cli.action(`Tearing down VPN Connection ${cli.color.cyan(name)} in space ${cli.color.cyan(space)}`, lib.deleteVPNConnection(space, name))
+  yield cli.action(`Tearing down VPN Connection ${cli.color.cyan(name)} in space ${cli.color.cyan(space)}`, lib.deleteVPNConnection(space, name))
 }
 
 module.exports = {
@@ -39,5 +40,5 @@ module.exports = {
     { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from' },
     { name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt' }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

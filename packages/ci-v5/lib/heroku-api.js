@@ -4,11 +4,11 @@ const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const VERSION_HEADER = `${V3_HEADER}.ci`
 const PIPELINE_HEADER = `${V3_HEADER}.pipelines`
 
-async function pipelineCoupling(client, app) {
+function * pipelineCoupling (client, app) {
   return client.get(`/apps/${app}/pipeline-couplings`)
 }
 
-async function pipelineRepository(client, pipelineID) {
+function * pipelineRepository (client, pipelineID) {
   return client.request({
     host: KOLKRABBI,
     path: `/pipelines/${pipelineID}/repository`,
@@ -18,7 +18,7 @@ async function pipelineRepository(client, pipelineID) {
   })
 }
 
-async function getDyno(client, appID, dynoID) {
+function * getDyno (client, appID, dynoID) {
   return client.request({
     path: `/apps/${appID}/dynos/${dynoID}`,
     headers: {
@@ -28,7 +28,7 @@ async function getDyno(client, appID, dynoID) {
   })
 }
 
-async function githubArchiveLink(client, user, repository, ref) {
+function * githubArchiveLink (client, user, repository, ref) {
   return client.request({
     host: KOLKRABBI,
     path: `/github/repos/${user}/${repository}/tarball/${ref}`,
@@ -38,7 +38,7 @@ async function githubArchiveLink(client, user, repository, ref) {
   })
 }
 
-async function testRun(client, pipelineID, number) {
+function * testRun (client, pipelineID, number) {
   return client.request({
     path: `/pipelines/${pipelineID}/test-runs/${number}`,
     headers: {
@@ -48,7 +48,7 @@ async function testRun(client, pipelineID, number) {
   })
 }
 
-async function testNodes(client, testRunIdD) {
+function * testNodes (client, testRunIdD) {
   return client.request({
     path: `/test-runs/${testRunIdD}/test-nodes`,
     headers: {
@@ -58,7 +58,7 @@ async function testNodes(client, testRunIdD) {
   })
 }
 
-async function testRuns(client, pipelineID) {
+function * testRuns (client, pipelineID) {
   return client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
     headers: {
@@ -68,8 +68,8 @@ async function testRuns(client, pipelineID) {
   })
 }
 
-async function latestTestRun(client, pipelineID) {
-  const latestTestRuns = await client.request({
+function * latestTestRun (client, pipelineID) {
+  const latestTestRuns = yield client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
     headers: {
       Authorization: `Bearer ${client.options.token}`,
@@ -96,11 +96,11 @@ function logStream (url, fn) {
   return https.get(url, fn)
 }
 
-async function createSource(client) {
-  return await client.post(`/sources`);
+function * createSource (client) {
+  return yield client.post(`/sources`)
 }
 
-async function createTestRun(client, body) {
+function * createTestRun (client, body) {
   const headers = {
     Accept: VERSION_HEADER
   }

@@ -1,14 +1,15 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
   const { app } = context
 
-  let db = await fetcher.arbitraryAppDB(app)
-  let schedules = await heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, { host: host(db) })
+  let db = yield fetcher.arbitraryAppDB(app)
+  let schedules = yield heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, { host: host(db) })
 
   if (!schedules.length) {
     cli.warn(`No backup schedules found on ${cli.color.app(app)}
@@ -27,5 +28,5 @@ module.exports = {
   description: 'list backup schedule',
   needsApp: true,
   needsAuth: true,
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

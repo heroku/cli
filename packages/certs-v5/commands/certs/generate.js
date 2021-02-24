@@ -1,5 +1,6 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 
 let openssl = require('../../lib/openssl.js')
@@ -69,12 +70,12 @@ function getCommand (certs, domain) {
   }
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   if (requiresPrompt(context)) {
-    context.flags.owner = await cli.prompt('Owner of this certificate')
-    context.flags.country = await cli.prompt('Country of owner (two-letter ISO code)')
-    context.flags.area = await cli.prompt('State/province/etc. of owner')
-    context.flags.city = await cli.prompt('City of owner')
+    context.flags.owner = yield cli.prompt('Owner of this certificate')
+    context.flags.country = yield cli.prompt('Country of owner (two-letter ISO code)')
+    context.flags.area = yield cli.prompt('State/province/etc. of owner')
+    context.flags.city = yield cli.prompt('City of owner')
   }
 
   let subject = getSubject(context)
@@ -83,14 +84,14 @@ async function run(context, heroku) {
   let keysize = context.flags.keysize || 2048
   let keyfile = `${domain}.key`
 
-  let certs = await endpoints(context.app, heroku)
+  let certs = yield endpoints(context.app, heroku)
 
   var command = getCommand(certs, domain)
 
   if (context.flags.selfsigned) {
     let crtfile = `${domain}.crt`
 
-    await openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', crtfile, '-subj', subject, '-x509'])
+    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', crtfile, '-subj', subject, '-x509'])
 
     cli.console.error('Your key and self-signed certificate have been generated.')
     cli.console.error('Next, run:')
@@ -98,7 +99,7 @@ async function run(context, heroku) {
   } else {
     let csrfile = `${domain}.csr`
 
-    await openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject])
+    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject])
 
     cli.console.error('Your key and certificate signing request have been generated.')
     cli.console.error(`Submit the CSR in '${csrfile}' to your preferred certificate authority.`)
@@ -161,5 +162,5 @@ module.exports = {
   examples: '$ heroku certs:generate example.com',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

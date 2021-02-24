@@ -1,20 +1,21 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 
 let flags = require('../../lib/flags.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
-async function run(context, heroku) {
-  let endpoint = await flags(context, heroku)
+function * run (context, heroku) {
+  let endpoint = yield flags(context, heroku)
 
-  let cert = await cli.action(`Fetching SSL certificate ${endpoint.name} info for ${cli.color.app(context.app)}`, {}, heroku.request({
+  let cert = yield cli.action(`Fetching SSL certificate ${endpoint.name} info for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` }
   }))
 
   if (context.flags['show-domains']) {
-    let domains = await Promise.all(endpoint.domains.map(domain => {
+    let domains = yield Promise.all(endpoint.domains.map(domain => {
       return heroku.request({
         path: `/apps/${context.flags.app}/domains/${domain}`
       }).then(response => response.hostname)
@@ -38,5 +39,5 @@ module.exports = {
   description: 'show certificate information for an SSL certificate',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

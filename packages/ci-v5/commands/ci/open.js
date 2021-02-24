@@ -1,10 +1,11 @@
 const cli = require('heroku-cli-util')
+const co = require('co')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-async function run(context, heroku) {
-  const pipeline = await Utils.getPipeline(context, heroku)
-  await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
+function * run (context, heroku) {
+  const pipeline = yield Utils.getPipeline(context, heroku)
+  yield cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
 }
 
 module.exports = {
@@ -27,5 +28,5 @@ module.exports = {
     Example:
 
     $ heroku ci:open --app murmuring-headland-14719`,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

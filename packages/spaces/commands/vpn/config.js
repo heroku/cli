@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 function displayVPNConfigInfo (space, name, config) {
   cli.styledHeader(`${name} VPN Tunnels`)
@@ -26,7 +27,7 @@ function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:config --space my-space vpn-connection-name`)
 }
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let space = context.flags.space || context.args.space
   check(space, 'Space name required')
 
@@ -34,7 +35,7 @@ async function run (context, heroku) {
   check(name, 'VPN connection name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
-  let config = await lib.getVPNConnection(space, name)
+  let config = yield lib.getVPNConnection(space, name)
 
   if (context.flags.json) {
     cli.styledJSON(config)
@@ -72,6 +73,6 @@ You will use the information provided by this command to establish a Private Spa
     { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from' },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(run),
+  run: cli.command(co.wrap(run)),
   displayVPNConfigInfo: displayVPNConfigInfo
 }

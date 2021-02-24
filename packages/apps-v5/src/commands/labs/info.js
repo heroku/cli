@@ -1,6 +1,7 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
 function print (feature) {
   cli.styledHeader(feature.name)
@@ -11,15 +12,15 @@ function print (feature) {
   })
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let feature
   try {
-    feature = await heroku.get(`/account/features/${context.args.feature}`)
+    feature = yield heroku.get(`/account/features/${context.args.feature}`)
   } catch (err) {
     if (err.statusCode !== 404) throw err
     // might be an app feature
     if (!context.app) throw err
-    feature = await heroku.get(`/apps/${context.app}/features/${context.args.feature}`)
+    feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`)
   }
   if (context.flags.json) {
     cli.styledJSON(feature)
@@ -38,5 +39,5 @@ module.exports = {
   ],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

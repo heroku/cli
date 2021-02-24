@@ -1,9 +1,10 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
-  let auth = await cli.action('Revoking OAuth Authorization', {success: false}, heroku.request({
+function * run (context, heroku) {
+  let auth = yield cli.action('Revoking OAuth Authorization', {success: false}, heroku.request({
     method: 'DELETE',
     path: `/oauth/authorizations/${encodeURIComponent(context.args.id)}`
   }))
@@ -17,5 +18,5 @@ module.exports = {
   description: 'revoke OAuth authorization',
   needsAuth: true,
   args: [{name: 'id'}],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

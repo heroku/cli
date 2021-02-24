@@ -1,12 +1,13 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  let db = await fetcher.database(context.app, context.args.database)
+  let db = yield fetcher.database(context.app, context.args.database)
 
   let query = `
 WITH constants AS (
@@ -71,7 +72,7 @@ FROM
 ORDER BY raw_waste DESC, bloat DESC
 `
 
-  let output = await psql.exec(db, query)
+  let output = yield psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -81,7 +82,7 @@ const cmd = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [

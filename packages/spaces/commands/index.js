@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const { flags } = require('@heroku-cli/command')
 const _ = require('lodash')
 
@@ -20,10 +21,10 @@ function displayJSON (spaces) {
   cli.log(JSON.stringify(spaces, null, 2))
 }
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let team = context.flags.team
 
-  let spaces = await heroku.get('/spaces')
+  let spaces = yield heroku.get('/spaces')
   if (team) {
     spaces = spaces.filter((s) => s.team.name === team)
   }
@@ -46,5 +47,5 @@ module.exports = {
     { name: 'json', description: 'output in json format' },
     flags.team({ name: 'team', hasValue: true })
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

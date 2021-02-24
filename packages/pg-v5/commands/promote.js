@@ -1,25 +1,26 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const host = require('../lib/host')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const { app, args, flags } = context
   const { force } = flags
-  const attachment = await fetcher.attachment(app, args.database)
+  const attachment = yield fetcher.attachment(app, args.database)
 
   let current
   let attachments
 
-  await cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, async function () {
+  yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
     // Finds or creates a non-DATABASE attachment for the DB currently
     // attached as DATABASE.
     //
     // If current DATABASE is attached by other names, return one of them.
     // If current DATABASE is only attachment, create a new one and return it.
     // If no current DATABASE, return nil.
-    attachments = await heroku.get(`/apps/${app}/addon-attachments`)
+    attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
     current = attachments.find(a => a.name === 'DATABASE')
     if (!current) return
 
@@ -37,7 +38,7 @@ async function run(context, heroku) {
     // other attachments. In order to promote this database without
     // error, we can create a secondary attachment, just-in-time.
 
-    let backup = await heroku.post('/addon-attachments', {
+    let backup = yield heroku.post('/addon-attachments', {
       body: {
         app: { name: app },
         addon: { name: current.addon.name },
@@ -46,10 +47,10 @@ async function run(context, heroku) {
       }
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
-  }())
+  }))
 
   if (!force) {
-    let status = await heroku.request({
+    let status = yield heroku.request({
       host: host(attachment.addon),
       path: `/client/v11/databases/${attachment.addon.id}/wait_status`
     })
@@ -68,8 +69,8 @@ async function run(context, heroku) {
     promotionMessage = `Promoting ${cli.color.addon(attachment.addon.name)} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
   }
 
-  await cli.action(promotionMessage, async function () {
-    await heroku.post('/addon-attachments', {
+  yield cli.action(promotionMessage, co(function * () {
+    yield heroku.post('/addon-attachments', {
       body: {
         name: 'DATABASE',
         app: { name: app },
@@ -78,12 +79,12 @@ async function run(context, heroku) {
         confirm: app
       }
     })
-  }())
+  }))
 
   let currentPooler = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id && a.name == "DATABASE_CONNECTION_POOL")
   if (currentPooler) {
-    await cli.action(`Reattaching pooler to new leader`, async function () {
-      await heroku.post('/addon-attachments', {
+    yield cli.action(`Reattaching pooler to new leader`, co(function * () {
+      yield heroku.post('/addon-attachments', {
         body: {
           name: currentPooler.name,
           app: { name: app },
@@ -92,16 +93,16 @@ async function run(context, heroku) {
           confirm: app
         }
       })
-    }())
+    }))
     return cli.action.done()
   }
 
-  let releasePhase = ((await heroku.get(`/apps/${app}/formation`)))
+  let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
     .find((formation) => formation.type === 'release')
 
   if (releasePhase) {
-    await cli.action('Checking release phase', async function () {
-      let releases = await heroku.request({
+    yield cli.action('Checking release phase', co(function * () {
+      let releases = yield heroku.request({
         path: `/apps/${app}/releases`,
         partial: true,
         headers: {
@@ -118,17 +119,17 @@ async function run(context, heroku) {
       let endTime = Date.now() + 900000 // 15 minutes from now
       let [attachId, detachId] = [attach.id, detach.id]
       while (true) {
-        let attach = await fetcher.release(app, attachId)
+        let attach = yield fetcher.release(app, attachId)
         if (attach && attach.status === 'succeeded') {
           let msg = 'pg:promote succeeded.'
-          let detach = await fetcher.release(app, detachId)
+          let detach = yield fetcher.release(app, detachId)
           if (detach && detach.status === 'failed') {
             msg += ` It is safe to ignore the failed ${detach.description} release.`
           }
           return cli.action.done(msg)
         } else if (attach && attach.status === 'failed') {
           let msg = `pg:promote failed because ${attach.description} release was unsuccessful. Your application is currently running `
-          let detach = await fetcher.release(app, detachId)
+          let detach = yield fetcher.release(app, detachId)
           if (detach && detach.status === 'succeeded') {
             msg += 'without an attached DATABASE_URL.'
           } else {
@@ -140,9 +141,9 @@ async function run(context, heroku) {
           return cli.action.done('timeout. Check your Attach DATABASE release for failures.')
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 5000))
+        yield new Promise((resolve) => setTimeout(resolve, 5000))
       }
-    }())
+    }))
   }
 }
 
@@ -154,5 +155,5 @@ module.exports = {
   needsAuth: true,
   flags: [{ name: 'force', char: 'f' }],
   args: [{ name: 'database' }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

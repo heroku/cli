@@ -48,7 +48,7 @@ const cmd = proxyquire('../../../commands/credentials/rotate', {
 
 let lastApp, lastConfirm, lastMsg
 
-const confirmApp = async function (app, confirm, msg) {
+const confirmApp = function * (app, confirm, msg) {
   lastApp = app
   lastConfirm = confirm
   lastMsg = msg

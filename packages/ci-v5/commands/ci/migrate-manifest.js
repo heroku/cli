@@ -1,10 +1,11 @@
 const fs = require('fs')
 const cli = require('heroku-cli-util')
+const co = require('co')
 const BB = require('bluebird')
 const writeFile = BB.promisify(fs.writeFile)
 const unlinkFile = BB.promisify(fs.unlink)
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const appJSONPath = `${process.cwd()}/app.json`
   const appCiJSONPath = `${process.cwd()}/app-ci.json`
   let action
@@ -13,8 +14,8 @@ async function run(context, heroku) {
     cli.log(cli.color.green('Please check the contents of your app.json before committing to your repo.'))
   }
 
-  async function updateAppJson() {
-    await cli.action(
+  function * updateAppJson () {
+    yield cli.action(
       // Updating / Creating
       `${action.charAt(0).toUpperCase() + action.slice(1)} app.json file`,
       writeFile(appJSONPath, `${JSON.stringify(appJSON, null, '  ')}\n`)
@@ -39,7 +40,7 @@ async function run(context, heroku) {
       msg += `, but we're ${action} ${action === 'updating' ? 'your' : 'a new'} app.json manifest for you.`
       appJSON.environments = {}
       cli.log(msg)
-      await updateAppJson()
+      yield updateAppJson()
       showWarning()
     } else {
       msg += `, and your app.json already has the environments key.`
@@ -57,8 +58,8 @@ async function run(context, heroku) {
     }
 
     appJSON.environments.test = appCiJSON
-    await updateAppJson()
-    await cli.action(
+    yield updateAppJson()
+    yield cli.action(
       'Deleting app-ci.json file',
       unlinkFile(appCiJSONPath)
     )
@@ -81,5 +82,5 @@ module.exports = {
     Deleting app-ci.json file... done
     Please check the contents of your app.json before committing to your repo
     You're all set! 🎉.`,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 let context
 let heroku
@@ -55,7 +56,7 @@ ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
   throw err
 }
 
-async function run(c, h) {
+function * run (c, h) {
   const resolver = require('../../lib/resolve')
   const util = require('../../lib/util')
 
@@ -77,13 +78,13 @@ async function run(c, h) {
   if (plan.indexOf(':') !== -1) plan = plan.split(':')[1]
 
   // find the add-on to be changed
-  addon = await resolver.addon(h, app, name).catch((e) => handleAPIError(e))
+  addon = yield resolver.addon(h, app, name).catch((e) => handleAPIError(e))
 
   service = addon.addon_service.name
   app = addon.app.name
   plan = `${service}:${plan}`
-  await cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, { success: false }, async function () {
-    addon = await heroku.request({
+  yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, { success: false }, co(function * () {
+    addon = yield heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,
       method: 'PATCH',
       body: { plan: { name: plan } },
@@ -94,7 +95,7 @@ async function run(c, h) {
     }).catch((e) => handlePlanChangeAPIError(e))
     cli.action.done(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
     if (addon.provision_message) cli.log(addon.provision_message)
-  }())
+  }))
 }
 
 let cmd = {
@@ -116,7 +117,7 @@ $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2`
   needsAuth: true,
   wantsApp: true,
   args: [{ name: 'addon' }, { name: 'plan', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [

@@ -1,6 +1,7 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 let fs = require('fs')
 let os = require('os')
 let path = require('path')
@@ -47,8 +48,8 @@ function writeSudoTemplate (ctx, sso, path) {
   })
 }
 
-let sudo = async function (ctx, api) {
-  let sso = await api.request({
+let sudo = co.wrap(function * (ctx, api) {
+  let sso = yield api.request({
     method: 'GET',
     path: `/apps/${ctx.app}/addons/${ctx.args.addon}/sso`,
     headers: {
@@ -56,19 +57,19 @@ let sudo = async function (ctx, api) {
     }
   })
   if (sso.method === 'get') {
-    await open(sso.action)
+    yield open(sso.action)
   } else {
-    await writeSudoTemplate(ctx, sso, ssoPath)
-    await open(`file://${ssoPath}`)
+    yield writeSudoTemplate(ctx, sso, ssoPath)
+    yield open(`file://${ssoPath}`)
   }
-}
+})
 
-async function run(ctx, api) {
+function * run (ctx, api) {
   const resolve = require('../../lib/resolve')
 
   if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
-  let attachment = await resolve.attachment(api, ctx.app, ctx.args.addon)
+  let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon)
     .catch(function (err) {
       if (err.statusCode !== 404) throw err
     })
@@ -77,14 +78,14 @@ async function run(ctx, api) {
   if (attachment) {
     webUrl = attachment.web_url
   } else {
-    let addon = await resolve.addon(api, ctx.app, ctx.args.addon)
+    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
     webUrl = addon.web_url
   }
 
   if (ctx.flags['show-url']) {
     cli.log(webUrl)
   } else {
-    await open(webUrl)
+    yield open(webUrl)
   }
 }
 
@@ -95,6 +96,6 @@ module.exports = {
   needsAuth: true,
   args: [{ name: 'addon' }],
   flags: [{ name: 'show-url', description: 'show URL, do not open browser' }],
-  run: cli.command({ preauth: true }, run),
+  run: cli.command({ preauth: true }, co.wrap(run)),
   description: "open an add-on's dashboard in your browser"
 }

@@ -1,48 +1,32 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const filesize = require('filesize')
   const util = require('util')
   const { countBy, snakeCase } = require('lodash')
 
-  async function getInfo(app) {
-    let promises = [
-      heroku.get(`/apps/${app}/addons`),
-      heroku.request({
+  function * getInfo (app) {
+    const pipelineCouplings = heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+
+    let promises = {
+      addons: heroku.get(`/apps/${app}/addons`),
+      app: heroku.request({
         path: `/apps/${app}`,
         headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
       }),
-      heroku.get(`/apps/${app}/dynos`).catch(() => []),
-      heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-      heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
-    ]
+      dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
+      collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
+      pipeline_coupling: pipelineCouplings
+    }
 
     if (context.flags.extended) {
-      promises.push(heroku.get(`/apps/${app}?extended=true`))
+      promises.appExtended = heroku.get(`/apps/${app}?extended=true`)
     }
 
-    let [
-      addons,
-      appWithMoreInfo,
-      dynos,
-      collaborators,
-      pipelineCouplings,
-      appExtended
-    ] = await Promise.all(promises)
-
-    let data = {
-      addons,
-      app: appWithMoreInfo,
-      dynos,
-      collaborators,
-      pipeline_coupling: pipelineCouplings,
-    }
-
-    if (appExtended) {
-      data.appExtended = appExtended
-    }
+    let data = yield promises
 
     if (context.flags.extended) {
       data.appExtended.acm = data.app.acm
@@ -58,7 +42,7 @@ async function run(context, heroku) {
 
   context.app = app // make sure context.app is always set for herkou-cli-util
 
-  let info = await getInfo(app)
+  let info = yield getInfo(app)
   let addons = info.addons.map(a => a.plan.name).sort()
   let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
 
@@ -157,7 +141,7 @@ repo_size=5000000
     { name: 'extended', char: 'x', hidden: true },
     { name: 'json', char: 'j' }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [

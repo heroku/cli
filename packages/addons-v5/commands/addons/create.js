@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const { notify } = require('../../lib/notify')
 
 function parseConfig (args) {
@@ -30,7 +31,7 @@ function parseConfig (args) {
   return config
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let createAddon = require('../../lib/create_addon')
 
   let { app, flags, args } = context
@@ -43,7 +44,7 @@ async function run(context, heroku) {
   let addon
 
   try {
-    addon = await createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
+    addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
     if (context.flags.wait) {
       notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
     }
@@ -54,7 +55,7 @@ async function run(context, heroku) {
     throw error
   }
 
-  await context.config.runHook('recache', { type: 'addon', app, addon })
+  yield context.config.runHook('recache', { type: 'addon', app, addon })
   cli.log(`Use ${cli.color.cmd('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)
 }
 
@@ -71,7 +72,7 @@ const cmd = {
     { name: 'confirm', description: 'overwrite existing config vars or existing add-on attachments', hasValue: true },
     { name: 'wait', description: 'watch add-on creation status and exit when complete' }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [

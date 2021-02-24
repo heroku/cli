@@ -1,10 +1,11 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let lib = require('../../lib/log-drains')(heroku)
-  let drain = await lib.getLogDrain(context.flags.space)
+  let drain = yield lib.getLogDrain(context.flags.space)
   if (context.flags.json) {
     cli.log(JSON.stringify(drain, null, 2))
   } else {
@@ -24,5 +25,5 @@ module.exports = {
     { name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

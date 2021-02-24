@@ -1,15 +1,16 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 const psql = require('../lib/psql')
 
-async function ensurePGStatStatement(db) {
+function * ensurePGStatStatement (db) {
   let query = `
 SELECT exists(
   SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
   WHERE e.extname='pg_stat_statements' AND n.nspname = 'public'
 ) AS available`
-  let output = await psql.exec(db, query)
+  let output = yield psql.exec(db, query)
 
   if (!output.includes('t')) {
     throw new Error(`pg_stat_statements extension need to be installed in the public schema first.
@@ -17,18 +18,18 @@ You can install it by running: CREATE EXTENSION pg_stat_statements;`)
   }
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')
 
   const { app, args, flags } = context
   const { database } = args
 
-  let db = await fetcher(heroku).database(app, database)
+  let db = yield fetcher(heroku).database(app, database)
 
-  await ensurePGStatStatement(db)
+  yield ensurePGStatStatement(db)
 
   if (flags.reset) {
-    await psql.exec(db, 'SELECT pg_stat_statements_reset()')
+    yield psql.exec(db, 'SELECT pg_stat_statements_reset()')
     return
   }
 
@@ -56,7 +57,7 @@ ORDER BY total_time DESC
 LIMIT ${limit}
 `
 
-  let output = await psql.exec(db, query)
+  let output = yield psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -72,5 +73,5 @@ module.exports = {
     { name: 'truncate', char: 't', description: 'truncate queries to 40 characters' },
     { name: 'num', char: 'n', description: 'the number of queries to display (default: 10)', hasValue: true }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

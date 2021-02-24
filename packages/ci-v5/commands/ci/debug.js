@@ -1,5 +1,6 @@
 const cli = require('heroku-cli-util')
 const Dyno = require('@heroku-cli/plugin-run-v5').Dyno
+const co = require('co')
 const api = require('../../lib/heroku-api')
 const git = require('../../lib/git')
 const source = require('../../lib/source')
@@ -10,21 +11,21 @@ const PipelineCompletion = require('../../lib/completions')
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
 
-async function run(context, heroku) {
-  const pipeline = await Utils.getPipeline(context, heroku)
+function * run (context, heroku) {
+  const pipeline = yield Utils.getPipeline(context, heroku)
 
-  const pipelineRepository = await api.pipelineRepository(heroku, pipeline.id)
+  const pipelineRepository = yield api.pipelineRepository(heroku, pipeline.id)
   const organization = pipelineRepository.organization &&
                        pipelineRepository.organization.name
 
-  const commit = await git.readCommit('HEAD')
-  const sourceBlobUrl = await cli.action('Preparing source', async function () {
-    return await source.createSourceBlob(commit.ref, context, heroku);
-  }())
+  const commit = yield git.readCommit('HEAD')
+  const sourceBlobUrl = yield cli.action('Preparing source', co(function * () {
+    return yield source.createSourceBlob(commit.ref, context, heroku)
+  }))
 
   // Create test run and wait for it to transition to `debugging`
-  const testRun = await cli.action('Creating test run', async function () {
-    const run = await api.createTestRun(heroku, {
+  const testRun = yield cli.action('Creating test run', co(function * () {
+    const run = yield api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
@@ -35,14 +36,14 @@ async function run(context, heroku) {
       source_blob_url: sourceBlobUrl
     })
 
-    return await TestRun.waitForStates(['debugging', 'errored'], run, { heroku });
-  }())
+    return yield TestRun.waitForStates(['debugging', 'errored'], run, { heroku })
+  }))
 
   if (testRun.status === 'errored') {
     cli.exit(1, `Test run creation failed while ${testRun.error_state} with message "${testRun.message}"`)
   }
 
-  const appSetup = await api.appSetup(heroku, testRun.app_setup.id)
+  const appSetup = yield api.appSetup(heroku, testRun.app_setup.id)
   const noSetup = context.flags['no-setup']
 
   cli.log(`${noSetup ? 'Attaching' : 'Running setup and attaching'} to test dyno...`)
@@ -53,7 +54,7 @@ async function run(context, heroku) {
     cli.warn('to execute a build and configure the environment')
   }
 
-  const testNodes = await api.testNodes(heroku, testRun.id)
+  const testNodes = yield api.testNodes(heroku, testRun.id)
 
   const dyno = new Dyno({
     heroku,
@@ -75,13 +76,13 @@ async function run(context, heroku) {
   }
 
   try {
-    await dyno.attach()
+    yield dyno.attach()
   } catch (err) {
     if (err.exitCode) cli.exit(err.exitCode, err)
     else throw err
   }
 
-  await cli.action(
+  yield cli.action(
     'Cleaning up',
     api.updateTestRun(heroku, testRun.id, {
       status: 'cancelled',
@@ -124,5 +125,5 @@ module.exports = {
       description: 'start test run with an empty cache'
     }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

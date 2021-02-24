@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const bastion = require('../lib/bastion')
@@ -28,7 +29,7 @@ function exec (cmd, opts = {}) {
   }
 }
 
-const prepare = async function (target) {
+const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost' || !target.host) {
     exec(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
@@ -38,10 +39,10 @@ const prepare = async function (target) {
     // of --echo-all is set.
     const num = Math.random()
     const emptyMarker = `${num}${num}`
-    let result = await psql.exec(target, `SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
+    let result = yield psql.exec(target, `SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
     if (!result.includes(emptyMarker)) throw new Error(`Remote database is not empty. Please create a new database or use ${cli.color.cmd('heroku pg:reset')}`)
   }
-}
+})
 
 function connArgs (uri, skipDFlag) {
   const args = []
@@ -55,24 +56,17 @@ function connArgs (uri, skipDFlag) {
   return args
 }
 
-const verifyExtensionsMatch = async function (source, target) {
+const verifyExtensionsMatch = co.wrap(function * (source, target) {
   // It's pretty common for local DBs to not have extensions available that
   // are used by the remote app, so take the final precaution of warning if
   // the extensions available in the local database don't match. We don't
   // report it if the difference is solely in the version of an extension
   // used, though.
   let sql = 'SELECT extname FROM pg_extension ORDER BY extname;'
-
-  let [extensionTarget, extensionSource] = await Promise.all([
-    psql.exec(target, sql),
-    psql.exec(source, sql)
-  ])
-
-  let extensions = {
-    target: extensionTarget,
-    source: extensionSource
+  let extensions = yield {
+    target: psql.exec(target, sql),
+    source: psql.exec(source, sql)
   }
-
   // TODO: it shouldn't matter if the target has *more* extensions than the source
   if (extensions.target !== extensions.source) {
     cli.warn(`WARNING: Extensions in newly created target database differ from existing source database.
@@ -85,14 +79,14 @@ ignored are acceptable - entire tables may have been missed, where a dependency
 could not be resolved. You may need to to install a postgresql-contrib package
 and retry.`)
   }
-}
+})
 
-const maybeTunnel = async function (herokuDb) {
+const maybeTunnel = function * (herokuDb) {
   // TODO defend against side effects, should find altering code & fix
   herokuDb = Object.assign({}, herokuDb)
 
   const configs = bastion.getConfigs(herokuDb)
-  const tunnel = await bastion.sshTunnel(herokuDb, configs.dbTunnelConfig)
+  const tunnel = yield bastion.sshTunnel(herokuDb, configs.dbTunnelConfig)
   if (tunnel) {
     const tunnelHost = {
       host: 'localhost',
@@ -113,11 +107,11 @@ function spawnPipe (pgDump, pgRestore) {
   })
 }
 
-const run = async function (sourceIn, targetIn, exclusions) {
-  await prepare(targetIn)
+const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
+  yield prepare(targetIn)
 
-  const source = await maybeTunnel(sourceIn)
-  const target = await maybeTunnel(targetIn)
+  const source = yield maybeTunnel(sourceIn)
+  const target = yield maybeTunnel(targetIn)
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
   let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', ...connArgs(source, true)]
@@ -146,39 +140,39 @@ const run = async function (sourceIn, targetIn, exclusions) {
   const pgDump = cp.spawn('pg_dump', dumpFlags, dumpOptions)
   const pgRestore = cp.spawn('pg_restore', restoreFlags, restoreOptions)
 
-  await spawnPipe(pgDump, pgRestore)
+  yield spawnPipe(pgDump, pgRestore)
 
   if (source._tunnel) source._tunnel.close()
   if (target._tunnel) target._tunnel.close()
 
-  await verifyExtensionsMatch(sourceIn, targetIn)
-}
+  yield verifyExtensionsMatch(sourceIn, targetIn)
+})
 
-async function push(context, heroku) {
+function * push (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const { app, args } = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
   const source = util.parsePostgresConnectionString(args.source)
-  const target = await fetcher.database(app, args.target)
+  const target = yield fetcher.database(app, args.target)
 
   cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.attachment.addon.name)}`)
-  await run(source, target, exclusions)
+  yield run(source, target, exclusions)
   cli.log('heroku-cli: Pushing complete.')
 }
 
-async function pull(context, heroku) {
+function * pull (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const { app, args } = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
-  const source = await fetcher.database(app, args.source)
+  const source = yield fetcher.database(app, args.source)
   const target = util.parsePostgresConnectionString(args.target)
 
   cli.log(`heroku-cli: Pulling ${cli.color.addon(source.attachment.addon.name)} ---> ${cli.color.cyan(args.target)}`)
-  await run(source, target, exclusions)
+  yield run(source, target, exclusions)
   cli.log('heroku-cli: Pulling complete.')
 }
 
@@ -211,7 +205,7 @@ Examples:
     # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
 `,
-    run: cli.command({ preauth: true }, push)
+    run: cli.command({ preauth: true }, co.wrap(push))
   }, cmd),
   Object.assign({
     command: 'pull',
@@ -234,6 +228,6 @@ Examples:
     # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 `,
-    run: cli.command({ preauth: true }, pull)
+    run: cli.command({ preauth: true }, co.wrap(pull))
   }, cmd)
 ]

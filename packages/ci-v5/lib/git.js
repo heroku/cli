@@ -35,21 +35,21 @@ function runGit (...args) {
   })
 }
 
-async function getRef(branch) {
+function * getRef (branch) {
   return runGit('rev-parse', branch || 'HEAD')
 }
 
-async function getBranch(symbolicRef) {
+function * getBranch (symbolicRef) {
   return runGit('symbolic-ref', '--short', symbolicRef)
 }
 
-async function getCommitTitle(ref) {
+function * getCommitTitle (ref) {
   return runGit('log', ref || '', '-1', '--pretty=format:%s')
 }
 
-async function createArchive(ref) {
+function * createArchive (ref) {
   const tar = spawn('git', ['archive', '--format', 'tar.gz', ref])
-  const file = await tmp.openAsync({ suffix: '.tar.gz' })
+  const file = yield tmp.openAsync({ suffix: '.tar.gz' })
   const write = tar.stdout.pipe(fs.createWriteStream(file.path))
 
   return new Promise((resolve, reject) => {
@@ -58,8 +58,8 @@ async function createArchive(ref) {
   })
 }
 
-async function githubRepository() {
-  const remote = await runGit('remote', 'get-url', 'origin')
+function * githubRepository () {
+  const remote = yield runGit('remote', 'get-url', 'origin')
   const repository = gh(remote)
 
   if (repository === null) {
@@ -69,10 +69,10 @@ async function githubRepository() {
   return repository
 }
 
-async function readCommit(commit) {
-  const branch = await getBranch('HEAD')
-  const ref = await getRef(commit)
-  const message = await getCommitTitle(ref)
+function * readCommit (commit) {
+  const branch = yield getBranch('HEAD')
+  const ref = yield getRef(commit)
+  const message = yield getCommitTitle(ref)
 
   return Promise.resolve({
     branch: branch,

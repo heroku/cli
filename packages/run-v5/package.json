@@ -22,6 +22,7 @@
     "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
+    "co": "4.6.0",
     "fs-extra": "^7.0.1",
     "heroku-cli-util": "^8.0.11",
     "shellwords": "^0.1.1"

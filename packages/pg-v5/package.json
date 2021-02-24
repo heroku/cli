@@ -15,6 +15,7 @@
   "dependencies": {
     "@heroku-cli/plugin-addons": "^1.2.29",
     "bytes": "^3.1.0",
+    "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "debug": "^4.1.1",
     "filesize": "^4.0.0",

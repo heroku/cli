@@ -1,10 +1,11 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   context.args.unshift('rake')
   let opts = {
     heroku: heroku,
@@ -19,7 +20,7 @@ async function run(context, heroku) {
 
   let dyno = new Dyno(opts)
   try {
-    await dyno.start()
+    yield dyno.start()
   } catch (err) {
     if (err.exitCode) {
       cli.error(err)
@@ -40,5 +41,5 @@ module.exports = {
     { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
     { name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

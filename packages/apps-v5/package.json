@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.4.1",
+    "co": "^4.6.0",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
     "heroku-cli-util": "^8.0.11",

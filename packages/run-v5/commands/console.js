@@ -1,10 +1,11 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let opts = {
     heroku: heroku,
     app: context.app,
@@ -15,7 +16,7 @@ async function run(context, heroku) {
   }
 
   let dyno = new Dyno(opts)
-  await dyno.start()
+  yield dyno.start()
 }
 
 module.exports = {
@@ -27,5 +28,5 @@ module.exports = {
     { name: 'size', char: 's', description: 'dyno size', hasValue: true },
     { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

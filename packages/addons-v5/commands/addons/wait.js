@@ -1,20 +1,21 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const { notify } = require('../../lib/notify')
 const waitForAddonProvisioning = require('../../lib/addons_wait')
 
-async function run(ctx, api) {
+function * run (ctx, api) {
   const resolve = require('../../lib/resolve')
 
   let addons
   if (ctx.args.addon) {
-    addons = [await resolve.addon(api, ctx.app, ctx.args.addon)]
+    addons = [yield resolve.addon(api, ctx.app, ctx.args.addon)]
   } else {
     if (ctx.app) {
-      addons = await api.get(`/apps/${ctx.app}/addons`)
+      addons = yield api.get(`/apps/${ctx.app}/addons`)
     } else {
-      addons = await api.get('/addons')
+      addons = yield api.get('/addons')
     }
   }
   addons = addons.filter(addon => addon.state === 'provisioning')
@@ -25,7 +26,7 @@ async function run(ctx, api) {
   for (let addon of addons) {
     const startTime = new Date()
     try {
-      addon = await waitForAddonProvisioning(api, addon, interval)
+      addon = yield waitForAddonProvisioning(api, addon, interval)
     } catch (error) {
       notify(`heroku addons:wait ${addon.name}`, 'Add-on failed to provision', false)
       throw error
@@ -53,7 +54,7 @@ module.exports = {
   needsAuth: true,
   args: [{ name: 'addon', optional: true }],
   flags: [{ name: 'wait-interval', description: 'how frequently to poll in seconds', hasValue: true }],
-  run: cli.command({ preauth: true }, run),
+  run: cli.command({ preauth: true }, co.wrap(run)),
   usage: `${topic}:wait ADDON`,
   description: 'show provisioning status of the add-ons on the app'
 }

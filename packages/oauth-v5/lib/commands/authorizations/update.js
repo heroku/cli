@@ -1,9 +1,10 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let authorizations = require('../../authorizations')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let client
   if (context.flags['client-id']) {
     client = {
@@ -11,7 +12,7 @@ async function run(context, heroku) {
       secret: context.flags['client-secret']
     }
   }
-  let auth = await cli.action('Updating OAuth Authorization', heroku.request({
+  let auth = yield cli.action('Updating OAuth Authorization', heroku.request({
     method: 'PATCH',
     path: `/oauth/authorizations/${encodeURIComponent(context.args.id)}`,
     body: {
@@ -34,5 +35,5 @@ module.exports = {
     {name: 'client-id', hasValue: true, description: 'identifier of OAuth client to set'},
     {name: 'client-secret', hasValue: true, description: 'secret of OAuth client to set'}
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

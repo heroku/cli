@@ -14,6 +14,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/addons-v5/<%- commandPath %>"
   },
   "dependencies": {
+    "co": "4.6.0",
     "co-wait": "0.0.0",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",

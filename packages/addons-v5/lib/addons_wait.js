@@ -1,17 +1,18 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-module.exports = async function (api, addon, interval) {
+module.exports = function * (api, addon, interval) {
   const wait = require('co-wait')
   const app = addon.app.name
   const addonName = addon.name
 
-  await cli.action(`Creating ${cli.color.addon(addon.name)}`, async function () {
+  yield cli.action(`Creating ${cli.color.addon(addon.name)}`, co(function * () {
     while (addon.state === 'provisioning') {
-      await wait(interval * 1000)
+      yield wait(interval * 1000)
 
-      addon = await api.request({
+      addon = yield api.request({
         method: 'GET',
         path: `/apps/${app}/addons/${addonName}`,
         headers: {'Accept-Expansion': 'addon_service,plan'}
@@ -20,7 +21,7 @@ module.exports = async function (api, addon, interval) {
     if (addon.state === 'deprovisioned') {
       throw new Error(`The add-on was unable to be created, with status ${addon.state}`)
     }
-  }())
+  }))
 
   return addon
 }

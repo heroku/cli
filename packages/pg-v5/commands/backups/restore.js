@@ -1,5 +1,6 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
 function dropboxURL (url) {
@@ -13,7 +14,7 @@ function dropboxURL (url) {
   return url
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
@@ -21,7 +22,7 @@ async function run(context, heroku) {
 
   const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
-  const db = await fetcher.addon(app, args.database)
+  const db = yield fetcher.addon(app, args.database)
 
   let backupURL
   let backupName = args.backup
@@ -35,7 +36,7 @@ async function run(context, heroku) {
     } else {
       backupApp = app
     }
-    let transfers = await heroku.get(`/client/v11/apps/${backupApp}/transfers`, { host: host() })
+    let transfers = yield heroku.get(`/client/v11/apps/${backupApp}/transfers`, { host: host() })
     let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
     let backup
     if (backupName) {
@@ -50,21 +51,21 @@ async function run(context, heroku) {
     backupURL = backup.to_url
   }
 
-  await cli.confirmApp(app, flags.confirm)
+  yield cli.confirmApp(app, flags.confirm)
   let restore
-  await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, async function () {
-    restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
+  yield cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, co(function * () {
+    restore = yield heroku.post(`/client/v11/databases/${db.id}/restores`, {
       body: { backup_url: backupURL },
       host: host(db)
     })
-  }())
+  }))
   cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use ${cli.color.cmd('heroku pg:backups')} to check progress.
 Stop a running restore with ${cli.color.cmd('heroku pg:backups:cancel')}.
 `)
 
-  await pgbackups.wait('Restoring', restore.uuid, interval, flags.verbose, db.app.name)
+  yield pgbackups.wait('Restoring', restore.uuid, interval, flags.verbose, db.app.name)
 }
 
 module.exports = {
@@ -83,5 +84,5 @@ module.exports = {
     { name: 'verbose', char: 'v' },
     { name: 'confirm', char: 'c', hasValue: true }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

@@ -1,6 +1,7 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 let time = require('../../time')
 const { truncate, sortBy, reduce, forEach } = require('lodash')
 
@@ -29,7 +30,7 @@ function printExtended (dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
+function * printAccountQuota (context, heroku, app, account) {
   if (app.process_tier !== 'free') {
     return
   }
@@ -38,7 +39,7 @@ async function printAccountQuota(context, heroku, app, account) {
     return
   }
 
-  let quota = await heroku.request({
+  let quota = yield heroku.request({
     path: `/accounts/${account.id}/actions/get-quota`,
     headers: { Accept: 'application/vnd.heroku+json; version=3.account-quotas' }
   })
@@ -100,7 +101,7 @@ function printDynos (dynos) {
   })
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const { app, flags, args } = context
   const types = args
   const { json, extended } = flags
@@ -116,11 +117,7 @@ async function run(context, heroku) {
   })
   promises.accountInfo = heroku.request({ path: '/account' })
 
-  let [ dynos, appInfo, accountInfo ] = await Promise.all([
-    promises.dynos,
-    promises.appInfo,
-    promises.accountInfo
-  ])
+  let { dynos, appInfo, accountInfo } = yield promises
   const shielded = appInfo.space && appInfo.space.shield
 
   if (shielded) {
@@ -152,7 +149,7 @@ async function run(context, heroku) {
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
-    await printAccountQuota(context, heroku, appInfo, accountInfo)
+    yield printAccountQuota(context, heroku, appInfo, accountInfo)
     if (dynos.length === 0) cli.log(`No dynos on ${cli.color.app(app)}`)
     else printDynos(dynos)
   }
@@ -179,5 +176,5 @@ $ heroku ps run # specifying types
 run.1: up for 5m: bash`,
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

@@ -1,18 +1,19 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 const getProcessType = (s) => s.split('-', 2)[0].split('.', 2)[0]
 const getProcessNum = (s) => parseInt(s.split('-', 2)[0].split('.', 2)[1])
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:topology my-space')
 
-  let topology = await heroku.get(`/spaces/${spaceName}/topology`)
+  let topology = yield heroku.get(`/spaces/${spaceName}/topology`)
   let appInfo = []
   if (topology.apps) {
-    appInfo = await Promise.all(topology.apps.map((app) => heroku.get(`/apps/${app.id}`)))
+    appInfo = yield topology.apps.map((app) => heroku.get(`/apps/${app.id}`))
   }
 
   render(spaceName, topology, appInfo, context.flags)
@@ -82,5 +83,5 @@ module.exports = {
     { name: 'json', description: 'output in json format' }
   ],
   render: render,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

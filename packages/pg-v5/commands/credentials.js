@@ -1,17 +1,18 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 const { sortBy } = require('lodash')
 const util = require('../lib/util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
 
   const { app, args, flags } = context
 
-  let showCredentials = async function () {
+  let showCredentials = co.wrap(function * () {
     const host = require('../lib/host')
-    let addon = await fetcher.addon(app, args.database)
+    let addon = yield fetcher.addon(app, args.database)
     let attachments = []
     let credentials = []
 
@@ -25,11 +26,11 @@ async function run(context, heroku) {
       return util.presentCredentialAttachments(app, credAttachments, credentials, cred)
     }
 
-    credentials = await heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
+    credentials = yield heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
       { host: host(addon) })
     let isDefaultCredential = (cred) => cred.name !== 'default'
     credentials = sortBy(credentials, isDefaultCredential, 'name')
-    attachments = await heroku.get(`/addons/${addon.name}/addon-attachments`)
+    attachments = yield heroku.get(`/addons/${addon.name}/addon-attachments`)
 
     cli.warn(`${cli.color.cmd('pg:credentials')} has recently changed. Please use ${cli.color.cmd('pg:credentials:url')} for the previous output.`)
     cli.table(credentials, {
@@ -38,12 +39,12 @@ async function run(context, heroku) {
         { key: 'state', label: 'State' }
       ]
     })
-  }
+  })
 
   if (flags.reset) {
     cli.error(`${cli.color.cmd('pg:credentials --reset')} is deprecated. Please use ${cli.color.cmd('pg:credentials:rotate')} instead.`)
   } else {
-    await showCredentials()
+    yield showCredentials()
   }
 }
 
@@ -55,5 +56,5 @@ module.exports = {
   needsAuth: true,
   flags: [{ name: 'reset', description: 'DEPRECATED' }],
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

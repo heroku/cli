@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 exports.boolean = (value) => {
   switch (value) {
@@ -26,25 +27,25 @@ exports.numeric = (value) => {
 }
 
 exports.generate = (name, convert, explain) => {
-  return async function run(context, heroku) {
+  return co.wrap(function * run (context, heroku) {
     const host = require('./host')
     const util = require('./util')
     const fetcher = require('./fetcher')(heroku)
     const { app, args } = context
     const { value, database } = args
 
-    const db = await fetcher.addon(app, database)
+    const db = yield fetcher.addon(app, database)
 
     if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
     if (util.legacyPlan(db)) throw new Error('This operation is not supported by Legacy tier databases.')
 
     if (!value) {
-      let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, { host: host(db) })
+      let settings = yield heroku.get(`/postgres/v0/databases/${db.id}/config`, { host: host(db) })
       let setting = settings[name]
       cli.log(`${name.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))
     } else {
-      let settings = await heroku.patch(`/postgres/v0/databases/${db.id}/config`, {
+      let settings = yield heroku.patch(`/postgres/v0/databases/${db.id}/config`, {
         host: host(db),
         body: { [name]: convert(value) }
       })
@@ -52,5 +53,5 @@ exports.generate = (name, convert, explain) => {
       cli.log(`${name.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))
     }
-  };
+  })
 }

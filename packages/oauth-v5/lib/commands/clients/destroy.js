@@ -1,14 +1,15 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let id = context.args.id
   let request = heroku.request({
     method: 'DELETE',
     path: `/oauth/clients/${id}`
   })
-  await cli.action(`Destroying ${cli.color.cyan(id)}`, request)
+  yield cli.action(`Destroying ${cli.color.cyan(id)}`, request)
 }
 
 module.exports = {
@@ -17,5 +18,5 @@ module.exports = {
   description: 'delete client by ID',
   needsAuth: true,
   args: [{name: 'id'}],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

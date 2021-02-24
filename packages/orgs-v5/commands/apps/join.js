@@ -1,8 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let request = heroku.get('/account')
     .then(function (user) {
       return heroku.post(`/teams/apps/${context.app}/collaborators`, {
@@ -10,7 +11,7 @@ async function run(context, heroku) {
       })
     })
 
-  await cli.action(`Joining ${cli.color.cyan(context.app)}`, request)
+  yield cli.action(`Joining ${cli.color.cyan(context.app)}`, request)
 }
 
 let cmd = {
@@ -19,7 +20,7 @@ let cmd = {
   description: 'add yourself to a team app',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }
 
 let root = Object.assign({}, cmd, { topic: 'join', command: null })

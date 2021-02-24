@@ -1,13 +1,14 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run (context, heroku) {
+function * run (context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:peerings:accept pcx-12345678 --space my-space')
   let pcxID = context.flags.pcxid || context.args.pcxid
-  await lib.acceptPeeringRequest(space, pcxID)
+  yield lib.acceptPeeringRequest(space, pcxID)
   cli.log(`Accepting and configuring peering connection ${cli.color.cyan.bold(pcxID)}`)
 }
 
@@ -27,5 +28,5 @@ module.exports = {
     { name: 'pcxid', char: 'p', hasValue: true, description: 'PCX ID of a pending peering' },
     { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

@@ -1,8 +1,9 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   function enableFeature (feature, app) {
     return heroku.request({
       path: app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`,
@@ -15,19 +16,19 @@ async function run(context, heroku) {
   let request
   let target
   try {
-    await heroku.get(`/account/features/${feature}`)
+    yield heroku.get(`/account/features/${feature}`)
     request = enableFeature(feature)
-    target = ((await heroku.get('/account'))).email
+    target = (yield heroku.get('/account')).email
   } catch (err) {
     if (err.statusCode !== 404) throw err
     // might be an app feature
     if (!context.app) throw err
-    await heroku.get(`/apps/${context.app}/features/${feature}`)
+    yield heroku.get(`/apps/${context.app}/features/${feature}`)
     request = enableFeature(feature, context.app)
     target = context.app
   }
 
-  await cli.action(`Enabling ${cli.color.green(feature)} for ${cli.color.cyan(target)}`, request)
+  yield cli.action(`Enabling ${cli.color.green(feature)} for ${cli.color.cyan(target)}`, request)
 }
 
 module.exports = {
@@ -37,5 +38,5 @@ module.exports = {
   args: [{ name: 'feature' }],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

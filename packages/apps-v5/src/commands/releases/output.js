@@ -1,11 +1,12 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 let releases = require('../../releases')
 let output = require('../../output')
 
-async function run(context, heroku) {
-  let release = await releases.FindByLatestOrId(heroku, context.app, context.args.release)
+function * run (context, heroku) {
+  let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
   let streamUrl = release.output_stream_url
 
@@ -14,7 +15,7 @@ async function run(context, heroku) {
     return
   }
 
-  await output.Stream(streamUrl)
+  yield output.Stream(streamUrl)
     .catch(err => {
       if (err.statusCode === 404) {
         cli.warn('Release command not started yet. Please try again in a few seconds.')
@@ -31,5 +32,5 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   args: [{ name: 'release', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

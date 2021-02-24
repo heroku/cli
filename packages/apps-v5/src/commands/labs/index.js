@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
 function printJSON (features) {
   cli.log(JSON.stringify(features, null, 2))
@@ -19,17 +20,11 @@ function printFeatures (features) {
   }
 }
 
-async function run(context, heroku) {
-  let [currentUser, user, app] = await Promise.all([
-    heroku.get('/account'),
-    heroku.get('/account/features'),
-    context.app ? heroku.get(`/apps/${context.app}/features`) : null
-  ])
-
-  let features = {
-    currentUser,
-    user,
-    app
+function * run (context, heroku) {
+  let features = yield {
+    currentUser: heroku.get('/account'),
+    user: heroku.get('/account/features'),
+    app: context.app ? heroku.get(`/apps/${context.app}/features`) : null
   }
   // general features are managed via `features` not `labs`
   features.user = features.user.filter((f) => f.state !== 'general')
@@ -56,5 +51,5 @@ module.exports = {
   ],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

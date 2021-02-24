@@ -1,11 +1,12 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let url = require('url')
 
-async function run(context, heroku) {
-  let app = await heroku.get(`/apps/${context.app}`)
-  await cli.open(url.resolve(app.web_url, context.args.path || ''))
+function * run (context, heroku) {
+  let app = yield heroku.get(`/apps/${context.app}`)
+  yield cli.open(url.resolve(app.web_url, context.args.path || ''))
 }
 
 let cmd = {
@@ -18,7 +19,7 @@ $ heroku open -a myapp /foo
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'path', optional: true }],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }
 
 module.exports = [

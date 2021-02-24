@@ -1,13 +1,14 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 const { flags } = require('@heroku-cli/command')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let team = context.flags.team
   if (!team) throw new Error('No team specified')
-  let org = await heroku.get(`/teams/${team}`)
-  await cli.open(`https://dashboard.heroku.com/teams/${org.name}`)
+  let org = yield heroku.get(`/teams/${team}`)
+  yield cli.open(`https://dashboard.heroku.com/teams/${org.name}`)
 }
 
 module.exports = {
@@ -19,5 +20,5 @@ module.exports = {
   flags: [
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

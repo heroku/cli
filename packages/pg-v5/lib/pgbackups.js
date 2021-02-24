@@ -1,5 +1,6 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
 function prefix (transfer) {
@@ -28,17 +29,17 @@ module.exports = (context, heroku) => ({
     return bytes(size, opts)
   },
   transfer: {
-    num: async function (name) {
+    num: co.wrap(function * (name) {
       let m = name.match(/^[abcr](\d+)$/)
       if (m) return parseInt(m[1])
       m = name.match(/^o[ab]\d+$/)
       if (m) {
         const host = require('./host')()
-        let transfers = await heroku.get(`/client/v11/apps/${context.app}/transfers`, { host })
+        let transfers = yield heroku.get(`/client/v11/apps/${context.app}/transfers`, { host })
         let transfer = transfers.find(t => module.exports(context, heroku).transfer.name(t) === name)
         if (transfer) return transfer.num
       }
-    },
+    }),
     name: transfer => {
       let oldPGBName = transfer.options && transfer.options.pgbackups_name
       if (oldPGBName) return `o${oldPGBName}`
@@ -78,7 +79,7 @@ module.exports = (context, heroku) => ({
       }
     }
 
-    let poll = async function () {
+    let poll = co.wrap(function * () {
       let tty = process.env.TERM !== 'dumb' && process.stderr.isTTY
       let backup
       let failures = 0
@@ -90,7 +91,7 @@ module.exports = (context, heroku) => ({
 
       while (true) {
         try {
-          backup = await heroku.get(url, { host })
+          backup = yield heroku.get(url, { host })
         } catch (err) {
           if (failures++ > 20) throw err
         }
@@ -109,7 +110,7 @@ module.exports = (context, heroku) => ({
           if (backup.succeeded) return
           else {
             // logs is undefined unless verbose=true is passed
-            backup = await heroku.get(verboseUrl, { host })
+            backup = yield heroku.get(verboseUrl, { host })
 
             throw new Error(`An error occurred and the backup did not finish.
 
@@ -118,9 +119,9 @@ ${backup.logs.slice(-5).map(l => l.message).join('\n')}
 Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))} for more details.`)
           }
         }
-        await wait(interval * 1000)
+        yield wait(interval * 1000)
       }
-    }
+    })
 
     if (verbose) {
       cli.log(`${action}...`)

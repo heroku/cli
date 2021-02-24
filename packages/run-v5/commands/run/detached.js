@@ -1,12 +1,13 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../../lib/helpers')
 let logDisplayer = require('../../lib/log_displayer')
 let Dyno = require('../../lib/dyno')
 const { DynoSizeCompletion, ProcessTypeCompletion } = require('@heroku-cli/command/lib/completions')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let opts = {
     heroku: heroku,
     app: context.app,
@@ -18,10 +19,10 @@ async function run(context, heroku) {
   }
   if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
   let dyno = new Dyno(opts)
-  await dyno.start()
+  yield dyno.start()
 
   if (context.flags.tail) {
-    await logDisplayer(heroku, {
+    yield logDisplayer(heroku, {
       app: context.app,
       dyno: dyno.dyno.name,
       tail: true
@@ -47,5 +48,5 @@ Run heroku logs -a app -p run.1 to view the output.`,
     { name: 'type', description: 'process type', hasValue: true, completion: ProcessTypeCompletion },
     { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

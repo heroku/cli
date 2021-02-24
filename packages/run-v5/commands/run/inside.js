@@ -1,10 +1,11 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 const helpers = require('../../lib/helpers')
 const Dyno = require('../../lib/dyno')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   if (context.args.length < 2) throw new Error('Usage: heroku run:inside DYNO COMMAND\n\nExample: heroku run:inside web.1 bash')
   let opts = {
     heroku: heroku,
@@ -17,7 +18,7 @@ async function run(context, heroku) {
   }
 
   let dyno = new Dyno(opts)
-  await dyno.start()
+  yield dyno.start()
 }
 
 module.exports = {
@@ -36,5 +37,5 @@ Running bash on web.1.... up
     { name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
     { name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

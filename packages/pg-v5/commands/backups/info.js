@@ -1,5 +1,6 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
 function status (backup) {
@@ -22,27 +23,27 @@ function compression (compressed, total) {
   return ` (${pct}% compression)`
 }
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const { sortBy } = require('lodash')
   const host = require('../../lib/host')()
   const app = context.app
 
-  let getBackup = async function (id) {
+  let getBackup = co.wrap(function * (id) {
     let backupID
     if (id) {
-      backupID = await pgbackups.transfer.num(id)
+      backupID = yield pgbackups.transfer.num(id)
       if (!backupID) throw new Error(`Invalid ID: ${id}`)
     } else {
-      let transfers = await heroku.get(`/client/v11/apps/${app}/transfers`, { host })
+      let transfers = yield heroku.get(`/client/v11/apps/${app}/transfers`, { host })
       transfers = sortBy(transfers, 'created_at')
       let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
       let lastBackup = backups.pop()
       if (!lastBackup) throw new Error(`No backups. Capture one with ${cli.color.cmd('heroku pg:backups:capture')}`)
       backupID = lastBackup.num
     }
-    return await heroku.get(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, { host });
-  }
+    return yield heroku.get(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, { host })
+  })
 
   let displayBackup = backup => {
     cli.styledHeader(`Backup ${cli.color.cyan(pgbackups.transfer.name(backup))}`)
@@ -64,7 +65,7 @@ async function run(context, heroku) {
     cli.log()
   }
 
-  let backup = await getBackup(context.args.backup_id)
+  let backup = yield getBackup(context.args.backup_id)
   displayBackup(backup)
   displayLogs(backup)
 }
@@ -76,5 +77,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'backup_id', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

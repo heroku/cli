@@ -1,8 +1,9 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const url = require('url')
   const host = require('../lib/host')
   const pgbackups = require('../lib/pgbackups')(context, heroku)
@@ -18,7 +19,7 @@ async function run(context, heroku) {
     return output
   }
 
-  let resolve = async function (db) {
+  let resolve = co.wrap(function * (db) {
     if (db.match(/^postgres:\/\//)) {
       // For the case an input is URL format
       let uri = url.parse(db)
@@ -31,12 +32,12 @@ async function run(context, heroku) {
       }
     } else {
       // Other case (need to resolve attachment)
-      let attachment = await fetcher.attachment(app, db)
+      let attachment = yield fetcher.attachment(app, db)
       if (!attachment) throw new Error(`${db} not found on ${cli.color.app(app)}`)
-      let [addon, config] = await Promise.all([
+      let [addon, config] = yield [
         heroku.get(`/addons/${attachment.addon.name}`),
         heroku.get(`/apps/${attachment.app.name}/config-vars`)
-      ])
+      ]
       attachment.addon = addon
       config = upperCaseConfig(config) // Upper case config var keys
       return {
@@ -46,7 +47,7 @@ async function run(context, heroku) {
         confirm: app
       }
     }
-  }
+  })
 
   // Get source and target from inputs
   // source/target format:
@@ -55,19 +56,19 @@ async function run(context, heroku) {
   //  * just color: PINK
   //  * addon name: my-heroku-addon-name
   //  * app name + color/config: myapp::ORANGE
-  let [source, target] = await Promise.all([resolve(args.source), resolve(args.target)])
+  let [source, target] = yield [resolve(args.source), resolve(args.target)]
   if (source.url === target.url) throw new Error('Cannot copy database onto itself')
 
-  await cli.confirmApp(target.confirm, flags.confirm, `WARNING: Destructive action
+  yield cli.confirmApp(target.confirm, flags.confirm, `WARNING: Destructive action
 This command will remove all data from ${cli.color.yellow(target.name)}
 Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.color.yellow(target.name)}`)
 
   let copy
   let attachment
-  await cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, async function () {
+  yield cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, co(function * () {
     attachment = target.attachment || source.attachment
     if (!attachment) throw new Error('Heroku PostgreSQL database must be source or target')
-    copy = await heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
+    copy = yield heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
       body: {
         from_name: source.name,
         from_url: source.url,
@@ -76,16 +77,16 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
       },
       host: host(attachment.addon)
     })
-  }())
+  }))
 
   if (source.attachment) {
-    let credentials = await heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
+    let credentials = yield heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
       { host: host(source.attachment.addon) })
     if (credentials.length > 1) {
       cli.action.warn(`pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.`)
     }
   }
-  await pgbackups.wait('Copying', copy.uuid, interval, flags.verbose, attachment.addon.app.name)
+  yield pgbackups.wait('Copying', copy.uuid, interval, flags.verbose, attachment.addon.app.name)
 }
 
 module.exports = {
@@ -104,5 +105,5 @@ module.exports = {
     { name: 'verbose' },
     { name: 'confirm', hasValue: true }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

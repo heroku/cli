@@ -1,37 +1,38 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   cli.warn('This is a beta command and is not considered reliable or complete. Use with caution.')
   const host = require('../lib/host')
   const util = require('../lib/util')
   const fetcher = require('../lib/fetcher')(heroku)
   let { app, args, flags } = context
-  let db = await fetcher.addon(app, args.database)
+  let db = yield fetcher.addon(app, args.database)
 
   if (util.starterPlan(db)) throw new Error('pg:repoint is only available for follower production databases')
 
-  let replica = await heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) })
+  let replica = yield heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) })
 
   if (!replica.following) {
     throw new Error('pg:repoint is only available for follower production databases')
   }
 
-  let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
+  let origin = util.databaseNameFromUrl(replica.following, yield heroku.get(`/apps/${app}/config-vars`))
 
-  let newLeader = await fetcher.addon(app, flags.follow)
+  let newLeader = yield fetcher.addon(app, flags.follow)
 
-  await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
+  yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
 ${cli.color.addon(db.name)} will be repointed to follow ${newLeader.name}, and stop following ${origin}.
 
 This cannot be undone.`)
 
   let data = { follow: newLeader.id }
-  await cli.action(`Starting repoint of ${cli.color.addon(db.name)}`, async function () {
-    await heroku.post(`/client/v11/databases/${db.id}/repoint`, { host: host(db), body: data })
+  yield cli.action(`Starting repoint of ${cli.color.addon(db.name)}`, co(function * () {
+    yield heroku.post(`/client/v11/databases/${db.id}/repoint`, { host: host(db), body: data })
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
-  }())
+  }))
 }
 
 module.exports = {
@@ -50,5 +51,5 @@ module.exports = {
     { name: 'confirm', char: 'c', hasValue: true },
     { name: 'follow', description: 'leader database to follow', hasValue: true }
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

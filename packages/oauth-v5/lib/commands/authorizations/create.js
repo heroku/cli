@@ -1,9 +1,10 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 const authorizations = require('../../authorizations')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   let promise = heroku.request({
     method: 'POST',
     path: '/oauth/authorizations',
@@ -18,7 +19,7 @@ async function run(context, heroku) {
     promise = cli.action('Creating OAuth Authorization', promise)
   }
 
-  let auth = await promise
+  let auth = yield promise
 
   if (context.flags.short) {
     cli.log(auth.access_token.token)
@@ -49,5 +50,5 @@ module.exports = {
     {char: 'S', name: 'short', description: 'only output token'},
     {char: 'j', name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

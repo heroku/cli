@@ -1,9 +1,10 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 const stripAnsi = require('strip-ansi')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const statusHelper = require('../../status_helper')
   const time = require('../../time')
   const { truncate } = require('lodash')
@@ -28,7 +29,7 @@ async function run(context, heroku) {
 
   let url = `/apps/${context.app}/releases`
   if (context.flags.extended) url = url + '?extended=true'
-  let releases = await heroku.request({
+  let releases = yield heroku.request({
     path: url,
     partial: true,
     headers: {
@@ -44,7 +45,7 @@ async function run(context, heroku) {
   let runningRelease = releases.filter((r) => r.status === 'pending').slice(-1)[0]
   let runningSlug
   if (runningRelease && runningRelease.slug) {
-    runningSlug = await heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
+    runningSlug = yield heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
   }
 
   let optimizeWidth = function (releases, columns, optimizeKey) {
@@ -162,5 +163,5 @@ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`,
     { name: 'json', description: 'output releases in json format' },
     { name: 'extended', char: 'x', hidden: true }
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

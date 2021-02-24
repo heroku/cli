@@ -1,5 +1,6 @@
 'use strict'
 
+let co = require('co')
 let cli = require('heroku-cli-util')
 let certificateDetails = require('../../../lib/certificate_details.js')
 let _ = require('lodash')
@@ -27,8 +28,8 @@ function humanize (value) {
   return value.split('-').map((word) => _.capitalize(word)).join(' ')
 }
 
-async function run(context, heroku) {
-  let [app, certs, domains] = await Promise.all([
+function * run (context, heroku) {
+  let [app, certs, domains] = yield [
     heroku.request({
       path: `/apps/${context.app}`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
@@ -41,7 +42,7 @@ async function run(context, heroku) {
       path: `/apps/${context.app}/domains`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     })
-  ])
+  ]
 
   let message
   if (app.acm) {
@@ -103,5 +104,5 @@ module.exports = {
   description: 'show ACM status for an app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

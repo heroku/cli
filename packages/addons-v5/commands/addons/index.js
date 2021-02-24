@@ -1,8 +1,9 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const co = require('co')
 
-async function run(ctx, api) {
+function * run (ctx, api) {
   const util = require('../../lib/util')
   const table = util.table
   const style = util.style
@@ -13,10 +14,12 @@ async function run(ctx, api) {
 
   const { groupBy, some, sortBy, values } = require('lodash')
 
-  async function addonGetter(api, app) {
+  // Gets *all* attachments and add-ons and filters locally because the API
+  // returns *owned* items not associated items.
+  function * addonGetter (api, app) {
     let attachments, addons
 
-    if (app) { // don't display attachments globally
+    if (app) { // don't disploy attachments globally
       addons = api.get(`/apps/${app}/addons`, { headers: {
         'Accept-Expansion': 'addon_service,plan'
       } })
@@ -46,7 +49,7 @@ async function run(ctx, api) {
     }
 
     // Get addons and attachments in parallel
-    let items = await Promise.all([addons, attachments])
+    let items = yield [addons, attachments]
 
     function isRelevantToApp (addon) {
       return !app ||
@@ -244,11 +247,11 @@ async function run(ctx, api) {
   }
 
   if (!ctx.flags.all && ctx.app) {
-    let addons = await addonGetter(api, ctx.app)
+    let addons = yield co(addonGetter(api, ctx.app))
     if (ctx.flags.json) displayJSON(addons)
     else displayForApp(ctx.app, addons)
   } else {
-    let addons = await addonGetter(api)
+    let addons = yield co(addonGetter(api))
     if (ctx.flags.json) displayJSON(addons)
     else displayAll(addons)
   }
@@ -273,7 +276,7 @@ module.exports = {
     }
   ],
 
-  run: cli.command({ preauth: true }, run),
+  run: cli.command({ preauth: true }, co.wrap(run)),
   usage: `${topic} [--all|--app APP]`,
   description: 'lists your add-ons and attachments',
   help: `The default filter applied depends on whether you are in a Heroku app

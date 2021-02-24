@@ -1,9 +1,10 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
-async function run(context, heroku) {
-  let drain = await heroku.request({
+function * run (context, heroku) {
+  let drain = yield heroku.request({
     method: 'post',
     path: `/apps/${context.app}/log-drains`,
     body: { url: context.args.url }
@@ -18,5 +19,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'url' }],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

@@ -1,19 +1,20 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
+let co = require('co')
 
 let run = cli.command({ preauth: true }, function (ctx, api) {
-  return async function () {
-    let addon = await api.get(`/addons/${ctx.args.addon}`)
+  return co(function * () {
+    let addon = yield api.get(`/addons/${ctx.args.addon}`)
     let addonUrl = `/apps/${addon.app.id}/addons/${addon.id}`
 
-    await api.patch(addonUrl, { body: { name: ctx.args.name } })
+    yield api.patch(addonUrl, { body: { name: ctx.args.name } })
 
     let oldName = ctx.args.addon
     let newName = cli.color.magenta(ctx.args.name)
 
     cli.log(`${oldName} successfully renamed to ${newName}.`)
-  }();
+  })
 })
 
 let topic = 'addons'

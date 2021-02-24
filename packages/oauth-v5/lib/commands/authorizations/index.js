@@ -1,10 +1,11 @@
 'use strict'
 
+const co = require('co')
 const cli = require('heroku-cli-util')
 
-async function run(context, heroku) {
+function * run (context, heroku) {
   const _ = require('lodash')
-  let authorizations = await heroku.get('/oauth/authorizations')
+  let authorizations = yield heroku.get('/oauth/authorizations')
   authorizations = _.sortBy(authorizations, 'description')
 
   if (context.flags.json) {
@@ -30,5 +31,5 @@ module.exports = {
   flags: [
     {name: 'json', char: 'j', description: 'output in json format'}
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }
