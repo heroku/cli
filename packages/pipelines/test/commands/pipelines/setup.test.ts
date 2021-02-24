@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 import {cli} from 'cli-ux'
 import sinon from 'sinon'
 
-describe.only('pipelines:setup', () => {
+describe('pipelines:setup', () => {
   test
   .nock('https://kolkrabbi.heroku.com', kolkrabbi => kolkrabbi.get('/account/github/token').replyWithError(''))
   .command(['pipelines:setup'])

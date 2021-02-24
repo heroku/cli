@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import * as PromoteCmd from '../../../src/commands/pipelines/promote'
 
 describe('pipelines:promote', () => {
   const apiUrl = 'https://api.heroku.com'
@@ -204,7 +205,60 @@ describe('pipelines:promote', () => {
     .command(['pipelines:promote', `--app=${sourceApp.name}`])
     .it('streams the release command output', ctx => {
       expect(ctx.stdout).to.contain('Running release command')
+      expect(ctx.stdout).to.contain('Release Command Output')
       expect(ctx.stdout).to.contain('successful')
     })
+  })
+
+  context('with release phase that errors', function () {
+    function mockPromotionTargetsWithRelease(testInstance: typeof test, release: any) {
+      let pollCount = 0
+
+      return testInstance
+      .nock(apiUrl, api => {
+        api
+        .post('/pipeline-promotions', {
+          pipeline: {id: pipeline.id},
+          source: {app: {id: sourceApp.id}},
+          targets: [
+            {app: {id: targetApp1.id}},
+            {app: {id: targetApp2.id}},
+          ],
+        })
+        .reply(201, promotion)
+        .get(`/apps/${targetApp1.id}/releases/${release.id}`)
+        .reply(200, targetReleaseWithOutput)
+        .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+        .reply(200, function () {
+          pollCount++
+
+          return [{
+            app: {id: targetApp1.id},
+            release: {id: release.id},
+            status: pollCount > 1 ? 'successful' : 'pending',
+            error_message: null,
+          }]
+        })
+      })
+      .nock('https://busl.example', api => {
+        api
+        .get('/release')
+        .times(100)
+        .reply(404, 'Release Command Output')
+      })
+    }
+
+    mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
+    .stderr()
+    .stdout()
+    .stub(PromoteCmd, 'sleep', () => {
+      return Promise.resolve()
+    })
+    .command(['pipelines:promote', `--app=${sourceApp.name}`])
+    .catch((error: any) => {
+      expect(error.oclif.exit).to.equal(2)
+      expect(error.message).to.equal('stream release output not available')
+    })
+    .it('attempts stream and returns error')
   })
 })
