@@ -138,13 +138,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
 
     fetchResponse.body.pipe(process.stdout)
 
-    const promise = new Promise((resolve, reject) => {
-      return finished(fetchResponse.body)
-      .then(() => resolve(''))
-      .catch(error => reject(error))
-    })
-
-    return promise
+    await finished(fetchResponse.body)
   }
 
   async function retry(maxAttempts: number, fn: () => Promise<any>) {
