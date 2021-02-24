@@ -7,7 +7,6 @@ import fetch from 'node-fetch'
 import util from 'util'
 import Stream from 'stream'
 
-
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
 
@@ -139,13 +138,10 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
 
     fetchResponse.body.pipe(process.stdout)
 
-    const promise = new Promise(async (resolve, reject) => {
-      try {
-        await finished(fetchResponse.body)
-        resolve('')
-      } catch (err) {
-        reject(err)
-      }
+    const promise = new Promise((resolve, reject) => {
+      return finished(fetchResponse.body)
+      .then(() => resolve(''))
+      .catch(error => reject(error))
     })
 
     return promise
@@ -154,15 +150,17 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
   async function retry(maxAttempts: number, fn: () => Promise<any>) {
     let currentAttempt = 0
 
-    while(true) {
+    while (true) {
       try {
+        /* eslint-disable no-await-in-loop */
         await fn()
         return
-      } catch (err) {
+      } catch (error) {
         if (++currentAttempt === maxAttempts) {
-          throw err
+          throw error
         }
         await sleep(1000)
+        /* eslint-enable no-await-in-loop */
       }
     }
   }
@@ -243,8 +241,8 @@ export default class Promote extends Command {
 
     try {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
-    } catch (err) {
-      cli.error(err)
+    } catch (error) {
+      cli.error(error)
     }
 
     const appsByID = keyBy(allApps, 'id')
