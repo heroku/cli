@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
+
+
+### Features
+
+* **pg-v5:** add burst checks, json output to diagnose ([c9c6f97](https://github.com/heroku/cli/commit/c9c6f979680bf79ea5dd1bf3cdfdde41b6da702b))
+
+
+
+
+
 # [7.48.0](https://github.com/heroku/cli/compare/v7.47.13...v7.48.0) (2021-02-22)
 
 
