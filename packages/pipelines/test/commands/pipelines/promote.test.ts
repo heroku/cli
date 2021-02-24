@@ -1,7 +1,6 @@
 import {expect, test} from '@oclif/test'
 import * as PromoteCmd from '../../../src/commands/pipelines/promote'
 
-
 describe('pipelines:promote', () => {
   const apiUrl = 'https://api.heroku.com'
 
@@ -201,8 +200,8 @@ describe('pipelines:promote', () => {
     }
 
     mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
-    .stdout({print: true})
-    .stderr({print: true})
+    .stdout()
+    .stderr()
     .command(['pipelines:promote', `--app=${sourceApp.name}`])
     .it('streams the release command output', ctx => {
       expect(ctx.stdout).to.contain('Running release command')
@@ -258,7 +257,7 @@ describe('pipelines:promote', () => {
     .command(['pipelines:promote', `--app=${sourceApp.name}`])
     .catch((error: any) => {
       expect(error.oclif.exit).to.equal(2)
-      expect(error.message).to.equal("stream release output not available")
+      expect(error.message).to.equal('stream release output not available')
     })
     .it('attempts stream and returns error')
   })
