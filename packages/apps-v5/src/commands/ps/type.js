@@ -39,11 +39,25 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     const shielded = appProps.space && appProps.space.shield
 
     formation = sortBy(formation, 'type')
-    if (shielded) {
-      formation.forEach((d) => {
+
+    let dynoTotals = [];
+
+    formation.forEach((d) => {
+
+      if (shielded) {
         d.size = d.size.replace('Private-', 'Shield-')
-      })
-    }
+      }
+      if(d.size in dynoTotals) {
+        dynoTotals[d.size] += d.quantity;
+      } else {
+        dynoTotals[d.size] = d.quantity;
+      }
+    });
+
+    dynoTotals = Object.keys(dynoTotals).map((k) => ({
+      type: cli.color.green(k), 
+      total: cli.color.yellow(dynoTotals[k])
+    }));
 
     formation = formation.map((d) => ({
       type: cli.color.green(d.type),
@@ -52,14 +66,25 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
       'cost/mo': costs[d.size] ? (costs[d.size] * d.quantity).toString() : ''
     }))
 
+
     if (formation.length === 0) throw emptyFormationErr()
 
+    cli.styledHeader('Dyno Types');
     cli.table(formation, {
       columns: [
         { key: 'type' },
         { key: 'size' },
         { key: 'qty' },
         { key: 'cost/mo' }
+      ]
+    })
+
+    cli.styledHeader('Dyno Totals');
+
+    cli.table(dynoTotals, {
+      columns: [
+        { key: 'type' },
+        { key: 'total' }
       ]
     })
   }
