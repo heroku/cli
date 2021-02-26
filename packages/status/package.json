@@ -23,7 +23,7 @@
     "@oclif/config": "^1.12.10",
     "@oclif/errors": "^1.2.2",
     "cli-ux": "^4.9.3",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.17.0",
     "http-call": "^5.2.3"
   },
   "devDependencies": {
