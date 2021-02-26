@@ -65,7 +65,6 @@ module.exports = (context, heroku) => ({
     if (app === undefined) {
       app = context.app
     }
-    const wait = require('co-wait')
     const host = require('./host')()
     const pgbackups = module.exports(context, heroku)
 
@@ -118,7 +117,7 @@ ${backup.logs.slice(-5).map(l => l.message).join('\n')}
 Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))} for more details.`)
           }
         }
-        await wait(interval * 1000)
+        await new Promise((resolve) => setTimeout(resolve, interval * 1000))
       }
     }
 
