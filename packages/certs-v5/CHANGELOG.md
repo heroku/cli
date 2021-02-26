@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* **certs-v5:** remove co-wait ([411d7e8](https://github.com/heroku/cli/commit/411d7e8cb2791f5b236b796f5bd62f4c4d40b64a))
+
+
+
+
+
 # [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5

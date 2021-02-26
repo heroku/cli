@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* **pg-v5:** remove co-wait ([85ea0c2](https://github.com/heroku/cli/commit/85ea0c2c9113b0b53c87d6925b5fb3e8220a7f74))
+
+
+
+
+
 # [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
 
 
