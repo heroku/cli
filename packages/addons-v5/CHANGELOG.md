@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* **addons-v5:** remove co-wait ([360e8bb](https://github.com/heroku/cli/commit/360e8bb4cd6108659b42b0f02636384c0cd66e78))
+
+
+
+
+
 # [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
 
 **Note:** Version bump only for package @heroku-cli/plugin-addons-v5
