@@ -3,13 +3,12 @@
 const cli = require('heroku-cli-util')
 
 module.exports = async function (api, addon, interval) {
-  const wait = require('co-wait')
   const app = addon.app.name
   const addonName = addon.name
 
   await cli.action(`Creating ${cli.color.addon(addon.name)}`, async function () {
     while (addon.state === 'provisioning') {
-      await wait(interval * 1000)
+      await new Promise((resolve) => setTimeout(resolve, interval * 1000))
 
       addon = await api.request({
         method: 'GET',
