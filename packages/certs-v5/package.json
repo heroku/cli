@@ -15,7 +15,6 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "co-wait": "0.0.0",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
