@@ -51,7 +51,7 @@ let collaborators = [
 describe('apps:info', () => {
   beforeEach(() => cli.mockConsole())
 
-  it('shows app info', () => {
+  it('shows app info', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -60,9 +60,12 @@ describe('apps:info', () => {
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Auto Cert Mgmt:   true
@@ -78,12 +81,14 @@ Slug Size:        1000 B
 Space:            myspace
 Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows extended app info', () => {
+  it('shows extended app info', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -93,9 +98,12 @@ Web URL:          https://myapp.herokuapp.com
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ app: 'myapp', args: {}, flags: { extended: true } })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { extended: true } })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Auto Cert Mgmt:   true
@@ -117,12 +125,14 @@ Web URL:          https://myapp.herokuapp.com
 
 
 { foo: 'bar', id: 12345 }
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows empty extended app info when not defined', () => {
+  it('shows empty extended app info when not defined', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -132,9 +142,12 @@ Web URL:          https://myapp.herokuapp.com
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ app: 'myapp', args: {}, flags: { extended: true } })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { extended: true } })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Auto Cert Mgmt:   true
@@ -155,11 +168,13 @@ Web URL:          https://myapp.herokuapp.com
 --- Extended Information ---
 
 
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
-  it('shows app info via arg', () => {
+  it('shows app info via arg', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -169,9 +184,12 @@ Web URL:          https://myapp.herokuapp.com
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
     let context = { args: { app: 'myapp' }, flags: {} }
-    return cmd.run(context)
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run(context)
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Auto Cert Mgmt:   true
@@ -187,13 +205,15 @@ Slug Size:        1000 B
 Space:            myspace
 Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
-      .then(() => expect(context.app).to.equal('myapp'))
+`);
+
+    appApi.done();
+    api.done();
+
+    return expect(context.app).to.equal('myapp')
   })
 
-  it('shows app info via arg when the app is in a pipeline', () => {
+  it('shows app info via arg when the app is in a pipeline', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -204,9 +224,12 @@ Web URL:          https://myapp.herokuapp.com
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
     let context = { args: { app: 'myapp' }, flags: {} }
-    return cmd.run(context)
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run(context)
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Auto Cert Mgmt:   true
@@ -223,13 +246,15 @@ Slug Size:        1000 B
 Space:            myspace
 Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
-      .then(() => expect(context.app).to.equal('myapp'))
+`);
+
+    appApi.done();
+    api.done();
+
+    return expect(context.app).to.equal('myapp')
   })
 
-  it('shows app info in shell format', () => {
+  it('shows app info in shell format', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -238,9 +263,12 @@ Web URL:          https://myapp.herokuapp.com
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ args: { app: 'myapp' }, flags: { shell: true } })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`auto_cert_mgmt=true
+
+    await cmd.run({ args: { app: 'myapp' }, flags: { shell: true } })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
 database_size=1000 B
@@ -252,12 +280,14 @@ owner=foo@foo.com
 region=eu
 dynos={ web: 1 }
 stack=cedar-14
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows app info in shell format when the app is in pipeline', () => {
+  it('shows app info in shell format when the app is in pipeline', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -267,9 +297,12 @@ stack=cedar-14
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ args: { app: 'myapp' }, flags: { shell: true } })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`auto_cert_mgmt=true
+
+    await cmd.run({ args: { app: 'myapp' }, flags: { shell: true } })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
 database_size=1000 B
@@ -282,12 +315,14 @@ owner=foo@foo.com
 region=eu
 dynos={ web: 1 }
 stack=cedar-14
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows extended app info in json format', () => {
+  it('shows extended app info in json format', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -297,18 +332,19 @@ stack=cedar-14
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ args: { app: 'myapp' }, flags: { json: true, extended: true } })
-      .then(() => {
-        let json = JSON.parse(cli.stdout)
-        expect(json.appExtended).to.equal(undefined)
-        expect(json.app.extended).not.to.equal(undefined)
-        expect(json.app.extended.id).to.equal(appExtended.extended.id)
-      })
-      .then(() => appApi.done())
-      .then(() => api.done())
+
+    await cmd.run({ args: { app: 'myapp' }, flags: { json: true, extended: true } })
+
+    expect(json.app.extended.id).to.equal(appExtended.extended.id)
+    expect(json.app.extended).not.to.equal(undefined)
+    expect(json.appExtended).to.equal(undefined)
+    let json = JSON.parse(cli.stdout)
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows app info in json format', () => {
+  it('shows app info in json format', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appAcm)
@@ -318,21 +354,22 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
       .get('/apps/myapp/pipeline-couplings').reply(200, { app: { id: appAcm.id }, pipeline: { name: 'my-pipeline' } })
-    return cmd.run({ args: { app: 'myapp' }, flags: { json: true } })
-      .then(() => {
-        let json = JSON.parse(cli.stdout)
-        expect(json.appExtended).to.equal(undefined)
-        expect(json.app.extended).to.equal(undefined)
-        expect(json.addons.length).to.equal(addons.length)
-        expect(json.collaborators.length).to.equal(collaborators.length)
-        expect(json.dynos[0].type).to.equal('web')
-        expect(json.pipeline_coupling.pipeline.name).to.equal('my-pipeline')
-      })
-      .then(() => appApi.done())
-      .then(() => api.done())
+
+    await cmd.run({ args: { app: 'myapp' }, flags: { json: true } })
+
+    expect(json.pipeline_coupling.pipeline.name).to.equal('my-pipeline')
+    expect(json.dynos[0].type).to.equal('web')
+    expect(json.collaborators.length).to.equal(collaborators.length)
+    expect(json.addons.length).to.equal(addons.length)
+    expect(json.app.extended).to.equal(undefined)
+    expect(json.appExtended).to.equal(undefined)
+    let json = JSON.parse(cli.stdout)
+    appApi.done();
+
+    return api.done()
   })
 
-  it('shows app info with a stack change', () => {
+  it('shows app info with a stack change', async () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }).get('/apps/myapp').reply(200, appStackChange)
@@ -341,9 +378,12 @@ stack=cedar-14
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`=== myapp
+
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+
+    expect(cli.stderr).to.equal('');
+
+    expect(cli.stdout).to.equal(`=== myapp
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
@@ -358,8 +398,10 @@ Slug Size:        1000 B
 Space:            myspace
 Stack:            cedar-14 (next build will use heroku-20)
 Web URL:          https://myapp.herokuapp.com
-`))
-      .then(() => appApi.done())
-      .then(() => api.done())
+`);
+
+    appApi.done();
+
+    return api.done()
   })
 })

@@ -8,7 +8,7 @@ let cli = require('heroku-cli-util')
 describe('trusted-ips:remove', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('removes a CIDR entry from the trusted IP ranges', function () {
+  it('removes a CIDR entry from the trusted IP ranges', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
@@ -26,7 +26,7 @@ describe('trusted-ips:remove', function () {
         ]
       })
       .reply(200, { rules: [] })
-    return cmd.run({ args: { source: '128.0.0.1/20' }, flags: { space: 'my-space' } })
-      .then(() => api.done())
+    await cmd.run({ args: { source: '128.0.0.1/20' }, flags: { space: 'my-space' } })
+    return api.done()
   })
 })

@@ -9,16 +9,18 @@ const cmd = commands.find((c) => c.topic === 'apps' && c.command === 'favorites:
 describe('apps:favorites:add', () => {
   beforeEach(() => cli.mockConsole())
 
-  it('adds the app as a favorite', () => {
+  it('adds the app as a favorite', async () => {
     let api = nock('https://particleboard.heroku.com')
       .get('/favorites?type=app')
       .reply(200, [])
       .post('/favorites', { type: 'app', resource_id: 'myapp' })
       .reply(201)
 
-    return cmd.run({ app: 'myapp' })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Adding myapp to favorites... done\n'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp' })
+
+    expect(cli.stdout).to.equal('');
+    expect(cli.stderr).to.equal('Adding myapp to favorites... done\n');
+
+    return api.done()
   })
 })

@@ -36,9 +36,9 @@ describe('pg:maintenance', () => {
     pg.done()
   })
 
-  it('shows maintenance', () => {
+  it('shows maintenance', async () => {
     pg.get('/client/v11/databases/1/maintenance').reply(200, { message: 'foo' })
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout).to.equal('foo\n'))
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+    return expect(cli.stdout).to.equal('foo\n')
   })
 })

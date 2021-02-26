@@ -80,7 +80,7 @@ describe('pg:diagnose', () => {
   })
 
   describe('when not passing arguments', () => {
-    it('generates a report', () => {
+    it('generates a report', async () => {
       api.get(`/addons/${addon.name}`).reply(200, db)
       api.get(`/apps/${app.name}/config-vars`).reply(200, {
         DATABASE_ENDPOINT_042EExxx_URL: dbURL,
@@ -116,8 +116,9 @@ describe('pg:diagnose', () => {
           metrics: [],
         })
         .reply(200, report)
-      return cmd.run({ app: app.name, args: {}, flags: {} }).then(() =>
-        expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
+      await cmd.run({ app: app.name, args: {}, flags: {} })
+
+      return expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -126,8 +127,7 @@ Count
 1
 RED: Load
 Load 100
-`),
-      )
+`)
     })
   })
 
@@ -174,7 +174,7 @@ Load 100
     })
 
     context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', () => {
-      it('generates a report for that DB', () => {
+      it('generates a report for that DB', async () => {
         api.get(`/addons/${addon.name}`).reply(200, db)
         api.get(`/apps/${app.name}/config-vars`).reply(200, {
           DATABASE_ENDPOINT_042EExxx_URL: dbURL,
@@ -210,10 +210,11 @@ Load 100
             metrics: [],
           })
           .reply(200, report)
-        return cmd
+
+        await cmd
           .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': 'HEROKU_POSTGRESQL_SILVER_URL' }, flags: {} })
-          .then(() =>
-            expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
+
+        return expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -222,12 +223,11 @@ Count
 1
 RED: Load
 Load 100
-`),
-          )
+`)
       })
 
       context('with the --json flag set', () => {
-        it('outputs in styled JSON', () => {
+        it('outputs in styled JSON', async () => {
           api.get(`/addons/${addon.name}`).reply(200, db)
           api.get(`/apps/${app.name}/config-vars`).reply(200, {
             DATABASE_URL: dbURL,
@@ -263,18 +263,19 @@ Load 100
             })
             .reply(200, report)
 
-          return cmd
+          await cmd
             .run({
               app: 'myapp',
               args: { 'DATABASE|REPORT_ID': 'DATABASE_URL' },
               flags: { json: true },
             })
-            .then(() => expect(cli.stdout).to.equal(JSON.stringify(report, null, 2)+'\n'))
+
+          return expect(cli.stdout).to.equal(JSON.stringify(report, null, 2)+'\n')
         })
       })
     })
 
-    it('displays an existing report with empty results', () => {
+    it('displays an existing report with empty results', async () => {
       diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
         id: '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c',
         app: 'myapp',
@@ -293,19 +294,19 @@ Load 100
           },
         ],
       })
-      return cmd
+
+      await cmd
         .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+
+      return expect(cli.stdout).to.equal(`Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
 RED: Load
-`),
-        )
+`)
     })
 
-    it('roughly conforms with Ruby output', () => {
+    it('roughly conforms with Ruby output', async () => {
       diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
         id: 'abc123',
         app: 'appname',
@@ -328,10 +329,11 @@ RED: Load
           },
         ],
       })
-      return cmd
+
+      await cmd
         .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
+
+      return expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 RED: Connection Count
@@ -346,11 +348,10 @@ two
 GREEN: Hit Rate
 SKIPPED: Load
 Error Load check not supported on this plan
-`),
-        )
+`)
     })
 
-    it('converts underscores to spaces', () => {
+    it('converts underscores to spaces', async () => {
       diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
         id: 'abc123',
         app: 'appname',
@@ -366,16 +367,16 @@ Error Load check not supported on this plan
           },
         ],
       })
-      return cmd
+
+      await cmd
         .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
+
+      return expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 SKIPPED: Load
 Error Thing Load check not supported on this plan
-`),
-        )
+`)
     })
   })
 })

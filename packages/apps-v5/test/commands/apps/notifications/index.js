@@ -13,52 +13,64 @@ describe('notifications', () => {
 
   describe('no notifications', () => {
     describe('with app', () => {
-      it('warns about no read notifications', () => {
+      it('warns about no read notifications', async () => {
         let heroku = nock('https://api.heroku.com:443')
           .get('/apps/myapp').reply(200, { id: 'myapp', name: 'myapp' })
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications')
           .reply(200, [])
-        return cmd.run({ app: 'myapp', flags: { read: true } })
-          .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(unwrap(cli.stderr)).to.equal('You have no notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n'))
-          .then(() => heroku.done())
-          .then(() => telex.done())
+
+        await cmd.run({ app: 'myapp', flags: { read: true } })
+
+        expect(cli.stdout).to.equal('');
+        expect(unwrap(cli.stderr)).to.equal('You have no notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n');
+        heroku.done();
+
+        return telex.done()
       })
 
-      it('warns about no unread notifications', () => {
+      it('warns about no unread notifications', async () => {
         let heroku = nock('https://api.heroku.com:443')
           .get('/apps/myapp').reply(200, { id: 'myapp', name: 'myapp' })
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications')
           .reply(200, [])
-        return cmd.run({ app: 'myapp', flags: { read: false } })
-          .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(unwrap(cli.stderr)).to.equal('No unread notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n'))
-          .then(() => heroku.done())
-          .then(() => telex.done())
+
+        await cmd.run({ app: 'myapp', flags: { read: false } })
+
+        expect(cli.stdout).to.equal('');
+        expect(unwrap(cli.stderr)).to.equal('No unread notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n');
+        heroku.done();
+
+        return telex.done()
       })
     })
 
     describe('no app', () => {
-      it('warns about no read notifications', () => {
+      it('warns about no read notifications', async () => {
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications')
           .reply(200, [])
-        return cmd.run({ flags: { read: true } })
-          .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(unwrap(cli.stderr)).to.equal('You have no notifications.\n'))
-          .then(() => telex.done())
+
+        await cmd.run({ flags: { read: true } })
+
+        expect(cli.stdout).to.equal('');
+        expect(unwrap(cli.stderr)).to.equal('You have no notifications.\n');
+
+        return telex.done()
       })
 
-      it('warns about no unread notifications', () => {
+      it('warns about no unread notifications', async () => {
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications')
           .reply(200, [])
-        return cmd.run({ flags: { read: false } })
-          .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(unwrap(cli.stderr)).to.equal('No unread notifications. Run heroku notifications --read to view read notifications.\n'))
-          .then(() => telex.done())
+
+        await cmd.run({ flags: { read: false } })
+
+        expect(cli.stdout).to.equal('');
+        expect(unwrap(cli.stderr)).to.equal('No unread notifications. Run heroku notifications --read to view read notifications.\n');
+
+        return telex.done()
       })
     })
   })
@@ -90,15 +102,17 @@ describe('notifications', () => {
       }
     ]
 
-    it('shows all read app notifications', () => {
+    it('shows all read app notifications', async () => {
       let heroku = nock('https://api.heroku.com:443')
         .get('/apps/myapp')
         .reply(200, { id: 'myapp', name: 'myapp' })
       let telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, notifications)
-      return cmd.run({ app: 'myapp', flags: { read: true, json: false } })
-        .then(() => expect(cli.stdout).to.equal(`=== Read Notifications for myapp
+
+      await cmd.run({ app: 'myapp', flags: { read: true, json: false } })
+
+      expect(cli.stdout).to.equal(`=== Read Notifications for myapp
 
 title
 
@@ -113,20 +127,24 @@ title2
   msg
   ${time.ago(d)}
   followup
-`))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => heroku.done())
-        .then(() => telex.done())
+`);
+
+      expect(cli.stderr).to.equal('');
+      heroku.done();
+
+      return telex.done()
     })
 
-    it('shows all unread notifications', () => {
+    it('shows all unread notifications', async () => {
       let telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, notifications)
         .patch('/user/notifications/101', { read: true })
         .reply(200)
-      return cmd.run({ flags: { json: false } })
-        .then(() => expect(cli.stdout).to.equal(`=== Unread Notifications
+
+      await cmd.run({ flags: { json: false } })
+
+      expect(cli.stdout).to.equal(`=== Unread Notifications
 
 title
 
@@ -134,19 +152,24 @@ title
   msg
   ${time.ago(d)}
   followup
-`))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => telex.done())
+`);
+
+      expect(cli.stderr).to.equal('');
+
+      return telex.done()
     })
 
-    it('shows all read notifications as json', () => {
+    it('shows all read notifications as json', async () => {
       let telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, notifications)
-      return cmd.run({ flags: { read: true, json: true } })
-        .then(() => expect(JSON.parse(cli.stdout)[0].id).to.equal(101))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => telex.done())
+
+      await cmd.run({ flags: { read: true, json: true } })
+
+      expect(JSON.parse(cli.stdout)[0].id).to.equal(101);
+      expect(cli.stderr).to.equal('');
+
+      return telex.done()
     })
   })
 })

@@ -44,7 +44,7 @@ describe('pg:credentials:destroy', () => {
     api.done()
   })
 
-  it('destroys the credential', () => {
+  it('destroys the credential', async () => {
     pg.delete('/postgres/v0/databases/postgres-1/credentials/credname').reply(200)
     let attachments = [
       {
@@ -54,11 +54,14 @@ describe('pg:credentials:destroy', () => {
       }
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'credname', confirm: 'myapp' } })
-      .then(() => expect(cli.stderr).to.equal('Destroying credential credname... done\n'))
-      .then(() => expect(cli.stdout).to.equal(`The credential has been destroyed within postgres-1.
+
+    await cmd.run({ app: 'myapp', args: {}, flags: { name: 'credname', confirm: 'myapp' } })
+
+    expect(cli.stderr).to.equal('Destroying credential credname... done\n');
+
+    return expect(cli.stdout).to.equal(`The credential has been destroyed within postgres-1.
 Database objects owned by credname will be assigned to the default credential.
-`))
+`)
   })
 
   it('throws an error when the db is starter plan', () => {

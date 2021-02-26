@@ -17,27 +17,31 @@ describe('container login', () => {
   })
   afterEach(() => sandbox.restore())
 
-  it('logs to the docker registry', () => {
+  it('logs to the docker registry', async () => {
     let version = sandbox.stub(Sanbashi, 'version').returns([19, 12])
     let login = sandbox.stub(Sanbashi, 'cmd')
       .withArgs('docker', ['login', '--username=_', '--password-stdin', 'registry.heroku.com'], { input: 'heroku_token' })
 
-    return cmd.run({ flags: {} })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(version))
-      .then(() => sandbox.assert.calledOnce(login))
+    await cmd.run({ flags: {} })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr, 'to be empty');
+    sandbox.assert.calledOnce(version);
+
+    return sandbox.assert.calledOnce(login)
   })
 
-  it('logs to the docker registry with an old version', () => {
+  it('logs to the docker registry with an old version', async () => {
     let version = sandbox.stub(Sanbashi, 'version').returns([17, 0])
     let login = sandbox.stub(Sanbashi, 'cmd')
       .withArgs('docker', ['login', '--username=_', '--password=heroku_token', 'registry.heroku.com'])
 
-    return cmd.run({ flags: {}, auth: { password: 'token' } })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(version))
-      .then(() => sandbox.assert.calledOnce(login))
+    await cmd.run({ flags: {}, auth: { password: 'token' } })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr, 'to be empty');
+    sandbox.assert.calledOnce(version);
+
+    return sandbox.assert.calledOnce(login)
   })
 })

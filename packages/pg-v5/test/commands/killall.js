@@ -31,12 +31,14 @@ describe('pg:killall', () => {
     nock.cleanAll()
   })
 
-  it('waits for all databases to be available', () => {
+  it('waits for all databases to be available', async () => {
     pg
       .post('/client/v11/databases/1/connection_reset').reply(200)
 
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Terminating connections for all credentials... done\n'))
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr).to.equal('Terminating connections for all credentials... done\n')
   })
 })

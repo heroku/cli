@@ -34,21 +34,27 @@ describe('psql', () => {
     cli.mockConsole()
   })
 
-  it('runs psql', () => {
+  it('runs psql', async () => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'exec').returns(Promise.resolve(''))
-    return cmd.run({ args: {}, flags: { command: 'SELECT 1' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('--> Connecting to postgres-1\n'))
-      .then(() => psql.exec.restore())
+
+    await cmd.run({ args: {}, flags: { command: 'SELECT 1' } })
+
+    expect(cli.stdout).to.equal('');
+    expect(cli.stderr).to.equal('--> Connecting to postgres-1\n');
+
+    return psql.exec.restore()
   })
 
-  it('runs psql with file', () => {
+  it('runs psql with file', async () => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
-    return cmd.run({ args: {}, flags: { file: 'test.sql' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('--> Connecting to postgres-1\n'))
-      .then(() => psql.execFile.restore())
+
+    await cmd.run({ args: {}, flags: { file: 'test.sql' } })
+
+    expect(cli.stdout).to.equal('');
+    expect(cli.stderr).to.equal('--> Connecting to postgres-1\n');
+
+    return psql.execFile.restore()
   })
 })

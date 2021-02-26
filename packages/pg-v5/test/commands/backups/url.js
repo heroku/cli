@@ -28,16 +28,16 @@ const shouldUrl = function (cmdRun) {
         { succeeded: true, to_type: 'gof3r', num: 3 }
       ])
     })
-    it('shows URL', () => {
-      return cmdRun({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
+    it('shows URL', async () => {
+      await cmdRun({ app: 'myapp', args: {} })
+      return expect(cli.stdout).to.equal('https://dburl\n')
     })
   })
 
   context('with id', () => {
-    it('shows URL', () => {
-      return cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
-        .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
+    it('shows URL', async () => {
+      await cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
+      return expect(cli.stdout).to.equal('https://dburl\n')
     })
   })
 }

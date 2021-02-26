@@ -19,7 +19,7 @@ describe('git:remote', function () {
       .to.be.rejectedWith(Error, 'Specify an app with --app')
   })
 
-  it('replaces an http-git remote', function () {
+  it('replaces an http-git remote', async function() {
     let git = require('../mock/git')
     let mock = sinon.mock(git)
     mock.expects('exec').withExactArgs(['remote']).once().returns(Promise.resolve('heroku'))
@@ -29,16 +29,15 @@ describe('git:remote', function () {
       .get('/apps/myapp')
       .reply(200, { name: 'myapp' })
 
-    return remote.run({ flags: { app: 'myapp' }, args: [] })
-      .then(() => expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
-      .then(() => {
-        mock.verify()
-        mock.restore()
-        api.done()
-      })
+    await remote.run({ flags: { app: 'myapp' }, args: [] })
+    expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
+
+    mock.verify()
+    mock.restore()
+    api.done()
   })
 
-  it('adds an http-git remote', function () {
+  it('adds an http-git remote', async function() {
     let git = require('../mock/git')
     let mock = sinon.mock(git)
     mock.expects('exec').withExactArgs(['remote']).once().returns(Promise.resolve(''))
@@ -48,12 +47,11 @@ describe('git:remote', function () {
       .get('/apps/myapp')
       .reply(200, { name: 'myapp' })
 
-    return remote.run({ flags: { app: 'myapp' }, args: [] })
-      .then(() => expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
-      .then(() => {
-        mock.verify()
-        mock.restore()
-        api.done()
-      })
+    await remote.run({ flags: { app: 'myapp' }, args: [] })
+    expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
+
+    mock.verify()
+    mock.restore()
+    api.done()
   })
 })

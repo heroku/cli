@@ -21,61 +21,73 @@ describe('spaces', function () {
     expect(cmd).to.have.own.property('wantsOrg', true)
   })
 
-  it('shows spaces', function () {
+  it('shows spaces', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [
         { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now }
       ])
-    return cmd.run({ flags: {} })
-      .then(() => expect(cli.stdout).to.equal(
-        `Name      Team     Region     State    Created At
+
+    await cmd.run({ flags: {} })
+
+    expect(cli.stdout).to.equal(
+      `Name      Team     Region     State    Created At
 ────────  ───────  ─────────  ───────  ────────────────────────
 my-space  my-team  my-region  enabled  ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows spaces with --json', function () {
+  it('shows spaces with --json', async function () {
     let spaces = [{ name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now.toISOString() }]
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, spaces)
-    return cmd.run({ flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(spaces))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(spaces)
+
+    return api.done()
   })
 
-  it('shows spaces scoped by teams', function () {
+  it('shows spaces scoped by teams', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [
         { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now },
         { name: 'other-space', team: { name: 'other-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now }
       ])
-    return cmd.run({ flags: { team: 'my-team' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `Name      Team     Region     State    Created At
+
+    await cmd.run({ flags: { team: 'my-team' } })
+
+    expect(cli.stdout).to.equal(
+      `Name      Team     Region     State    Created At
 ────────  ───────  ─────────  ───────  ────────────────────────
 my-space  my-team  my-region  enabled  ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('maps org option to team and shows spaces scoped by teams', function () {
+  it('maps org option to team and shows spaces scoped by teams', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [
         { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now },
         { name: 'other-space', team: { name: 'other-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now }
       ])
-    return cmd.run({ flags: { team: 'my-team' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `Name      Team     Region     State    Created At
+
+    await cmd.run({ flags: { team: 'my-team' } })
+
+    expect(cli.stdout).to.equal(
+      `Name      Team     Region     State    Created At
 ────────  ───────  ─────────  ───────  ────────────────────────
 my-space  my-team  my-region  enabled  ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
   it('shows spaces team error message', function () {

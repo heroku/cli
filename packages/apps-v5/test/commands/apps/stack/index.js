@@ -10,7 +10,7 @@ describe('stack', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('show available stacks', () => {
+  it('show available stacks', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp').reply(200, {
         name: 'myapp',
@@ -22,16 +22,20 @@ describe('stack', () => {
         { name: 'cedar' },
         { name: 'cedar-14' }
       ])
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Available Stacks
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Available Stacks
   cedar-10
 * cedar-14
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('show an undeployed build stack', () => {
+  it('show an undeployed build stack', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp').reply(200, {
         name: 'myapp',
@@ -43,12 +47,16 @@ describe('stack', () => {
         { name: 'cedar' },
         { name: 'cedar-14' }
       ])
-    return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== myapp Available Stacks
+
+    await cmd.run({ app: 'myapp', flags: {} })
+
+    expect(cli.stdout).to.equal(`=== myapp Available Stacks
   cedar-10 (active on next deploy)
 * cedar-14
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 })

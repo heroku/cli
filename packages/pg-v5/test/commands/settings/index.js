@@ -36,10 +36,10 @@ describe('pg:settings', () => {
     pg.done()
   })
 
-  it('shows settings', () => {
+  it('shows settings', async () => {
     pg.get('/postgres/v0/databases/1/config').reply(200,
       { log_statement: { value: 'none' } })
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout).to.equal('=== postgres-1\nlog-statement: none\n'))
+    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+    return expect(cli.stdout).to.equal('=== postgres-1\nlog-statement: none\n')
   })
 })

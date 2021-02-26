@@ -22,7 +22,7 @@ describe('heroku apps:transfer', () => {
       stubGet.apps()
     })
 
-    it('transfers selected apps to a team', () => {
+    it('transfers selected apps to a team', async () => {
       inquirer.prompt = (prompts) => {
         let choices = prompts[0].choices
         expect(choices).to.eql([
@@ -39,17 +39,15 @@ describe('heroku apps:transfer', () => {
       }
 
       let api = stubPatch.teamAppTransfer()
-      return cmd.run({ args: { recipient: 'team' }, flags: { bulk: true } })
-        .then(function () {
-          api.done()
-          expect(cli.stderr).to.equal(`Transferring applications to team...
+      await cmd.run({ args: { recipient: 'team' }, flags: { bulk: true } })
+      api.done()
+      expect(cli.stderr).to.equal(`Transferring applications to team...
 
 Transferring myapp... done
 `)
-        })
     })
 
-    it('transfers selected apps to a personal account', () => {
+    it('transfers selected apps to a personal account', async () => {
       inquirer.prompt = (prompts) => {
         let choices = prompts[0].choices
         expect(choices).to.eql([
@@ -66,14 +64,12 @@ Transferring myapp... done
       }
 
       let api = stubPost.personalToPersonal()
-      return cmd.run({ args: { recipient: 'raulb@heroku.com' }, flags: { bulk: true } })
-        .then(function () {
-          api.done()
-          expect(cli.stderr).to.equal(`Transferring applications to raulb@heroku.com...
+      await cmd.run({ args: { recipient: 'raulb@heroku.com' }, flags: { bulk: true } })
+      api.done()
+      expect(cli.stderr).to.equal(`Transferring applications to raulb@heroku.com...
 
 Initiating transfer of myapp... email sent
 `)
-        })
     })
   })
 
@@ -82,22 +78,30 @@ Initiating transfer of myapp... email sent
       stubGet.personalApp()
     })
 
-    it('transfers the app to a personal account', () => {
+    it('transfers the app to a personal account', async () => {
       let api = stubPost.personalToPersonal()
-      return cmd.run({ app: 'myapp', args: { recipient: 'raulb@heroku.com' }, flags: {} })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Initiating transfer of myapp to raulb@heroku.com... email sent
-`).to.eq(cli.stderr))
-        .then(() => api.done())
+
+      await cmd.run({ app: 'myapp', args: { recipient: 'raulb@heroku.com' }, flags: {} })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Initiating transfer of myapp to raulb@heroku.com... email sent
+`).to.eq(cli.stderr);
+
+      return api.done()
     })
 
-    it('transfers the app to a team', () => {
+    it('transfers the app to a team', async () => {
       let api = stubPatch.teamAppTransfer()
-      return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Transferring myapp to team... done
-`).to.eq(cli.stderr))
-        .then(() => api.done())
+
+      await cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Transferring myapp to team... done
+`).to.eq(cli.stderr);
+
+      return api.done()
     })
   })
 
@@ -106,25 +110,33 @@ Initiating transfer of myapp... email sent
       stubGet.teamApp()
     })
 
-    it('transfers the app to a personal account confirming app name', () => {
+    it('transfers the app to a personal account confirming app name', async () => {
       let api = stubPatch.teamAppTransfer()
-      return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { confirm: 'myapp' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Transferring myapp to team... done
-`).to.eq(cli.stderr))
-        .then(() => api.done())
+
+      await cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { confirm: 'myapp' } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Transferring myapp to team... done
+`).to.eq(cli.stderr);
+
+      return api.done()
     })
 
-    it('transfers the app to a team', () => {
+    it('transfers the app to a team', async () => {
       let api = stubPatch.teamAppTransfer()
-      return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Transferring myapp to team... done
-`).to.eq(cli.stderr))
-        .then(() => api.done())
+
+      await cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Transferring myapp to team... done
+`).to.eq(cli.stderr);
+
+      return api.done()
     })
 
-    it('transfers and locks the app if --locked is passed', () => {
+    it('transfers and locks the app if --locked is passed', async () => {
       let api = stubPatch.teamAppTransfer()
 
       let lockedAPI = nock('https://api.heroku.com:443')
@@ -133,13 +145,17 @@ Initiating transfer of myapp... email sent
         .patch('/teams/apps/myapp', { locked: true })
         .reply(200)
 
-      return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { locked: true } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Transferring myapp to team... done
+      await cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { locked: true } })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Transferring myapp to team... done
 Locking myapp... done
-`).to.eq(cli.stderr))
-        .then(() => api.done())
-        .then(() => lockedAPI.done())
+`).to.eq(cli.stderr);
+
+      api.done();
+
+      return lockedAPI.done()
     })
   })
 })

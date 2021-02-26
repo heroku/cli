@@ -55,32 +55,37 @@ let peers = [
 describe('spaces:peerings', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows space peering info', function () {
+  it('shows space peering info', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/peerings')
       .reply(200,
         peers
       )
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space Peerings
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space Peerings
 PCX ID             Type      CIDR Blocks               Status              VPC ID         AWS Region  AWS Account ID  Expires
 ─────────────────  ────────  ────────────────────────  ──────────────────  ─────────────  ──────────  ──────────────  ───────
 ******             heroku    10.1.0.0/16               active              ******         ******      ******
 pcx-123456789012   external  10.2.0.0/16, 10.3.0.0/16  active              vpc-12345678   us-east-1   012345678901
 pcx-0987654321098  unknown   10.4.0.0/16               pending-acceptance  vpc-87654321   us-west-1   012345678901
 pcx-abcdefg        unknown   10.5.0.0/16               failed              vpc-665544332  us-east-2   012345678901
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows peering:info --json', function () {
+  it('shows peering:info --json', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/peerings')
       .reply(200, peers)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(peers))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(peers)
+
+    return api.done()
   })
 })

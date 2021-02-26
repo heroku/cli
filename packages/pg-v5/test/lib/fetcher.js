@@ -34,17 +34,15 @@ describe('fetcher', () => {
   })
 
   describe('addon', () => {
-    it('returns addon attached to app', () => {
+    it('returns addon attached to app', async () => {
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve({ addon: { name: 'postgres-1' } }))
-      return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
-        .then(addon => {
-          expect(addon.name).to.equal('postgres-1')
-        })
+      const addon = await fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
+      expect(addon.name).to.equal('postgres-1')
     })
   })
 
   describe('database', () => {
-    it('returns db connection info', () => {
+    it('returns db connection info', async () => {
       let addonApp = { name: 'addon-app' }
       let app = { name: 'myapp' }
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve(
@@ -53,11 +51,11 @@ describe('fetcher', () => {
       api.get('/apps/myapp/config-vars').reply(200, {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
-      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-        .then(db => expect(db.user).to.equal('pguser'))
+      const db = await fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      return expect(db.user).to.equal('pguser')
     })
 
-    it('uses attachment db config', () => {
+    it('uses attachment db config', async () => {
       let addonApp = { name: 'addon-app' }
       let attachApp = { name: 'attach-myapp' }
       stub.withArgs(sinon.match.any, 'myapp', 'attach-myapp::DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve(
@@ -66,11 +64,11 @@ describe('fetcher', () => {
       api.get('/apps/attach-myapp/config-vars').reply(200, {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
-      return fetcher(new Heroku()).database('myapp', 'attach-myapp::DATABASE_URL')
-        .then(db => expect(db.user).to.equal('pguser'))
+      const db = await fetcher(new Heroku()).database('myapp', 'attach-myapp::DATABASE_URL')
+      return expect(db.user).to.equal('pguser')
     })
 
-    it('returns db connection info when multiple but no ambiguity', () => {
+    it('returns db connection info when multiple but no ambiguity', async () => {
       let addonApp = { name: 'addon-app' }
       let app = { name: 'myapp' }
       let err = Object.assign(new Error(), {
@@ -90,11 +88,11 @@ describe('fetcher', () => {
         'CRED_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
 
-      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-        .then(db => expect(db.user).to.equal('pguser'))
+      const db = await fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      return expect(db.user).to.equal('pguser')
     })
 
-    it('returns db connection for app::config info when multiple but no ambiguity', () => {
+    it('returns db connection for app::config info when multiple but no ambiguity', async () => {
       let addonApp = { name: 'addon-app' }
       let attachApp = { name: 'attach-app' }
       let err = Object.assign(new Error(), {
@@ -114,8 +112,8 @@ describe('fetcher', () => {
         'CRED_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
 
-      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-        .then(db => expect(db.user).to.equal('pguser'))
+      const db = await fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      return expect(db.user).to.equal('pguser')
     })
 
     it('errors when config var value ambiguity', () => {
@@ -174,7 +172,7 @@ describe('fetcher', () => {
     })
 
     describe('when not found and DATABASE_URL config var exists', () => {
-      it('returns when no db arg', () => {
+      it('returns when no db arg', async () => {
         const err = new Error()
         err.statusCode = 404
         err.body = { id: 'not_found' }
@@ -198,8 +196,9 @@ describe('fetcher', () => {
 
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
-        return fetcher(new Heroku()).database('myapp')
-          .then((db) => expect(db).to.deep.equal({
+        const db = await fetcher(new Heroku()).database('myapp')
+
+        return expect(db).to.deep.equal({
             user: 'pguser',
             password: 'pgpass',
             database: 'pgdb',
@@ -207,10 +206,10 @@ describe('fetcher', () => {
             port: null,
             attachment: attachments[0],
             url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-          }))
+          })
       })
 
-      it('returns when DATABASE_URL db arg', () => {
+      it('returns when DATABASE_URL db arg', async () => {
         const err = new Error()
         err.statusCode = 404
         err.body = { id: 'not_found' }
@@ -234,8 +233,9 @@ describe('fetcher', () => {
 
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
-        return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-          .then((db) => expect(db).to.deep.equal({
+        const db = await fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+
+        return expect(db).to.deep.equal({
             user: 'pguser',
             password: 'pgpass',
             database: 'pgdb',
@@ -243,10 +243,10 @@ describe('fetcher', () => {
             port: null,
             attachment: attachments[0],
             url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-          }))
+          })
       })
 
-      it('returns when attach-app::DATABASE_URL db arg', () => {
+      it('returns when attach-app::DATABASE_URL db arg', async () => {
         const err = new Error()
         err.statusCode = 404
         err.body = { id: 'not_found' }
@@ -270,8 +270,9 @@ describe('fetcher', () => {
 
         api.get('/apps/attach-app/addon-attachments').reply(200, attachments)
 
-        return fetcher(new Heroku()).database('myapp', 'attach-app::DATABASE_URL')
-          .then((db) => expect(db).to.deep.equal({
+        const db = await fetcher(new Heroku()).database('myapp', 'attach-app::DATABASE_URL')
+
+        return expect(db).to.deep.equal({
             user: 'pguser',
             password: 'pgpass',
             database: 'pgdb',
@@ -279,10 +280,10 @@ describe('fetcher', () => {
             port: null,
             attachment: attachments[0],
             url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-          }))
+          })
       })
 
-      it('returns when DATABASE db arg', () => {
+      it('returns when DATABASE db arg', async () => {
         const err = new Error()
         err.statusCode = 404
         err.body = { id: 'not_found' }
@@ -306,8 +307,9 @@ describe('fetcher', () => {
 
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
-        return fetcher(new Heroku()).database('myapp', 'DATABASE')
-          .then((db) => expect(db).to.deep.equal({
+        const db = await fetcher(new Heroku()).database('myapp', 'DATABASE')
+
+        return expect(db).to.deep.equal({
             user: 'pguser',
             password: 'pgpass',
             database: 'pgdb',
@@ -315,7 +317,7 @@ describe('fetcher', () => {
             port: null,
             attachment: attachments[0],
             url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-          }))
+          })
       })
 
       it('throws not found if not neither set', () => {
@@ -399,7 +401,7 @@ describe('fetcher', () => {
   })
 
   describe('all', () => {
-    it('returns all addons attached to app', () => {
+    it('returns all addons attached to app', async () => {
       let plan = { name: 'heroku-postgresql:hobby-dev' }
       let attachments = [
         { addon: { id: 100, name: 'postgres-1', plan }, name: 'DATABASE' },
@@ -408,13 +410,11 @@ describe('fetcher', () => {
       ]
       api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
-      return fetcher(new Heroku()).all('myapp')
-        .then(addons => {
-          expect(addons[0], 'to satisfy', { name: 'postgres-1' })
-          expect(addons[1], 'to satisfy', { name: 'postgres-2' })
-          expect(addons[0], 'to satisfy', { attachment_names: ['DATABASE', 'HEROKU_POSTGRESQL_PINK'] })
-          expect(addons.length).to.equal(2)
-        })
+      const addons = await fetcher(new Heroku()).all('myapp')
+      expect(addons[0], 'to satisfy', { name: 'postgres-1' })
+      expect(addons[1], 'to satisfy', { name: 'postgres-2' })
+      expect(addons[0], 'to satisfy', { attachment_names: ['DATABASE', 'HEROKU_POSTGRESQL_PINK'] })
+      expect(addons.length).to.equal(2)
     })
   })
 })

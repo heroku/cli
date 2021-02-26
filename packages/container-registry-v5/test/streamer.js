@@ -19,18 +19,20 @@ MockOut.prototype._write = function (d) {
 }
 
 describe('streaming', () => {
-  it('streams data', () => {
+  it('streams data', async () => {
     const ws = new MockOut()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .reply(200, 'My data')
 
-    return streamer('https://streamer.test/streams/data.log', ws)
-      .then(() => expect(ws.data.join('')).to.equal('My data'))
-      .then(() => api.done())
+    await streamer('https://streamer.test/streams/data.log', ws)
+
+    expect(ws.data.join('')).to.equal('My data');
+
+    return api.done()
   })
 
-  it('retries a missing stream', () => {
+  it('retries a missing stream', async () => {
     const ws = new MockOut()
     let attempts = 0
 
@@ -46,9 +48,11 @@ describe('streaming', () => {
         return [200, 'My retried data']
       })
 
-    return streamer('https://streamer.test/streams/data.log', ws)
-      .then(() => expect(ws.data.join('')).to.equal('My retried data'))
-      .then(() => api.done())
+    await streamer('https://streamer.test/streams/data.log', ws)
+
+    expect(ws.data.join('')).to.equal('My retried data');
+
+    return api.done()
   }).timeout(5 * 1000 * 1.2)
 
   it('errors on too many retries', async () => {

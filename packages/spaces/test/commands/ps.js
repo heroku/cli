@@ -42,15 +42,16 @@ const privateDynos = [
 describe('spaces:ps', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows space dynos', function () {
+  it('shows space dynos', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, spaceDynos)
     let apiSpace = nock('https://api.heroku.com:443')
       .get('/spaces/my-space').reply(200, { shield: false })
 
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== app_name1 web (Free): npm start (1)
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== app_name1 web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
 === app_name1 run: one-off processes (1)
@@ -62,52 +63,62 @@ web.1: up ${hourAgoStr} (~ 1h ago)
 === app_name2 run: one-off processes (1)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
-`))
-      .then(() => api.done())
-      .then(() => apiSpace.done())
+`)
+
+    api.done()
+
+    return apiSpace.done()
   })
 
-  it('shows shield space dynos', function () {
+  it('shows shield space dynos', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, privateDynos)
     let apiSpace = nock('https://api.heroku.com:443')
       .get('/spaces/my-space').reply(200, { shield: true })
 
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== app_name1 web (Shield-M): npm start (1)
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== app_name1 web (Shield-M): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
-`))
-      .then(() => api.done())
-      .then(() => apiSpace.done())
+`)
+
+    api.done()
+
+    return apiSpace.done()
   })
 
-  it('shows private space dynos', function () {
+  it('shows private space dynos', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, privateDynos)
     let apiSpace = nock('https://api.heroku.com:443')
       .get('/spaces/my-space').reply(200, { shield: false })
 
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== app_name1 web (Private-M): npm start (1)
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== app_name1 web (Private-M): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
-`))
-      .then(() => api.done())
-      .then(() => apiSpace.done())
+`)
+
+    api.done()
+
+    return apiSpace.done()
   })
 
-  it('shows space dynos with --json', function () {
+  it('shows space dynos with --json', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, spaceDynos)
     let apiSpace = nock('https://api.heroku.com:443')
       .get('/spaces/my-space').reply(200, { shield: false })
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(spaceDynos))
-      .then(() => api.done())
-      .then(() => apiSpace.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(spaceDynos)
+    api.done()
+
+    return apiSpace.done()
   })
 })

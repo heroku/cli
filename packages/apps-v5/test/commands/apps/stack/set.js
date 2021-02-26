@@ -29,40 +29,48 @@ const completedUpgradeApp = {
 describe('stack:set', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('sets the stack', function () {
+  it('sets the stack', async function() {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp', { build_stack: 'heroku-20' })
       .reply(200, pendingUpgradeApp)
 
-    return cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: {} })
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n'))
-      .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
+    await cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: {} })
+
+    expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n');
+
+    expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to create a new release on myapp.
-`))
-      .then(() => api.done())
+`);
+
+    return api.done()
   })
 
-  it('sets the stack on a different remote', function () {
+  it('sets the stack on a different remote', async function() {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp', { build_stack: 'heroku-20' })
       .reply(200, pendingUpgradeApp)
 
-    return cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: { remote: 'staging' } })
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n'))
-      .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
+    await cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: { remote: 'staging' } })
+
+    expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n');
+
+    expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
 Run git push staging main to create a new release on myapp.
-`))
-      .then(() => api.done())
+`);
+
+    return api.done()
   })
 
-  it('does not show the redeploy message if the stack was immediately updated by API', function () {
+  it('does not show the redeploy message if the stack was immediately updated by API', async function() {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp', { build_stack: 'heroku-20' })
       .reply(200, completedUpgradeApp)
 
-    return cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: {} })
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n'))
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: { stack: 'heroku-20' }, flags: {} })
+
+    expect(cli.stderr).to.equal('Setting stack to heroku-20... done\n');
+    expect(cli.stdout).to.equal('');
+
+    return api.done()
   })
 })

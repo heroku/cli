@@ -42,34 +42,37 @@ const shouldSchedule = function (cmdRun) {
     pg.done()
   })
 
-  it('schedules a backup', () => {
-    let dbA = { info: [
-      { name: 'Continuous Protection', values: ['On'] }
-    ] }
-    pg.get('/client/v11/databases/1').reply(200, dbA)
-    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT', confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr, 'to match', /Scheduling automatic daily backups of postgres-1 at 06:00 America\/New_York... done\n/))
-  })
-
-  it('warns user that logical backups are error prone if continuous proctecion is on', () => {
+  it('schedules a backup', async () => {
     let dbA = { info: [
       { name: 'Continuous Protection', values: ['On'] }
     ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
-    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
-      .then(() => expect(cli.stderr, 'to match', /backups of large databases are likely to fail/))
+    await cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT', confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+
+    return expect(cli.stderr, 'to match', /Scheduling automatic daily backups of postgres-1 at 06:00 America\/New_York... done\n/)
   })
 
-  it('does not warn user that logical backups are error prone if continuous proctecion is off', () => {
+  it('warns user that logical backups are error prone if continuous proctecion is on', async () => {
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['On'] }
+    ] }
+    pg.get('/client/v11/databases/1').reply(200, dbA)
+
+    await cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
+    return expect(cli.stderr, 'to match', /backups of large databases are likely to fail/)
+  })
+
+  it('does not warn user that logical backups are error prone if continuous proctecion is off', async () => {
     let dbA = { info: [
       { name: 'Continuous Protection', values: ['Off'] }
     ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
-    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
-      .then(() => expect(cli.stderr, 'not to match', /backups of large databases are likely to fail/))
+    await cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
+    return expect(cli.stderr, 'not to match', /backups of large databases are likely to fail/)
   })
 }
 

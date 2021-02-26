@@ -38,13 +38,13 @@ describe('pg:kill', () => {
     api.done()
   })
 
-  it('kills pid 100', () => {
-    return cmd.run({ app: 'myapp', args: { pid: 100 }, flags: {} })
-      .then(() => expect(psql._query.trim()).to.equal('SELECT pg_cancel_backend(100);'))
+  it('kills pid 100', async () => {
+    await cmd.run({ app: 'myapp', args: { pid: 100 }, flags: {} })
+    return expect(psql._query.trim()).to.equal('SELECT pg_cancel_backend(100);')
   })
 
-  it('force kills pid 100', () => {
-    return cmd.run({ app: 'myapp', args: { pid: 100 }, flags: { force: true } })
-      .then(() => expect(psql._query.trim()).to.equal('SELECT pg_terminate_backend(100);'))
+  it('force kills pid 100', async () => {
+    await cmd.run({ app: 'myapp', args: { pid: 100 }, flags: { force: true } })
+    return expect(psql._query.trim()).to.equal('SELECT pg_terminate_backend(100);')
   })
 })

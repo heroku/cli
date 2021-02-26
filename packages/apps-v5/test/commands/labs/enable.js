@@ -9,7 +9,7 @@ const cmd = require('../../../src/commands/labs/enable')
 describe('labs:enable', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('enables a user lab feature', function () {
+  it('enables a user lab feature', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, { email: 'jeff@heroku.com' })
@@ -22,8 +22,8 @@ describe('labs:enable', function () {
       })
       .patch('/account/features/feature-a', { enabled: true })
       .reply(200)
-    return cmd.run({ args: { feature: 'feature-a' } })
-      .then(() => api.done())
+    await cmd.run({ args: { feature: 'feature-a' } })
+    return api.done()
   })
 
   it('enables an app feature', async function () {
@@ -37,9 +37,12 @@ describe('labs:enable', function () {
         doc_url: 'https://devcenter.heroku.com'
       })
       .patch('/apps/myapp/features/feature-a', { enabled: true }).reply(200)
-    return cmd.run({ app: 'myapp', args: { feature: 'feature-a' } })
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr).to.equal('Enabling feature-a for myapp... done\n'))
-      .then(() => api.done())
+
+    await cmd.run({ app: 'myapp', args: { feature: 'feature-a' } })
+
+    expect(cli.stdout, 'to be empty');
+    expect(cli.stderr).to.equal('Enabling feature-a for myapp... done\n');
+
+    return api.done()
   })
 })

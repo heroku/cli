@@ -16,7 +16,7 @@ describe('spaces:create', function () {
     expect(cmd).to.have.own.property('wantsOrg', true)
   })
 
-  it('creates a Standard space', function () {
+  it('creates a Standard space', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
@@ -27,9 +27,11 @@ describe('spaces:create', function () {
       .reply(201,
         { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space
+
+    await cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two' } })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space
 Team:       my-team
 Region:     my-region
 CIDR:       10.0.0.0/16
@@ -37,11 +39,12 @@ Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     off
 Created at: ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows Standard Private Space Add-on cost warning', function () {
+  it('shows Standard Private Space Add-on cost warning', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
@@ -52,13 +55,16 @@ Created at: ${now.toISOString()}
       .reply(201,
         { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two' } })
-      .then(() => expect(cli.stderr).to.include(
-        `Each Heroku Standard Private Space costs $1000`))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two' } })
+
+    expect(cli.stderr).to.include(
+      `Each Heroku Standard Private Space costs $1000`)
+
+    return api.done()
   })
 
-  it('creates a Shield space', function () {
+  it('creates a Shield space', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
@@ -70,9 +76,11 @@ Created at: ${now.toISOString()}
       .reply(201,
         { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space
+
+    await cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space
 Team:       my-team
 Region:     my-region
 CIDR:       10.0.0.0/16
@@ -80,11 +88,12 @@ Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     on
 Created at: ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows Shield Private Space Add-on cost warning', function () {
+  it('shows Shield Private Space Add-on cost warning', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
@@ -96,13 +105,16 @@ Created at: ${now.toISOString()}
       .reply(201,
         { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
-      .then(() => expect(cli.stderr).to.include(
-        `Each Heroku Shield Private Space costs $3000`))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
+
+    expect(cli.stderr).to.include(
+      `Each Heroku Shield Private Space costs $3000`)
+
+    return api.done()
   })
 
-  it('creates a space with custom cidr and data cidr', function () {
+  it('creates a space with custom cidr and data cidr', async function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
@@ -115,9 +127,11 @@ Created at: ${now.toISOString()}
       .reply(201,
         { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '172.23.0.0/20' }, shield: true, log_drain_url: 'https://logs.cheetah.com', cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space
+
+    await cmd.run({ flags: { team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '172.23.0.0/20' }, shield: true, log_drain_url: 'https://logs.cheetah.com', cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space
 Team:       my-team
 Region:     my-region
 CIDR:       10.0.0.0/16
@@ -125,8 +139,9 @@ Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     off
 Created at: ${now.toISOString()}
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
   it('create fails without team name', function (done) {

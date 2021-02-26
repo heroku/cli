@@ -9,7 +9,7 @@ const { expect } = require('chai')
 describe('labs:info', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows user labs feature info', function () {
+  it('shows user labs feature info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account/features/feature-a')
       .reply(200, {
@@ -18,17 +18,21 @@ describe('labs:info', function () {
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({ args: { feature: 'feature-a' }, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== feature-a
+
+    await cmd.run({ args: { feature: 'feature-a' }, flags: {} })
+
+    expect(cli.stdout).to.equal(`=== feature-a
 Description: a user lab feature
 Docs:        https://devcenter.heroku.com
 Enabled:     true
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows user labs feature info as json', () => {
+  it('shows user labs feature info as json', async () => {
     let api = nock('https://api.heroku.com:443')
       .get('/account/features/feature-a')
       .reply(200, {
@@ -37,13 +41,16 @@ Enabled:     true
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({ args: { feature: 'feature-a' }, flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'feature-a' }))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+
+    await cmd.run({ args: { feature: 'feature-a' }, flags: { json: true } })
+
+    expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'feature-a' });
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 
-  it('shows app labs feature info', function () {
+  it('shows app labs feature info', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account/features/feature-a').reply(404)
       .get('/apps/myapp/features/feature-a')
@@ -53,13 +60,17 @@ Enabled:     true
         description: 'an app labs feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({ app: 'myapp', args: { feature: 'feature-a' }, flags: {} })
-      .then(() => expect(cli.stdout).to.equal(`=== feature-a
+
+    await cmd.run({ app: 'myapp', args: { feature: 'feature-a' }, flags: {} })
+
+    expect(cli.stdout).to.equal(`=== feature-a
 Description: an app labs feature
 Docs:        https://devcenter.heroku.com
 Enabled:     true
-`))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
+`);
+
+    expect(cli.stderr, 'to be empty');
+
+    return api.done()
   })
 })

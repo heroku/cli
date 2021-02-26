@@ -8,28 +8,34 @@ describe('heroku teams', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('shows Enterprise teams only when passing the --enterprise flag', () => {
+  it('shows Enterprise teams only when passing the --enterprise flag', async () => {
     let apiGetTeams = stubGet.teams()
 
-    return cmd.run({ flags: { enterprise: true } })
-      .then(() => expect(
+    await cmd.run({ flags: { enterprise: true } })
+
+    expect(
         `enterprise a  collaborator
-enterprise b  admin\n`).to.eq(cli.stdout))
-      .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetTeams.done())
+enterprise b  admin\n`).to.eq(cli.stdout);
+
+    expect('').to.eq(cli.stderr);
+
+    return apiGetTeams.done()
   })
 
-  it('shows teams', () => {
+  it('shows teams', async () => {
     let apiGetTeamsOnly = stubGet.teams([
       { name: 'enterprise a', role: 'collaborator', type: 'enterprise' },
       { name: 'enterprise b', role: 'admin', type: 'enterprise' }
     ])
 
-    return cmd.run({ flags: {} })
-      .then(() => expect(
+    await cmd.run({ flags: {} })
+
+    expect(
         `enterprise a  collaborator
-enterprise b  admin\n`).to.eq(cli.stdout))
-      .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetTeamsOnly.done())
+enterprise b  admin\n`).to.eq(cli.stdout);
+
+    expect('').to.eq(cli.stderr);
+
+    return apiGetTeamsOnly.done()
   })
 })

@@ -9,18 +9,21 @@ describe('heroku access', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
-    it('shows the app collaborators', () => {
+    it('shows the app collaborators', async () => {
       let apiGetPersonalApp = stubGet.personalApp()
       let apiGetAppCollaborators = stubGet.appCollaborators()
 
-      return cmd.run({ app: 'myapp', flags: {} })
-        .then(() => expect(
+      await cmd.run({ app: 'myapp', flags: {} })
+
+      expect(
           `jeff@heroku.com   collaborator
 raulb@heroku.com  owner
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetPersonalApp.done())
-        .then(() => apiGetAppCollaborators.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+      apiGetPersonalApp.done();
+
+      return apiGetAppCollaborators.done()
     })
   })
 
@@ -28,22 +31,25 @@ raulb@heroku.com  owner
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
-    it('shows the app collaborators and hides the team collaborator record', () => {
+    it('shows the app collaborators and hides the team collaborator record', async () => {
       let apiGetteamApp = stubGet.teamApp()
       let apiGetOrgMembers = stubGet.teamMembers()
       let apiGetAppPermissions = stubGet.appPermissions()
       let apiGetteamAppCollaboratorsWithPermissions = stubGet.teamAppCollaboratorsWithPermissions()
 
-      return cmd.run({ app: 'myapp', flags: {} })
-        .then(() => expect(
+      await cmd.run({ app: 'myapp', flags: {} })
+
+      expect(
           `bob@heroku.com    member  deploy,view
 raulb@heroku.com  admin   deploy,manage,operate,view
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetteamApp.done())
-        .then(() => apiGetOrgMembers.done())
-        .then(() => apiGetAppPermissions.done())
-        .then(() => apiGetteamAppCollaboratorsWithPermissions.done())
+`).to.eq(cli.stdout);
+
+      expect('').to.eq(cli.stderr);
+      apiGetteamApp.done();
+      apiGetOrgMembers.done();
+      apiGetAppPermissions.done();
+
+      return apiGetteamAppCollaboratorsWithPermissions.done()
     })
   })
 })

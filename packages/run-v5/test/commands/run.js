@@ -9,40 +9,52 @@ const assertExit = require('../assert_exit')
 describe('run', () => {
   beforeEach(() => cli.mockConsole())
 
-  it('runs a command', () => {
+  it('runs a command', async () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['echo', '1', '2', '3'] })
-      .then(() => fixture.release())
-      .then(() => expect(stdout).to.contain('1 2 3\n'))
+
+    await cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['echo', '1', '2', '3'] })
+
+    fixture.release();
+
+    return expect(stdout).to.contain('1 2 3\n')
   })
 
-  it('runs a command with spaces', () => {
+  it('runs a command with spaces', async () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} '] })
-      .then(() => fixture.release())
-      .then(() => expect(stdout).to.equal('{"foo": "bar"} \n'))
+
+    await cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} '] })
+
+    fixture.release();
+
+    return expect(stdout).to.equal('{"foo": "bar"} \n')
   })
 
-  it('runs a command with quotes', () => {
+  it('runs a command with quotes', async () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}'] })
-      .then(() => fixture.release())
-      .then(() => expect(stdout).to.equal('{"foo":"bar"}\n'))
+
+    await cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}'] })
+
+    fixture.release();
+
+    return expect(stdout).to.equal('{"foo":"bar"}\n')
   })
 
-  it('runs a command with env vars', () => {
+  it('runs a command with env vars', async () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: { env: 'FOO=bar' }, auth: { password: global.apikey }, args: ['env'] })
-      .then(() => fixture.release())
-      .then(() => expect(stdout).to.contain('FOO=bar'))
+
+    await cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: { env: 'FOO=bar' }, auth: { password: global.apikey }, args: ['env'] })
+
+    fixture.release();
+
+    return expect(stdout).to.contain('FOO=bar')
   })
 
   it('gets 127 status for invalid command', () => {

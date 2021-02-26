@@ -37,16 +37,17 @@ describe('pg:links', () => {
     pg.done()
   })
 
-  it('shows links', () => {
+  it('shows links', async () => {
     pg.get('/client/v11/databases/1/links').reply(200, [
       { name: 'redis-link-1', created_at: '100', remote: { attachment_name: 'REDIS', name: 'redis-001' } }
     ])
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(`=== postgres-1
+    await cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+
+    return expect(cli.stdout).to.equal(`=== postgres-1
 
  * redis-link-1
 created_at: 100
 remote:     REDIS (redis-001)
-`))
+`)
   })
 })

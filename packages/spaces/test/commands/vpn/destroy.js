@@ -9,13 +9,16 @@ const cli = require('heroku-cli-util')
 describe('spaces:vpn:destroy', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('destroys VPN Connection when name is specified', function () {
+  it('destroys VPN Connection when name is specified', async function () {
     let api = nock('https://api.heroku.com:443')
       .delete('/spaces/my-space/vpn-connections/my-vpn-connection')
       .reply(202)
-    return cmd.run({ args: { name: 'my-vpn-connection' }, flags: { space: 'my-space', confirm: 'my-vpn-connection' } })
-      .then(() => expect(cli.stderr).to.equal(
-        `Tearing down VPN Connection my-vpn-connection in space my-space... done\n`))
-      .then(() => api.done())
+
+    await cmd.run({ args: { name: 'my-vpn-connection' }, flags: { space: 'my-space', confirm: 'my-vpn-connection' } })
+
+    expect(cli.stderr).to.equal(
+      `Tearing down VPN Connection my-vpn-connection in space my-space... done\n`)
+
+    return api.done()
   })
 })

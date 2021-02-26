@@ -9,7 +9,7 @@ const cli = require('heroku-cli-util')
 describe('spaces:vpn:wait', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('waits for VPN to allocate and then shows space config', function () {
+  it('waits for VPN to allocate and then shows space config', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200)
@@ -101,20 +101,23 @@ describe('spaces:vpn:wait', function () {
         ]
       })
 
-    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
-      .then(() => expect(cli.stderr).to.equal(
-        `Waiting for VPN Connection vpn-connection-name-wait to allocate... done\n\n`))
-      .then(() => expect(cli.stdout).to.equal(
-        `=== vpn-connection-name-wait VPN Tunnels
+    await cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
+
+    expect(cli.stderr).to.equal(
+      `Waiting for VPN Connection vpn-connection-name-wait to allocate... done\n\n`)
+
+    expect(cli.stdout).to.equal(
+      `=== vpn-connection-name-wait VPN Tunnels
 VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets  IKE Version
 ──────────  ────────────────  ─────────────  ──────────────  ────────────────  ───────────
 Tunnel 1    52.44.146.197     52.44.146.196  apresharedkey1  10.0.0.0/16       1
 Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1\n`
-      ))
-      .then(() => api.done())
+    )
+
+    return api.done()
   })
 
-  it('returns an error if the VPN status is updated to failed', function () {
+  it('returns an error if the VPN status is updated to failed', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200)
@@ -177,14 +180,15 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
         ]
       })
 
-    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
+    await cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
       .catch(reason => {
         expect(reason.message).to.equal('supplied CIDR block already in use')
       })
-      .then(() => api.done())
+
+    return api.done()
   })
 
-  it('tells the user if the VPN has been allocated', function () {
+  it('tells the user if the VPN has been allocated', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-allocated')
       .reply(200, {
@@ -198,9 +202,11 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
         status_message: ''
       })
 
-    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-allocated', interval: 0 } })
-      .then(() => expect(cli.stdout).to.equal(
-        `VPN has been allocated.\n`))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-allocated', interval: 0 } })
+
+    expect(cli.stdout).to.equal(
+      `VPN has been allocated.\n`)
+
+    return api.done()
   })
 })

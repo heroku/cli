@@ -9,27 +9,32 @@ const cmd = commands.find(c => c.topic === 'apps' && c.command === 'destroy')
 describe('apps:destroy', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('deletes the app', function () {
+  it('deletes the app', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp').reply(200, { name: 'myapp' })
       .delete('/apps/myapp').reply(200)
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n'))
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+
+    expect(cli.stdout).to.equal('');
+    expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n');
+
+    return api.done()
   })
 
-  it('deletes the app via arg', function () {
+  it('deletes the app via arg', async function() {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp').reply(200, { name: 'myapp' })
       .delete('/apps/myapp').reply(200)
 
     let context = { args: { app: 'myapp' }, flags: { confirm: 'myapp' } }
-    return cmd.run(context)
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n'))
-      .then(() => api.done())
-      .then(() => expect(context.app).to.equal('myapp'))
+
+    await cmd.run(context)
+
+    expect(cli.stdout).to.equal('');
+    expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n');
+    api.done();
+
+    return expect(context.app).to.equal('myapp')
   })
 })

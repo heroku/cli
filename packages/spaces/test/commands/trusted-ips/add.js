@@ -8,7 +8,7 @@ let cli = require('heroku-cli-util')
 describe('trusted-ips:add', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('adds a CIDR entry to the trusted IP ranges', function () {
+  it('adds a CIDR entry to the trusted IP ranges', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
@@ -25,7 +25,7 @@ describe('trusted-ips:add', function () {
         ]
       })
       .reply(200, { rules: [] })
-    return cmd.run({ args: { source: '127.0.0.1/20' }, flags: { space: 'my-space' } })
-      .then(() => api.done())
+    await cmd.run({ args: { source: '127.0.0.1/20' }, flags: { space: 'my-space' } })
+    return api.done()
   })
 })

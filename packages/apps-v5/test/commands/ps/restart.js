@@ -11,11 +11,11 @@ describe('ps:restart', function () {
     nock.cleanAll()
   })
 
-  it('restarts all dynos', function () {
+  it('restarts all dynos', async function() {
     let api = nock('https://api.heroku.com')
       .delete('/apps/myapp/dynos').reply(200)
 
-    return cmd.run({ app: 'myapp', args: {} })
-      .then(() => api.done())
+    await cmd.run({ app: 'myapp', args: {} })
+    return api.done()
   })
 })

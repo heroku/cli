@@ -41,9 +41,10 @@ const shouldInfo = function (cmdRun) {
       })
     })
 
-    it('shows the backup', () => {
-      return cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
-        .then(() => expect(cli.stdout).to.equal(`=== Backup b003
+    it('shows the backup', async () => {
+      await cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
+
+      return expect(cli.stdout).to.equal(`=== Backup b003
 Database:         RED
 Status:           Pending
 Type:             Manual
@@ -53,7 +54,7 @@ Backup Size:      97.66KB
 === Backup Logs
 100 foo
 
-`))
+`)
     })
   })
 
@@ -73,9 +74,10 @@ Backup Size:      97.66KB
       })
     })
 
-    it('shows the backup', () => {
-      return cmdRun({ app: 'myapp', args: { backup_id: 'ob001' } })
-        .then(() => expect(cli.stdout).to.equal(`=== Backup ob001
+    it('shows the backup', async () => {
+      await cmdRun({ app: 'myapp', args: { backup_id: 'ob001' } })
+
+      return expect(cli.stdout).to.equal(`=== Backup ob001
 Database:         RED
 Status:           Pending
 Type:             Manual
@@ -85,7 +87,7 @@ Backup Size:      97.66KB
 === Backup Logs
 100 foo
 
-`))
+`)
     })
   })
 
@@ -105,9 +107,10 @@ Backup Size:      97.66KB
       })
     })
 
-    it('shows the latest backup', () => {
-      return cmdRun({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout).to.equal(`=== Backup b003
+    it('shows the latest backup', async () => {
+      await cmdRun({ app: 'myapp', args: {} })
+
+      return expect(cli.stdout).to.equal(`=== Backup b003
 Database:         RED
 Finished at:      100
 Status:           Completed
@@ -118,7 +121,7 @@ Backup Size:      97.66KB (90% compression)
 === Backup Logs
 100 foo
 
-`))
+`)
     })
   })
 }

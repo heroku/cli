@@ -16,7 +16,7 @@ describe('heroku redis:promote', function () {
     nock.cleanAll()
   })
 
-  it('# promotes', function () {
+  it('# promotes', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         { name: 'redis-silver-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL'] },
@@ -31,14 +31,16 @@ describe('heroku redis:promote', function () {
         'name': 'REDIS'
       }).reply(200, {})
 
-    return command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => attach.done())
-      .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
+    await command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    attach.done();
+    expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n');
+
+    return expect(cli.stderr).to.equal('')
   })
 
-  it('# promotes and replaces attachment of existing REDIS_URL if necessary', function () {
+  it('# promotes and replaces attachment of existing REDIS_URL if necessary', async function() {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {
@@ -69,11 +71,13 @@ describe('heroku redis:promote', function () {
         'name': 'REDIS'
       }).reply(200, {})
 
-    return command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
-      .then(() => app.done())
-      .then(() => attachRedisUrl.done())
-      .then(() => attach.done())
-      .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
+    await command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
+
+    app.done();
+    attachRedisUrl.done();
+    attach.done();
+    expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n');
+
+    return expect(cli.stderr).to.equal('')
   })
 })

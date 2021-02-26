@@ -9,7 +9,7 @@ const cli = require('heroku-cli-util')
 describe('spaces:transfer', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('yields success when the API succeeds', function () {
+  it('yields success when the API succeeds', async function () {
     const space = 'dimension-c137'
     const team = 'jerry'
     const api = nock('https://api.heroku.com:443')
@@ -31,12 +31,15 @@ describe('spaces:transfer', function () {
           'updated_at': '2019-07-16T10:19:10Z'
         }
       )
-    return cmd.run({ flags: { team, space } })
-      .then(() => expect(cli.stderr).to.contain('done'))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { team, space } })
+
+    expect(cli.stderr).to.contain('done')
+
+    return api.done()
   })
 
-  it('yields the API error messages when the API fails', function () {
+  it('yields the API error messages when the API fails', async function () {
     const space = 'dimension-c137'
     const team = 'jerry'
     const message = 'rikki tikki tavi!'
@@ -46,8 +49,10 @@ describe('spaces:transfer', function () {
       .post(`/spaces/${space}/transfer`, { 'new_owner': team })
       .reply(500, { id, message })
 
-    return cmd.run({ flags: { team, space } })
-      .then(() => expect(cli.stderr).to.contain(message))
-      .then(() => api.done())
+    await cmd.run({ flags: { team, space } })
+
+    expect(cli.stderr).to.contain(message)
+
+    return api.done()
   })
 })

@@ -9,7 +9,7 @@ let cli = require('heroku-cli-util')
 describe('drains:set', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows the log drain', function () {
+  it('shows the log drain', async function () {
     let api = nock('https://api.heroku.com:443')
       .put('/spaces/my-space/log-drain', {
         url: 'https://example.com'
@@ -22,10 +22,14 @@ describe('drains:set', function () {
         updated_at: '2016-03-23T18:31:50Z',
         url: 'https://example.com'
       })
-    return cmd.run({ args: { url: 'https://example.com' }, flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `Successfully set drain https://example.com for my-space.
+
+    await cmd.run({ args: { url: 'https://example.com' }, flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `Successfully set drain https://example.com for my-space.
 `
-      )).then(() => api.done())
+    )
+
+    return api.done()
   })
 })

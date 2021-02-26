@@ -61,11 +61,13 @@ describe('pg:connection-polling:attach', () => {
       }).reply(201, { name: attachmentName })
     })
 
-    it('attaches pgbouncer with attachment name', () => {
-      return cmd.run({ app: 'myapp', args: { database: 'postgres-1' }, flags: { as: attachmentName } })
-        .then(() => expect(cli.stdout).to.equal(``))
-        .then(() => expect(cli.stderr).to.contain('Enabling Connection Pooling on'))
-        .then(() => expect(cli.stderr).to.contain(`Setting ${attachmentName} config vars and restarting myapp... done, v0\n`))
+    it('attaches pgbouncer with attachment name', async () => {
+      await cmd.run({ app: 'myapp', args: { database: 'postgres-1' }, flags: { as: attachmentName } })
+
+      expect(cli.stdout).to.equal(``);
+      expect(cli.stderr).to.contain('Enabling Connection Pooling on');
+
+      return expect(cli.stderr).to.contain(`Setting ${attachmentName} config vars and restarting myapp... done, v0\n`)
     })
   })
 
@@ -77,11 +79,13 @@ describe('pg:connection-polling:attach', () => {
       }).reply(201, { name: 'HEROKU_COLOR' })
     })
 
-    it('attaches pgbouncer with default credential', () => {
-      return cmd.run({ app: 'myapp', args: { database: 'postgres-1' }, flags: {} })
-        .then(() => expect(cli.stdout).to.equal(``))
-        .then(() => expect(cli.stderr).to.contain('Enabling Connection Pooling on'))
-        .then(() => expect(cli.stderr).to.contain('Setting HEROKU_COLOR config vars and restarting myapp... done, v0\n'))
+    it('attaches pgbouncer with default credential', async () => {
+      await cmd.run({ app: 'myapp', args: { database: 'postgres-1' }, flags: {} })
+
+      expect(cli.stdout).to.equal(``);
+      expect(cli.stderr).to.contain('Enabling Connection Pooling on');
+
+      return expect(cli.stderr).to.contain('Setting HEROKU_COLOR config vars and restarting myapp... done, v0\n')
     })
   })
 })

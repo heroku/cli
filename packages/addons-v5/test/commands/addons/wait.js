@@ -37,15 +37,17 @@ describe('addons:wait', () => {
           .reply(200, [fixtures.addons['www-db']]) // provisioned
       })
 
-      it('prints output indicating that it is done', () => {
-        return cmd.run({ flags: {}, args: { addon: 'www-db' } })
-          .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(cli.stderr).to.equal(''))
+      it('prints output indicating that it is done', async () => {
+        await cmd.run({ flags: {}, args: { addon: 'www-db' } })
+
+        expect(cli.stdout).to.equal('');
+
+        return expect(cli.stderr).to.equal('')
       })
     })
 
     context('for an add-on that is still provisioning', () => {
-      it('waits until the add-on is provisioned, then shows config vars', () => {
+      it('waits until the add-on is provisioned, then shows config vars', async () => {
         // Call to resolve the add-on:
         let resolverResponse = nock('https://api.heroku.com')
           .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-redis' })
@@ -63,15 +65,17 @@ describe('addons:wait', () => {
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedAddon)
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
-          .then(() => resolverResponse.done())
-          .then(() => provisioningResponse.done())
-          .then(() => provisionedResponse.done())
-          .then(() => expect(cli.stderr).to.equal('Creating www-redis... done\n'))
-          .then(() => expect(cli.stdout).to.equal('Created www-redis as REDIS_URL\n'))
+        await cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+
+        resolverResponse.done();
+        provisioningResponse.done();
+        provisionedResponse.done();
+        expect(cli.stderr).to.equal('Creating www-redis... done\n');
+
+        return expect(cli.stdout).to.equal('Created www-redis as REDIS_URL\n')
       })
 
-      it('does NOT notify the user when provisioning takes less than 5 seconds', () => {
+      it('does NOT notify the user when provisioning takes less than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         // Call to resolve the add-on:
@@ -89,12 +93,14 @@ describe('addons:wait', () => {
             return provisionedAddon
           })
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
-          .then(() => expect(notifySpy.called).to.be.false)
-          .then(() => expect(notifySpy.calledOnce).to.be.false)
+        await cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+
+        expect(notifySpy.called).to.be.false;
+
+        return expect(notifySpy.calledOnce).to.be.false
       })
 
-      it('notifies the user when provisioning takes longer than 5 seconds', () => {
+      it('notifies the user when provisioning takes longer than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         // Call to resolve the add-on:
@@ -113,9 +119,11 @@ describe('addons:wait', () => {
             return provisionedAddon
           })
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
-          .then(() => expect(notifySpy.called).to.be.true)
-          .then(() => expect(notifySpy.calledOnce).to.be.true)
+        await cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+
+        expect(notifySpy.called).to.be.true;
+
+        return expect(notifySpy.calledOnce).to.be.true
       })
     })
 
@@ -147,7 +155,7 @@ describe('addons:wait', () => {
           })
       })
 
-      it('shows that it failed to provision', function () {
+      it('shows that it failed to provision', async function() {
         nock('https://api.heroku.com')
           .get('/addons/www-redis')
           .reply(200, fixtures.addons['www-redis']) // provisioning has started
@@ -158,16 +166,20 @@ describe('addons:wait', () => {
         nock('https://api.heroku.com', { reqheaders: expansionHeaders })
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
-        return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
-          .then(() => { throw new Error('unreachable') })
-          .catch((err) => expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned'))
+
+        try {
+          await cmd.run({ flags: {}, args: { addon: 'www-redis' } })
+          throw new Error('unreachable')
+        } catch (err) {
+          return expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        }
       })
     })
   })
 
   context('waiting for add-ons', () => {
     context('for an app', () => {
-      it('waits for addons serially', () => {
+      it('waits for addons serially', async () => {
         let ignoredAddon = _.clone(fixtures.addons['www-db'])
         ignoredAddon.state = 'provisioned'
 
@@ -205,19 +217,21 @@ describe('addons:wait', () => {
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, provisionedWwwAddon)
 
-        return cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: 'acme-inc-www' })
-          .then(() => resolverResponse.done())
-          .then(() => redisResponse.done())
-          .then(() => wwwResponse.done())
-          .then(() => provisionedRedisResponse.done())
-          .then(() => provisionedWwwResponse.done())
-          .then(() => expect(cli.stderr).to.equal('Creating www-db... done\nCreating www-redis... done\n'))
-          .then(() => expect(cli.stdout).to.equal('Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n'))
+        await cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: 'acme-inc-www' })
+
+        resolverResponse.done();
+        redisResponse.done();
+        wwwResponse.done();
+        provisionedRedisResponse.done();
+        provisionedWwwResponse.done();
+        expect(cli.stderr).to.equal('Creating www-db... done\nCreating www-redis... done\n');
+
+        return expect(cli.stdout).to.equal('Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n')
       })
     })
 
     context('for all', () => {
-      it('waits for addons serially', () => {
+      it('waits for addons serially', async () => {
         let ignoredAddon = _.clone(fixtures.addons['www-db'])
         ignoredAddon.state = 'provisioned'
 
@@ -255,14 +269,16 @@ describe('addons:wait', () => {
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, provisionedWwwAddon)
 
-        return cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: null })
-          .then(() => resolverResponse.done())
-          .then(() => redisResponse.done())
-          .then(() => wwwResponse.done())
-          .then(() => provisionedRedisResponse.done())
-          .then(() => provisionedWwwResponse.done())
-          .then(() => expect(cli.stderr).to.equal('Creating www-db... done\nCreating www-redis... done\n'))
-          .then(() => expect(cli.stdout).to.equal('Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n'))
+        await cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: null })
+
+        resolverResponse.done();
+        redisResponse.done();
+        wwwResponse.done();
+        provisionedRedisResponse.done();
+        provisionedWwwResponse.done();
+        expect(cli.stderr).to.equal('Creating www-db... done\nCreating www-redis... done\n');
+
+        return expect(cli.stdout).to.equal('Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n')
       })
     })
   })

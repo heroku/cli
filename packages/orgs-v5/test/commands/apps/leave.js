@@ -17,24 +17,32 @@ describe('heroku apps:leave', () => {
   afterEach(() => nock.cleanAll())
 
   context('when it is an org app', () => {
-    it('leaves the app', () => {
-      return cmd.run({ app: 'myapp' })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Leaving myapp... done
-`).to.eq(cli.stderr))
-        .then(() => apiGetUserAccount.done())
-        .then(() => apiDeletePersonalAppCollaborator.done())
+    it('leaves the app', async () => {
+      await cmd.run({ app: 'myapp' })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Leaving myapp... done
+`).to.eq(cli.stderr);
+
+      apiGetUserAccount.done();
+
+      return apiDeletePersonalAppCollaborator.done()
     })
   })
 
   context('when it is not an org app', () => {
-    it('leaves the app', () => {
-      return cmd.run({ app: 'myapp' })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Leaving myapp... done
-`).to.eq(cli.stderr))
-        .then(() => apiGetUserAccount.done())
-        .then(() => apiDeletePersonalAppCollaborator.done())
+    it('leaves the app', async () => {
+      await cmd.run({ app: 'myapp' })
+
+      expect('').to.eq(cli.stdout);
+
+      expect(`Leaving myapp... done
+`).to.eq(cli.stderr);
+
+      apiGetUserAccount.done();
+
+      return apiDeletePersonalAppCollaborator.done()
     })
   })
 })

@@ -11,7 +11,7 @@ let now = new Date()
 describe('trusted-ips', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('shows the trusted IP ranges', function () {
+  it('shows the trusted IP ranges', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
@@ -23,15 +23,18 @@ describe('trusted-ips', function () {
           { source: '127.0.0.1/20', action: 'allow' }
         ]
       })
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== Trusted IP Ranges
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== Trusted IP Ranges
 127.0.0.1/20
-`))
-      .then(() => api.done())
+`)
+
+    return api.done()
   })
 
-  it('shows the trusted IP ranges with blank rules', function () {
+  it('shows the trusted IP ranges with blank rules', async function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
@@ -41,14 +44,17 @@ describe('trusted-ips', function () {
         created_by: 'dickeyxxx',
         rules: []
       })
-    return cmd.run({ flags: { space: 'my-space' } })
-      .then(() => expect(cli.stdout).to.equal(
-        `=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.
-`))
-      .then(() => api.done())
+
+    await cmd.run({ flags: { space: 'my-space' } })
+
+    expect(cli.stdout).to.equal(
+      `=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.
+`)
+
+    return api.done()
   })
 
-  it('shows the trusted IP ranges --json', function () {
+  it('shows the trusted IP ranges --json', async function () {
     let ruleSet = {
       version: '1',
       default_action: 'allow',
@@ -63,8 +69,10 @@ describe('trusted-ips', function () {
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, ruleSet)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
-      .then(() => expect(JSON.parse(cli.stdout)).to.eql(ruleSet))
-      .then(() => api.done())
+    await cmd.run({ flags: { space: 'my-space', json: true } })
+
+    expect(JSON.parse(cli.stdout)).to.eql(ruleSet)
+
+    return api.done()
   })
 })
