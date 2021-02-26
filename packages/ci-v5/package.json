@@ -17,7 +17,6 @@
     "@heroku-cli/plugin-run-v5": "^7.49.0",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
-    "co-wait": "0.0.0",
     "github-url-to-object": "^4.0.4",
     "got": "^8.3.2",
     "heroku-cli-util": "^8.0.11",
