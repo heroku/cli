@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.50.0](https://github.com/heroku/cli/compare/v7.49.1...v7.50.0) (2021-03-02)
+
+
+### Features
+
+* **ps-v5:** Add total dynos table to ps:type output ([8bb3569](https://github.com/heroku/cli/commit/8bb3569865adb41c5aeaca08b8ae0f1fd61e1629))
+
+
+
+
+
 # [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
