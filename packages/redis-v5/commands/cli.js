@@ -183,6 +183,15 @@ module.exports = {
     let configVars = await getRedisConfigVars(addon, heroku)
 
     let redis = await api.request(`/redis/v0/databases/${addon.name}`)
+    
+    if (redis.plan.startsWith('shield-')) {
+      cli.error(`
+      Using redis:cli on Heroku Redis shield plans is not supported.
+      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features
+      `)
+      cli.exit(1)
+    }
+
     let hobby = redis.plan.indexOf('hobby') === 0
 
     if (hobby) {
