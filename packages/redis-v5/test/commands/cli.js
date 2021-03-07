@@ -21,6 +21,7 @@ describe('heroku redis:cli', function () {
 
   beforeEach(function () {
     cli.mockConsole()
+    cli.exit.mock()
 
     class Client extends Duplex {
       _write (chunk, encoding, callback) { }
@@ -147,6 +148,43 @@ describe('heroku redis:cli', function () {
       .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(tls.connect.called).to.equal(true))
+  })
+
+  it('# exits with an error with shield databases', async function () {
+    let app = nock('https://api.heroku.com:443')
+      .get('/apps/example/addons').reply(200, [
+        {
+          id: addonId,
+          name: 'redis-haiku',
+          addon_service: { name: 'heroku-redis' },
+          config_vars: ['REDIS_FOO', 'REDIS_BAR'],
+          billing_entity: {
+            id: appId,
+            name: 'example'
+          }
+        }
+      ])
+
+    let configVars = nock('https://api.heroku.com:443')
+      .get('/apps/example/config-vars').reply(200, { 'FOO': 'BAR' })
+
+    let redis = nock('https://redis-api.heroku.com:443')
+      .get('/redis/v0/databases/redis-haiku').reply(200, {
+        resource_url: 'redis://foobar:password@example.com:8649',
+        plan: 'shield-9'
+      })
+
+    try {
+      await command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+      expect(true, 'cli command should fail!').to.equal(false)
+    } catch (err) {
+      expect(err).to.be.an.instanceof(cli.exit.ErrorExit)
+      expect(err.code).to.equal(1)
+    }
+    await app.done()
+    await redis.done()
+    await configVars.done()
+    expect(cli.stderr).to.contain('Using redis:cli on Heroku Redis shield plans is not supported.')
   })
 
   it('# for bastion it uses tunnel.connect', function () {
