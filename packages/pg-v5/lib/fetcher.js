@@ -58,10 +58,12 @@ module.exports = heroku => {
         throw new Error(`${cli.color.app(app)} has no databases`)
       }
 
-      matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getConfigVarName(attachment.config_vars)])
+      // there can be cases where we have attachments without config vars, so lets reject those
+      let filtered_attachments = attachments.filter(attachment => attachment.config_vars.length !== 0)
+      matches = filtered_attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getConfigVarName(attachment.config_vars)])
 
       if (matches.length === 0) {
-        let validOptions = attachments.map(attachment => pgUtil.getConfigVarName(attachment.config_vars))
+        let validOptions = filtered_attachments.map(attachment => pgUtil.getConfigVarName(attachment.config_vars))
         throw new Error(`Unknown database: ${passedDb}. Valid options are: ${validOptions.join(', ')}`)
       }
     }

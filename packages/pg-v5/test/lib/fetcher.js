@@ -384,6 +384,37 @@ describe('fetcher', () => {
 
         return expect(fetcher(new Heroku()).database('myapp')).to.be.rejectedWith(/myapp has no databases/)
       })
+
+      it('does not throw an error if an attachment has no config vars', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = { id: 'not_found' }
+        err.message = 'Not Found'
+
+        stub.withArgs(sinon.match.any, 'myapp', 'HEROKU_POSTGRESQL_PINK_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'HEROKU_POSTGRESQL_PINK_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = { name: 'heroku-postgresql:hobby-dev' }
+        let attachments = [
+          {
+            app: { name: 'myapp' },
+            addon: { id: 100, name: 'postgres-1', plan },
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          },
+          {
+            app: { name: 'myapp' },
+            addon: { id: 100, name: 'postgres-2', plan },
+            config_vars: []
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return expect(fetcher(new Heroku()).database('myapp', 'HEROKU_POSTGRESQL_PINK_URL')).to.not.be.rejectedWith(/Database URL not found for this addon/)
+      })
     })
 
     describe('when not found and DATABASE_URL config var does not exist', () => {
