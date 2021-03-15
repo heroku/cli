@@ -20,7 +20,7 @@
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
-    "node-notifier": "^5.4.0",
+    "node-notifier": "^9.0.1",
     "smooth-progress": "^1.1.0",
     "strip-eof": "^2.0.0",
     "tunnel-ssh": "^4.1.4",
