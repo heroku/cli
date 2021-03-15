@@ -223,7 +223,7 @@ jobs:
           yarn --frozen-lockfile
           cp -r /persisted/dist /cli/packages/cli
           cp -r /persisted/tmp /cli/packages/cli
-          ./scripts/release/homebrew
+          ./scripts/release/homebrew.js
   invalidate_cdn_cache:
     <<: *defaults
     steps:
