@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.51.0](https://github.com/heroku/cli/compare/v7.50.0...v7.51.0) (2021-03-17)
+
+
+### Features
+
+* **redis-v5:** exit if trying to use redis:cli with shield plan ([01b9030](https://github.com/heroku/cli/commit/01b9030435e457749d7ffa28883d758a5145c5fc))
+
+
+
+
+
 ## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-redis-v5
