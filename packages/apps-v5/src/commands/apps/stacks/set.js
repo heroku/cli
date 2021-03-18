@@ -19,7 +19,7 @@ async function run(context, heroku) {
   // API updates the app's `stack` to match `build_stack` immediately.
   if (app.stack.name !== app.build_stack.name) {
     cli.log(`You will need to redeploy ${cli.color.app(context.app)} for the change to take effect.`)
-    cli.log(`Run ${cli.color.cmd(push(context.flags.remote))} to create a new release on ${cli.color.app(context.app)}.`)
+    cli.log(`Run ${cli.color.cmd(push(context.flags.remote))} to trigger a new build on ${cli.color.app(context.app)}.`)
   }
 }
 
@@ -28,8 +28,9 @@ let cmd = {
   needsAuth: true,
   description: 'set the stack of an app',
   examples: `$ heroku stack:set heroku-20 -a myapp
-Stack set. Next release on myapp will use heroku-20.
-Run git push heroku main to create a new release on myapp.`,
+Setting stack to heroku-20... done
+You will need to redeploy myapp for the change to take effect.
+Run git push heroku main to trigger a new build on myapp.`,
   args: [{ name: 'stack' }],
   run: cli.command(run)
 }
