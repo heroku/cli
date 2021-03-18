@@ -11,7 +11,7 @@ class HerokuNode < Formula
   keg_only "heroku-node is only used by Heroku CLI (heroku/brew/heroku), which explicitly requires from Cellar"
 
   def install
-    bin.install  buildpath/"bin/node"
+    bin.install buildpath/"bin/node"
   end
 
   def test
