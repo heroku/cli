@@ -3,7 +3,9 @@
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
     "outDir": "./lib",
     "pretty": true,
     "rootDirs": [
@@ -11,8 +13,5 @@
     ],
     "strict": true,
     "target": "es2017"
-  },
-  "include": [
-    "./src/**/*"
-  ]
+  }
 }

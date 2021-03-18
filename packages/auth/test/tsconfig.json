@@ -2,10 +2,10 @@
   "declaration": false,
   "extends": "../tsconfig",
   "compilerOptions": {
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "CommonJS"
   },
   "include": [
     "./**/*",
-    "../src/**/*"
   ]
 }
