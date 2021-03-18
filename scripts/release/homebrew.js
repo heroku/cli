@@ -59,8 +59,9 @@ if (!process.env.CIRCLE_TAG) {
 
 async function calculateSHA256 (fileName) {
   const hash = crypto.createHash('sha256')
+  hash.setEncoding('hex')
   await promisify(pipeline)(fs.createReadStream(fileName), hash)
-  return hash.digest('hex')
+  return hash.read()
 }
 
 const ROOT = path.join(__dirname, 'homebrew')
@@ -144,6 +145,7 @@ async function updateHomebrew () {
   await git(['add', 'Formula'])
   await git(['config', '--local', 'core.pager', 'cat'])
   await git(['diff', '--cached'], { stdio: 'inherit' })
+  await git(['commit', '-m', `heroku v${SHORT_VERSION}`])
   if (process.env.SKIP_GIT_PUSH === undefined) {
     await git(['push', 'origin', 'master'])
   }
