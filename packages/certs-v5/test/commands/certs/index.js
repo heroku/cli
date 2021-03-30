@@ -65,7 +65,7 @@ tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  Fals
 
   it('# shows a mix of certs ordered by name', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
@@ -121,7 +121,7 @@ tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21
 
   it('# shows ACM for the type when acm true', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointAcm])
@@ -148,7 +148,7 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
 
   it('# shows certs with common names stacked and stable matches', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
@@ -175,7 +175,7 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
 
   it('# shows certs with common names stacked and stable matches (bugfix)', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcardBug])
@@ -202,7 +202,7 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI   0
 
   it('# shows certs with common names stacked and stable matches wildcard', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcard])
@@ -229,7 +229,7 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI   0
 
   it('# shows certs with common names stacked and just stable cname matches', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])

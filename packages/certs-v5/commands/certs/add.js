@@ -228,11 +228,18 @@ async function configureDomains(context, heroku, meta, cert) {
 }
 
 async function run(context, heroku) {
+  let headers
   let features = await heroku.get(`/apps/${context.app}/features`)
   let canMultiSni = checkMultiSniFeature(features)
   context.canMultiSni = canMultiSni
 
   let meta = await getMeta(context, heroku)
+
+  if (meta.variant) {
+    headers = { 'Accept': `application/vnd.heroku+json; version=3.${meta.variant}` }
+  } else {
+    headers = { 'Accept': `application/vnd.heroku+json; version=3` }
+  }
 
   let files = await getCertAndKey(context)
 
@@ -240,7 +247,7 @@ async function run(context, heroku) {
     path: meta.path,
     method: 'POST',
     body: { certificate_chain: files.crt, private_key: files.key },
-    headers: { 'Accept': `application/vnd.heroku+json; version=3.${meta.variant}` }
+    headers: headers
   }))
 
   cert._meta = meta

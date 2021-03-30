@@ -36,7 +36,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { name: 'tokyo-1050' }) }).then(function () {
         mockSsl.done()
@@ -56,7 +56,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { name: 'tokyo-1050' }) }).then(function () {
         mockSsl.done()
@@ -93,7 +93,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { endpoint: 'tokyo-1050.herokussl.com' }) }).then(function () {
         mockSsl.done()

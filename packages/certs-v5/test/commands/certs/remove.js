@@ -57,7 +57,7 @@ describe('heroku certs:remove', function () {
       .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
@@ -86,7 +86,7 @@ describe('heroku certs:remove', function () {
       .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
