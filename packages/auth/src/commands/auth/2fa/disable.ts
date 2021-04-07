@@ -12,6 +12,7 @@ export default class Auth2faGenerate extends Command {
   ]
 
   async run() {
-    cli.warn('DEPRECATION WARNING: this command has been removed, in favor of disabling MFA in your Account Settings in a browser.')
+    cli.error('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
+    cli.exit(1)
   }
 }
