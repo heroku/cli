@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
+
+
+### Bug Fixes
+
+* **apps-v5:** Improve UX of stack:set command output ([#1771](https://github.com/heroku/cli/issues/1771)) ([2949f1d](https://github.com/heroku/cli/commit/2949f1dc1447bf145656f489bb81eadc3044d54f))
+
+
+
+
+
 # [7.50.0](https://github.com/heroku/cli/compare/v7.49.1...v7.50.0) (2021-03-02)
 
 

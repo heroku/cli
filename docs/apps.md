@@ -300,8 +300,9 @@ OPTIONS
 
 EXAMPLES
   $ heroku stack:set heroku-20 -a myapp
-  Stack set. Next release on myapp will use heroku-20.
-  Run git push heroku main to create a new release on myapp.
+  Setting stack to heroku-20... done
+  You will need to redeploy myapp for the change to take effect.
+  Run git push heroku main to trigger a new build on myapp.
 ```
 
 ## `heroku apps:transfer RECIPIENT`
