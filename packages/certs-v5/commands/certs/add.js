@@ -240,7 +240,7 @@ async function run(context, heroku) {
     path: meta.path,
     method: 'POST',
     body: { certificate_chain: files.crt, private_key: files.key },
-    headers: { 'Accept': `application/vnd.heroku+json; version=3.${meta.variant}` }
+    headers: { 'Accept': `application/vnd.heroku+json; version=3${meta.variant ? '.' + meta.variant : ''}` }
   }))
 
   cert._meta = meta

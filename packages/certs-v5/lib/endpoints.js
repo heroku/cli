@@ -12,10 +12,7 @@ function sslCertsPromise (app, heroku) {
 }
 
 function sniCertsPromise (app, heroku) {
-  return heroku.request({
-    path: `/apps/${app}/sni-endpoints`,
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
-  }).catch(function (err) {
+  return heroku.request({path: `/apps/${app}/sni-endpoints`}).catch(function (err) {
     if (err.statusCode === 422 && err.body && err.body.id === 'space_app_not_supported') {
       return []
     }
@@ -29,7 +26,6 @@ function meta (app, t, name) {
   var path, variant
   if (t === 'sni') {
     path = `/apps/${app}/sni-endpoints`
-    variant = 'sni_ssl_cert'
   } else if (t === 'ssl') {
     path = `/apps/${app}/ssl-endpoints`
     variant = 'ssl_cert'
@@ -39,7 +35,12 @@ function meta (app, t, name) {
   if (name) {
     path = `${path}/${name}`
   }
-  return {path, variant, flag: t}
+
+  if (variant) {
+    return {path, variant, flag: t}
+  } else {
+    return {path, flag: t}
+  }
 }
 
 function tagAndSort (app, allCerts) {

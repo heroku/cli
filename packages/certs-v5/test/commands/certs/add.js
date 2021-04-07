@@ -1312,7 +1312,7 @@ SSL certificate is self signed.
     mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content'
