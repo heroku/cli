@@ -27,7 +27,7 @@ if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
   exit 1
 fi
 
-git pull --rebase origin "${MAIN_BRANCH}"
+git pull --ff-only origin "${MAIN_BRANCH}"
 # The --force overrides local tags.
 # This is needed if you've published the CLI previously,
 # otherwise git will exit with an error unnecessarily.

@@ -27,7 +27,7 @@ if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
   exit 1
 fi
 
-git pull --rebase origin "${MAIN_BRANCH}"
+git pull --ff-only origin "${MAIN_BRANCH}"
 
 # Create a branch with the unix timestamp of the current second
 BRANCH_NAME="release-$(date +%s)"
