@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.50.0 darwin-x64 node-v12.18.4
+@heroku-cli/plugin-apps-v5/7.52.0 darwin-x64 node-v12.18.4
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -311,8 +311,9 @@ OPTIONS
 
 EXAMPLES
   $ heroku stack:set heroku-20 -a myapp
-  Stack set. Next release on myapp will use heroku-20.
-  Run git push heroku main to create a new release on myapp.
+  Setting stack to heroku-20... done
+  You will need to redeploy myapp for the change to take effect.
+  Run git push heroku main to trigger a new build on myapp.
 ```
 
 ## `heroku config:set`
