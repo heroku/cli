@@ -57,18 +57,6 @@ function hasMatch (certDomains, domain) {
   return _.find(certDomains, (certDomain) => (certDomain === domain || isWildcardMatch(certDomain, domain)))
 }
 
-function getFlagChoices (context, certDomains, existingDomains) {
-  let flagDomains = context.flags.domains.split(',').map((str) => str.trim()).filter((str) => str !== '')
-  let choices = _.difference(flagDomains, existingDomains)
-
-  let badChoices = _.remove(choices, (choice) => (!hasMatch(certDomains, choice)))
-  badChoices.forEach(function (choice) {
-    cli.warn(`Not adding ${choice} because it is not listed in the certificate`)
-  })
-
-  return choices
-}
-
 function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   let nonWildcardDomains = newDomains.filter((domain) => !isWildcard(domain))
 
@@ -90,11 +78,7 @@ async function getChoices(certDomains, newDomains, existingDomains, context) {
   if (newDomains.length === 0) {
     return []
   } else {
-    if (context.flags.domains !== undefined) {
-      return getFlagChoices(context, certDomains, existingDomains)
-    } else {
-      return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
-    }
+    return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
   }
 }
 
@@ -282,8 +266,7 @@ module.exports = {
   ],
   flags: [
     { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
-    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion },
-    { name: 'domains', description: 'domains to create after certificate upload', hasValue: true }
+    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion }
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',
