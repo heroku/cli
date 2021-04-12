@@ -25,6 +25,7 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:cli [DATABASE]`
@@ -66,6 +67,7 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
