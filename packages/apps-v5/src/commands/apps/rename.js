@@ -18,6 +18,10 @@ async function run(context, heroku) {
   let app = await cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
   let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
   cli.log(`${app.web_url} | ${gitUrl}`)
+  
+  if (!app.web_url.includes('https')) {
+    cli.log(`Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.`)
+  }
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
