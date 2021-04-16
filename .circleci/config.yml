@@ -9,13 +9,39 @@ defaults: &defaults
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
         LC_TYPE: en_US.UTF-8
-        NODE_OPTIONS: --max_old_space_size=4096
+        NODE_OPTIONS: --max_old_space_size=4096 --unhandled-rejections=strict
 
 version: 2.1
 orbs:
   win: circleci/windows@2.4.0
 executorType: docker
 jobs:
+  acceptance-test:
+    <<: *defaults
+    docker:
+      - image: "node:<<parameters.node-version>>"
+        environment:
+          <<: *env
+          RUN_ACCEPTANCE_TESTS: true
+    parameters:
+      node-version:
+        type: "string"
+    steps:
+      - checkout
+      - restore_cache: &yarn_restore_cache
+          keys:
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}
+            - v4-yarn
+      - run:
+          name: Installing dependencies
+          command: yarn --frozen-lockfile
+      - run:
+          name: heroku whoami
+          command: ./bin/run whoami
+      - run:
+          name: Smoke tests CLI
+          command: ./scripts/run-acceptance
   windows-test:
     executor:
       name: win/default
@@ -142,14 +168,8 @@ jobs:
           name: Installing dependencies
           command: yarn --frozen-lockfile
       - run:
-          name: heroku whoami
-          command: ./bin/run whoami
-      - run:
           name: Running all tests
           command: yarn test
-      - run:
-          name: Uploading code coverage to codecov
-          command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
   node10-test:
     <<: *test
     docker:
@@ -160,6 +180,53 @@ jobs:
     docker:
       - image: node:14
     resource_class: xlarge
+  pack-windows:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *yarn_restore_cache
+      - run: |
+          mkdir -p /build
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+      - run:
+          name: Building Windows binaries
+          command: ./scripts/pack/win
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
+  pack-tarballs:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *yarn_restore_cache
+      - run: |
+          mkdir -p /build
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+      - run:
+          name: Building Tarballs
+          command: ./scripts/pack/tarballs
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
+  store-artifacts:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /build
+      - checkout
+      - restore_cache: *yarn_restore_cache
+      - run:
+          name: "Create SHA256.txt"
+          command: ./scripts/hash-artifacts
+      - store_artifacts:
+          path: /build/dist
+          destination: /
   release_tarballs:
     <<: *defaults
     steps:
@@ -280,71 +347,103 @@ workflows:
       - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
-  heroku_cli_release:
-    jobs:
-      - node14-test: &node14_test
-          filters:
-            branches:
-              only:
-                - master
-            tags: &version_tags
-              only: /^v.*/
-      - node12-test: *node14_test
-      - node10-test: *node14_test
-      - windows-test: *node14_test
-      - release_tarballs: &release_tarballs
-          requires:
+      - acceptance-test:
+          context:
+            - heroku-cli-acceptance-tests
+          matrix:
+            parameters:
+              node-version:
+                - "10"
+                - "12"
+                - "14"
+      - pack-windows:
+          requires: &pack-requires
+            - node14-test
             - node12-test
             - node10-test
             - windows-test
-          filters: &master_dev_and_version_tags
-            tags:
-              <<: *version_tags
-            branches:
-              only:
-                - master
-                - dev
-      - release_deb: *release_tarballs
-      - release_win: *release_tarballs
-      - release_homebrew:
+            - acceptance-test
+      - pack-tarballs:
+          requires: *pack-requires
+      - store-artifacts:
           requires:
-            - release_tarballs
-          filters: &only_version_tags
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
-#       - trigger_macos: &trigger_macos
+            - pack-windows
+            - pack-tarballs
+#   heroku_cli_release:
+#     jobs:
+#       - node14-test: &node14_test
+#           filters:
+#             branches:
+#               only:
+#                 - master
+#             tags: &version_tags
+#               only: /^v.*/
+#       - node12-test: *node14_test
+#       - node10-test: *node14_test
+#       - windows-test: *node14_test
+#       - acceptance-test:
+#           context:
+#             - heroku-cli-acceptance-tests
+#           matrix:
+#             parameters:
+#               node-version:
+#                 - "10"
+#                 - "12"
+#                 - "14"
+#       - release_tarballs: &release_tarballs
 #           requires:
 #             - node12-test
 #             - node10-test
 #             - windows-test
+#             - acceptance-test
+#           filters: &master_dev_and_version_tags
+#             tags:
+#               <<: *version_tags
+#             branches:
+#               only:
+#                 - master
+#                 - dev
+#       - release_deb: *release_tarballs
+#       - release_win: *release_tarballs
+#       - release_homebrew:
+#           requires:
+#             - release_tarballs
+#           filters: &only_version_tags
+#             branches:
+#               ignore: /.*/
+#             tags:
+#               <<: *version_tags
+# #       - trigger_macos: &trigger_macos
+# #           requires:
+# #             - node12-test
+# #             - node10-test
+# #             - windows-test
+# #           filters:
+# #             <<: *only_version_tags
+# #      - release_snap:
+# #          requires:
+# #            - node12-test
+# #            - node10-test
+# #            - windows-test
+# #          filters:
+# #            <<: *only_version_tags
+#       - invalidate_cdn_cache:
+#           requires:
+#             - install_scripts
+#           filters:
+#             <<: *master_dev_and_version_tags
+#       - install_scripts: &install_scripts
+#           requires:
+#             - release_tarballs
+#             - release_deb
+#             - release_win
+#           filters:
+#             <<: *master_dev_and_version_tags
+#       - change_management: &change_management
+#           requires:
+#             - release_tarballs
+#             - release_deb
+#             - release_win
 #           filters:
 #             <<: *only_version_tags
-#      - release_snap:
-#          requires:
-#            - node12-test
-#            - node10-test
-#            - windows-test
-#          filters:
-#            <<: *only_version_tags
-      - invalidate_cdn_cache:
-          requires:
-            - install_scripts
-          filters:
-            <<: *master_dev_and_version_tags
-      - install_scripts: &install_scripts
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
-            <<: *master_dev_and_version_tags
-      - change_management: &change_management
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
-            <<: *only_version_tags
-      - dev_center_docs: *change_management
+#       - dev_center_docs: *change_management

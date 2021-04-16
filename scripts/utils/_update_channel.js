@@ -1,7 +1,10 @@
 const qq = require('qqjs')
+const fs = require('fs')
+const path = require('path')
 
-module.exports = async () => {
-  const pjson = await qq.readJSON('./package.json')
+module.exports = () => {
+  const pjsonPath = path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')
+  const pjson = require(pjsonPath)
   if (process.env.CIRCLE_TAG && process.env.CIRCLE_TAG.startsWith('v')) {
     pjson.version = pjson.version.split('-')[0]
   } else if (process.env.CIRCLE_BRANCH === 'master') {
@@ -9,5 +12,5 @@ module.exports = async () => {
   } else {
     pjson.version = pjson.version.split('-')[0] + '-dev'
   }
-  await qq.writeJSON('./package.json', pjson)
+  fs.writeFileSync(pjsonPath, JSON.stringify(pjson, null, 2), {encoding: 'utf8'})
 }
