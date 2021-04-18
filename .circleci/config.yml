@@ -222,7 +222,7 @@ jobs:
       - checkout
       - restore_cache: *yarn_restore_cache
       - run:
-          name: "Create SHA256.txt"
+          name: "Create SHA256 artifacts"
           command: ./scripts/hash-artifacts
       - store_artifacts:
           path: /build/dist
@@ -281,15 +281,14 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /persisted
+          at: /build
       - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn --frozen-lockfile
-          cp -r /persisted/dist /cli/packages/cli
-          cp -r /persisted/tmp /cli/packages/cli
+          cp -r /build/dist /cli/packages/cli
           ./scripts/release/homebrew.js
   invalidate_cdn_cache:
     <<: *defaults

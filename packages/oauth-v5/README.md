@@ -1,6 +1,5 @@
 # Heroku OAuth [![CircleCI](https://circleci.com/gh/heroku/heroku-cli-oauth.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-oauth)
 [![Code Climate](https://codeclimate.com/github/heroku/heroku-cli-oauth/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-cli-oauth)
-[![codecov](https://codecov.io/gh/heroku/heroku-cli-oauth/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-oauth)
 [![npm version](https://badge.fury.io/js/heroku-cli-oauth.svg)](https://badge.fury.io/js/heroku-cli-oauth)
 [![License](https://img.shields.io/github/license/heroku/heroku-cli-oauth.svg)](https://github.com/heroku/heroku-cli-oauth/blob/master/LICENSE)
 
