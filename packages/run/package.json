@@ -70,9 +70,8 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pretest": "tsc -p test --noEmit",
-    "test": "npm run test:unit",
-    "test:unit": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "test:integration": "node ./bin/bats-test-runner",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test:acceptance": "yarn test --grep='@acceptance'",
     "posttest": "yarn lint",
     "version": "oclif-dev readme && git add README.md"
   }

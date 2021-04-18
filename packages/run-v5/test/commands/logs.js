@@ -3,8 +3,9 @@
 const cmd = require('../../commands/logs')
 const cli = require('heroku-cli-util')
 const { expect } = require('chai')
+const { describeAcceptance } = require('../test-helper')
 
-describe('logs', () => {
+describeAcceptance('logs', () => {
   beforeEach(() => cli.mockConsole())
 
   it('shows the logs', () => {

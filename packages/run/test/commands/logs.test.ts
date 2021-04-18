@@ -1,6 +1,12 @@
 import {expect, test} from '@oclif/test'
 
-describe('logs', () => {
+let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe
+
+if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
+  describeOrSkip = describe.skip.bind(describe)
+}
+
+describeOrSkip('@acceptance logs', () => {
   test
   .stdout()
   .command(['logs', '--app=heroku-cli-ci-smoke-test-app'])

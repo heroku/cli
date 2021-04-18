@@ -1,6 +1,12 @@
 import {expect, test} from '@oclif/test'
 
-describe('run', () => {
+let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe
+
+if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
+  describeOrSkip = describe.skip.bind(describe)
+}
+
+describeOrSkip('@acceptance run', () => {
   const testFactory = () => {
     return test
     .stdout()

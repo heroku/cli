@@ -7,7 +7,6 @@ local
 [![Version](https://img.shields.io/npm/v/local.svg)](https://npmjs.org/package/local)
 [![CircleCI](https://circleci.com/gh/chadian/local/tree/master.svg?style=shield)](https://circleci.com/gh/chadian/local/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/chadian/local?branch=master&svg=true)](https://ci.appveyor.com/project/chadian/local/branch/master)
-[![Codecov](https://codecov.io/gh/chadian/local/branch/master/graph/badge.svg)](https://codecov.io/gh/chadian/local)
 [![Downloads/week](https://img.shields.io/npm/dw/local.svg)](https://npmjs.org/package/local)
 [![License](https://img.shields.io/npm/l/local.svg)](https://github.com/chadian/local/blob/master/package.json)
 

@@ -7,7 +7,6 @@ webhooks
 [![Version](https://img.shields.io/npm/v/webhooks.svg)](https://npmjs.org/package/webhooks)
 [![CircleCI](https://circleci.com/gh/chadian/webhooks/tree/master.svg?style=shield)](https://circleci.com/gh/chadian/webhooks/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/chadian/webhooks?branch=master&svg=true)](https://ci.appveyor.com/project/chadian/webhooks/branch/master)
-[![Codecov](https://codecov.io/gh/chadian/webhooks/branch/master/graph/badge.svg)](https://codecov.io/gh/chadian/webhooks)
 [![Downloads/week](https://img.shields.io/npm/dw/webhooks.svg)](https://npmjs.org/package/webhooks)
 [![License](https://img.shields.io/npm/l/webhooks.svg)](https://github.com/chadian/webhooks/blob/master/package.json)
 
@@ -212,7 +211,7 @@ OPTIONS
   -u, --url=url                      (required) URL for receiver
 
 EXAMPLE
-  $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 
+  $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s
   09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
