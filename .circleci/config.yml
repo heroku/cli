@@ -214,6 +214,23 @@ jobs:
           root: /cli/packages/cli
           paths:
             - dist
+  pack-deb:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *yarn_restore_cache
+      - run: |
+          mkdir -p /build
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+      - run:
+          name: Building Debian
+          command: ./scripts/pack/deb
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
   store-artifacts:
     <<: *defaults
     steps:
@@ -364,10 +381,13 @@ workflows:
             - acceptance-test
       - pack-tarballs:
           requires: *pack-requires
+      - pack-deb:
+          requires: *pack-requires
       - store-artifacts:
           requires:
             - pack-windows
             - pack-tarballs
+            - pack-deb
 #   heroku_cli_release:
 #     jobs:
 #       - node14-test: &node14_test
