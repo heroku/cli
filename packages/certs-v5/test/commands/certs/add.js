@@ -80,7 +80,7 @@ describe('heroku certs:add', function () {
         })
         .reply(200, endpoint)
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'endpoint' } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'endpoint' } }).then(function () {
         mockSsl.done()
         expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
         expect(cli.stdout).to.equal(
@@ -120,7 +120,7 @@ ${certificateDetails}
     })
   })
 
-  it('# runs with bypass', function () {
+  it('# errors out with intermediaries', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
@@ -147,7 +147,7 @@ ${certificateDetails}
       })
       .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mockSni.done()
       mockSsl.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
@@ -179,7 +179,7 @@ ${certificateDetails}
         'resource': 'addon'
       })
 
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: { bypass: true } })).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} })).then(function () {
       mockSsl.done()
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
@@ -213,7 +213,7 @@ ${certificateDetails}
       })
       .reply(200, endpointWarning)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mockSni.done()
       mockSsl.done()
       expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -247,7 +247,7 @@ ${certificateDetails}
       })
       .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       /* eslint-disable no-irregular-whitespace */
@@ -291,7 +291,7 @@ ${certificateDetails}
       })
       .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       /* eslint-disable no-irregular-whitespace */
@@ -399,7 +399,7 @@ ${certificateDetails}
           { 'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org' }
         )
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         domainsCreate.done()
@@ -708,7 +708,7 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
           { 'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com' }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -758,7 +758,7 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
           { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -802,7 +802,7 @@ tokyo-1050.herokuapp.com
           { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com' }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -849,7 +849,7 @@ biz.example.com  CNAME        biz.example.com.herokudns.com
         .get('/apps/example/domains')
         .reply(200, [])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -889,7 +889,7 @@ SSL certificate is self signed.
           { 'kind': 'custom', 'hostname': 'bar.example.com', 'cname': 'bar.example.com.herokudns.com' }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -928,7 +928,7 @@ bar.example.com  CNAME        bar.example.com.herokudns.com  ! Does not match an
           { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
@@ -1039,7 +1039,7 @@ SSL certificate is self signed.
             { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com', 'status': 'succeeded' }
           ])
 
-        return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+        return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
           mock.done()
           domainsMock.done()
           domainsRetry.done()
@@ -1090,7 +1090,7 @@ biz.example.com  CNAME        biz.example.com.herokudns.com
             { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': null, 'status': 'none' }
           ])
 
-        return assert.isRejected(certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }), /Timed out while waiting for stable domains to be created/).then(function () {
+        return assert.isRejected(certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }), /Timed out while waiting for stable domains to be created/).then(function () {
           mock.done()
           domainsMock.done()
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !\n')
@@ -1122,7 +1122,7 @@ SSL certificate is self signed.
       .get('/apps/example/addons/ssl%3Aendpoint')
       .reply(200, {})
 
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } })).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} })).then(function () {
       mockAddons.done()
       expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
@@ -1131,7 +1131,7 @@ SSL certificate is self signed.
 
   it('# errors out if type is not known', function () {
     mockSniFeatureFlag(nock, 'example')
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'foo' } })).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'foo' } })).then(function () {
       expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
     })
@@ -1159,7 +1159,7 @@ SSL certificate is self signed.
       })
       .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'sni' } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'sni' } }).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       expect(cli.stdout).to.equal(
@@ -1194,7 +1194,7 @@ ${certificateDetails}
       })
       .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'endpoint' } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'endpoint' } }).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       expect(cli.stdout).to.equal(
