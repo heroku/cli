@@ -100,113 +100,6 @@ ${certificateDetails}
     fs.readFile.restore()
   })
 
-  it('# posts to ssl doctor', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '23'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey content')
-      .reply(200, { pem: 'pem content', key: 'key content' })
-
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
-    let mockSni = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
-      sslDoctor.done()
-      mockSsl.done()
-      mockSni.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
-      expect(cli.stdout).to.equal(
-        `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-    })
-    /* eslint-enable no-irregular-whitespace */
-  })
-
-  it('# posts intermediaries to ssl doctor', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'int_file', 'int content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '35'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nint content\nkey content')
-      .reply(200, { pem: 'pem content\nint content', key: 'key content' })
-
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
-    let mockSni = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content\nint content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} }).then(function () {
-      sslDoctor.done()
-      mockSsl.done()
-      mockSni.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
-      expect(cli.stdout).to.equal(
-        `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-    })
-    /* eslint-enable no-irregular-whitespace */
-  })
-
   it('# errors out when args < 2', function () {
     mockSniFeatureFlag(nock, 'example')
     nock('https://api.heroku.com')
@@ -227,50 +120,7 @@ ${certificateDetails}
     })
   })
 
-  it('# propegates ssl doctor errors', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '23'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey content')
-      .reply(422, 'No certificate given is a domain name certificate.')
-
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} })
-      .then(function () {
-        expect.fail('Expected exception')
-      })
-      .catch(function (err) {
-        mockSsl.done()
-        sslDoctor.done()
-        expect(cli.stdout).to.equal('')
-        expect(cli.stderr).to.equal('Resolving trust chain... !\n')
-        expect(err.message).to.equal('No certificate given is a domain name certificate.')
-      })
-  })
-
-  it('# bypasses ssl doctor', function () {
+  it('# runs with bypass', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
@@ -477,15 +327,6 @@ ${certificateDetails}
     mockFile(fs, 'pem_file', 'pem content')
     mockFile(fs, 'key_file', 'key content')
 
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '23'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey content')
-      .reply(200, { pem: 'pem content', key: 'key content' })
-
     let mockSni = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content'
@@ -493,9 +334,8 @@ ${certificateDetails}
       .reply(200, endpoint)
 
     return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
-      sslDoctor.done()
       mockSni.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL certificate to example... done\n')
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
