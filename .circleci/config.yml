@@ -252,9 +252,22 @@ jobs:
           paths:
             - dist
             - tmp
+  sign_win:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /build
+      - checkout
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+          ./scripts/sign/win
   release_win:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: /build
       - checkout
       - run: |
           cp yarn.lock packages/cli

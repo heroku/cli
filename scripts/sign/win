@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+const execa = require('execa')
+const glob = require('glob')
+const process = require('process')
+
+const root = '/Users/ccarbert/Desktop/build/dist'
+
+function extractSigningVariables () {
+  let key, pass
+
+  try {
+    const buffer = Buffer.from(process.env.HEROKU_WINDOWS_KEY, 'base64')
+    key = buffer.toString()
+  } catch (e) {
+    console.log('an error occurred extracting the signing key')
+    process.exit()
+  }
+
+  try {
+    pass = process.env.HEROKU_WINDOWS_SIGNING_PASS
+  } catch (e) {
+    console.log('an error occurred extracting the signing pass')
+    process.exit()
+  }
+
+  return { key, pass }
+}
+
+async function sign (exePath) {
+  const { key, pass } = extractSigningVariables()
+
+  try {
+    await execa('osslsigncode', [
+      '-pkcs12', key,
+      '-pass', pass,
+      '-n', 'Heroku CLI',
+      '-i', 'https://toolbelt.heroku.com/',
+      '-h', 'sha512',
+      '-in', exePath,
+      '-out', exePath
+    ], {
+      cwd: root
+    })
+  } catch (e) {
+    console.log(`an error occurred during the signing for exe: ${exePath}`)
+    process.exit()
+  }
+}
+
+async function main () {
+  const exePaths = glob.sync(`${root}/win/heroku-v*-*.exe`)
+
+  console.log(`Signing windows exes, ${exePaths.length} exes to sign`)
+  const exeSignings = exePaths.map(async exePath => {
+    console.log(`Starting signing ${exePath}`)
+    await sign(exePath)
+    console.log(`Finished signing ${exePath}`)
+  })
+
+  await Promise.all(exeSignings)
+  console.log('Finished signing windows exes')
+}
+
+main()
