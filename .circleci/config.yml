@@ -255,9 +255,9 @@ jobs:
           name: "Signing debian"
           command: cd /build/dist/deb && /cli/scripts/sign/deb
       - persist_to_workspace:
-          root: /
+          root: /build
           paths:
-            - build/dist
+            - dist
   store-artifacts:
     <<: *defaults
     steps:
