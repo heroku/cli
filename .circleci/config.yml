@@ -280,12 +280,12 @@ jobs:
       - attach_workspace:
           at: /cli/packages/cli/dist
       - run: |
-        cp yarn.lock packages/cli
-        cd packages/cli
-        yarn --frozen-lockfile
-        ./scripts/release/tarballs
-        ./scripts/release/deb
-        ./scripts/postrelease/install_scripts
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+          ./scripts/release/tarballs
+          ./scripts/release/deb
+          ./scripts/postrelease/install_scripts
   trigger_macos:
     <<: *defaults
     steps:
