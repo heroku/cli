@@ -271,49 +271,21 @@ jobs:
       - store_artifacts:
           path: /build/dist
           destination: /
-  release_tarballs:
+  release_deb_and_tarballs:
     <<: *defaults
     steps:
-      - add_ssh_keys
+      - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - checkout
+      - attach_workspace:
+          at: /cli/packages/cli/dist
       - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/tarballs
-      - save_cache:
-          key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-          paths:
-            - /cli/node_modules
-            - /cli/tmp/cache
-            - /usr/local/share/.cache/yarn
-      - run: |
-          mkdir /persisted
-          cp -r /cli/packages/cli/dist /persisted
-          cp -r /cli/packages/cli/tmp /persisted
-      - persist_to_workspace:
-          root: /persisted
-          paths:
-            - dist
-            - tmp
-  release_win:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/win
-  release_deb:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/deb
+        cp yarn.lock packages/cli
+        cd packages/cli
+        yarn --frozen-lockfile
+        ./scripts/release/tarballs
+        ./scripts/release/deb
+        ./scripts/postrelease/install_scripts
   trigger_macos:
     <<: *defaults
     steps:
@@ -340,12 +312,6 @@ jobs:
       - checkout
       - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
-  install_scripts:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: yarn --frozen-lockfile
-      - run: ./scripts/postrelease/install_scripts
   change_management:
     <<: *defaults
     steps:
@@ -366,28 +332,12 @@ jobs:
       - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-  release_snap:
-    docker:
-      - image: snapcore/snapcraft:stable
-        environment:
-          LC_ALL: C.UTF-8
-    steps:
-      # the snapcraft image does not include git
-      - run: apt-get -qq update; apt-get -y install git
-      - checkout
-      - run: ./scripts/release/snap
 workflows:
   version: 2.1
-  heroku_cli_tests:
+  heroku_cli:
     jobs:
       - yarn
       - windows-test: &windows_test
-          filters:
-            tags: &version_tags
-              only: /^v.*/
-            branches:
-              ignore:
-                - master
           requires:
             - yarn
       - node14-test: *windows_test
@@ -425,81 +375,30 @@ workflows:
             - pack-windows
             - pack-tarballs
             - sign-deb
-#   heroku_cli_release:
-#     jobs:
-#       - node14-test: &node14_test
-#           filters:
-#             branches:
-#               only:
-#                 - master
-#             tags: &version_tags
-#               only: /^v.*/
-#       - node12-test: *node14_test
-#       - node10-test: *node14_test
-#       - windows-test: *node14_test
-#       - acceptance-test:
-#           context:
-#             - heroku-cli-acceptance-tests
-#           matrix:
-#             parameters:
-#               node-version:
-#                 - "10"
-#                 - "12"
-#                 - "14"
-#       - release_tarballs: &release_tarballs
-#           requires:
-#             - node12-test
-#             - node10-test
-#             - windows-test
-#             - acceptance-test
-#           filters: &master_dev_and_version_tags
-#             tags:
-#               <<: *version_tags
-#             branches:
-#               only:
-#                 - master
-#                 - dev
-#       - release_deb: *release_tarballs
-#       - release_win: *release_tarballs
-#       - release_homebrew:
-#           requires:
-#             - release_tarballs
-#           filters: &only_version_tags
-#             branches:
-#               ignore: /.*/
-#             tags:
-#               <<: *version_tags
-# #       - trigger_macos: &trigger_macos
-# #           requires:
-# #             - node12-test
-# #             - node10-test
-# #             - windows-test
-# #           filters:
-# #             <<: *only_version_tags
-# #      - release_snap:
-# #          requires:
-# #            - node12-test
-# #            - node10-test
-# #            - windows-test
-# #          filters:
-# #            <<: *only_version_tags
-#       - invalidate_cdn_cache:
-#           requires:
-#             - install_scripts
-#           filters:
-#             <<: *master_dev_and_version_tags
-#       - install_scripts: &install_scripts
-#           requires:
-#             - release_tarballs
-#             - release_deb
-#             - release_win
-#           filters:
-#             <<: *master_dev_and_version_tags
-#       - change_management: &change_management
-#           requires:
-#             - release_tarballs
-#             - release_deb
-#             - release_win
-#           filters:
-#             <<: *only_version_tags
-#       - dev_center_docs: *change_management
+      - release_deb_and_tarballs:
+          context:
+            - heroku-cli-s3
+          requires:
+            - sign-deb
+          filters: &master_dev_and_version_tags
+            tags:
+              only: /^v.*/
+            branches:
+              only:
+                - master
+      # - release_homebrew:
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters: *master_dev_and_version_tags
+      - invalidate_cdn_cache:
+          requires:
+            - release_deb_and_tarballs
+          filters: *master_dev_and_version_tags
+      # - change_management: &change_management
+      #     context:
+      #       - heroku-cli-tps
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters:
+      #       <<: *only_version_tags
+      # - dev_center_docs: *change_management
