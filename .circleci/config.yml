@@ -274,9 +274,9 @@ jobs:
   release_deb_and_tarballs:
     <<: *defaults
     steps:
+      - checkout
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
-      - checkout
       - attach_workspace:
           at: /cli/packages/cli/dist
       - run: |
