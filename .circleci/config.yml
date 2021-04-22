@@ -383,6 +383,7 @@ workflows:
             - heroku-cli-s3
           requires:
             - sign-deb
+            - pack-tarballs
           filters: &master_dev_and_version_tags
             tags:
               only: /^v.*/
