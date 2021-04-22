@@ -197,6 +197,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_install
       - restore_cache: *yarn_restore_cache
       - run: |
           mkdir -p /build
@@ -215,6 +216,7 @@ jobs:
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -232,6 +234,7 @@ jobs:
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
