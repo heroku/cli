@@ -357,10 +357,12 @@ workflows:
   heroku_cli:
     jobs:
       - yarn
-      - windows-test: &windows_test
+      # - windows-test: &windows_test
+      #     requires:
+      #       - yarn
+      - node14-test: &windows_test
           requires:
             - yarn
-      - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
       - acceptance-test:
@@ -379,7 +381,7 @@ workflows:
             - node14-test
             - node12-test
             - node10-test
-            - windows-test
+            # - windows-test
             - acceptance-test
       - pack-tarballs:
           requires: *pack-requires
