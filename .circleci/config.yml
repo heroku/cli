@@ -20,20 +20,29 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: &yarn_setup
+          name: Setup Yarn config
+          command: |
+            mkdir -p /cli/.yarn
+            node --version >> .cache-key
+            yarn --version >> .cache-key
+            sha256sum .circleci/config.yml >> .cache-key
+            sha256sum yarn.lock >> .cache-key
+            mkdir -p /cli/.yarn/offline-mirror
+            yarn config set cache-folder /cli/.yarn/cache
+            yarn config set yarn-offline-mirror /cli/.yarn/offline-mirror
       - restore_cache: &yarn_restore_cache
           keys:
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}
-            - v4-yarn
+            - v5-yarn-{{checksum ."cache-key"}}-master
+            - v5-yarn-{{checksum ".cache-key"}}-{{Branch}}
       - run: &yarn_install
           name: Installing dependencies
-          command: yarn --frozen-lockfile
+          command: yarn --frozen-lockfile --prefer-offline
       - save_cache:
-          key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+          key: v5-yarn-{{checksum ".cache-key"}}-{{Branch}}
           paths:
             - /cli/node_modules
-            - /cli/tmp/cache
-            - /usr/local/share/.cache/yarn
+            - /cli/.yarn
   acceptance-test:
     <<: *defaults
     docker:
@@ -46,6 +55,7 @@ jobs:
         type: "string"
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run:
@@ -171,11 +181,12 @@ jobs:
     resource_class: xlarge
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: &yarn_restore_cache
           keys:
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}
-            - v4-yarn
+            - v5-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v5-yarn-{{ checksum ".circleci/config.yml" }}
+            - v5-yarn
       - run: *yarn_install
       - run:
           name: Installing dependencies
@@ -197,6 +208,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
       - run: *yarn_install
       - restore_cache: *yarn_restore_cache
       - run: |
@@ -215,6 +227,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run: |
@@ -233,6 +246,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run: |
@@ -253,6 +267,7 @@ jobs:
       - attach_workspace:
           at: /build
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run:
           name: "Signing debian"
@@ -267,6 +282,7 @@ jobs:
       - attach_workspace:
           at: /build
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run:
           name: "Create SHA256 artifacts"
@@ -278,6 +294,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - attach_workspace:
