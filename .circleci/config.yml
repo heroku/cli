@@ -338,7 +338,7 @@ jobs:
             ./scripts/release/deb
       - run:
           name: Publish Install Scripts
-          command: ./scripts/postrelease/install_scripts
+          command: /cli/scripts/postrelease/install_scripts
   trigger_macos:
     <<: *defaults
     steps:
