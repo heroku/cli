@@ -383,16 +383,21 @@ workflows:
   version: 2.1
   heroku_cli:
     jobs:
-      - yarn
+      - yarn:
+          filters: &always_run_filter
+            tags:
+              only: /^v.*/
       # - windows-test: &windows_test
       #     requires:
       #       - yarn
       - node14-test: &windows_test
+          filters: *always_run_filter
           requires:
             - yarn
       - node12-test: *windows_test
       - node10-test: *windows_test
       - acceptance-test:
+          filters: *always_run_filter
           context:
             - heroku-cli-acceptance-tests
           matrix:
@@ -404,6 +409,7 @@ workflows:
           requires:
             - yarn
       - pack-windows:
+          filters: *always_run_filter
           requires: &pack-requires
             - node14-test
             - node12-test
@@ -411,15 +417,19 @@ workflows:
             # - windows-test
             - acceptance-test
       - pack-tarballs:
+          filters: *always_run_filter
           requires: *pack-requires
       - pack-deb:
+          filters: *always_run_filter
           requires: *pack-requires
       - sign-deb:
+          filters: *always_run_filter
           context:
             - heroku-cli-sign-deb
           requires:
             - pack-deb
       - store-artifacts:
+          filters: *always_run_filter
           requires:
             - pack-windows
             - pack-tarballs
