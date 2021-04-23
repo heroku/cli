@@ -393,13 +393,10 @@ workflows:
           filters: &always_run_filter
             tags:
               only: /^v.*/
-      # - windows-test: &windows_test
-      #     requires:
-      #       - yarn
-      - node14-test: &windows_test
-          filters: *always_run_filter
+      - windows-test: &windows_test
           requires:
             - yarn
+      - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
       - acceptance-test:
@@ -420,7 +417,7 @@ workflows:
             - node14-test
             - node12-test
             - node10-test
-            # - windows-test
+            - windows-test
             - acceptance-test
       - pack-tarballs:
           filters: *always_run_filter
