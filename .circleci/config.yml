@@ -46,9 +46,7 @@ jobs:
             # Represents the final directories in yarn's cache after it un-tars
             # tarballs from the offline-mirror AND runs install scripts.
             cat \
-              .cache-keys/yarn-version \
-              .cache-keys/yarn-lock \
-              .cache-keys/circleci-config \
+              .cache-keys/yarn-offline-mirror \
               .cache-keys/node-version
               > .cache-keys/yarn-cache
       - restore_cache: &yarn_restore_cache
@@ -326,13 +324,21 @@ jobs:
       - run: *yarn_install
       - attach_workspace:
           at: /cli/packages/cli
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile --prefer-offline
-          ./scripts/release/tarballs
-          ./scripts/release/deb
-          ./scripts/postrelease/install_scripts
+      - run:
+          name: packages/cli yarn install
+          command: |
+            cp yarn.lock packages/cli
+            cd packages/cli
+            yarn --frozen-lockfile --prefer-offline
+      - run:
+          name: Upload production artifacts
+          command: |
+            cd packages/cli
+            ./scripts/release/tarballs
+            ./scripts/release/deb
+      - run:
+          name: Publish Install Scripts
+          command: ./scripts/postrelease/install_scripts
   trigger_macos:
     <<: *defaults
     steps:
