@@ -24,25 +24,51 @@ jobs:
           name: Setup Yarn config
           command: |
             mkdir -p /cli/.yarn
-            node --version >> .cache-key
-            yarn --version >> .cache-key
-            sha256sum .circleci/config.yml >> .cache-key
-            sha256sum yarn.lock >> .cache-key
             mkdir -p /cli/.yarn/offline-mirror
             yarn config set cache-folder /cli/.yarn/cache
             yarn config set yarn-offline-mirror /cli/.yarn/offline-mirror
+
+            mkdir -p .cache-keys
+            yarn --version >> .cache-keys/yarn-version
+            sha256sum yarn.lock >> .cache-keys/yarn-lock
+            node --version >> .cache-keys/node-version
+            sha256sum .circleci/config.yml >> .cache-keys/circleci-config
+
+            # offline mirror cache file
+            cat \
+              .cache-keys/yarn-version \
+              .cache-keys/yarn-lock \
+              .cache-keys/circleci-config \
+              > .cache-keys/yarn-offline-mirror
+
+            # yarn cache (which is separate from offline mirror) cache file
+            # but dependent on node version.
+            # Represents the final directories in yarn's cache after it un-tars
+            # tarballs from the offline-mirror AND runs install scripts.
+            cat \
+              .cache-keys/yarn-version \
+              .cache-keys/yarn-lock \
+              .cache-keys/circleci-config \
+              .cache-keys/node-version
+              > .cache-keys/yarn-cache
       - restore_cache: &yarn_restore_cache
           keys:
-            - v5-yarn-{{checksum ."cache-key"}}-master
-            - v5-yarn-{{checksum ".cache-key"}}-{{Branch}}
+            - v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-master
+            - v5-yarn-offline-mirror-{{checksum ".cache-key/yarn-offline-mirror"}}-{{.Branch}}
+            - v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-master
+            - v5-yarn-cache-{{checksum ".cache-key/yarn-cache"}}-{{.Branch}}
       - run: &yarn_install
           name: Installing dependencies
           command: yarn --frozen-lockfile --prefer-offline
       - save_cache:
-          key: v5-yarn-{{checksum ".cache-key"}}-{{Branch}}
+          key: v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-{{.Branch}}
+          paths:
+            - /cli/.yarn/offline-mirror
+      - save_cache:
+          key: v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-{{.Branch}}
           paths:
             - /cli/node_modules
-            - /cli/.yarn
+            - /cli/.yarn/cache
   acceptance-test:
     <<: *defaults
     docker:
@@ -284,6 +310,7 @@ jobs:
       - checkout
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run:
           name: "Create SHA256 artifacts"
           command: ./scripts/hash-artifacts
@@ -302,7 +329,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile
+          yarn --frozen-lockfile --prefer-offline
           ./scripts/release/tarballs
           ./scripts/release/deb
           ./scripts/postrelease/install_scripts
