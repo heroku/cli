@@ -281,7 +281,7 @@ jobs:
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - attach_workspace:
-          at: /cli/packages/cli/dist
+          at: /cli/packages/cli
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
