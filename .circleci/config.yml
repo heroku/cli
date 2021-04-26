@@ -52,9 +52,9 @@ jobs:
       - restore_cache: &yarn_restore_cache
           keys:
             - v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-master
-            - v5-yarn-offline-mirror-{{checksum ".cache-key/yarn-offline-mirror"}}-{{.Branch}}
+            - v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-{{.Branch}}
             - v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-master
-            - v5-yarn-cache-{{checksum ".cache-key/yarn-cache"}}-{{.Branch}}
+            - v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-{{.Branch}}
       - run: &yarn_install
           name: Installing dependencies
           command: yarn --frozen-lockfile --prefer-offline
