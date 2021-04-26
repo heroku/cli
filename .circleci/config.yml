@@ -394,6 +394,7 @@ workflows:
             tags:
               only: /^v.*/
       - windows-test: &windows_test
+          filters: *always_run_filter
           requires:
             - yarn
       - node14-test: *windows_test
