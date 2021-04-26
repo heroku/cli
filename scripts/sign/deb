@@ -9,3 +9,6 @@ gpg --digest-algo SHA512 -abs --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HE
 echo "Signed debian packages successfully"
 echo "sha256 sums:"
 sha256sum *Release*
+
+mkdir -p /build/dist/apt
+gpg --armor --export $HEROKU_DEB_KEY_ID > /build/dist/apt/release.key
