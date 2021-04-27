@@ -10,6 +10,8 @@ update the Heroku CLI
 update the heroku CLI
 
 ```
+update the <%= config.bin %> CLI
+
 USAGE
   $ heroku update [CHANNEL]
 ```

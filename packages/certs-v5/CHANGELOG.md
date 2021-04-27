@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+
+### Features
+
+* **certs-v5:** Remove old --domains flag from certs:add ([#1781](https://github.com/heroku/cli/issues/1781)) ([12115d0](https://github.com/heroku/cli/commit/12115d0897ba89ed5984c8e1e0bfca09ff8763bb))
+
+
+
+
+
 # [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5

@@ -413,7 +413,12 @@ workflows:
           requires:
             - yarn
       - pack-windows:
-          filters: *always_run_filter
+          filters: &master_dev_and_version_tags
+            tags:
+              only: /^v.*/
+            branches:
+              only:
+                - master
           requires: &pack-requires
             - node14-test
             - node12-test
@@ -421,35 +426,30 @@ workflows:
             - windows-test
             - acceptance-test
       - pack-tarballs:
-          filters: *always_run_filter
+          filters: *master_dev_and_version_tags
           requires: *pack-requires
       - pack-deb:
-          filters: *always_run_filter
+          filters: *master_dev_and_version_tags
           requires: *pack-requires
       - sign-deb:
-          filters: *always_run_filter
+          filters: *master_dev_and_version_tags
           context:
             - heroku-cli-sign-deb
           requires:
             - pack-deb
       - store-artifacts:
-          filters: *always_run_filter
+          filters: *master_dev_and_version_tags
           requires:
             - pack-windows
             - pack-tarballs
             - sign-deb
       - release_deb_and_tarballs:
+          filters: *master_dev_and_version_tags
           context:
             - heroku-cli-s3
           requires:
             - sign-deb
             - pack-tarballs
-          filters: &master_dev_and_version_tags
-            tags:
-              only: /^v.*/
-            branches:
-              only:
-                - master
       # - release_homebrew:
       #     requires:
       #       - release_deb_and_tarballs

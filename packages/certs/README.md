@@ -20,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-certs
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-certs/7.47.13 darwin-x64 node-v12.18.4
+@heroku-cli/plugin-certs/7.53.0 darwin-x64 node-v12.14.1
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND

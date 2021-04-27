@@ -12,6 +12,9 @@ forward logs to syslog or HTTPS
 display the log drains of an app
 
 ```
+display the log drains of an app
+
+
 USAGE
   $ heroku drains
 
@@ -26,6 +29,9 @@ OPTIONS
 adds a log drain to an app
 
 ```
+adds a log drain to an app
+
+
 USAGE
   $ heroku drains:add URL
 
@@ -39,6 +45,9 @@ OPTIONS
 removes a log drain from an app
 
 ```
+removes a log drain from an app
+
+
 USAGE
   $ heroku drains:remove [URL|TOKEN]
 

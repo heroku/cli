@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+
+### Features
+
+* **redis-v5:** add JSON output to redis:info ([ddd2bba](https://github.com/heroku/cli/commit/ddd2bbae2102945ffdb293d3900f8aae925d022d))
+
+
+
+
+
 # [7.51.0](https://github.com/heroku/cli/compare/v7.50.0...v7.51.0) (2021-03-17)
 
 
