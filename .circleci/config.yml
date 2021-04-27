@@ -454,10 +454,10 @@ workflows:
       #     requires:
       #       - release_deb_and_tarballs
       #     filters: *master_dev_and_version_tags
-      - invalidate_cdn_cache:
-          requires:
-            - release_deb_and_tarballs
-          filters: *master_dev_and_version_tags
+      # - invalidate_cdn_cache:
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters: *master_dev_and_version_tags
       # - change_management: &change_management
       #     context:
       #       - heroku-cli-tps
