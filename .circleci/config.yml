@@ -16,6 +16,57 @@ orbs:
   win: circleci/windows@2.4.0
 executorType: docker
 jobs:
+  yarn:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: &yarn_setup
+          name: Setup Yarn config
+          command: |
+            mkdir -p /cli/.yarn
+            mkdir -p /cli/.yarn/offline-mirror
+            yarn config set cache-folder /cli/.yarn/cache
+            yarn config set yarn-offline-mirror /cli/.yarn/offline-mirror
+
+            mkdir -p .cache-keys
+            yarn --version >> .cache-keys/yarn-version
+            sha256sum yarn.lock >> .cache-keys/yarn-lock
+            node --version >> .cache-keys/node-version
+            sha256sum .circleci/config.yml >> .cache-keys/circleci-config
+
+            # offline mirror cache file
+            cat \
+              .cache-keys/yarn-version \
+              .cache-keys/yarn-lock \
+              .cache-keys/circleci-config \
+              > .cache-keys/yarn-offline-mirror
+
+            # yarn cache (which is separate from offline mirror) cache file
+            # but dependent on node version.
+            # Represents the final directories in yarn's cache after it un-tars
+            # tarballs from the offline-mirror AND runs install scripts.
+            cat \
+              .cache-keys/yarn-offline-mirror \
+              .cache-keys/node-version
+              > .cache-keys/yarn-cache
+      - restore_cache: &yarn_restore_cache
+          keys:
+            - v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-master
+            - v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-{{.Branch}}
+            - v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-master
+            - v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-{{.Branch}}
+      - run: &yarn_install
+          name: Installing dependencies
+          command: yarn --frozen-lockfile --prefer-offline
+      - save_cache:
+          key: v5-yarn-offline-mirror-{{checksum ".cache-keys/yarn-offline-mirror"}}-{{.Branch}}
+          paths:
+            - /cli/.yarn/offline-mirror
+      - save_cache:
+          key: v5-yarn-cache-{{checksum ".cache-keys/yarn-cache"}}-{{.Branch}}
+          paths:
+            - /cli/node_modules
+            - /cli/.yarn/cache
   acceptance-test:
     <<: *defaults
     docker:
@@ -28,14 +79,9 @@ jobs:
         type: "string"
     steps:
       - checkout
-      - restore_cache: &yarn_restore_cache
-          keys:
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}
-            - v4-yarn
-      - run:
-          name: Installing dependencies
-          command: yarn --frozen-lockfile
+      - run: *yarn_setup
+      - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run:
           name: heroku whoami
           command: ./bin/run whoami
@@ -159,11 +205,13 @@ jobs:
     resource_class: xlarge
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: &yarn_restore_cache
           keys:
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v4-yarn-{{ checksum ".circleci/config.yml" }}
-            - v4-yarn
+            - v5-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v5-yarn-{{ checksum ".circleci/config.yml" }}
+            - v5-yarn
+      - run: *yarn_install
       - run:
           name: Installing dependencies
           command: yarn --frozen-lockfile
@@ -184,6 +232,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
+      - run: *yarn_install
       - restore_cache: *yarn_restore_cache
       - run: |
           mkdir -p /build
@@ -201,7 +251,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -214,62 +266,79 @@ jobs:
           root: /cli/packages/cli
           paths:
             - dist
+  pack-deb:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: *yarn_setup
+      - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
+      - run: |
+          mkdir -p /build
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+      - run:
+          name: Building Deb package
+          command: ./scripts/pack/deb
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
+  sign-deb:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /build
+      - checkout
+      - run: *yarn_setup
+      - restore_cache: *yarn_restore_cache
+      - run:
+          name: "Signing debian"
+          command: cd /build/dist/deb && /cli/scripts/sign/deb
+      - persist_to_workspace:
+          root: /build
+          paths:
+            - dist
   store-artifacts:
     <<: *defaults
     steps:
       - attach_workspace:
           at: /build
       - checkout
+      - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
       - run:
           name: "Create SHA256 artifacts"
           command: ./scripts/hash-artifacts
       - store_artifacts:
           path: /build/dist
           destination: /
-  release_tarballs:
-    <<: *defaults
-    steps:
-      - add_ssh_keys
-      - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/tarballs
-      - save_cache:
-          key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-          paths:
-            - /cli/node_modules
-            - /cli/tmp/cache
-            - /usr/local/share/.cache/yarn
-      - run: |
-          mkdir /persisted
-          cp -r /cli/packages/cli/dist /persisted
-          cp -r /cli/packages/cli/tmp /persisted
-      - persist_to_workspace:
-          root: /persisted
-          paths:
-            - dist
-            - tmp
-  release_win:
+  release_deb_and_tarballs:
     <<: *defaults
     steps:
       - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/win
-  release_deb:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile
-          ./scripts/release/deb
+      - run: *yarn_setup
+      - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
+      - attach_workspace:
+          at: /cli/packages/cli
+      - run:
+          name: packages/cli yarn install
+          command: |
+            cp yarn.lock packages/cli
+            cd packages/cli
+            yarn --frozen-lockfile --prefer-offline
+      - run:
+          name: Upload production artifacts
+          command: |
+            cd packages/cli
+            ./scripts/release/tarballs
+            ./scripts/release/deb
+      - run:
+          name: Publish Install Scripts
+          command: /cli/scripts/postrelease/install_scripts
   trigger_macos:
     <<: *defaults
     steps:
@@ -296,12 +365,6 @@ jobs:
       - checkout
       - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
-  install_scripts:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: yarn --frozen-lockfile
-      - run: ./scripts/postrelease/install_scripts
   change_management:
     <<: *defaults
     steps:
@@ -322,31 +385,23 @@ jobs:
       - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-  release_snap:
-    docker:
-      - image: snapcore/snapcraft:stable
-        environment:
-          LC_ALL: C.UTF-8
-    steps:
-      # the snapcraft image does not include git
-      - run: apt-get -qq update; apt-get -y install git
-      - checkout
-      - run: ./scripts/release/snap
 workflows:
   version: 2.1
-  heroku_cli_tests:
+  heroku_cli:
     jobs:
-      - windows-test: &windows_test
-          filters:
-            tags: &version_tags
+      - yarn:
+          filters: &always_run_filter
+            tags:
               only: /^v.*/
-            branches:
-              ignore:
-                - master
+      - windows-test: &windows_test
+          filters: *always_run_filter
+          requires:
+            - yarn
       - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
       - acceptance-test:
+          filters: *always_run_filter
           context:
             - heroku-cli-acceptance-tests
           matrix:
@@ -355,7 +410,10 @@ workflows:
                 - "10"
                 - "12"
                 - "14"
+          requires:
+            - yarn
       - pack-windows:
+          filters: *always_run_filter
           requires: &pack-requires
             - node14-test
             - node12-test
@@ -363,86 +421,48 @@ workflows:
             - windows-test
             - acceptance-test
       - pack-tarballs:
+          filters: *always_run_filter
           requires: *pack-requires
+      - pack-deb:
+          filters: *always_run_filter
+          requires: *pack-requires
+      - sign-deb:
+          filters: *always_run_filter
+          context:
+            - heroku-cli-sign-deb
+          requires:
+            - pack-deb
       - store-artifacts:
+          filters: *always_run_filter
           requires:
             - pack-windows
             - pack-tarballs
-#   heroku_cli_release:
-#     jobs:
-#       - node14-test: &node14_test
-#           filters:
-#             branches:
-#               only:
-#                 - master
-#             tags: &version_tags
-#               only: /^v.*/
-#       - node12-test: *node14_test
-#       - node10-test: *node14_test
-#       - windows-test: *node14_test
-#       - acceptance-test:
-#           context:
-#             - heroku-cli-acceptance-tests
-#           matrix:
-#             parameters:
-#               node-version:
-#                 - "10"
-#                 - "12"
-#                 - "14"
-#       - release_tarballs: &release_tarballs
-#           requires:
-#             - node12-test
-#             - node10-test
-#             - windows-test
-#             - acceptance-test
-#           filters: &master_dev_and_version_tags
-#             tags:
-#               <<: *version_tags
-#             branches:
-#               only:
-#                 - master
-#                 - dev
-#       - release_deb: *release_tarballs
-#       - release_win: *release_tarballs
-#       - release_homebrew:
-#           requires:
-#             - release_tarballs
-#           filters: &only_version_tags
-#             branches:
-#               ignore: /.*/
-#             tags:
-#               <<: *version_tags
-# #       - trigger_macos: &trigger_macos
-# #           requires:
-# #             - node12-test
-# #             - node10-test
-# #             - windows-test
-# #           filters:
-# #             <<: *only_version_tags
-# #      - release_snap:
-# #          requires:
-# #            - node12-test
-# #            - node10-test
-# #            - windows-test
-# #          filters:
-# #            <<: *only_version_tags
-#       - invalidate_cdn_cache:
-#           requires:
-#             - install_scripts
-#           filters:
-#             <<: *master_dev_and_version_tags
-#       - install_scripts: &install_scripts
-#           requires:
-#             - release_tarballs
-#             - release_deb
-#             - release_win
-#           filters:
-#             <<: *master_dev_and_version_tags
-#       - change_management: &change_management
-#           requires:
-#             - release_tarballs
-#             - release_deb
-#             - release_win
-#           filters:
-#             <<: *only_version_tags
-#       - dev_center_docs: *change_management
+            - sign-deb
+      - release_deb_and_tarballs:
+          context:
+            - heroku-cli-s3
+          requires:
+            - sign-deb
+            - pack-tarballs
+          filters: &master_dev_and_version_tags
+            tags:
+              only: /^v.*/
+            branches:
+              only:
+                - master
+      # - release_homebrew:
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters: *master_dev_and_version_tags
+      # - invalidate_cdn_cache:
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters: *master_dev_and_version_tags
+      # - change_management: &change_management
+      #     context:
+      #       - heroku-cli-tps
+      #     requires:
+      #       - release_deb_and_tarballs
+      #     filters:
+      #       <<: *only_version_tags
+      # - dev_center_docs: *change_management
