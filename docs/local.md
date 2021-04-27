@@ -12,6 +12,9 @@ run Heroku app locally
 run heroku app locally
 
 ```
+run heroku app locally
+Start the application specified by a Procfile (defaults to ./Procfile)
+
 USAGE
   $ heroku local [PROCESSNAME]
 
@@ -33,13 +36,15 @@ EXAMPLE
   $ heroku local web=1,worker=2
 ```
 
-_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.47.13/src/commands/local/index.ts)_
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.53.0/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
 run a one-off command
 
 ```
+run a one-off command
+
 USAGE
   $ heroku local:run
 
@@ -51,15 +56,17 @@ EXAMPLE
   $ heroku local:run bin/migrate
 ```
 
-_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.47.13/src/commands/local/run.ts)_
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.53.0/src/commands/local/run.ts)_
 
 ## `heroku local:version`
 
 display node-foreman version
 
 ```
+display node-foreman version
+
 USAGE
   $ heroku local:version
 ```
 
-_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.47.13/src/commands/local/version.ts)_
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.53.0/src/commands/local/version.ts)_

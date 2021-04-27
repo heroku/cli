@@ -19,12 +19,16 @@ manage heroku redis instances
 gets information about redis
 
 ```
+gets information about redis
+
+
 USAGE
   $ heroku redis [DATABASE]
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:cli [DATABASE]`
@@ -32,6 +36,9 @@ OPTIONS
 opens a redis prompt
 
 ```
+opens a redis prompt
+
+
 USAGE
   $ heroku redis:cli [DATABASE]
 
@@ -46,6 +53,9 @@ OPTIONS
 display credentials information
 
 ```
+display credentials information
+
+
 USAGE
   $ heroku redis:credentials [DATABASE]
 
@@ -60,12 +70,16 @@ OPTIONS
 gets information about redis
 
 ```
+gets information about redis
+
+
 USAGE
   $ heroku redis:info [DATABASE]
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
@@ -73,6 +87,25 @@ OPTIONS
 set the keyspace notifications configuration
 
 ```
+set the keyspace notifications configuration
+Set the configuration to enable keyspace notification events:
+    K     Keyspace events, published with __keyspace@<db>__ prefix.
+    E     Keyevent events, published with __keyevent@<db>__ prefix.
+    g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
+    $     String commands
+    l     List commands
+    s     Set commands
+    h     Hash commands
+    z     Sorted set commands
+    t     Stream commands
+    x     Expired events (events generated every time a key expires)
+    e     Evicted events (events generated when a key is evicted for maxmemory)
+    m     Key miss events (events generated when a key that doesn't exist is accessed)
+    A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
+
+    pass an empty string ('') to disable keyspace notifications
+  
+
 USAGE
   $ heroku redis:keyspace-notifications [DATABASE]
 
@@ -105,6 +138,9 @@ DESCRIPTION
 manage maintenance windows
 
 ```
+manage maintenance windows
+Set or change the maintenance window for your Redis instance
+
 USAGE
   $ heroku redis:maintenance [DATABASE]
 
@@ -124,6 +160,19 @@ DESCRIPTION
 set the key eviction policy
 
 ```
+set the key eviction policy
+Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
+
+    noeviction      # returns errors when memory limit is reached
+    allkeys-lfu     # removes less frequently used keys first
+    volatile-lfu    # removes less frequently used keys first that have an expiry set
+    allkeys-lru     # removes less recently used keys first
+    volatile-lru    # removes less recently used keys first that have an expiry set
+    allkeys-random  # evicts random keys
+    volatile-random # evicts random keys but only those that have an expiry set
+    volatile-ttl    # only evicts keys with an expiry set and a short TTL
+  
+
 USAGE
   $ heroku redis:maxmemory [DATABASE]
 
@@ -150,6 +199,9 @@ DESCRIPTION
 sets DATABASE as your REDIS_URL
 
 ```
+sets DATABASE as your REDIS_URL
+
+
 USAGE
   $ heroku redis:promote DATABASE
 
@@ -163,6 +215,9 @@ OPTIONS
 set the number of seconds to wait before killing idle connections
 
 ```
+set the number of seconds to wait before killing idle connections
+Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be closed.
+
 USAGE
   $ heroku redis:timeout [DATABASE]
 
@@ -181,6 +236,9 @@ DESCRIPTION
 wait for Redis instance to be available
 
 ```
+wait for Redis instance to be available
+
+
 USAGE
   $ heroku redis:wait [DATABASE]
 

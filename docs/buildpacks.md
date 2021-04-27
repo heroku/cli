@@ -17,6 +17,8 @@ scripts used to compile apps
 display the buildpacks for an app
 
 ```
+display the buildpacks for an app
+
 USAGE
   $ heroku buildpacks
 
@@ -25,13 +27,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/index.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
 add new app buildpack, inserting into list of buildpacks if necessary
 
 ```
+add new app buildpack, inserting into list of buildpacks if necessary
+
 USAGE
   $ heroku buildpacks:add BUILDPACK
 
@@ -44,13 +48,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/add.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/add.ts)_
 
 ## `heroku buildpacks:clear`
 
 clear all buildpacks set on the app
 
 ```
+clear all buildpacks set on the app
+
 USAGE
   $ heroku buildpacks:clear
 
@@ -59,13 +65,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/clear.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
 fetch info about a buildpack
 
 ```
+fetch info about a buildpack
+
 USAGE
   $ heroku buildpacks:info BUILDPACK
 
@@ -73,13 +81,15 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/info.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/info.ts)_
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
 remove a buildpack set on the app
 
 ```
+remove a buildpack set on the app
+
 USAGE
   $ heroku buildpacks:remove [BUILDPACK]
 
@@ -92,13 +102,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/remove.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/remove.ts)_
 
 ## `heroku buildpacks:search [TERM]`
 
 search for buildpacks
 
 ```
+search for buildpacks
+
 USAGE
   $ heroku buildpacks:search [TERM]
 
@@ -111,11 +123,13 @@ OPTIONS
   --namespace=namespace      buildpack namespaces to filter on using a comma separated list
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/search.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/search.ts)_
 
 ## `heroku buildpacks:set BUILDPACK`
 
 ```
+undefined
+
 USAGE
   $ heroku buildpacks:set BUILDPACK
 
@@ -128,13 +142,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/set.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
 list versions of a buildpack
 
 ```
+list versions of a buildpack
+
 USAGE
   $ heroku buildpacks:versions BUILDPACK
 
@@ -142,4 +158,4 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.47.13/packages/buildpacks/src/commands/buildpacks/versions.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.53.0/packages/buildpacks/src/commands/buildpacks/versions.ts)_

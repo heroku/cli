@@ -29,6 +29,9 @@ manage heroku private spaces
 list available spaces
 
 ```
+list available spaces
+
+
 USAGE
   $ heroku spaces
 
@@ -42,6 +45,22 @@ OPTIONS
 create a new space
 
 ```
+create a new space
+Example:
+
+    $ heroku spaces:create --space my-space --team my-team --region oregon
+    Creating space my-space in team my-team... done
+    === my-space
+    ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
+    Team:       my-team
+    Region:     oregon
+    CIDR:       10.0.0.0/16
+    Data CIDR:  172.23.0.0/20
+    State:      allocating
+    Created at: 2016-01-06T03:23:13Z
+
+  
+
 USAGE
   $ heroku spaces:create
 
@@ -72,6 +91,13 @@ DESCRIPTION
 destroy a space
 
 ```
+destroy a space
+Example:
+
+    $ heroku spaces:destroy --space my-space
+    Destroying my-space... done
+
+
 USAGE
   $ heroku spaces:destroy
 
@@ -91,6 +117,9 @@ DESCRIPTION
 show info about a space
 
 ```
+show info about a space
+
+
 USAGE
   $ heroku spaces:info
 
@@ -104,6 +133,30 @@ OPTIONS
 display the information necessary to initiate a peering connection
 
 ```
+display the information necessary to initiate a peering connection
+Example:
+
+    $ heroku spaces:peering:info example-space
+    === example-space Peering Info
+    AWS Account ID:    012345678910
+    AWS Region:        us-west-2
+    AWS VPC ID:        vpc-baadf00d
+    AWS VPC CIDR:      10.0.0.0/16
+    Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
+    Unavailable CIDRs: 10.1.0.0/16
+
+You will use the information provied by this command to establish a peering connection request from your AWS VPC to your private space.
+
+To start the peering process, go into your AWS console for the VPC you would like peered with your Private Space,
+navigate to the VPC service, choose the "Peering Connections" option and click the "Create peering connection" button.
+
+- The AWS Account ID and VPC ID are necessary for the AWS VPC Peering connection wizard.
+- You will also need to configure your VPC route table to route the Dyno CIDRs through the peering connection.
+
+Once you've established the peering connection request, you can use the spaces:peerings:accept command to accept and
+configure the peering connection for the space.
+  
+
 USAGE
   $ heroku spaces:peering:info
 
@@ -141,6 +194,9 @@ DESCRIPTION
 list peering connections for a space
 
 ```
+list peering connections for a space
+
+
 USAGE
   $ heroku spaces:peerings
 
@@ -154,6 +210,13 @@ OPTIONS
 accepts a pending peering request for a private space
 
 ```
+accepts a pending peering request for a private space
+Example:
+
+    $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
+    Accepting and configuring peering connection pcx-4bd27022
+  
+
 USAGE
   $ heroku spaces:peerings:accept
 
@@ -173,6 +236,13 @@ DESCRIPTION
 destroys an active peering connection in a private space
 
 ```
+destroys an active peering connection in a private space
+Example:
+
+    $ heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
+    Tearing down peering connection pcx-4bd27022
+  
+
 USAGE
   $ heroku spaces:peerings:destroy
 
@@ -193,6 +263,9 @@ DESCRIPTION
 list dynos for a space
 
 ```
+list dynos for a space
+
+
 USAGE
   $ heroku spaces:ps
 
@@ -206,6 +279,13 @@ OPTIONS
 renames a space
 
 ```
+renames a space
+Example:
+
+    $ heroku spaces:rename --from old-space-name --to new-space-name
+    Renaming space old-space-name to new-space-name... done
+
+
 USAGE
   $ heroku spaces:rename
 
@@ -225,6 +305,9 @@ DESCRIPTION
 show space topology
 
 ```
+show space topology
+
+
 USAGE
   $ heroku spaces:topology
 
@@ -238,6 +321,13 @@ OPTIONS
 transfer a space to another team
 
 ```
+transfer a space to another team
+Example:
+
+    $ heroku spaces:transfer --space=space-name --team=team-name
+    Transferring space-name to team-name... done
+
+
 USAGE
   $ heroku spaces:transfer
 
@@ -257,6 +347,24 @@ DESCRIPTION
 display the configuration information for VPN
 
 ```
+display the configuration information for VPN
+Example:
+
+    $ heroku spaces:vpn:config --space my-space vpn-connection-name
+    === vpn-connection-name VPN Tunnels
+    VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
+    ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
+    Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
+    Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
+
+You will use the information provided by this command to establish a Private Space VPN Connection.
+
+- You must configure your VPN Gateway to use both Tunnels provided by Heroku
+- The VPN Gateway values are the IP addresses of the Private Space Tunnels
+- The Customer Gateway value is the Public IP of your VPN Gateway
+- The VPN Gateway must use the IKE Version shown and the Pre-shared Keys as the authentication method
+
+
 USAGE
   $ heroku spaces:vpn:config
 
@@ -288,6 +396,10 @@ DESCRIPTION
 create VPN
 
 ```
+create VPN
+Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
+The connection is established over the public Internet but all traffic is encrypted using IPSec.
+
 USAGE
   $ heroku spaces:vpn:connect
 
@@ -313,6 +425,16 @@ EXAMPLES
 list the VPN Connections for a space
 
 ```
+list the VPN Connections for a space
+Example:
+
+  $ heroku spaces:vpn:connections --space my-space
+  === my-space VPN Connections
+  Name    Status  Tunnels
+  ──────  ──────  ───────
+  office  active  UP/UP
+  
+
 USAGE
   $ heroku spaces:vpn:connections
 
@@ -335,6 +457,13 @@ DESCRIPTION
 destroys VPN in a private space
 
 ```
+destroys VPN in a private space
+Example:
+
+    $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
+    Tearing down VPN Connection vpn-connection-name in space example-space
+  
+
 USAGE
   $ heroku spaces:vpn:destroy
 
@@ -355,6 +484,23 @@ DESCRIPTION
 display the information for VPN
 
 ```
+display the information for VPN
+Example:
+
+    $ heroku spaces:vpn:info --space my-space vpn-connection-name
+    === vpn-connection-name VPN Tunnel Info
+    Name:           vpn-connection-name
+    ID:             123456789012
+    Public IP:      35.161.69.30
+    Routable CIDRs: 172.16.0.0/16
+    Status:         failed
+    Status Message: supplied CIDR block already in use
+    === my-space Tunnel Info
+    VPN Tunnel  IP Address     Status  Status Last Changed   Details
+    ──────────  ─────────────  ──────  ────────────────────  ──────────────
+    Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+    Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+
 USAGE
   $ heroku spaces:vpn:info
 
@@ -386,6 +532,10 @@ DESCRIPTION
 update VPN
 
 ```
+update VPN
+Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
+The connection is established over the public Internet but all traffic is encrypted using IPSec.
+
 USAGE
   $ heroku spaces:vpn:update
 
@@ -409,6 +559,9 @@ EXAMPLES
 wait for VPN Connection to be created
 
 ```
+wait for VPN Connection to be created
+
+
 USAGE
   $ heroku spaces:vpn:wait
 
@@ -425,6 +578,9 @@ OPTIONS
 wait for a space to be created
 
 ```
+wait for a space to be created
+
+
 USAGE
   $ heroku spaces:wait
 

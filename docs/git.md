@@ -11,6 +11,8 @@ manage local git repository for app
 clones a heroku app to your local machine at DIRECTORY (defaults to app name)
 
 ```
+clones a heroku app to your local machine at DIRECTORY (defaults to app name)
+
 USAGE
   $ heroku git:clone [DIRECTORY]
 
@@ -29,13 +31,17 @@ EXAMPLES
   ...
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.47.13/packages/git/src/commands/git/clone.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.53.0/packages/git/src/commands/git/clone.ts)_
 
 ## `heroku git:remote`
 
 adds a git remote to an app repo
 
 ```
+adds a git remote to an app repo
+extra arguments will be passed to git remote add
+
+
 USAGE
   $ heroku git:remote
 
@@ -55,4 +61,4 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.47.13/packages/git/src/commands/git/remote.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.53.0/packages/git/src/commands/git/remote.ts)_

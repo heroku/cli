@@ -14,6 +14,8 @@ list installed plugins
 list installed plugins
 
 ```
+list installed plugins
+
 USAGE
   $ heroku plugins
 
@@ -31,6 +33,14 @@ _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/
 installs a plugin into the CLI
 
 ```
+installs a plugin into the CLI
+Can be installed from npm or a git url.
+
+Installation of a user-installed plugin will override a core plugin.
+
+e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in the CLI without the need to patch and update the whole CLI.
+
+
 USAGE
   $ heroku plugins:install PLUGIN...
 
@@ -67,6 +77,12 @@ _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/
 links a plugin into the CLI for development
 
 ```
+links a plugin into the CLI for development
+Installation of a linked plugin will override a user-installed or core plugin.
+
+e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' command will override the user-installed or core plugin implementation. This is useful for development work.
+
+
 USAGE
   $ heroku plugins:link PLUGIN
 
@@ -94,6 +110,8 @@ _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/
 removes a plugin from the CLI
 
 ```
+removes a plugin from the CLI
+
 USAGE
   $ heroku plugins:uninstall PLUGIN...
 
@@ -116,6 +134,8 @@ _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/
 update installed plugins
 
 ```
+update installed plugins
+
 USAGE
   $ heroku plugins:update
 
