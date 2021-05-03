@@ -315,7 +315,7 @@ jobs:
       - store_artifacts:
           path: /build/dist
           destination: /
-  release_deb_and_tarballs:
+  release-deb-and-tarballs:
     <<: *defaults
     steps:
       - checkout
@@ -346,7 +346,7 @@ jobs:
       - checkout
       - run: yarn --frozen-lockfile
       - run: ./scripts/release/macos_installer_trigger
-  release_homebrew:
+  release-homebrew:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -359,20 +359,20 @@ jobs:
           yarn --frozen-lockfile
           cp -r /build/dist /cli/packages/cli
           ./scripts/release/homebrew.js
-  invalidate_cdn_cache:
+  invalidate-cdn-cache:
     <<: *defaults
     steps:
       - checkout
       - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
-  change_management:
+  change-management:
     <<: *defaults
     steps:
       - checkout
       - run: |
           yarn --frozen-lockfile
           ./scripts/postrelease/change_management
-  dev_center_docs:
+  dev-center-docs:
     docker: &devdocs_docker
       - image: heroku/devcenter
         environment:
@@ -414,7 +414,7 @@ workflows:
             - yarn
       - pack-windows:
           filters: &master_dev_and_version_tags
-            tags:
+            tags: &version_tags
               only: /^v.*/
             branches:
               only:
@@ -443,26 +443,29 @@ workflows:
             - pack-windows
             - pack-tarballs
             - sign-deb
-      - release_deb_and_tarballs:
+      - release-deb-and-tarballs:
           filters: *master_dev_and_version_tags
           context:
             - heroku-cli-s3
           requires:
             - sign-deb
             - pack-tarballs
-      # - release_homebrew:
-      #     requires:
-      #       - release_deb_and_tarballs
-      #     filters: *master_dev_and_version_tags
-      # - invalidate_cdn_cache:
-      #     requires:
-      #       - release_deb_and_tarballs
-      #     filters: *master_dev_and_version_tags
-      # - change_management: &change_management
-      #     context:
-      #       - heroku-cli-tps
-      #     requires:
-      #       - release_deb_and_tarballs
-      #     filters:
-      #       <<: *only_version_tags
-      # - dev_center_docs: *change_management
+      - invalidate-cdn-cache:
+          filters: *master_dev_and_version_tags
+          requires:
+            - release-deb-and-tarballs
+      - release-homebrew:
+          filters: &tags_only
+            tags: *version_tags
+            branches: &never_run_on_branches
+              ignore: /.*/
+          context:
+            - heroku-cli-s3
+          requires:
+            - invalidate-cdn-cache
+      - change-management: &change_management
+          filters: *tags_only
+          context:
+            - heroku-cli-tps
+          requires:
+            - release-deb-and-tarballs
