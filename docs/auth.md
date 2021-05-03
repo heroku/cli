@@ -58,7 +58,7 @@ USAGE
   $ heroku auth:login
 
 OPTIONS
-  -e, --expires-in=expires-in  duration of token in seconds (default 1 year)
+  -e, --expires-in=expires-in  duration of token in seconds (default 30 days)
   -i, --interactive            login with username/password
   --browser=browser            browser to open SSO with (example: "firefox", "safari")
 

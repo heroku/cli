@@ -11,7 +11,7 @@ export default class Login extends Command {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     sso: flags.boolean({hidden: true, char: 's', description: 'login for enterprise users under SSO'}),
     interactive: flags.boolean({char: 'i', description: 'login with username/password'}),
-    'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 1 year)'}),
+    'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),
   }
 
   async run() {
