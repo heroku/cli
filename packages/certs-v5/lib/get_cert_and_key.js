@@ -21,5 +21,9 @@ async function getFilesBypass(context) {
 
 module.exports = async function (context) {
   if (context.args.length < 2) usageError()
+  if (context.flags.bypass) {
+    cli.warn('use of the --bypass flag is deprecated. The flag currently does not perform any additional behavior. Please remove --bypass')
+  }
+
   return await getFilesBypass(context);
 }

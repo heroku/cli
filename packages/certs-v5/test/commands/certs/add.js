@@ -1206,4 +1206,41 @@ ${certificateDetails}
 `)
     })
   })
+
+  it('warns on deprecated --bypass flag', function () {
+    nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/features')
+      .reply(200, [])
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/addons/ssl%3Aendpoint')
+      .reply(404, {
+        'id': 'not_found',
+        'resource': 'addon'
+      })
+
+    mockDomains(inquirer)
+
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
+
+    let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint)
+
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
+      mock.done()
+      expect(cli.stderr).to.equal(
+        ` ▸    use of the --bypass flag is deprecated. The flag currently does not
+ ▸    perform any additional behavior. Please remove --bypass
+Adding SSL certificate to example... done
+`)
+      })
+  })
 })
