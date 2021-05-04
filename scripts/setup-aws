@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+apt-get update
+apt-get install -y --no-recommends python3 python3-setuptools python3-pip
+
+echo "installing AWS CLI through Python pip:"
+set +x
+pip3 install awscli --upgrade
+set -x
+
+echo "configuring cloudfront"
+aws configure set preview.cloudfront true

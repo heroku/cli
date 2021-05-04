@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     HEROKU_AUTHOR: Heroku
   docker:
-    - image: oclif/nsis:12.0.0-16
+    - image: node:12
       environment: &env
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
@@ -198,10 +198,15 @@ jobs:
       - run:
           name: Test and Lint
           command: yarn --cwd packages/webhooks test
-  node12-test: &test
+  test:
     <<: *defaults
+    parameters:
+      node-version:
+        type: string
     docker:
-      - image: node:12
+      - image: node:<< parameters.node-version >>
+        environment:
+          <<: *env
     resource_class: xlarge
     steps:
       - checkout
@@ -218,20 +223,13 @@ jobs:
       - run:
           name: Running all tests
           command: yarn test
-  node10-test:
-    <<: *test
-    docker:
-      - image: node:10
-    resource_class: xlarge
-  node14-test:
-    <<: *test
-    docker:
-      - image: node:14
-    resource_class: xlarge
   pack-windows:
     <<: *defaults
     steps:
       - checkout
+      - run: &setup_nsis
+          name: "Setup NSIS dependencies (scripts/setup-nsis)"
+          command: ./scripts/setup-nsis
       - run: *yarn_setup
       - run: *yarn_install
       - restore_cache: *yarn_restore_cache
@@ -251,6 +249,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *setup_nsis
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
@@ -270,6 +269,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *setup_nsis
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
@@ -291,6 +291,7 @@ jobs:
       - attach_workspace:
           at: /build
       - checkout
+      - run: *setup_nsis
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run:
@@ -319,6 +320,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *setup_nsis
+      - run: &setup_aws
+          name: Setup AWS CLI (./scripts/setup-aws)
+          command: ./scripts/setup-aws
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
@@ -363,6 +368,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run: *setup_nsis
+      - run: *setup_aws
       - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
   change-management:
@@ -393,25 +400,27 @@ workflows:
           filters: &always_run_filter
             tags:
               only: /^v.*/
-      - windows-test: &windows_test
+      - test:
           filters: *always_run_filter
-          requires:
+          requires: &yarn_requires
             - yarn
-      - node14-test: *windows_test
-      - node12-test: *windows_test
-      - node10-test: *windows_test
+          matrix:
+            parameters:
+              node-version: &node_versions
+                - "10"
+                - "12"
+                - "14"
+      - windows-test:
+          filters: *always_run_filter
+          requires: *yarn_requires
       - acceptance-test:
           filters: *always_run_filter
           context:
             - heroku-cli-acceptance-tests
           matrix:
             parameters:
-              node-version:
-                - "10"
-                - "12"
-                - "14"
-          requires:
-            - yarn
+              node-version: *node_versions
+          requires: *yarn_requires
       - pack-windows:
           filters: &master_dev_and_version_tags
             tags: &version_tags
@@ -420,9 +429,7 @@ workflows:
               only:
                 - master
           requires: &pack-requires
-            - node14-test
-            - node12-test
-            - node10-test
+            - test
             - windows-test
             - acceptance-test
       - pack-tarballs:
