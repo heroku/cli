@@ -452,6 +452,8 @@ workflows:
             - pack-tarballs
       - invalidate-cdn-cache:
           filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-s3
           requires:
             - release-deb-and-tarballs
       - release-homebrew:
