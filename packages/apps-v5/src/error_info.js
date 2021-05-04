@@ -95,6 +95,11 @@ module.exports = [
     'level': 'warning'
   },
   {
+    'name': 'H31',
+    'title': 'Misdirected Request',
+    'level': 'critical'
+  },
+  {
     'name': 'H80',
     'title': 'Maintenance Mode',
     'level': 'warning'
