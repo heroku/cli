@@ -243,7 +243,6 @@ class Tunnel {
 async function exec (db, query, cmdArgs=[]) {
   const configs = bastion.getConfigs(db)
   const options = psqlQueryOptions(query, configs.dbEnv, cmdArgs)
-
   return runWithTunnel(db, configs.dbTunnelConfig, options)
 }
 
