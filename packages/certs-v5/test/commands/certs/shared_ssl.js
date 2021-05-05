@@ -112,7 +112,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, name: 'tokyo-1050', confirm: 'example' } })).then(function () {
+      return assertExit(1, certs.run({ app: 'example', args: args, flags: { name: 'tokyo-1050', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
         expect(unwrap(cli.stderr)).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket\n')

@@ -53,74 +53,12 @@ describe('heroku certs:update', function () {
     mockFile(fs, 'key_file', 'key content')
 
     var thrown = false
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'notexample', bypass: true } }).catch(function (err) {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
       expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
       expect(thrown).to.equal(true)
     })
-  })
-
-  it('# updates an endpoint when ssl doctor passes', function () {
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '23'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey content')
-      .reply(200, { pem: 'pem content', key: 'key content' })
-
-    let mock = nock('https://api.heroku.com')
-      .patch('/apps/example/sni-endpoints/tokyo-1050', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpointStable)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { name: 'tokyo-1050', confirm: 'example' } }).then(function () {
-      sslDoctor.done()
-      mock.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nUpdating SSL certificate tokyo-1050 for example... done\n')
-      expect(cli.stdout).to.equal(
-        `Updated certificate details:
-${certificateDetails}
-`)
-    })
-  })
-
-  it('# posts intermediaries to ssl doctor', function () {
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'int_file', 'int content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '35'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nint content\nkey content')
-      .reply(200, { pem: 'pem content\nint content', key: 'key content' })
-
-    let mock = nock('https://api.heroku.com')
-      .patch('/apps/example/sni-endpoints/tokyo-1050', {
-        certificate_chain: 'pem content\nint content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: { confirm: 'example' } }).then(function () {
-      sslDoctor.done()
-      mock.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nUpdating SSL certificate tokyo-1050 for example... done\n')
-      expect(cli.stdout).to.equal(
-        `Updated certificate details:
-${certificateDetails}
-`)
-    })
-    /* eslint-enable no-irregular-whitespace */
   })
 
   it('# errors out when args < 2', function () {
@@ -134,32 +72,7 @@ ${certificateDetails}
     })
   })
 
-  it('# propegates ssl doctor errors', function () {
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '23'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey content')
-      .reply(422, 'No certificate given is a domain name certificate.')
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'example' } })
-      .then(function () {
-        expect.fail('Expected exception')
-      })
-      .catch(function (err) {
-        sslDoctor.done()
-        expect(cli.stdout).to.equal('')
-        expect(cli.stderr).to.equal('Resolving trust chain... !\n')
-        expect(err.message).to.equal('No certificate given is a domain name certificate.')
-      })
-  })
-
-  it('# bypasses ssl doctor', function () {
+  it('# can run', function () {
     mockFile(fs, 'pem_file', 'pem content')
     mockFile(fs, 'key_file', 'key content')
 
@@ -169,7 +82,7 @@ ${certificateDetails}
       })
       .reply(200, endpointStable)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, confirm: 'example' } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'example' } }).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 for example... done\n')
       expect(cli.stdout).to.equal(
@@ -179,12 +92,12 @@ ${certificateDetails}
     })
   })
 
-  it('# bypass errors out with intermediaries', function () {
+  it('# errors out with intermediaries', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: { bypass: true } })).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} })).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
@@ -200,7 +113,7 @@ ${certificateDetails}
       })
       .reply(200, endpointWarning)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, confirm: 'example' } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'example' } }).then(function () {
       mock.done()
       expect(unwrap(cli.stderr)).to.equal('Updating SSL certificate tokyo-1050 for example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n')
     })
@@ -235,15 +148,15 @@ ${certificateDetails}
     }
 
     shared.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { bypass: true, confirm: 'example' }
+      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
     })
 
     sharedSsl.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { bypass: true, confirm: 'example' }
+      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
     })
 
     sharedSni.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { bypass: true, confirm: 'example' }
+      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
     })
   })
 })
@@ -287,7 +200,7 @@ describe('heroku certs:update (dogwood)', function () {
       })
       .reply(200, endpointStable)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { name: 'tokyo-1050', confirm: 'example', bypass: true } }).then(function () {
+    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { name: 'tokyo-1050', confirm: 'example' } }).then(function () {
       mockSni.done()
       mockPut.done()
       expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 for example... done\n')

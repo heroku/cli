@@ -4,7 +4,6 @@ let cli = require('heroku-cli-util')
 
 let error = require('../../lib/error.js')
 let readFile = require('../../lib/read_file.js')
-let sslDoctor = require('../../lib/ssl_doctor.js')
 
 async function run(context) {
   if (context.args.length === 0) {
@@ -13,7 +12,6 @@ async function run(context) {
 
   let res = await Promise.all(context.args.map(function (arg) { return readFile(arg) }))
 
-  let body = await sslDoctor('resolve-chain', res)
   cli.console.writeLog(body)
 }
 

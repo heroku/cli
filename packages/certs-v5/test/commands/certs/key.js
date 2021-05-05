@@ -33,32 +33,4 @@ describe('heroku certs:key', function () {
       expect(cli.stdout).to.equal('')
     })
   })
-
-  it('# posts all certs to ssl doctor', function () {
-    fs.readFile
-      .withArgs('a_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('b_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key a content')
-    fs.readFile
-      .withArgs('c_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key b content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '39'
-      }
-    })
-      .post('/resolve-chain-and-key', 'pem content\nkey a content\nkey b content')
-      .reply(200, { pem: 'pem content', key: 'key b content' })
-
-    return certs.run({ app: 'example', args: ['a_file', 'b_file', 'c_file'] }).then(function () {
-      sslDoctor.done()
-      expect(cli.stderr).to.equal('Testing for signing key... done\n')
-      expect(cli.stdout).to.equal(
-        'key b content')
-    })
-  })
 })

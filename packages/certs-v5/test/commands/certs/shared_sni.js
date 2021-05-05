@@ -76,7 +76,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint, endpointCname])
 
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
+      return assertExit(1, certs.run({ app: 'example', args: args, flags: { endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
         expect(unwrap(cli.stderr)).to.equal('Must pass --name when more than one endpoint matches --endpoint\n')
@@ -130,7 +130,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, name: 'tokyo-1050', confirm: 'example' } })).then(function () {
+      return assertExit(1, certs.run({ app: 'example', args: args, flags: { name: 'tokyo-1050', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
         expect(unwrap(cli.stderr)).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket\n')
