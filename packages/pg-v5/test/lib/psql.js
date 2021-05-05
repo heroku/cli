@@ -123,6 +123,41 @@ describe('psql', () => {
       expect(output, 'to equal', NOW_OUTPUT)
     })
 
+    it('runs psql with supplied args', async () => {
+      const expectedEnv = Object.freeze({
+        PGAPPNAME: 'psql non-interactive',
+        PGSSLMODE: 'prefer',
+        PGUSER: 'jeff',
+        PGPASSWORD: 'pass',
+        PGDATABASE: 'mydb',
+        PGPORT: 5432,
+        PGHOST: 'localhost'
+      })
+
+      const mock = mockSpawn(
+        'psql',
+        ['-c', 'SELECT NOW();', '--set', 'sslmode=require', '-t', '-q'],
+        {
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'inherit'],
+          env: expectedEnv
+        }
+      )
+
+      mock.callsFake(() => {
+        fakePsqlProcess.start()
+        return fakePsqlProcess
+      })
+
+      const promise = psql.exec(db, 'SELECT NOW();', ['-t', '-q'])
+      await fakePsqlProcess.waitForStart()
+      mock.verify()
+      fakePsqlProcess.stdout.write(NOW_OUTPUT)
+      await fakePsqlProcess.simulateExit(0)
+      const output = await ensureFinished(promise)
+      expect(output, 'to equal', NOW_OUTPUT)
+    })
+
     it('runs psql and throws an error if psql exits with exit code > 0', async () => {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
@@ -184,7 +219,7 @@ describe('psql', () => {
           fakePsqlProcess.start()
           return fakePsqlProcess
         })
-        const promise = psql.exec(bastionDb, 'SELECT NOW();', 1000)
+        const promise = psql.exec(bastionDb, 'SELECT NOW();')
         await fakePsqlProcess.waitForStart()
         mock.verify()
         expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)
@@ -213,7 +248,7 @@ describe('psql', () => {
           return fakePsqlProcess
         })
 
-        const promise = psql.exec(bastionDb, 'SELECT NOW();', 1000)
+        const promise = psql.exec(bastionDb, 'SELECT NOW();')
         await fakePsqlProcess.waitForStart()
         mock.verify()
         expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)
@@ -244,7 +279,7 @@ describe('psql', () => {
           return fakePsqlProcess
         })
 
-        const execPromise = psql.exec(bastionDb, 'SELECT NOW();', 1000)
+        const execPromise = psql.exec(bastionDb, 'SELECT NOW();')
         await fakePsqlProcess.waitForStart()
         mock.verify()
         expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)
@@ -313,7 +348,7 @@ describe('psql', () => {
         return fakePsqlProcess
       })
 
-      const promise = psql.execFile(bastionDb, 'test.sql', 1000)
+      const promise = psql.execFile(bastionDb, 'test.sql')
       await fakePsqlProcess.waitForStart()
       mock.verify()
       expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true)

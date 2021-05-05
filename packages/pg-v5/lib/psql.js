@@ -8,10 +8,10 @@ const finished = util.promisify(Stream.finished)
 const bastion = require('./bastion')
 const debug = require('./debug')
 
-function psqlQueryOptions (query, dbEnv) {
+function psqlQueryOptions (query, dbEnv, cmdArgs=[]) {
   debug('Running query: %s', query.trim())
 
-  const psqlArgs = ['-c', query, '--set', 'sslmode=require']
+  const psqlArgs = ['-c', query, '--set', 'sslmode=require'].concat(cmdArgs)
 
   const childProcessOptions = {
     encoding: 'utf8',
@@ -240,10 +240,9 @@ class Tunnel {
   }
 }
 
-async function exec (db, query) {
+async function exec (db, query, cmdArgs=[]) {
   const configs = bastion.getConfigs(db)
-  const options = psqlQueryOptions(query, configs.dbEnv)
-
+  const options = psqlQueryOptions(query, configs.dbEnv, cmdArgs)
   return runWithTunnel(db, configs.dbTunnelConfig, options)
 }
 
