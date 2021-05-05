@@ -1236,11 +1236,8 @@ ${certificateDetails}
 
     return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } }).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal(
-        ` ▸    use of the --bypass flag is deprecated. The flag currently does not
- ▸    perform any additional behavior. Please remove --bypass
-Adding SSL certificate to example... done
-`)
+      expect(cli.stderr).to.include('use of the --bypass flag is deprecated.')
+      expect(cli.stderr).to.include('Adding SSL certificate to example... done')
       })
   })
 })
