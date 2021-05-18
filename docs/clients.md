@@ -25,7 +25,7 @@ OPTIONS
   -j, --json  output in json format
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/index.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/index.js)_
 
 ## `heroku clients:create NAME REDIRECT_URI`
 
@@ -43,7 +43,7 @@ OPTIONS
   -s, --shell  output in shell format
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/create.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/create.js)_
 
 ## `heroku clients:destroy ID`
 
@@ -57,7 +57,7 @@ USAGE
   $ heroku clients:destroy ID
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/destroy.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/destroy.js)_
 
 ## `heroku clients:info ID`
 
@@ -75,7 +75,7 @@ OPTIONS
   -s, --shell  output in shell format
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/info.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/info.js)_
 
 ## `heroku clients:rotate ID`
 
@@ -93,7 +93,7 @@ OPTIONS
   -s, --shell  output in shell format
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/rotate.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/rotate.js)_
 
 ## `heroku clients:update ID`
 
@@ -111,4 +111,4 @@ OPTIONS
   --url=url        change the client redirect URL
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.53.0/packages/oauth-v5/lib/commands/clients/update.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.54.0/packages/oauth-v5/lib/commands/clients/update.js)_

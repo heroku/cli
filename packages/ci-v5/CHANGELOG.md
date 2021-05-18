@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **ci-v5:** remove co-wait ([f1e0a08](https://github.com/heroku/cli/commit/f1e0a0865277e13aaa533db9c943130860b8106a))
+
+
+
+
+
 # [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci-v5

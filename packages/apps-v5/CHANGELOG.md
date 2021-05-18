@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **apps-v5:** get pipeline stage from `pipeline_coupling` ([fbb68c1](https://github.com/heroku/cli/commit/fbb68c1de00cae64f07e2324c3fcb097ca6016a4))
+* **apps-v5:** Improve UX of stack:set command output ([#1771](https://github.com/heroku/cli/issues/1771)) ([2949f1d](https://github.com/heroku/cli/commit/2949f1dc1447bf145656f489bb81eadc3044d54f))
+
+
+### Features
+
+* **ps-v5:** Add total dynos table to ps:type output ([8bb3569](https://github.com/heroku/cli/commit/8bb3569865adb41c5aeaca08b8ae0f1fd61e1629))
+
+
+
+
+
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5

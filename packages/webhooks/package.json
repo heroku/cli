@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-webhooks",
   "description": "Heroku CLI plugin to manage webhooks",
-  "version": "7.53.0",
+  "version": "7.54.0",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {

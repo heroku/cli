@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **pg-v5:** remove co-wait ([85ea0c2](https://github.com/heroku/cli/commit/85ea0c2c9113b0b53c87d6925b5fb3e8220a7f74))
+
+
+### Features
+
+* **pg-v5:** add burst checks, json output to diagnose ([c9c6f97](https://github.com/heroku/cli/commit/c9c6f979680bf79ea5dd1bf3cdfdde41b6da702b))
+
+
+
+
+
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pg-v5
