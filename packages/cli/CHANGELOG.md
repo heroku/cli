@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Features
+
+* upgrade node to 12.21.0 ([fb27477](https://github.com/heroku/cli/commit/fb274776ea5ed28d31cb8a53e6cfb6819e6ef4a9))
+
+
+
+
+
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package heroku

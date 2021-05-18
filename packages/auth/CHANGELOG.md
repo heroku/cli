@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Features
+
+* **auth:** Update auth:2fa:disable ([57e1d00](https://github.com/heroku/cli/commit/57e1d00e9de9a65fd12efedb17e67ac79abdbcff)), closes [/salesforce.quip.com/JYsuAbKPJa0W#UaWABAZB3C9](https://github.com//salesforce.quip.com/JYsuAbKPJa0W/issues/UaWABAZB3C9)
+
+
+
+
+
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth

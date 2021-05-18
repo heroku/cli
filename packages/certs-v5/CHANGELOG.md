@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **certs-v5:** remove co-wait ([411d7e8](https://github.com/heroku/cli/commit/411d7e8cb2791f5b236b796f5bd62f4c4d40b64a))
+
+
+### Features
+
+* **certs-v5:** Remove old --domains flag from certs:add ([#1781](https://github.com/heroku/cli/issues/1781)) ([12115d0](https://github.com/heroku/cli/commit/12115d0897ba89ed5984c8e1e0bfca09ff8763bb))
+
+
+
+
+
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5
