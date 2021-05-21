@@ -30,6 +30,7 @@ export default class Run extends Command {
     'no-tty': flags.boolean({description: 'force the command to not run in a tty'}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
     'no-notify': flags.boolean({description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)'}),
+    timeout: flags.boolean({description: 'sets a timeout on the command in seconds'}),
   }
 
   async run() {
@@ -45,6 +46,7 @@ export default class Run extends Command {
       heroku: this.heroku,
       listen: flags.listen,
       notify: !flags['no-notify'],
+      timeout: flags.timeout,
       size: flags.size,
       type: flags.type,
     }

@@ -40,6 +40,7 @@ interface DynoOpts {
   showStatus?: boolean;
   size?: string;
   type?: string;
+  timeout: number;
 }
 
 export default class Dyno extends Duplex {
@@ -169,7 +170,7 @@ export default class Dyno extends Duplex {
       const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
         rejectUnauthorized: this.heroku.options.rejectUnauthorized,
       })
-      c.setTimeout(1000 * 60 * 60)
+      c.setTimeout(1000 * this.opts.timeout)
       c.setEncoding('utf8')
       c.on('connect', () => {
         debug('connect')
