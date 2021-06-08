@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.54.1](https://github.com/heroku/cli/compare/v7.54.0...v7.54.1) (2021-06-08)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 
