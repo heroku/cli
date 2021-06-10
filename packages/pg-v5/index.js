@@ -52,6 +52,7 @@ exports.commands = flatten([
   require('./commands/settings/log_statement'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
+  require('./commands/upgrade/wait'),
   require('./commands/vacuum_stats'),
   require('./commands/wait')
 ])
