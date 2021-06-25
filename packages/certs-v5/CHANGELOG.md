@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.55.0](https://github.com/heroku/cli/compare/v7.54.1...v7.55.0) (2021-06-25)
+
+
+### Features
+
+* **certs-v5:** Add display name to certs table ([#1826](https://github.com/heroku/cli/issues/1826)) ([c911f99](https://github.com/heroku/cli/commit/c911f99726e0e7f6a8d3d7931e9042280766864c))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 
