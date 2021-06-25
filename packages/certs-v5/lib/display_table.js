@@ -32,6 +32,7 @@ module.exports = function (certs) {
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
       common_names: f.ssl_cert.cert_domains.join(', '),
+      display_name: f.display_name,
     }
 
     // If they're using ACM it's not really worth showing the number of associated domains since
@@ -44,8 +45,12 @@ module.exports = function (certs) {
   })
 
   let columns = [
-    {label: 'Name', key: 'name'}
+    {label: 'Name', key: 'name'},
   ]
+
+  if (certs.some(cert => cert.display_name)) {
+    columns.push({label: 'Display Name', key: 'display_name'});
+  }
 
   if (_.find(mapped, (row) => row.cname)) {
     columns = columns.concat([{label: 'Endpoint', key: 'cname', format: function (f) { return f || '(Not applicable for SNI)' }}])

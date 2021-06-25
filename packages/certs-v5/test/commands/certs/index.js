@@ -36,10 +36,33 @@ describe('heroku certs', function () {
         expect(cli.stderr).to.equal('')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
+          `Name        Display Name   Endpoint                  Common Name(s)  Expires               Trusted  Type      Domains
+──────────  ─────────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────  ───────
+akita-7777                 akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint  0
+tokyo-1050  my-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False    Endpoint  0
+`)
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('does not display name if there is not any', function () {
+      let mockSni = nock('https://api.heroku.com')
+        .get('/apps/example/sni-endpoints')
+        .reply(200, [])
+
+      let mockSsl = nock('https://api.heroku.com')
+        .get('/apps/example/ssl-endpoints')
+        .reply(200, [endpoint2])
+
+      return certs.run({ app: 'example' }).then(function () {
+        mockSni.done()
+        mockSsl.done()
+        expect(cli.stderr).to.equal('')
+        /* eslint-disable no-trailing-spaces */
+        expect(cli.stdout).to.equal(
           `Name        Endpoint                  Common Name(s)  Expires               Trusted  Type      Domains
 ──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────  ───────
 akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint  0
-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False    Endpoint  0
 `)
         /* eslint-enable no-trailing-spaces */
       })
