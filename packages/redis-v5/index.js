@@ -8,7 +8,8 @@ exports.commands = [
   require('./commands/timeout'),
   require('./commands/maxmemory'),
   require('./commands/maintenance'),
-  require('./commands/keyspace-notifications')
+  require('./commands/keyspace-notifications'),
+  require('./commands/stats-reset'),
 ]
 
 exports.topic = {
