@@ -29,6 +29,7 @@ To publish new versions, see
 * [`heroku redis:maintenance [DATABASE]`](#heroku-redismaintenance-database)
 * [`heroku redis:maxmemory [DATABASE]`](#heroku-redismaxmemory-database)
 * [`heroku redis:promote DATABASE`](#heroku-redispromote-database)
+* [`heroku redis:stats-reset [DATABASE]`](#heroku-redisstats-reset-database)
 * [`heroku redis:timeout [DATABASE]`](#heroku-redistimeout-database)
 * [`heroku redis:wait [DATABASE]`](#heroku-rediswait-database)
 
@@ -176,6 +177,20 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+```
+
+## `heroku redis:stats-reset [DATABASE]`
+
+reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
+
+```
+USAGE
+  $ heroku redis:stats-reset [DATABASE]
+
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -c, --confirm=confirm
+  -r, --remote=remote    git remote of app to use
 ```
 
 ## `heroku redis:timeout [DATABASE]`

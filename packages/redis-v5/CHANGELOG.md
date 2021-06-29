@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.56.0](https://github.com/heroku/cli/compare/v7.55.0...v7.56.0) (2021-06-29)
+
+
+### Features
+
+* **redis-v5:** add redis:stats-reset command ([#1830](https://github.com/heroku/cli/issues/1830)) ([b983ed8](https://github.com/heroku/cli/commit/b983ed8840741e7adf5c2b4ba37e93e2ae1a3947))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 
