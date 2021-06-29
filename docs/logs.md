@@ -35,4 +35,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.56.0/src/commands/logs.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.57.0/src/commands/logs.ts)_
