@@ -274,6 +274,11 @@ export default class Dyno extends Duplex {
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
+      // Debug SSH
+      if (this._isDebug()) {
+        params.push('-vvv')
+      }
+
       const stdio: Array<(number | 'pipe')> = [0, 1, 'pipe']
       if (this.opts['exit-code']) {
         stdio[1] = 'pipe'
