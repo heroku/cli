@@ -21,7 +21,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/oauth-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.22.1",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11"
   },
