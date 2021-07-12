@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.56.1](https://github.com/heroku/cli/compare/v7.56.0...v7.56.1) (2021-07-12)
+
+
+### Bug Fixes
+
+* **pg-v5:** add an environment variable for which addon service to resolve ([40d212d](https://github.com/heroku/cli/commit/40d212d98ecce4b9c918735b711104862a04b263))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 
