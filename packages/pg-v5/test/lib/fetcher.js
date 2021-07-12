@@ -31,11 +31,21 @@ describe('fetcher', () => {
 
   afterEach(() => {
     api.done()
+    delete process.env.HEROKU_POSTGRESQL_ADDON_NAME
   })
 
   describe('addon', () => {
     it('returns addon attached to app', () => {
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve({ addon: { name: 'postgres-1' } }))
+      return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
+        .then(addon => {
+          expect(addon.name).to.equal('postgres-1')
+        })
+    })
+
+    it('returns addon attached to app in another shogun', () => {
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', { addon_service: 'heroku-postgresql-meta', namespace: null }).returns(Promise.resolve({ addon: { name: 'postgres-1' } }))
+      process.env.HEROKU_POSTGRESQL_ADDON_NAME = 'heroku-postgresql-meta'
       return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
         .then(addon => {
           expect(addon.name).to.equal('postgres-1')

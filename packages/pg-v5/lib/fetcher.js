@@ -15,7 +15,9 @@ module.exports = heroku => {
 
       debug(`fetching ${db} on ${app}`)
 
-      return resolve.appAttachment(heroku, app, db, { addon_service: 'heroku-postgresql', namespace: namespace })
+      let addonService = process.env.HEROKU_POSTGRESQL_ADDON_NAME || 'heroku-postgresql'
+      debug(`addon service: ${addonService}`)
+      return resolve.appAttachment(heroku, app, db, { addon_service: addonService, namespace: namespace })
         .then(attached => ({ matches: [attached] }))
         .catch(function (err) {
           if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
