@@ -18,7 +18,8 @@ async function run (context, heroku) {
     env: context.flags.env,
     'no-tty': context.flags['no-tty'],
     attach: true,
-    listen: context.flags.listen
+    listen: context.flags.listen,
+    timeout: context.flags['timeout']
   }
   if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
 
@@ -53,7 +54,8 @@ Running myscript.sh -a arg1 -s arg2 on app.... up, run.1`,
     { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
     { name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false },
     { name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true },
-    { name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false }
+    { name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false },
+    { name: 'timeout', int: 3600, description: 'sets a timeout on the command in seconds', hasValue: true }
   ],
   run: cli.command(run)
 }

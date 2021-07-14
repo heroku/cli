@@ -33,6 +33,7 @@ class Dyno extends Duplex {
     this.cork()
     this.opts = opts
     this.heroku = opts.heroku
+    this.timeout = opts.timeout
     if (this.opts.showStatus === undefined) this.opts.showStatus = true
   }
 
@@ -114,7 +115,7 @@ class Dyno extends Duplex {
 
       if (this.opts.showStatus) cli.action.status(this._status('starting'))
       let c = tls.connect(this.uri.port, this.uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
-      c.setTimeout(1000 * 60 * 60)
+      c.setTimeout(1000 * timeout)
       c.setEncoding('utf8')
       c.on('connect', () => {
         debug('connect')
