@@ -2,6 +2,8 @@ const cli = require('heroku-cli-util')
 const debug = require('../lib/debug')
 const streamer = require('../lib/streamer')
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
     ${cli.color.cmd('heroku container:release web')}                       # Releases the previously pushed web process type
@@ -93,17 +95,23 @@ let release = async function (context, heroku) {
     return
   }
 
-  if (release.status === 'failed') {
+  let releaseStatus = release.status
+
+  if (releaseStatus === 'failed') {
     cli.exit(1, 'Error: release command failed')
-  } else if ((release.status === 'pending') && release.output_stream_url) {
+  } else if ((releaseStatus === 'pending') && release.output_stream_url) {
     cli.log('Running release command...')
     await streamer(release.output_stream_url, process.stdout)
 
-    let finishedRelease = await heroku.request({
-      path: `/apps/${context.app}/releases/${release.id}`
-    })
+    while (releaseStatus === 'pending') {
+      releaseStatus = await heroku.request({
+        path: `/apps/${context.app}/releases/${release.id}`
+      }).then(release => release.status)
 
-    if (finishedRelease.status === 'failed') {
+      if (releaseStatus === 'pending') { await wait(200) }
+    }
+
+    if (releaseStatus === 'failed') {
       cli.exit(1, 'Error: release command failed')
     }
   }
