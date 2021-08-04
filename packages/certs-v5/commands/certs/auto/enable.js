@@ -1,7 +1,8 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let { waitForDomains, printDomains } = require('../../../lib/domains')
+let { waitForDomains, printDomains, waitForCertIssuedOnDomains } = require('../../../lib/domains')
+const { notify } = require('../../../lib/notify')
 
 async function enable (context, heroku) {
   const domains = await heroku.get(`/apps/${context.app}/domains`, {
@@ -21,6 +22,11 @@ async function enable (context, heroku) {
 
 async function run (context, heroku) {
   let domainsBeforeEnable = await cli.action('Enabling Automatic Certificate Management', enable(context, heroku))
+
+  if (context.flags.wait) {
+    await waitForCertIssuedOnDomains(context, heroku)
+    notify(`heroku certs:auto:enable`, 'Certificate issued to all domains')
+  }
 
   let domains = await waitForDomains(context, heroku)
 

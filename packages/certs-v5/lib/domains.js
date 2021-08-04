@@ -66,4 +66,28 @@ function printDomains (domainsTable, msg) {
   }
 }
 
-module.exports = {waitForDomains, printDomains}
+async function waitForCertIssuedOnDomains(context, heroku) {
+  function certIssuedOrFailedForAllCustomDomains (domains) {
+    domains = domains.filter((domain) => domain.kind === 'custom')
+    return _.every(domains, (domain) => domain.acm_status === 'cert issued' || domain.acm_status === 'failed')
+  }
+
+  function apiRequest (context, heroku) {
+    return heroku.get(`/apps/${context.app}/domains`)
+  }
+
+  let domains = await apiRequest(context, heroku)
+
+  if (!certIssuedOrFailedForAllCustomDomains(domains)) {
+    await cli.action('Waiting until the certificate is issued to all domains', (async function () {
+      let i = 0;
+      do {
+        await wait(1000)
+        domains = await apiRequest(context, heroku)
+
+      } while (!certIssuedOrFailedForAllCustomDomains(domains))
+    })())
+  }
+}
+
+module.exports = {waitForDomains, printDomains, waitForCertIssuedOnDomains}
