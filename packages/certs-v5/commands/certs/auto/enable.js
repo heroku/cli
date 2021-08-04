@@ -11,7 +11,11 @@ async function enable (context, heroku) {
     headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' },
     body: {}
   })
-  cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto:wait')}`)
+  if (context.flags.wait) {
+    cli.action.done(`${cli.color.yellow('starting')}.`)
+  } else {
+    cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto:wait')}`)
+  }
   return domains
 }
 
@@ -40,5 +44,8 @@ module.exports = {
   description: 'enable ACM status for an app',
   needsApp: true,
   needsAuth: true,
+  flags: [
+    { name: 'wait', description: 'watch ACM status and exit when complete' }
+  ],
   run: cli.command(run)
 }
