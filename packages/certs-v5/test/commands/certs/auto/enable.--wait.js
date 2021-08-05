@@ -39,16 +39,19 @@ describe('heroku certs:auto:enable --wait', function () {
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
     ])
     let now = new Date().toISOString()
+    // Process started
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
     ])
+    // One cert is failing, could be a temporary issue, we need to retry the check later
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'dns-verified', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now },
     ])
+    // Issue resolved, both domains have their certs issued
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
@@ -89,16 +92,19 @@ describe('heroku certs:auto:enable --wait', function () {
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
     ])
     let now = new Date().toISOString()
+    // Process started
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
     ])
+    // One cert is failing, could be a temporary issue, we need to retry the check later
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'dns-verified', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now },
     ])
+    // Issue not resolved, we stopped retrying
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
@@ -135,16 +141,19 @@ describe('heroku certs:auto:enable --wait', function () {
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
     ])
     let now = new Date().toISOString()
+    // Process started
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now },
     ])
+    // One cert is failing, could be a temporary issue, we need to retry the check later
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'dns-verified', 'updated_at': now },
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now },
     ])
+    // Issue not resolved, we stopped retrying, and the cert for the other domain also failed
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'updated_at': now },
@@ -181,6 +190,7 @@ describe('heroku certs:auto:enable --wait', function () {
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
     ])
     let now = new Date().toISOString()
+    // Precess finished before the first check, no need to wait
     domainsApi.get('/apps/example/domains').reply(200, [
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
       { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
