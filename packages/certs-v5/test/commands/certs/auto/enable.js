@@ -30,7 +30,6 @@ describe('heroku certs:auto:enable', function () {
 
     return certs.run({
         app: 'example',
-        args: ['--wait'],
         flags: {wait: false}
       })
         .then(function () {
@@ -65,7 +64,6 @@ describe('heroku certs:auto:enable', function () {
 
     return certs.run({
         app: 'example',
-        args: ['--wait'],
         flags: {wait: false}
       })
         .then(function () {
@@ -93,7 +91,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
 
     return certs.run({
         app: 'example',
-        args: ['--wait'],
         flags: {wait: false}
       })
         .then(function () {
