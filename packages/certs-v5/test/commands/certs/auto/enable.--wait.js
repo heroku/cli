@@ -165,4 +165,44 @@ describe('heroku certs:auto:enable --wait', function () {
         acmApi.done()
       })
   })
+
+  it('does not wait if all certs are issued when first checked', () => {
+    const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+
+    let acmApi = nock('https://api.heroku.com', {
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+    })
+    acmApi.post('/apps/example/acm', {}).reply(200, { acm: true })
+
+    let domainsApi = nock('https://api.heroku.com')
+    domainsApi.get('/apps/example/domains').reply(200, [
+      { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
+      { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
+      { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+    ])
+    let now = new Date().toISOString()
+    domainsApi.get('/apps/example/domains').reply(200, [
+      { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
+      { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+      { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+    ])
+    domainsApi.get('/apps/example/domains').reply(200, [
+      { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null },
+      { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+      { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+    ])
+
+    return certs.run({
+      app: 'example',
+      args: ['--wait'],
+      flags: {wait: true}
+    })
+      .then(function () {
+        expect(notifySpy.called).to.equal(true)
+        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\n')
+        expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.\n')
+        domainsApi.done()
+        acmApi.done()
+      })
+  })
 })
