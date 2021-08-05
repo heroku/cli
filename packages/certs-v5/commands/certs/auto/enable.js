@@ -24,8 +24,14 @@ async function run (context, heroku) {
   let domainsBeforeEnable = await cli.action('Enabling Automatic Certificate Management', enable(context, heroku))
 
   if (context.flags.wait) {
-    await waitForCertIssuedOnDomains(context, heroku)
-    notify(`heroku certs:auto:enable`, 'Certificate issued to all domains')
+    try {
+      await waitForCertIssuedOnDomains(context, heroku)
+      notify(`heroku certs:auto:enable`, 'Certificate issued to all domains')
+    } catch(error) {
+      notify(`heroku certs:auto:enable`, 'An error occurred', false)
+      cli.styledHeader(`${cli.color.red('Error')}: The certificate could not be issued to all domains. See status with ${cli.color.cmd('heroku certs:auto')}.`)
+      throw error
+    }
   }
 
   let domains = await waitForDomains(context, heroku)

@@ -72,6 +72,11 @@ async function waitForCertIssuedOnDomains(context, heroku) {
     return _.every(domains, (domain) => domain.acm_status === 'cert issued' || domain.acm_status === 'failed')
   }
 
+  function someFailed (domains) {
+    domains = domains.filter((domain) => domain.kind === 'custom')
+    return _.some(domains, (domain) => domain.acm_status === 'failed')
+  }
+
   function apiRequest (context, heroku) {
     return heroku.get(`/apps/${context.app}/domains`)
   }
@@ -86,6 +91,10 @@ async function waitForCertIssuedOnDomains(context, heroku) {
         domains = await apiRequest(context, heroku)
 
       } while (!certIssuedOrFailedForAllCustomDomains(domains))
+
+      if (someFailed(domains)) {
+        throw new Error('ACM not enabled for some domains')
+      }
     })())
   }
 }
