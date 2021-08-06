@@ -4,6 +4,8 @@
 let expect = require('chai').expect
 let nock = require('nock')
 let certs = require('../../../../commands/certs/auto')
+const sinon = require('sinon')
+const lolex = require('lolex')
 
 let letsEncrypt = {
   ssl_cert: {
@@ -45,7 +47,7 @@ describe('heroku certs:auto', function () {
       { 'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -90,7 +92,7 @@ heroku-san-test.heroku-cli-sni-test.com  OK      less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null, 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -145,7 +147,7 @@ heroku-unknown.heroku-cli-sni-test.com       Waiting       less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null, 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -182,7 +184,7 @@ heroku-unknown.heroku-cli-sni-test.com   Waiting  less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -226,7 +228,7 @@ heroku-failed.heroku-cli-sni-test.com    Failed  less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -265,7 +267,7 @@ heroku-failed.heroku-cli-sni-test.com    Failing  less than a minute
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('=== Automatic Certificate Management is disabled on example\n')
       api.done()
@@ -289,7 +291,7 @@ heroku-failed.heroku-cli-sni-test.com    Failing  less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -320,7 +322,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
       { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -343,7 +345,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [])
     api.get('/apps/example/domains').reply(200, [])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('=== Automatic Certificate Management is disabled on example\n')
       api.done()
@@ -362,7 +364,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [selfSigned])
     api.get('/apps/example/domains').reply(200, [])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -385,7 +387,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [selfSigned])
     api.get('/apps/example/domains').reply(200, [])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('=== Automatic Certificate Management is disabled on example\n')
       api.done()
@@ -408,7 +410,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
       { 'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'acm_status_reason': 'uh oh something failed', 'updated_at': now }
     ])
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({ app: 'example', flags: {wait: false} }).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
         `=== Automatic Certificate Management is enabled on example
@@ -432,6 +434,119 @@ heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than
 `)
       api.done()
       apiCerts.done()
+    })
+  })
+
+  context('--wait', function () {
+    let clock
+    let sandbox
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      clock = lolex.install()
+      clock.setTimeout = function (fn, timeout) { fn() }
+    })
+
+    afterEach(function () {
+      clock.uninstall()
+      sandbox.restore()
+    })
+
+    it('waits until certs are issued and displays the domains details', function () {
+      let api = nock('https://api.heroku.com', {
+        reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+      })
+      let apiDomains = nock('https://api.heroku.com')
+      let apiCerts = nock('https://api.heroku.com')
+      let now = new Date().toISOString()
+
+      api.get('/apps/example').reply(200, { acm: true })
+      apiCerts.get('/apps/example/sni-endpoints').reply(200, [])
+      api.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
+      ])
+      apiDomains.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
+      ])
+      apiDomains.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now }
+      ])
+      api.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now }
+      ])
+
+      return certs.run({ app: 'example', flags: {wait: true}, args: ['--wait'], }).then(function () {
+        expect(cli.stderr).to.equal('Waiting until the certificate is issued to all domains... done\n')
+        expect(cli.stdout).to.equal(
+          `=== Automatic Certificate Management is enabled on example
+
+Domain                                  Status       Last Updated
+──────────────────────────────────────  ───────────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com      Cert issued  less than a minute
+heroku-failing.heroku-cli-sni-test.com  Cert issued  less than a minute
+`)
+        api.done()
+        apiDomains.done()
+        apiCerts.done()
+      })
+    })
+
+    it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', function () {
+      let api = nock('https://api.heroku.com', {
+        reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+      })
+      let apiDomains = nock('https://api.heroku.com')
+      let apiCerts = nock('https://api.heroku.com')
+      let now = new Date().toISOString()
+
+      api.get('/apps/example').reply(200, { acm: true })
+      apiCerts.get('/apps/example/sni-endpoints').reply(200, [])
+      api.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
+      ])
+      apiDomains.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now }
+      ])
+      apiDomains.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'updated_at': now }
+      ])
+      api.get('/apps/example/domains').reply(200, [
+        { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null },
+        { 'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'cert issued', 'updated_at': now },
+        { 'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'updated_at': now }
+      ])
+
+      return certs.run({ app: 'example', flags: {wait: true}, args: ['--wait'], }).then(function () {
+        expect(cli.stderr).to.equal('Waiting until the certificate is issued to all domains... !\n')
+        expect(cli.stdout).to.equal(
+          `=== Automatic Certificate Management is enabled on example
+
+Domain                                  Status       Last Updated
+──────────────────────────────────────  ───────────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com      Cert issued  less than a minute
+heroku-failing.heroku-cli-sni-test.com  Failed       less than a minute
+
+=== Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
+`)
+        api.done()
+        apiDomains.done()
+        apiCerts.done()
+      })
     })
   })
 })
