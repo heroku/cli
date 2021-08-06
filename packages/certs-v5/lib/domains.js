@@ -85,11 +85,10 @@ async function waitForCertIssuedOnDomains(context, heroku) {
 
   if (!certIssuedOrFailedForAllCustomDomains(domains)) {
     await cli.action('Waiting until the certificate is issued to all domains', (async function () {
-      do {
+      while (!certIssuedOrFailedForAllCustomDomains(domains)) {
         await wait(60*1000)
         domains = await apiRequest(context, heroku)
-
-      } while (!certIssuedOrFailedForAllCustomDomains(domains))
+      }
 
       if (someFailed(domains)) {
         throw new Error('ACM not enabled for some domains')
