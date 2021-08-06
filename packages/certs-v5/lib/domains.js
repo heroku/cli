@@ -85,7 +85,6 @@ async function waitForCertIssuedOnDomains(context, heroku) {
 
   if (!certIssuedOrFailedForAllCustomDomains(domains)) {
     await cli.action('Waiting until the certificate is issued to all domains', (async function () {
-      let i = 0;
       do {
         await wait(60*1000)
         domains = await apiRequest(context, heroku)
