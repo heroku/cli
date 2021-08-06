@@ -77,6 +77,7 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --wait               watch ACM status and display the status when complete
 ```
 
 _See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.55.0/packages/certs-v5/commands/certs/auto/index.js)_
