@@ -33,7 +33,7 @@ describe('heroku certs:auto:enable', function () {
         flags: {wait: false}
       })
         .then(function () {
-          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto:wait\n')
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
           expect(cli.stdout).to.equal(
             `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
 `)
@@ -67,7 +67,7 @@ describe('heroku certs:auto:enable', function () {
         flags: {wait: false}
       })
         .then(function () {
-          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto:wait\n')
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
           expect(cli.stdout).to.equal(
             `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
 Domain           Record Type  DNS Target
@@ -94,7 +94,7 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         flags: {wait: false}
       })
         .then(function () {
-          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto:wait\n')
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
           expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n')
           domainsApi.done()
           acmApi.done()

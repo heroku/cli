@@ -15,7 +15,7 @@ async function enable (context, heroku) {
   if (context.flags.wait) {
     cli.action.done(`${cli.color.yellow('starting')}.`)
   } else {
-    cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto:wait')}`)
+    cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto --wait')}`)
   }
   return domains
 }
