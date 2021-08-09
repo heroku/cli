@@ -81,13 +81,23 @@ async function waitForCertIssuedOnDomains(context, heroku) {
     return heroku.get(`/apps/${context.app}/domains`)
   }
 
+  function backoff(attempts) {
+    let wait = 15*1000;
+    // Don't wait more than 60 seconds
+    let multiplier = attempts < 60 ? Math.floor(attempts/20) : 3
+    let extraWait = wait * multiplier;
+    return wait + extraWait
+  }
+
   let domains = await apiRequest(context, heroku)
 
   if (!certIssuedOrFailedForAllCustomDomains(domains)) {
     await cli.action('Waiting until the certificate is issued to all domains', (async function () {
+      let retries = 0;
       while (!certIssuedOrFailedForAllCustomDomains(domains)) {
-        await wait(60*1000)
+        await wait(backoff(retries))
         domains = await apiRequest(context, heroku)
+        retries++
       }
 
       if (someFailed(domains)) {
