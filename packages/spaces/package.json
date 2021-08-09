@@ -31,7 +31,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^13.2.0",
-    "sinon": "^7.2.3"
+    "sinon": "^11.1.2"
   },
   "files": [
     "oclif.manifest.json",
