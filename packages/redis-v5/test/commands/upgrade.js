@@ -6,6 +6,7 @@ let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
 let command = require('../../commands/upgrade')
+const unwrap = require('../unwrap')
 
 describe('heroku redis:upgrade', () => {
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('heroku redis:upgrade', () => {
         message: 'Upgrading version now!'
       })
 
-    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+    return command.run({ app: 'example', flags: { confirm: 'example', version: '6.2' }, args: {}, auth: { username: 'foobar', password: 'password' } })
       .then(() => app.done())
       .then(() => redis.done())
       .then(() => expect(cli.stdout).to.equal('Upgrading version now!\n'))
