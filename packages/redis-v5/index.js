@@ -10,6 +10,7 @@ exports.commands = [
   require('./commands/maintenance'),
   require('./commands/keyspace-notifications'),
   require('./commands/stats-reset'),
+  require('./commands/upgrade'),
 ]
 
 exports.topic = {

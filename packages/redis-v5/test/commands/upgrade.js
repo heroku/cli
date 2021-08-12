@@ -1,0 +1,40 @@
+'use strict'
+/* globals describe it beforeEach cli */
+
+let expect = require('chai').expect
+let nock = require('nock')
+let exit = require('heroku-cli-util').exit
+
+let command = require('../../commands/upgrade')
+
+describe('heroku redis:upgrade', () => {
+  beforeEach(() => {
+    cli.mockConsole()
+    nock.cleanAll()
+    exit.mock()
+  })
+
+  it('# upgrades the redis version', () => {
+    let app = nock('https://api.heroku.com:443')
+      .get('/apps/example/addons').reply(200, [
+        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_URL'] }
+      ])
+
+    let redis = nock('https://redis-api.heroku.com:443')
+      .post('/redis/v0/databases/redis-haiku/upgrade', { version: '6.2' }).reply(200, {
+        message: 'Upgrading version now!'
+      })
+
+    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Upgrading version now!\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+  })
+
+  it('# errors on missing version', function () {
+    return expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a valid version.\n'))
+  })
+})
