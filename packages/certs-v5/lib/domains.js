@@ -66,4 +66,45 @@ function printDomains (domainsTable, msg) {
   }
 }
 
-module.exports = {waitForDomains, printDomains}
+async function waitForCertIssuedOnDomains(context, heroku) {
+  function certIssuedOrFailedForAllCustomDomains (domains) {
+    domains = domains.filter((domain) => domain.kind === 'custom')
+    return _.every(domains, (domain) => domain.acm_status === 'cert issued' || domain.acm_status === 'failed')
+  }
+
+  function someFailed (domains) {
+    domains = domains.filter((domain) => domain.kind === 'custom')
+    return _.some(domains, (domain) => domain.acm_status === 'failed')
+  }
+
+  function apiRequest (context, heroku) {
+    return heroku.get(`/apps/${context.app}/domains`)
+  }
+
+  function backoff(attempts) {
+    let wait = 15*1000;
+    // Don't wait more than 60 seconds
+    let multiplier = attempts < 60 ? Math.floor(attempts/20) : 3
+    let extraWait = wait * multiplier;
+    return wait + extraWait
+  }
+
+  let domains = await apiRequest(context, heroku)
+
+  if (!certIssuedOrFailedForAllCustomDomains(domains)) {
+    await cli.action('Waiting until the certificate is issued to all domains', (async function () {
+      let retries = 0;
+      while (!certIssuedOrFailedForAllCustomDomains(domains)) {
+        await wait(backoff(retries))
+        domains = await apiRequest(context, heroku)
+        retries++
+      }
+
+      if (someFailed(domains)) {
+        throw new Error('ACM not enabled for some domains')
+      }
+    })())
+  }
+}
+
+module.exports = {waitForDomains, printDomains, waitForCertIssuedOnDomains}
