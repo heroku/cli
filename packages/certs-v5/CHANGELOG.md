@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.57.0](https://github.com/heroku/cli/compare/v7.56.1...v7.57.0) (2021-08-17)
+
+
+### Features
+
+* **certs-v5:** Add --wait flag to certs:auto:enable command ([#1850](https://github.com/heroku/cli/issues/1850)) ([3e75af5](https://github.com/heroku/cli/commit/3e75af519bf6347e40b1641fdd659369335371ce))
+
+
+
+
+
 # [7.55.0](https://github.com/heroku/cli/compare/v7.54.1...v7.55.0) (2021-06-25)
 
 
