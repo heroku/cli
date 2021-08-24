@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.59.0](https://github.com/heroku/cli/compare/v7.58.0...v7.59.0) (2021-08-24)
+
+
+### Features
+
+* **redis-v5:** add redis:upgrade command ([#1853](https://github.com/heroku/cli/issues/1853)) ([cff3f48](https://github.com/heroku/cli/commit/cff3f488e063189c5c48ec90c6dc2a02bb73bb19))
+
+
+
+
+
 # [7.56.0](https://github.com/heroku/cli/compare/v7.55.0...v7.56.0) (2021-06-29)
 
 
