@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.58.0](https://github.com/heroku/cli/compare/v7.57.0...v7.58.0) (2021-08-24)
+
+
+### Features
+
+* **pg-v5:** Add pg:settings:track-functions ([#1854](https://github.com/heroku/cli/issues/1854)) ([68a4cf7](https://github.com/heroku/cli/commit/68a4cf7d759eceee012ff56b4ac26710ab0c025b))
+
+
+
+
+
 ## [7.56.1](https://github.com/heroku/cli/compare/v7.56.0...v7.56.1) (2021-07-12)
 
 

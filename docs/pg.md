@@ -47,6 +47,7 @@ manage postgresql databases
 * [`heroku pg:settings:log-lock-waits [VALUE] [DATABASE]`](#heroku-pgsettingslog-lock-waits-value-database)
 * [`heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-min-duration-statement-value-database)
 * [`heroku pg:settings:log-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-statement-value-database)
+* [`heroku pg:settings:track-functions [VALUE] [DATABASE]`](#heroku-pgsettingstrack-functions-value-database)
 * [`heroku pg:unfollow DATABASE`](#heroku-pgunfollow-database)
 * [`heroku pg:upgrade [DATABASE]`](#heroku-pgupgrade-database)
 * [`heroku pg:vacuum-stats [DATABASE]`](#heroku-pgvacuum-stats-database)
@@ -957,6 +958,32 @@ DESCRIPTION
   mod  - Includes all statements from ddl as well as data-modifying statements such as INSERT, UPDATE, DELETE, TRUNCATE, 
   COPY
   all  - All statements are logged
+```
+
+## `heroku pg:settings:track-functions [VALUE] [DATABASE]`
+
+track_functions controls tracking of function call counts and time used. Default is none.
+
+```
+track_functions controls tracking of function call counts and time used. Default is none.
+Valid values for VALUE:
+none - No functions are tracked
+pl   - Only procedural language functions are tracked
+all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked
+
+USAGE
+  $ heroku pg:settings:track-functions [VALUE] [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Valid values for VALUE:
+  none - No functions are tracked
+  pl   - Only procedural language functions are tracked
+  all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are 
+  not tracked
 ```
 
 ## `heroku pg:unfollow DATABASE`
