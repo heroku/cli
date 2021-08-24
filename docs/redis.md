@@ -13,6 +13,7 @@ manage heroku redis instances
 * [`heroku redis:promote DATABASE`](#heroku-redispromote-database)
 * [`heroku redis:stats-reset [DATABASE]`](#heroku-redisstats-reset-database)
 * [`heroku redis:timeout [DATABASE]`](#heroku-redistimeout-database)
+* [`heroku redis:upgrade [DATABASE]`](#heroku-redisupgrade-database)
 * [`heroku redis:wait [DATABASE]`](#heroku-rediswait-database)
 
 ## `heroku redis [DATABASE]`
@@ -247,6 +248,24 @@ OPTIONS
 DESCRIPTION
   Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be 
   closed.
+```
+
+## `heroku redis:upgrade [DATABASE]`
+
+perform in-place version upgrade
+
+```
+perform in-place version upgrade
+
+
+USAGE
+  $ heroku redis:upgrade [DATABASE]
+
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -c, --confirm=confirm
+  -r, --remote=remote    git remote of app to use
+  -v, --version=version
 ```
 
 ## `heroku redis:wait [DATABASE]`
