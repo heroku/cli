@@ -96,6 +96,19 @@ async function run(context, heroku) {
     return cli.action.done()
   }
 
+  let promotedDatabaseDetails = await heroku.request({
+    host: host(attachment.addon),
+    path: `/client/v11/databases/${attachment.addon.id}`
+  })
+
+  if (!!promotedDatabaseDetails['following']){
+    let unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
+    cli.warn(`WARNING: Your database has been promoted but it is currently a follower database in read-only mode.
+      \n Promoting a database with ${cli.color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
+      \n Use ${cli.color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${cli.color.addon(promotedDatabaseDetails['leader']['name'])}) and convert it into a writable database.`)
+  }
+  
+
   let releasePhase = ((await heroku.get(`/apps/${app}/formation`)))
     .find((formation) => formation.type === 'release')
 

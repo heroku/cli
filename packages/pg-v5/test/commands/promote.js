@@ -40,6 +40,7 @@ describe('pg:promote when argument is database', () => {
     api.get('/apps/myapp/formation').reply(200, [])
     pg = nock('https://postgres-api.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
+    pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, { 'following': null })
     api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
     cli.mockConsole()
   })
@@ -216,6 +217,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     api.get('/apps/myapp/formation').reply(200, [])
     pg = nock('https://postgres-api.heroku.com')
     pg.get(`/client/v11/databases/${credentialAttachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
+    pg.get(`/client/v11/databases/${credentialAttachment.addon.id}`).reply(200, { 'following': null })
     cli.mockConsole()
   })
 
@@ -387,6 +389,7 @@ describe('pg:promote when release phase is present', () => {
 
     pg = nock('https://postgres-api.heroku.com')
     pg.get(`/client/v11/databases/${addonID}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
+    pg.get(`/client/v11/databases/${addonID}`).reply(200, { 'following': null })
 
     cli.mockConsole()
   })
@@ -478,6 +481,7 @@ describe('pg:promote when database is not available or force flag is present', (
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
     pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, { 'following': null })
     cli.mockConsole()
   })
 
@@ -542,4 +546,72 @@ Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
       .then(() => expect(cli.stderr).to.equal(`Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
   })
+})
+
+
+describe('pg:promote when promoted database is a follower', () => {
+  let api
+  let pg
+
+  const attachment = {
+    addon: {
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2'
+    },
+    namespace: null
+  }
+
+  const fetcher = () => {
+    return {
+      attachment: () => attachment
+    }
+  }
+
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
+  const cmd = proxyquire('../../commands/promote', {
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
+  })
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com:443')
+    api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': false, message: 'available' })
+
+    cli.mockConsole()
+  })
+
+  afterEach(() => {
+    nock.cleanAll()
+    api.done()
+    pg.done()
+  })
+
+  it('warns user if database is a follower', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, { 
+      'following': 'postgres://xxx.com:5432/abcdefghijklmn',
+      'leader' :{"addon_id":"5ba2ba8b-07a9-4a65-a808-585a50e37f98","name":"postgresql-leader"}
+     })
+  
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+      .then(() => expect(cli.stderr).to.include('Your database has been promoted but it is currently a follower'))
+  }) 
+
 })
