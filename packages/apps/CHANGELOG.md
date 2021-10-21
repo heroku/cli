@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.59.1](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.59.0...v7.59.1) (2021-10-21)
+
+
+### Bug Fixes
+
+* update domain:add to pass required sni_endpoint to endpoint ([#1875](https://github.com/heroku/heroku-cli-plugin-apps/issues/1875)) ([05bcd79](https://github.com/heroku/heroku-cli-plugin-apps/commit/05bcd79025958e1fe896f7a8eb259caf617463e0))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps
