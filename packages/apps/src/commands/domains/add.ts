@@ -9,7 +9,7 @@ import waitForDomain from '../../lib/wait-for-domain'
 
 interface DomainCreatePayload {
   hostname: string;
-  sni_endpoint?: string;
+  sni_endpoint: string | null;
 }
 
 export default class DomainsAdd extends Command {
@@ -79,6 +79,7 @@ export default class DomainsAdd extends Command {
 
     const domainCreatePayload: DomainCreatePayload = {
       hostname,
+      sni_endpoint: null,
     }
 
     let certs: Array<Heroku.SniEndpoint> = []
