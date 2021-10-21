@@ -236,7 +236,8 @@ USAGE
   $ heroku redis:wait [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+  -a, --app=app                  (required) app to run command against
+  -r, --remote=remote            git remote of app to use
+  --wait-interval=wait-interval  how frequently to poll in seconds
 ```
 <!-- commandsstop -->
