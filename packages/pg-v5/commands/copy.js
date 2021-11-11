@@ -1,9 +1,9 @@
 'use strict'
 
+const util = require('../lib/util')
 const cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
-  const url = require('url')
   const host = require('../lib/host')
   const pgbackups = require('../lib/pgbackups')(context, heroku)
   const fetcher = require('../lib/fetcher')(heroku)
@@ -21,13 +21,12 @@ async function run(context, heroku) {
   let resolve = async function (db) {
     if (db.match(/^postgres:\/\//)) {
       // For the case an input is URL format
-      let uri = url.parse(db)
-      let dbname = uri.path ? uri.path.slice(1) : ''
-      let host = `${uri.hostname}:${uri.port || 5432}`
+      let conn = util.parsePostgresConnectionString(db)
+      let host = `${conn.host}:${conn.port}`
       return {
-        name: dbname ? `database ${dbname} on ${host}` : `database on ${host}`,
+        name: conn.database ? `database ${conn.database} on ${host}` : `database on ${host}`,
         url: db,
-        confirm: dbname || uri.host
+        confirm: conn.database || conn.host
       }
     } else {
       // Other case (need to resolve attachment)

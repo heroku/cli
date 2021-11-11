@@ -9,6 +9,7 @@ const fetcher = proxyquire('../../lib/fetcher', { '@heroku-cli/plugin-addons': {
 const Heroku = require('heroku-client')
 const sinon = require('sinon')
 const url = require('url')
+const util = require('../../lib/util')
 
 beforeEach(function () {
   const getConfig = require('../../lib/config')
@@ -214,9 +215,9 @@ describe('fetcher', () => {
             password: 'pgpass',
             database: 'pgdb',
             host: 'pghost.com',
-            port: null,
+            port: 5432,
             attachment: attachments[0],
-            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+            url: util.parsePostgresConnectionString('postgres://pguser:pgpass@pghost.com/pgdb')
           }))
       })
 
@@ -250,9 +251,9 @@ describe('fetcher', () => {
             password: 'pgpass',
             database: 'pgdb',
             host: 'pghost.com',
-            port: null,
+            port: 5432,
             attachment: attachments[0],
-            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+            url: util.parsePostgresConnectionString('postgres://pguser:pgpass@pghost.com/pgdb')
           }))
       })
 
@@ -286,9 +287,9 @@ describe('fetcher', () => {
             password: 'pgpass',
             database: 'pgdb',
             host: 'pghost.com',
-            port: null,
+            port: 5432,
             attachment: attachments[0],
-            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+            url: util.parsePostgresConnectionString('postgres://pguser:pgpass@pghost.com/pgdb')
           }))
       })
 
@@ -322,9 +323,9 @@ describe('fetcher', () => {
             password: 'pgpass',
             database: 'pgdb',
             host: 'pghost.com',
-            port: null,
+            port: 5432,
             attachment: attachments[0],
-            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+            url: util.parsePostgresConnectionString('postgres://pguser:pgpass@pghost.com/pgdb')
           }))
       })
 
