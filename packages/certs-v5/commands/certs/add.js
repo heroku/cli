@@ -26,31 +26,7 @@ function Domains (domains) {
 }
 
 async function getMeta(context, heroku) {
-  let type = context.flags.type
-
-  if (type) {
-    switch (type) {
-      case 'endpoint':
-        return endpoints.meta(context.app, 'ssl')
-      case 'sni':
-        return endpoints.meta(context.app, 'sni')
-      default:
-        error.exit(1, "Must pass --type with either 'endpoint' or 'sni'")
-    }
-  }
-
-  let [ hasSpace, hasAddon ] = await Promise.all([
-    endpoints.hasSpace(context.app, heroku),
-    endpoints.hasAddon(context.app, heroku)
-  ])
-
-  if (hasSpace && !context.canMultiSni) {
-    return endpoints.meta(context.app, 'ssl')
-  } else if (!hasAddon) {
-    return endpoints.meta(context.app, 'sni')
-  } else {
-    error.exit(1, "Must pass --type with either 'endpoint' or 'sni'")
-  }
+  return endpoints.meta(context.app, 'sni')
 }
 
 function hasMatch (certDomains, domain) {
@@ -249,13 +225,6 @@ async function run(context, heroku) {
   displayWarnings(cert)
 }
 
-const CertTypeCompletion = {
-  skipCache: true,
-  options: (ctx) => {
-    return ['sni', 'endpoint']
-  }
-}
-
 module.exports = {
   topic: 'certs',
   command: 'add',
@@ -265,8 +234,7 @@ module.exports = {
     { name: 'KEY', optional: false }
   ],
   flags: [
-    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
-    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion }
+    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false }
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',
