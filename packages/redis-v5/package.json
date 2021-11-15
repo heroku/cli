@@ -16,7 +16,7 @@
   "dependencies": {
     "heroku-cli-util": "^8.0.11",
     "redis-parser": "^3.0.0",
-    "ssh2": "^0.8.9"
+    "ssh2": "^1.5.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
