@@ -102,17 +102,17 @@ exports.getConnectionDetails = function (attachment, config) {
 
   // build the default payload for non-bastion dbs
   debug(`Using "${connstringVar}" to connect to your database…`)
-  const target = url.parse(config[connstringVar])
-  let [user, password] = target.auth.split(':')
+
+  let conn = exports.parsePostgresConnectionString(config[connstringVar])
 
   let payload = {
-    user,
-    password,
-    database: target.path.split('/', 2)[1],
-    host: target.hostname,
-    port: target.port,
+    user: conn.user,
+    password: conn.password,
+    database: conn.database,
+    host: conn.hostname,
+    port: conn.port,
     attachment,
-    url: target
+    url: conn
   }
 
   // If bastion creds exist, graft it into the payload
@@ -159,8 +159,8 @@ exports.databaseNameFromUrl = (uri, config) => {
   let name = names.pop()
   while (names.length > 0 && name === 'DATABASE_URL') name = names.pop()
   if (name) return cli.color.configVar(name.replace(/_URL$/, ''))
-  uri = url.parse(uri)
-  return `${uri.hostname}:${uri.port || 5432}${uri.path}`
+  let conn = exports.parsePostgresConnectionString(uri)
+  return `${conn.host}:${conn.port}${conn.pathname}`
 }
 
 exports.parsePostgresConnectionString = (db) => {
