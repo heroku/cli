@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.59.2](https://github.com/heroku/cli/compare/v7.59.1...v7.59.2) (2021-11-18)
+
+
+### Bug Fixes
+
+* **pg-v5:** Fix databasename for URLs with query element and be more consistent ([#1882](https://github.com/heroku/cli/issues/1882)) ([5346faf](https://github.com/heroku/cli/commit/5346fafac979fab81e42b65b3659e988db1f8eea))
+
+
+
+
+
 ## [7.59.1](https://github.com/heroku/cli/compare/v7.59.0...v7.59.1) (2021-10-21)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pg-v5
