@@ -35,7 +35,7 @@
     "@heroku-cli/plugin-spaces": "^7.54.0",
     "@heroku-cli/plugin-status": "^7.54.0",
     "@heroku-cli/plugin-webhooks": "^7.54.0",
-    "@oclif/command": "1.5.18",
+    "@oclif/command": "1.8.3",
     "@oclif/config": "1.13.2",
     "@oclif/errors": "1.2.2",
     "@oclif/plugin-commands": "^1.2.2",
