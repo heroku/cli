@@ -106,15 +106,7 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file'], flags: {} })).then(function () {
-      mockSsl.done()
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
@@ -134,13 +126,6 @@ ${certificateDetails}
     mockFile(fs, 'pem_file', 'pem content')
     mockFile(fs, 'key_file', 'key content')
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
     let mockSni = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content'
@@ -149,7 +134,6 @@ ${certificateDetails}
 
     return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
       /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
@@ -200,13 +184,6 @@ ${certificateDetails}
     mockFile(fs, 'pem_file', 'pem content')
     mockFile(fs, 'key_file', 'key content')
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
     let mockSni = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content'
@@ -215,7 +192,6 @@ ${certificateDetails}
 
     return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
     })
   })
