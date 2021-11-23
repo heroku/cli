@@ -57,45 +57,6 @@ describe('heroku certs:add', function () {
     certs = proxyquire('../../../commands/certs/add', { inquirer })
   })
 
-  describe('(ported)', function () {
-    it('# adds an SSL endpoint if passed --type endpoint', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/ssl-endpoints')
-        .reply(200, [])
-
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
-      mockDomains(inquirer)
-
-      mockFile(fs, 'pem_file', 'pem content')
-      mockFile(fs, 'key_file', 'key content')
-
-      let mockSsl = nock('https://api.heroku.com', {
-        reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-      })
-        .post('/apps/example/ssl-endpoints', {
-          certificate_chain: 'pem content', private_key: 'key content'
-        })
-        .reply(200, endpoint)
-
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'endpoint' } }).then(function () {
-        mockSsl.done()
-        expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-        expect(cli.stdout).to.equal(
-        /* eslint-disable no-irregular-whitespace */
-          `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-        /* eslint-enable no-irregular-whitespace */
-      })
-    })
-  })
-
   afterEach(function () {
     fs.readFile.restore()
   })
@@ -156,15 +117,7 @@ ${certificateDetails}
       .get('/apps/example/features')
       .reply(200, [])
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} })).then(function () {
-      mockSsl.done()
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
