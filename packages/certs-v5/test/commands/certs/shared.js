@@ -113,12 +113,5 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         expect(cli.stdout).to.equal('')
       })
     })
-
-    it('# --name and --endpoint errors out', function () {
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { name: 'tokyo-1050', endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal('Specified both --name and --endpoint, please use just one\n')
-        expect(cli.stdout).to.equal('')
-      })
-    })
   })
 }
