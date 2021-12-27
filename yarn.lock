@@ -1764,9 +1764,9 @@
   integrity sha512-yN/FNNW1UYsRR1wwAoyOwqvDuLDtVXnaJTZ898XIw/Q5cCaeVAlVwvsmXLX5PuiScBYwZsZU4JYSHB3TvfdwvQ==
 
 "@types/phoenix@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.4.0.tgz#e8414a225c6c7e310cd6e2db5a2156fbbbf862dd"
-  integrity sha512-bsuR5rj81NxgJ1w+Z5mgHlcIFBJKa2ChtbFbd1xDXxNJaBqYocAL53vsQ9T/CIZOSEs4A3WK7VMvzOOsG5cbJQ==
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.5.4.tgz#c08a1da6d7b4e365f6a1fe1ff9aada55f5356d24"
+  integrity sha512-L5eZmzw89eXBKkiqVBcJfU1QGx9y+wurRIEgt0cuLH0hwNtVUxtx+6cu0R2STwWj468sjXyBYPYDtGclUd1kjQ==
 
 "@types/semver@^5.5.0":
   version "5.5.0"
