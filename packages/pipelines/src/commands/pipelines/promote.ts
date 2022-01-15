@@ -237,6 +237,8 @@ export default class Promote extends Command {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
     } catch (error) {
       cli.error(error)
+
+      cli.exit(1)
     }
 
     const appsByID = keyBy(allApps, 'id')
@@ -257,6 +259,8 @@ export default class Promote extends Command {
       cli.log('\nPromotion successful')
     } else {
       cli.warn('\nPromotion to some apps failed')
+
+      cli.exit(1)
     }
 
     cli.styledObject(styledTargets)
