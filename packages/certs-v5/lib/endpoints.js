@@ -1,7 +1,5 @@
 'use strict'
 
-const { checkPrivateSniFeature } = require('./features.js')
-
 function sniCertsPromise (app, heroku) {
   return heroku.request({path: `/apps/${app}/sni-endpoints`}).catch(function (err) {
     if (err.statusCode === 422 && err.body && err.body.id === 'space_app_not_supported') {
@@ -43,7 +41,6 @@ function tagAndSort (app, sniCerts) {
 
 async function all(appName, heroku) {
   const featureList = await heroku.get(`/apps/${appName}/features`)
-  const privateSniFeatureEnabled = checkPrivateSniFeature(featureList)
 
   let sniCerts = await sniCertsPromise(appName, heroku)
 
