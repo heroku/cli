@@ -67,7 +67,7 @@ describe('streaming', () => {
     const ws = new MockOut()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
-      .times(10)
+      .times(30)
       .reply(404, '')
 
     await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
