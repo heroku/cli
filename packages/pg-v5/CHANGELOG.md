@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.59.3](https://github.com/heroku/cli/compare/v7.59.2...v7.59.3) (2022-02-28)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
 ## [7.59.2](https://github.com/heroku/cli/compare/v7.59.1...v7.59.2) (2021-11-18)
 
 
