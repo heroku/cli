@@ -94,19 +94,6 @@ jobs:
       size: xlarge
     steps:
       - checkout
-      - run:
-          name: Install latest yarn
-          command: |
-            (New-Object Net.WebClient).DownloadFile("https://yarnpkg.com/latest.msi", "$env:temp\yarn.msi")
-            cmd /c start /wait msiexec.exe /i $env:temp\yarn.msi /quiet /qn /norestart /log install.log
-      - run:
-          name: Verify yarn installation
-          command: |
-            if (!(Test-Path -Path "C:\Program Files (x86)\Yarn\bin\yarn" -PathType Leaf)) {
-              Write-Host "> Installation failed." -ForegroundColor Red
-              Write-Host "" -ForegroundColor Red
-              exit 1
-            }
       - restore_cache:
           keys:
             - node-modules-v1-win-{{ checksum "yarn.lock" }}
