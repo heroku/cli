@@ -23,7 +23,6 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       cli.mockConsole()
       error.exit.mock()
       nock.cleanAll()
-      mockSniFeatureFlag(nock, 'example')
     })
 
     it('allows an SNI --endpoint to be specified using --name', function () {

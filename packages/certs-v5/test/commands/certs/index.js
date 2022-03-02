@@ -14,7 +14,6 @@ let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
 
 describe('heroku certs', function () {
   beforeEach(function () {
-    mockSniFeatureFlag(nock, 'example')
     cli.mockConsole()
   })
 

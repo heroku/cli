@@ -32,14 +32,8 @@ describe('heroku certs:update', function () {
     error.exit.mock()
 
     nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStable])
-
-    mockSniFeatureFlag(nock, 'example')
   })
 
   afterEach(function () {

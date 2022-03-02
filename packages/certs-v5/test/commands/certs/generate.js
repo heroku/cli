@@ -26,7 +26,6 @@ function mockPrompt (arg, returns) {
 describe('heroku certs:generate', function () {
   beforeEach(function () {
     cli.mockConsole()
-    mockSniFeatureFlag(nock, 'example')
 
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')

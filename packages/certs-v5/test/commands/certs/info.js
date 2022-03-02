@@ -14,7 +14,6 @@ let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_det
 
 describe('heroku certs:info ported', function () {
   beforeEach(function () {
-    mockSniFeatureFlag(nock, 'example')
     cli.mockConsole()
   })
 

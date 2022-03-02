@@ -15,7 +15,6 @@ describe('heroku certs:remove', function () {
     cli.mockConsole()
     error.exit.mock()
     nock.cleanAll()
-    mockSniFeatureFlag(nock, 'example')
   })
 
   it('# requires confirmation', function () {
