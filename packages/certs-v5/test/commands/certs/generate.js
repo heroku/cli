@@ -14,7 +14,6 @@ let childProcess = require('child_process')
 
 let certs = require('../../../commands/certs/generate.js')
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 let EventEmitter = require('events').EventEmitter
 
@@ -32,10 +31,6 @@ describe('heroku certs:generate', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
 
     // stub cli here using sinon
     // if this works, remove proxyquire
@@ -155,12 +150,6 @@ $ heroku certs:update CERTFILE example.org.key
 
   it('# suggests next step should be certs:update when domain is known in ssl', function () {
     nock.cleanAll()
-
-    mockSniFeatureFlag(nock, 'example')
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint])
 
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')

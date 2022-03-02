@@ -8,9 +8,7 @@ let error = require('../../../lib/error.js')
 
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let shared = require('./shared.js')
-let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs:remove', function () {
   beforeEach(function () {
@@ -21,10 +19,6 @@ describe('heroku certs:remove', function () {
   })
 
   it('# requires confirmation', function () {
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint])
-
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
@@ -32,7 +26,6 @@ describe('heroku certs:remove', function () {
     var thrown = false
     return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
-      mockSsl.done()
       mockSni.done()
       expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
@@ -48,10 +41,6 @@ describe('heroku certs:remove', function () {
         'resource': 'addon'
       })
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -62,7 +51,6 @@ describe('heroku certs:remove', function () {
 
     return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
       mockAddons.done()
-      mockSsl.done()
       mockSni.done()
       mock.done()
       expect(cli.stderr).to.equal('Removing SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n')
@@ -75,10 +63,6 @@ describe('heroku certs:remove', function () {
       .get('/apps/example/addons/ssl%3Aendpoint')
       .reply(200, {})
 
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -89,7 +73,6 @@ describe('heroku certs:remove', function () {
 
     return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
       mockAddon.done()
-      mockSsl.done()
       mockSni.done()
       mock.done()
       expect(cli.stderr).to.equal('Removing SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n')
@@ -98,10 +81,6 @@ describe('heroku certs:remove', function () {
   })
 
   it('# requires confirmation', function () {
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint])
-
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
@@ -109,7 +88,6 @@ describe('heroku certs:remove', function () {
     var thrown = false
     return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
-      mockSsl.done()
       mockSni.done()
       expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
@@ -141,10 +119,6 @@ describe('heroku certs:remove', function () {
   }
 
   shared.shouldHandleArgs('certs:remove', 'removes an endpoint', certs, callback, {
-    stderr, stdout, flags: { confirm: 'example' }
-  })
-
-  sharedSsl.shouldHandleArgs('certs:remove', 'removes an endpoint', certs, callback, {
     stderr, stdout, flags: { confirm: 'example' }
   })
 

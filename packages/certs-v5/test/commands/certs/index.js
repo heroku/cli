@@ -11,8 +11,6 @@ let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
 let endpointWildcardBug = require('../../stubs/sni-endpoints.js').endpoint_wildcard_bug
 let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
-let endpointSpace = require('../../stubs/ssl-endpoints.js').endpoint_space
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs', function () {
   beforeEach(function () {
@@ -26,13 +24,8 @@ describe('heroku certs', function () {
         .get('/apps/example/sni-endpoints')
         .reply(200, [])
 
-      let mockSsl = nock('https://api.heroku.com')
-        .get('/apps/example/ssl-endpoints')
-        .reply(200, [endpoint, endpoint2])
-
       return certs.run({ app: 'example' }).then(function () {
         mockSni.done()
-        mockSsl.done()
         expect(cli.stderr).to.equal('')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
@@ -50,13 +43,8 @@ tokyo-1050  my-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 
         .get('/apps/example/sni-endpoints')
         .reply(200, [])
 
-      let mockSsl = nock('https://api.heroku.com')
-        .get('/apps/example/ssl-endpoints')
-        .reply(200, [endpoint2])
-
       return certs.run({ app: 'example' }).then(function () {
         mockSni.done()
-        mockSsl.done()
         expect(cli.stderr).to.equal('')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
@@ -73,13 +61,8 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
         .get('/apps/example/sni-endpoints')
         .reply(200, [])
 
-      let mockSsl = nock('https://api.heroku.com')
-        .get('/apps/example/ssl-endpoints')
-        .reply(200, [])
-
       return certs.run({ app: 'example' }).then(function () {
         mockSni.done()
-        mockSsl.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku certs:add CRT KEY to add one.\n`)
       })
@@ -91,15 +74,8 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint2])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -120,15 +96,8 @@ tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.exam
         'message': 'App heroku-certs-test is in a space, but space apps are not supported on this endpoint. Try `/apps/:id/ssl-endpoints` instead.'
       })
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpointSpace])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -145,15 +114,8 @@ tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointAcm])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -170,15 +132,8 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -197,15 +152,8 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcardBug])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -224,15 +172,8 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI   0
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcard])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -249,15 +190,8 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI   0
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
-    let mockSsl = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
-      mockSsl.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -285,10 +219,6 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
 
     nock('https://api.heroku.com')
       .get('/apps/example/domains')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
     let mock = nock('https://api.heroku.com')

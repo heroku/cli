@@ -26,7 +26,6 @@ let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_det
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let unwrap = require('../../unwrap.js')
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 let lolex = require('lolex')
 
@@ -215,7 +214,7 @@ ${certificateDetails}
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-      .post('/apps/example/ssl-endpoints', {
+      .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content'
       })
       .reply(200, endpoint)

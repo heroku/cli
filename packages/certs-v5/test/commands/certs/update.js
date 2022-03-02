@@ -10,7 +10,6 @@ let certs = require('../../../commands/certs/update.js')
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let shared = require('./shared.js')
-let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
 
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
@@ -18,7 +17,6 @@ let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 function mockFile (fs, file, content) {
   fs.readFile
@@ -148,10 +146,6 @@ ${certificateDetails}
     }
 
     shared.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
-    })
-
-    sharedSsl.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
       stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
     })
 
