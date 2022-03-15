@@ -26,7 +26,6 @@ let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_det
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let unwrap = require('../../unwrap.js')
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 let lolex = require('lolex')
 
@@ -62,7 +61,6 @@ describe('heroku certs:add', function () {
   })
 
   it('# errors out when args < 2', function () {
-    mockSniFeatureFlag(nock, 'example')
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
@@ -77,10 +75,6 @@ describe('heroku certs:add', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
 
     mockDomains(inquirer)
 
@@ -113,10 +107,6 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} })).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
@@ -127,10 +117,6 @@ ${certificateDetails}
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
 
     mockDomains(inquirer)
 
@@ -149,21 +135,10 @@ ${certificateDetails}
     })
   })
 
-  it('# automatically creates an SNI endpoint if no SSL addon', function () {
+  it('# creates an SNI endpoint', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
 
     mockDomains(inquirer)
 
@@ -191,62 +166,10 @@ ${certificateDetails}
     /* eslint-enable no-irregular-whitespace */
   })
 
-  it('# automatically creates an SSL endpoint if in dogwood', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, {
-        'space': { 'name': 'spacely-space-1234' }
-      })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let mock = nock('https://api.heroku.com')
-      .post('/apps/example/ssl-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
-      mock.done()
-      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
-      expect(cli.stdout).to.equal(
-        `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-    })
-    /* eslint-enable no-irregular-whitespace */
-  })
-
-  it('# shows the configure prompt when flagged in', function () {
-    mockSniFeatureFlag(nock, 'example', true)
+  it('# shows the configure prompt', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
 
     nock('https://api.heroku.com')
       .get('/apps/example/domains')
@@ -281,22 +204,11 @@ ${certificateDetails}
         .get('/apps/example')
         .reply(200, { 'space': null })
 
-      nock('https://api.heroku.com')
-        .get('/apps/example/addons/ssl%3Aendpoint')
-        .reply(404, {
-          'id': 'not_found',
-          'resource': 'addon'
-        })
-
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       mockFile(fs, 'pem_file', 'pem content')
       mockFile(fs, 'key_file', 'key content')
     })
 
-    it('# prompts creates an SNI endpoint with stable cnames if no SSL addon', function () {
+    it('# prompts creates an SNI endpoint with stable cnames', function () {
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -362,10 +274,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
 
     it('# does not prompt if all domains covered', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -415,10 +323,6 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
     })
 
     it('# does not error out if the cert CN is for the heroku domain', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -457,10 +361,6 @@ tokyo-1050.herokuapp.com
     })
 
     it('# does not prompt if domains covered with wildcard', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -508,10 +408,6 @@ biz.example.com  CNAME        biz.example.com.herokudns.com
     })
 
     it('# does not prompt if no domains and wildcard cert', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -545,10 +441,6 @@ SSL certificate is self signed.
     })
 
     it('# prints mismatched domains for wildcard cert', function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/features')
-        .reply(200, [])
-
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content'
@@ -746,116 +638,10 @@ SSL certificate is self signed.
     })
   })
 
-  it('# errors out if there is an SSL addon and no flags set', function () {
-    mockSniFeatureFlag(nock, 'example')
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
-
-    let mockAddons = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(200, {})
-
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} })).then(function () {
-      mockAddons.done()
-      expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
-      expect(cli.stdout).to.equal('')
-    })
-  })
-
-  it('# errors out if type is not known', function () {
-    mockSniFeatureFlag(nock, 'example')
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'foo' } })).then(function () {
-      expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
-      expect(cli.stdout).to.equal('')
-    })
-  })
-
-  it('# creates an SNI endpoint if SSL addon and passed --type sni', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
-    })
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'sni' } }).then(function () {
-      mockSni.done()
-      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      expect(cli.stdout).to.equal(
-        `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-    })
-  })
-
-  it('# creates an SSL certificate if SSL addon and passed --type endpoint', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
-    mockDomains(inquirer)
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
-    })
-      .post('/apps/example/ssl-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpoint)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { type: 'endpoint' } }).then(function () {
-      mockSni.done()
-      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      expect(cli.stdout).to.equal(
-        `example now served by tokyo-1050.herokussl.com
-Certificate details:
-${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
-`)
-    })
-  })
-
   it('warns on deprecated --bypass flag', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(404, {
-        'id': 'not_found',
-        'resource': 'addon'
-      })
 
     mockDomains(inquirer)
 

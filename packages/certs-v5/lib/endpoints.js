@@ -1,12 +1,7 @@
 'use strict'
 
 function sniCertsPromise (app, heroku) {
-  return heroku.request({path: `/apps/${app}/sni-endpoints`}).catch(function (err) {
-    if (err.statusCode === 422 && err.body && err.body.id === 'space_app_not_supported') {
-      return []
-    }
-    throw err
-  }).then(function (data) {
+  return heroku.request({path: `/apps/${app}/sni-endpoints`}).then(function (data) {
     return data
   })
 }
@@ -40,8 +35,6 @@ function tagAndSort (app, sniCerts) {
 }
 
 async function all(appName, heroku) {
-  const featureList = await heroku.get(`/apps/${appName}/features`)
-
   let sniCerts = await sniCertsPromise(appName, heroku)
 
   return tagAndSort(appName, sniCerts)
