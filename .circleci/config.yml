@@ -386,7 +386,7 @@ workflows:
             - yarn
       - node14-test: *windows_test
       - node12-test: *windows_test
-      - node10-test: *windows_test
+      - node16-test: *windows_test
       - acceptance-test:
           filters: *always_run_filter
           context:
@@ -394,7 +394,7 @@ workflows:
           matrix:
             parameters:
               node-version:
-                - "10"
+                - "16"
                 - "12"
                 - "14"
           requires:
@@ -409,7 +409,7 @@ workflows:
           requires: &pack-requires
             - node14-test
             - node12-test
-            - node10-test
+            - node16-test
             - windows-test
             - acceptance-test
       - pack-tarballs:
