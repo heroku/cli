@@ -185,10 +185,10 @@ jobs:
       - run:
           name: Test and Lint
           command: yarn --cwd packages/webhooks test
-  node12-test: &test
+  node14-test: &test
     <<: *defaults
     docker:
-      - image: node:12
+      - image: node:14
     resource_class: xlarge
     steps:
       - checkout
@@ -205,15 +205,15 @@ jobs:
       - run:
           name: Running all tests
           command: yarn test
-  node10-test:
+  node12-test:
     <<: *test
     docker:
-      - image: node:10
+      - image: node:12
     resource_class: xlarge
-  node14-test:
+  node16-test:
     <<: *test
     docker:
-      - image: node:14
+      - image: node:16
     resource_class: xlarge
   pack-windows:
     <<: *defaults
