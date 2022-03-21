@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     HEROKU_AUTHOR: Heroku
   docker:
-    - image: oclif/nsis:12.0.0-16
+    - image: node:14
       environment: &env
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
