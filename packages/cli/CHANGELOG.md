@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Features
+
+* upgrade to node 14.19.0 ([#1953](https://github.com/heroku/cli/issues/1953)) ([f54bb24](https://github.com/heroku/cli/commit/f54bb24e343d20cf02fd72747be21e737680e81c))
+
+
+
+
+
 ## [7.59.4](https://github.com/heroku/cli/compare/v7.59.3...v7.59.4) (2022-03-08)
 
 **Note:** Version bump only for package heroku
