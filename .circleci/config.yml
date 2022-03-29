@@ -338,13 +338,14 @@ jobs:
       - run:
           name: Publish Install Scripts
           command: /cli/scripts/postrelease/install_scripts
-  trigger_macos:
-    <<: *defaults
-    steps:
-      - add_ssh_keys
-      - checkout
-      - run: yarn --frozen-lockfile
-      - run: ./scripts/release/macos_installer_trigger
+  ## Job not currently being used
+  # trigger_macos:
+  #   <<: *defaults
+  #   steps:
+  #     - add_ssh_keys
+  #     - checkout
+  #     - run: yarn --frozen-lockfile
+  #     - run: ./scripts/release/macos_installer_trigger
   release-homebrew:
     <<: *defaults
     steps:
@@ -419,7 +420,7 @@ workflows:
               only: /^v.*/
             branches:
               only:
-                - fix-ci-apt-pkgs
+                - master
           requires: &pack-requires
             - node14-test
             - node12-test
@@ -457,18 +458,16 @@ workflows:
             - heroku-cli-s3
           requires:
             - release-deb-and-tarballs
-      # - release-homebrew:
-      #     filters: &tags_only
-      #       tags: *version_tags
-      #       branches: &never_run_on_branches
-      #         ignore: /.*/
-      #     context:
-      #       - heroku-cli-s3
-      #     requires:
-      #       - release-deb-and-tarballs
-      # - change-management: &change_management
-      #     filters: *tags_only
-      #     context:
-      #       - heroku-cli-tps
-      #     requires:
-      #       - release-deb-and-tarballs
+      - release-homebrew:
+          filters: &tags_only
+            tags: *version_tags
+            branches: &never_run_on_branches
+              ignore: /.*/
+          requires:
+            - release-deb-and-tarballs
+      - change-management: &change_management
+          filters: *tags_only
+          context:
+            - heroku-cli-tps
+          requires:
+            - release-deb-and-tarballs
