@@ -220,8 +220,11 @@ jobs:
     steps:
       - checkout
       - run: *yarn_setup
-      - run: *yarn_install
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y nsis p7zip-full
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
