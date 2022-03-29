@@ -99,7 +99,7 @@ jobs:
             - node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: yarn install --frozen-lockfile
+          command: yarn install --frozen-lockfile --prefer-offline
       - save_cache:
           paths:
             - ./node_modules
@@ -320,6 +320,9 @@ jobs:
       - run: *yarn_install
       - attach_workspace:
           at: /cli/packages/cli
+      - run: |
+          apt-get update
+          apt-get install -y awscli
       - run:
           name: packages/cli yarn install
           command: |
@@ -359,7 +362,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn --frozen-lockfile
+      - run: |
+          apt-get update
+          apt-get install -y awscli
       - run: ./scripts/postrelease/invalidate_cdn_cache
   change-management:
     <<: *defaults
@@ -439,19 +444,19 @@ workflows:
             - pack-windows
             - pack-tarballs
             - sign-deb
-      # - release-deb-and-tarballs:
-      #     filters: *master_dev_and_version_tags
-      #     context:
-      #       - heroku-cli-s3
-      #     requires:
-      #       - sign-deb
-      #       - pack-tarballs
-      # - invalidate-cdn-cache:
-      #     filters: *master_dev_and_version_tags
-      #     context:
-      #       - heroku-cli-s3
-      #     requires:
-      #       - release-deb-and-tarballs
+      - release-deb-and-tarballs:
+          filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-s3
+          requires:
+            - sign-deb
+            - pack-tarballs
+      - invalidate-cdn-cache:
+          filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-s3
+          requires:
+            - release-deb-and-tarballs
       # - release-homebrew:
       #     filters: &tags_only
       #       tags: *version_tags
@@ -460,7 +465,7 @@ workflows:
       #     context:
       #       - heroku-cli-s3
       #     requires:
-      #       - invalidate-cdn-cache
+      #       - release-deb-and-tarballs
       # - change-management: &change_management
       #     filters: *tags_only
       #     context:
