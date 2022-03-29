@@ -242,6 +242,9 @@ jobs:
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run: |
+          apt-get update
+          apt-get install -y p7zip-full
+      - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
           cd packages/cli
@@ -260,6 +263,9 @@ jobs:
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y apt-utils
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -405,7 +411,7 @@ workflows:
               only: /^v.*/
             branches:
               only:
-                - master
+                - fix-ci-apt-pkgs
           requires: &pack-requires
             - node14-test
             - node12-test
@@ -430,31 +436,31 @@ workflows:
             - pack-windows
             - pack-tarballs
             - sign-deb
-      - release-deb-and-tarballs:
-          filters: *master_dev_and_version_tags
-          context:
-            - heroku-cli-s3
-          requires:
-            - sign-deb
-            - pack-tarballs
-      - invalidate-cdn-cache:
-          filters: *master_dev_and_version_tags
-          context:
-            - heroku-cli-s3
-          requires:
-            - release-deb-and-tarballs
-      - release-homebrew:
-          filters: &tags_only
-            tags: *version_tags
-            branches: &never_run_on_branches
-              ignore: /.*/
-          context:
-            - heroku-cli-s3
-          requires:
-            - invalidate-cdn-cache
-      - change-management: &change_management
-          filters: *tags_only
-          context:
-            - heroku-cli-tps
-          requires:
-            - release-deb-and-tarballs
+      # - release-deb-and-tarballs:
+      #     filters: *master_dev_and_version_tags
+      #     context:
+      #       - heroku-cli-s3
+      #     requires:
+      #       - sign-deb
+      #       - pack-tarballs
+      # - invalidate-cdn-cache:
+      #     filters: *master_dev_and_version_tags
+      #     context:
+      #       - heroku-cli-s3
+      #     requires:
+      #       - release-deb-and-tarballs
+      # - release-homebrew:
+      #     filters: &tags_only
+      #       tags: *version_tags
+      #       branches: &never_run_on_branches
+      #         ignore: /.*/
+      #     context:
+      #       - heroku-cli-s3
+      #     requires:
+      #       - invalidate-cdn-cache
+      # - change-management: &change_management
+      #     filters: *tags_only
+      #     context:
+      #       - heroku-cli-tps
+      #     requires:
+      #       - release-deb-and-tarballs
