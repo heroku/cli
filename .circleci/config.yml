@@ -288,6 +288,7 @@ jobs:
       - run: |
           apt-get update
           apt-get install -y awscli
+          aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
   change-management:
     <<: *defaults
