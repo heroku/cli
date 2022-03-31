@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.60.1](https://github.com/heroku/cli/compare/v7.60.0...v7.60.1) (2022-03-31)
+
+
+### Bug Fixes
+
+* upgrade tslib from 1.9.3 to 1.14.1 ([#1891](https://github.com/heroku/cli/issues/1891)) ([ccfe505](https://github.com/heroku/cli/commit/ccfe5057a1476a126316662ae4f50b7ebe48d4eb))
+
+
+
+
+
 # [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
 
 
