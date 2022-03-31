@@ -99,7 +99,7 @@ jobs:
             - node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: yarn install --frozen-lockfile
+          command: yarn install --frozen-lockfile --prefer-offline
       - save_cache:
           paths:
             - ./node_modules
@@ -142,8 +142,11 @@ jobs:
     steps:
       - checkout
       - run: *yarn_setup
-      - run: *yarn_install
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y nsis p7zip-full
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -164,6 +167,9 @@ jobs:
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run: |
+          apt-get update
+          apt-get install -y p7zip-full
+      - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
           cd packages/cli
@@ -182,6 +188,9 @@ jobs:
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y apt-utils
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -233,6 +242,9 @@ jobs:
       - run: *yarn_install
       - attach_workspace:
           at: /cli/packages/cli
+      - run: |
+          apt-get update
+          apt-get install -y awscli
       - run:
           name: packages/cli yarn install
           command: |
@@ -248,13 +260,14 @@ jobs:
       - run:
           name: Publish Install Scripts
           command: /cli/scripts/postrelease/install_scripts
-  trigger_macos:
-    <<: *defaults
-    steps:
-      - add_ssh_keys
-      - checkout
-      - run: yarn --frozen-lockfile
-      - run: ./scripts/release/macos_installer_trigger
+  ## Job not currently being used
+  # trigger_macos:
+  #   <<: *defaults
+  #   steps:
+  #     - add_ssh_keys
+  #     - checkout
+  #     - run: yarn --frozen-lockfile
+  #     - run: ./scripts/release/macos_installer_trigger
   release-homebrew:
     <<: *defaults
     steps:
@@ -272,7 +285,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn --frozen-lockfile
+      - run: |
+          apt-get update
+          apt-get install -y awscli
       - run: ./scripts/postrelease/invalidate_cdn_cache
   change-management:
     <<: *defaults
@@ -370,10 +385,8 @@ workflows:
             tags: *version_tags
             branches: &never_run_on_branches
               ignore: /.*/
-          context:
-            - heroku-cli-s3
           requires:
-            - invalidate-cdn-cache
+            - release-deb-and-tarballs
       - change-management: &change_management
           filters: *tags_only
           context:
