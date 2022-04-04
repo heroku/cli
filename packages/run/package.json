@@ -32,7 +32,7 @@
     "http-call": "^5.2.5",
     "mocha": "^5",
     "nyc": "^13",
-    "sinon": "^7.4.1",
+    "sinon": "^13.0.1",
     "ts-node": "^8",
     "typescript": "3.7.5"
   },
