@@ -8,13 +8,11 @@ import {createPipeline, getAccountInfo, getTeam} from '../../api'
 import GitHubAPI from '../../github-api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
 import createApps from '../../setup/create-apps'
-import getCISettings from '../../setup/get-ci-settings'
 import getGitHubToken from '../../setup/get-github-token'
 import getNameAndRepo from '../../setup/get-name-and-repo'
 import getRepo from '../../setup/get-repo'
 import getSettings from '../../setup/get-settings'
 import pollAppSetups from '../../setup/poll-app-setups'
-import setupPipeline from '../../setup/setup-pipeline'
 import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
 // eslint-disable-next-line new-cap
@@ -68,11 +66,8 @@ export default class Setup extends Command {
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = await getRepo(github, repoName)
-    const settings = await getSettings(flags.yes, repo.default_branch)
-
-    const ciSettings = await getCISettings(flags.yes, team)
+    const settings = await getSettings(flags.yes, repo.full_name, repo.default_branch)
     const ownerType = team ? 'team' : 'user'
-
     // If team or org is not specified, we assign ownership to the user creating
     const {
       body: {id: ownerID},
@@ -98,9 +93,12 @@ export default class Setup extends Command {
     await pollAppSetups(this.heroku, appSetups)
     cli.action.stop()
 
-    const stagingApp = appSetups.find((appSetup: any) => appSetup.app.name === stagingAppName).app
+    const setup = this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+      body: settings,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
+    })
 
-    const setup = setupPipeline(kolkrabbi, stagingApp.id, settings, pipeline.id, ciSettings)
+    // const setup = (kolkrabbi, stagingApp.id, settings, pipeline.id, ciSettings)
 
     cli.action.start('Configuring pipeline')
     try {
