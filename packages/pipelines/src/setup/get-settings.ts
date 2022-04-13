@@ -1,8 +1,7 @@
 import cli from 'cli-ux'
 
-export default async function getSettings(yes: any, repo: any, branch: any) {
+export default async function getSettings(yes: any, repo: any) {
   const DEFAULT_SETTINGS = {
-    auto_deploy: true,
     wait_for_ci: true,
     automatic_review_apps: true,
     destroy_stale_apps: true,
@@ -18,7 +17,6 @@ export default async function getSettings(yes: any, repo: any, branch: any) {
   }
 
   const settings = {
-    auto_deploy: true,
     wait_for_ci: true,
     automatic_review_apps: true,
     destroy_stale_apps: true,
