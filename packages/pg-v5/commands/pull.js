@@ -121,7 +121,7 @@ const run = async function (sourceIn, targetIn, exclusions) {
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
   let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', ...connArgs(source, true)]
-  if (exclude !== '') dumpFlags.push(exclude)
+  if (exclude !== '') dumpFlags.unshift(exclude)
 
   const dumpOptions = {
     env: {
