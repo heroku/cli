@@ -9,6 +9,7 @@ Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 SSL certificate is self signed.`,
   endpoint: { 'name': 'tokyo-1050',
     'cname': 'tokyo-1050.herokussl.com',
+    'display_name': 'my-tokyo-1050',
     'ssl_cert': {
       'ca_signed?': false,
       'cert_domains': [ 'example.org' ],

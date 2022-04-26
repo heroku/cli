@@ -96,7 +96,7 @@ function redisCLI (uri, client) {
   })
 }
 
-function bastionConnect ({ uri, bastions, config }) {
+function bastionConnect ({ uri, bastions, config, prefer_native_tls }) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -104,10 +104,22 @@ function bastionConnect ({ uri, bastions, config }) {
       tunnel.forwardOut('localhost', localPort, uri.hostname, uri.port, function (err, stream) {
         if (err) return reject(err)
         stream.on('close', () => tunnel.end())
-        redisCLI(uri, stream).then(resolve).catch(reject)
+
+        let client
+        if (prefer_native_tls) {
+          client = tls.connect({
+            socket: stream,
+            port: parseInt(uri.port, 10),
+            host: uri.hostname,
+            rejectUnauthorized: false
+          })
+        } else {
+          client = stream
+        }
+
+        redisCLI(uri, client).then(resolve).catch(reject)
       })
-    })
-    tunnel.connect({
+    }).connect({
       host: bastions.split(',')[0],
       username: 'bastion',
       privateKey: match(config, /_BASTION_KEY/)
@@ -128,13 +140,28 @@ function maybeTunnel (redis, config) {
   let bastions = match(config, /_BASTIONS/)
   let hobby = redis.plan.indexOf('hobby') === 0
   let uri = url.parse(redis.resource_url)
+  let prefer_native_tls = redis.prefer_native_tls
+
+  if (prefer_native_tls && hobby) {
+    uri = url.parse(match(config, /_TLS_URL/))
+  }
 
   if (bastions != null) {
-    return bastionConnect({ uri, bastions, config })
+    return bastionConnect({ uri, bastions, config, prefer_native_tls })
   } else {
     let client
-    if (!hobby) {
-      client = tls.connect({ port: parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false })
+    if (prefer_native_tls) {
+      client = tls.connect({
+        port: parseInt(uri.port, 10),
+        host: uri.hostname,
+        rejectUnauthorized: false
+      })
+    } else if (!hobby) {
+      client = tls.connect({
+        port: parseInt(uri.port, 10) + 1,
+        host: uri.hostname,
+        rejectUnauthorized: false
+      })
     } else {
       client = net.connect({ port: uri.port, host: uri.hostname })
     }
@@ -153,23 +180,40 @@ module.exports = {
   run: cli.command({ preauth: true }, async (context, heroku) => {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
-
-    let config = await heroku.get(`/apps/${context.app}/config-vars`)
+    let configVars = await getRedisConfigVars(addon, heroku)
 
     let redis = await api.request(`/redis/v0/databases/${addon.name}`)
-    let hobby = redis.plan.indexOf('hobby') === 0
+    
+    if (redis.plan.startsWith('shield-')) {
+      cli.error(`
+      Using redis:cli on Heroku Redis shield plans is not supported.
+      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features
+      `)
+      cli.exit(1)
+    }
 
-    if (hobby) {
+    let hobby = redis.plan.indexOf('hobby') === 0
+    let prefer_native_tls = redis.prefer_native_tls
+
+    if (!prefer_native_tls && hobby) {
       await cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
     }
 
-    let vars = {}
-    addon.config_vars.forEach(function (key) { vars[key] = config[key] })
-    let nonBastionVars = addon.config_vars.filter(function (configVar) {
+    let nonBastionVars = Object.keys(configVars).filter(function (configVar) {
       return !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar))
     }).join(', ')
 
     cli.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
-    return maybeTunnel(redis, vars)
+    return maybeTunnel(redis, configVars)
   })
+}
+
+// try to lookup the right config vars from the billing app
+async function getRedisConfigVars (addon, heroku) {
+  let config = await heroku.get(`/apps/${addon.billing_entity.name}/config-vars`)
+
+  return addon.config_vars.reduce((memo, configVar) => {
+    memo[configVar] = config[configVar]
+    return memo
+  }, {})
 }

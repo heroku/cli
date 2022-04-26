@@ -11,11 +11,12 @@ let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
 let endpointWildcardBug = require('../../stubs/sni-endpoints.js').endpoint_wildcard_bug
 let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
-
 let endpointSpace = require('../../stubs/ssl-endpoints.js').endpoint_space
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs', function () {
   beforeEach(function () {
+    mockSniFeatureFlag(nock, 'example')
     cli.mockConsole()
   })
 
@@ -35,10 +36,33 @@ describe('heroku certs', function () {
         expect(cli.stderr).to.equal('')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
-          `Name        Endpoint                  Common Name(s)  Expires               Trusted  Type
-──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────
-akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint
-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False    Endpoint
+          `Name        Display Name   Endpoint                  Common Name(s)  Expires               Trusted  Type      Domains
+──────────  ─────────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────  ───────
+akita-7777                 akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint  0
+tokyo-1050  my-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False    Endpoint  0
+`)
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('does not display name if there is not any', function () {
+      let mockSni = nock('https://api.heroku.com')
+        .get('/apps/example/sni-endpoints')
+        .reply(200, [])
+
+      let mockSsl = nock('https://api.heroku.com')
+        .get('/apps/example/ssl-endpoints')
+        .reply(200, [endpoint2])
+
+      return certs.run({ app: 'example' }).then(function () {
+        mockSni.done()
+        mockSsl.done()
+        expect(cli.stderr).to.equal('')
+        /* eslint-disable no-trailing-spaces */
+        expect(cli.stdout).to.equal(
+          `Name        Endpoint                  Common Name(s)  Expires               Trusted  Type      Domains
+──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────  ───────
+akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint  0
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -63,9 +87,7 @@ tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  Fals
   })
 
   it('# shows a mix of certs ordered by name', function () {
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
@@ -81,10 +103,10 @@ tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  Fals
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
-──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────────
-akita-7777  akita-7777.herokussl.com  heroku.com                                         2013-08-01 21:34 UTC  True     Endpoint
-tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI
+        `Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type      Domains
+──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────────  ───────
+akita-7777  akita-7777.herokussl.com  heroku.com                                         2013-08-01 21:34 UTC  True     Endpoint  0
+tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI       0
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -110,18 +132,16 @@ tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.exam
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                               Common Name(s)  Expires               Trusted  Type
-──────────  ─────────────────────────────────────  ──────────────  ────────────────────  ───────  ─────────────────
-tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21:34 UTC  True     Private Space App
+        `Name        Endpoint                               Common Name(s)  Expires               Trusted  Type               Domains
+──────────  ─────────────────────────────────────  ──────────────  ────────────────────  ───────  ─────────────────  ───────
+tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21:34 UTC  True     Private Space App  0
 `)
       /* eslint-enable no-trailing-spaces */
     })
   })
 
   it('# shows ACM for the type when acm true', function () {
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointAcm])
 
@@ -146,9 +166,7 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
   })
 
   it('# shows certs with common names stacked and stable matches', function () {
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
@@ -164,9 +182,9 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Common Name(s)                                     Expires               Trusted  Type
-──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI
+        `Name        Common Name(s)                                     Expires               Trusted  Type  Domains
+──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────  ───────
+tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI   0
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -174,7 +192,7 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
 
   it('# shows certs with common names stacked and stable matches (bugfix)', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcardBug])
@@ -191,9 +209,9 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Common Name(s)  Expires               Trusted  Type
-──────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI
+        `Name        Common Name(s)  Expires               Trusted  Type  Domains
+──────────  ──────────────  ────────────────────  ───────  ────  ───────
+tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI   0
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -201,7 +219,7 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI
 
   it('# shows certs with common names stacked and stable matches wildcard', function () {
     let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcard])
@@ -218,18 +236,16 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Common Name(s)  Expires               Trusted  Type
-──────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI
+        `Name        Common Name(s)  Expires               Trusted  Type  Domains
+──────────  ──────────────  ────────────────────  ───────  ────  ───────
+tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI   0
 `)
       /* eslint-enable no-trailing-spaces */
     })
   })
 
   it('# shows certs with common names stacked and just stable cname matches', function () {
-    let mockSni = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
 
@@ -245,9 +261,9 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Common Name(s)                                     Expires               Trusted  Type
-──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI
+        `Name        Common Name(s)                                     Expires               Trusted  Type  Domains
+──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────  ───────
+tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI   0
 `)
       /* eslint-enable no-trailing-spaces */
     })

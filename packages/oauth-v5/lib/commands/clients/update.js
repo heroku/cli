@@ -1,7 +1,6 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 let lib = require('../../clients')
 
 let empty = o => Object.keys(o).length === 0
@@ -16,7 +15,7 @@ function getUpdates (o) {
   return updates
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   let id = context.args.id
   let request = heroku.request({
     method: 'PATCH',
@@ -24,7 +23,7 @@ function * run (context, heroku) {
     body: getUpdates(context.flags)
   })
 
-  yield cli.action(`Updating ${cli.color.cyan(id)}`, request)
+  await cli.action(`Updating ${cli.color.cyan(id)}`, request)
 }
 
 module.exports = {
@@ -37,5 +36,5 @@ module.exports = {
     {name: 'url', hasValue: true, description: 'change the client redirect URL'}
   ],
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

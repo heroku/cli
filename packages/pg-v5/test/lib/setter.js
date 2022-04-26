@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -48,54 +48,54 @@ describe('setter', () => {
         pg.get('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
         return cli.command(fn)({ app: 'myapp', args: {}, flags: {} })
-          .then(() => expect(cli.stdout, 'to equal', `${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
+          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
       })
 
       it(`change the value for ${name}`, () => {
         pg.patch('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
         return cli.command(fn)({ app: 'myapp', args: { value: value }, flags: {} })
-          .then(() => expect(cli.stdout, 'to equal', `${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
+          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
       })
     })
   })
 
   describe('boolean', () => {
     it('returns true if on or true', () => {
-      expect(setter.boolean('on'), 'to equal', true)
-      expect(setter.boolean('ON'), 'to equal', true)
-      expect(setter.boolean('true'), 'to equal', true)
+      expect(setter.boolean('on')).to.equal(true)
+      expect(setter.boolean('ON')).to.equal(true)
+      expect(setter.boolean('true')).to.equal(true)
     })
 
     it('returns false if off, false or null', () => {
-      expect(setter.boolean('OFF'), 'to equal', false)
-      expect(setter.boolean('off'), 'to equal', false)
-      expect(setter.boolean('false'), 'to equal', false)
-      expect(setter.boolean(null), 'to equal', false)
+      expect(setter.boolean('OFF')).to.equal(false)
+      expect(setter.boolean('off')).to.equal(false)
+      expect(setter.boolean('false')).to.equal(false)
+      expect(setter.boolean(null)).to.equal(false)
     })
 
     it('raise error if not recognized', () => {
-      expect(() => setter.boolean('notok'), 'to throw a', TypeError)
-      expect(() => setter.boolean('maybe'), 'to throw a', TypeError)
+      expect(() => setter.boolean('notok')).to.throw(TypeError)
+      expect(() => setter.boolean('maybe')).to.throw(TypeError)
     })
   })
 
   describe('numeric', () => {
     it('returns a numeric value for number', () => {
-      expect(setter.numeric('10'), 'to equal', 10)
-      expect(setter.numeric('1'), 'to equal', 1)
+      expect(setter.numeric('10')).to.equal(10)
+      expect(setter.numeric('1')).to.equal(1)
     })
 
     it('raise error if not a number', () => {
-      expect(() => setter.numeric('not a number'), 'to throw a', TypeError)
-      expect(() => setter.numeric('NaN'), 'to throw a', TypeError)
-      expect(() => setter.numeric('Infinite'), 'to throw a', TypeError)
+      expect(() => setter.numeric('not a number')).to.throw(TypeError)
+      expect(() => setter.numeric('NaN')).to.throw(TypeError)
+      expect(() => setter.numeric('Infinite')).to.throw(TypeError)
     })
   })
 
   describe('enum', () => {
     it('returns the given value', () => {
-      expect(setter.enum('value'), 'to equal', 'value')
+      expect(setter.enum('value')).to.equal('value')
     })
   })
 })

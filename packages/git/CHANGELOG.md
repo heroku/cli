@@ -3,6 +3,102 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+# [7.43.0](https://github.com/heroku/cli/compare/v7.42.13...v7.43.0) (2020-09-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.42.8](https://github.com/heroku/cli/compare/v7.42.7...v7.42.8) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.42.7](https://github.com/heroku/cli/compare/v7.42.6...v7.42.7) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-git

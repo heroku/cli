@@ -3,6 +3,201 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.59.3](https://github.com/heroku/cli/compare/v7.59.2...v7.59.3) (2022-02-28)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+# [7.57.0](https://github.com/heroku/cli/compare/v7.56.1...v7.57.0) (2021-08-17)
+
+
+### Features
+
+* **certs-v5:** Add --wait flag to certs:auto:enable command ([#1850](https://github.com/heroku/cli/issues/1850)) ([3e75af5](https://github.com/heroku/cli/commit/3e75af519bf6347e40b1641fdd659369335371ce))
+
+
+
+
+
+# [7.55.0](https://github.com/heroku/cli/compare/v7.54.1...v7.55.0) (2021-06-25)
+
+
+### Features
+
+* **certs-v5:** Add display name to certs table ([#1826](https://github.com/heroku/cli/issues/1826)) ([c911f99](https://github.com/heroku/cli/commit/c911f99726e0e7f6a8d3d7931e9042280766864c))
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **certs-v5:** remove co-wait ([411d7e8](https://github.com/heroku/cli/commit/411d7e8cb2791f5b236b796f5bd62f4c4d40b64a))
+
+
+### Features
+
+* **certs-v5:** Remove old --domains flag from certs:add ([#1781](https://github.com/heroku/cli/issues/1781)) ([12115d0](https://github.com/heroku/cli/commit/12115d0897ba89ed5984c8e1e0bfca09ff8763bb))
+
+
+
+
+
+## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+
+### Features
+
+* **certs-v5:** Remove old --domains flag from certs:add ([#1781](https://github.com/heroku/cli/issues/1781)) ([12115d0](https://github.com/heroku/cli/commit/12115d0897ba89ed5984c8e1e0bfca09ff8763bb))
+
+
+
+
+
+# [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* **certs-v5:** remove co-wait ([411d7e8](https://github.com/heroku/cli/commit/411d7e8cb2791f5b236b796f5bd62f4c4d40b64a))
+
+
+
+
+
+# [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.47.5](https://github.com/heroku/cli/compare/v7.47.4...v7.47.5) (2020-12-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+# [7.47.0](https://github.com/heroku/cli/compare/v7.46.2...v7.47.0) (2020-10-29)
+
+
+### Features
+
+* **certs-v5:** add domain info in certs list and info ([#1660](https://github.com/heroku/cli/issues/1660)) ([1920ff5](https://github.com/heroku/cli/commit/1920ff559f7ceeab3c1e60d34ce863166fe62854))
+
+
+
+
+
+## [7.46.2](https://github.com/heroku/cli/compare/v7.46.1...v7.46.2) (2020-10-22)
+
+
+### Bug Fixes
+
+* **certs-v5:** fix logic for requesting all cert resources ([#1661](https://github.com/heroku/cli/issues/1661)) ([46187e5](https://github.com/heroku/cli/commit/46187e5aef89b6d8d152ceb63653c62b49021e84))
+
+
+
+
+
+## [7.43.1](https://github.com/heroku/cli/compare/v7.43.0...v7.43.1) (2020-09-21)
+
+
+### Bug Fixes
+
+* **certs-v5:** check if an app is a private space app when using SNI endpoints ([#1644](https://github.com/heroku/cli/issues/1644)) ([34c2ece](https://github.com/heroku/cli/commit/34c2ece4c5ebd48f37a3a0793c7735f52fb49a15))
+
+
+
+
+
+## [7.42.4](https://github.com/heroku/cli/compare/v7.42.3...v7.42.4) (2020-07-13)
+
+
+### Bug Fixes
+
+* **certs-v5:** fix logic for checking multiple sni flag ([#1560](https://github.com/heroku/cli/issues/1560)) ([7e615b5](https://github.com/heroku/cli/commit/7e615b5e7922c9cbb4b651d3e98d9275bfcd0820))
+
+
+
+
+
+## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
+
+
+### Bug Fixes
+
+* **certs-v5:** handle private spaces sni migrated apps ([#1456](https://github.com/heroku/cli/issues/1456)) ([039fcf4](https://github.com/heroku/cli/commit/039fcf4e5479ff6231bfe329b482d23f38bd4634))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5

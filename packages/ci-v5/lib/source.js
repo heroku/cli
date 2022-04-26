@@ -5,10 +5,10 @@ const git = require('./git')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 
-function * uploadArchive (url, filePath) {
+async function uploadArchive(url, filePath) {
   const request = got.stream.put(url, {
     headers: {
-      'content-length': (yield fs.statAsync(filePath)).size
+      'content-length': ((await fs.statAsync(filePath))).size
     }
   })
 
@@ -20,31 +20,31 @@ function * uploadArchive (url, filePath) {
   })
 }
 
-function * prepareSource (ref, context, heroku) {
-  const [filePath, source] = yield [
+async function prepareSource(ref, context, heroku) {
+  const [filePath, source] = await Promise.all([
     git.createArchive(ref),
     api.createSource(heroku)
-  ]
-  yield uploadArchive(source.source_blob.put_url, filePath)
+  ])
+  await uploadArchive(source.source_blob.put_url, filePath)
   return Promise.resolve(source)
 }
 
-function * urlExists (url) {
-  return yield got.head(url)
+async function urlExists(url) {
+  return await got.head(url);
 }
 
-function * createSourceBlob (ref, context, heroku) {
+async function createSourceBlob(ref, context, heroku) {
   try {
-    const githubRepository = yield git.githubRepository()
+    const githubRepository = await git.githubRepository()
     const { user, repo } = githubRepository
-    const archiveLink = yield api.githubArchiveLink(heroku, user, repo, ref)
+    const archiveLink = await api.githubArchiveLink(heroku, user, repo, ref)
 
-    if (yield urlExists(archiveLink.archive_link)) {
+    if (await urlExists(archiveLink.archive_link)) {
       return archiveLink.archive_link
     }
   } catch (ex) { }
 
-  const sourceBlob = yield prepareSource(ref, context, heroku)
+  const sourceBlob = await prepareSource(ref, context, heroku)
   return sourceBlob.source_blob.get_url
 }
 

@@ -2,7 +2,7 @@
 /* globals describe beforeEach afterEach cli it nock */
 
 let resolve = require('../../lib/resolve')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let Heroku = require('heroku-client')
 
 describe('resolve', () => {

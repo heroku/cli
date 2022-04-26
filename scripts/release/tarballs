@@ -4,7 +4,6 @@ const qq = require('qqjs')
 
 qq.config.silent = false
 qq.run(async () => {
-  await require('./update_channel')()
-  await qq.x('./node_modules/.bin/oclif-dev pack')
+  await require('../utils/_update_channel')()
   await qq.x('./node_modules/.bin/oclif-dev publish')
 })

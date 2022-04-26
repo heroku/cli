@@ -1,17 +1,16 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
 function displayJSON (info) {
   cli.log(JSON.stringify(info, null, 2))
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:peering:info --space my-space')
-  let pInfo = yield lib.getPeeringInfo(space)
+  let pInfo = await lib.getPeeringInfo(space)
   if (context.flags.json) displayJSON(pInfo)
   else lib.displayPeeringInfo(space, pInfo)
 }
@@ -49,5 +48,5 @@ configure the peering connection for the space.
     { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

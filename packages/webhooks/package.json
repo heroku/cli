@@ -1,12 +1,12 @@
 {
   "name": "@heroku-cli/plugin-webhooks",
   "description": "Heroku CLI plugin to manage webhooks",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.4.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "cli-ux": "^5.2.1",
@@ -31,7 +31,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/lib",

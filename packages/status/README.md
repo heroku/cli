@@ -4,7 +4,6 @@ CLI Plugin for [Heroku Status](https://status.heroku.com)
 [![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-status.svg)](https://npmjs.org/package/@heroku-cli/plugin-status)
 [![CircleCI](https://circleci.com/gh/heroku/heroku-cli-status/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-status/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-cli-status?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-cli-status/branch/master)
-[![Codecov](https://codecov.io/gh/heroku/heroku-cli-status/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-status)
 [![Greenkeeper](https://badges.greenkeeper.io/heroku/heroku-cli-status.svg)](https://greenkeeper.io/)
 [![Known Vulnerabilities](https://snyk.io/test/npm/@heroku-cli/plugin-status/badge.svg)](https://snyk.io/test/npm/@heroku-cli/plugin-status)
 [![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-status.svg)](https://npmjs.org/package/@heroku-cli/plugin-status)
@@ -60,7 +59,7 @@ $ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
 $ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-status/7.60.0 darwin-x64 node-v14.18.2
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
   $ @heroku-cli/plugin-status COMMAND
@@ -82,5 +81,5 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/status/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/status/src/commands/status.ts)_
 <!-- commandsstop -->

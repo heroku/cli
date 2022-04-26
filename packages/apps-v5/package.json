@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-apps-v5",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -15,8 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.3.0",
-    "co": "^4.6.0",
+    "@heroku-cli/command": "^8.4.1",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
     "heroku-cli-util": "^8.0.11",
@@ -26,13 +25,14 @@
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
-    "term-img": "^2.1.0",
-    "urijs": "1.19.1"
+    "term-img": "^4.1.0",
+    "urijs": "1.19.10"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
     "mocha": "^5.2.0",
     "mockdate": "^2.0.2",
@@ -42,8 +42,7 @@
     "set-tz": "^0.1.0",
     "std-mocks": "1.0.1",
     "testdouble": "^3.10.0",
-    "time-require": "0.1.2",
-    "unexpected": "^11.0.1"
+    "time-require": "0.1.2"
   },
   "files": [
     "/oclif.manifest.json",

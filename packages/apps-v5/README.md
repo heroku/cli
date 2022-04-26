@@ -2,7 +2,6 @@ heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=s
 ===========
 
 [![Code Climate](https://codeclimate.com/github/heroku/heroku-apps/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-apps)
-[![codecov](https://codecov.io/gh/heroku/heroku-apps/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-apps)
 [![npm version](https://badge.fury.io/js/heroku-apps.svg)](https://badge.fury.io/js/heroku-apps)
 [![License](https://img.shields.io/github/license/heroku/heroku-apps.svg)](https://github.com/heroku/heroku-apps/blob/master/LICENSE)
 [![Greenkeeper badge](https://badges.greenkeeper.io/heroku/heroku-apps.svg)](https://greenkeeper.io/)
@@ -15,7 +14,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-apps-v5/7.60.0 darwin-x64 node-v14.18.2
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -121,7 +120,7 @@ OPTIONS
 
 EXAMPLES
   $ heroku apps:create
-  Creating app... done, stack is heroku-18
+  Creating app... done, stack is heroku-20
   https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
   # or just
@@ -310,9 +309,10 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
-  $ heroku stack:set heroku-18 -a myapp
-  Stack set. Next release on myapp will use heroku-18.
-  Run git push heroku master to create a new release on myapp.
+  $ heroku stack:set heroku-20 -a myapp
+  Setting stack to heroku-20... done
+  You will need to redeploy myapp for the change to take effect.
+  Run git push heroku main to trigger a new build on myapp.
 ```
 
 ## `heroku config:set`

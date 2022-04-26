@@ -3,12 +3,12 @@
 let allEndpoints = require('./endpoints.js').all
 let error = require('./error.js')
 
-module.exports = function * (context, heroku) {
+module.exports = async function (context, heroku) {
   if (context.flags.endpoint && context.flags.name) {
     error.exit(1, 'Specified both --name and --endpoint, please use just one')
   }
 
-  var endpoints = yield allEndpoints(context.app, heroku)
+  var endpoints = await allEndpoints(context.app, heroku)
 
   if (endpoints.length === 0) {
     error.exit(1, `${context.app} has no SSL certificates`)

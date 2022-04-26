@@ -50,6 +50,7 @@ exports.commands = flatten([
   require('./commands/settings/log_lock_waits'),
   require('./commands/settings/log_min_duration_statement'),
   require('./commands/settings/log_statement'),
+  require('./commands/settings/track_functions'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),

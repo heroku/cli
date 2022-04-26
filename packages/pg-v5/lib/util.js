@@ -15,6 +15,23 @@ function getConfigVarName (configVars) {
 
 exports.getConfigVarName = getConfigVarName
 
+function getConfigVarNameFromAttachment (attachment, config) {
+  const configVars = attachment.config_vars.filter((cv) => {
+    return config[cv] && config[cv].startsWith('postgres://')
+  })
+  if (configVars.length === 0) {
+    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
+  }
+
+  let configVarName = `${attachment.name}_URL`
+  if (configVars.includes(configVarName) && configVarName in config) {
+    return configVarName
+  }
+  return getConfigVarName(configVars)
+}
+
+exports.getConfigVarNameFromAttachment  = getConfigVarNameFromAttachment;
+
 function formatAttachment (attachment) {
   let attName = cli.color.addon(attachment.name)
 
@@ -77,30 +94,25 @@ exports.presentCredentialAttachments = presentCredentialAttachments
 exports.getConnectionDetails = function (attachment, config) {
   const {getBastion} = require('./bastion')
   const url = require('url')
-  const configVars = attachment.config_vars.filter((cv) => {
-    return config[cv] && config[cv].startsWith('postgres://')
-  })
-  if (configVars.length === 0) {
-    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
-  }
-  const connstringVar = getConfigVarName(configVars)
+
+  const connstringVar = getConfigVarNameFromAttachment(attachment, config)
 
   // remove _URL from the end of the config var name
   const baseName = connstringVar.slice(0, -4)
 
   // build the default payload for non-bastion dbs
   debug(`Using "${connstringVar}" to connect to your database…`)
-  const target = url.parse(config[connstringVar])
-  let [user, password] = target.auth.split(':')
+
+  let conn = exports.parsePostgresConnectionString(config[connstringVar])
 
   let payload = {
-    user,
-    password,
-    database: target.path.split('/', 2)[1],
-    host: target.hostname,
-    port: target.port,
+    user: conn.user,
+    password: conn.password,
+    database: conn.database,
+    host: conn.hostname,
+    port: conn.port,
     attachment,
-    url: target
+    url: conn
   }
 
   // If bastion creds exist, graft it into the payload
@@ -147,8 +159,8 @@ exports.databaseNameFromUrl = (uri, config) => {
   let name = names.pop()
   while (names.length > 0 && name === 'DATABASE_URL') name = names.pop()
   if (name) return cli.color.configVar(name.replace(/_URL$/, ''))
-  uri = url.parse(uri)
-  return `${uri.hostname}:${uri.port || 5432}${uri.path}`
+  let conn = exports.parsePostgresConnectionString(uri)
+  return `${conn.host}:${conn.port}${conn.pathname}`
 }
 
 exports.parsePostgresConnectionString = (db) => {

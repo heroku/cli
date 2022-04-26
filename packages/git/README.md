@@ -6,7 +6,6 @@ Heroku CLI plugin to manage local git repos.
 [![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-git.svg)](https://npmjs.org/package/@heroku-cli/plugin-git)
 [![CircleCI](https://circleci.com/gh/[object Object]/tree/master.svg?style=shield)](https://circleci.com/gh/[object Object]/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/[object Object]?branch=master&svg=true)](https://ci.appveyor.com/project/[object Object]/branch/master)
-[![Codecov](https://codecov.io/gh/[object Object]/branch/master/graph/badge.svg)](https://codecov.io/gh/[object Object])
 [![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-git.svg)](https://npmjs.org/package/@heroku-cli/plugin-git)
 [![License](https://img.shields.io/npm/l/@heroku-cli/plugin-git.svg)](https://github.com/[object Object]/blob/master/package.json)
 
@@ -21,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-git
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-git/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-git/7.60.0 darwin-x64 node-v14.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -56,7 +55,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/git/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/clone.ts)_
 
 ## `oclif-example git:remote`
 
@@ -78,9 +77,9 @@ EXAMPLES
   # set git remote heroku to https://git.heroku.com/example.git
        $ heroku git:remote -a example
 
-       # set git remote heroku-staging to https://git.heroku.com/example-staging.git
+       # set git remote heroku-staging to https://git.heroku.com/example.git
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/git/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->

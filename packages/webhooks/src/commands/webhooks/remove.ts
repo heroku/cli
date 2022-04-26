@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../base'
+import BaseCommand from '../../base'
 export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
 

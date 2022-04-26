@@ -15,6 +15,20 @@ architectures:
 parts:
   heroku:
     plugin: nil
+    override-pull: |
+      snapcraftctl pull
+      COMMIT_MSG=$(git log --max-count 1 --pretty="format:%s" | awk '{print $1}')
+      CLI_VERSION=$(grep \"version\": packages/cli/package.json | head -n 1 | awk '{print $2}' | tr -d \" | tr -d \,)
+
+      echo "COMMIT_MSG"
+      echo $COMMIT_MSG
+      echo "CLI_VERSION"
+      echo $CLI_VERSION
+
+      if test "$COMMIT_MSG" = "v$CLI_VERSION"; then
+        echo "Setting snapcraft version to $COMMIT_MSG"
+        snapcraftctl set-version $COMMIT_MSG
+      fi
     override-build: |
       set -ex
 
@@ -35,7 +49,7 @@ parts:
       tar xvzf heroku.tar.gz
       rmdir ../install
       mv package ../install
-      OS=linux ./scripts/fetch_node_binary ../install/bin
+      OS=linux ./scripts/utils/_fetch_node_binary ../install/bin
       cd ../install && yarn --prod
       cd ../install && bin/run -v
       sed -i 's/#!\/usr\/bin\/env node/#!\/snap\/heroku\/current\/bin\/node/' ../install/bin/run

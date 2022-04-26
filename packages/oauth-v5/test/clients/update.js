@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../lib/commands/clients/update')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('clients:update', () => {
   let api
@@ -40,7 +40,7 @@ describe('clients:update', () => {
   })
 
   it('does nothing with no changes', () => {
-    return expect(cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: {} }),
-      'to be rejected with', 'No changes provided.')
+    return expect(cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: {} }))
+      .to.be.rejectedWith(Error, 'No changes provided.')
   })
 })

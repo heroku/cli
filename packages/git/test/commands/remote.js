@@ -4,7 +4,7 @@
 let sinon = require('sinon')
 let nock = require('nock')
 let proxyquire = require('proxyquire')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let cli = require('heroku-cli-util')
 
 describe('git:remote', function () {
@@ -15,10 +15,8 @@ describe('git:remote', function () {
     let git = require('../mock/git')
     let remote = proxyquire('../../commands/git/remote', { '../../lib/git': () => git })
 
-    return expect(
-      remote.run({ flags: {}, args: [] }),
-      'to be rejected with',
-      { message: 'Specify an app with --app' })
+    return expect(remote.run({ flags: {}, args: [] }))
+      .to.be.rejectedWith(Error, 'Specify an app with --app')
   })
 
   it('replaces an http-git remote', function () {
@@ -32,7 +30,7 @@ describe('git:remote', function () {
       .reply(200, { name: 'myapp' })
 
     return remote.run({ flags: { app: 'myapp' }, args: [] })
-      .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
+      .then(() => expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
       .then(() => {
         mock.verify()
         mock.restore()
@@ -51,7 +49,7 @@ describe('git:remote', function () {
       .reply(200, { name: 'myapp' })
 
     return remote.run({ flags: { app: 'myapp' }, args: [] })
-      .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
+      .then(() => expect(cli.stdout.to.equal('set git remote heroku to https://git.heroku.com/myapp.git\n'))
       .then(() => {
         mock.verify()
         mock.restore()

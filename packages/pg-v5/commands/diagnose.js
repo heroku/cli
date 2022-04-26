@@ -1,44 +1,63 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
-  const { app, args } = context
+  const URL = require('url')
+  const uuid = require('uuid')
 
-  let generateReport = co.wrap(function * (database) {
-    let db = yield fetcher.addon(app, database)
-    db = yield heroku.get(`/addons/${db.name}`)
-    let config = yield heroku.get(`/apps/${app}/config-vars`)
-    // TODO: util.getConfigVarName is only providing one of config vars of that
-    // addon, we should make sure that we either use the default cred or any
-    // cred that associated with the attachment name that was provided to
-    // pg:diagnose command
-    let params = {
-      url: config[util.getConfigVarName(db.config_vars)],
+  const { app, args, flags } = context
+
+  let generateParams = async function (url, db, dbName) {
+    let base_params = {
+      url: URL.format(url),
       plan: db.plan.name.split(':')[1],
       app: db.app.name,
-      database: util.getConfigVarName(db.config_vars)
+      database: dbName,
     }
-    if (!util.starterPlan(db)) {
-      params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
-    }
-    return yield heroku.post('/reports', {
-      host: PGDIAGNOSE_HOST,
-      body: params
-    })
-  })
 
-  let displayReport = report => {
+    if (!util.starterPlan(db)) {
+      base_params.metrics = await heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
+      let burstData = await heroku.get(`/client/v11/databases/${db.id}/burst_status`, { host: host(db) })
+      if (burstData && Object.keys(burstData).length !== 0) {
+        base_params.burst_data_present = true
+        base_params.burst_status = burstData.burst_status
+      }
+    }
+
+    return base_params
+  }
+
+  let generateReport = async function (database) {
+    let attachment = await fetcher.attachment(app, database)
+    const { addon: db } = attachment
+    let config = await heroku.get(`/apps/${app}/config-vars`)
+
+    const { url } = util.getConnectionDetails(attachment, config)
+    const dbName = util.getConfigVarNameFromAttachment(attachment, config)
+
+    let params = await generateParams(url, db, dbName)
+    return await heroku.post('/reports', {
+      host: PGDIAGNOSE_HOST,
+      body: params,
+    });
+  }
+
+  let displayReport = (report) => {
+    if (flags.json) {
+      cli.styledJSON(report)
+      return
+    }
+
     cli.log(`Report ${report.id} for ${report.app}::${report.database}
 available for one month after creation on ${report.created_at}
 `)
-    let display = checks => {
+    let display = (checks) => {
       checks.forEach((check) => {
         let color = cli.color[check.status] || ((txt) => txt)
         cli.log(color(`${check.status.toUpperCase()}: ${check.name}`))
@@ -51,28 +70,33 @@ available for one month after creation on ${report.created_at}
 
           let keys = Object.keys(check.results[0])
           cli.table(check.results, {
-            columns: keys.map(key => ({ label: capitalize(key), key: key }))
+            columns: keys.map((key) => ({ label: capitalize(key), key: key })),
           })
         } else {
           if (!Object.keys(check.results).length) return
 
           let key = Object.keys(check.results)[0]
-          cli.log(`${key.split('_').map((s) => capitalize(s)).join(' ')} ${check.results[key]}`)
+          cli.log(
+            `${key
+              .split('_')
+              .map((s) => capitalize(s))
+              .join(' ')} ${check.results[key]}`,
+          )
         }
       })
     }
-    display(report.checks.filter(c => c.status === 'red'))
-    display(report.checks.filter(c => c.status === 'yellow'))
-    display(report.checks.filter(c => c.status === 'green'))
-    display(report.checks.filter(c => !['red', 'yellow', 'green'].find(d => d === c.status)))
+    display(report.checks.filter((c) => c.status === 'red'))
+    display(report.checks.filter((c) => c.status === 'yellow'))
+    display(report.checks.filter((c) => c.status === 'green'))
+    display(report.checks.filter((c) => !['red', 'yellow', 'green'].find((d) => d === c.status)))
   }
 
   let report
   let id = args['DATABASE|REPORT_ID']
-  if (id && id.match(/^[a-z0-9-]{36}$/)) {
-    report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
+  if (id && uuid.validate(id)) {
+    report = await heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
   } else {
-    report = yield generateReport(id)
+    report = await generateReport(id)
   }
 
   displayReport(report)
@@ -89,5 +113,6 @@ if REPORT_ID is specified instead, a previous report is displayed
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'DATABASE|REPORT_ID', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  flags: [{ name: 'json', description: "format output as JSON", hasValue: false }],
+  run: cli.command({ preauth: true }, run),
 }

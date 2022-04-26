@@ -5,9 +5,9 @@
 const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const expect = require('unexpected')
-const env = require('process').env
+const { expect } = require('chai')
 
+const env = process.env
 let db
 
 const fetcher = () => ({
@@ -108,7 +108,7 @@ describe('pg', () => {
     })
 
     it('pushes out a db', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -125,13 +125,13 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('pushes out a db using url port', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-h', 'localhost', '-p', '5433', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -148,16 +148,16 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('pushes out a db using PGPORT', () => {
       env.PGPORT = dumpOpts.env.PGPORT = '5433'
       restoreOpts.env.PGPORT = '5433'
 
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-p', '5433', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -174,9 +174,9 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -193,7 +193,7 @@ describe('pg', () => {
         localPort: 49152
       }
 
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -210,14 +210,14 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
 
     it('exits non-zero when there is an error', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -236,16 +236,16 @@ describe('pg', () => {
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
         .catch((error) => {
-          expect(error.message, 'to equal', 'pg_dump errored with 1')
-          expect(spawnStub.callCount, 'to equal', 2)
-          expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\n')
-          expect(cli.stderr, 'to equal', '')
+          expect(error.message).to.equal('pg_dump errored with 1')
+          expect(spawnStub.callCount).to.equal(2)
+          expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\n')
+          expect(cli.stderr).to.equal('')
         })
     })
   })
 
   describe('pull', () => {
-    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
+    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
     const dumpOpts = {
       env: {
         PGPASSWORD: 'pass',
@@ -297,11 +297,11 @@ describe('pg', () => {
 
     it('pulls a db in', () => {
       return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce, 'to equal', true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' }), 'to equal', true))
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(createDbStub.calledOnce).to.equal(true))
+        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -319,12 +319,12 @@ describe('pg', () => {
       }
 
       return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce, 'to equal', true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' }), 'to equal', true))
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => expect(createDbStub.calledOnce).to.equal(true))
+        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
   })
 })

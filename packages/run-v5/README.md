@@ -1,7 +1,6 @@
 heroku-run [![Circle CI](https://circleci.com/gh/heroku/heroku-run.svg?style=svg)](https://circleci.com/gh/heroku/heroku-run)
 ==========
 
-[![codecov](https://codecov.io/gh/heroku/heroku-run/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-run)
 [![License](https://img.shields.io/github/license/heroku/heroku-run.svg)](https://github.com/heroku/heroku-run/blob/master/LICENSE)
 
 Heroku CLI plugin to run one-off dyno processes.
@@ -37,7 +36,7 @@ EXAMPLES
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
 
-_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.39.2/packages/run-v5/commands/logs.js)_
+_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.56.0/packages/run-v5/commands/logs.js)_
 
 ## `heroku run`
 
@@ -69,7 +68,7 @@ EXAMPLES
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.39.2/packages/run-v5/commands/run.js)_
+_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.56.0/packages/run-v5/commands/run.js)_
 
 ## `heroku run:detached`
 
@@ -93,5 +92,5 @@ EXAMPLES
   Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.39.2/packages/run-v5/commands/run/detached.js)_
+_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.56.0/packages/run-v5/commands/run/detached.js)_
 <!-- commandsstop -->

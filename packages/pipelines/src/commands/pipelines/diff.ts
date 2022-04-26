@@ -83,7 +83,7 @@ export default class PipelinesDiff extends Command {
     remote: flags.remote(),
   }
 
-  kolkrabbi = new KolkrabbiAPI(this.config.userAgent, this.heroku.auth)
+  kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
   getAppInfo = async (appName: string, appId: string): Promise<AppInfo> => {
     // Find GitHub connection for the app

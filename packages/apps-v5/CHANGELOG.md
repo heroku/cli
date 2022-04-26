@@ -3,6 +3,209 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1957](https://github.com/heroku/cli/issues/1957)) ([e5656b0](https://github.com/heroku/cli/commit/e5656b08a241b203a72cfff2c722f64241260c51))
+
+
+
+
+
+## [7.59.4](https://github.com/heroku/cli/compare/v7.59.3...v7.59.4) (2022-03-08)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1957](https://github.com/heroku/cli/issues/1957)) ([e5656b0](https://github.com/heroku/cli/commit/e5656b08a241b203a72cfff2c722f64241260c51))
+
+
+
+
+
+## [7.54.1](https://github.com/heroku/cli/compare/v7.54.0...v7.54.1) (2021-06-08)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **apps-v5:** get pipeline stage from `pipeline_coupling` ([fbb68c1](https://github.com/heroku/cli/commit/fbb68c1de00cae64f07e2324c3fcb097ca6016a4))
+* **apps-v5:** Improve UX of stack:set command output ([#1771](https://github.com/heroku/cli/issues/1771)) ([2949f1d](https://github.com/heroku/cli/commit/2949f1dc1447bf145656f489bb81eadc3044d54f))
+
+
+### Features
+
+* **ps-v5:** Add total dynos table to ps:type output ([8bb3569](https://github.com/heroku/cli/commit/8bb3569865adb41c5aeaca08b8ae0f1fd61e1629))
+
+
+
+
+
+## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
+
+
+### Bug Fixes
+
+* **apps-v5:** Improve UX of stack:set command output ([#1771](https://github.com/heroku/cli/issues/1771)) ([2949f1d](https://github.com/heroku/cli/commit/2949f1dc1447bf145656f489bb81eadc3044d54f))
+
+
+
+
+
+# [7.50.0](https://github.com/heroku/cli/compare/v7.49.1...v7.50.0) (2021-03-02)
+
+
+### Features
+
+* **ps-v5:** Add total dynos table to ps:type output ([8bb3569](https://github.com/heroku/cli/commit/8bb3569865adb41c5aeaca08b8ae0f1fd61e1629))
+
+
+
+
+
+# [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.47.11](https://github.com/heroku/cli/compare/v7.47.10...v7.47.11) (2021-01-22)
+
+
+### Bug Fixes
+
+* **apps-v5:** get pipeline stage from `pipeline_coupling` ([fbb68c1](https://github.com/heroku/cli/commit/fbb68c1de00cae64f07e2324c3fcb097ca6016a4))
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.43.0](https://github.com/heroku/cli/compare/v7.42.13...v7.43.0) (2020-09-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.42.8](https://github.com/heroku/cli/compare/v7.42.7...v7.42.8) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.42.7](https://github.com/heroku/cli/compare/v7.42.6...v7.42.7) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.42.5](https://github.com/heroku/cli/compare/v7.42.4...v7.42.5) (2020-07-20)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* upgrade urijs from 1.19.1 to 1.19.2 ([#1521](https://github.com/heroku/cli/issues/1521)) ([4326e72](https://github.com/heroku/cli/commit/4326e72a388251a829789e330865e170f5575b48))
+
+
+
+
+
+# [7.40.0](https://github.com/heroku/cli/compare/v7.39.6...v7.40.0) (2020-05-01)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5

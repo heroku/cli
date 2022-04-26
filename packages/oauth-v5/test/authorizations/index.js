@@ -1,7 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../lib/commands/authorizations')
 
@@ -19,7 +19,7 @@ describe('authorizations', function () {
 
     it('lists the authorizations', function () {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'awesome      f6e8d969-129f-42d2-854b-c2eca9d5a42e  app,user\n'))
+        .then(() => expect(cli.stdout).to.equal('awesome      f6e8d969-129f-42d2-854b-c2eca9d5a42e  app,user\n'))
     })
 
     it('lists the authorizations as json', function () {
@@ -37,7 +37,7 @@ describe('authorizations', function () {
 
     it('shows no authorizations message', function () {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'No OAuth authorizations.\n'))
+        .then(() => expect(cli.stdout).to.equal('No OAuth authorizations.\n'))
     })
   })
 })

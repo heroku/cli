@@ -4,8 +4,7 @@ const qq = require('qqjs')
 
 qq.config.silent = false
 qq.run(async () => {
-  await require('./update_channel')()
-  await qq.x('echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import')
-  await qq.x('./node_modules/.bin/oclif-dev pack:deb')
+  await require('../utils/_update_channel')()
   await qq.x('./node_modules/.bin/oclif-dev publish:deb')
+  await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /cli/packages/cli/dist/apt/release.key "s3://${process.env.HEROKU_S3_BUCKET}/apt/release.key"`)
 })

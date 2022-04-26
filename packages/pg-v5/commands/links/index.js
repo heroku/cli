@@ -1,23 +1,22 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
   let { app, args } = context
 
   let dbs
-  if (args.database) dbs = yield [fetcher.addon(app, args.database)]
-  else dbs = yield fetcher.all(app)
+  if (args.database) dbs = await Promise.all([fetcher.addon(app, args.database)])
+  else dbs = await fetcher.all(app)
 
   if (!dbs.length) throw new Error(`No databases on ${cli.color.app(app)}`)
 
-  dbs = yield dbs.map(db => {
-    db.links = heroku.get(`/client/v11/databases/${db.id}/links`, { host: host(db) })
+  dbs = await Promise.all(dbs.map(async (db) => {
+    db.links = await heroku.get(`/client/v11/databases/${db.id}/links`, { host: host(db) })
     return db
-  })
+  }))
 
   let once
   dbs.forEach(db => {
@@ -43,5 +42,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

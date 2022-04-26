@@ -1,10 +1,10 @@
 {
   "name": "@heroku-cli/plugin-autocomplete",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.4.1",
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
     "chalk": "^2.4.2",
@@ -37,7 +37,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/oclif.manifest.json",

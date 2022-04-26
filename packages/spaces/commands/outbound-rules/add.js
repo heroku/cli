@@ -1,7 +1,6 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 const { SpaceCompletion } = require('@heroku-cli/command/lib/completions')
 
 const ProtocolCompletion = {
@@ -11,19 +10,19 @@ const ProtocolCompletion = {
   }
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
   let space = context.flags.space
   if (!space) throw new Error('Space name required.')
-  let ruleset = yield lib.getOutboundRules(space)
+  let ruleset = await lib.getOutboundRules(space)
   ruleset.rules = ruleset.rules || []
-  let ports = yield lib.parsePorts(context.flags.protocol, context.flags.port)
+  let ports = await lib.parsePorts(context.flags.protocol, context.flags.port)
   ruleset.rules.push({
     target: context.flags.dest,
     from_port: ports[0],
     to_port: ports[1] || ports[0],
     protocol: context.flags.protocol })
-  ruleset = yield lib.putOutboundRules(space, ruleset)
+  ruleset = await lib.putOutboundRules(space, ruleset)
   cli.log(`Added rule to the Outbound Rules of ${cli.color.cyan.bold(space)}`)
   cli.warn('Modifying the Outbound Rules may break Add-ons for Apps in this Private Space')
 }
@@ -66,5 +65,5 @@ allow. ICMP types are numbered, 0-255.
     { name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".', completion: ProtocolCompletion },
     { name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed is 65535, except for ICMP with a maximum of 255.' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

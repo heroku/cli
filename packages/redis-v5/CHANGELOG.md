@@ -3,6 +3,162 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.59.1](https://github.com/heroku/cli/compare/v7.59.0...v7.59.1) (2021-10-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [7.59.0](https://github.com/heroku/cli/compare/v7.58.0...v7.59.0) (2021-08-24)
+
+
+### Features
+
+* **redis-v5:** add redis:upgrade command ([#1853](https://github.com/heroku/cli/issues/1853)) ([cff3f48](https://github.com/heroku/cli/commit/cff3f488e063189c5c48ec90c6dc2a02bb73bb19))
+
+
+
+
+
+# [7.56.0](https://github.com/heroku/cli/compare/v7.55.0...v7.56.0) (2021-06-29)
+
+
+### Features
+
+* **redis-v5:** add redis:stats-reset command ([#1830](https://github.com/heroku/cli/issues/1830)) ([b983ed8](https://github.com/heroku/cli/commit/b983ed8840741e7adf5c2b4ba37e93e2ae1a3947))
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Features
+
+* **redis-v5:** add JSON output to redis:info ([ddd2bba](https://github.com/heroku/cli/commit/ddd2bbae2102945ffdb293d3900f8aae925d022d))
+* **redis-v5:** exit if trying to use redis:cli with shield plan ([01b9030](https://github.com/heroku/cli/commit/01b9030435e457749d7ffa28883d758a5145c5fc))
+
+
+
+
+
+## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+
+### Features
+
+* **redis-v5:** add JSON output to redis:info ([ddd2bba](https://github.com/heroku/cli/commit/ddd2bbae2102945ffdb293d3900f8aae925d022d))
+
+
+
+
+
+# [7.51.0](https://github.com/heroku/cli/compare/v7.50.0...v7.51.0) (2021-03-17)
+
+
+### Features
+
+* **redis-v5:** exit if trying to use redis:cli with shield plan ([01b9030](https://github.com/heroku/cli/commit/01b9030435e457749d7ffa28883d758a5145c5fc))
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [7.45.0](https://github.com/heroku/cli/compare/v7.44.0...v7.45.0) (2020-10-07)
+
+
+### Features
+
+* **redis-v5:** add new command to enable keyspace notifications ([#1650](https://github.com/heroku/cli/issues/1650)) ([e13c97d](https://github.com/heroku/cli/commit/e13c97d3670a024870daf23b637c72ccb0eaae35))
+
+
+
+
+
+## [7.42.6](https://github.com/heroku/cli/compare/v7.42.5...v7.42.6) (2020-07-30)
+
+
+### Bug Fixes
+
+* **redis-v5:** use billing entity to look up config vars ([#1572](https://github.com/heroku/cli/issues/1572)) ([8ee4bb9](https://github.com/heroku/cli/commit/8ee4bb9bcc8b3f078c53c9a535077b5518588bef))
+
+
+
+
+
+## [7.42.3](https://github.com/heroku/cli/compare/v7.42.2...v7.42.3) (2020-07-09)
+
+
+### Bug Fixes
+
+* **redis-v5:** update bastionConnect function to use prefer_native_tls when true ([#1558](https://github.com/heroku/cli/issues/1558)) ([791ad0d](https://github.com/heroku/cli/commit/791ad0d7e732f20cb25b39602d2b58e624555421))
+
+
+
+
+
+## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Features
+
+* **redis-v5:** use default port for Redis 6 ([#1529](https://github.com/heroku/cli/issues/1529)) ([2ac3390](https://github.com/heroku/cli/commit/2ac33903c9800236497ed18b8eeff025eb55092f))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-redis-v5

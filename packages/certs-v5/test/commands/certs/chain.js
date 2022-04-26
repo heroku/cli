@@ -33,31 +33,4 @@ describe('heroku certs:chain', function () {
       expect(cli.stdout).to.equal('')
     })
   })
-
-  it('# posts all certs to ssl doctor', function () {
-    fs.readFile
-      .withArgs('a_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem a content')
-    fs.readFile
-      .withArgs('b_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem b content')
-
-    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
-      reqheaders: {
-        'content-type': 'application/octet-stream',
-        'content-length': '27'
-      }
-    })
-      .post('/resolve-chain', 'pem a content\npem b content')
-      .reply(200, 'pem a content\npem b content\n')
-
-    return certs.run({ app: 'example', args: ['a_file', 'b_file'] }).then(function () {
-      sslDoctor.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\n')
-      expect(cli.stdout).to.equal(
-        `pem a content
-pem b content
-`)
-    })
-  })
 })

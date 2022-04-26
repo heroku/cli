@@ -1,13 +1,12 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  let db = yield fetcher.database(context.app, context.args.database)
+  let db = await fetcher.database(context.app, context.args.database)
 
   let query = `
 WITH table_opts AS (
@@ -50,7 +49,7 @@ FROM
 ORDER BY 1
 `
 
-  let output = yield psql.exec(db, query)
+  let output = await psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -60,7 +59,7 @@ const cmd = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

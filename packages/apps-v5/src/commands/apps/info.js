@@ -1,33 +1,48 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const filesize = require('filesize')
   const util = require('util')
   const { countBy, snakeCase } = require('lodash')
 
-  function * getInfo (app) {
-    const pipelineCouplings = heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
-
-    let promises = {
-      addons: heroku.get(`/apps/${app}/addons`),
-      app: heroku.request({
+  async function getInfo(app) {
+    let promises = [
+      heroku.get(`/apps/${app}/addons`),
+      heroku.request({
         path: `/apps/${app}`,
         headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
       }),
-      dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
-      collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-      pipeline_coupling: pipelineCouplings,
-      pipeline: pipelineCouplings // TODO: Remove this key once we feel comfortable with https://github.com/heroku/heroku-apps/pull/207#issuecomment-335775852.
-    }
+      heroku.get(`/apps/${app}/dynos`).catch(() => []),
+      heroku.get(`/apps/${app}/collaborators`).catch(() => []),
+      heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
+    ]
 
     if (context.flags.extended) {
-      promises.appExtended = heroku.get(`/apps/${app}?extended=true`)
+      promises.push(heroku.get(`/apps/${app}?extended=true`))
     }
 
-    let data = yield promises
+    let [
+      addons,
+      appWithMoreInfo,
+      dynos,
+      collaborators,
+      pipelineCouplings,
+      appExtended
+    ] = await Promise.all(promises)
+
+    let data = {
+      addons,
+      app: appWithMoreInfo,
+      dynos,
+      collaborators,
+      pipeline_coupling: pipelineCouplings,
+    }
+
+    if (appExtended) {
+      data.appExtended = appExtended
+    }
 
     if (context.flags.extended) {
       data.appExtended.acm = data.app.acm
@@ -43,7 +58,7 @@ function * run (context, heroku) {
 
   context.app = app // make sure context.app is always set for herkou-cli-util
 
-  let info = yield getInfo(app)
+  let info = await getInfo(app)
   let addons = info.addons.map(a => a.plan.name).sort()
   let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
 
@@ -59,7 +74,7 @@ function * run (context, heroku) {
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
     if (info.app.space) data['Space'] = info.app.space.name
     if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
-    if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline.stage}`
+    if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
 
     data['Auto Cert Mgmt'] = info.app.acm
     data['Git URL'] = info.app.git_url
@@ -101,7 +116,7 @@ function * run (context, heroku) {
     if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(new Date(info.app.cron_next_run)))
     if (info.app.database_size) print('database_size', filesize(info.app.database_size, { round: 0 }))
     if (info.app.create_status !== 'complete') print('create_status', info.app.create_status)
-    if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline.stage}`)
+    if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline_coupling.stage}`)
 
     print('git_url', info.app.git_url)
     print('web_url', info.app.web_url)
@@ -117,7 +132,6 @@ function * run (context, heroku) {
     shell()
   } else if (context.flags.json) {
     cli.styledJSON(info)
-    cli.warn('DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`')
   } else {
     print()
   }
@@ -143,7 +157,7 @@ repo_size=5000000
     { name: 'extended', char: 'x', hidden: true },
     { name: 'json', char: 'j' }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

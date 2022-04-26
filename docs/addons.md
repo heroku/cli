@@ -23,6 +23,12 @@ tools and services for developing, extending, and operating your app
 lists your add-ons and attachments
 
 ```
+lists your add-ons and attachments
+The default filter applied depends on whether you are in a Heroku app
+directory. If so, the --app flag is implied. If not, the default of --all
+is implied. Explicitly providing either flag overrides the default
+behavior.
+
 USAGE
   $ heroku addons [--all|--app APP]
 
@@ -48,6 +54,9 @@ EXAMPLES
 attach an existing add-on resource to an app
 
 ```
+attach an existing add-on resource to an app
+
+
 USAGE
   $ heroku addons:attach ADDON_NAME
 
@@ -64,6 +73,9 @@ OPTIONS
 create a new add-on resource
 
 ```
+create a new add-on resource
+
+
 USAGE
   $ heroku addons:create SERVICE:PLAN
 
@@ -81,6 +93,9 @@ OPTIONS
 permanently destroy an add-on resource
 
 ```
+permanently destroy an add-on resource
+
+
 USAGE
   $ heroku addons:destroy [ADDON]... [flags]
 
@@ -96,6 +111,9 @@ OPTIONS
 detach an existing add-on resource from an app
 
 ```
+detach an existing add-on resource from an app
+
+
 USAGE
   $ heroku addons:detach ATTACHMENT_NAME
 
@@ -109,6 +127,9 @@ OPTIONS
 open an add-on's Dev Center documentation in your browser
 
 ```
+open an add-on's Dev Center documentation in your browser
+
+
 USAGE
   $ heroku addons:docs ADDON
 
@@ -123,6 +144,14 @@ OPTIONS
 change add-on plan
 
 ```
+change add-on plan
+See available plans with `heroku addons:plans SERVICE`.
+
+Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
+Either one can be used to change an add-on plan up or down.
+
+https://devcenter.heroku.com/articles/managing-add-ons
+
 USAGE
   $ heroku addons:downgrade ADDON [PLAN]
 
@@ -151,6 +180,9 @@ EXAMPLE
 show detailed add-on resource and attachment information
 
 ```
+show detailed add-on resource and attachment information
+
+
 USAGE
   $ heroku addons:info ADDON
 
@@ -164,6 +196,9 @@ OPTIONS
 open an add-on's dashboard in your browser
 
 ```
+open an add-on's dashboard in your browser
+
+
 USAGE
   $ heroku addons:open ADDON
 
@@ -178,6 +213,9 @@ OPTIONS
 list all available plans for an add-on services
 
 ```
+list all available plans for an add-on services
+
+
 USAGE
   $ heroku addons:plans SERVICE
 
@@ -190,6 +228,9 @@ OPTIONS
 rename an add-on
 
 ```
+rename an add-on
+
+
 USAGE
   $ heroku addons:rename ADDON NEW_NAME
 
@@ -203,6 +244,9 @@ OPTIONS
 list all available add-on services
 
 ```
+list all available add-on services
+
+
 USAGE
   $ heroku addons:services
 
@@ -215,6 +259,14 @@ OPTIONS
 change add-on plan
 
 ```
+change add-on plan
+See available plans with `heroku addons:plans SERVICE`.
+
+Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
+Either one can be used to change an add-on plan up or down.
+
+https://devcenter.heroku.com/articles/managing-add-ons
+
 USAGE
   $ heroku addons:upgrade ADDON [PLAN]
 
@@ -243,6 +295,9 @@ EXAMPLE
 show provisioning status of the add-ons on the app
 
 ```
+show provisioning status of the add-ons on the app
+
+
 USAGE
   $ heroku addons:wait ADDON
 

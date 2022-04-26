@@ -1,18 +1,17 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 const { SpaceCompletion } = require('@heroku-cli/command/lib/completions')
 
 function displayJSON (rules) {
   cli.log(JSON.stringify(rules, null, 2))
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku outbound-rules --space my-space')
-  let rules = yield lib.getOutboundRules(space)
+  let rules = await lib.getOutboundRules(space)
   if (context.flags.json) displayJSON(rules)
   else lib.displayRules(space, rules)
 }
@@ -38,5 +37,5 @@ You can add specific rules that only allow your dyno to communicate with trusted
     { name: 'space', char: 's', hasValue: true, description: 'space to get outbound rules from', completion: SpaceCompletion },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

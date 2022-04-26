@@ -14,6 +14,8 @@ environment variables of apps
 display the config vars for an app
 
 ```
+display the config vars for an app
+
 USAGE
   $ heroku config
 
@@ -24,13 +26,17 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.39.2/packages/config/src/commands/config/index.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
 interactively edit config vars
 
 ```
+interactively edit config vars
+This command opens the app config in a text editor set by $VISUAL or $EDITOR.
+Any variables added/removed/changed will be updated on the app after saving and closing the file.
+
 USAGE
   $ heroku config:edit [KEY]
 
@@ -56,13 +62,15 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.39.2/packages/config/src/commands/config/edit.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
 display a single config value for an app
 
 ```
+display a single config value for an app
+
 USAGE
   $ heroku config:get KEY...
 
@@ -76,13 +84,16 @@ EXAMPLES
   production
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.39.2/packages/config/src/commands/config/get.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/get.ts)_
 
 ## `heroku config:set`
 
 set one or more config vars
 
 ```
+set one or more config vars
+
+
 USAGE
   $ heroku config:set
 
@@ -106,6 +117,8 @@ EXAMPLES
 unset one or more config vars
 
 ```
+unset one or more config vars
+
 USAGE
   $ heroku config:unset
 
@@ -123,4 +136,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.39.2/packages/config/src/commands/config/unset.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/unset.ts)_

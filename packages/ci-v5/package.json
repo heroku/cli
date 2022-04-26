@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci-v5",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -13,12 +13,10 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.3.0",
-    "@heroku-cli/plugin-run-v5": "^7.39.2",
+    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/plugin-run-v5": "^7.56.0",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
-    "co": "^4.6.0",
-    "co-wait": "0.0.0",
     "github-url-to-object": "^4.0.4",
     "got": "^8.3.2",
     "heroku-cli-util": "^8.0.11",
@@ -30,7 +28,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
@@ -39,7 +37,7 @@
     "std-mocks": "^1.0.1"
   },
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "oclif.manifest.json",

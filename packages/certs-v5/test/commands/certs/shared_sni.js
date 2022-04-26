@@ -11,6 +11,7 @@ let endpointCname = require('../../stubs/sni-endpoints.js').endpoint_cname
 let assertExit = require('../../assert_exit.js')
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 const unwrap = require('../../unwrap')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
   let args = options.args || {}
@@ -23,6 +24,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       cli.mockConsole()
       error.exit.mock()
       nock.cleanAll()
+      mockSniFeatureFlag(nock, 'example')
     })
 
     it('allows an SNI --endpoint to be specified using --name', function () {
@@ -34,7 +36,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { name: 'tokyo-1050' }) }).then(function () {
         mockSsl.done()
@@ -54,7 +56,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { name: 'tokyo-1050' }) }).then(function () {
         mockSsl.done()
@@ -74,7 +76,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint, endpointCname])
 
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
+      return assertExit(1, certs.run({ app: 'example', args: args, flags: { endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
         expect(unwrap(cli.stderr)).to.equal('Must pass --name when more than one endpoint matches --endpoint\n')
@@ -91,7 +93,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint, 'sni_ssl_cert')
+      let mock = callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
 
       return certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { endpoint: 'tokyo-1050.herokussl.com' }) }).then(function () {
         mockSsl.done()
@@ -128,7 +130,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
 
-      return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, name: 'tokyo-1050', confirm: 'example' } })).then(function () {
+      return assertExit(1, certs.run({ app: 'example', args: args, flags: { name: 'tokyo-1050', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
         expect(unwrap(cli.stderr)).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket\n')

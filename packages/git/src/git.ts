@@ -15,7 +15,7 @@ export default class Git {
       return stdout.trim()
     } catch (error) {
       if (error.code === 'ENOENT') {
-        ux.error('Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+        ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
       }
       throw error
     }
@@ -27,7 +27,7 @@ export default class Git {
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {
-          ux.error('Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+          ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
         } else reject(err)
       })
       s.on('close', resolve)

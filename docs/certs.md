@@ -21,6 +21,9 @@ a topic for the ssl plugin
 list SSL certificates for an app
 
 ```
+list SSL certificates for an app
+
+
 USAGE
   $ heroku certs
 
@@ -29,13 +32,16 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/index.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/index.js)_
 
 ## `heroku certs:add CRT KEY`
 
 add an SSL certificate to an app
 
 ```
+add an SSL certificate to an app
+Note: certificates with PEM encoding are also valid
+
 USAGE
   $ heroku certs:add CRT KEY
 
@@ -43,7 +49,6 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --bypass             bypass the trust chain completion step
-  --domains=domains    domains to create after certificate upload
   --type=type          type to create, either 'sni' or 'endpoint'
 
 DESCRIPTION
@@ -52,32 +57,39 @@ DESCRIPTION
 EXAMPLES
   $ heroku certs:add example.com.crt example.com.key
 
-  Certificate Intermediary:
-  $ heroku certs:add intermediary.crt example.com.crt example.com.key
+       If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/add.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/add.js)_
 
 ## `heroku certs:auto`
 
 show ACM status for an app
 
 ```
+show ACM status for an app
+
+
 USAGE
   $ heroku certs:auto
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --wait               watch ACM status and display the status when complete
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/auto/index.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/auto/index.js)_
 
 ## `heroku certs:auto:disable`
 
 disable ACM for an app
 
 ```
+disable ACM for an app
+
+
 USAGE
   $ heroku certs:auto:disable
 
@@ -86,28 +98,35 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/auto/disable.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/auto/disable.js)_
 
 ## `heroku certs:auto:enable`
 
 enable ACM status for an app
 
 ```
+enable ACM status for an app
+
+
 USAGE
   $ heroku certs:auto:enable
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+  --wait               watch ACM status and exit when complete
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/auto/enable.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/auto/enable.js)_
 
 ## `heroku certs:auto:refresh`
 
 refresh ACM for an app
 
 ```
+refresh ACM for an app
+
+
 USAGE
   $ heroku certs:auto:refresh
 
@@ -116,13 +135,16 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/auto/refresh.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/auto/refresh.js)_
 
 ## `heroku certs:chain`
 
 print an ordered & complete chain for a certificate
 
 ```
+print an ordered & complete chain for a certificate
+
+
 USAGE
   $ heroku certs:chain
 
@@ -131,13 +153,19 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/chain.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/chain.js)_
 
 ## `heroku certs:generate DOMAIN`
 
 generate a key and a CSR or self-signed certificate
 
 ```
+generate a key and a CSR or self-signed certificate
+Generate a key and certificate signing request (or self-signed certificate)
+for an app. Prompts for information to put in the certificate unless --now
+is used, or at least one of the --subject, --owner, --country, --area, or
+--city options is specified.
+
 USAGE
   $ heroku certs:generate DOMAIN
 
@@ -163,13 +191,16 @@ EXAMPLES
   $ heroku certs:generate example.com
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/generate.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/generate.js)_
 
 ## `heroku certs:info`
 
 show certificate information for an SSL certificate
 
 ```
+show certificate information for an SSL certificate
+
+
 USAGE
   $ heroku certs:info
 
@@ -178,15 +209,20 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
   --endpoint=endpoint  endpoint to check info on
   --name=name          name to check info on
+  --show-domains       show associated domains
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/info.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/info.js)_
 
 ## `heroku certs:key`
 
 print the correct key for the given certificate
 
 ```
+print the correct key for the given certificate
+You must pass one single certificate, and one or more keys.
+The first key that signs the certificate will be printed back.
+
 USAGE
   $ heroku certs:key
 
@@ -202,13 +238,16 @@ EXAMPLES
   $ heroku certs:key example.com.crt example.com.key
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/key.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/key.js)_
 
 ## `heroku certs:remove`
 
 remove an SSL certificate from an app
 
 ```
+remove an SSL certificate from an app
+
+
 USAGE
   $ heroku certs:remove
 
@@ -219,13 +258,16 @@ OPTIONS
   --name=name          name to remove
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/remove.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/remove.js)_
 
 ## `heroku certs:update CRT KEY`
 
 update an SSL certificate on an app
 
 ```
+update an SSL certificate on an app
+Note: certificates with PEM encoding are also valid
+
 USAGE
   $ heroku certs:update CRT KEY
 
@@ -242,8 +284,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku certs:update example.com.crt example.com.key
 
-  Certificate Intermediary:
-  $ heroku certs:update intermediary.crt example.com.crt example.com.key
+       If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/certs-v5/commands/certs/update.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.60.0/packages/certs-v5/commands/certs/update.js)_

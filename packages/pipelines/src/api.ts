@@ -83,7 +83,7 @@ export function getTeam(heroku: APIClient, teamId: any) {
 function getAppFilter(heroku: APIClient, appIds: Array<string>) {
   return heroku.request<Array<Heroku.App>>('/filters/apps', {
     method: 'POST',
-    headers: {Accept: FILTERS_HEADER},
+    headers: {Accept: FILTERS_HEADER, Range: 'id ..; max=1000;'},
     body: {in: {id: appIds}},
   })
 }

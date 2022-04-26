@@ -9,6 +9,12 @@ module.exports = function (heroku) {
     })
   }
 
+  function patchVPNConnections (space, name, cidrs) {
+    return request('PATCH', `/spaces/${space}/vpn-connections/${name}`, {
+      routable_cidrs: cidrs
+    })
+  }
+
   function getVPNConnections (space) {
     return request('GET', `/spaces/${space}/vpn-connections`)
   }
@@ -31,6 +37,7 @@ module.exports = function (heroku) {
 
   return {
     postVPNConnections,
+    patchVPNConnections,
     getVPNConnections,
     getVPNConnection,
     deleteVPNConnection

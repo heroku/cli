@@ -1,6 +1,5 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let inquirer = require('inquirer')
@@ -14,7 +13,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-
+let { checkMultiSniFeature } = require('../../lib/features.js')
 let { waitForDomains, printDomains } = require('../../lib/domains')
 
 function Domains (domains) {
@@ -26,7 +25,7 @@ function Domains (domains) {
   this.hasFailed = this.failed.length > 0
 }
 
-function * getMeta (context, heroku) {
+async function getMeta(context, heroku) {
   let type = context.flags.type
 
   if (type) {
@@ -40,12 +39,12 @@ function * getMeta (context, heroku) {
     }
   }
 
-  let { hasSpace, hasAddon } = yield {
-    hasSpace: endpoints.hasSpace(context.app, heroku),
-    hasAddon: endpoints.hasAddon(context.app, heroku)
-  }
+  let [ hasSpace, hasAddon ] = await Promise.all([
+    endpoints.hasSpace(context.app, heroku),
+    endpoints.hasAddon(context.app, heroku)
+  ])
 
-  if (hasSpace) {
+  if (hasSpace && !context.canMultiSni) {
     return endpoints.meta(context.app, 'ssl')
   } else if (!hasAddon) {
     return endpoints.meta(context.app, 'sni')
@@ -56,18 +55,6 @@ function * getMeta (context, heroku) {
 
 function hasMatch (certDomains, domain) {
   return _.find(certDomains, (certDomain) => (certDomain === domain || isWildcardMatch(certDomain, domain)))
-}
-
-function getFlagChoices (context, certDomains, existingDomains) {
-  let flagDomains = context.flags.domains.split(',').map((str) => str.trim()).filter((str) => str !== '')
-  let choices = _.difference(flagDomains, existingDomains)
-
-  let badChoices = _.remove(choices, (choice) => (!hasMatch(certDomains, choice)))
-  badChoices.forEach(function (choice) {
-    cli.warn(`Not adding ${choice} because it is not listed in the certificate`)
-  })
-
-  return choices
 }
 
 function getPromptChoices (context, certDomains, existingDomains, newDomains) {
@@ -87,22 +74,18 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   }])
 }
 
-function * getChoices (certDomains, newDomains, existingDomains, context) {
+async function getChoices(certDomains, newDomains, existingDomains, context) {
   if (newDomains.length === 0) {
     return []
   } else {
-    if (context.flags.domains !== undefined) {
-      return getFlagChoices(context, certDomains, existingDomains)
-    } else {
-      return (yield getPromptChoices(context, certDomains, existingDomains, newDomains)).domains
-    }
+    return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
   }
 }
 
-function * addDomains (context, heroku, meta, cert) {
+async function addDomains(context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
 
-  let apiDomains = yield waitForDomains(context, heroku)
+  let apiDomains = await waitForDomains(context, heroku)
 
   let existingDomains = []
   let newDomains = []
@@ -133,7 +116,7 @@ function * addDomains (context, heroku, meta, cert) {
     existingDomains.forEach((domain) => cli.log(domain))
   }
 
-  let choices = yield getChoices(certDomains, newDomains, existingDomains, context)
+  let choices = await getChoices(certDomains, newDomains, existingDomains, context)
   let domains
 
   if (choices.length === 0) {
@@ -160,7 +143,7 @@ function * addDomains (context, heroku, meta, cert) {
 
     let label = choices.length > 1 ? 'domains' : 'domain'
     let message = `Adding ${label} ${choices.map((choice) => cli.color.green(choice)).join(', ')} to ${cli.color.app(context.app)}`
-    domains = yield cli.action(message, {}, promise).catch(function (err) {
+    domains = await cli.action(message, {}, promise).catch(function (err) {
       if (err instanceof Domains) {
         return err
       }
@@ -200,28 +183,27 @@ function * addDomains (context, heroku, meta, cert) {
   }
 }
 
-function * configureDomains (context, heroku, meta, cert) {
+async function configureDomains(context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
-  let apiDomains = yield waitForDomains(context, heroku)
+  let apiDomains = await waitForDomains(context, heroku)
   let appDomains = apiDomains.map(domain => domain.hostname)
   let matchedDomains = matchDomains(certDomains, appDomains)
 
   if (matchedDomains.length > 0) {
     cli.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
 
-    let selectedDomains = (yield inquirer.prompt([{
+    let selectedDomains = ((await inquirer.prompt([{
       type: 'checkbox',
       name: 'domains',
       message: 'Select domains',
       choices: matchedDomains
-    }])).domains
+    }]))).domains
 
     if (selectedDomains.length > 0) {
-      yield Promise.all(selectedDomains.map(domain => {
+      await Promise.all(selectedDomains.map(domain => {
         return heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
-          headers: { Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints' },
           body: { sni_endpoint: cert.name }
         })
       }))
@@ -229,18 +211,20 @@ function * configureDomains (context, heroku, meta, cert) {
   }
 }
 
-function * run (context, heroku) {
-  let meta = yield getMeta(context, heroku)
+async function run(context, heroku) {
+  let features = await heroku.get(`/apps/${context.app}/features`)
+  let canMultiSni = checkMultiSniFeature(features)
+  context.canMultiSni = canMultiSni
 
-  let files = yield getCertAndKey(context)
-  let features = yield heroku.get(`/apps/${context.app}/features`)
-  let canMultiSni = features.find(feature => feature.name === 'allow-multiple-sni-endpoints' && feature.enabled === true)
+  let meta = await getMeta(context, heroku)
 
-  let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
+  let files = await getCertAndKey(context)
+
+  let cert = await cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
     body: { certificate_chain: files.crt, private_key: files.key },
-    headers: { 'Accept': `application/vnd.heroku+json; version=3.${meta.variant}` }
+    headers: { 'Accept': `application/vnd.heroku+json; version=3${meta.variant ? '.' + meta.variant : ''}` }
   }))
 
   cert._meta = meta
@@ -257,9 +241,9 @@ function * run (context, heroku) {
   certificateDetails(cert)
 
   if (canMultiSni) {
-    yield configureDomains(context, heroku, meta, cert)
+    await configureDomains(context, heroku, meta, cert)
   } else {
-    yield addDomains(context, heroku, meta, cert)
+    await addDomains(context, heroku, meta, cert)
   }
 
   displayWarnings(cert)
@@ -282,16 +266,15 @@ module.exports = {
   ],
   flags: [
     { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
-    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion },
-    { name: 'domains', description: 'domains to create after certificate upload', hasValue: true }
+    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion }
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',
   examples: `$ heroku certs:add example.com.crt example.com.key
 
-Certificate Intermediary:
-$ heroku certs:add intermediary.crt example.com.crt example.com.key`,
+    If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+    https://help.salesforce.com/s/articleView?id=000333504&type=1`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

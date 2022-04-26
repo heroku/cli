@@ -1,16 +1,15 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:peerings:destroy pcx-12345678 --space my-space')
   let pcxID = context.flags.pcxid || context.args.pcxid
-  yield cli.confirmApp(pcxID, context.flags.confirm, `Destructive Action
+  await cli.confirmApp(pcxID, context.flags.confirm, `Destructive Action
 This command will attempt to destroy the peering connection ${cli.color.bold.red(pcxID)}`)
-  yield lib.destroyPeeringRequest(space, pcxID)
+  await lib.destroyPeeringRequest(space, pcxID)
   cli.log(`Tearing down peering connection ${cli.color.cyan.bold(pcxID)}`)
 }
 
@@ -31,5 +30,5 @@ module.exports = {
     { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
     { name: 'confirm', hasValue: true, description: 'set to PCX ID to bypass confirm prompt' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

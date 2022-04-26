@@ -1,9 +1,8 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   if (context.args.length === 0) {
     cli.exit(1, 'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
   }
@@ -31,24 +30,24 @@ function * run (context, heroku) {
 
   let config
 
-  yield cli.action(
+  await cli.action(
     `Setting ${context.args.map((v) => cli.color.configVar(v.split('=')[0])).join(', ')} and restarting ${cli.color.app(context.app)}`,
     { success: false },
-    co(function * () {
-      config = yield heroku.request({
+    async function () {
+      config = await heroku.request({
         method: 'patch',
         path: `/apps/${context.app}/config-vars`,
         body: vars
       })
-      let release = yield lastRelease()
+      let release = await lastRelease()
       cli.action.done(`done, ${cli.color.release('v' + release.version)}`)
-    })
+    }()
   )
 
   config = pickBy(config, (_, k) => vars[k])
   config = mapKeys(config, (_, k) => cli.color.green(k))
   cli.styledObject(config)
-  yield context.config.runHook('recache', { type: 'config', app: context.app })
+  await context.config.runHook('recache', { type: 'config', app: context.app })
 }
 
 let cmd = {
@@ -64,7 +63,7 @@ RACK_ENV:  staging`,
   needsApp: true,
   needsAuth: true,
   variableArgs: true,
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -69,7 +69,7 @@ describe('pg:credentials:url', () => {
     pg.get('/postgres/v0/databases/postgres-1/credentials/jeff').reply(200, roleInfo)
 
     return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout, 'to equal', `Connection information for jeff credential.\nConnection info string:
+      .then(() => expect(cli.stdout).to.equal(`Connection information for jeff credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=jeff password=hunter2 sslmode=require"
 Connection URL:
    postgres://jeff:hunter2@localhost:5442/d123
@@ -93,8 +93,8 @@ Connection URL:
       '../../lib/fetcher': fetcher
     })
 
-    const err = new Error(`Only one default credential is supported for Hobby tier databases.`)
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
+    const err = `Only one default credential is supported for Hobby tier databases.`
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
   it('shows the correct credentials with starter plan', () => {
@@ -132,7 +132,7 @@ Connection URL:
     starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `Connection information for default credential.\nConnection info string:
+      .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
 Connection URL:
    postgres://abcdef:hunter2@localhost:5442/d123

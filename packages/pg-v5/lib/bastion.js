@@ -1,9 +1,11 @@
 'use strict'
 
 const debug = require('./debug')
-const tunnel = require('tunnel-ssh')
-const cli = require('heroku-cli-util')
+const tunnelSSH = require('tunnel-ssh')
 const host = require('./host')
+const util = require('util')
+const { once, EventEmitter } = require('events')
+const createSSHTunnel = util.promisify(tunnelSSH)
 
 const getBastion = function (config, baseName) {
   const { sample } = require('lodash')
@@ -81,37 +83,54 @@ function getConfigs (db) {
 
 exports.getConfigs = getConfigs
 
-function sshTunnel (db, dbTunnelConfig, timeout) {
-  return new Promise((resolve, reject) => {
-    // if necessary to tunnel, setup a tunnel
-    // see also https://github.com/heroku/heroku/blob/master/lib/heroku/helpers/heroku_postgresql.rb#L53-L80
-    let timer = setTimeout(() => reject(new Error('Establishing a secure tunnel timed out')), timeout)
-    if (db.bastionKey) {
-      let tun = tunnel(dbTunnelConfig, (err, tnl) => {
-        if (err) {
-          debug(err)
-          reject(new Error('Unable to establish a secure tunnel to your database.'))
-        }
-        debug('Tunnel created')
-        clearTimeout(timer)
-        resolve(tnl)
-      })
-      tun.on('error', (err) => {
-        // we can't reject the promise here because we may already have resolved it
-        debug(err)
-        cli.exit(1, 'Secure tunnel to your database failed')
-      })
-    } else {
-      clearTimeout(timer)
-      resolve()
+class Timeout {
+  constructor (timeout, message) {
+    this.timeout = timeout
+    this.message = message;
+    this.events = new EventEmitter()
+  }
+
+  async promise () {
+    this.timer = setTimeout(() => {
+      this.events.emit('error', new Error(this.message))
+    }, this.timeout)
+
+    try {
+      await once(this.events, 'cancelled')
+    } finally {
+      clearTimeout(this.timer)
     }
-  })
+  }
+
+  cancel () {
+    this.events.emit('cancelled')
+  }
+}
+
+async function sshTunnel (db, dbTunnelConfig, timeout = 10000) {
+  if (!db.bastionKey) {
+    return null
+  }
+
+  const timeoutInstance = new Timeout(timeout, 'Establishing a secure tunnel timed out');
+  try {
+    const tunnelInstance = await Promise.race([
+      timeoutInstance.promise(),
+      createSSHTunnel(dbTunnelConfig)
+    ])
+    return tunnelInstance
+  } catch (err) {
+    debug(err)
+    throw new Error('Unable to establish a secure tunnel to your database.')
+  } finally {
+    timeoutInstance.cancel()
+  }
 }
 
 exports.sshTunnel = sshTunnel
 
-function * fetchConfig (heroku, db) {
-  return yield heroku.get(
+async function fetchConfig (heroku, db) {
+  return heroku.get(
     `/client/v11/databases/${encodeURIComponent(db.id)}/bastion`,
     {
       host: host(db)

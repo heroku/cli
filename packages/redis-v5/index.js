@@ -7,7 +7,10 @@ exports.commands = [
   require('./commands/promote'),
   require('./commands/timeout'),
   require('./commands/maxmemory'),
-  require('./commands/maintenance')
+  require('./commands/maintenance'),
+  require('./commands/keyspace-notifications'),
+  require('./commands/stats-reset'),
+  require('./commands/upgrade'),
 ]
 
 exports.topic = {

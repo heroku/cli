@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
 import debugFactory from 'debug'
+import * as Heroku from '@heroku-cli/schema'
 
 import Dyno from '../../lib/dyno'
 import {buildCommand} from '../../lib/helpers'
@@ -51,7 +52,7 @@ export default class Run extends Command {
     if (!opts.command) {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
-
+    await this.heroku.get<Heroku.Account>('/account')
     const dyno = new Dyno(opts)
     try {
       await dyno.start()

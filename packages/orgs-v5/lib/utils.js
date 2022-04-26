@@ -32,19 +32,19 @@ let printGroupsJSON = function (group) {
   cli.log(JSON.stringify(group, null, 2))
 }
 
-let teamInfo = function * (context, heroku) {
+let teamInfo = async function (context, heroku) {
   let teamName = context.flags.team
   if (!teamName) error.exit(1, 'No team or org specified.\nRun this command with --team')
-  return yield heroku.get(`/teams/${teamName}`)
+  return await heroku.get(`/teams/${teamName}`);
 }
 
-let addMemberToTeam = function * (email, role, groupName, heroku, method = 'PUT') {
+let addMemberToTeam = async function (email, role, groupName, heroku, method = 'PUT') {
   let request = heroku.request({
     method: method,
     path: `/teams/${groupName}/members`,
     body: {email, role}
   })
-  yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
+  await cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
 }
 
 let warnIfAtTeamMemberLimit = async function (teamInfo, groupName, context, heroku) {

@@ -1,8 +1,8 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let certificateDetails = require('../../../lib/certificate_details.js')
+let { waitForCertIssuedOnDomains } = require('../../../lib/domains')
 let _ = require('lodash')
 let distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
 
@@ -28,8 +28,8 @@ function humanize (value) {
   return value.split('-').map((word) => _.capitalize(word)).join(' ')
 }
 
-function * run (context, heroku) {
-  let [app, certs, domains] = yield [
+async function run(context, heroku) {
+  let [app, certs, domains] = await Promise.all([
     heroku.request({
       path: `/apps/${context.app}`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
@@ -42,7 +42,7 @@ function * run (context, heroku) {
       path: `/apps/${context.app}/domains`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     })
-  ]
+  ])
 
   let message
   if (app.acm) {
@@ -51,6 +51,20 @@ function * run (context, heroku) {
     if (certs.length === 1 && certs[0].ssl_cert.acm) {
       cli.log('')
       certificateDetails(certs[0])
+    }
+
+    if (context.flags.wait) {
+      try {
+        await waitForCertIssuedOnDomains(context, heroku)
+      } catch {
+        // Ignored, we retry the request one more time and show the results on the table
+      }
+
+      // We need to request again to get the updated info for the domains
+      domains = await heroku.request({
+        path: `/apps/${context.app}/domains`,
+        headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+      })
     }
 
     domains = domains.filter(domain => domain.kind === 'custom')
@@ -104,5 +118,8 @@ module.exports = {
   description: 'show ACM status for an app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  flags: [
+    { name: 'wait', description: 'watch ACM status and display the status when complete' }
+  ],
+  run: cli.command(run)
 }

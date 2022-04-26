@@ -3,6 +3,143 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Features
+
+* **auth:** Update auth:2fa:disable ([57e1d00](https://github.com/heroku/cli/commit/57e1d00e9de9a65fd12efedb17e67ac79abdbcff)), closes [/salesforce.quip.com/JYsuAbKPJa0W#UaWABAZB3C9](https://github.com//salesforce.quip.com/JYsuAbKPJa0W/issues/UaWABAZB3C9)
+
+
+
+
+
+## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+# [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
+
+
+### Features
+
+* **auth:** Update auth:2fa:disable ([57e1d00](https://github.com/heroku/cli/commit/57e1d00e9de9a65fd12efedb17e67ac79abdbcff)), closes [/salesforce.quip.com/JYsuAbKPJa0W#UaWABAZB3C9](https://github.com//salesforce.quip.com/JYsuAbKPJa0W/issues/UaWABAZB3C9)
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.47.12](https://github.com/heroku/cli/compare/v7.47.11...v7.47.12) (2021-02-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.47.4](https://github.com/heroku/cli/compare/v7.47.3...v7.47.4) (2020-12-01)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.46.1](https://github.com/heroku/cli/compare/v7.46.0...v7.46.1) (2020-10-20)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+# [7.46.0](https://github.com/heroku/cli/compare/v7.45.0...v7.46.0) (2020-10-13)
+
+
+### Features
+
+* **auth:** add a deprecation warning to generate-recovery-codes ([#1656](https://github.com/heroku/cli/issues/1656)) ([d9cfe49](https://github.com/heroku/cli/commit/d9cfe499b4fe43daa774816bfd1ca31d29ab2ec1))
+
+
+
+
+
+# [7.43.0](https://github.com/heroku/cli/compare/v7.42.13...v7.43.0) (2020-09-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.42.8](https://github.com/heroku/cli/compare/v7.42.7...v7.42.8) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth

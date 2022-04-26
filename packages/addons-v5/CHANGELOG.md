@@ -3,6 +3,95 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+
+### Bug Fixes
+
+* **addons-v5:** remove co-wait ([360e8bb](https://github.com/heroku/cli/commit/360e8bb4cd6108659b42b0f02636384c0cd66e78))
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
+
+
+### Bug Fixes
+
+* **addons-v5:** remove co-wait ([360e8bb](https://github.com/heroku/cli/commit/360e8bb4cd6108659b42b0f02636384c0cd66e78))
+
+
+
+
+
+# [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* **addons-v5:** Use os.tmpdir() rather than /tmp for cross-platform support - fixes [#1506](https://github.com/heroku/cli/issues/1506) ([#1518](https://github.com/heroku/cli/issues/1518)) ([23f45d9](https://github.com/heroku/cli/commit/23f45d94eaefc67e9610b42cc78df849bef4f8d0))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-addons-v5

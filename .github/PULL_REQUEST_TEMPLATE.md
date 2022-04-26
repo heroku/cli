@@ -1,4 +1,6 @@
 <!--
+Note: Windows jobs on CircleCI will sometimes fail to exit (a bug in their containers), if this happens simply re-run the job or workflow.
+
 When creating a PR, be sure to prepend the PR title with the Conventional Commit type (`feat`, `fix`, or `chore`) and the package name.
 
 Examples:
@@ -13,5 +15,5 @@ Examples:
 
 `chore(cli): edit README`
 
-Learn more about [Conventional Commits](http://conventionalcommits.org).
+Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 -->

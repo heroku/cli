@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -39,7 +39,7 @@ describe('pg:maintenance', () => {
   it('sets maintenance window', () => {
     pg.put('/client/v11/databases/1/maintenance_window', { description: 'Sunday 06:30' }).reply(200)
     return cmd.run({ app: 'myapp', args: { window: 'Sunday 06:30' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', 'Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
   })
 })

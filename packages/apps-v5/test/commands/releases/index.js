@@ -4,13 +4,13 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/releases')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const isTTY = process.stdout.isTTY
 
 const assertLineWidths = function (blob, lineWidth) {
   let lines = blob.split('\n')
   for (let i = 1; i < lines.length - 1; i++) {
-    expect(lines[i].length, 'to equal', lineWidth)
+    expect(lines[i].length).to.equal(lineWidth)
   }
 }
 
@@ -240,7 +240,7 @@ describe('releases', () => {
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -259,7 +259,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KEY c…  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -280,7 +280,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit release command executing               jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                                  jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KE… release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -299,7 +299,7 @@ v37  first commit                                         jeff@heroku.com  2015/
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  third commit                              jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                       jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove AWS_SECRET_ACCESS_KEY config vars  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -320,7 +320,7 @@ v37  first commit                              jeff@heroku.com  2015/11/18 01:36
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -341,7 +341,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, {})
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -360,7 +360,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .get('/apps/myapp/releases')
       .reply(200, releasesNoSlug)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
 v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 `))
       .then(() => assertLineWidths(cli.stdout, 80))
@@ -385,7 +385,7 @@ v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +00
       .get('/apps/myapp/releases')
       .reply(200, [])
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', 'myapp has no releases.\n'))
+      .then(() => expect(cli.stdout).to.equal('myapp has no releases.\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -395,7 +395,7 @@ v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +00
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
     return cmd.run({ app: 'myapp', flags: { extended: true } })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
@@ -409,7 +409,7 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
     return cmd.run({ app: 'myapp', flags: { extended: true } })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
@@ -427,7 +427,7 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Releases
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000

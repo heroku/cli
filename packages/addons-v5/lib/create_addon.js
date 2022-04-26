@@ -13,7 +13,7 @@ function formatConfigVarsMessage (addon) {
   }
 }
 
-module.exports = function * (heroku, app, plan, confirm, wait, options) {
+module.exports = async function (heroku, app, plan, confirm, wait, options) {
   const util = require('./util')
   const waitForAddonProvisioning = require('./addons_wait')
 
@@ -40,14 +40,14 @@ module.exports = function * (heroku, app, plan, confirm, wait, options) {
     )
   }
 
-  let addon = yield util.trapConfirmationRequired(app, confirm, (confirm) => (createAddonRequest(confirm)))
+  let addon = await util.trapConfirmationRequired(app, confirm, (confirm) => (createAddonRequest(confirm)))
 
   if (addon.provision_message) { cli.log(addon.provision_message) }
 
   if (addon.state === 'provisioning') {
     if (wait) {
       cli.log(`Waiting for ${cli.color.addon(addon.name)}...`)
-      addon = yield waitForAddonProvisioning(heroku, addon, 5)
+      addon = await waitForAddonProvisioning(heroku, addon, 5)
       cli.log(formatConfigVarsMessage(addon))
     } else {
       cli.log(`${cli.color.addon(addon.name)} is being created in the background. The app will restart when complete...`)

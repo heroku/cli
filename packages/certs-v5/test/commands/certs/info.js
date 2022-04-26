@@ -12,9 +12,11 @@ let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let endpointUntrusted = require('../../stubs/sni-endpoints.js').endpoint_untrusted
 let endpointTrusted = require('../../stubs/sni-endpoints.js').endpoint_trusted
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs:info ported', function () {
   beforeEach(function () {
+    mockSniFeatureFlag(nock, 'example')
     cli.mockConsole()
   })
 

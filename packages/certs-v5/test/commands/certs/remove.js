@@ -10,12 +10,14 @@ let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let shared = require('./shared.js')
 let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs:remove', function () {
   beforeEach(function () {
     cli.mockConsole()
     error.exit.mock()
     nock.cleanAll()
+    mockSniFeatureFlag(nock, 'example')
   })
 
   it('# requires confirmation', function () {
@@ -54,9 +56,7 @@ describe('heroku certs:remove', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mock = nock('https://api.heroku.com')
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
 
@@ -83,9 +83,7 @@ describe('heroku certs:remove', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
-    })
+    let mock = nock('https://api.heroku.com')
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
 

@@ -3,6 +3,81 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+# [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [7.42.12](https://github.com/heroku/cli/compare/v7.42.11...v7.42.12) (2020-08-26)
+
+
+### Bug Fixes
+
+* bump cross-env from 5.2.0 to 7.0.2 ([#1597](https://github.com/heroku/cli/issues/1597)) ([33b2aba](https://github.com/heroku/cli/commit/33b2aba842993053f035e732871e19f2a35156a8))
+
+
+
+
+
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-oauth-v5

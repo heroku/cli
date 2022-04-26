@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const format = require('../../lib/format')()
 
 function displayVPNInfo (space, name, info) {
@@ -41,7 +40,7 @@ function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space my-space vpn-connection-name`)
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let space = context.flags.space || context.args.space
   check(space, 'Space name required')
 
@@ -49,7 +48,7 @@ function * run (context, heroku) {
   check(name, 'VPN connection name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
-  let info = yield lib.getVPNConnection(space, name)
+  let info = await lib.getVPNConnection(space, name)
 
   if (info.name) {
     name = info.name
@@ -84,6 +83,6 @@ module.exports = {
     { name: 'json', description: 'output in json format' },
     { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from' }
   ],
-  run: cli.command(co.wrap(run)),
+  run: cli.command(run),
   render: render
 }

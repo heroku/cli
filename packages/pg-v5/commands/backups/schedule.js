@@ -1,6 +1,5 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
 const TZ = {
@@ -27,7 +26,7 @@ function parse (at) {
   return { hour, timezone: TZ[timezone.toUpperCase()] || timezone || 'UTC' }
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
 
@@ -35,12 +34,12 @@ function * run (context, heroku) {
 
   let schedule = parse(flags.at)
 
-  let attachment = yield fetcher.attachment(app, args.database)
+  let attachment = await fetcher.attachment(app, args.database)
   let db = attachment.addon
 
   let at = cli.color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
 
-  let dbInfo = yield heroku.request({
+  let dbInfo = await heroku.request({
     host: host(db),
     method: 'get',
     path: `/client/v11/databases/${db.id}`
@@ -57,15 +56,15 @@ function * run (context, heroku) {
     }
   }
 
-  yield cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, co(function * () {
+  await cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, async function () {
     // We've been using config var name as schedule_name historically
     schedule.schedule_name = attachment.name + '_URL'
 
-    yield heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
+    await heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
       body: schedule,
       host: host(db)
     })
-  }))
+  }())
 }
 
 module.exports = {
@@ -80,5 +79,5 @@ module.exports = {
   flags: [
     { name: 'at', required: true, hasValue: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'" }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

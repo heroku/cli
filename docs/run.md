@@ -11,11 +11,14 @@ run a one-off process inside a Heroku dyno
 run a one-off process inside a heroku dyno
 
 ```
+run a one-off process inside a heroku dyno
+Shows a notification if the dyno takes more than 20 seconds to start.
+
 USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) parent app used by review apps
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -29,20 +32,18 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku run bash
-  Running bash on app.... up, run.1
-  ~ $
-
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
-  Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/run-v5/commands/run.js)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.60.0/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
 run a detached dyno, where output is sent to your logs
 
 ```
+run a detached dyno, where output is sent to your logs
+
 USAGE
   $ heroku run:detached
 
@@ -51,13 +52,11 @@ OPTIONS
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
-  -t, --tail           stream logs from the dyno
+  -t, --tail           continually stream logs
   --type=type          process type
 
-EXAMPLES
+EXAMPLE
   $ heroku run:detached ls
-  Running ls on app [detached]... up, run.1
-  Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.39.2/packages/run-v5/commands/run/detached.js)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.60.0/src/commands/run/detached.ts)_

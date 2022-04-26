@@ -7,7 +7,6 @@ local
 [![Version](https://img.shields.io/npm/v/local.svg)](https://npmjs.org/package/local)
 [![CircleCI](https://circleci.com/gh/chadian/local/tree/master.svg?style=shield)](https://circleci.com/gh/chadian/local/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/chadian/local?branch=master&svg=true)](https://ci.appveyor.com/project/chadian/local/branch/master)
-[![Codecov](https://codecov.io/gh/chadian/local/branch/master/graph/badge.svg)](https://codecov.io/gh/chadian/local)
 [![Downloads/week](https://img.shields.io/npm/dw/local.svg)](https://npmjs.org/package/local)
 [![License](https://img.shields.io/npm/l/local.svg)](https://github.com/chadian/local/blob/master/package.json)
 
@@ -22,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-local
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-local/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-local/7.60.0 darwin-x64 node-v14.18.2
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -61,7 +60,7 @@ EXAMPLE
   $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -79,7 +78,7 @@ EXAMPLE
   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/local/run.ts)_
 
 ## `heroku local:version`
 
@@ -90,5 +89,5 @@ USAGE
   $ heroku local:version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/local/version.ts)_
 <!-- commandsstop -->

@@ -182,7 +182,7 @@ export class BuildpackCommand {
   }
 
   validateIndex(index: number) {
-    if (isNaN(index) || index <= 0) {
+    if (Number.isNaN(index) || index <= 0) {
       cli.error('Invalid index. Must be greater than 0.', {exit: 1})
     }
   }

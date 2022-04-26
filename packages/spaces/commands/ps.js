@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const co = require('co')
 const strftime = require('strftime')
 const _ = require('lodash')
 
@@ -16,11 +15,11 @@ function timeAgo (since) {
   else return message
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   const spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:ps my-space')
 
-  const [spaceDynos, space] = yield Promise.all([
+  const [spaceDynos, space] = await Promise.all([
     heroku.get(`/spaces/${spaceName}/dynos`),
     heroku.get(`/spaces/${spaceName}`)
   ])
@@ -84,5 +83,5 @@ module.exports = {
     { name: 'space', char: 's', hasValue: true, description: 'space to get dynos of' },
     { name: 'json', description: 'output in json format' }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

@@ -1,18 +1,17 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 const { flags } = require('@heroku-cli/command')
 const { SpaceCompletion } = require('@heroku-cli/command/lib/completions')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const { sortBy, partition } = require('lodash')
 
   let teamIdentifier = context.flags.team
   let team = (!context.flags.personal && teamIdentifier) ? teamIdentifier : null
   let space = context.flags.space
   let internalRouting = context.flags['internal-routing']
-  if (space) team = (yield heroku.get(`/spaces/${space}`)).team.name
+  if (space) team = ((await heroku.get(`/spaces/${space}`))).team.name
 
   function annotateAppName (app) {
     let name = `${app.name}`
@@ -74,10 +73,10 @@ function * run (context, heroku) {
   let path = '/users/~/apps'
   if (team) path = `/teams/${team}/apps`
   else if (context.flags.all) path = '/apps'
-  let [apps, user] = yield [
+  let [apps, user] = await Promise.all([
     heroku.get(path),
     heroku.get('/account')
-  ]
+  ])
   apps = sortBy(apps, 'name')
   if (space) {
     apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space))
@@ -112,7 +111,7 @@ theirapp   other@owner.name`,
     { name: 'internal-routing', hidden: true, char: 'i', description: 'filter to Internal Web Apps' },
     flags.team({ name: 'team', hasValue: true })
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
 
 module.exports = [

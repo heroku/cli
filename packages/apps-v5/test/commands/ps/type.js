@@ -29,10 +29,15 @@ describe('ps:type', function () {
       .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
 
     return cmd.run({ app: 'myapp', args: ['hobby'] })
-      .then(() => expect(cli.stdout).to.eq(`type    size   qty  cost/mo
+      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
+type    size   qty  cost/mo
 ──────  ─────  ───  ───────
 web     Hobby  1    7
 worker  Hobby  2    14
+=== Dyno Totals
+type   total
+─────  ─────
+Hobby  3
 `))
       .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
       .then(() => api.done())
@@ -50,10 +55,16 @@ worker  Hobby  2    14
       .reply(200, [{ type: 'web', quantity: 1, size: 'Standard-1X' }, { type: 'worker', quantity: 2, size: 'Standard-2X' }])
 
     return cmd.run({ app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x'] })
-      .then(() => expect(cli.stdout).to.eq(`type    size         qty  cost/mo
+      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
+type    size         qty  cost/mo
 ──────  ───────────  ───  ───────
 web     Standard-1X  1    25
 worker  Standard-2X  2    100
+=== Dyno Totals
+type         total
+───────────  ─────
+Standard-1X  1
+Standard-2X  2
 `))
       .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
       .then(() => api.done())
@@ -67,10 +78,16 @@ worker  Standard-2X  2    100
       .reply(200, [{ type: 'web', quantity: 0, size: 'Private-M' }, { type: 'web', quantity: 0, size: 'Private-L' }])
 
     return cmd.run({ app: 'myapp', args: [] })
-      .then(() => expect(cli.stdout).to.eq(`type  size      qty  cost/mo
+      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
+type  size      qty  cost/mo
 ────  ────────  ───  ───────
 web   Shield-M  0
 web   Shield-L  0
+=== Dyno Totals
+type      total
+────────  ─────
+Shield-M  0
+Shield-L  0
 `))
       .then(() => api.done())
   })

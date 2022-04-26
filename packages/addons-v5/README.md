@@ -1,7 +1,6 @@
 # heroku-cli-addons [![Circle CI](https://circleci.com/gh/heroku/heroku-cli-addons.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-addons)
 
 [![Code Climate](https://codeclimate.com/github/heroku/heroku-cli-addons/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-cli-addons)
-[![codecov](https://codecov.io/gh/heroku/heroku-cli-addons/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-addons)
 [![npm version](https://badge.fury.io/js/heroku-cli-addons.svg)](https://badge.fury.io/js/heroku-cli-addons)
 [![License](https://img.shields.io/github/license/heroku/heroku-cli-addons.svg)](https://github.com/heroku/heroku-cli-addons/blob/master/LICENSE)
 

@@ -1,9 +1,8 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')
   const psql = require('../lib/psql')
 
@@ -11,12 +10,12 @@ function * run (context, heroku) {
   const { pid, database } = args
   const { force } = flags
 
-  let db = yield fetcher(heroku).database(app, database)
+  let db = await fetcher(heroku).database(app, database)
 
   let query = `
 SELECT ${force ? 'pg_terminate_backend' : 'pg_cancel_backend'}(${parseInt(pid)});`
 
-  let output = yield psql.exec(db, query)
+  let output = await psql.exec(db, query)
   process.stdout.write(output)
 }
 
@@ -31,5 +30,5 @@ module.exports = {
     { name: 'pid' },
     { name: 'database', optional: true }
   ],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }

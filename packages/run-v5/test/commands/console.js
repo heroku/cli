@@ -1,6 +1,6 @@
 'use strict'
 
-const expect = require('unexpected')
+const { expect } = require('chai')
 const sinon = require('sinon')
 const Dyno = require('../../lib/dyno')
 const cmd = require('../../commands/console')
@@ -16,8 +16,8 @@ describe('console', () => {
   })
 
   it('runs console', () => {
-    return cmd.run({ app: 'heroku-run-test-app', flags: {} })
-      .then(() => expect(dynoOpts.command, 'to equal', 'console'))
+    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {} })
+      .then(() => expect(dynoOpts.command).to.equal('console'))
   })
 
   afterEach(() => {

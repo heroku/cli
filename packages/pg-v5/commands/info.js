@@ -1,6 +1,5 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
 const util = require('../lib/util')
 
@@ -32,7 +31,7 @@ function displayDB (db, app) {
   cli.log()
 }
 
-function * run (context, heroku) {
+async function run(context, heroku) {
   const { sortBy } = require('lodash')
   const host = require('../lib/host')
   const fetcher = require('../lib/fetcher')(heroku)
@@ -40,23 +39,23 @@ function * run (context, heroku) {
   const db = context.args.database
 
   let addons = []
-  let config = heroku.get(`/apps/${app}/config-vars`)
+  let config = await heroku.get(`/apps/${app}/config-vars`)
 
   if (db) {
-    addons = yield [fetcher.addon(app, db)]
+    addons = await Promise.all([fetcher.addon(app, db)])
   } else {
-    addons = yield fetcher.all(app)
+    addons = await fetcher.all(app)
     if (addons.length === 0) {
       cli.log(`${cli.color.app(app)} has no heroku-postgresql databases.`)
       return
     }
   }
 
-  let dbs = yield addons.map(addon => {
+  let dbs = await Promise.all(addons.map(async (addon) => {
     return {
       addon,
       config,
-      db: heroku.request({
+      db: await heroku.request({
         host: host(addon),
         method: 'get',
         path: `/client/v11/databases/${addon.id}`
@@ -65,7 +64,7 @@ function * run (context, heroku) {
         cli.warn(`${cli.color.addon(addon.name)} is not yet provisioned.\nRun ${cli.color.cmd('heroku addons:wait')} to wait until the db is provisioned.`)
       })
     }
-  })
+  }))
 
   dbs = dbs.filter(db => db.db)
   dbs.forEach(db => { db.configVars = util.configVarNamesFromValue(db.config, db.db.resource_url) })
@@ -80,7 +79,7 @@ let cmd = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  run: cli.command({ preauth: true }, run)
 }
 
 module.exports = [

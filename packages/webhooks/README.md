@@ -7,7 +7,6 @@ webhooks
 [![Version](https://img.shields.io/npm/v/webhooks.svg)](https://npmjs.org/package/webhooks)
 [![CircleCI](https://circleci.com/gh/chadian/webhooks/tree/master.svg?style=shield)](https://circleci.com/gh/chadian/webhooks/tree/master)
 [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/chadian/webhooks?branch=master&svg=true)](https://ci.appveyor.com/project/chadian/webhooks/branch/master)
-[![Codecov](https://codecov.io/gh/chadian/webhooks/branch/master/graph/badge.svg)](https://codecov.io/gh/chadian/webhooks)
 [![Downloads/week](https://img.shields.io/npm/dw/webhooks.svg)](https://npmjs.org/package/webhooks)
 [![License](https://img.shields.io/npm/l/webhooks.svg)](https://github.com/chadian/webhooks/blob/master/package.json)
 
@@ -22,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-webhooks
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-webhooks/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-webhooks/7.60.0 darwin-x64 node-v14.18.2
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -31,7 +30,6 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`heroku base`](#heroku-base)
 * [`heroku webhooks`](#heroku-webhooks)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
 * [`heroku webhooks:deliveries`](#heroku-webhooksdeliveries)
@@ -41,15 +39,6 @@ USAGE
 * [`heroku webhooks:info ID`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove ID`](#heroku-webhooksremove-id)
 * [`heroku webhooks:update ID`](#heroku-webhooksupdate-id)
-
-## `heroku base`
-
-```
-USAGE
-  $ heroku base
-```
-
-_See code: [src/commands/base.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/base.ts)_
 
 ## `heroku webhooks`
 
@@ -67,7 +56,7 @@ EXAMPLE
   $ heroku webhooks
 ```
 
-_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/index.ts)_
+_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/index.ts)_
 
 ## `heroku webhooks:add`
 
@@ -90,7 +79,7 @@ EXAMPLE
   $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/add.ts)_
+_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/add.ts)_
 
 ## `heroku webhooks:deliveries`
 
@@ -109,7 +98,7 @@ EXAMPLE
   $ heroku webhooks:deliveries
 ```
 
-_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/deliveries/index.ts)_
+_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/deliveries/index.ts)_
 
 ## `heroku webhooks:deliveries:info ID`
 
@@ -127,7 +116,7 @@ EXAMPLE
   $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/deliveries/info.ts)_
+_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:events`
 
@@ -145,7 +134,7 @@ EXAMPLE
   $ heroku webhooks:events
 ```
 
-_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/events/index.ts)_
+_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/events/index.ts)_
 
 ## `heroku webhooks:events:info ID`
 
@@ -163,7 +152,7 @@ EXAMPLE
   $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/events/info.ts)_
+_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/events/info.ts)_
 
 ## `heroku webhooks:info ID`
 
@@ -181,7 +170,7 @@ EXAMPLE
   $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/info.ts)_
+_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/info.ts)_
 
 ## `heroku webhooks:remove ID`
 
@@ -202,7 +191,7 @@ EXAMPLE
   $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/remove.ts)_
+_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/remove.ts)_
 
 ## `heroku webhooks:update ID`
 
@@ -226,5 +215,5 @@ EXAMPLE
   09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v7.39.2/src/commands/webhooks/update.ts)_
+_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/webhooks/update.ts)_
 <!-- commandsstop -->

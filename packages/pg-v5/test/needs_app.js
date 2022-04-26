@@ -1,11 +1,11 @@
 'use strict'
 /* global describe it */
 
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('all commands', () => {
   it('should needsApp', () => {
     const missingNeedsApp = require('..').commands.filter((command) => !command.needsApp)
-    expect(missingNeedsApp, 'to equal', [])
+    expect(missingNeedsApp).to.deep.equal([])
   })
 })

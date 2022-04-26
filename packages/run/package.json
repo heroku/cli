@@ -1,11 +1,11 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.38.1",
+  "version": "7.60.0",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "@oclif/command": "^1",
@@ -23,6 +23,7 @@
     "@types/mocha": "^5",
     "@types/node": "^10",
     "@types/node-notifier": "^5.4.0",
+    "bats": "^1.1.0",
     "chai": "^4",
     "eslint": "^6.7.2",
     "eslint-config-oclif": "^3.1.0",
@@ -36,7 +37,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/lib",
@@ -70,6 +71,7 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test:acceptance": "yarn test --grep='@acceptance'",
     "posttest": "yarn lint",
     "version": "oclif-dev readme && git add README.md"
   }

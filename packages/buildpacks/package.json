@@ -1,14 +1,14 @@
 {
   "name": "@heroku-cli/plugin-buildpacks",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Terence Lee @hone",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.4.1",
     "@heroku/buildpack-registry": "^1.0.1",
     "@oclif/config": "^1.12.10",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "cli-ux": "^4.9.3",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.3",
@@ -43,7 +43,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/lib",

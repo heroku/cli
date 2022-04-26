@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cli = require('heroku-cli-util')
 const cmd = commands.find((c) => c.topic === 'releases' && c.command === 'info')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 let d = new Date(2000, 1, 1)
 
@@ -30,7 +30,7 @@ describe('releases:info', function () {
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
     return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+      .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -52,7 +52,7 @@ FOO: foo
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
     return cmd.run({ app: 'myapp', flags: { shell: true }, args: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+      .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -74,7 +74,7 @@ BAR=bar
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
     return cmd.run({ app: 'myapp', flags: {}, args: { release: 'v10' } })
-      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+      .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com
@@ -114,7 +114,7 @@ FOO: foo
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
     return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+      .then(() => expect(cli.stdout).to.equal(`=== Release v10
 By:      foo@foo.com
 Change:  something changed (release command failed)
 When:    ${d.toISOString()}
@@ -141,7 +141,7 @@ FOO: foo
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
     return cmd.run({ app: 'myapp', flags: {}, args: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+      .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
 By:      foo@foo.com

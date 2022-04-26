@@ -6,8 +6,10 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "lerna": "^3.22.1",
     "promise-request-retry": "^1.0.2",
-    "standard": "12.0.1"
+    "standard": "12.0.1",
+    "tmp": "^0.2.1"
   },
   "standard": {
     "env": "mocha",
@@ -17,13 +19,12 @@
     ]
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency 4",
-    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "posttest": "standard"
+    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md"
   },
   "workspaces": [
     "packages/*"

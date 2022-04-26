@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../base'
+import BaseCommand from '../../../base'
 
 export default class EventsIndex extends BaseCommand {
   static description = 'list webhook events on an app'

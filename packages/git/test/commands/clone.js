@@ -3,15 +3,15 @@
 
 let sinon = require('sinon')
 let nock = require('nock')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let proxyquire = require('proxyquire')
 
 describe('git:clone', function () {
   it('errors if no app given', function () {
     let clone = require('../..').commands.find((c) => c.topic === 'git' && c.command === 'clone')
 
-    return expect(clone.run({ flags: {}, args: [] }),
-      'to be rejected with', { message: 'Specify an app with --app' })
+    return expect(clone.run({ flags: {}, args: [] }))
+      .to.be.rejectedWith(Error, 'Specify an app with --app')
   })
 
   it('clones the repo', function () {

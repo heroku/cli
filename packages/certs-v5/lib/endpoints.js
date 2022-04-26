@@ -1,5 +1,7 @@
 'use strict'
 
+const { checkPrivateSniFeature } = require('./features.js')
+
 function sslCertsPromise (app, heroku) {
   return heroku.request({
     path: `/apps/${app}/ssl-endpoints`,
@@ -10,10 +12,7 @@ function sslCertsPromise (app, heroku) {
 }
 
 function sniCertsPromise (app, heroku) {
-  return heroku.request({
-    path: `/apps/${app}/sni-endpoints`,
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
-  }).catch(function (err) {
+  return heroku.request({path: `/apps/${app}/sni-endpoints`}).catch(function (err) {
     if (err.statusCode === 422 && err.body && err.body.id === 'space_app_not_supported') {
       return []
     }
@@ -27,7 +26,6 @@ function meta (app, t, name) {
   var path, variant
   if (t === 'sni') {
     path = `/apps/${app}/sni-endpoints`
-    variant = 'sni_ssl_cert'
   } else if (t === 'ssl') {
     path = `/apps/${app}/ssl-endpoints`
     variant = 'ssl_cert'
@@ -37,7 +35,12 @@ function meta (app, t, name) {
   if (name) {
     path = `${path}/${name}`
   }
-  return {path, variant, flag: t}
+
+  if (variant) {
+    return {path, variant, flag: t}
+  } else {
+    return {path, flag: t}
+  }
 }
 
 function tagAndSort (app, allCerts) {
@@ -54,26 +57,26 @@ function tagAndSort (app, allCerts) {
   })
 }
 
-function * all (app, heroku) {
-  let allCerts = yield {
-    ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku)
+async function all(appName, heroku) {
+  const featureList = await heroku.get(`/apps/${appName}/features`)
+  const privateSniFeatureEnabled = checkPrivateSniFeature(featureList)
+
+  let [ssl_certs, sni_certs] = await Promise.all([
+    // use SNI endpoints only
+    privateSniFeatureEnabled ? [] : sslCertsPromise(appName, heroku),
+    sniCertsPromise(appName, heroku)
+  ])
+
+  let allCerts = {
+    ssl_certs,
+    sni_certs
   }
 
-  return tagAndSort(app, allCerts)
+  return tagAndSort(appName, allCerts)
 }
 
-function * certsAndDomains (app, heroku) {
-  let requests = yield {
-    ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku)
-  }
-
-  return {certs: tagAndSort(app, requests), domains: requests.domains}
-}
-
-function * hasAddon (app, heroku) {
-  return yield heroku.request({
+async function hasAddon(app, heroku) {
+  return await heroku.request({
     path: `/apps/${app}/addons/ssl%3Aendpoint`
   }).then(function () {
     return true
@@ -83,21 +86,20 @@ function * hasAddon (app, heroku) {
     } else {
       throw err
     }
-  })
+  });
 }
 
-function * hasSpace (app, heroku) {
-  return yield heroku.request({
+async function hasSpace(app, heroku) {
+  return await heroku.request({
     path: `/apps/${app}`
   }).then(function (data) {
     return !!data.space
-  })
+  });
 }
 
 module.exports = {
   hasSpace,
   hasAddon,
   meta,
-  all,
-  certsAndDomains
+  all
 }

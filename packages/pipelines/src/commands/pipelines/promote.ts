@@ -3,10 +3,16 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
 import assert from 'assert'
 import cli from 'cli-ux'
-import got from 'got'
+import fetch from 'node-fetch'
+import util from 'util'
+import Stream from 'stream'
 
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
+
+export const sleep  = (time: number) => {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
 
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
@@ -59,9 +65,8 @@ function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand:
 }
 
 async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
-  cli.action.start('Fetching app info')
+  cli.log('Fetching app info...')
   const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
-  cli.action.stop()
   return coupling
 }
 
@@ -80,9 +85,8 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
   }
 
   try {
-    cli.action.start(label)
+    cli.log(`${label}...`)
     const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
-    cli.action.stop()
     return promotions
   } catch (error) {
     if (!error.body || error.body.id !== 'two_factor') {
@@ -106,9 +110,8 @@ function assertApps(app: string, targetApps: Array<Heroku.App>, targetStage: str
 }
 
 async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
-  cli.action.start('Fetching release info')
+  cli.log('Fetching release info...')
   const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
-  cli.action.stop()
   return release
 }
 
@@ -124,19 +127,41 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
   }
 
   cli.log('Running release command...')
-  const fetch = (retry = 100) => new Promise((resolve, reject) => {
-    const stream = got.stream(release.output_stream_url!)
-    stream.on('error', async err => {
-      await wait(100)
-      if (retry && err.code === '404') {
-        fetch(retry - 1).then(resolve).catch(reject)
-      } else reject(err)
-    })
-    stream.on('end', resolve)
-    const piped = stream.pipe(process.stdout)
-    piped.on('error', reject)
+
+  async function streamReleaseOutput(releaseStreamUrl: string) {
+    const finished = util.promisify(Stream.finished)
+    const fetchResponse = await fetch(releaseStreamUrl)
+
+    if (fetchResponse.status >= 400) {
+      throw new Error('stream release output not available')
+    }
+
+    fetchResponse.body.pipe(process.stdout)
+
+    await finished(fetchResponse.body)
+  }
+
+  async function retry(maxAttempts: number, fn: () => Promise<any>) {
+    let currentAttempt = 0
+
+    while (true) {
+      try {
+        /* eslint-disable no-await-in-loop */
+        await fn()
+        return
+      } catch (error) {
+        if (++currentAttempt === maxAttempts) {
+          throw error
+        }
+        await sleep(1000)
+        /* eslint-enable no-await-in-loop */
+      }
+    }
+  }
+
+  await retry(100, () => {
+    return streamReleaseOutput(release.output_stream_url!)
   })
-  await fetch()
 
   return pollPromotionStatus(heroku, promotion.id, false)
 }
@@ -163,9 +188,8 @@ export default class Promote extends Command {
     const {flags} = this.parse(Promote)
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
-    cli.action.start(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}`)
+    cli.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
     const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
-    cli.action.stop()
     const sourceStage = coupling.stage
 
     let promotionActionName = ''
@@ -206,10 +230,14 @@ export default class Promote extends Command {
     )
 
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
-    cli.action.start('Waiting for promotion to complete')
+    cli.log('Waiting for promotion to complete...')
     let promotionTargets = await pollLoop
-    promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
-    cli.action.stop()
+
+    try {
+      promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
+    } catch (error) {
+      cli.error(error)
+    }
 
     const appsByID = keyBy(allApps, 'id')
 

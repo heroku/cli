@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-oauth",
   "description": "Command line plugin for managing OAuth clients, authorizations and tokens.",
-  "version": "7.39.2",
+  "version": "7.60.0",
   "author": "Taylor Mock @tmock12",
   "bin": {
     "heroku": "./bin/run"
@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -36,7 +36,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/bin",

@@ -3,6 +3,113 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+# [7.56.0](https://github.com/heroku/cli/compare/v7.55.0...v7.56.0) (2021-06-29)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+# [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+# [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+# [7.43.0](https://github.com/heroku/cli/compare/v7.42.13...v7.43.0) (2020-09-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+## [7.42.9](https://github.com/heroku/cli/compare/v7.42.8...v7.42.9) (2020-08-25)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+## [7.42.8](https://github.com/heroku/cli/compare/v7.42.7...v7.42.8) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+## [7.42.5](https://github.com/heroku/cli/compare/v7.42.4...v7.42.5) (2020-07-20)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run
+
+
+
+
+
+## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
+
+
+### Bug Fixes
+
+* **run:** error messages & exiting ([#1547](https://github.com/heroku/cli/issues/1547)) ([9e3e2f6](https://github.com/heroku/cli/commit/9e3e2f60b16c5f710820e7860749f28d066ce9d0))
+
+
+
+
+
+## [7.41.1](https://github.com/heroku/cli/compare/v7.41.0...v7.41.1) (2020-05-12)
+
+
+### Bug Fixes
+
+* **run:** add legacyUri property to dyno class ([6a8aea3](https://github.com/heroku/cli/commit/6a8aea399c0f4dd94dc0535453559bdba8426488))
+* **run:** add url.auth property to https request options ([#1517](https://github.com/heroku/cli/issues/1517)) ([6918933](https://github.com/heroku/cli/commit/6918933867624760c6b10a9237528ae7b897844b))
+* **run:** use URL.parse to backsupport ssh ([#1515](https://github.com/heroku/cli/issues/1515)) ([fe11325](https://github.com/heroku/cli/commit/fe113255a4f1b59bc27cef16dbe2ff4434f64237))
+
+
+
+
+
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+
+### Bug Fixes
+
+* **run:** fix run status code and use https ([#1351](https://github.com/heroku/cli/issues/1351)) ([ca8127f](https://github.com/heroku/cli/commit/ca8127fd5811d9f9c87aea891d33b36a6835a2ec))
+
+
+
+
+
 ## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
 
 **Note:** Version bump only for package @heroku-cli/plugin-run

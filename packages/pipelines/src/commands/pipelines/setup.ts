@@ -60,7 +60,7 @@ export default class Setup extends Command {
       return
     }
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, this.heroku.auth)
+    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
     const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
 
     const team = flags.team
