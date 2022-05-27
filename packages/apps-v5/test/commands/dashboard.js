@@ -101,7 +101,7 @@ See other CLI commands with heroku help
     describe('with a favorite app', () => {
       it('shows the dashboard', () => {
         let longboard = nock('https://particleboard.heroku.com:443')
-          .get('/favorites?type=app').reply(200, [{ app_name: 'myapp' }])
+          .get('/favorites?type=app').reply(200, [{ resource_name: 'myapp' }])
         let heroku = nock('https://api.heroku.com:443')
           .get('/teams').reply(200, [])
           .get('/apps/myapp').reply(200, {

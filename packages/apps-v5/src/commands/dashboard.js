@@ -101,7 +101,7 @@ async function run(context, heroku) {
       host: 'particleboard.heroku.com',
       path: '/favorites?type=app',
       headers: { Range: '' }
-    }).then((apps) => apps.map((app) => app.app_name))
+    }).then((apps) => apps.map((app) => app.resource_name))
   }
 
   function fetchMetrics (apps) {
