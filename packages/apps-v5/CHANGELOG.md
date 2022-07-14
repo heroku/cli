@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.60.2](https://github.com/heroku/cli/compare/v7.60.1...v7.60.2) (2022-04-27)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1979](https://github.com/heroku/cli/issues/1979)) ([36fb4d4](https://github.com/heroku/cli/commit/36fb4d4ad29f7800a095a9d14390f7d0c909a5da))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1957](https://github.com/heroku/cli/issues/1957)) ([e5656b0](https://github.com/heroku/cli/commit/e5656b08a241b203a72cfff2c722f64241260c51))
+
+
+
+
+
 ## [7.59.4](https://github.com/heroku/cli/compare/v7.59.3...v7.59.4) (2022-03-08)
 
 

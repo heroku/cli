@@ -43,7 +43,7 @@ describe('validateURL', () => {
     describe('invalid URLs', () => {
       test
       .do(() => validateURL('foo'))
-      .catch(error => expect(error.message).to.equal('Invalid URL: foo'))
+      .catch(error => expect(error.message).to.contain('Invalid URL'))
       .it('fails when invalid')
     })
   })

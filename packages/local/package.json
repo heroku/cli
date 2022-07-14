@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local",
   "description": "run heroku apps locally",
-  "version": "7.54.0",
+  "version": "7.60.0",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -30,7 +30,7 @@
     "typescript": "3.3.3333"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/lib",
