@@ -16,7 +16,7 @@
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.2.9",
     "validator": "^10.11.0"
   },
   "devDependencies": {
