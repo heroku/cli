@@ -22,7 +22,6 @@ ARGUMENTS
 OPTIONS
   -a, --app=app        (required) the Heroku app to use
   -r, --remote=remote  the git remote to create, default "heroku"
-  --ssh-git            use SSH git protocol
 
 EXAMPLES
   $ heroku git:clone -a example
@@ -48,7 +47,6 @@ USAGE
 OPTIONS
   -a, --app=app        the Heroku app to use
   -r, --remote=remote  the git remote to create
-  --ssh-git            use SSH git protocol
 
 DESCRIPTION
   extra arguments will be passed to git remote add
