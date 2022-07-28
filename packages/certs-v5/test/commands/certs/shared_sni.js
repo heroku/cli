@@ -8,6 +8,7 @@ let error = require('../../../lib/error.js')
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2
 let endpointCname = require('../../stubs/sni-endpoints.js').endpoint_cname
+let endpointHeroku = require('../../stubs/sni-endpoints.js').endpoint_heroku
 let assertExit = require('../../assert_exit.js')
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 const unwrap = require('../../unwrap')
@@ -97,7 +98,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
     it('# --name errors out in the case where more than one matches', function () {
       let mockSni = nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint])
+        .reply(200, [endpoint, endpointHeroku])
 
       return assertExit(1, certs.run({ app: 'example', args: args, flags: { name: 'tokyo-1050', confirm: 'example' } })).then(function () {
         mockSni.done()

@@ -7,7 +7,7 @@ function sniCertsPromise (app, heroku) {
 }
 
 function meta (app, t, name) {
-  var path, variant
+  var path
   if (t === 'sni') {
     path = `/apps/${app}/sni-endpoints`
   } else {
@@ -17,11 +17,7 @@ function meta (app, t, name) {
     path = `${path}/${name}`
   }
 
-  if (variant) {
-    return {path, variant, flag: t}
-  } else {
-    return {path, flag: t}
-  }
+  return {path, flag: t}
 }
 
 function tagAndSort (app, sniCerts) {

@@ -95,8 +95,6 @@ describe('heroku certs:add', function () {
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
       /* eslint-enable no-irregular-whitespace */
     })
@@ -159,8 +157,6 @@ ${certificateDetails}
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
     /* eslint-enable no-irregular-whitespace */
@@ -228,70 +224,19 @@ ${certificateDetails}
       inquirer.prompt = (prompts) => {
         let choices = prompts[0].choices
         expect(choices).to.eql([
-          { name: 'foo.example.org' },
-          { name: 'bar.example.org' }
+          'biz.example.com'
         ])
-        return Promise.resolve({ domains: ['foo.example.org'] })
+        return Promise.resolve({ domains: choices })
       }
 
       let domainsCreate = nock('https://api.heroku.com')
-        .post('/apps/example/domains', { hostname: 'foo.example.org' })
-        .reply(200,
-          { 'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org' }
-        )
+        .patch('/apps/example/domains/biz.example.com')
+        .reply(200)
 
       return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
         domainsCreate.done()
-        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domain foo.example.org to example... done\n')
-        /* eslint-disable no-trailing-spaces */
-        expect(cli.stdout).to.equal(
-          `Certificate details:
-Common Name(s): foo.example.org
-                bar.example.org
-                biz.example.com
-Expires At:     2013-08-01 21:34 UTC
-Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-Starts At:      2012-08-01 21:34 UTC
-Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-SSL certificate is self signed.
-
-=== The following common names already have domain entries
-biz.example.com
-
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target
-───────────────  ───────────  ─────────────────────────────
-biz.example.com  CNAME        biz.example.com.herokudns.com
-baz.example.org  CNAME        baz.example.org.herokudns.com
-example.org      ALIAS/ANAME  example.org.herokudns.com
-example.co.uk    ALIAS/ANAME  example.co.uk.herokudns.com
-foo.example.org  CNAME        foo.example.org.herokudns.com
-`)
-        /* eslint-enable no-trailing-spaces */
-      })
-    })
-
-    it('# does not prompt if all domains covered', function () {
-      let mock = nock('https://api.heroku.com')
-        .post('/apps/example/sni-endpoints', {
-          certificate_chain: 'pem content', private_key: 'key content'
-        })
-        .reply(200, endpointStables)
-
-      let domainsMock = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [
-          { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' },
-          { 'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'bar.example.org.herokudns.com' },
-          { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudnsdev.com' },
-          { 'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com' }
-        ])
-
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
-        mock.done()
-        domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
@@ -304,19 +249,7 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
-
-=== The following common names already have domain entries
-foo.example.org
-bar.example.org
-biz.example.com
-
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target
-───────────────  ───────────  ────────────────────────────────
-foo.example.org  CNAME        foo.example.org.herokudns.com
-bar.example.org  CNAME        bar.example.org.herokudns.com
-biz.example.com  CNAME        biz.example.com.herokudnsdev.com
-baz.example.org  CNAME        baz.example.org.herokudns.com
+=== Almost done! Which of these domains on this application would you like this certificate associated with?
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -335,9 +268,24 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
           { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null }
         ])
 
+      let domainsMockPatch = nock('https://api.heroku.com')
+        .patch('/apps/example/domains/tokyo-1050.herokuapp.com')
+        .reply(200, [
+          { 'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null }
+        ])
+
+      inquirer.prompt = (prompts) => {
+        let choices = prompts[0].choices
+        expect(choices).to.eql([
+          'tokyo-1050.herokuapp.com'
+        ])
+        return Promise.resolve({ domains: choices })
+      }
+
       return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
+        domainsMockPatch.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
         /* eslint-disable no-irregular-whitespace */
         /* eslint-disable no-trailing-spaces */
@@ -349,11 +297,7 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=he
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com
 SSL certificate is not trusted.
-
-=== The following common names are for hosts that are managed by Heroku
-tokyo-1050.herokuapp.com
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Almost done! Which of these domains on this application would you like this certificate associated with?
 `)
         /* eslint-enable no-trailing-spaces */
         /* eslint-enable no-irregular-whitespace */
@@ -372,8 +316,12 @@ tokyo-1050.herokuapp.com
         .reply(200, [
           { 'kind': 'custom', 'hostname': '*.example.org', 'cname': 'wildcard.example.org.herokudns.com' },
           { 'kind': 'custom', 'hostname': '*.example.com', 'cname': 'wildcard.example.com.herokudns.com' },
-          { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com' }
+          // { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com' }
         ])
+
+      inquirer.prompt = (prompts) => {
+        expect.fail('inquirer.prompt() should not be called')
+      }
 
       return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
@@ -390,18 +338,6 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
-
-=== The following common names already have domain entries
-foo.example.org
-bar.example.org
-biz.example.com
-
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target
-───────────────  ───────────  ──────────────────────────────────
-*.example.org    CNAME        wildcard.example.org.herokudns.com
-*.example.com    CNAME        wildcard.example.com.herokudns.com
-biz.example.com  CNAME        biz.example.com.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -432,8 +368,6 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
-
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-enable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
@@ -454,48 +388,22 @@ SSL certificate is self signed.
           { 'kind': 'custom', 'hostname': 'bar.example.com', 'cname': 'bar.example.com.herokudns.com' }
         ])
 
-      return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
-        mock.done()
-        domainsMock.done()
-        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-trailing-spaces */
-        /* eslint-disable no-irregular-whitespace */
-        expect(cli.stdout).to.equal(
-          `Certificate details:
-Common Name(s): *.example.org
-Expires At:     2013-08-01 21:34 UTC
-Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-Starts At:      2012-08-01 21:34 UTC
-Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-SSL certificate is self signed.
+      let domainsMockPatch = nock('https://api.heroku.com')
+        .patch('/apps/example/domains/foo.example.org')
+        .reply(200)
 
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target                     Warnings
-───────────────  ───────────  ─────────────────────────────  ────────────────────────────────────────────────────
-foo.example.org  CNAME        foo.example.org.herokudns.com
-bar.example.com  CNAME        bar.example.com.herokudns.com  ! Does not match any domains on your SSL certificate
-`)
-        /* eslint-enable no-irregular-whitespace */
-        /* eslint-enable no-trailing-spaces */
-      })
-    })
-
-    it('# prints matched domains for wildcard cert with no warnings', function () {
-      let mock = nock('https://api.heroku.com')
-        .post('/apps/example/sni-endpoints', {
-          certificate_chain: 'pem content', private_key: 'key content'
-        })
-        .reply(200, endpointWildcard)
-
-      let domainsMock = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [
-          { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' }
+      inquirer.prompt = (prompts) => {
+        let choices = prompts[0].choices
+        expect(choices).to.eql([
+          'foo.example.org'
         ])
+        return Promise.resolve({ 'domains': choices })
+      }
 
       return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
         domainsMock.done()
+        domainsMockPatch.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
         /* eslint-disable no-trailing-spaces */
         /* eslint-disable no-irregular-whitespace */
@@ -507,11 +415,7 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
-
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target
-───────────────  ───────────  ─────────────────────────────
-foo.example.org  CNAME        foo.example.org.herokudns.com
+=== Almost done! Which of these domains on this application would you like this certificate associated with?
 `)
         /* eslint-enable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
@@ -565,11 +469,36 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
             { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com', 'status': 'succeeded' }
           ])
 
+        let domainsCreateFoo = nock('https://api.heroku.com')
+          .patch('/apps/example/domains/foo.example.org')
+          .reply(200)
+
+        let domainsCreateBar = nock('https://api.heroku.com')
+          .patch('/apps/example/domains/bar.example.org')
+          .reply(200)
+
+        let domainsCreateBiz = nock('https://api.heroku.com')
+          .patch('/apps/example/domains/biz.example.com')
+          .reply(200)
+
+        inquirer.prompt = (prompts) => {
+          let choices = prompts[0].choices
+          expect(choices).to.eql([
+            'foo.example.org',
+            'bar.example.org',
+            'biz.example.com'
+          ])
+          return Promise.resolve({ domains: choices })
+        }
+
         return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
           mock.done()
           domainsMock.done()
           domainsRetry.done()
           domainsSuccess.done()
+          domainsCreateFoo.done()
+          domainsCreateBar.done()
+          domainsCreateBiz.done()
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... done\n')
           /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
@@ -582,18 +511,7 @@ Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=se
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
-
-=== The following common names already have domain entries
-foo.example.org
-bar.example.org
-biz.example.com
-
-=== Your certificate has been added successfully.  Update your application's DNS settings as follows
-Domain           Record Type  DNS Target
-───────────────  ───────────  ─────────────────────────────
-foo.example.org  CNAME        foo.example.org.herokudns.com
-bar.example.org  CNAME        bar.example.org.herokudns.com
-biz.example.com  CNAME        biz.example.com.herokudns.com
+=== Almost done! Which of these domains on this application would you like this certificate associated with?
 `)
           /* eslint-enable no-trailing-spaces */
         })

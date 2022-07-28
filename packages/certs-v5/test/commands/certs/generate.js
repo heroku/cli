@@ -171,7 +171,7 @@ $ heroku certs:update CERTFILE example.org.key
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku certs:update CERTFILE example.org.key
+$ heroku certs:add CERTFILE example.org.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])

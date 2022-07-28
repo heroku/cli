@@ -16,22 +16,22 @@ describe('heroku certs:remove', function () {
     nock.cleanAll()
   })
 
-  it('# requires confirmation', function () {
+  it('# requires confirmation if no endpoint on app', function () {
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
 
     var thrown = false
-    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
+    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (_) {
       thrown = true
       mockSni.done()
-      expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(cli.stderr).to.equal(' ▸    example has no SSL certificates\n')
     }).then(function () {
       expect(thrown).to.equal(true)
     })
   })
 
-  it('# requires confirmation', function () {
+  it('# requires confirmation if wrong endpoint on app', function () {
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])

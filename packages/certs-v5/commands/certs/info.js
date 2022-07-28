@@ -10,7 +10,7 @@ async function run(context, heroku) {
 
   let cert = await cli.action(`Fetching SSL certificate ${endpoint.name} info for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
-    headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` }
+    headers: { 'Accept': `application/vnd.heroku+json; version=3` }
   }))
 
   if (context.flags['show-domains']) {
