@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "7.54.0",
+  "version": "7.60.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -50,7 +50,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "oclif.manifest.json",

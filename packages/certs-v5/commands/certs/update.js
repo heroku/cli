@@ -46,8 +46,8 @@ module.exports = {
   help: 'Note: certificates with PEM encoding are also valid',
   examples: `$ heroku certs:update example.com.crt example.com.key
 
-Certificate Intermediary:
-$ heroku certs:update intermediary.crt example.com.crt example.com.key`,
+    If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+    https://help.salesforce.com/s/articleView?id=000333504&type=1`,
   needsApp: true,
   needsAuth: true,
   run: cli.command({ preauth: true }, run)

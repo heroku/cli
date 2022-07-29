@@ -351,7 +351,6 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
-  --reset              DEPRECATED
 ```
 
 ## `heroku pg:credentials:create [DATABASE]`
