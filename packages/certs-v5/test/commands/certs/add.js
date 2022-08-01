@@ -352,7 +352,11 @@ SSL certificate is self signed.
 
       let domainsMock = nock('https://api.heroku.com')
         .get('/apps/example/domains')
-        .reply(200, [])
+          .reply(200, [])
+
+      inquirer.prompt = (prompts) => {
+        expect.fail('inquirer.prompt() should not be called')
+      }
 
       return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: {} }).then(function () {
         mock.done()
