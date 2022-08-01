@@ -16,18 +16,18 @@ describe('heroku certs:remove', function () {
     nock.cleanAll()
   })
 
-  it('# requires confirmation if no endpoint on app', function () {
-    let mockSni = nock('https://api.heroku.com')
+  it('# deletes the endpoint', function () {
+    let mockGet = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [])
+      .reply(200, [endpoint])
+    let mockDelete = nock('https://api.heroku.com')
+        .delete('/apps/example/sni-endpoints/' + endpoint.name)
+      .reply(200, [endpoint])
 
-    var thrown = false
-    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (_) {
-      thrown = true
-      mockSni.done()
-      expect(cli.stderr).to.equal(' ▸    example has no SSL certificates\n')
-    }).then(function () {
-      expect(thrown).to.equal(true)
+    return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
+      mockGet.done()
+      mockDelete.done()
+      expect(cli.stderr).to.equal('Removing SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n')
     })
   })
 
