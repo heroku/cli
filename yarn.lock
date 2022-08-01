@@ -8032,10 +8032,10 @@ printf@0.3.0:
   resolved "https://registry.yarnpkg.com/printf/-/printf-0.3.0.tgz#6918ca5237c047e19cf004b69e6bcfafbef1ce82"
   integrity sha512-DlJSroT2n9nkh47D4T6BHFQvsMR0L41889ECLmdbzk2BlhN0t31/vl5mHvlWiNBCNQrqG9XfpXwqmJQ2utoYwg==
 
-printf@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/printf/-/printf-0.5.1.tgz#e0466788260859ed153006dc6867f09ddf240cf3"
-  integrity sha512-UaE/jO0hNsrvPGQEb4LyNzcrJv9Z00tsreBduOSxMtrebvoUhxiEJ4YCHX8YHf6akwfKsC2Gyv5zv47UXhMiLg==
+printf@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/printf/-/printf-0.6.1.tgz#b9afa3d3b55b7f2e8b1715272479fc756ed88650"
+  integrity sha512-is0ctgGdPJ5951KulgfzvHGwJtZ5ck8l042vRkV6jrkpBzTmb/lueTqguWHy2JfVA+RY6gFVlaZgUS0j7S/dsw==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
