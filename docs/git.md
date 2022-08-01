@@ -22,7 +22,6 @@ ARGUMENTS
 OPTIONS
   -a, --app=app        (required) the Heroku app to use
   -r, --remote=remote  the git remote to create, default "heroku"
-  --ssh-git            use SSH git protocol
 
 EXAMPLES
   $ heroku git:clone -a example
@@ -31,7 +30,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.54.0/packages/git/src/commands/git/clone.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/clone.ts)_
 
 ## `heroku git:remote`
 
@@ -48,7 +47,6 @@ USAGE
 OPTIONS
   -a, --app=app        the Heroku app to use
   -r, --remote=remote  the git remote to create
-  --ssh-git            use SSH git protocol
 
 DESCRIPTION
   extra arguments will be passed to git remote add
@@ -61,4 +59,4 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.54.0/packages/git/src/commands/git/remote.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/remote.ts)_

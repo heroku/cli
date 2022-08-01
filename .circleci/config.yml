@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     HEROKU_AUTHOR: Heroku
   docker:
-    - image: oclif/nsis:12.0.0-16
+    - image: node:14
       environment: &env
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
@@ -94,114 +94,23 @@ jobs:
       size: xlarge
     steps:
       - checkout
-      - run:
-          name: Install latest yarn
-          command: |
-            (New-Object Net.WebClient).DownloadFile("https://yarnpkg.com/latest.msi", "$env:temp\yarn.msi")
-            cmd /c start /wait msiexec.exe /i $env:temp\yarn.msi /quiet /qn /norestart /log install.log
-      - run:
-          name: Verify yarn installation
-          command: |
-            if (!(Test-Path -Path "C:\Program Files (x86)\Yarn\bin\yarn" -PathType Leaf)) {
-              Write-Host "> Installation failed." -ForegroundColor Red
-              Write-Host "" -ForegroundColor Red
-              exit 1
-            }
       - restore_cache:
           keys:
             - node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: yarn install --frozen-lockfile
+          command: yarn install --frozen-lockfile --prefer-offline
       - save_cache:
           paths:
             - ./node_modules
           key: node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Test and Lint
-          command: yarn --cwd packages/addons-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/apps-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/apps test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/auth test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/autocomplete test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/buildpacks test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/certs-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/certs test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ci-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ci test
-      # - run:
-      #     name: Test and Lint
-      #     command: yarn --cwd packages/cli test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/config test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/container-registry-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/git test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/local test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/oauth-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/oauth test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/orgs-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/pg-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/pipelines test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ps test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/redis-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/run-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/run test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/spaces test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/status test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/webhooks test
-  node12-test: &test
+          command: yarn test
+  node14-test: &test
     <<: *defaults
     docker:
-      - image: node:12
+      - image: node:14
     resource_class: xlarge
     steps:
       - checkout
@@ -218,23 +127,26 @@ jobs:
       - run:
           name: Running all tests
           command: yarn test
-  node10-test:
+  node12-test:
     <<: *test
     docker:
-      - image: node:10
+      - image: node:12
     resource_class: xlarge
-  node14-test:
+  node16-test:
     <<: *test
     docker:
-      - image: node:14
+      - image: node:16
     resource_class: xlarge
   pack-windows:
     <<: *defaults
     steps:
       - checkout
       - run: *yarn_setup
-      - run: *yarn_install
       - restore_cache: *yarn_restore_cache
+      - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y nsis p7zip-full
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -255,6 +167,9 @@ jobs:
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
       - run: |
+          apt-get update
+          apt-get install -y p7zip-full
+      - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
           cd packages/cli
@@ -273,6 +188,9 @@ jobs:
       - run: *yarn_setup
       - restore_cache: *yarn_restore_cache
       - run: *yarn_install
+      - run: |
+          apt-get update
+          apt-get install -y apt-utils
       - run: |
           mkdir -p /build
           cp yarn.lock packages/cli
@@ -324,6 +242,9 @@ jobs:
       - run: *yarn_install
       - attach_workspace:
           at: /cli/packages/cli
+      - run: |
+          apt-get update
+          apt-get install -y awscli
       - run:
           name: packages/cli yarn install
           command: |
@@ -339,13 +260,14 @@ jobs:
       - run:
           name: Publish Install Scripts
           command: /cli/scripts/postrelease/install_scripts
-  trigger_macos:
-    <<: *defaults
-    steps:
-      - add_ssh_keys
-      - checkout
-      - run: yarn --frozen-lockfile
-      - run: ./scripts/release/macos_installer_trigger
+  ## Job not currently being used
+  # trigger_macos:
+  #   <<: *defaults
+  #   steps:
+  #     - add_ssh_keys
+  #     - checkout
+  #     - run: yarn --frozen-lockfile
+  #     - run: ./scripts/release/macos_installer_trigger
   release-homebrew:
     <<: *defaults
     steps:
@@ -363,7 +285,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn --frozen-lockfile
+      - run: |
+          apt-get update
+          apt-get install -y awscli
+          aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
   change-management:
     <<: *defaults
@@ -399,7 +324,7 @@ workflows:
             - yarn
       - node14-test: *windows_test
       - node12-test: *windows_test
-      - node10-test: *windows_test
+      - node16-test: *windows_test
       - acceptance-test:
           filters: *always_run_filter
           context:
@@ -407,7 +332,7 @@ workflows:
           matrix:
             parameters:
               node-version:
-                - "10"
+                - "16"
                 - "12"
                 - "14"
           requires:
@@ -422,7 +347,7 @@ workflows:
           requires: &pack-requires
             - node14-test
             - node12-test
-            - node10-test
+            - node16-test
             - windows-test
             - acceptance-test
       - pack-tarballs:
@@ -461,10 +386,8 @@ workflows:
             tags: *version_tags
             branches: &never_run_on_branches
               ignore: /.*/
-          context:
-            - heroku-cli-s3
           requires:
-            - invalidate-cdn-cache
+            - release-deb-and-tarballs
       - change-management: &change_management
           filters: *tags_only
           context:

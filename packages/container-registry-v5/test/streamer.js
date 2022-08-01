@@ -1,6 +1,7 @@
 const { expect } = require('chai')
 const nock = require('nock')
 const stream = require('stream')
+let lolex = require('lolex')
 
 const streamer = require('../lib/streamer')
 
@@ -19,6 +20,17 @@ MockOut.prototype._write = function (d) {
 }
 
 describe('streaming', () => {
+  let clock;
+
+  beforeEach(function () {
+    clock = lolex.install()
+    clock.setTimeout = function (fn, timeout) { fn() }
+  })
+
+  afterEach(function () {
+    clock.uninstall()
+  })
+
   it('streams data', () => {
     const ws = new MockOut()
     const api = nock('https://streamer.test:443')
@@ -49,18 +61,18 @@ describe('streaming', () => {
     return streamer('https://streamer.test/streams/data.log', ws)
       .then(() => expect(ws.data.join('')).to.equal('My retried data'))
       .then(() => api.done())
-  }).timeout(5 * 1000 * 1.2)
+  })
 
   it('errors on too many retries', async () => {
     const ws = new MockOut()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
-      .times(10)
+      .times(30)
       .reply(404, '')
 
     await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
     await api.done()
-  }).timeout(10 * 1000 * 1.2)
+  })
 
   it('does not retry on non-404 errors', async () => {
     const ws = new MockOut()

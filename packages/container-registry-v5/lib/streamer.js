@@ -1,5 +1,5 @@
 const http = require('http-call').HTTP
-const maxRetries = 10
+const maxRetries = 30
 
 async function call (url, out, retries) {
   try {

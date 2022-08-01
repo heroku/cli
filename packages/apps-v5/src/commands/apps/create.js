@@ -71,7 +71,7 @@ function addonsFromPlans (plans) {
 }
 
 async function configureGitRemote (context, app, git) {
-  let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name)
+  let remoteUrl = git.gitUrl(app.name)
   if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
   return remoteUrl
 }
@@ -151,7 +151,7 @@ function run (context, heroku) {
 let cmd = {
   description: 'creates a new app',
   examples: `$ heroku apps:create
-Creating app... done, stack is heroku-20
+Creating app... done, stack is heroku-22
 https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
 # or just
@@ -184,7 +184,6 @@ $ heroku apps:create --region eu`,
     { name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion },
     { name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion },
     { name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion },
-    { name: 'ssh-git', description: 'use SSH git protocol for local git remote' },
     { name: 'internal-routing', hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.' },
     { name: 'features', hidden: true, hasValue: true },
     { name: 'kernel', hidden: true, hasValue: true },

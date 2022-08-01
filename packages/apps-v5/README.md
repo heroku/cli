@@ -14,7 +14,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.54.1 darwin-x64 node-v12.18.4
+@heroku-cli/plugin-apps-v5/7.60.2 darwin-x64 node-v14.18.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -120,7 +120,7 @@ OPTIONS
 
 EXAMPLES
   $ heroku apps:create
-  Creating app... done, stack is heroku-20
+  Creating app... done, stack is heroku-22
   https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
   # or just
@@ -309,8 +309,8 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
-  $ heroku stack:set heroku-20 -a myapp
-  Setting stack to heroku-20... done
+  $ heroku stack:set heroku-22 -a myapp
+  Setting stack to heroku-22... done
   You will need to redeploy myapp for the change to take effect.
   Run git push heroku main to trigger a new build on myapp.
 ```

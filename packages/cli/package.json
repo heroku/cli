@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.59.1",
+  "version": "7.60.2",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -11,38 +11,38 @@
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/plugin-addons-v5": "^7.54.0",
-    "@heroku-cli/plugin-apps": "^7.59.1",
-    "@heroku-cli/plugin-apps-v5": "^7.54.1",
-    "@heroku-cli/plugin-auth": "^7.54.0",
-    "@heroku-cli/plugin-autocomplete": "^7.54.0",
-    "@heroku-cli/plugin-buildpacks": "^7.54.0",
-    "@heroku-cli/plugin-certs": "^7.54.0",
-    "@heroku-cli/plugin-certs-v5": "^7.57.0",
-    "@heroku-cli/plugin-ci": "^7.54.0",
-    "@heroku-cli/plugin-ci-v5": "^7.56.0",
-    "@heroku-cli/plugin-config": "^7.54.0",
-    "@heroku-cli/plugin-container-registry-v5": "^7.54.0",
-    "@heroku-cli/plugin-git": "^7.54.0",
-    "@heroku-cli/plugin-local": "^7.54.0",
+    "@heroku-cli/plugin-apps": "^7.60.0",
+    "@heroku-cli/plugin-apps-v5": "^7.60.2",
+    "@heroku-cli/plugin-auth": "^7.60.0",
+    "@heroku-cli/plugin-autocomplete": "^7.60.0",
+    "@heroku-cli/plugin-buildpacks": "^7.60.0",
+    "@heroku-cli/plugin-certs": "^7.60.0",
+    "@heroku-cli/plugin-certs-v5": "^7.60.0",
+    "@heroku-cli/plugin-ci": "^7.60.0",
+    "@heroku-cli/plugin-ci-v5": "^7.60.0",
+    "@heroku-cli/plugin-config": "^7.60.0",
+    "@heroku-cli/plugin-container-registry-v5": "^7.60.0",
+    "@heroku-cli/plugin-git": "^7.60.0",
+    "@heroku-cli/plugin-local": "^7.60.0",
     "@heroku-cli/plugin-oauth-v5": "^7.54.0",
     "@heroku-cli/plugin-orgs-v5": "^7.54.0",
-    "@heroku-cli/plugin-pg-v5": "^7.59.1",
+    "@heroku-cli/plugin-pg-v5": "^7.60.0",
     "@heroku-cli/plugin-pipelines": "^7.54.0",
-    "@heroku-cli/plugin-ps": "^7.54.0",
+    "@heroku-cli/plugin-ps": "^7.60.0",
     "@heroku-cli/plugin-ps-exec": "2.3.8",
     "@heroku-cli/plugin-redis-v5": "^7.59.1",
-    "@heroku-cli/plugin-run": "^7.56.0",
+    "@heroku-cli/plugin-run": "^7.60.0",
     "@heroku-cli/plugin-spaces": "^7.54.0",
-    "@heroku-cli/plugin-status": "^7.54.0",
-    "@heroku-cli/plugin-webhooks": "^7.54.0",
-    "@oclif/command": "1.5.18",
+    "@heroku-cli/plugin-status": "^7.60.0",
+    "@heroku-cli/plugin-webhooks": "^7.60.0",
+    "@oclif/command": "1.8.0",
     "@oclif/config": "1.13.2",
     "@oclif/errors": "1.2.2",
     "@oclif/plugin-commands": "^1.2.2",
     "@oclif/plugin-help": "2.2.0",
     "@oclif/plugin-legacy": "1.2.0",
     "@oclif/plugin-not-found": "1.2.2",
-    "@oclif/plugin-plugins": "1.7.9",
+    "@oclif/plugin-plugins": "1.10.1",
     "@oclif/plugin-update": "1.5.0",
     "@oclif/plugin-warn-if-update-available": "1.7.0",
     "@oclif/plugin-which": "1.0.3",
@@ -53,7 +53,7 @@
     "http-call": "5.3.0",
     "netrc-parser": "3.1.6",
     "semver": "5.6.0",
-    "tslib": "1.9.3",
+    "tslib": "1.14.1",
     "uuid": "3.3.2"
   },
   "devDependencies": {
@@ -87,7 +87,7 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/oclif.manifest.json",
@@ -240,7 +240,7 @@
     },
     "update": {
       "node": {
-        "version": "12.21.0"
+        "version": "14.19.0"
       },
       "s3": {
         "xz": true,
