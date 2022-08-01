@@ -17,17 +17,15 @@ describe('heroku certs', function () {
     cli.mockConsole()
   })
 
-  describe('(ported)', function () {
-    it('warns about no SSL certificates if the app has no certs', function () {
-      let mockSni = nock('https://api.heroku.com')
+  it('warns about no SSL certificates if the app has no certs', function () {
+    let mockSni = nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [])
 
-      return certs.run({ app: 'example' }).then(function () {
-        mockSni.done()
-        expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku certs:add CRT KEY to add one.\n`)
-      })
+    return certs.run({ app: 'example' }).then(function () {
+      mockSni.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku certs:add CRT KEY to add one.\n`)
     })
   })
 
