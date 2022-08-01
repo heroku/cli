@@ -26,7 +26,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       nock.cleanAll()
     })
 
-    it('allows an SNI --endpoint to be specified using --name', function () {
+    it('allows an --endpoint to be specified using --name', function () {
       let mockSni = nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
@@ -41,7 +41,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       })
     })
 
-    it(txt + '(SNI)', function () {
+    it(txt, function () {
       let mockSni = nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
@@ -68,7 +68,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       })
     })
 
-    it('# allows an SNI endpoint to be specified using --endpoint', function () {
+    it('# allows an endpoint to be specified using --endpoint', function () {
       let mockSni = nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
