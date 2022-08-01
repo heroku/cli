@@ -71,7 +71,7 @@ describe('heroku certs:add', function () {
     })
   })
 
-  it('# errors out with intermediaries', function () {
+  it('# works with a cert and key', function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
