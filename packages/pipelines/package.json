@@ -17,7 +17,7 @@
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "node-fetch": "^2.6.1",
-    "validator": "^10.11.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
