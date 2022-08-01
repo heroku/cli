@@ -11,12 +11,12 @@ let endpointUntrusted = require('../../stubs/sni-endpoints.js').endpoint_untrust
 let endpointTrusted = require('../../stubs/sni-endpoints.js').endpoint_trusted
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 
-describe('heroku certs:info ported', function () {
+describe('heroku certs:info', function () {
   beforeEach(function () {
     cli.mockConsole()
   })
 
-  it('shows certificate details', function () {
+  it('shows certificate details when self-signed', function () {
     let mockSni = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
