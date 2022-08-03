@@ -4,7 +4,6 @@
 list installed plugins
 
 * [`heroku plugins`](#heroku-plugins)
-* [`heroku plugins:inspect PLUGIN...`](#heroku-pluginsinspect-plugin)
 * [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin)
 * [`heroku plugins:link PLUGIN`](#heroku-pluginslink-plugin)
 * [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin)
@@ -27,30 +26,7 @@ EXAMPLE
   $ heroku plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/index.ts)_
-
-## `heroku plugins:inspect PLUGIN...`
-
-displays installation properties of a plugin
-
-```
-displays installation properties of a plugin
-
-USAGE
-  $ heroku plugins:inspect PLUGIN...
-
-ARGUMENTS
-  PLUGIN  [default: .] plugin to inspect
-
-OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose
-
-EXAMPLE
-  $ heroku plugins:inspect myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/inspect.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/index.ts)_
 
 ## `heroku plugins:install PLUGIN...`
 
@@ -94,7 +70,7 @@ EXAMPLES
   $ heroku plugins:install someuser/someplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/install.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/install.ts)_
 
 ## `heroku plugins:link PLUGIN`
 
@@ -127,7 +103,7 @@ EXAMPLE
   $ heroku plugins:link myplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/link.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/link.ts)_
 
 ## `heroku plugins:uninstall PLUGIN...`
 
@@ -151,7 +127,7 @@ ALIASES
   $ heroku plugins:remove
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/uninstall.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/uninstall.ts)_
 
 ## `heroku plugins:update`
 
@@ -168,4 +144,4 @@ OPTIONS
   -v, --verbose
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/update.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/update.ts)_
