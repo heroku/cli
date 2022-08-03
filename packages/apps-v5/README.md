@@ -14,7 +14,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.60.2 darwin-x64 node-v14.18.0
+@heroku-cli/plugin-apps-v5/7.61.0 darwin-x64 node-v16.14.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -116,7 +116,6 @@ OPTIONS
   --json                     output in json format
   --region=region            specify region for the app to run in
   --space=space              the private space to create the app in
-  --ssh-git                  use SSH git protocol for local git remote
 
 EXAMPLES
   $ heroku apps:create
@@ -272,7 +271,6 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
-  --ssh-git            use ssh git protocol instead of https
 
 DESCRIPTION
   This will locally update the git remote if it is set to the old app.
