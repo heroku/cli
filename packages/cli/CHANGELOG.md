@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+
+### Bug Fixes
+
+* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
+
+
+
+
+
 # [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
 
 
