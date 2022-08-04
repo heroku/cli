@@ -46,7 +46,6 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --bypass             bypass the trust chain completion step
-  --type=type          type to create, either 'sni' or 'endpoint'
 
 DESCRIPTION
   Note: certificates with PEM encoding are also valid
