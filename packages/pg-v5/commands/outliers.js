@@ -7,7 +7,7 @@ async function ensurePGStatStatement(db) {
   let query = `
 SELECT exists(
   SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
-  WHERE e.extname='pg_stat_statements' AND n.nspname = 'public'
+  WHERE e.extname='pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
 ) AS available`
   let output = await psql.exec(db, query)
 
