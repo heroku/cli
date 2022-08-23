@@ -17,8 +17,12 @@
 
   echoerr() { echo "\$@" 1>&2; }
 
-  if [[ ! ":\$PATH:" == *":/usr/local/bin:"* ]]; then
-    echoerr "Your path is missing /usr/local/bin, you need to add this to use this installer."
+  if [ -z "$HEROKU_NO_PATH_CHECK" ] && [[ ! ":\$PATH:" == *":/usr/local/bin:"* ]]; then
+    echoerr
+    echoerr "Your PATH appears to be missing /usr/local/bin, so the CLI may not run."
+    echoerr "To install it regardless, set HEROKU_NO_PATH_CHECK and re-run the installer:"
+    echoerr
+    echoerr "    export HEROKU_NO_PATH_CHECK=1"
     exit 1
   fi
 
