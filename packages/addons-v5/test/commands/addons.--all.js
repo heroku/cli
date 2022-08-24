@@ -30,7 +30,7 @@ describe('addons --all', function () {
           `Owning App    Add-on     Plan                         Price      State
 ────────────  ─────────  ───────────────────────────  ─────────  ────────
 acme-inc-api  api-redis  heroku-redis:premium-2       $60/month  created
-acme-inc-www  www-db     heroku-postgresql:hobby-dev  free       created
+acme-inc-www  www-db     heroku-postgresql:no-free    $0/month   created
 acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  creating`)
       })
     })

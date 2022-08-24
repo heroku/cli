@@ -35,7 +35,6 @@ module.exports = {
 
     if (!price) return
     if (price.contract) return 'contract'
-    if (price.cents === 0) return 'free'
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
     return printf(fmt, price.cents / 100, price.unit)

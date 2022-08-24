@@ -48,13 +48,13 @@ fixtures.services = {
 }
 
 fixtures.plans = {
-  'heroku-postgresql:hobby-dev': {
+  'heroku-postgresql:no-free': {
     'created_at': '2013-10-24T17:21:05Z',
     'default': true,
     'description': 'Heroku Postgres Hobby Dev',
     'human_name': 'Hobby Dev',
     'id': '062a1cc7-f79f-404c-9f91-135f70175577',
-    'name': 'heroku-postgresql:hobby-dev',
+    'name': 'heroku-postgresql:no-free',
     'price': {
       'cents': 0,
       'unit': 'month'
@@ -98,7 +98,7 @@ fixtures.addons = {
     id: '8895ea98-4c7b-11e5-9a16-2cf0ee2c94de',
     name: 'www-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    plan: fixtures.plans['heroku-postgresql:no-free'],
     state: 'provisioned',
     billed_price: {
       cents: 0
@@ -131,7 +131,7 @@ fixtures.addons = {
     id: '87f63372-60f8-11e5-bd19-2cf0ee2c94de',
     name: 'dwh-test-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    plan: fixtures.plans['heroku-postgresql:no-free'],
     state: 'provisioned',
     billed_price: {
       cents: 0
