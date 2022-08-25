@@ -54,7 +54,7 @@ async function run(context, heroku) {
   let restore
   await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, async function () {
     restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
-      body: { backup_url: backupURL },
+      body: { backup_url: backupURL, extensions: flags.extensions },
       host: host(db)
     })
   }())
@@ -80,6 +80,7 @@ module.exports = {
   ],
   flags: [
     { name: 'wait-interval', hasValue: true },
+    { name: 'extensions', char: 'e', hasValue: true, description: 'comma-separated list of extensions to pre-install in the public schema' },
     { name: 'verbose', char: 'v' },
     { name: 'confirm', char: 'c', hasValue: true }
   ],

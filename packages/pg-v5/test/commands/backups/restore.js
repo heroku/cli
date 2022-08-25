@@ -140,6 +140,34 @@ Stop a running restore with heroku pg:backups:cancel.
         .then(() => expect(cli.stderr).to.equal(`Starting restore of https://www.dropbox.com to postgres-1... done\n${restoringText()}`))
     })
   })
+
+  context('with extensions', () => {
+    beforeEach(() => {
+      pg.get('/client/v11/apps/myapp/transfers').reply(200, [
+        { num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl' }
+      ])
+      pg.post('/client/v11/databases/1/restores', { backup_url: 'https://myurl', extensions: 'uuid-ossp,postgis' }).reply(200, {
+        num: 5,
+        from_name: 'DATABASE',
+        uuid: '100-001'
+      })
+      pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {
+        finished_at: '101',
+        succeeded: true
+      })
+    })
+
+    it('restores a db with pre-installed extensions', () => {
+      return cmdRun({ app: 'myapp', args: {}, flags: { confirm: 'myapp', extensions: 'uuid-ossp,postgis' } })
+        .then(() => expect(cli.stdout).to.equal(`
+Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
+Use heroku pg:backups to check progress.
+Stop a running restore with heroku pg:backups:cancel.
+
+`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
+    })
+  })
 }
 
 describe('pg:backups:restore', () => {
