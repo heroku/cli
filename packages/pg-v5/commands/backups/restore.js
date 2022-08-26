@@ -25,6 +25,11 @@ async function run(context, heroku) {
 
   let backupURL
   let backupName = args.backup
+  let extensions = context.flags.extensions
+  if (extensions) {
+    extensions = extensions.split(',').map(ext => ext.trim().toLowerCase()).sort()
+  }
+
 
   if (backupName && backupName.match(/^https?:\/\//)) {
     backupURL = dropboxURL(backupName)
@@ -54,7 +59,7 @@ async function run(context, heroku) {
   let restore
   await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, async function () {
     restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
-      body: { backup_url: backupURL, extensions: flags.extensions },
+      body: { backup_url: backupURL, extensions: extensions },
       host: host(db)
     })
   }())
