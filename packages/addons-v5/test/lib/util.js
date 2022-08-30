@@ -5,10 +5,6 @@ let util = require('../../lib/util')
 let expect = require('chai').expect
 
 describe('util.formatPrice', function () {
-  it('formats as "free" when cents is 0', function () {
-    expect(util.formatPrice({ cents: 0, unit: 'does not matter' })).to.eq('free')
-  })
-
   it('formats cents per unit', function () {
     expect(util.formatPrice({ cents: 100, unit: 'UNIT' })).to.eq('$1/UNIT')
   })

@@ -72,9 +72,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
       ])
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                             Plan       Price      State
-─────────────────────────────────  ─────────  ─────────  ───────
-heroku-postgresql (www-db)         no-free    $0/month   ted
+Add-on                             Plan     Price     State
+─────────────────────────────────  ───────  ────────  ───────
+heroku-postgresql (www-db)         no-free  $0/month  created
  ├─ as DATABASE
  └─ as WWW_DB on acme-inc-dwh app
 
@@ -91,9 +91,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
 
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout, `
-Add-on                               Plan       Price                         State
-───────────────────────────────────  ─────────  ────────────────────────────  ───────
-heroku-postgresql (www-db)           no-free    (billed to acme-inc-www app)  created
+Add-on                               Plan     Price                         State
+───────────────────────────────────  ───────  ────────────────────────────  ───────
+heroku-postgresql (www-db)           no-free  (billed to acme-inc-www app)  created
  ├─ as WWW_DB
  └─ as DATABASE on acme-inc-www app
 
