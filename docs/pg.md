@@ -183,6 +183,7 @@ USAGE
 OPTIONS
   -a, --app=app                  (required) app to run command against
   -c, --confirm=confirm
+  -e, --extensions=extensions    comma-separated list of extensions to pre-install in the public schema
   -r, --remote=remote            git remote of app to use
   -v, --verbose
   --wait-interval=wait-interval
@@ -865,9 +866,10 @@ USAGE
   $ heroku pg:reset [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) app to run command against
+  -a, --app=app                (required) app to run command against
   -c, --confirm=confirm
-  -r, --remote=remote    git remote of app to use
+  -e, --extensions=extensions  comma-separated list of extensions to pre-install in the public schema
+  -r, --remote=remote          git remote of app to use
 ```
 
 ## `heroku pg:settings [DATABASE]`

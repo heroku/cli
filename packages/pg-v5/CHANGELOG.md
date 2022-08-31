@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.63.0](https://github.com/heroku/cli/compare/v7.62.0...v7.63.0) (2022-08-31)
+
+
+### Features
+
+* **pg-v5:** accept a list of extensions to pre-install for pg:backups:restore and pg:reset ([#2043](https://github.com/heroku/cli/issues/2043)) ([0608f5e](https://github.com/heroku/cli/commit/0608f5e17a08d98bf957440924bb73763f4baae5))
+
+
+
+
+
 # [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
 
 
