@@ -30,51 +30,6 @@ function printExtended (dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
-  if (app.process_tier !== 'free') {
-    return
-  }
-
-  if (app.owner.id !== account.id) {
-    return
-  }
-
-  let quota = await heroku.request({
-    path: `/accounts/${account.id}/actions/get-quota`,
-    headers: { Accept: 'application/vnd.heroku+json; version=3.account-quotas' }
-  })
-    .then(function (data) {
-    // very temporary fix, the person who can fix this is on vacation
-      if (data.id === 'not_found') {
-        return null
-      }
-      return data
-    })
-    .catch(function () {
-      return null
-    })
-
-  if (!quota) return
-
-  let remaining = (quota.account_quota === 0) ? 0 : quota.account_quota - quota.quota_used
-  let percentage = (quota.account_quota === 0) ? 0 : Math.floor(remaining / quota.account_quota * 100)
-  let remainingMinutes = remaining / 60
-  let hours = Math.floor(remainingMinutes / 60)
-  let minutes = Math.floor(remainingMinutes % 60)
-
-  let appQuota = quota.apps.find((appQuota) => { return appQuota.app_uuid === app.id })
-  let appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
-  let appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
-  let appHours = Math.floor(appQuotaUsed / 60)
-  let appMinutes = Math.floor(appQuotaUsed % 60)
-
-  cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-  cli.log(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-  cli.log('For more information on dyno sleeping and how to upgrade, see:')
-  cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
-  cli.log()
-}
-
 function printDynos (dynos) {
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
@@ -153,7 +108,6 @@ async function run(context, heroku) {
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
-    await printAccountQuota(context, heroku, appInfo, accountInfo)
     if (dynos.length === 0) cli.log(`No dynos on ${cli.color.app(app)}`)
     else printDynos(dynos)
   }
