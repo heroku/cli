@@ -18,7 +18,7 @@ describe('addons:plans', function () {
     return cmd.run({ args: { service: 'daservice' }, flags: {} })
       .then(() => expect(cli.stdout).to.equal(`         slug    name    price
 ───────  ──────  ──────  ──────────
-default  first   First   $0/month
+default  first   First   free
          second  Second  $20/month
          third   Third   $100/month
          fourth  Fourth  contract

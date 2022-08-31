@@ -40,7 +40,7 @@ Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:no-free
-Price:        $0/month
+Price:        free
 State:        created
 `)
       })
@@ -72,7 +72,7 @@ Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:no-free
-Price:        $0/month
+Price:        free
 State:        created
 `)
       })
@@ -110,7 +110,7 @@ Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:no-free
-Price:        $0/month
+Price:        free
 State:        created
 `)
       })
