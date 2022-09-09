@@ -10,8 +10,6 @@ display autocomplete installation instructions
 display autocomplete installation instructions
 
 ```
-display autocomplete installation instructions
-
 USAGE
   $ heroku autocomplete [SHELL]
 

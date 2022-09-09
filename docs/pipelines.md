@@ -23,8 +23,6 @@ manage pipelines
 list pipelines you have access to
 
 ```
-list pipelines you have access to
-
 USAGE
   $ heroku pipelines
 
@@ -42,10 +40,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 add this app to a pipeline
 
 ```
-add this app to a pipeline
-The app and pipeline names must be specified.
-The stage of the app will be guessed based on its name if not specified.
-
 USAGE
   $ heroku pipelines:add PIPELINE
 
@@ -72,8 +66,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 connect a github repo to an existing pipeline
 
 ```
-connect a github repo to an existing pipeline
-
 USAGE
   $ heroku pipelines:connect NAME
 
@@ -94,12 +86,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 create a new pipeline
 
 ```
-create a new pipeline
-  An existing app must be specified as the first app in the pipeline.
-  The pipeline name will be inferred from the app name if not specified.
-  The stage of the app will be guessed based on its name if not specified.
-  The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
-
 USAGE
   $ heroku pipelines:create [NAME]
 
@@ -114,9 +100,9 @@ OPTIONS
 
 DESCRIPTION
   An existing app must be specified as the first app in the pipeline.
-     The pipeline name will be inferred from the app name if not specified.
-     The stage of the app will be guessed based on its name if not specified.
-     The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
+    The pipeline name will be inferred from the app name if not specified.
+    The stage of the app will be guessed based on its name if not specified.
+    The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
 
 EXAMPLES
   $ heroku pipelines:create -a my-app-staging
@@ -130,8 +116,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 destroy a pipeline
 
 ```
-destroy a pipeline
-
 USAGE
   $ heroku pipelines:destroy PIPELINE
 
@@ -149,8 +133,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 compares the latest release of this app to its downstream app(s)
 
 ```
-compares the latest release of this app to its downstream app(s)
-
 USAGE
   $ heroku pipelines:diff
 
@@ -169,8 +151,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 show list of apps in a pipeline
 
 ```
-show list of apps in a pipeline
-
 USAGE
   $ heroku pipelines:info PIPELINE
 
@@ -191,8 +171,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 open a pipeline in dashboard
 
 ```
-open a pipeline in dashboard
-
 USAGE
   $ heroku pipelines:open PIPELINE
 
@@ -210,8 +188,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 promote the latest release of this app to its downstream app(s)
 
 ```
-promote the latest release of this app to its downstream app(s)
-
 USAGE
   $ heroku pipelines:promote
 
@@ -231,8 +207,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 remove this app from its pipeline
 
 ```
-remove this app from its pipeline
-
 USAGE
   $ heroku pipelines:remove
 
@@ -251,8 +225,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 rename a pipeline
 
 ```
-rename a pipeline
-
 USAGE
   $ heroku pipelines:rename PIPELINE NAME
 
@@ -271,8 +243,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)
 
 ```
-bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)
-
 USAGE
   $ heroku pipelines:setup [NAME] [REPO]
 
@@ -295,8 +265,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 transfer ownership of a pipeline
 
 ```
-transfer ownership of a pipeline
-
 USAGE
   $ heroku pipelines:transfer OWNER
 
@@ -319,8 +287,6 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 update the app's stage in a pipeline
 
 ```
-update the app's stage in a pipeline
-
 USAGE
   $ heroku pipelines:update
 

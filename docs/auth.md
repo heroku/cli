@@ -15,8 +15,6 @@ check 2fa status
 check 2fa status
 
 ```
-check 2fa status
-
 USAGE
   $ heroku auth:2fa
 
@@ -32,8 +30,6 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 disables 2fa on account
 
 ```
-disables 2fa on account
-
 USAGE
   $ heroku auth:2fa:disable
 
@@ -52,8 +48,6 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 login with your Heroku credentials
 
 ```
-login with your Heroku credentials
-
 USAGE
   $ heroku auth:login
 
@@ -73,8 +67,6 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 clears local login credentials and invalidates API session
 
 ```
-clears local login credentials and invalidates API session
-
 USAGE
   $ heroku auth:logout
 
@@ -89,9 +81,6 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 outputs current CLI authentication token.
 
 ```
-outputs current CLI authentication token.
-By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create
-
 USAGE
   $ heroku auth:token
 
@@ -110,8 +99,6 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 display the current logged in user
 
 ```
-display the current logged in user
-
 USAGE
   $ heroku auth:whoami
 

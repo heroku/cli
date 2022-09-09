@@ -11,9 +11,6 @@ run a one-off process inside a Heroku dyno
 run a one-off process inside a heroku dyno
 
 ```
-run a one-off process inside a heroku dyno
-Shows a notification if the dyno takes more than 20 seconds to start.
-
 USAGE
   $ heroku run
 
@@ -42,8 +39,6 @@ _See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.60.0/s
 run a detached dyno, where output is sent to your logs
 
 ```
-run a detached dyno, where output is sent to your logs
-
 USAGE
   $ heroku run:detached
 
