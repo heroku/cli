@@ -21,8 +21,6 @@ run an application test suite on Heroku
 display the most recent CI runs for the given pipeline
 
 ```
-display the most recent CI runs for the given pipeline
-
 USAGE
   $ heroku ci
 
@@ -43,11 +41,6 @@ _See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.62.0/pa
 display CI config vars
 
 ```
-display CI config vars
-Example:
-
-    $ heroku ci:config --app murmuring-headland-14719 --json
-
 USAGE
   $ heroku ci:config
 
@@ -61,7 +54,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku ci:config --app murmuring-headland-14719 --json
+      $ heroku ci:config --app murmuring-headland-14719 --json
 ```
 
 ## `heroku ci:config:get KEY`
@@ -69,13 +62,6 @@ DESCRIPTION
 get a CI config var
 
 ```
-get a CI config var
-Examples:
-
-    $ heroku ci:config:get RAILS_ENV
-    test
-
-
 USAGE
   $ heroku ci:config:get KEY
 
@@ -88,8 +74,8 @@ OPTIONS
 DESCRIPTION
   Examples:
 
-       $ heroku ci:config:get RAILS_ENV
-       test
+      $ heroku ci:config:get RAILS_ENV
+      test
 ```
 
 ## `heroku ci:config:set`
@@ -97,15 +83,6 @@ DESCRIPTION
 set CI config vars
 
 ```
-set CI config vars
-Examples:
-
-    $ heroku ci:config:set RAILS_ENV=test
-    Setting test config vars... done
-
-    RAILS_ENV: test
-
-
 USAGE
   $ heroku ci:config:set
 
@@ -117,10 +94,10 @@ OPTIONS
 DESCRIPTION
   Examples:
 
-       $ heroku ci:config:set RAILS_ENV=test
-       Setting test config vars... done
+      $ heroku ci:config:set RAILS_ENV=test
+      Setting test config vars... done
 
-       RAILS_ENV: test
+      RAILS_ENV: test
 ```
 
 ## `heroku ci:config:unset`
@@ -128,13 +105,6 @@ DESCRIPTION
 unset CI config vars
 
 ```
-unset CI config vars
-Examples:
-
-    $ heroku ci:config:uset RAILS_ENV
-    Unsetting RAILS_ENV... done
-
-
 USAGE
   $ heroku ci:config:unset
 
@@ -146,8 +116,8 @@ OPTIONS
 DESCRIPTION
   Examples:
 
-       $ heroku ci:config:uset RAILS_ENV
-       Unsetting RAILS_ENV... done
+      $ heroku ci:config:uset RAILS_ENV
+      Unsetting RAILS_ENV... done
 ```
 
 ## `heroku ci:debug`
@@ -155,17 +125,6 @@ DESCRIPTION
 opens an interactive test debugging session with the contents of the current directory
 
 ```
-opens an interactive test debugging session with the contents of the current directory
-Example:
-
-    $ heroku ci:debug
-    Preparing source... done
-    Creating test run... done
-    Running setup and attaching to test dyno...
-
-~ $
-
-
 USAGE
   $ heroku ci:debug
 
@@ -179,10 +138,10 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku ci:debug
-       Preparing source... done
-       Creating test run... done
-       Running setup and attaching to test dyno...
+      $ heroku ci:debug
+      Preparing source... done
+      Creating test run... done
+      Running setup and attaching to test dyno...
 
   ~ $
 ```
@@ -192,8 +151,6 @@ DESCRIPTION
 show the status of a specific test run
 
 ```
-show the status of a specific test run
-
 USAGE
   $ heroku ci:info TEST-RUN
 
@@ -213,8 +170,6 @@ _See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.62.0/pa
 looks for the most recent run and returns the output of that run
 
 ```
-looks for the most recent run and returns the output of that run
-
 USAGE
   $ heroku ci:last
 
@@ -234,26 +189,17 @@ _See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.62.0/pa
 app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.
 
 ```
-app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.
-Example:
-
-    $ heroku ci:migrate-manifest
-    Writing app.json file... done
-    Deleting app-ci.json file... done
-    Please check the contents of your app.json before committing to your repo
-    You're all set! 🎉.
-
 USAGE
   $ heroku ci:migrate-manifest
 
 DESCRIPTION
   Example:
 
-       $ heroku ci:migrate-manifest
-       Writing app.json file... done
-       Deleting app-ci.json file... done
-       Please check the contents of your app.json before committing to your repo
-       You're all set! 🎉.
+      $ heroku ci:migrate-manifest
+      Writing app.json file... done
+      Deleting app-ci.json file... done
+      Please check the contents of your app.json before committing to your repo
+      You're all set! 🎉.
 ```
 
 ## `heroku ci:open`
@@ -261,13 +207,6 @@ DESCRIPTION
 open the Dashboard version of Heroku CI
 
 ```
-open the Dashboard version of Heroku CI
-opens a browser to view the Dashboard version of Heroku CI
-
-    Example:
-
-    $ heroku ci:open --app murmuring-headland-14719
-
 USAGE
   $ heroku ci:open
 
@@ -279,9 +218,9 @@ OPTIONS
 DESCRIPTION
   opens a browser to view the Dashboard version of Heroku CI
 
-       Example:
+      Example:
 
-       $ heroku ci:open --app murmuring-headland-14719
+      $ heroku ci:open --app murmuring-headland-14719
 ```
 
 ## `heroku ci:rerun [NUMBER]`
@@ -289,8 +228,6 @@ DESCRIPTION
 rerun tests against current directory
 
 ```
-rerun tests against current directory
-
 USAGE
   $ heroku ci:rerun [NUMBER]
 
@@ -309,8 +246,6 @@ _See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.62.0/pa
 run tests against current directory
 
 ```
-run tests against current directory
-
 USAGE
   $ heroku ci:run
 

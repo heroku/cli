@@ -16,8 +16,6 @@ custom domains for apps
 list domains for an app
 
 ```
-list domains for an app
-
 USAGE
   $ heroku domains
 
@@ -52,8 +50,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 add a domain to an app
 
 ```
-add a domain to an app
-
 USAGE
   $ heroku domains:add HOSTNAME
 
@@ -76,8 +72,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 remove all domains from an app
 
 ```
-remove all domains from an app
-
 USAGE
   $ heroku domains:clear
 
@@ -97,8 +91,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 show detailed information for a domain on an app
 
 ```
-show detailed information for a domain on an app
-
 USAGE
   $ heroku domains:info HOSTNAME
 
@@ -118,8 +110,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 remove a domain from an app
 
 ```
-remove a domain from an app
-
 USAGE
   $ heroku domains:remove HOSTNAME
 
@@ -139,8 +129,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 update a domain to use a different SSL certificate on an app
 
 ```
-update a domain to use a different SSL certificate on an app
-
 USAGE
   $ heroku domains:update [HOSTNAME]
 
@@ -161,8 +149,6 @@ _See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin
 wait for domain to be active for an app
 
 ```
-wait for domain to be active for an app
-
 USAGE
   $ heroku domains:wait [HOSTNAME]
 

@@ -17,8 +17,6 @@ scripts used to compile apps
 display the buildpacks for an app
 
 ```
-display the buildpacks for an app
-
 USAGE
   $ heroku buildpacks
 
@@ -34,8 +32,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 add new app buildpack, inserting into list of buildpacks if necessary
 
 ```
-add new app buildpack, inserting into list of buildpacks if necessary
-
 USAGE
   $ heroku buildpacks:add BUILDPACK
 
@@ -55,8 +51,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 clear all buildpacks set on the app
 
 ```
-clear all buildpacks set on the app
-
 USAGE
   $ heroku buildpacks:clear
 
@@ -72,8 +66,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 fetch info about a buildpack
 
 ```
-fetch info about a buildpack
-
 USAGE
   $ heroku buildpacks:info BUILDPACK
 
@@ -88,8 +80,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 remove a buildpack set on the app
 
 ```
-remove a buildpack set on the app
-
 USAGE
   $ heroku buildpacks:remove [BUILDPACK]
 
@@ -109,8 +99,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 search for buildpacks
 
 ```
-search for buildpacks
-
 USAGE
   $ heroku buildpacks:search [TERM]
 
@@ -128,8 +116,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 ## `heroku buildpacks:set BUILDPACK`
 
 ```
-undefined
-
 USAGE
   $ heroku buildpacks:set BUILDPACK
 
@@ -149,8 +135,6 @@ _See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7
 list versions of a buildpack
 
 ```
-list versions of a buildpack
-
 USAGE
   $ heroku buildpacks:versions BUILDPACK
 

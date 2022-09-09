@@ -14,8 +14,6 @@ environment variables of apps
 display the config vars for an app
 
 ```
-display the config vars for an app
-
 USAGE
   $ heroku config
 
@@ -33,10 +31,6 @@ _See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.
 interactively edit config vars
 
 ```
-interactively edit config vars
-This command opens the app config in a text editor set by $VISUAL or $EDITOR.
-Any variables added/removed/changed will be updated on the app after saving and closing the file.
-
 USAGE
   $ heroku config:edit [KEY]
 
@@ -69,8 +63,6 @@ _See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.
 display a single config value for an app
 
 ```
-display a single config value for an app
-
 USAGE
   $ heroku config:get KEY...
 
@@ -91,9 +83,6 @@ _See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.60.
 set one or more config vars
 
 ```
-set one or more config vars
-
-
 USAGE
   $ heroku config:set
 
@@ -117,8 +106,6 @@ EXAMPLES
 unset one or more config vars
 
 ```
-unset one or more config vars
-
 USAGE
   $ heroku config:unset
 

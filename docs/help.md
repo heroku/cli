@@ -10,8 +10,6 @@ display help for heroku
 display help for heroku
 
 ```
-display help for <%= config.bin %>
-
 USAGE
   $ heroku help [COMMAND]
 

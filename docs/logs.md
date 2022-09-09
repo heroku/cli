@@ -10,9 +10,6 @@ display recent log output
 display recent log output
 
 ```
-display recent log output
-disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
-
 USAGE
   $ heroku logs
 

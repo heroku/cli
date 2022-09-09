@@ -11,9 +11,6 @@ OAuth sessions
 list your OAuth sessions
 
 ```
-list your OAuth sessions
-
-
 USAGE
   $ heroku sessions
 
@@ -28,9 +25,6 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 delete (logout) OAuth session by ID
 
 ```
-delete (logout) OAuth session by ID
-
-
 USAGE
   $ heroku sessions:destroy ID
 ```

@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.63.0",
+  "version": "7.63.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -17,7 +17,7 @@
     "@heroku-cli/plugin-autocomplete": "^7.60.0",
     "@heroku-cli/plugin-buildpacks": "^7.62.0",
     "@heroku-cli/plugin-certs": "^7.60.0",
-    "@heroku-cli/plugin-certs-v5": "^7.62.0",
+    "@heroku-cli/plugin-certs-v5": "^7.63.1",
     "@heroku-cli/plugin-ci": "^7.62.0",
     "@heroku-cli/plugin-ci-v5": "^7.62.0",
     "@heroku-cli/plugin-config": "^7.60.0",
@@ -26,7 +26,7 @@
     "@heroku-cli/plugin-local": "^7.60.0",
     "@heroku-cli/plugin-oauth-v5": "^7.54.0",
     "@heroku-cli/plugin-orgs-v5": "^7.54.0",
-    "@heroku-cli/plugin-pg-v5": "^7.63.0",
+    "@heroku-cli/plugin-pg-v5": "^7.63.1",
     "@heroku-cli/plugin-pipelines": "^7.62.0",
     "@heroku-cli/plugin-ps": "^7.60.0",
     "@heroku-cli/plugin-ps-exec": "2.3.8",
@@ -57,8 +57,8 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@rasphilco/dev-cli": "^0.1.0",
     "@oclif/test": "^1.2.4",
+    "@rasphilco/dev-cli": "^0.1.0",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/debug": "^4.1.2",
