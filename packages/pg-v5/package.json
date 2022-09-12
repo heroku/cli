@@ -60,5 +60,6 @@
     "release": "np",
     "test": "cross-env TZ=utc nyc mocha",
     "version": "oclif-dev readme && git add README.md"
-  }
+  },
+  "gitHead": "b9c5a6a93e462832cf9b4ad92f3fdf6f5f3290a8"
 }
