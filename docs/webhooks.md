@@ -18,6 +18,8 @@ list webhooks on an app
 list webhooks on an app
 
 ```
+list webhooks on an app
+
 USAGE
   $ heroku webhooks
 
@@ -36,6 +38,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 add a webhook to an app
 
 ```
+add a webhook to an app
+
 USAGE
   $ heroku webhooks:add
 
@@ -59,6 +63,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 list webhook deliveries on an app
 
 ```
+list webhook deliveries on an app
+
 USAGE
   $ heroku webhooks:deliveries
 
@@ -78,6 +84,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 info for a webhook event on an app
 
 ```
+info for a webhook event on an app
+
 USAGE
   $ heroku webhooks:deliveries:info ID
 
@@ -96,6 +104,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 list webhook events on an app
 
 ```
+list webhook events on an app
+
 USAGE
   $ heroku webhooks:events
 
@@ -114,6 +124,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 info for a webhook event on an app
 
 ```
+info for a webhook event on an app
+
 USAGE
   $ heroku webhooks:events:info ID
 
@@ -132,6 +144,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 info for a webhook on an app
 
 ```
+info for a webhook on an app
+
 USAGE
   $ heroku webhooks:info ID
 
@@ -150,6 +164,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 removes a webhook from an app
 
 ```
+removes a webhook from an app
+
 USAGE
   $ heroku webhooks:remove ID
 
@@ -171,6 +187,8 @@ _See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.6
 updates a webhook in an app
 
 ```
+updates a webhook in an app
+
 USAGE
   $ heroku webhooks:update ID
 

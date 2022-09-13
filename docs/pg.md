@@ -58,6 +58,9 @@ manage postgresql databases
 show database information
 
 ```
+show database information
+
+
 USAGE
   $ heroku pg [DATABASE]
 
@@ -71,6 +74,9 @@ OPTIONS
 list database backups
 
 ```
+list database backups
+
+
 USAGE
   $ heroku pg:backups
 
@@ -84,6 +90,9 @@ OPTIONS
 cancel an in-progress backup or restore (default newest)
 
 ```
+cancel an in-progress backup or restore (default newest)
+
+
 USAGE
   $ heroku pg:backups:cancel [BACKUP_ID]
 
@@ -97,6 +106,9 @@ OPTIONS
 capture a new backup
 
 ```
+capture a new backup
+
+
 USAGE
   $ heroku pg:backups:capture [DATABASE]
 
@@ -112,6 +124,9 @@ OPTIONS
 delete a backup
 
 ```
+delete a backup
+
+
 USAGE
   $ heroku pg:backups:delete BACKUP_ID
 
@@ -126,6 +141,9 @@ OPTIONS
 downloads database backup
 
 ```
+downloads database backup
+
+
 USAGE
   $ heroku pg:backups:download [BACKUP_ID]
 
@@ -140,6 +158,9 @@ OPTIONS
 get information about a specific backup
 
 ```
+get information about a specific backup
+
+
 USAGE
   $ heroku pg:backups:info [BACKUP_ID]
 
@@ -153,6 +174,9 @@ OPTIONS
 restore a backup (default latest) to a database
 
 ```
+restore a backup (default latest) to a database
+defaults to saving the latest database to DATABASE_URL
+
 USAGE
   $ heroku pg:backups:restore [BACKUP] [DATABASE]
 
@@ -173,6 +197,9 @@ DESCRIPTION
 schedule daily backups for given database
 
 ```
+schedule daily backups for given database
+
+
 USAGE
   $ heroku pg:backups:schedule [DATABASE]
 
@@ -189,6 +216,9 @@ OPTIONS
 list backup schedule
 
 ```
+list backup schedule
+
+
 USAGE
   $ heroku pg:backups:schedules
 
@@ -202,6 +232,9 @@ OPTIONS
 stop daily backups
 
 ```
+stop daily backups
+
+
 USAGE
   $ heroku pg:backups:unschedule [DATABASE]
 
@@ -215,6 +248,9 @@ OPTIONS
 get secret but publicly accessible URL of a backup
 
 ```
+get secret but publicly accessible URL of a backup
+
+
 USAGE
   $ heroku pg:backups:url [BACKUP_ID]
 
@@ -228,6 +264,9 @@ OPTIONS
 show table and index bloat in your database ordered by most wasteful
 
 ```
+show table and index bloat in your database ordered by most wasteful
+
+
 USAGE
   $ heroku pg:bloat [DATABASE]
 
@@ -241,6 +280,9 @@ OPTIONS
 display queries holding locks other queries are waiting to be released
 
 ```
+display queries holding locks other queries are waiting to be released
+
+
 USAGE
   $ heroku pg:blocking [DATABASE]
 
@@ -254,6 +296,12 @@ OPTIONS
 add an attachment to a database using connection pooling
 
 ```
+add an attachment to a database using connection pooling
+Example:
+
+  heroku pg:connection-pooling:attach postgresql-something-12345
+
+
 USAGE
   $ heroku pg:connection-pooling:attach [DATABASE]
 
@@ -265,7 +313,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-    heroku pg:connection-pooling:attach postgresql-something-12345
+     heroku pg:connection-pooling:attach postgresql-something-12345
 ```
 
 ## `heroku pg:copy SOURCE TARGET`
@@ -273,6 +321,9 @@ DESCRIPTION
 copy all data from source db to target
 
 ```
+copy all data from source db to target
+at least one of the databases must be a Heroku PostgreSQL DB
+
 USAGE
   $ heroku pg:copy SOURCE TARGET
 
@@ -292,6 +343,9 @@ DESCRIPTION
 show information on credentials in the database
 
 ```
+show information on credentials in the database
+
+
 USAGE
   $ heroku pg:credentials [DATABASE]
 
@@ -305,6 +359,12 @@ OPTIONS
 create credential within database
 
 ```
+create credential within database
+Example:
+
+    heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
+
+
 USAGE
   $ heroku pg:credentials:create [DATABASE]
 
@@ -316,7 +376,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
+       heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
 ```
 
 ## `heroku pg:credentials:destroy [DATABASE]`
@@ -324,6 +384,12 @@ DESCRIPTION
 destroy credential within database
 
 ```
+destroy credential within database
+Example:
+
+    heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
+
+
 USAGE
   $ heroku pg:credentials:destroy [DATABASE]
 
@@ -336,7 +402,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
+       heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
 ```
 
 ## `heroku pg:credentials:repair-default [DATABASE]`
@@ -344,6 +410,12 @@ DESCRIPTION
 repair the permissions of the default credential within database
 
 ```
+repair the permissions of the default credential within database
+Example:
+
+    heroku pg:credentials:repair-default postgresql-something-12345
+
+
 USAGE
   $ heroku pg:credentials:repair-default [DATABASE]
 
@@ -355,7 +427,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      heroku pg:credentials:repair-default postgresql-something-12345
+       heroku pg:credentials:repair-default postgresql-something-12345
 ```
 
 ## `heroku pg:credentials:rotate [DATABASE]`
@@ -363,6 +435,9 @@ DESCRIPTION
 rotate the database credentials
 
 ```
+rotate the database credentials
+
+
 USAGE
   $ heroku pg:credentials:rotate [DATABASE]
 
@@ -380,6 +455,9 @@ OPTIONS
 show information on a database credential
 
 ```
+show information on a database credential
+
+
 USAGE
   $ heroku pg:credentials:url [DATABASE]
 
@@ -394,6 +472,12 @@ OPTIONS
 run or view diagnostics report
 
 ```
+run or view diagnostics report
+
+defaults to DATABASE_URL database if no DATABASE is specified
+if REPORT_ID is specified instead, a previous report is displayed
+
+
 USAGE
   $ heroku pg:diagnose [DATABASE|REPORT_ID]
 
@@ -412,6 +496,9 @@ DESCRIPTION
 show database information
 
 ```
+show database information
+
+
 USAGE
   $ heroku pg:info [DATABASE]
 
@@ -425,6 +512,9 @@ OPTIONS
 kill a query
 
 ```
+kill a query
+
+
 USAGE
   $ heroku pg:kill PID [DATABASE]
 
@@ -439,6 +529,9 @@ OPTIONS
 terminates all connections for all credentials
 
 ```
+terminates all connections for all credentials
+
+
 USAGE
   $ heroku pg:killall [DATABASE]
 
@@ -452,6 +545,9 @@ OPTIONS
 lists all databases and information on link
 
 ```
+lists all databases and information on link
+
+
 USAGE
   $ heroku pg:links [DATABASE]
 
@@ -465,6 +561,11 @@ OPTIONS
 create a link between data stores
 
 ```
+create a link between data stores
+Example:
+
+    heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
+
 USAGE
   $ heroku pg:links:create REMOTE DATABASE
 
@@ -476,7 +577,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
+       heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
 ```
 
 ## `heroku pg:links:destroy DATABASE LINK`
@@ -484,6 +585,11 @@ DESCRIPTION
 destroys a link between data stores
 
 ```
+destroys a link between data stores
+Example:
+
+    heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
+
 USAGE
   $ heroku pg:links:destroy DATABASE LINK
 
@@ -495,7 +601,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
+       heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
 ```
 
 ## `heroku pg:locks [DATABASE]`
@@ -503,6 +609,9 @@ DESCRIPTION
 display queries with active locks
 
 ```
+display queries with active locks
+
+
 USAGE
   $ heroku pg:locks [DATABASE]
 
@@ -517,6 +626,9 @@ OPTIONS
 show current maintenance information
 
 ```
+show current maintenance information
+
+
 USAGE
   $ heroku pg:maintenance [DATABASE]
 
@@ -530,6 +642,9 @@ OPTIONS
 start maintenance
 
 ```
+start maintenance
+
+
 USAGE
   $ heroku pg:maintenance:run [DATABASE]
 
@@ -544,6 +659,13 @@ OPTIONS
 set weekly maintenance window
 
 ```
+set weekly maintenance window
+All times are in UTC.
+
+Example:
+
+    heroku pg:maintenance:window postgres-slippery-100 "Sunday 06:00"
+
 USAGE
   $ heroku pg:maintenance:window DATABASE WINDOW
 
@@ -556,7 +678,7 @@ DESCRIPTION
 
   Example:
 
-      heroku pg:maintenance:window postgres-slippery-100 "Sunday 06:00"
+       heroku pg:maintenance:window postgres-slippery-100 "Sunday 06:00"
 ```
 
 ## `heroku pg:outliers [DATABASE]`
@@ -564,6 +686,9 @@ DESCRIPTION
 show 10 queries that have longest execution time in aggregate
 
 ```
+show 10 queries that have longest execution time in aggregate
+
+
 USAGE
   $ heroku pg:outliers [DATABASE]
 
@@ -580,6 +705,9 @@ OPTIONS
 sets DATABASE as your DATABASE_URL
 
 ```
+sets DATABASE as your DATABASE_URL
+
+
 USAGE
   $ heroku pg:promote DATABASE
 
@@ -594,6 +722,9 @@ OPTIONS
 view active queries with execution time
 
 ```
+view active queries with execution time
+
+
 USAGE
   $ heroku pg:ps [DATABASE]
 
@@ -608,6 +739,9 @@ OPTIONS
 open a psql shell to the database
 
 ```
+open a psql shell to the database
+
+
 USAGE
   $ heroku pg:psql [DATABASE]
 
@@ -624,6 +758,26 @@ OPTIONS
 pull Heroku database into local or remote database
 
 ```
+pull Heroku database into local or remote database
+Pull from SOURCE into TARGET.
+
+TARGET must be one of:
+  * a database name (i.e. on a local PostgreSQL server)  => TARGET must not exist and will be created
+  * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
+  * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
+
+To delete a local database run `dropdb TARGET`
+To create an empty remote database, run `createdb` with connection command-line options (run `createdb --help` for details).
+
+Examples:
+
+    # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
+    $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
+
+    # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
+    $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
+
+
 USAGE
   $ heroku pg:pull SOURCE TARGET
 
@@ -636,9 +790,9 @@ DESCRIPTION
   Pull from SOURCE into TARGET.
 
   TARGET must be one of:
-    * a database name (i.e. on a local PostgreSQL server)  => TARGET must not exist and will be created
-    * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
-    * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
+     * a database name (i.e. on a local PostgreSQL server)  => TARGET must not exist and will be created
+     * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
+     * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
 
   To delete a local database run `dropdb TARGET`
   To create an empty remote database, run `createdb` with connection command-line options (run `createdb --help` for 
@@ -646,11 +800,11 @@ DESCRIPTION
 
   Examples:
 
-      # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
-      $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
+       # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
+       $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
 
-      # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
-      $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
+       # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
+       $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 ```
 
 ## `heroku pg:push SOURCE TARGET`
@@ -658,6 +812,23 @@ DESCRIPTION
 push local or remote into Heroku database
 
 ```
+push local or remote into Heroku database
+Push from SOURCE into TARGET. TARGET must be empty.
+
+To empty a Heroku database for push run `heroku pg:reset`
+
+SOURCE must be either the name of a database existing on your localhost or the
+fully qualified URL of a remote database.
+
+Examples:
+
+    # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
+    $ heroku pg:push mylocaldb postgresql-swimmingly-100
+
+    # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
+    $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
+
+
 USAGE
   $ heroku pg:push SOURCE TARGET
 
@@ -676,11 +847,11 @@ DESCRIPTION
 
   Examples:
 
-      # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
-      $ heroku pg:push mylocaldb postgresql-swimmingly-100
+       # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
+       $ heroku pg:push mylocaldb postgresql-swimmingly-100
 
-      # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
-      $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
+       # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
+       $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
 ```
 
 ## `heroku pg:reset [DATABASE]`
@@ -688,6 +859,9 @@ DESCRIPTION
 delete all data in DATABASE
 
 ```
+delete all data in DATABASE
+
+
 USAGE
   $ heroku pg:reset [DATABASE]
 
@@ -703,6 +877,9 @@ OPTIONS
 show your current database settings
 
 ```
+show your current database settings
+
+
 USAGE
   $ heroku pg:settings [DATABASE]
 
@@ -716,6 +893,10 @@ OPTIONS
 Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
 
 ```
+Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
+Delays due to lock contention occur when multiple transactions are trying to access the same resource at the same time.
+Applications and their query patterns should try to avoid changes to many different tables within the same transaction.
+
 USAGE
   $ heroku pg:settings:log-lock-waits [VALUE] [DATABASE]
 
@@ -735,6 +916,10 @@ DESCRIPTION
 The duration of each completed statement will be logged if the statement completes after the time specified by VALUE.
 
 ```
+The duration of each completed statement will be logged if the statement completes after the time specified by VALUE.
+VALUE needs to specified as a whole number, in milliseconds.
+Setting log_min_duration_statement to zero prints all statement durations and -1 will disable logging statement durations.
+
 USAGE
   $ heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]
 
@@ -753,6 +938,13 @@ DESCRIPTION
 log_statement controls which SQL statements are logged.
 
 ```
+log_statement controls which SQL statements are logged.
+Valid values for VALUE:
+none - No statements are logged
+ddl  - All data definition statements, such as CREATE, ALTER and DROP will be logged
+mod  - Includes all statements from ddl as well as data-modifying statements such as INSERT, UPDATE, DELETE, TRUNCATE, COPY
+all  - All statements are logged
+
 USAGE
   $ heroku pg:settings:log-statement [VALUE] [DATABASE]
 
@@ -764,8 +956,8 @@ DESCRIPTION
   Valid values for VALUE:
   none - No statements are logged
   ddl  - All data definition statements, such as CREATE, ALTER and DROP will be logged
-  mod  - Includes all statements from ddl as well as data-modifying statements such as INSERT, UPDATE, DELETE, TRUNCATE,
-   COPY
+  mod  - Includes all statements from ddl as well as data-modifying statements such as INSERT, UPDATE, DELETE, TRUNCATE, 
+  COPY
   all  - All statements are logged
 ```
 
@@ -774,6 +966,12 @@ DESCRIPTION
 track_functions controls tracking of function call counts and time used. Default is none.
 
 ```
+track_functions controls tracking of function call counts and time used. Default is none.
+Valid values for VALUE:
+none - No functions are tracked
+pl   - Only procedural language functions are tracked
+all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked
+
 USAGE
   $ heroku pg:settings:track-functions [VALUE] [DATABASE]
 
@@ -794,6 +992,9 @@ DESCRIPTION
 stop a replica from following and make it a writeable database
 
 ```
+stop a replica from following and make it a writeable database
+
+
 USAGE
   $ heroku pg:unfollow DATABASE
 
@@ -808,6 +1009,9 @@ OPTIONS
 unfollow a database and upgrade it to the latest stable PostgreSQL version
 
 ```
+unfollow a database and upgrade it to the latest stable PostgreSQL version
+to upgrade to another PostgreSQL version, use pg:copy instead
+
 USAGE
   $ heroku pg:upgrade [DATABASE]
 
@@ -826,6 +1030,9 @@ DESCRIPTION
 show dead rows and whether an automatic vacuum is expected to be triggered
 
 ```
+show dead rows and whether an automatic vacuum is expected to be triggered
+
+
 USAGE
   $ heroku pg:vacuum-stats [DATABASE]
 
@@ -839,6 +1046,9 @@ OPTIONS
 blocks until database is available
 
 ```
+blocks until database is available
+
+
 USAGE
   $ heroku pg:wait [DATABASE]
 

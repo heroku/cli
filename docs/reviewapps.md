@@ -11,6 +11,8 @@ manage reviewapps in pipelines
 disable review apps and/or settings on an existing pipeline
 
 ```
+disable review apps and/or settings on an existing pipeline
+
 USAGE
   $ heroku reviewapps:disable
 
@@ -33,6 +35,8 @@ _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.
 enable review apps and/or settings on an existing pipeline
 
 ```
+enable review apps and/or settings on an existing pipeline
+
 USAGE
   $ heroku reviewapps:enable
 
