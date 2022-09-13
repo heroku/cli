@@ -48,7 +48,7 @@
     "@oclif/plugin-which": "1.0.3",
     "cli-ux": "4.9.3",
     "debug": "4.1.1",
-    "execa": "1.0.0",
+    "execa": "6.1.0",
     "fs-extra": "7.0.1",
     "http-call": "5.3.0",
     "netrc-parser": "3.1.6",
