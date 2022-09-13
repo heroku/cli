@@ -290,20 +290,19 @@ jobs:
       - run: |
           yarn --frozen-lockfile
           ./scripts/postrelease/change_management
-  ## Job not currently being used
-  # dev-center-docs:
-  #   docker: &devdocs_docker
-  #     - image: heroku/devcenter
-  #       environment:
-  #         LANG: en_US.UTF-8
-  #         LANGUAGE: en_US.UTF-8
-  #         LC_TYPE: en_US.UTF-8
-  #         LC_ALL: C.UTF-8
-  #   steps:
-  #     - checkout
-  #     - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
-  #     - store_artifacts:
-  #         path: /tmp/heroku-cli-commands.md
+  dev-center-docs:
+    docker: &devdocs_docker
+      - image: heroku/devcenter
+        environment:
+          LANG: en_US.UTF-8
+          LANGUAGE: en_US.UTF-8
+          LC_TYPE: en_US.UTF-8
+          LC_ALL: C.UTF-8
+    steps:
+      - checkout
+      - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands.md
 workflows:
   version: 2.1
   heroku_cli:
@@ -312,82 +311,82 @@ workflows:
           filters: &always_run_filter
             tags:
               only: /^v.*/
-      # - windows-test: &windows_test
-      #     filters: *always_run_filter
-      #     requires:
-      #       - yarn
-      # - node-test:
-      #     filters: *always_run_filter
-      #     matrix:
-      #       parameters:
-      #         node-version:
-      #           - "16"
-      #           - "14"
-      #     requires:
-      #       - yarn
-      # - acceptance-test:
-      #     filters: *always_run_filter
-      #     context:
-      #       - heroku-cli-acceptance-tests
-      #     matrix:
-      #       parameters:
-      #         node-version:
-      #           - "16"
-      #           - "14"
-      #     requires:
-      #       - yarn
-      # - pack-windows:
-      #     filters: &master_dev_and_version_tags
-      #       tags: &version_tags
-      #         only: /^v.*/
-      #       branches:
-      #         only:
-      #           - master
-      #     requires: &pack-requires
-      #       - node-test
-      #       - windows-test
-      #       - acceptance-test
-      # - pack-tarballs:
-      #     filters: *master_dev_and_version_tags
-      #     requires: *pack-requires
-      # - pack-deb:
-      #     filters: *master_dev_and_version_tags
-      #     requires: *pack-requires
-      # - sign-deb:
-      #     filters: *master_dev_and_version_tags
-      #     context:
-      #       - heroku-cli-sign-deb
-      #     requires:
-      #       - pack-deb
-      # - store-artifacts:
-      #     filters: *master_dev_and_version_tags
-      #     requires:
-      #       - pack-windows
-      #       - pack-tarballs
-      #       - sign-deb
-      # - release-deb-and-tarballs:
-      #     filters: *master_dev_and_version_tags
-      #     context:
-      #       - heroku-cli-s3
-      #     requires:
-      #       - sign-deb
-      #       - pack-tarballs
-      # - invalidate-cdn-cache:
-      #     filters: *master_dev_and_version_tags
-      #     context:
-      #       - heroku-cli-s3
-      #     requires:
-      #       - release-deb-and-tarballs
-      # - release-homebrew:
-      #     filters: &tags_only
-      #       tags: *version_tags
-      #       branches: &never_run_on_branches
-      #         ignore: /.*/
-      #     requires:
-      #       - release-deb-and-tarballs
-      # - change-management: &change_management
-      #     filters: *tags_only
-      #     context:
-      #       - heroku-cli-tps
-      #     requires:
-      #       - release-deb-and-tarballs
+      - windows-test: &windows_test
+          filters: *always_run_filter
+          requires:
+            - yarn
+      - node-test:
+          filters: *always_run_filter
+          matrix:
+            parameters:
+              node-version:
+                - "16"
+                - "14"
+          requires:
+            - yarn
+      - acceptance-test:
+          filters: *always_run_filter
+          context:
+            - heroku-cli-acceptance-tests
+          matrix:
+            parameters:
+              node-version:
+                - "16"
+                - "14"
+          requires:
+            - yarn
+      - pack-windows:
+          filters: &master_dev_and_version_tags
+            tags: &version_tags
+              only: /^v.*/
+            branches:
+              only:
+                - master
+          requires: &pack-requires
+            - node-test
+            - windows-test
+            - acceptance-test
+      - pack-tarballs:
+          filters: *master_dev_and_version_tags
+          requires: *pack-requires
+      - pack-deb:
+          filters: *master_dev_and_version_tags
+          requires: *pack-requires
+      - sign-deb:
+          filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-sign-deb
+          requires:
+            - pack-deb
+      - store-artifacts:
+          filters: *master_dev_and_version_tags
+          requires:
+            - pack-windows
+            - pack-tarballs
+            - sign-deb
+      - release-deb-and-tarballs:
+          filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-s3
+          requires:
+            - sign-deb
+            - pack-tarballs
+      - invalidate-cdn-cache:
+          filters: *master_dev_and_version_tags
+          context:
+            - heroku-cli-s3
+          requires:
+            - release-deb-and-tarballs
+      - release-homebrew:
+          filters: &tags_only
+            tags: *version_tags
+            branches: &never_run_on_branches
+              ignore: /.*/
+          requires:
+            - release-deb-and-tarballs
+      - change-management: &change_management
+          filters: *tags_only
+          context:
+            - heroku-cli-tps
+          requires:
+            - release-deb-and-tarballs

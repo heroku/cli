@@ -7,8 +7,6 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
-const skipOnWindows = process.platform === 'win32' ? it.skip : it
-
 const env = process.env
 let db
 
@@ -109,7 +107,7 @@ describe('pg', () => {
       delete dumpOpts.env.PGPORT
     })
 
-    skipOnWindows('pushes out a db', () => {
+    it('pushes out a db', () => {
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
@@ -132,7 +130,7 @@ describe('pg', () => {
         .then(() => expect(cli.stderr).to.equal(''))
     })
 
-    skipOnWindows('pushes out a db using url port', () => {
+    it('pushes out a db using url port', () => {
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
@@ -155,7 +153,7 @@ describe('pg', () => {
         .then(() => expect(cli.stderr).to.equal(''))
     })
 
-    skipOnWindows('pushes out a db using PGPORT', () => {
+    it('pushes out a db using PGPORT', () => {
       env.PGPORT = dumpOpts.env.PGPORT = '5433'
       restoreOpts.env.PGPORT = '5433'
 
@@ -181,7 +179,7 @@ describe('pg', () => {
         .then(() => expect(cli.stderr).to.equal(''))
     })
 
-    skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
+    it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
       db.bastionHost = 'bastion-host'
       db.bastionKey = 'super-private-key'
 
@@ -218,7 +216,7 @@ describe('pg', () => {
         .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
 
-    skipOnWindows('exits non-zero when there is an error', () => {
+    it('exits non-zero when there is an error', () => {
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
@@ -297,7 +295,7 @@ describe('pg', () => {
       spawnStub.restore()
     })
 
-    skipOnWindows('pulls a db in', () => {
+    it('pulls a db in', () => {
       return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
         .then(() => expect(createDbStub.calledOnce).to.equal(true))
         .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
@@ -306,7 +304,7 @@ describe('pg', () => {
         .then(() => expect(cli.stderr).to.equal(''))
     })
 
-    skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
+    it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
       db.bastionHost = 'bastion-host'
       db.bastionKey = 'super-private-key'
 
