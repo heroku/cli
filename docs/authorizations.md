@@ -15,6 +15,9 @@ OAuth authorizations
 list OAuth authorizations
 
 ```
+list OAuth authorizations
+
+
 USAGE
   $ heroku authorizations
 
@@ -29,6 +32,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 create a new OAuth authorization
 
 ```
+create a new OAuth authorization
+This creates an authorization with access to your Heroku account.
+
 USAGE
   $ heroku authorizations:create
 
@@ -50,6 +56,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 show an existing OAuth authorization
 
 ```
+show an existing OAuth authorization
+
+
 USAGE
   $ heroku authorizations:info ID
 
@@ -64,6 +73,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 revoke OAuth authorization
 
 ```
+revoke OAuth authorization
+
+
 USAGE
   $ heroku authorizations:revoke ID
 
@@ -78,6 +90,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 updates an OAuth authorization token
 
 ```
+updates an OAuth authorization token
+
+
 USAGE
   $ heroku authorizations:rotate ID
 ```
@@ -89,6 +104,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 updates an OAuth authorization
 
 ```
+updates an OAuth authorization
+
+
 USAGE
   $ heroku authorizations:update ID
 
