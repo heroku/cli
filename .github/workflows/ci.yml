@@ -1,11 +1,7 @@
 name: Node CI Suite
 
 on:
-  push:
-    branches: [ '**' ]
-    tags: [ '**' ]
-  pull_request:
-    branches: [ master ]
+  push
 
 jobs:
   test:
