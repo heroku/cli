@@ -308,6 +308,21 @@
     open "^6.2.0"
     uuid "^8.3.0"
 
+"@heroku-cli/heroku-exec-util@0.7.6":
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/heroku-exec-util/-/heroku-exec-util-0.7.6.tgz#d147203e42e7729db1856f5be20824dfc1683b6e"
+  integrity sha512-MPu0s1ua8NlHzwzn5VtaWb1x81ZCr6SmRc4F3JWdCWAuXGGfr8dNzm9uDnpfKTXBqjdtN3lkQVrL8vkBC0sYUg==
+  dependencies:
+    "@heroku/socksv5" "^0.0.9"
+    co-wait "0.0.0"
+    heroku-cli-util "^8.0.12"
+    keypair "1.0.4"
+    node-forge "1.3.0"
+    smooth-progress "1.1.0"
+    ssh2 "1.4.0"
+    temp "0.9.1"
+    uuid "3.4.0"
+
 "@heroku-cli/notifications@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.2.tgz#46e2a8c0b678b83d46d9347dccbf3f5c31744e80"
@@ -326,13 +341,13 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-ps-exec@2.3.8":
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.8.tgz#3693d4855ca6e06b42001cd956c42c1282a058cc"
-  integrity sha512-r+wCiFtNEJ+hsztVvinzZYaLL00s3Ovn+IbTQIQkeKG+CpFXa3yrBQsyNvfIs3yUdEF5n2086czJ1iaAq/qyLQ==
+"@heroku-cli/plugin-ps-exec@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.4.0.tgz#ab5eab483235b1759ad4aa2c696aeb258f1d5c04"
+  integrity sha512-AIZvKLzeG5zNQVKZa8WxJaxBxxwBAqBYemM94kxvy5P7I3+S3Gn1JlQJ+xC3AYpuj1cH4r5mOGel5WHQO6H5cw==
   dependencies:
+    "@heroku-cli/heroku-exec-util" "0.7.6"
     heroku-cli-util "^8.0.8"
-    heroku-exec-util "0.7.5"
     lodash "^4.17.13"
 
 "@heroku-cli/schema@^1.0.25":
@@ -3371,6 +3386,13 @@ coveralls@^3.0.0:
     minimist "^1.2.0"
     request "^2.88.0"
 
+cpu-features@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cpu-features/-/cpu-features-0.0.2.tgz#9f636156f1155fd04bdbaa028bb3c2fbef3cea7a"
+  integrity sha512-/2yieBqvMcRj8McNzkycjW2v3OIUOibBfd2dLEJ0nWts8NobAxwiyw9phVNS6oDL8x8tz9F7uNVFEVpJncQpeA==
+  dependencies:
+    nan "^2.14.1"
+
 cpu-features@~0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/cpu-features/-/cpu-features-0.0.4.tgz#0023475bb4f4c525869c162e4108099e35bf19d8"
@@ -5529,7 +5551,7 @@ here@0.0.2:
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
   integrity sha1-acGvPwISHz2HiOAuhNyLOQXXEZU=
 
-heroku-cli-util@^8.0.11:
+heroku-cli-util@^8.0.11, heroku-cli-util@^8.0.12:
   version "8.0.12"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.12.tgz#a2a13126095887c16afc01e3ac0f7816ddbe2a05"
   integrity sha512-63wB17oSktlA/HzpIV/PGe8Isq5AZArT51KAW1gg54zyYRIiHOwXik93HZuuRVUaVrWvVUhItFeLgqMwAwlTsw==
@@ -5578,21 +5600,6 @@ heroku-client@^3.0.7, heroku-client@^3.1.0:
   dependencies:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
-
-heroku-exec-util@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.5.tgz#2de5a6213e07e96c3a51e64d31ea0e9c2fe7f230"
-  integrity sha512-br2hIJN0y0yO+EOxV9qn+i6zhRpZTWa+ECKSpjwtAHsG3dFp+cZkHoVm6QxC/9XypCILFBN0LRlOoVNWs/IUhQ==
-  dependencies:
-    "@heroku/socksv5" "^0.0.9"
-    co-wait "0.0.0"
-    heroku-cli-util "^8.0.9"
-    keypair "1.0.1"
-    node-forge "0.7.5"
-    smooth-progress "1.1.0"
-    ssh2 "0.6.1"
-    temp "0.8.3"
-    uuid "3.2.1"
 
 hosted-git-info@^2.1.4, hosted-git-info@^2.7.1:
   version "2.8.9"
@@ -6615,10 +6622,10 @@ just-extend@^4.0.2:
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-4.0.2.tgz#f3f47f7dfca0f989c55410a7ebc8854b07108afc"
   integrity sha512-FrLwOgm+iXrPV+5zDU6Jqu4gCRXbWEQg2O3SKONsWE4w7AXFRkryS53bpWdaL9cNol+AmR3AEYz6kn+o0fCPnw==
 
-keypair@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/keypair/-/keypair-1.0.1.tgz#7603719270afb6564ed38a22087a06fc9aa4ea1b"
-  integrity sha1-dgNxknCvtlZO04oiCHoG/Jqk6hs=
+keypair@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/keypair/-/keypair-1.0.4.tgz#a749a45f388593f3950f18b3757d32a93bd8ce83"
+  integrity sha512-zwhgOhhniaL7oxMgUMKKw5219PWWABMO+dgMnzJOQ2/5L3XJtTJGhW2PEXlxXj9zaccdReZJZ83+4NPhVfNVDg==
 
 keyv@3.0.0:
   version "3.0.0"
@@ -7396,7 +7403,7 @@ mz@^2.5.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@^2.15.0, nan@^2.16.0:
+nan@^2.14.1, nan@^2.15.0, nan@^2.16.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.16.0.tgz#664f43e45460fb98faf00edca0bb0d7b8dce7916"
   integrity sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==
@@ -7551,10 +7558,10 @@ node-fetch@^2.2.0, node-fetch@^2.3.0, node-fetch@^2.5.0, node-fetch@^2.6.1:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-forge@0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.7.5.tgz#6c152c345ce11c52f465c2abd957e8639cd674df"
-  integrity sha512-MmbQJ2MTESTjt3Gi/3yG1wGpIMhUfcIypUCGtTizFR9IiccFwxSpfp0vtIZlkFclEqERemxfnSdZEMR9VqqEFQ==
+node-forge@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.0.tgz#37a874ea723855f37db091e6c186e5b67a01d4b2"
+  integrity sha512-08ARB91bUi6zNKzVmaj3QO7cr397uiDT2nJ63cHjyNtCTWIgvS47j3eT0WfzUwS9+6Z5YshRaoasFkXCKrIYbA==
 
 node-gyp@^5.0.2:
   version "5.0.5"
@@ -9108,11 +9115,6 @@ rimraf@^3.0.0:
   dependencies:
     glob "^7.1.3"
 
-rimraf@~2.2.6:
-  version "2.2.8"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
-  integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
-
 run-async@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"
@@ -9613,15 +9615,6 @@ ssh2-streams@~0.1.15:
     semver "^5.1.0"
     streamsearch "~0.1.2"
 
-ssh2-streams@~0.2.0:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.2.1.tgz#9c9c9964be60e9644575af328677f64b1e5cbd79"
-  integrity sha512-3zCOsmunh1JWgPshfhKmBCL3lUtHPoh+a/cyQ49Ft0Q0aF7xgN06b76L+oKtFi0fgO57FLjFztb1GlJcEZ4a3Q==
-  dependencies:
-    asn1 "~0.2.0"
-    semver "^5.1.0"
-    streamsearch "~0.1.2"
-
 ssh2@0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.5.4.tgz#1bf6b6b28c96eaef267f4d6c46a5a2517a599e27"
@@ -9629,12 +9622,16 @@ ssh2@0.5.4:
   dependencies:
     ssh2-streams "~0.1.15"
 
-ssh2@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.6.1.tgz#5dde1a7394bb978b1f9c2f014affee2f5493bd40"
-  integrity sha512-fNvocq+xetsaAZtBG/9Vhh0GDjw1jQeW7Uq/DPh4fVrJd0XxSfXAqBjOGVk4o2jyWHvyC6HiaPFpfHlR12coDw==
+ssh2@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-1.4.0.tgz#e32e8343394364c922bad915a5a7fecd67d0f5c5"
+  integrity sha512-XvXwcXKvS452DyQvCa6Ct+chpucwc/UyxgliYz+rWXJ3jDHdtBb9xgmxJdMmnIn5bpgGAEV3KaEsH98ZGPHqwg==
   dependencies:
-    ssh2-streams "~0.2.0"
+    asn1 "^0.2.4"
+    bcrypt-pbkdf "^1.0.2"
+  optionalDependencies:
+    cpu-features "0.0.2"
+    nan "^2.15.0"
 
 ssh2@^1.11.0:
   version "1.11.0"
@@ -10127,13 +10124,12 @@ temp-write@^3.4.0:
     temp-dir "^1.0.0"
     uuid "^3.0.1"
 
-temp@0.8.3:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/temp/-/temp-0.8.3.tgz#e0c6bc4d26b903124410e4fed81103014dfc1f59"
-  integrity sha1-4Ma8TSa5AxJEEOT+2BEDAU38H1k=
+temp@0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/temp/-/temp-0.9.1.tgz#2d666114fafa26966cd4065996d7ceedd4dd4697"
+  integrity sha512-WMuOgiua1xb5R56lE0eH6ivpVmg/lq2OHm4+LtT/xtEtPQ+sz6N3bBM6WZ5FvO1lO4IKIOb43qnhoc4qxP5OeA==
   dependencies:
-    os-tmpdir "^1.0.0"
-    rimraf "~2.2.6"
+    rimraf "~2.6.2"
 
 temp@^0.9.4:
   version "0.9.4"
@@ -10713,15 +10709,15 @@ util-promisify@^2.1.0:
     safe-buffer "^5.1.2"
     which-typed-array "^1.1.2"
 
-uuid@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
-  integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
-
 uuid@3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
+
+uuid@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
+  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 uuid@8.0.0:
   version "8.0.0"
