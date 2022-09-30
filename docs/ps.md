@@ -23,6 +23,9 @@ Client tools for Heroku Exec
 list dynos for an app
 
 ```
+list dynos for an app
+
+
 USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
@@ -49,6 +52,8 @@ EXAMPLES
 disable web dyno autoscaling
 
 ```
+disable web dyno autoscaling
+
 USAGE
   $ heroku ps:autoscale:disable
 
@@ -64,6 +69,8 @@ _See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.60.0/pa
 enable web dyno autoscaling
 
 ```
+enable web dyno autoscaling
+
 USAGE
   $ heroku ps:autoscale:enable
 
@@ -83,6 +90,11 @@ _See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.60.0/pa
 Copy a file from a dyno to the local filesystem
 
 ```
+Copy a file from a dyno to the local filesystem
+Example:
+
+    $ heroku ps:copy FILENAME --app murmuring-headland-14719
+
 USAGE
   $ heroku ps:copy FILE
 
@@ -95,7 +107,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      $ heroku ps:copy FILENAME --app murmuring-headland-14719
+       $ heroku ps:copy FILENAME --app murmuring-headland-14719
 ```
 
 ## `heroku ps:exec`
@@ -103,6 +115,11 @@ DESCRIPTION
 Create an SSH session to a dyno
 
 ```
+Create an SSH session to a dyno
+Example:
+
+    $ heroku ps:exec 'node -i' --app murmuring-headland-14719
+
 USAGE
   $ heroku ps:exec
 
@@ -116,7 +133,7 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      $ heroku ps:exec 'node -i' --app murmuring-headland-14719
+       $ heroku ps:exec 'node -i' --app murmuring-headland-14719
 ```
 
 ## `heroku ps:forward PORT`
@@ -124,6 +141,16 @@ DESCRIPTION
 Forward traffic on a local port to a dyno
 
 ```
+Forward traffic on a local port to a dyno
+Provide a port or comma-separated list of ports to forward.
+
+    For example, "4000,9000:9001" will forward port 4000 to port 4000 and
+    port 9000 to port 9001.
+
+    Example:
+
+    $ heroku ps:forward 8080 --app murmuring-headland-14719
+
 USAGE
   $ heroku ps:forward PORT
 
@@ -135,12 +162,12 @@ OPTIONS
 DESCRIPTION
   Provide a port or comma-separated list of ports to forward.
 
-      For example, "4000,9000:9001" will forward port 4000 to port 4000 and
-      port 9000 to port 9001.
+       For example, "4000,9000:9001" will forward port 4000 to port 4000 and
+       port 9000 to port 9001.
 
-      Example:
+       Example:
 
-      $ heroku ps:forward 8080 --app murmuring-headland-14719
+       $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
 ## `heroku ps:kill DYNO`
@@ -148,6 +175,10 @@ DESCRIPTION
 stop app dyno
 
 ```
+stop app dyno
+
+stop app dyno or dyno type
+
 USAGE
   $ heroku ps:kill DYNO
 
@@ -171,6 +202,16 @@ EXAMPLES
 manage dyno sizes
 
 ```
+manage dyno sizes
+
+Called with no arguments shows the current dyno size.
+
+Called with one argument sets the size.
+Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+
+Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+
+
 USAGE
   $ heroku ps:resize
 
@@ -192,6 +233,9 @@ DESCRIPTION
 restart app dynos
 
 ```
+restart app dynos
+if DYNO is not specified, restarts all dynos on app
+
 USAGE
   $ heroku ps:restart [DYNO]
 
@@ -218,6 +262,12 @@ EXAMPLES
 scale dyno quantity up or down
 
 ```
+scale dyno quantity up or down
+Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
+
+Omitting any arguments will display the app's current dyno formation, in a
+format suitable for passing back into ps:scale.
+
 USAGE
   $ heroku ps:scale
 
@@ -244,6 +294,14 @@ EXAMPLES
 Launch a SOCKS proxy into a dyno
 
 ```
+Launch a SOCKS proxy into a dyno
+Example:
+
+    $ heroku ps:socks --app murmuring-headland-14719
+    Establishing credentials... done
+    SOCKSv5 proxy server started on port 1080
+    Use CTRL+C to stop the proxy
+
 USAGE
   $ heroku ps:socks
 
@@ -255,10 +313,10 @@ OPTIONS
 DESCRIPTION
   Example:
 
-      $ heroku ps:socks --app murmuring-headland-14719
-      Establishing credentials... done
-      SOCKSv5 proxy server started on port 1080
-      Use CTRL+C to stop the proxy
+       $ heroku ps:socks --app murmuring-headland-14719
+       Establishing credentials... done
+       SOCKSv5 proxy server started on port 1080
+       Use CTRL+C to stop the proxy
 ```
 
 ## `heroku ps:stop DYNO`
@@ -266,6 +324,10 @@ DESCRIPTION
 stop app dyno
 
 ```
+stop app dyno
+
+stop app dyno or dyno type
+
 USAGE
   $ heroku ps:stop DYNO
 
@@ -289,6 +351,16 @@ EXAMPLES
 manage dyno sizes
 
 ```
+manage dyno sizes
+
+Called with no arguments shows the current dyno size.
+
+Called with one argument sets the size.
+Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+
+Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+
+
 USAGE
   $ heroku ps:type
 
@@ -310,6 +382,8 @@ DESCRIPTION
 wait for all dynos to be running latest version after a release
 
 ```
+wait for all dynos to be running latest version after a release
+
 USAGE
   $ heroku ps:wait
 

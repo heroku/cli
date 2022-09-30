@@ -10,6 +10,8 @@ list available regions for deployment
 list available regions for deployment
 
 ```
+list available regions for deployment
+
 USAGE
   $ heroku regions
 

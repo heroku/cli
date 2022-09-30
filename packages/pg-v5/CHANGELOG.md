@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.63.4](https://github.com/heroku/cli/compare/v7.63.0...v7.63.4) (2022-09-14)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+
+
+
+## [7.63.3](https://github.com/heroku/cli/compare/v7.63.0...v7.63.3) (2022-09-13)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+
+
+
 ## [7.63.2](https://github.com/heroku/cli/compare/v7.63.0...v7.63.2) (2022-09-12)
 
 

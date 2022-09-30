@@ -17,6 +17,9 @@ Use containers to build and deploy Heroku apps
 Use containers to build and deploy Heroku apps
 
 ```
+Use containers to build and deploy Heroku apps
+
+
 USAGE
   $ heroku container
 ```
@@ -26,6 +29,10 @@ USAGE
 log in to Heroku Container Registry
 
 ```
+log in to Heroku Container Registry
+Usage:
+        heroku container:login
+
 USAGE
   $ heroku container:login
 
@@ -34,7 +41,7 @@ OPTIONS
 
 DESCRIPTION
   Usage:
-          heroku container:login
+           heroku container:login
 ```
 
 ## `heroku container:logout`
@@ -42,6 +49,9 @@ DESCRIPTION
 log out from Heroku Container Registry
 
 ```
+log out from Heroku Container Registry
+
+
 USAGE
   $ heroku container:logout
 
@@ -54,6 +64,13 @@ OPTIONS
 pulls an image from an app's process type
 
 ```
+pulls an image from an app's process type
+
+    [1m[4m[35mUsage:[39m[24m[22m
+    [36m[1mheroku container:pull web[22m[39m        # Pulls the web image from the app
+    [36m[1mheroku container:pull web worker[22m[39m # Pulls both the web and worker images from the app
+    [36m[1mheroku container:pull web:latest[22m[39m # Pulls the latest tag from the web image
+
 USAGE
   $ heroku container:pull
 
@@ -64,9 +81,9 @@ OPTIONS
 
 DESCRIPTION
   Usage:
-      heroku container:pull web        # Pulls the web image from the app
-      heroku container:pull web worker # Pulls both the web and worker images from the app
-      heroku container:pull web:latest # Pulls the latest tag from the web image
+       heroku container:pull web        # Pulls the web image from the app
+       heroku container:pull web worker # Pulls both the web and worker images from the app
+       heroku container:pull web:latest # Pulls the latest tag from the web image
 ```
 
 ## `heroku container:push`
@@ -74,6 +91,9 @@ DESCRIPTION
 builds, then pushes Docker images to deploy your Heroku app
 
 ```
+builds, then pushes Docker images to deploy your Heroku app
+
+
 USAGE
   $ heroku container:push
 
@@ -99,6 +119,12 @@ EXAMPLES
 Releases previously pushed Docker images to your Heroku app
 
 ```
+Releases previously pushed Docker images to your Heroku app
+
+    [1m[4m[35mUsage:[39m[24m[22m
+    [36m[1mheroku container:release web[22m[39m                       # Releases the previously pushed web process type
+    [36m[1mheroku container:release web worker[22m[39m                # Releases the previously pushed web and worker process types
+
 USAGE
   $ heroku container:release
 
@@ -109,8 +135,8 @@ OPTIONS
 
 DESCRIPTION
   Usage:
-      heroku container:release web                       # Releases the previously pushed web process type
-      heroku container:release web worker                # Releases the previously pushed web and worker process types
+       heroku container:release web                       # Releases the previously pushed web process type
+       heroku container:release web worker                # Releases the previously pushed web and worker process types
 ```
 
 ## `heroku container:rm`
@@ -118,6 +144,12 @@ DESCRIPTION
 remove the process type from your app
 
 ```
+remove the process type from your app
+
+    [1m[4m[35mUsage:[39m[24m[22m
+    [36m[1mheroku container:rm web[22m[39m        # Destroys the web container
+    [36m[1mheroku container:rm web worker[22m[39m # Destroys the web and worker containers
+
 USAGE
   $ heroku container:rm
 
@@ -127,8 +159,8 @@ OPTIONS
 
 DESCRIPTION
   Usage:
-      heroku container:rm web        # Destroys the web container
-      heroku container:rm web worker # Destroys the web and worker containers
+       heroku container:rm web        # Destroys the web container
+       heroku container:rm web worker # Destroys the web and worker containers
 ```
 
 ## `heroku container:run`
@@ -136,6 +168,12 @@ DESCRIPTION
 builds, then runs the docker image locally
 
 ```
+builds, then runs the docker image locally
+
+    [1m[4m[35mUsage:[39m[24m[22m
+    [36m[1mheroku container:run web bash[22m[39m # Runs bash on the local web docker container
+    [36m[1mheroku container:run worker[22m[39m   # Runs the container CMD on the local worker container
+
 USAGE
   $ heroku container:run
 
@@ -147,6 +185,6 @@ OPTIONS
 
 DESCRIPTION
   Usage:
-      heroku container:run web bash # Runs bash on the local web docker container
-      heroku container:run worker   # Runs the container CMD on the local worker container
+       heroku container:run web bash # Runs bash on the local web docker container
+       heroku container:run worker   # Runs the container CMD on the local worker container
 ```

@@ -13,6 +13,9 @@ add/remove experimental features
 list experimental features
 
 ```
+list experimental features
+
+
 USAGE
   $ heroku labs
 
@@ -27,6 +30,8 @@ OPTIONS
 disables an experimental feature
 
 ```
+disables an experimental feature
+
 USAGE
   $ heroku labs:disable [FEATURE]
 
@@ -43,6 +48,9 @@ _See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/
 enables an experimental feature
 
 ```
+enables an experimental feature
+
+
 USAGE
   $ heroku labs:enable FEATURE
 
@@ -56,6 +64,9 @@ OPTIONS
 show feature info
 
 ```
+show feature info
+
+
 USAGE
   $ heroku labs:info FEATURE
 
