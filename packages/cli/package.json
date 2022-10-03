@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@oclif/test": "^1.2.4",
-    "@rasphilco/dev-cli": "^0.1.0",
+    "@oclif/dev-cli": "^1.23",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/debug": "^4.1.2",
