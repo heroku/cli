@@ -130,7 +130,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   cli.table(data, {
     printHeader: undefined,
     columns: [
-      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
+      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that width is 1 character
       {key: 'number', label: ''},
       {key: 'branch'},
       {key: 'sha'},
