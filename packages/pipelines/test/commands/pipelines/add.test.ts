@@ -34,7 +34,7 @@ describe('pipelines:add', () => {
   .stderr()
   .stdout()
   // this `stub` overrides the prompt function on
-  // the inqurier package to simulate what would be
+  // the inquirer package to simulate what would be
   // returned from answering if "development" was
   // selected by the user
   .stub(inquirer, 'prompt', (questions: any) => {
