@@ -35,7 +35,7 @@ const app = {
   'name': 'app-name'
 }
 
-describe('spaces:toplogy', function () {
+describe('spaces:topology', function () {
   beforeEach(() => cli.mockConsole())
 
   it('shows space topology', function () {
@@ -54,7 +54,7 @@ Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
       .then(() => api.done())
   })
 
-  it('shows space toplogy  --json', function () {
+  it('shows space topology  --json', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
@@ -64,7 +64,7 @@ Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
       .then(() => api.done())
   })
 
-  it('shows space toplology --json', function () {
+  it('shows space topology --json', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
