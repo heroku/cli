@@ -69,7 +69,7 @@ describe('pipelines:add', () => {
   .stderr()
   .stdout()
   // this `stub` overrides the prompt function,
-  // similuating that the user picked the identical
+  // simulating that the user picked the identical
   // pipeline value with id: '0987' for the pipeline
   // question
   .stub(inquirer, 'prompt', (questions: any) => {
