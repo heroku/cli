@@ -92,7 +92,7 @@ describe('pipelines:add', () => {
 
     // by returning to a query for pipeline names with
     // multiple results we trigger a choice from the
-    // user to disambigute between the choices
+    // user to disambiguate between the choices
     const pipelinesWithIdenticalNames = [
       firstIdenticallyNamedPipeline,
       secondIdenticallyNamedPipeline,
