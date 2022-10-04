@@ -618,7 +618,7 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
-  -t, --truncate       truncates queries to 40 charaters
+  -t, --truncate       truncates queries to 40 characters
 ```
 
 ## `heroku pg:maintenance [DATABASE]`
