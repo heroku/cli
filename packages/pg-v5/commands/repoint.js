@@ -15,7 +15,7 @@ async function run(context, heroku) {
   let replica = await heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) })
 
   if (!replica.following) {
-    throw new Error('pg:repoint is only available for follower production databases')
+    throw new Error('pg:repoint is only available for standard tier follower databases and above.')
   }
 
   let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))

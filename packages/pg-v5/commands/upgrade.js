@@ -19,7 +19,7 @@ async function run(context, heroku) {
   if (status.error) throw new Error(status.error)
 
   if (!replica.following) {
-    throw new Error('pg:upgrade is only available for follower production databases')
+    throw new Error('pg:upgrade is only available for standard tier follower databases and above.')
   }
 
   let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
