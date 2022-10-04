@@ -1,4 +1,4 @@
-**This project is for the Heroku CLI only and issues are reviewed as we are able. If you need more immediate assistence or help with anything not specific to the CLI itself, please use https://help.heroku.com.**
+**This project is for the Heroku CLI only and issues are reviewed as we are able. If you need more immediate assistance or help with anything not specific to the CLI itself, please use https://help.heroku.com.**
 
 Do you want to request a *feature* or report a *bug*?
 -----------------------------------------------------
