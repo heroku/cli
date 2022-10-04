@@ -8,7 +8,7 @@ import {fetchCache} from '../../cache'
 export default class Options extends AutocompleteBase {
   static hidden = true
 
-  static description = 'display arg or flag completion options (used internally by completion fuctions)'
+  static description = 'display arg or flag completion options (used internally by completion functions)'
 
   static flags = {
     app: flags.app({required: false, hidden: true}),
