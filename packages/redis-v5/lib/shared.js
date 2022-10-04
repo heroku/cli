@@ -98,7 +98,7 @@ module.exports = (context, heroku) => {
 
           redis.app = db.addon.app
           redis.config_vars = db.addon.config_vars
-          const { formation, metaas_source, port, ...filteredRedis } = redis
+          const { formation, meta_as_source, port, ...filteredRedis } = redis
           redii.push(filteredRedis)
         }
         cli.styledJSON(redii)
