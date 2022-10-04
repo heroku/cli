@@ -72,7 +72,7 @@ OPTIONS
   -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=remote                git remote of app to use
   -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=authorization  authoriation header to send with webhooks
+  -t, --authorization=authorization  authorization header to send with webhooks
   -u, --url=url                      (required) URL for receiver
 
 EXAMPLE
@@ -207,7 +207,7 @@ OPTIONS
   -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=remote                git remote of app to use
   -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=authorization  authoriation header to send with webhooks
+  -t, --authorization=authorization  authorization header to send with webhooks
   -u, --url=url                      (required) URL for receiver
 
 EXAMPLE
