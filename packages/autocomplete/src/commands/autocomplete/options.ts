@@ -188,7 +188,7 @@ export default class Options extends AutocompleteBase {
           }
         }
 
-        // --app=my-app is consided a flag & not a flag value
+        // --app=my-app is considered a flag & not a flag value
         // the shell's autocomplete handles partial value matching
 
         // add parsedFlag
