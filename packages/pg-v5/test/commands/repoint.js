@@ -42,14 +42,14 @@ describe('pg:repoint', () => {
     addon.plan = { name: 'heroku-postgresql:hobby-dev' }
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:repoint is only available for standard tier follower databases and above.')
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower databases on at least the Standard tier.')
   })
 
   it('refuses to repoint non-follower dbs', () => {
     pg.get('/client/v11/databases/1').reply(200, { forked_from: 'postgres://db1' })
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:repoint is only available for standard tier follower databases and above.')
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower databases on at least the Standard tier.')
   })
 
   it('repoints db', () => {

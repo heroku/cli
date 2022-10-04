@@ -35,7 +35,7 @@ exports.generate = (name, convert, explain) => {
 
     const db = await fetcher.addon(app, database)
 
-    if (util.essentialPlan(db)) throw new Error('This operation is not supported by essential tier databases.')
+    if (util.essentialPlan(db)) throw new Error("You can’t perform this operation on Essential-tier databases.")
 
     if (!value) {
       let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, { host: host(db) })

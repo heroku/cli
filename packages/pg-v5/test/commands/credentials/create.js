@@ -71,7 +71,7 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
       '../../lib/fetcher': fetcher
     })
 
-    const err = 'This operation is not supported by essential tier databases.'
+    const err = "You can’t perform this operation on Essential-tier databases."
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 })

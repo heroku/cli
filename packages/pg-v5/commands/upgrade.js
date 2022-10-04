@@ -9,7 +9,7 @@ async function run(context, heroku) {
   let { app, args, flags } = context
   let db = await fetcher.addon(app, args.database)
 
-  if (util.essentialPlan(db)) throw new Error('pg:upgrade is only available for standard tier follower databases and above.')
+  if (util.essentialPlan(db)) throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
 
   let [replica, status] = await Promise.all([
     heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) }),
@@ -19,7 +19,7 @@ async function run(context, heroku) {
   if (status.error) throw new Error(status.error)
 
   if (!replica.following) {
-    throw new Error('pg:upgrade is only available for standard tier follower databases and above.')
+    throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
   }
 
   let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
