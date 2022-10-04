@@ -7,7 +7,7 @@ module.exports = function (topic) {
     topic: topic,
     command: 'login',
     flags: [{ name: 'verbose', char: 'v', hasValue: false }],
-    description: 'log in to Heroku Container Registry',
+    description: 'log into Heroku Container Registry',
     help: `Usage:
         heroku container:login`,
     needsApp: false,

@@ -26,10 +26,10 @@ USAGE
 
 ## `heroku container:login`
 
-log in to Heroku Container Registry
+log into Heroku Container Registry
 
 ```
-log in to Heroku Container Registry
+log into Heroku Container Registry
 Usage:
         heroku container:login
 
