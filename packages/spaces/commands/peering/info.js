@@ -30,7 +30,7 @@ module.exports = {
     Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
     Unavailable CIDRs: 10.1.0.0/16
 
-You will use the information provied by this command to establish a peering connection request from your AWS VPC to your private space.
+You will use the information provided by this command to establish a peering connection request from your AWS VPC to your private space.
 
 To start the peering process, go into your AWS console for the VPC you would like peered with your Private Space,
 navigate to the VPC service, choose the "Peering Connections" option and click the "Create peering connection" button.
