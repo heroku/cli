@@ -6,7 +6,7 @@ module.exports = function (addon) {
   let host = process.env.HEROKU_POSTGRESQL_HOST
   let starterHost = process.env.HEROKU_POSTGRESQL_STARTER_HOST
 
-  if (addon && util.starterPlan(addon)) {
+  if (addon && util.essentialPlan(addon)) {
     if (starterHost) return `https://${starterHost}`
     return 'https://postgres-starter-api.heroku.com'
   }
