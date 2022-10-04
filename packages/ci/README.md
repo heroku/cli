@@ -157,7 +157,7 @@ USAGE
 
 ## `heroku ci:run`
 
-Run this from within your repo directory to trigger a test agains the current branch and commit.
+Run this from within your repo directory to trigger a test against the current branch and commit.
 
 ```
 USAGE
