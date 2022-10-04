@@ -62,7 +62,7 @@ export default class {
     })
   }
 
-  getPipelineGithub(pipeline: any) {
+  getPipelineGitHub(pipeline: any) {
     return this.request(`/pipelines/${pipeline}/github`, {
       method: 'GET',
     })
