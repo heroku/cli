@@ -25,7 +25,7 @@ describe('util', () => {
       expect(parsed.query).to.equal('application_name=myapp&sslmode=require')
     })
 
-    it('correctly parses conection strings with auth', () => {
+    it('correctly parses connection strings with auth', () => {
       const connString = 'postgres://user:pass@198.0.0.1:5432/my_database_name'
       const parsed = util.parsePostgresConnectionString(connString)
 
