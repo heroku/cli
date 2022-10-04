@@ -16,7 +16,7 @@ async function run(context, heroku) {
     throw new Error('cannot pass both --all and --name')
   }
   if (util.essentialPlan(db) && cred !== 'default') {
-    throw new Error(`Only one default credential is supported for essential tier databases.`)
+    throw new Error('Essential-tier databases support only one default credential.')
   }
   if (all && flags.force) {
     warnings.push('This forces rotation on all credentials including the default credential.')

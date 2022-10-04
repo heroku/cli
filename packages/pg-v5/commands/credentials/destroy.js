@@ -16,7 +16,7 @@ async function run(context, heroku) {
 
   let db = await fetcher.addon(app, args.database)
   if (util.essentialPlan(db)) {
-    throw new Error(`Only one default credential is supported for essential tier databases.`)
+    throw new Error('Essential-tier databases support only one default credential.')
   }
 
   let attachments = await heroku.get(`/addons/${db.name}/addon-attachments`)
