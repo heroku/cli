@@ -9,7 +9,7 @@ async function run(context, heroku) {
   let app = context.args.app || context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')
 
-  context.app = app // make sure context.app is always set for herkou-cli-util
+  context.app = app // make sure context.app is always set for heroku-cli-util
 
   await heroku.get(`/apps/${app}`)
   await cli.confirmApp(app, context.flags.confirm, `WARNING: This will delete ${cli.color.app(app)} including all add-ons.`)
