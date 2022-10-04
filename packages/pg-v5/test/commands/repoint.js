@@ -38,18 +38,18 @@ describe('pg:repoint', () => {
     pg.done()
   })
 
-  it('refuses to repoint hobby dbs', () => {
+  it('refuses to repoint essential dbs', () => {
     addon.plan = { name: 'heroku-postgresql:hobby-dev' }
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower production databases')
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for standard tier follower databases and above.')
   })
 
   it('refuses to repoint non-follower dbs', () => {
     pg.get('/client/v11/databases/1').reply(200, { forked_from: 'postgres://db1' })
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower production databases')
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for standard tier follower databases and above.')
   })
 
   it('repoints db', () => {

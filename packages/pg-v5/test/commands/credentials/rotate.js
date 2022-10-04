@@ -117,7 +117,7 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher
     })
 
-    const err = `Only one default credential is supported for Hobby tier databases.`
+    const err = 'Only one default credential is supported for essential tier databases.'
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 

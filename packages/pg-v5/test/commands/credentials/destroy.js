@@ -78,7 +78,7 @@ Database objects owned by credname will be assigned to the default credential.
       '../../lib/fetcher': fetcher
     })
 
-    const err = `Only one default credential is supported for Hobby tier databases.`
+    const err = 'Only one default credential is supported for essential tier databases.'
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
