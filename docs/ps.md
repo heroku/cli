@@ -206,7 +206,7 @@ manage dyno sizes
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of eco|hobby|standard-1x|standard-2x|performance
+Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 
@@ -222,7 +222,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -355,7 +355,7 @@ manage dyno sizes
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of eco|hobby|standard-1x|standard-2x|performance
+Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 
@@ -371,7 +371,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
