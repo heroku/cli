@@ -32,8 +32,8 @@ describe('ps:type', function () {
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size   qty  cost/mo
 ──────  ─────  ───  ───────
-web     Basic  1    7
-worker  Basic  2    14
+web     Basic  1    $7
+worker  Basic  2    $14
 === Dyno Totals
 type   total
 ─────  ─────
@@ -58,8 +58,8 @@ Basic  3
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size         qty  cost/mo
 ──────  ───────────  ───  ───────
-web     Standard-1X  1    25
-worker  Standard-2X  2    100
+web     Standard-1X  1    $25
+worker  Standard-2X  2    $100
 === Dyno Totals
 type         total
 ───────────  ─────
