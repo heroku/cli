@@ -12,7 +12,7 @@ const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 
 function stubAccountQuota (code, body) {
   nock('https://api.heroku.com:443')
-    .get('/account/features/eco-2022')
+    .get('/account/features/free-2016')
     .reply(200, { enabled: true })
 
   nock('https://api.heroku.com:443')
