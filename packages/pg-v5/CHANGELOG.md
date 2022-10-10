@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.65.0](https://github.com/heroku/cli/compare/v7.64.0...v7.65.0) (2022-10-10)
+
+
+### Features
+
+* **pg-v5:** Support pg mini plans ([#2072](https://github.com/heroku/cli/issues/2072)) ([7153817](https://github.com/heroku/cli/commit/7153817facc979e78150bc48854f3744865fefd1))
+
+
+
+
+
 # [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
 
 
