@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn --network-timeout 1000000
-      - run: rm -rf yarn.lock
+      - run: rm yarn.lock
       - run: yarn test
 
   acceptance:
