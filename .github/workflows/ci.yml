@@ -9,14 +9,14 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x, 16.x]
-        os: [ubuntu-latest, macos-latest, windows-2019]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - run: yarn --network-timeout 1000000
       - run: yarn test
 
   acceptance:
