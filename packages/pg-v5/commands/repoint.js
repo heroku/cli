@@ -10,12 +10,12 @@ async function run(context, heroku) {
   let { app, args, flags } = context
   let db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('pg:repoint is only available for follower production databases')
+  if (util.essentialPlan(db)) throw new Error('pg:repoint is only available for follower databases on at least the Standard tier.')
 
   let replica = await heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) })
 
   if (!replica.following) {
-    throw new Error('pg:repoint is only available for follower production databases')
+    throw new Error('pg:repoint is only available for follower databases on at least the Standard tier.')
   }
 
   let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
