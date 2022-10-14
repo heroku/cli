@@ -13,8 +13,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-let { checkMultiSniFeature } = require('../../lib/features.js')
-let { waitForDomains, printDomains } = require('../../lib/domains')
+let { waitForDomains } = require('../../lib/domains')
 
 function Domains (domains) {
   this.domains = domains
@@ -26,31 +25,7 @@ function Domains (domains) {
 }
 
 async function getMeta(context, heroku) {
-  let type = context.flags.type
-
-  if (type) {
-    switch (type) {
-      case 'endpoint':
-        return endpoints.meta(context.app, 'ssl')
-      case 'sni':
-        return endpoints.meta(context.app, 'sni')
-      default:
-        error.exit(1, "Must pass --type with either 'endpoint' or 'sni'")
-    }
-  }
-
-  let [ hasSpace, hasAddon ] = await Promise.all([
-    endpoints.hasSpace(context.app, heroku),
-    endpoints.hasAddon(context.app, heroku)
-  ])
-
-  if (hasSpace && !context.canMultiSni) {
-    return endpoints.meta(context.app, 'ssl')
-  } else if (!hasAddon) {
-    return endpoints.meta(context.app, 'sni')
-  } else {
-    error.exit(1, "Must pass --type with either 'endpoint' or 'sni'")
-  }
+  return endpoints.meta(context.app, 'sni')
 }
 
 function hasMatch (certDomains, domain) {
@@ -79,107 +54,6 @@ async function getChoices(certDomains, newDomains, existingDomains, context) {
     return []
   } else {
     return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
-  }
-}
-
-async function addDomains(context, heroku, meta, cert) {
-  let certDomains = cert.ssl_cert.cert_domains
-
-  let apiDomains = await waitForDomains(context, heroku)
-
-  let existingDomains = []
-  let newDomains = []
-  let herokuDomains = []
-
-  certDomains.forEach(function (certDomain) {
-    let matches = findMatch(certDomain, apiDomains)
-    if (matches) {
-      if (matches.kind === 'heroku') {
-        herokuDomains.push(certDomain)
-      } else {
-        existingDomains.push(certDomain)
-      }
-    } else {
-      newDomains.push(certDomain)
-    }
-  })
-
-  if (herokuDomains.length > 0) {
-    cli.log()
-    cli.styledHeader('The following common names are for hosts that are managed by Heroku')
-    herokuDomains.forEach((domain) => cli.log(domain))
-  }
-
-  if (existingDomains.length > 0) {
-    cli.log()
-    cli.styledHeader('The following common names already have domain entries')
-    existingDomains.forEach((domain) => cli.log(domain))
-  }
-
-  let choices = await getChoices(certDomains, newDomains, existingDomains, context)
-  let domains
-
-  if (choices.length === 0) {
-    domains = new Domains([])
-  } else {
-    // Add a newline between the existing and adding messages
-    cli.console.error()
-
-    let promise = Promise.all(choices.map(function (certDomain) {
-      return heroku.request({
-        path: `/apps/${context.app}/domains`,
-        method: 'POST',
-        body: { 'hostname': certDomain }
-      }).catch(function (err) {
-        return { _hostname: certDomain, _failed: true, _err: err }
-      })
-    })).then(function (data) {
-      let domains = new Domains(data)
-      if (domains.hasFailed) {
-        throw domains
-      }
-      return domains
-    })
-
-    let label = choices.length > 1 ? 'domains' : 'domain'
-    let message = `Adding ${label} ${choices.map((choice) => cli.color.green(choice)).join(', ')} to ${cli.color.app(context.app)}`
-    domains = await cli.action(message, {}, promise).catch(function (err) {
-      if (err instanceof Domains) {
-        return err
-      }
-      throw err
-    })
-  }
-
-  if (domains.hasFailed) {
-    cli.log()
-    domains.failed.forEach(function (domain) {
-      cli.error(`An error was encountered when adding ${domain._hostname}`)
-      cli.error(domain._err)
-    })
-  }
-
-  cli.log()
-
-  let hasWildcard = _.some(certDomains, (certDomain) => isWildcard(certDomain))
-
-  let domainsTable = apiDomains.concat(domains.added)
-    .filter((domain) => domain.kind === 'custom')
-    .map(function (domain) {
-      let warning = null
-      if (hasWildcard && domain.hostname) {
-        if (!hasMatch(certDomains, domain.hostname)) {
-          warning = '! Does not match any domains on your SSL certificate'
-        }
-      }
-
-      return Object.assign({}, domain, { warning: warning })
-    })
-
-  printDomains(domainsTable, 'Your certificate has been added successfully.')
-
-  if (domains.hasFailed) {
-    error.exit(2)
   }
 }
 
@@ -212,10 +86,6 @@ async function configureDomains(context, heroku, meta, cert) {
 }
 
 async function run(context, heroku) {
-  let features = await heroku.get(`/apps/${context.app}/features`)
-  let canMultiSni = checkMultiSniFeature(features)
-  context.canMultiSni = canMultiSni
-
   let meta = await getMeta(context, heroku)
 
   let files = await getCertAndKey(context)
@@ -240,20 +110,8 @@ async function run(context, heroku) {
 
   certificateDetails(cert)
 
-  if (canMultiSni) {
-    await configureDomains(context, heroku, meta, cert)
-  } else {
-    await addDomains(context, heroku, meta, cert)
-  }
-
+  await configureDomains(context, heroku, meta, cert)
   displayWarnings(cert)
-}
-
-const CertTypeCompletion = {
-  skipCache: true,
-  options: (ctx) => {
-    return ['sni', 'endpoint']
-  }
 }
 
 module.exports = {
@@ -265,8 +123,7 @@ module.exports = {
     { name: 'KEY', optional: false }
   ],
   flags: [
-    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
-    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion }
+    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false }
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',

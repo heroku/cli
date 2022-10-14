@@ -87,6 +87,21 @@ This project is built with [lerna](https://lerna.js.org/). The core plugins are 
 
 The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
 
+Testing
+=======
+
+Run all tests with `lerna run test`.
+
+Run one test, in this case plugin-certs-v5, with `lerna run --scope @heroku-cli/plugin-certs-v5 test`.
+
+## Debugging
+
+Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+
+- Create a new run/debug configuration
+- Select the 'Mocha' type
+- Set the working directory to the directory of the package you are using.  (i.e. ~/Heroku/Repos/cli/packages/certs-v5)
+
 Releasing
 =========
 See the [Heroku CLI Release Steps](https://salesforce.quip.com/aPLDA1ZwjNlW).

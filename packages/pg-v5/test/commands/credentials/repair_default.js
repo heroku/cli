@@ -51,7 +51,7 @@ describe('pg:credentials:repair-default', () => {
       .then(() => expect(cli.stderr).to.equal('Resetting permissions and object ownership for default role to factory settings... done\n'))
   })
 
-  it('throws an error when the db is starter plan', () => {
+  it('throws an error when the db is essential plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
       plan: { name: 'heroku-postgresql:hobby-dev' }
@@ -68,7 +68,7 @@ describe('pg:credentials:repair-default', () => {
       '../../lib/fetcher': fetcher
     })
 
-    const err = 'This operation is not supported by Hobby tier databases.'
+    const err = "You can’t perform this operation on Essential-tier databases."
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })).to.be.rejectedWith(Error, err)
   })
 })

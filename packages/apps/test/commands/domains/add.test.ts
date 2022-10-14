@@ -19,41 +19,6 @@ describe('domains:add', () => {
     status: 'pending',
   }
 
-  describe('adding a domain without the feature flag existing all', () => {
-    test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
-    .get('/apps/myapp/features')
-    .reply(200, [])
-    .post('/apps/myapp/domains', {hostname: 'example.com', sni_endpoint: null})
-    .reply(200, domainsResponse),
-    )
-    .command(['domains:add', 'example.com', '--app', 'myapp'])
-    .it('adds the domain to the app', ctx => {
-      expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
-    })
-  })
-
-  describe('adding a domain without the feature flag on (the old way)', () => {
-    test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
-    .get('/apps/myapp/features')
-    .reply(200, [
-      {
-        name: 'allow-multiple-sni-endpoints',
-        enabled: false,
-      },
-    ])
-    .post('/apps/myapp/domains', {hostname: 'example.com', sni_endpoint: null})
-    .reply(200, domainsResponse),
-    )
-    .command(['domains:add', 'example.com', '--app', 'myapp'])
-    .it('adds the domain to the app', ctx => {
-      expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
-    })
-  })
-
   describe('adding a domain to an app with multiple certs', () => {
     const domainsResponseWithEndpoint = {
       ...domainsResponse,
@@ -66,13 +31,6 @@ describe('domains:add', () => {
       test
       .stderr()
       .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/features')
-      .reply(200, [
-        {
-          name: 'allow-multiple-sni-endpoints',
-          enabled: true,
-        },
-      ])
       .post('/apps/myapp/domains', {
         hostname: 'example.com',
         sni_endpoint: 'my-cert',
@@ -114,13 +72,6 @@ describe('domains:add', () => {
         return Promise.resolve({cert: 'my-cert'})
       })
       .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/features')
-      .reply(200, [
-        {
-          name: 'allow-multiple-sni-endpoints',
-          enabled: true,
-        },
-      ])
       .post('/apps/myapp/domains', {
         hostname: 'example.com',
         sni_endpoint: 'my-cert',

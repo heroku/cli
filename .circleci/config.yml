@@ -107,10 +107,13 @@ jobs:
       - run:
           name: Test and Lint
           command: yarn test
-  node14-test: &test
+  node-test: &test
     <<: *defaults
     docker:
-      - image: node:14
+      - image: "node:<<parameters.node-version>>"
+    parameters:
+      node-version:
+        type: "string"
     resource_class: xlarge
     steps:
       - checkout
@@ -127,16 +130,6 @@ jobs:
       - run:
           name: Running all tests
           command: yarn test
-  node12-test:
-    <<: *test
-    docker:
-      - image: node:12
-    resource_class: xlarge
-  node16-test:
-    <<: *test
-    docker:
-      - image: node:16
-    resource_class: xlarge
   pack-windows:
     <<: *defaults
     steps:
@@ -322,9 +315,15 @@ workflows:
           filters: *always_run_filter
           requires:
             - yarn
-      - node14-test: *windows_test
-      - node12-test: *windows_test
-      - node16-test: *windows_test
+      - node-test:
+          filters: *always_run_filter
+          matrix:
+            parameters:
+              node-version:
+                - "16"
+                - "14"
+          requires:
+            - yarn
       - acceptance-test:
           filters: *always_run_filter
           context:
@@ -333,7 +332,6 @@ workflows:
             parameters:
               node-version:
                 - "16"
-                - "12"
                 - "14"
           requires:
             - yarn
@@ -345,9 +343,7 @@ workflows:
               only:
                 - master
           requires: &pack-requires
-            - node14-test
-            - node12-test
-            - node16-test
+            - node-test
             - windows-test
             - acceptance-test
       - pack-tarballs:

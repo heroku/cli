@@ -43,6 +43,13 @@ now
 (1 row)
 `
 
+const VERSION_OUTPUT = `
+server_version
+-------------------------------
+11.16 (Ubuntu 11.16-1.pgdg20.04+1)
+(1 row)
+`
+
 describe('psql', () => {
   let fakePsqlProcess, fakeTunnel, tunnelStub
   let sandbox
@@ -288,6 +295,43 @@ describe('psql', () => {
         await ensureFinished(execPromise)
         expect(fakePsqlProcess.exited).to.equal(true)
       })
+    })
+  })
+
+  describe('fetchVersion', () => {
+    it('gets the server version', async () => {
+      const expectedEnv = Object.freeze({
+        PGAPPNAME: 'psql non-interactive',
+        PGSSLMODE: 'prefer',
+        PGUSER: 'jeff',
+        PGPASSWORD: 'pass',
+        PGDATABASE: 'mydb',
+        PGPORT: 5432,
+        PGHOST: 'localhost'
+      })
+
+      const mock = mockSpawn(
+        'psql',
+        ['-c', 'SHOW server_version', '--set', 'sslmode=require', '-X', '-q'],
+        {
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'inherit'],
+          env: expectedEnv
+        }
+      )
+
+      mock.callsFake(() => {
+        fakePsqlProcess.start()
+        return fakePsqlProcess
+      })
+
+      const promise = psql.fetchVersion(db)
+      await fakePsqlProcess.waitForStart()
+      mock.verify()
+      fakePsqlProcess.stdout.write(VERSION_OUTPUT)
+      await fakePsqlProcess.simulateExit(0)
+      const output = await ensureFinished(promise)
+      expect(output).to.equal('11.16')
     })
   })
 

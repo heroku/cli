@@ -5,22 +5,11 @@ let formatDate = require('./format_date.js')
 let _ = require('lodash')
 
 function type (f) {
-  if (f.cname && f.cname.endsWith('.herokuspace.com')) {
-    return 'Private Space App'
-  }
-
   if (f.ssl_cert && f.ssl_cert.acm) {
     return 'ACM'
+  } else {
+    return 'SNI'
   }
-
-  switch (f._meta.flag) {
-    case 'sni':
-      return 'SNI'
-    case 'ssl':
-      return 'Endpoint'
-  }
-
-  throw new Error(`Unexpected flag ${f._meta.flag}`)
 }
 
 module.exports = function (certs) {

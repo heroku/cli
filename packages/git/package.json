@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-git",
   "description": "Heroku CLI plugin to manage local git repos.",
-  "version": "7.60.0",
+  "version": "7.62.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -10,7 +10,7 @@
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
     "cli-ux": "^4.9.3",
-    "debug": "4.1.1"
+    "debug": "4.3.4"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",

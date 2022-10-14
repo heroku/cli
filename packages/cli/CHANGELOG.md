@@ -3,6 +3,113 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.65.0](https://github.com/heroku/cli/compare/v7.64.0...v7.65.0) (2022-10-10)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.63.4](https://github.com/heroku/cli/compare/v7.63.0...v7.63.4) (2022-09-14)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.63.3](https://github.com/heroku/cli/compare/v7.63.0...v7.63.3) (2022-09-13)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.63.2](https://github.com/heroku/cli/compare/v7.63.0...v7.63.2) (2022-09-12)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.63.1](https://github.com/heroku/cli/compare/v7.63.0...v7.63.1) (2022-09-09)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.63.0](https://github.com/heroku/cli/compare/v7.62.0...v7.63.0) (2022-08-31)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+
+### Bug Fixes
+
+* **certs-v5:** Removing references to SSL endpoints in the CLI ([#1885](https://github.com/heroku/cli/issues/1885)) ([94c1d98](https://github.com/heroku/cli/commit/94c1d98dfb171824e7aea8c9377ad68dae79caca))
+* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+
+### Bug Fixes
+
+* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
+
+
+
+
+
+# [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
+
+
+### Bug Fixes
+
+* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
+
+
+
+
+
+## [7.60.2](https://github.com/heroku/cli/compare/v7.60.1...v7.60.2) (2022-04-27)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 ## [7.60.1](https://github.com/heroku/cli/compare/v7.60.0...v7.60.1) (2022-03-31)
 
 

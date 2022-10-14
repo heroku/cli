@@ -4,7 +4,6 @@ import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-import checkMultiSni from '../../lib/multiple-sni-feature'
 import waitForDomain from '../../lib/wait-for-domain'
 
 interface DomainCreatePayload {
@@ -75,8 +74,6 @@ export default class DomainsAdd extends Command {
     const {args, flags} = this.parse(DomainsAdd)
     const {hostname} = args
 
-    const multipleSniEndpointsEnabled = await checkMultiSni(this.heroku, flags.app)
-
     const domainCreatePayload: DomainCreatePayload = {
       hostname,
       sni_endpoint: null,
@@ -85,15 +82,12 @@ export default class DomainsAdd extends Command {
     let certs: Array<Heroku.SniEndpoint> = []
 
     cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
-    if (multipleSniEndpointsEnabled) {
-      // multiple SNI endpoints is enabled
-      if (flags.cert) {
-        domainCreatePayload.sni_endpoint = flags.cert
-      } else {
-        const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
+    if (flags.cert) {
+      domainCreatePayload.sni_endpoint = flags.cert
+    } else {
+      const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
 
-        certs = [...body]
-      }
+      certs = [...body]
     }
 
     if (certs.length > 1) {
