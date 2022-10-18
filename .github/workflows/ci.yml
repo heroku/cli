@@ -40,6 +40,14 @@ jobs:
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
+# dummy job needed to pass changeling compliance because it only watches one build
+  done:
+    runs-on: macos-latest
+    needs: [test, acceptance]
+    steps:
+      - run: echo done
+        working-directory: /
+
   pack_deb:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
