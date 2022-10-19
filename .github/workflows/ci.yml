@@ -49,7 +49,6 @@ jobs:
         working-directory: /
 
   pack_deb:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -68,7 +67,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: packed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
 
   pack_tarballs:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
@@ -90,7 +89,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: packed-tarballs
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
 
   sign_deb:
     needs: [pack_deb]
@@ -109,14 +108,14 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: packed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
       - run: |
-          cd /home/runner/work/cli/cli/packages/cli/dist/deb
-          /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
+          cd /cli/packages/cli/dist/deb
+          /cli/packages/cli/scripts/sign/deb
       - uses: actions/upload-artifact@v3
         with:
           name: signed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
 
   release-deb-and-tarballs:
     needs: [test, acceptance, sign_deb, pack_tarballs]
@@ -134,14 +133,14 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: signed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
       - uses: actions/download-artifact@v3
         with:
           name: packed-tarballs
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
       - name: List all the downloaded files (for debugging)
         run: ls -R
-        working-directory: /home/runner/work/cli/cli/packages/cli/dist
+        working-directory: /cli/packages/cli/dist
       - run: |
           sudo apt-get update
           sudo apt-get install -y awscli
@@ -159,7 +158,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: all-dist
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
 
   ## POST release jobs
   invalidate-cdn-cache:
@@ -193,10 +192,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: all-dist
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /cli/packages/cli/dist
       - name: List all the downloaded files (for debugging)
         run: ls -R
-        working-directory: /home/runner/work/cli/cli/packages/cli/dist
+        working-directory: /cli/packages/cli/dist
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
