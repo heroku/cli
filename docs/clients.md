@@ -15,6 +15,9 @@ OAuth clients on the platform
 list your OAuth clients
 
 ```
+list your OAuth clients
+
+
 USAGE
   $ heroku clients
 
@@ -29,6 +32,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 create a new OAuth client
 
 ```
+create a new OAuth client
+
+
 USAGE
   $ heroku clients:create NAME REDIRECT_URI
 
@@ -44,6 +50,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 delete client by ID
 
 ```
+delete client by ID
+
+
 USAGE
   $ heroku clients:destroy ID
 ```
@@ -55,6 +64,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 show details of an oauth client
 
 ```
+show details of an oauth client
+
+
 USAGE
   $ heroku clients:info ID
 
@@ -70,6 +82,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 rotate OAuth client secret
 
 ```
+rotate OAuth client secret
+
+
 USAGE
   $ heroku clients:rotate ID
 
@@ -85,6 +100,9 @@ _See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5
 update OAuth client
 
 ```
+update OAuth client
+
+
 USAGE
   $ heroku clients:update ID
 

@@ -10,6 +10,8 @@ status of the Heroku platform
 display current status of the Heroku platform
 
 ```
+display current status of the Heroku platform
+
 USAGE
   $ heroku status
 

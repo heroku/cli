@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
-  "version": "7.63.2",
+  "version": "7.64.0",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -51,6 +51,5 @@
     "prepack": "oclif-dev manifest",
     "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "gitHead": "b9c5a6a93e462832cf9b4ad92f3fdf6f5f3290a8"
+  }
 }
