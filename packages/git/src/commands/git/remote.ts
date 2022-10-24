@@ -18,7 +18,6 @@ extra arguments will be passed to git remote add
   static flags = {
     app: flags.string({char: 'a', description: 'the Heroku app to use'}),
     remote: flags.string({char: 'r', description: 'the git remote to create'}),
-    'ssh-git': flags.boolean({description: 'use SSH git protocol'}),
   }
 
   static strict = false
@@ -33,7 +32,7 @@ extra arguments will be passed to git remote add
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     const remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
     const remotes = await git.exec(['remote'])
-    const url = git.url(app.name!, flags['ssh-git'])
+    const url = git.url(app.name!)
     if (remotes.split('\n').includes(remote)) {
       await git.exec(['remote', 'set-url', remote, url].concat(argv))
     } else {

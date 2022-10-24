@@ -2,10 +2,7 @@ Heroku CLI
 ==========
 
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
-
-[![CircleCI](https://circleci.com/gh/heroku/cli.svg?style=svg&circle-token=40b6a6c06ece93bccf45e2c648b39e1db3763c97)](https://circleci.com/gh/heroku/cli/tree/master)
-[![CircleCI](https://circleci.com/gh/heroku/cli-macos-installer/tree/master.svg?style=svg&circle-token=90b3b4392dc1668e97108edabdfc2c6baddc3a17)](https://circleci.com/gh/heroku/cli-macos-installer/tree/master)
-[![Snap Status](https://build.snapcraft.io/badge/heroku/cli.svg)](https://build.snapcraft.io/user/heroku/cli)
+[![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
 [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
 
@@ -86,6 +83,21 @@ Developing
 This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
 The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
+
+Testing
+=======
+
+Run all tests with `lerna run test`.
+
+Run one test, in this case plugin-certs-v5, with `lerna run --scope @heroku-cli/plugin-certs-v5 test`.
+
+## Debugging
+
+Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+
+- Create a new run/debug configuration
+- Select the 'Mocha' type
+- Set the working directory to the directory of the package you are using.  (i.e. ~/Heroku/Repos/cli/packages/certs-v5)
 
 Releasing
 =========

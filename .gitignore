@@ -11,3 +11,7 @@ node_modules
 /packages/cli/docs/*
 
 .vscode
+
+**/.DS_Store
+./idea
+

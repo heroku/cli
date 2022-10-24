@@ -41,4 +41,17 @@ describe('pg:reset', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
       .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
   })
+
+  context('with extensions', () => {
+    beforeEach(() => {
+      pg.put('/client/v11/databases/1/reset', { extensions: ['postgis', 'uuid-ossp'] }).reply(200, {
+        message: 'Reset successful.',
+      })
+    })
+
+    it('resets a db with pre-installed extensions', () => {
+      return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp', extensions: 'uuid-ossp, Postgis' } })
+        .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
+    })
+  })
 })

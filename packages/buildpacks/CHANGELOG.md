@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+**Note:** Version bump only for package @heroku-cli/plugin-buildpacks
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+
+### Bug Fixes
+
+* rm npm shrinkwrap from buildpacks & ci ([4e56398](https://github.com/heroku/cli/commit/4e5639846348c74b180f733c7eb50456f5b273f4))
+
+
+
+
+
 # [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
 
 **Note:** Version bump only for package @heroku-cli/plugin-buildpacks

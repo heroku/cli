@@ -11,7 +11,7 @@ async function run(context, heroku) {
   let db = await fetcher.addon(app, args.database)
   let addon = await heroku.get(`/addons/${encodeURIComponent(db.name)}`)
 
-  if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
+  if (util.essentialPlan(db)) throw new Error("You can’t perform this operation on Essential-tier databases.")
 
   let attachment = await cli.action(
     `Enabling Connection Pooling on ${cli.color.addon(addon.name)} to ${cli.color.app(app)}`,

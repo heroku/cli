@@ -16,9 +16,9 @@ async function run(context, heroku) {
     body: { name: newApp }
   })
   let app = await cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
-  let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
+  let gitUrl = git.gitUrl(app.name)
   cli.log(`${app.web_url} | ${gitUrl}`)
-  
+
   if (!app.web_url.includes('https')) {
     cli.log(`Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.`)
   }
@@ -48,9 +48,6 @@ Git remote heroku updated`,
   needsAuth: true,
   needsApp: true,
   args: [{ name: 'newname' }],
-  flags: [
-    { name: 'ssh-git', description: 'use ssh git protocol instead of https' }
-  ],
   run: cli.command(run)
 }
 

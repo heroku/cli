@@ -20,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-git
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-git/7.60.0 darwin-x64 node-v14.18.2
+@heroku-cli/plugin-git/7.62.0 darwin-x64 node-v16.14.0
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -46,7 +46,6 @@ ARGUMENTS
 OPTIONS
   -a, --app=app        (required) the Heroku app to use
   -r, --remote=remote  the git remote to create, default "heroku"
-  --ssh-git            use SSH git protocol
 
 EXAMPLES
   $ heroku git:clone -a example
@@ -55,7 +54,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.62.0/packages/git/src/commands/git/clone.ts)_
 
 ## `oclif-example git:remote`
 
@@ -68,7 +67,6 @@ USAGE
 OPTIONS
   -a, --app=app        the Heroku app to use
   -r, --remote=remote  the git remote to create
-  --ssh-git            use SSH git protocol
 
 DESCRIPTION
   extra arguments will be passed to git remote add
@@ -81,5 +79,5 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/git/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.62.0/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->
