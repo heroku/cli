@@ -83,7 +83,7 @@
     "qqjs": "0.3.10",
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
-    "ts-node": "^8.0.2",
+    "ts-node": "^10.9.1",
     "typescript": "3.7.5"
   },
   "engines": {

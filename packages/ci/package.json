@@ -47,7 +47,7 @@
     "mocha": "^5",
     "nock": "^9.6.1",
     "nyc": "^13.2.0",
-    "ts-node": "^8.0.2",
+    "ts-node": "^10.9.1",
     "typescript": "3.7.5"
   },
   "engines": {
