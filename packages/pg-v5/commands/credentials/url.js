@@ -12,8 +12,8 @@ async function run(context, heroku) {
 
   let db = await fetcher.addon(app, args.database)
   let cred = flags.name || 'default'
-  if (util.starterPlan(db) && cred !== 'default') {
-    throw new Error(`Only one default credential is supported for Hobby tier databases.`)
+  if (util.essentialPlan(db) && cred !== 'default') {
+    throw new Error('Essential-tier databases support only one default credential.')
   }
   let credInfo = await heroku.get(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}`,
     { host: host(db) })

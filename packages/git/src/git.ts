@@ -39,10 +39,6 @@ export default class Git {
     return this.exec(['config', 'heroku.remote']).catch(() => {})
   }
 
-  sshGitUrl(app: string) {
-    return `git@${vars.gitHost}:${app}.git`
-  }
-
   httpGitUrl(app: string) {
     return `https://${vars.httpGitHost}/${app}.git`
   }
@@ -55,7 +51,7 @@ export default class Git {
     .split(' ')[0]
   }
 
-  url(app: string, ssh: boolean) {
-    return ssh ? this.sshGitUrl(app) : this.httpGitUrl(app)
+  url(app: string) {
+    return this.httpGitUrl(app)
   }
 }
