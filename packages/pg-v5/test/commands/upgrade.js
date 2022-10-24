@@ -38,11 +38,11 @@ describe('pg:upgrade', () => {
     pg.done()
   })
 
-  it('refuses to upgrade hobby dbs', () => {
+  it('refuses to upgrade essential dbs', () => {
     addon.plan = { name: 'heroku-postgresql:hobby-dev' }
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower production databases')
+      .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower databases on at least the Standard tier.')
   })
 
   it('refuses to upgrade non-follower dbs', () => {
@@ -50,7 +50,7 @@ describe('pg:upgrade', () => {
     pg.get('/client/v11/databases/1/upgrade_status').reply(200, {})
 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
-      .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower production databases')
+      .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower databases on at least the Standard tier.')
   })
 
   it('upgrades db', () => {
