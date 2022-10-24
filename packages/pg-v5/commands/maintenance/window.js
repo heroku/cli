@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const { app, args } = context
   const db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
+  if (util.essentialPlan(db)) throw new Error("pg:maintenance isn’t available for Essential-tier databases.")
 
   if (!args.window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/)) throw new Error('Window must be "Day HH:MM" where MM is 00 or 30')
 

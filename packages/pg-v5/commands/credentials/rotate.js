@@ -15,8 +15,8 @@ async function run(context, heroku) {
   if (all && flags.name !== undefined) {
     throw new Error('cannot pass both --all and --name')
   }
-  if (util.starterPlan(db) && cred !== 'default') {
-    throw new Error(`Only one default credential is supported for Hobby tier databases.`)
+  if (util.essentialPlan(db) && cred !== 'default') {
+    throw new Error('Essential-tier databases support only one default credential.')
   }
   if (all && flags.force) {
     warnings.push('This forces rotation on all credentials including the default credential.')
