@@ -27,8 +27,8 @@ let cmd = {
   needsApp: true,
   needsAuth: true,
   description: 'set the stack of an app',
-  examples: `$ heroku stack:set heroku-20 -a myapp
-Setting stack to heroku-20... done
+  examples: `$ heroku stack:set heroku-22 -a myapp
+Setting stack to heroku-22... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`,
   args: [{ name: 'stack' }],

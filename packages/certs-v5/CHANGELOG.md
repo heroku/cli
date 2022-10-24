@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.63.4](https://github.com/heroku/cli/compare/v7.63.0...v7.63.4) (2022-09-14)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.63.3](https://github.com/heroku/cli/compare/v7.63.0...v7.63.3) (2022-09-13)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.63.2](https://github.com/heroku/cli/compare/v7.63.0...v7.63.2) (2022-09-12)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+## [7.63.1](https://github.com/heroku/cli/compare/v7.63.0...v7.63.1) (2022-09-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+
+### Bug Fixes
+
+* **certs-v5:** Removing references to SSL endpoints in the CLI ([#1885](https://github.com/heroku/cli/issues/1885)) ([94c1d98](https://github.com/heroku/cli/commit/94c1d98dfb171824e7aea8c9377ad68dae79caca))
+
+
+
+
+
 # [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5

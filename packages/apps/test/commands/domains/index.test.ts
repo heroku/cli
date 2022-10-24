@@ -90,8 +90,6 @@ describe('domains', () => {
 
   test
   .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [])
   .get('/apps/myapp/domains')
   .reply(200, herokuOnlyDomainsResponse),
   )
@@ -105,8 +103,6 @@ describe('domains', () => {
 
   test
   .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [])
   .get('/apps/myapp/domains')
   .reply(200, herokuAndCustomDomainsResponse),
   )
@@ -124,13 +120,6 @@ describe('domains', () => {
 
   test
   .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [
-    {
-      name: 'allow-multiple-sni-endpoints',
-      enabled: true,
-    },
-  ])
   .get('/apps/myapp/domains')
   .reply(200, herokuDomainWithSniEndpoint),
   )

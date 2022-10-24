@@ -14,7 +14,6 @@ let childProcess = require('child_process')
 
 let certs = require('../../../commands/certs/generate.js')
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 let EventEmitter = require('events').EventEmitter
 
@@ -27,15 +26,10 @@ function mockPrompt (arg, returns) {
 describe('heroku certs:generate', function () {
   beforeEach(function () {
     cli.mockConsole()
-    mockSniFeatureFlag(nock, 'example')
 
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
 
     // stub cli here using sinon
     // if this works, remove proxyquire
@@ -156,12 +150,6 @@ $ heroku certs:update CERTFILE example.org.key
   it('# suggests next step should be certs:update when domain is known in ssl', function () {
     nock.cleanAll()
 
-    mockSniFeatureFlag(nock, 'example')
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint])
-
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
@@ -175,7 +163,7 @@ $ heroku certs:update CERTFILE example.org.key
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku certs:update CERTFILE example.org.key
+$ heroku certs:add CERTFILE example.org.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])
