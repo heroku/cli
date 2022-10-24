@@ -10,5 +10,9 @@ echo "Signed debian packages successfully"
 echo "sha256 sums:"
 sha256sum *Release*
 
-mkdir -p /build/dist/apt
-echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /build/dist/apt/release.key
+# Former CircleCI setup
+# mkdir -p /build/dist/apt
+# echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /build/dist/apt/release.key
+#
+mkdir -p /home/runner/work/cli/cli/packages/cli/dist/apt
+echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /home/runner/work/cli/cli/packages/cli/dist/apt/release.key

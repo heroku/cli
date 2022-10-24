@@ -31,10 +31,6 @@ describe('heroku certs:generate', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
     // stub cli here using sinon
     // if this works, remove proxyquire
     sinon.stub(cli, 'prompt')
@@ -153,10 +149,6 @@ $ heroku certs:update CERTFILE example.org.key
 
   it('# suggests next step should be certs:update when domain is known in ssl', function () {
     nock.cleanAll()
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpoint])
 
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')

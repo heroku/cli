@@ -10,8 +10,7 @@ async function run(context, heroku) {
 
   const db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
-  if (util.legacyPlan(db)) throw new Error('This operation is not supported by Legacy-tier databases.')
+  if (util.essentialPlan(db)) throw new Error("You can’t perform this operation on Essential-tier databases.")
 
   let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, { host: host(db) })
   cli.styledHeader(db.name)
