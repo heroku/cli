@@ -2,14 +2,13 @@
   "name": "@heroku-cli/plugin-apps",
   "version": "7.62.0",
   "author": "Brett @brettgoulder",
+  "main": "src/index.js",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-apps/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "cli-ux": "^5.3.2",
+    "@oclif/core": "^1.19.2",
     "inquirer": "^7.0.1",
     "shell-escape": "^0.2.0",
     "tslib": "^1",
@@ -17,9 +16,7 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "^1",
-    "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
+    "@oclif/test": "^2.2.6",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -53,6 +50,12 @@
   "oclif": {
     "commands": "./lib/commands",
     "bin": "heroku",
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
+    "topicSeparator": " ",
+    "plugins": [
+      "@oclif/plugin-version"
+    ],
     "devPlugins": [
       "@oclif/plugin-help"
     ]

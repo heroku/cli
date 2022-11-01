@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import { CliUx } from '@oclif/core'
 import * as Uri from 'urijs'
 
 function isApexDomain(hostname: string) {
@@ -28,7 +28,7 @@ www.example.com  CNAME            www.example.herokudns.com
     app: flags.app({required: true}),
     remote: flags.remote(),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
-    ...cli.table.flags({except: 'no-truncate'}),
+    ...CliUx.ux.table.flags({except: 'no-truncate'}),
   }
 
   tableConfig = (needsEndpoints: boolean) => {
@@ -77,17 +77,22 @@ www.example.com  CNAME            www.example.herokudns.com
     const customDomains = domains.filter(domain => domain.kind === 'custom')
 
     if (flags.json) {
-      cli.styledJSON(domains)
+      CliUx.ux.styledJSON(domains)
     } else {
-      cli.styledHeader(`${flags.app} Heroku Domain`)
-      cli.log(herokuDomain && herokuDomain.hostname)
+      CliUx.ux.styledHeader(`${flags.app} Heroku Domain`)
+      CliUx.ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
-        cli.log()
-        cli.styledHeader(`${flags.app} Custom Domains`)
-        cli.table(customDomains, this.tableConfig(true), {
-          ...flags,
+        CliUx.ux.log()
+        CliUx.ux.styledHeader(`${flags.app} Custom Domains`)
+        const options: CliUx.Table.Options = {
+          columns: flags.columns,
+          sort: flags.sort,
+          filter: flags.filter,
+          csv: flags.csv,
+          extended: flags.extended,
           'no-truncate': true,
-        })
+        }
+        CliUx.ux.table(customDomains, this.tableConfig(true), options)
       }
     }
   }
