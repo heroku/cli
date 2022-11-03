@@ -2,8 +2,7 @@
   "declaration": false,
   "extends": "../tsconfig",
   "compilerOptions": {
-    "sourceMap": true,
-    "skipLibCheck": true
+    "sourceMap": true
   },
   "include": [
     "./**/*",
