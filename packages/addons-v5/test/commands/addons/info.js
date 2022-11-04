@@ -39,7 +39,7 @@ describe('addons:info', function () {
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:no-free
+Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)
@@ -71,7 +71,7 @@ State:        created
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:no-free
+Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)
@@ -109,7 +109,7 @@ State:        created
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:no-free
+Plan:         heroku-postgresql:hobby-dev
 Price:        free
 State:        created
 `)

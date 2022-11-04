@@ -23,21 +23,21 @@ describe('ps:type', function () {
       .reply(200, app())
       .get('/apps/myapp/formation')
       .reply(200, [{ type: 'web', quantity: 1, size: 'Eco' }, { type: 'worker', quantity: 2, size: 'Eco' }])
-      .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'basic' }, { type: 'worker', size: 'basic' }] })
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Basic' }, { type: 'worker', quantity: 2, size: 'Basic' }])
+      .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'hobby' }, { type: 'worker', size: 'hobby' }] })
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
       .get('/apps/myapp/formation')
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Basic' }, { type: 'worker', quantity: 2, size: 'Basic' }])
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
 
-    return cmd.run({ app: 'myapp', args: ['basic'] })
+    return cmd.run({ app: 'myapp', args: ['hobby'] })
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size   qty  cost/mo
 ──────  ─────  ───  ───────
-web     Basic  1    $7
-worker  Basic  2    $14
+web     Hobby  1    $7
+worker  Hobby  2    $14
 === Dyno Totals
 type   total
 ─────  ─────
-Basic  3
+Hobby  3
 `))
       .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
       .then(() => api.done())

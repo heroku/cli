@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const { sortBy, compact } = require('lodash')
 
-const costs = { 'Eco': 0, 'Basic': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
+const costs = { 'Free': 0, 'Eco': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
 
 let emptyFormationErr = (app) => {
   return new Error(`No process types on ${app}.
@@ -111,7 +111,7 @@ let cmd = {
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 `,
