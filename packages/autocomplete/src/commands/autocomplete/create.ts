@@ -1,4 +1,4 @@
-import {Command} from '@oclif/config'
+import {Command} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 

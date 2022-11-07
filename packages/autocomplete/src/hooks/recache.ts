@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as path from 'path'

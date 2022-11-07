@@ -1,5 +1,5 @@
 import {Config, Plugin} from '@oclif/config'
-import {loadJSON} from '@oclif/config/lib/util'
+import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
 import * as path from 'path'
 

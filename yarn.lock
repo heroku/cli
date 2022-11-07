@@ -1157,7 +1157,7 @@
     debug "^4.1.1"
     semver "^7.3.2"
 
-"@oclif/command@^1", "@oclif/command@^1.5.1", "@oclif/command@^1.5.10", "@oclif/command@^1.5.11", "@oclif/command@^1.5.12", "@oclif/command@^1.5.13", "@oclif/command@^1.5.8":
+"@oclif/command@^1", "@oclif/command@^1.5.1", "@oclif/command@^1.5.10", "@oclif/command@^1.5.11", "@oclif/command@^1.5.12", "@oclif/command@^1.5.13":
   version "1.5.18"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.18.tgz#57125b501fafa155ad280bf8dc9f36a911c44f11"
   integrity sha512-sfLb5UUCwyQ0w9LyQ1/3DUuD/RWnPZk6uvcK5P7pqD65WgRJaOPCqzuNZyb56kPsj6FftRp1UudApNKd7U0KBQ==
@@ -1269,24 +1269,6 @@
     tslib "^2.3.1"
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
-
-"@oclif/dev-cli@1.21.3":
-  version "1.21.3"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.21.3.tgz#229b69d90ef6b9b121e5b2c3a2751ad90c1a417d"
-  integrity sha512-TYhK6kz1skw28VZq6R5anSpwidZl+48jnDdKuwc3bbyaqyCqXQAnDAxliW562iDt3GkdOxpdDMza7O4qtyDSYQ==
-  dependencies:
-    "@oclif/command" "^1.5.10"
-    "@oclif/config" "^1.12.8"
-    "@oclif/errors" "^1.2.2"
-    "@oclif/plugin-help" "^2.1.6"
-    cli-ux "^5.2.0"
-    debug "^4.1.1"
-    fs-extra "^7.0.1"
-    github-slugger "^1.2.1"
-    lodash "^4.17.11"
-    normalize-package-data "^2.5.0"
-    qqjs "^0.3.10"
-    tslib "^1.9.3"
 
 "@oclif/dev-cli@^1", "@oclif/dev-cli@^1.21.3":
   version "1.22.2"
@@ -1427,20 +1409,6 @@
     cli-ux "^5.4.5"
     lodash "^4.17.11"
 
-"@oclif/plugin-help@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.1.6.tgz#ae14cbe2c5cd3eaf5f796d205ffbe66d3e369173"
-  integrity sha512-M4kTERpPWNSM1Mga7K/zo9DWHLCVf2FRaIeXPoytmTPd+0kSvG3TR0Vc1bwx9/cxXoYyYGgEejwNlrfayr8FZw==
-  dependencies:
-    "@oclif/command" "^1.5.8"
-    chalk "^2.4.1"
-    indent-string "^3.2.0"
-    lodash.template "^4.4.0"
-    string-width "^3.0.0"
-    strip-ansi "^5.0.0"
-    widest-line "^2.0.1"
-    wrap-ansi "^4.0.0"
-
 "@oclif/plugin-help@2.2.0", "@oclif/plugin-help@^2", "@oclif/plugin-help@^2.1.6":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.2.0.tgz#8dfc1c80deae47a205fbc70b018747ba93f31cc3"
@@ -1569,7 +1537,7 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-3.0.3.tgz#e679ad10535e31d333f809f7a71335cc9aef1e55"
   integrity sha512-KX8gMYA9ujBPOd1HFsV9e0iEx7Uoj8AG/3YsW4TtWQTg4lJvr82qNm7o/cFQfYRIt+jw7Ew/4oL4A22zOT+IRA==
 
-"@oclif/test@1.2.4", "@oclif/test@^1", "@oclif/test@^1.2.4":
+"@oclif/test@^1", "@oclif/test@^1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.4.tgz#81203074927c00b0804a171e67a45c5968813c01"
   integrity sha512-c0khMdYBGV7t9L7SNbh84t9PmTqfaTp4Jqf3JbWu80fd+SAM03m9o+dvrgx+qv4YbSTum4GpXBZtXHq4AXsD3Q==
@@ -3029,7 +2997,7 @@ cli-ux@4.9.3, cli-ux@^4.9.0, cli-ux@^4.9.1, cli-ux@^4.9.3:
     treeify "^1.1.0"
     tslib "^1.9.3"
 
-cli-ux@^5.2.0, cli-ux@^5.2.1, cli-ux@^5.3.1:
+cli-ux@^5.2.1, cli-ux@^5.3.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.3.1.tgz#3bed8b37c44b03a5d1b9d71d39a69a919a101835"
   integrity sha512-l2MXbitx0FjtHKSbHytuxfxWv6MdWBRh23ItRJjU17cjj0dqZxfAL863tzbR1FIs7jccPllPUvn3QWK6BQg3Pg==

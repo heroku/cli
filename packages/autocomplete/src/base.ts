@@ -1,4 +1,4 @@
-import Command, {flags} from '@heroku-cli/command'
+import {Command, Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -42,7 +42,7 @@ export abstract class AutocompleteBase extends Command {
     fs.write(fd, entry)
   }
 
-  protected findCompletion(cmdId: string, name: string, description = ''): flags.ICompletion | undefined {
+  protected findCompletion(cmdId: string, name: string, description = ''): Interfaces.Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
 }
