@@ -22,7 +22,7 @@ describe('ps:type', function () {
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Free' }, { type: 'worker', quantity: 2, size: 'Free' }])
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Eco' }, { type: 'worker', quantity: 2, size: 'Eco' }])
       .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'hobby' }, { type: 'worker', size: 'hobby' }] })
       .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
       .get('/apps/myapp/formation')
@@ -32,8 +32,8 @@ describe('ps:type', function () {
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size   qty  cost/mo
 ──────  ─────  ───  ───────
-web     Hobby  1    7
-worker  Hobby  2    14
+web     Hobby  1    $7
+worker  Hobby  2    $14
 === Dyno Totals
 type   total
 ─────  ─────
@@ -48,7 +48,7 @@ Hobby  3
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Free' }, { type: 'worker', quantity: 2, size: 'Free' }])
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Eco' }, { type: 'worker', quantity: 2, size: 'Eco' }])
       .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'standard-1x' }, { type: 'worker', size: 'standard-2x' }] })
       .reply(200, [{ type: 'web', quantity: 1, size: 'Standard-1X' }, { type: 'worker', quantity: 2, size: 'Standard-2X' }])
       .get('/apps/myapp/formation')
@@ -58,8 +58,8 @@ Hobby  3
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size         qty  cost/mo
 ──────  ───────────  ───  ───────
-web     Standard-1X  1    25
-worker  Standard-2X  2    100
+web     Standard-1X  1    $25
+worker  Standard-2X  2    $100
 === Dyno Totals
 type         total
 ───────────  ─────
