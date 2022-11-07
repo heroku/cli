@@ -1,22 +1,21 @@
-`heroku ps`
-===========
+# `heroku ps`
 
 Client tools for Heroku Exec
 
-* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
-* [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
-* [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
-* [`heroku ps:copy FILE`](#heroku-pscopy-file)
-* [`heroku ps:exec`](#heroku-psexec)
-* [`heroku ps:forward PORT`](#heroku-psforward-port)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
-* [`heroku ps:resize`](#heroku-psresize)
-* [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
-* [`heroku ps:scale`](#heroku-psscale)
-* [`heroku ps:socks`](#heroku-pssocks)
-* [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
-* [`heroku ps:type`](#heroku-pstype)
-* [`heroku ps:wait`](#heroku-pswait)
+- [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
+- [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
+- [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
+- [`heroku ps:copy FILE`](#heroku-pscopy-file)
+- [`heroku ps:exec`](#heroku-psexec)
+- [`heroku ps:forward PORT`](#heroku-psforward-port)
+- [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
+- [`heroku ps:resize`](#heroku-psresize)
+- [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
+- [`heroku ps:scale`](#heroku-psscale)
+- [`heroku ps:socks`](#heroku-pssocks)
+- [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
+- [`heroku ps:type`](#heroku-pstype)
+- [`heroku ps:wait`](#heroku-pswait)
 
 ## `heroku ps [TYPE [TYPE ...]]`
 
@@ -207,7 +206,7 @@ manage dyno sizes
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 
@@ -223,7 +222,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -356,7 +355,7 @@ manage dyno sizes
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 
@@ -372,7 +371,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
