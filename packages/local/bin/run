@@ -1,4 +1,4 @@
 #!/usr/bin/env node
+const { Command, Errors } = require('@oclif/core')
 
-require('@oclif/command').run()
-.catch(require('@oclif/errors/handle'))
+Command.run().catch(Errors.handle)

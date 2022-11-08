@@ -1,4 +1,4 @@
-import {Command} from '@oclif/command'
+import {Command} from '@oclif/core'
 
 import {fork as foreman} from '../../fork-foreman'
 
