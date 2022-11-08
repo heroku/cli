@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+const { Command, Errors, flush } = require('@oclif/core')
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
-require('@oclif/command').run()
-.then(require('@oclif/command/flush'))
-.catch(require('@oclif/errors/handle'))
+Command.run()
+  .then(flush)
+  .catch(Errors.handle)

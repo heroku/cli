@@ -1,4 +1,4 @@
-import * as Config from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 
 import deps from './deps'
@@ -21,7 +21,7 @@ export default class UserConfig {
   private _init!: Promise<void>
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(private readonly config: Config.IConfig) {}
+  constructor(private readonly config: Interfaces.Config) {}
 
   public get install() {
     return this.body.install || this.genInstall()

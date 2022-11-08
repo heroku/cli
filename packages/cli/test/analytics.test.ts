@@ -1,5 +1,5 @@
 import Login from '@heroku-cli/plugin-auth/src/commands/auth/login'
-import * as Config from '@oclif/config'
+import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'

@@ -1,7 +1,8 @@
-import {Hook} from '@oclif/config'
-import * as path from 'path'
+import {CliUx, Hook} from '@oclif/core'
 import * as fs from 'fs-extra'
-import cli from 'cli-ux'
+import * as path from 'path'
+
+const cli = CliUx.ux
 
 export function checkTos(options: any) {
   const tosPath: string = path.join(options.config.cacheDir, 'terms-of-service')

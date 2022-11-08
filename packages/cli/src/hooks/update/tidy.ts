@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import * as path from 'path'
 
 import deps from '../../deps'

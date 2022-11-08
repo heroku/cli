@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 
 export const brewHook: Hook<'update'> = async function () {
   // autocomplete is now in core, skip windows
