@@ -57,7 +57,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@rasphilco/dev-cli": "^0.1.0",
+    "@heroku-cli/dev-cli": "^1.26.12-0",
     "@oclif/test": "^1.2.4",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",

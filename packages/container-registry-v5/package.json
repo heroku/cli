@@ -19,7 +19,7 @@
     "inquirer": "^6.2.2"
   },
   "devDependencies": {
-    "@rasphilco/dev-cli": "^0.1.0",
+    "@heroku-cli/dev-cli": "^1.26.12-0",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
