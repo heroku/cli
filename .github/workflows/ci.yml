@@ -48,27 +48,28 @@ jobs:
       - run: echo done
         working-directory: /
 
-  # pack_deb:
-  #   if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Install system deps
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y nsis p7zip-full
-  #     - run: sudo mkdir -p /build
-  #     - name: Install package deps
-  #       run: |
-  #         cp yarn.lock packages/cli
-  #         cd packages/cli
-  #         yarn --frozen-lockfile
-  #     - name: Building deb
-  #       run: ./scripts/pack/deb
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: packed-deb
-  #         path: /home/runner/work/cli/cli/packages/cli/dist
+  pack_deb:
+#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis p7zip-full
+      - run: sudo mkdir -p /build
+      - name: Install package deps
+        run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile
+      - name: Building deb
+        run: ./scripts/pack/deb
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
 
   pack_tarballs:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
@@ -92,31 +93,31 @@ jobs:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
 
-  # sign_deb:
-  #   needs: [pack_deb]
-  #   if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-  #   runs-on: ubuntu-latest
-  #   environment: SignDebian
-  #   env:
-  #     HEROKU_DEB_SECRET_KEY: ${{ secrets.HEROKU_DEB_SECRET_KEY }}
-  #     HEROKU_DEB_SIGNING_PASSWORD: ${{ secrets.HEROKU_DEB_SIGNING_PASSWORD }}
-  #     HEROKU_DEB_KEY_ID: ${{ secrets.HEROKU_DEB_KEY_ID }}
-  #     HEROKU_DEB_PUBLIC_KEY: ${{ secrets.HEROKU_DEB_PUBLIC_KEY }}
+  sign_deb:
+    needs: [pack_deb]
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    runs-on: ubuntu-latest
+    environment: SignDebian
+    env:
+      HEROKU_DEB_SECRET_KEY: ${{ secrets.HEROKU_DEB_SECRET_KEY }}
+      HEROKU_DEB_SIGNING_PASSWORD: ${{ secrets.HEROKU_DEB_SIGNING_PASSWORD }}
+      HEROKU_DEB_KEY_ID: ${{ secrets.HEROKU_DEB_KEY_ID }}
+      HEROKU_DEB_PUBLIC_KEY: ${{ secrets.HEROKU_DEB_PUBLIC_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo mkdir -p /build
+      - uses: actions/download-artifact@v3
+        with:
+          name: packed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+      - run: |
+          cd /home/runner/work/cli/cli/packages/cli/dist/deb
+          /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
+      - uses: actions/upload-artifact@v3
+        with:
+          name: signed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - run: sudo mkdir -p /build
-  #     - uses: actions/download-artifact@v3
-  #       with:
-  #         name: packed-deb
-  #         path: /home/runner/work/cli/cli/packages/cli/dist
-  #     - run: |
-  #         cd /home/runner/work/cli/cli/packages/cli/dist/deb
-  #         /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: signed-deb
-  #         path: /home/runner/work/cli/cli/packages/cli/dist
 
   release-deb-and-tarballs:
     needs: [test, acceptance, pack_tarballs]
@@ -131,10 +132,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: sudo mkdir -p /build
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: signed-deb
-      #     path: /home/runner/work/cli/cli/packages/cli/dist
+      - uses: actions/download-artifact@v3
+        with:
+          name: signed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
       - uses: actions/download-artifact@v3
         with:
           name: packed-tarballs
@@ -155,6 +157,7 @@ jobs:
           cd packages/cli
           pwd
           ./scripts/release/tarballs
+          ./scripts/release/deb
       - uses: actions/upload-artifact@v3
         with:
           name: all-dist
