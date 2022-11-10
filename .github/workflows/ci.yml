@@ -5,6 +5,7 @@ on:
 
 jobs:
   test:
+    if: github.ref == 'false'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -21,6 +22,7 @@ jobs:
       - run: yarn test
 
   acceptance:
+    if: github.ref == 'false'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

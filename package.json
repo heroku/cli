@@ -1,6 +1,8 @@
 {
+  "dependencies": {
+    "@rasphilco/dev-cli": "^0.1.0"
+  },
   "devDependencies": {
-    "@rasphilco/dev-cli": "^0.1.0",
     "eslint": "5.13.0",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "^2.16.0",
