@@ -12,6 +12,10 @@ async function main() {
     cwd: CLI_ROOT,
     stdio: 'inherit'
   })
+  await execa('ls', ['./node_modules/.bin'], {
+    cwd: CLI_ROOT,
+    stdio: 'inherit'
+  })
   await execa('./node_modules/@rasphilco/dev-cli/bin/run', ['pack:deb'], {
     cwd: CLI_ROOT,
     stdio: 'inherit'
