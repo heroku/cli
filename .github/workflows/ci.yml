@@ -64,12 +64,11 @@ jobs:
           cd packages/cli
           yarn --frozen-lockfile
       - name: Building deb
-        run: ./scripts/pack/deb
+        run: sudo ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
-
 
   pack_tarballs:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
