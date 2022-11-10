@@ -27,7 +27,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@rasphilco/dev-cli": "^0.1.0",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",

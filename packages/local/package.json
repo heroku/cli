@@ -12,7 +12,7 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
+    "@rasphilco/dev-cli": "^0.1.0",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
