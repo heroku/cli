@@ -64,7 +64,7 @@ jobs:
           cd packages/cli
           yarn --frozen-lockfile
       - name: Building deb
-        run: sudo ./scripts/pack/deb
+        run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
         with:
           name: packed-deb
