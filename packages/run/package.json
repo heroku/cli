@@ -4,6 +4,7 @@
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "@rasphilco/dev-cli": "^0.1.0",
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/notifications": "^1.2.2",
@@ -16,7 +17,6 @@
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
