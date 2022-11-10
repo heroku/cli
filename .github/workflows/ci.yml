@@ -119,7 +119,7 @@ jobs:
 
 
   release-deb-and-tarballs:
-    needs: [test, acceptance, pack_tarballs]
+    needs: [test, acceptance, sign_deb, pack_tarballs]
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
