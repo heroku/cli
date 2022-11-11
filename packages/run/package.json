@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/dev-cli": "^1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
