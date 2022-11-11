@@ -18,7 +18,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           yarn: cache
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn test 
+      - run: yarn test
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -49,7 +49,7 @@ jobs:
         working-directory: /
 
   pack_deb:
-#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
