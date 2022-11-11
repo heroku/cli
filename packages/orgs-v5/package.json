@@ -45,7 +45,7 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
