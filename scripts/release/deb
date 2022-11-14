@@ -10,5 +10,5 @@ qq.run(async () => {
   // Former CircleCI setup
   // await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /cli/packages/cli/dist/apt/release.key "s3://${process.env.HEROKU_S3_BUCKET}/apt/release.key"`)
   //
-  await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /home/runner/cli/cli/packages/cli/dist/apt/release.key "s3://${process.env.HEROKU_S3_BUCKET}/apt/release.key"`)
+  await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /home/runner/work/cli/cli/packages/cli/dist/apt/release.key "s3://${process.env.HEROKU_S3_BUCKET}/apt/release.key"`)
 })
