@@ -13,9 +13,6 @@ add/remove account ssh keys
 display your SSH keys
 
 ```
-display your SSH keys
-
-
 USAGE
   $ heroku keys
 
@@ -29,9 +26,6 @@ OPTIONS
 add an SSH key for a user
 
 ```
-add an SSH key for a user
-if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
-
 USAGE
   $ heroku keys:add [KEY]
 
@@ -57,9 +51,6 @@ EXAMPLES
 remove all SSH keys for current user
 
 ```
-remove all SSH keys for current user
-
-
 USAGE
   $ heroku keys:clear
 ```
@@ -69,9 +60,6 @@ USAGE
 remove an SSH key from the user
 
 ```
-remove an SSH key from the user
-
-
 USAGE
   $ heroku keys:remove KEY
 
