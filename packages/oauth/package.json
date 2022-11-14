@@ -20,7 +20,7 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/test": "^1",
     "@types/chai": "^4",
     "@types/mocha": "^5",
