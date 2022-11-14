@@ -59,16 +59,16 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:create --space my-space --team my-team --region oregon
-       Creating space my-space in team my-team... done
-       === my-space
-       ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
-       Team:       my-team
-       Region:     oregon
-       CIDR:       10.0.0.0/16
-       Data CIDR:  172.23.0.0/20
-       State:      allocating
-       Created at: 2016-01-06T03:23:13Z
+      $ heroku spaces:create --space my-space --team my-team --region oregon
+      Creating space my-space in team my-team... done
+      === my-space
+      ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
+      Team:       my-team
+      Region:     oregon
+      CIDR:       10.0.0.0/16
+      Data CIDR:  172.23.0.0/20
+      State:      allocating
+      Created at: 2016-01-06T03:23:13Z
 ```
 
 ## `heroku spaces:destroy`
@@ -86,8 +86,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:destroy --space my-space
-       Destroying my-space... done
+      $ heroku spaces:destroy --space my-space
+      Destroying my-space... done
 ```
 
 ## `heroku spaces:info`
@@ -118,14 +118,14 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:peering:info example-space
-       === example-space Peering Info
-       AWS Account ID:    012345678910
-       AWS Region:        us-west-2
-       AWS VPC ID:        vpc-baadf00d
-       AWS VPC CIDR:      10.0.0.0/16
-       Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
-       Unavailable CIDRs: 10.1.0.0/16
+      $ heroku spaces:peering:info example-space
+      === example-space Peering Info
+      AWS Account ID:    012345678910
+      AWS Region:        us-west-2
+      AWS VPC ID:        vpc-baadf00d
+      AWS VPC CIDR:      10.0.0.0/16
+      Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
+      Unavailable CIDRs: 10.1.0.0/16
 
   You will use the information provied by this command to establish a peering connection request from your AWS VPC to 
   your private space.
@@ -168,8 +168,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
-       Accepting and configuring peering connection pcx-4bd27022
+      $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
+      Accepting and configuring peering connection pcx-4bd27022
 ```
 
 ## `heroku spaces:peerings:destroy`
@@ -188,8 +188,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
-       Tearing down peering connection pcx-4bd27022
+      $ heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
+      Tearing down peering connection pcx-4bd27022
 ```
 
 ## `heroku spaces:ps`
@@ -220,8 +220,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:rename --from old-space-name --to new-space-name
-       Renaming space old-space-name to new-space-name... done
+      $ heroku spaces:rename --from old-space-name --to new-space-name
+      Renaming space old-space-name to new-space-name... done
 ```
 
 ## `heroku spaces:topology`
@@ -252,8 +252,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:transfer --space=space-name --team=team-name
-       Transferring space-name to team-name... done
+      $ heroku spaces:transfer --space=space-name --team=team-name
+      Transferring space-name to team-name... done
 ```
 
 ## `heroku spaces:vpn:config`
@@ -272,12 +272,12 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:vpn:config --space my-space vpn-connection-name
-       === vpn-connection-name VPN Tunnels
-       VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
-       ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
-       Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
-       Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
+      $ heroku spaces:vpn:config --space my-space vpn-connection-name
+      === vpn-connection-name VPN Tunnels
+      VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
+      ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
+      Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
+      Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
 
   You will use the information provided by this command to establish a Private Space VPN Connection.
 
@@ -308,8 +308,8 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
-       Creating VPN Connection in space my-space... done
-       ▸    Use spaces:vpn:wait to track allocation.
+      Creating VPN Connection in space my-space... done
+      ▸    Use spaces:vpn:wait to track allocation.
 ```
 
 ## `heroku spaces:vpn:connections`
@@ -327,11 +327,11 @@ OPTIONS
 DESCRIPTION
   Example:
 
-     $ heroku spaces:vpn:connections --space my-space
-     === my-space VPN Connections
-     Name    Status  Tunnels
-     ──────  ──────  ───────
-     office  active  UP/UP
+    $ heroku spaces:vpn:connections --space my-space
+    === my-space VPN Connections
+    Name    Status  Tunnels
+    ──────  ──────  ───────
+    office  active  UP/UP
 ```
 
 ## `heroku spaces:vpn:destroy`
@@ -350,8 +350,8 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
-       Tearing down VPN Connection vpn-connection-name in space example-space
+      $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
+      Tearing down VPN Connection vpn-connection-name in space example-space
 ```
 
 ## `heroku spaces:vpn:info`
@@ -370,19 +370,19 @@ OPTIONS
 DESCRIPTION
   Example:
 
-       $ heroku spaces:vpn:info --space my-space vpn-connection-name
-       === vpn-connection-name VPN Tunnel Info
-       Name:           vpn-connection-name
-       ID:             123456789012
-       Public IP:      35.161.69.30
-       Routable CIDRs: 172.16.0.0/16
-       Status:         failed
-       Status Message: supplied CIDR block already in use
-       === my-space Tunnel Info
-       VPN Tunnel  IP Address     Status  Status Last Changed   Details
-       ──────────  ─────────────  ──────  ────────────────────  ──────────────
-       Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
-       Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+      $ heroku spaces:vpn:info --space my-space vpn-connection-name
+      === vpn-connection-name VPN Tunnel Info
+      Name:           vpn-connection-name
+      ID:             123456789012
+      Public IP:      35.161.69.30
+      Routable CIDRs: 172.16.0.0/16
+      Status:         failed
+      Status Message: supplied CIDR block already in use
+      === my-space Tunnel Info
+      VPN Tunnel  IP Address     Status  Status Last Changed   Details
+      ──────────  ─────────────  ──────  ────────────────────  ──────────────
+      Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+      Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
 ```
 
 ## `heroku spaces:vpn:update`
@@ -405,7 +405,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku spaces:vpn:update --name office --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
-       Updating VPN Connection in space my-space... done
+      Updating VPN Connection in space my-space... done
 ```
 
 ## `heroku spaces:vpn:wait`
@@ -476,8 +476,8 @@ DESCRIPTION
 
   Example:
 
-       $ heroku trusted-ips:add --space my-space 192.168.2.0/24
-       Added 192.168.0.1/24 to trusted IP ranges on my-space
+      $ heroku trusted-ips:add --space my-space 192.168.2.0/24
+      Added 192.168.0.1/24 to trusted IP ranges on my-space
 ```
 
 ## `heroku trusted-ips:remove SOURCE`
@@ -497,7 +497,7 @@ DESCRIPTION
 
   Example:
 
-       $ heroku trusted-ips:remove --space my-space 192.168.2.0/24
-       Removed 192.168.2.0/24 from trusted IP ranges on my-space
+      $ heroku trusted-ips:remove --space my-space 192.168.2.0/24
+      Removed 192.168.2.0/24 from trusted IP ranges on my-space
 ```
 <!-- commandsstop -->
