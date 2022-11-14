@@ -30,8 +30,8 @@ function printExtended (dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
-  if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
+async function printAccountQuota (context, heroku, app, account) {
+  if (app.process_tier !== 'eco') {
     return
   }
 
@@ -68,24 +68,12 @@ async function printAccountQuota(context, heroku, app, account) {
   let appHours = Math.floor(appQuotaUsed / 60)
   let appMinutes = Math.floor(appQuotaUsed % 60)
 
-  if (app.process_tier === 'eco') {
-    cli.log(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-    cli.log(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-    cli.log('For more information on Eco dyno hours, see:')
-    cli.log('https://devcenter.heroku.com/articles/eco-dyno-hours')
-    cli.log()
-  }
-
-  if (app.process_tier === 'free') {
-    cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-    cli.log(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-    cli.log('For more information on dyno sleeping and how to upgrade, see:')
-    cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
-    cli.log()
-  }
-
+  cli.log(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
+  cli.log(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
+  cli.log('For more information on Eco dyno hours, see:')
+  cli.log('https://devcenter.heroku.com/articles/eco-dyno-hours')
+  cli.log()
 }
-
 
 function printDynos (dynos) {
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
@@ -113,7 +101,7 @@ function printDynos (dynos) {
   })
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   const { app, flags, args } = context
   const types = args
   const { json, extended } = flags

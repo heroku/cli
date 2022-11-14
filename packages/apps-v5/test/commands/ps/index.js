@@ -41,7 +41,7 @@ function stubAppAndAccount () {
     reqHeaders: { 'Accept': 'application/vnd.heroku+json; version=3.process_tier' }
   })
     .get('/apps/myapp')
-    .reply(200, { process_tier: 'hobby' })
+    .reply(200, { process_tier: 'basic' })
 
   nock('https://api.heroku.com:443')
     .get('/account')
@@ -58,17 +58,17 @@ describe('ps', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [
-        { command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up' },
-        { command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up' }
+        { command: 'npm start', size: 'Basic', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up' },
+        { command: 'bash', size: 'Basic', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up' }
       ])
 
     stubAppAndAccount()
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
       .then(() => expect(cli.stdout).to.equal(`=== run: one-off processes (1)
-run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+run.1 (Basic): up ${hourAgoStr} (~ 1h ago): bash
 
-=== web (Free): npm start (1)
+=== web (Basic): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))
@@ -314,14 +314,14 @@ run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
       reqHeaders: { 'Accept': 'application/vnd.heroku+json; version=3.process_tier' }
     })
       .get('/apps/myapp')
-      .reply(200, { process_tier: 'hobby' })
+      .reply(200, { process_tier: 'basic' })
 
     let dynos = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
-      .reply(200, [{ command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up' }])
+      .reply(200, [{ command: 'bash', size: 'Basic', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up' }])
 
     let ecoExpression = `=== run: one-off processes (1)
-run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+run.1 (Basic): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
