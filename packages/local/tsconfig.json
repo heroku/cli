@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@oclif/test": ["src/oclif-test-override"]
-    },
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",

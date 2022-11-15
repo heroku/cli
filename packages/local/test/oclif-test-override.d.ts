@@ -4,7 +4,7 @@ export * from '@oclif/test/lib'
 
 type Modify<T, R> = Omit<T, keyof R> & R;
 
-export declare const test = Modify<typeof ogTest,  {
+export type test = Modify<typeof ogTest,  {
   stub: {
     output: {
       stubs: any[];

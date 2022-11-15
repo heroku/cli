@@ -1,7 +1,10 @@
 {
   "extends": "../tsconfig",
-
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@oclif/test": ["./oclif-test-override"]
+    },
     "noEmit": true,
   }
 }
