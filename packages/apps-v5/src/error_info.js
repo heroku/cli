@@ -110,11 +110,6 @@ module.exports = [
     'level': 'info'
   },
   {
-    'name': 'H82',
-    'title': 'Free dyno quota exhausted',
-    'level': 'info'
-  },
-  {
     'name': 'H99',
     'title': 'Platform error',
     'level': 'critical'
