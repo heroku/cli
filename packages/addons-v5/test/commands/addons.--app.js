@@ -54,7 +54,7 @@ describe('addons --app', function () {
         util.expectOutput(cli.stdout, `
 Add-on                      Plan       Price      State
 ──────────────────────────  ─────────  ─────────  ────────
-heroku-postgresql (www-db)  no-free    free       created
+heroku-postgresql (www-db)  mini       $5/month   created
  └─ as DATABASE
 
 heroku-redis (www-redis)    premium-2  $60/month  creating
@@ -72,9 +72,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
       ])
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                             Plan     Price  State
-─────────────────────────────────  ───────  ─────  ───────
-heroku-postgresql (www-db)         no-free  free   created
+Add-on                             Plan  Price     State
+─────────────────────────────────  ────  ────────  ───────
+heroku-postgresql (www-db)         mini  $5/month  created
  ├─ as DATABASE
  └─ as WWW_DB on acme-inc-dwh app
 
@@ -91,9 +91,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
 
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout, `
-Add-on                               Plan     Price                         State
-───────────────────────────────────  ───────  ────────────────────────────  ───────
-heroku-postgresql (www-db)           no-free  (billed to acme-inc-www app)  created
+Add-on                               Plan  Price                         State
+───────────────────────────────────  ────  ────────────────────────────  ───────
+heroku-postgresql (www-db)           mini  (billed to acme-inc-www app)  created
  ├─ as WWW_DB
  └─ as DATABASE on acme-inc-www app
 
@@ -171,7 +171,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
           ])
 
           return run('acme-inc-dwh', function () {
-            expect(cli.stdout.indexOf('no-free')).to.be.lt(cli.stdout.indexOf('standard-2'))
+            expect(cli.stdout.indexOf('mini')).to.be.lt(cli.stdout.indexOf('standard-2'))
           })
         })
 
