@@ -13,9 +13,6 @@ manage organization members
 list members of a team
 
 ```
-list members of a team
-
-
 USAGE
   $ heroku members
 
@@ -31,9 +28,6 @@ OPTIONS
 adds a user to a team
 
 ```
-adds a user to a team
-
-
 USAGE
   $ heroku members:add EMAIL
 
@@ -47,9 +41,6 @@ OPTIONS
 removes a user from a team
 
 ```
-removes a user from a team
-
-
 USAGE
   $ heroku members:remove EMAIL
 
@@ -62,9 +53,6 @@ OPTIONS
 sets a members role in a team
 
 ```
-sets a members role in a team
-
-
 USAGE
   $ heroku members:set EMAIL
 

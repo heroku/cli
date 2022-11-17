@@ -13,9 +13,6 @@ manage user access to apps
 list who has access to an app
 
 ```
-list who has access to an app
-
-
 USAGE
   $ heroku access
 
@@ -30,9 +27,6 @@ OPTIONS
 add new users to your app
 
 ```
-add new users to your app
-
-
 USAGE
   $ heroku access:add EMAIL
 
@@ -51,9 +45,6 @@ EXAMPLES
 remove users from a team app
 
 ```
-remove users from a team app
-
-
 USAGE
   $ heroku access:remove EMAIL
 
@@ -70,9 +61,6 @@ EXAMPLES
 update existing collaborators on an team app
 
 ```
-update existing collaborators on an team app
-
-
 USAGE
   $ heroku access:update EMAIL
 

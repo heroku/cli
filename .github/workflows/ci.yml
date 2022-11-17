@@ -51,6 +51,8 @@ jobs:
   pack_deb:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
+    env:
+      HEROKU_AUTHOR: 'Heroku'
     steps:
       - uses: actions/checkout@v3
       - name: Install system deps
