@@ -99,12 +99,12 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
   }
 
   let changes = await parse(context.args)
-    if (changes.length > 0) {
-      await cli.action(`Scaling dynos on ${cli.color.app(app)}`,
-        heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
-      )
-    }
-    await displayFormation()
+  if (changes.length > 0) {
+    await cli.action(`Scaling dynos on ${cli.color.app(app)}`,
+      heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
+    )
+  }
+  await displayFormation()
 }
 
 let cmd = {
