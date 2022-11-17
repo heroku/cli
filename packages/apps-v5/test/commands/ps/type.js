@@ -17,7 +17,12 @@ describe('ps:type', function () {
     nock.cleanAll()
   })
 
-  it('switches to basic dynos', function () {
+  it('errors if free flag is passed', function () {
+    return cmd.run({ app: 'myapp', args: ['free'] })
+      .then(() => expect(cli.stderr).to.include('Free dynos are no longer available.'))
+  })
+
+  it('switches to hobby dynos', function () {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, app())

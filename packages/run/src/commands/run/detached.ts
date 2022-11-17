@@ -43,6 +43,10 @@ export default class RunDetached extends Command {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
 
+    if (opts.size === 'free') {
+      return cli.error('Free dynos are no longer available.')
+    }
+
     const dyno = new Dyno(opts)
 
     await dyno.start()

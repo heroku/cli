@@ -1,7 +1,7 @@
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions'
-
+import cli from 'cli-ux'
 import Dyno from '../lib/dyno'
 import {buildCommand} from '../lib/helpers'
 
@@ -25,6 +25,10 @@ export default class RunConsole extends Command {
       size: flags.size,
       env: flags.env,
       attach: true,
+    }
+
+    if (opts.size === 'free') {
+      return cli.error('Free dynos are no longer available.')
     }
 
     const dyno = new Dyno(opts)
