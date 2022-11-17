@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const { sortBy, compact } = require('lodash')
 
-const costs = { 'Free': 0, 'Eco': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
+const costs = { 'Eco': 0, 'Basic': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
 
 let emptyFormationErr = (app) => {
   return new Error(`No process types on ${app}.
@@ -11,7 +11,7 @@ Upload a Procfile to add process types.
 https://devcenter.heroku.com/articles/procfile`)
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   let app = context.app
 
   let parse = async function (args) {
@@ -40,28 +40,28 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
 
     formation = sortBy(formation, 'type')
 
-    let dynoTotals = [];
-    let isShowingEcoCostMessage = false;
+    let dynoTotals = []
+    let isShowingEcoCostMessage = false
 
     formation.forEach((d) => {
-      if (d.size === 'Eco' && d.quantity !== 0) {
-        isShowingEcoCostMessage = true;
+      if (d.size === 'Eco') {
+        isShowingEcoCostMessage = true
       }
 
       if (shielded) {
         d.size = d.size.replace('Private-', 'Shield-')
       }
-      if(d.size in dynoTotals) {
-        dynoTotals[d.size] += d.quantity;
+      if (d.size in dynoTotals) {
+        dynoTotals[d.size] += d.quantity
       } else {
-        dynoTotals[d.size] = d.quantity;
+        dynoTotals[d.size] = d.quantity
       }
-    });
+    })
 
     dynoTotals = Object.keys(dynoTotals).map((k) => ({
-      type: cli.color.green(k), 
+      type: cli.color.green(k),
       total: cli.color.yellow(dynoTotals[k])
-    }));
+    }))
 
     formation = formation.map((d) => ({
       type: cli.color.green(d.type),
@@ -70,10 +70,9 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
       'cost/mo': costs[d.size] ? '$' + (costs[d.size] * d.quantity).toString() : ''
     }))
 
-
     if (formation.length === 0) throw emptyFormationErr()
 
-    cli.styledHeader('Dyno Types');
+    cli.styledHeader('Dyno Types')
     cli.table(formation, {
       columns: [
         { key: 'type' },
@@ -83,7 +82,7 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
       ]
     })
 
-    cli.styledHeader('Dyno Totals');
+    cli.styledHeader('Dyno Totals')
 
     cli.table(dynoTotals, {
       columns: [
@@ -111,7 +110,7 @@ let cmd = {
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
-Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
+Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 `,

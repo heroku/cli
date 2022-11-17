@@ -17,27 +17,27 @@ describe('ps:type', function () {
     nock.cleanAll()
   })
 
-  it('switches to hobby dynos', function () {
+  it('switches to basic dynos', function () {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
       .reply(200, [{ type: 'web', quantity: 1, size: 'Eco' }, { type: 'worker', quantity: 2, size: 'Eco' }])
-      .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'hobby' }, { type: 'worker', size: 'hobby' }] })
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
+      .patch('/apps/myapp/formation', { updates: [{ type: 'web', size: 'basic' }, { type: 'worker', size: 'basic' }] })
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Basic' }, { type: 'worker', quantity: 2, size: 'Basic' }])
       .get('/apps/myapp/formation')
-      .reply(200, [{ type: 'web', quantity: 1, size: 'Hobby' }, { type: 'worker', quantity: 2, size: 'Hobby' }])
+      .reply(200, [{ type: 'web', quantity: 1, size: 'Basic' }, { type: 'worker', quantity: 2, size: 'Basic' }])
 
-    return cmd.run({ app: 'myapp', args: ['hobby'] })
+    return cmd.run({ app: 'myapp', args: ['basic'] })
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
 type    size   qty  cost/mo
 ──────  ─────  ───  ───────
-web     Hobby  1    $7
-worker  Hobby  2    $14
+web     Basic  1    $7
+worker  Basic  2    $14
 === Dyno Totals
 type   total
 ─────  ─────
-Hobby  3
+Basic  3
 `))
       .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
       .then(() => api.done())
