@@ -10,9 +10,6 @@ open a psql shell to the database
 open a psql shell to the database
 
 ```
-open a psql shell to the database
-
-
 USAGE
   $ heroku psql [DATABASE]
 

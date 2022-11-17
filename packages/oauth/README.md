@@ -19,7 +19,7 @@ $ npm install -g @heroku-cli/plugin-oauth
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-oauth/7.60.0 darwin-x64 node-v14.18.2
+@heroku-cli/plugin-oauth/7.66.3 darwin-x64 node-v16.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -59,7 +59,7 @@ EXAMPLE
   $ heroku authorizations
 ```
 
-_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/index.ts)_
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/index.ts)_
 
 ## `heroku authorizations:create`
 
@@ -80,7 +80,7 @@ EXAMPLE
   $ heroku authorizations:create --description "For use with Anvil"
 ```
 
-_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/create.ts)_
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/create.ts)_
 
 ## `heroku authorizations:info ID`
 
@@ -94,7 +94,7 @@ OPTIONS
   -j, --json  output in json format
 ```
 
-_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/info.ts)_
+_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/info.ts)_
 
 ## `heroku authorizations:revoke ID`
 
@@ -108,7 +108,7 @@ EXAMPLE
   $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
-_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/revoke.ts)_
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/revoke.ts)_
 
 ## `heroku authorizations:rotate ID`
 
@@ -119,7 +119,7 @@ USAGE
   $ heroku authorizations:rotate ID
 ```
 
-_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/rotate.ts)_
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/rotate.ts)_
 
 ## `heroku authorizations:update ID`
 
@@ -135,7 +135,7 @@ OPTIONS
   --client-secret=client-secret  secret of OAuth client to set
 ```
 
-_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/authorizations/update.ts)_
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/authorizations/update.ts)_
 
 ## `heroku clients`
 
@@ -149,7 +149,7 @@ OPTIONS
   -j, --json  output in json format
 ```
 
-_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/index.ts)_
+_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/index.ts)_
 
 ## `heroku clients:create NAME REDIRECT_URI`
 
@@ -167,7 +167,7 @@ EXAMPLE
   $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
-_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/create.ts)_
+_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/create.ts)_
 
 ## `heroku clients:destroy ID`
 
@@ -178,7 +178,7 @@ USAGE
   $ heroku clients:destroy ID
 ```
 
-_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/destroy.ts)_
+_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/destroy.ts)_
 
 ## `heroku clients:info ID`
 
@@ -196,7 +196,7 @@ EXAMPLE
   $ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
 ```
 
-_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/info.ts)_
+_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/info.ts)_
 
 ## `heroku clients:rotate ID`
 
@@ -211,7 +211,7 @@ OPTIONS
   -s, --shell  output in shell format
 ```
 
-_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/rotate.ts)_
+_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/rotate.ts)_
 
 ## `heroku clients:update ID`
 
@@ -230,7 +230,7 @@ EXAMPLE
   https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
-_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/clients/update.ts)_
+_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/clients/update.ts)_
 
 ## `heroku help [COMMAND]`
 
@@ -261,7 +261,7 @@ OPTIONS
   -j, --json  output in json format
 ```
 
-_See code: [src/commands/sessions/index.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/sessions/index.ts)_
+_See code: [src/commands/sessions/index.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/sessions/index.ts)_
 
 ## `heroku sessions:destroy ID`
 
@@ -272,5 +272,5 @@ USAGE
   $ heroku sessions:destroy ID
 ```
 
-_See code: [src/commands/sessions/destroy.ts](https://github.com/heroku/cli/blob/v7.60.0/src/commands/sessions/destroy.ts)_
+_See code: [src/commands/sessions/destroy.ts](https://github.com/heroku/cli/blob/v7.66.3/src/commands/sessions/destroy.ts)_
 <!-- commandsstop -->

@@ -10,9 +10,6 @@ display notifications
 display notifications
 
 ```
-display notifications
-
-
 USAGE
   $ heroku notifications
 
