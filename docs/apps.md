@@ -26,9 +26,6 @@ manage apps on Heroku
 list your apps
 
 ```
-list your apps
-
-
 USAGE
   $ heroku apps
 
@@ -54,9 +51,6 @@ EXAMPLES
 creates a new app
 
 ```
-creates a new app
-
-
 USAGE
   $ heroku apps:create [APP]
 
@@ -103,9 +97,6 @@ EXAMPLES
 permanently destroy an app
 
 ```
-permanently destroy an app
-This will also destroy all add-ons on the app.
-
 USAGE
   $ heroku apps:destroy
 
@@ -123,9 +114,6 @@ DESCRIPTION
 view app errors
 
 ```
-view app errors
-
-
 USAGE
   $ heroku apps:errors
 
@@ -143,9 +131,6 @@ OPTIONS
 list favorited apps
 
 ```
-list favorited apps
-
-
 USAGE
   $ heroku apps:favorites
 
@@ -158,9 +143,6 @@ OPTIONS
 favorites an app
 
 ```
-favorites an app
-
-
 USAGE
   $ heroku apps:favorites:add
 
@@ -174,9 +156,6 @@ OPTIONS
 unfavorites an app
 
 ```
-unfavorites an app
-
-
 USAGE
   $ heroku apps:favorites:remove
 
@@ -190,18 +169,6 @@ OPTIONS
 show detailed app information
 
 ```
-show detailed app information
-$ heroku apps:info
-=== example
-Git URL:   https://git.heroku.com/example.git
-Repo Size: 5M
-...
-
-$ heroku apps:info --shell
-git_url=https://git.heroku.com/example.git
-repo_size=5000000
-...
-
 USAGE
   $ heroku apps:info
 
@@ -229,9 +196,6 @@ DESCRIPTION
 add yourself to a team app
 
 ```
-add yourself to a team app
-
-
 USAGE
   $ heroku apps:join
 
@@ -245,9 +209,6 @@ OPTIONS
 remove yourself from a team app
 
 ```
-remove yourself from a team app
-
-
 USAGE
   $ heroku apps:leave
 
@@ -261,9 +222,6 @@ OPTIONS
 prevent team members from joining an app
 
 ```
-prevent team members from joining an app
-
-
 USAGE
   $ heroku apps:lock
 
@@ -277,9 +235,6 @@ OPTIONS
 open the app in a web browser
 
 ```
-open the app in a web browser
-
-
 USAGE
   $ heroku apps:open [PATH]
 
@@ -300,9 +255,6 @@ EXAMPLES
 rename an app
 
 ```
-rename an app
-This will locally update the git remote if it is set to the old app.
-
 USAGE
   $ heroku apps:rename NEWNAME
 
@@ -324,9 +276,6 @@ EXAMPLES
 show the list of available stacks
 
 ```
-show the list of available stacks
-
-
 USAGE
   $ heroku apps:stacks
 
@@ -340,9 +289,6 @@ OPTIONS
 set the stack of an app
 
 ```
-set the stack of an app
-
-
 USAGE
   $ heroku apps:stacks:set STACK
 
@@ -362,9 +308,6 @@ EXAMPLES
 transfer applications to another user or team
 
 ```
-transfer applications to another user or team
-
-
 USAGE
   $ heroku apps:transfer RECIPIENT
 
@@ -393,9 +336,6 @@ EXAMPLES
 unlock an app so any team member can join
 
 ```
-unlock an app so any team member can join
-
-
 USAGE
   $ heroku apps:unlock
 

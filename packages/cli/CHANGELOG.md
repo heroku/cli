@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.66.4](https://github.com/heroku/cli/compare/v7.66.3...v7.66.4) (2022-11-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds to run in ci round 2 ([#2132](https://github.com/heroku/cli/issues/2132)) ([bd32cdc](https://github.com/heroku/cli/commit/bd32cdcee3a7a214b6aea6f309aae1a8ac2ae65e))
+
+
+
+
+
+## [7.66.2](https://github.com/heroku/cli/compare/v7.66.0...v7.66.2) (2022-11-10)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.66.1](https://github.com/heroku/cli/compare/v7.66.0...v7.66.1) (2022-11-09)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.66.0](https://github.com/heroku/cli/compare/v7.65.0...v7.66.0) (2022-11-07)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.65.0](https://github.com/heroku/cli/compare/v7.64.0...v7.65.0) (2022-10-10)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 # [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
 
 **Note:** Version bump only for package heroku
