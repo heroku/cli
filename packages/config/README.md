@@ -20,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/7.60.0 darwin-x64 node-v14.18.2
+@heroku-cli/plugin-config/7.66.3 darwin-x64 node-v16.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -49,7 +49,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v7.66.3/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -81,7 +81,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.66.3/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -101,7 +101,7 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.66.3/packages/config/src/commands/config/get.ts)_
 
 ## `heroku config:unset`
 
@@ -125,5 +125,5 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/config/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v7.66.3/packages/config/src/commands/config/unset.ts)_
 <!-- commandsstop -->

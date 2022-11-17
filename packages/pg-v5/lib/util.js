@@ -124,9 +124,7 @@ exports.getConnectionDetails = function (attachment, config) {
   return payload
 }
 
-exports.starterPlan = a => !!a.plan.name.match(/(dev|basic)$/)
-
-exports.legacyPlan = a => !!a.plan.name.match(/^legacy/)
+exports.essentialPlan = a => !!a.plan.name.match(/(dev|basic|mini)$/)
 
 exports.bastionKeyPlan = a => !!a.plan.name.match(/private/)
 

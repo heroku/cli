@@ -10,7 +10,7 @@ async function run(context, heroku) {
   const { app, args, flags } = context
 
   let db = await fetcher.addon(app, args.database)
-  if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
+  if (util.essentialPlan(db)) throw new Error("You can’t perform this operation on Essential-tier databases.")
 
   let data = {
     name: flags.name
