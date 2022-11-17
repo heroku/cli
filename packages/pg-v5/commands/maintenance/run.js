@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const { app, args, flags } = context
   const db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
+  if (util.essentialPlan(db)) throw new Error("pg:maintenance isn’t available for Essential-tier databases.")
   await cli.action(`Starting maintenance for ${cli.color.addon(db.name)}`, async function () {
     if (!flags.force) {
       let appInfo = await heroku.get(`/apps/${app}`)
