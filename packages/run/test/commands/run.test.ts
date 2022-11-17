@@ -17,6 +17,13 @@ describeOrSkip('@acceptance run', () => {
     })
   }
 
+  test
+  .command(['run', '--size=free', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
+  .catch(error => {
+    expect(error.message).to.include('Free dynos are no longer available.')
+  })
+  .it('errors if free flag is passed')
+
   testFactory()
   .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
   .it('runs a command', async ctx => {

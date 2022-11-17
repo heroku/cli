@@ -94,6 +94,10 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     if (isShowingEcoCostMessage) cli.log('\n$5 (flat monthly fee, shared across all Eco dynos)')
   }
 
+  if (context.args[0] === 'free') {
+    return cli.error('Free dynos are no longer available.')
+  }
+
   let changes = await parse(context.args)
   if (changes.length > 0) {
     await cli.action(`Scaling dynos on ${cli.color.app(app)}`,

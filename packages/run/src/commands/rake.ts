@@ -34,6 +34,10 @@ export default class RunRake extends Command {
       attach: true,
     }
 
+    if (opts.size === 'free') {
+      return cli.error('Free dynos are no longer available.')
+    }
+
     const dyno = new Dyno(opts)
     try {
       await dyno.start()

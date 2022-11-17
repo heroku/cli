@@ -15,4 +15,11 @@ describe('console', () => {
   .it('runs console', () => {
     expect(dynoOpts.command).to.equal('console')
   })
+
+  test
+  .command(['run', 'console', '--size=free', '--app=heroku-cli-ci-smoke-test-app'])
+  .catch(error => {
+    expect(error.message).to.include('Free dynos are no longer available.')
+  })
+  .it('errors if free flag is passed')
 })
