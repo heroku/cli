@@ -31,7 +31,7 @@ function printExtended (dynos) {
 }
 
 async function printAccountQuota (context, heroku, app, account) {
-  if (app.process_tier !== 'eco') {
+  if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
 
