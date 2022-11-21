@@ -53,10 +53,6 @@ export default class Run extends Command {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
 
-    if (opts.size === 'free') {
-      return cli.error('Free dynos are no longer available.')
-    }
-
     await this.heroku.get<Heroku.Account>('/account')
     const dyno = new Dyno(opts)
     try {

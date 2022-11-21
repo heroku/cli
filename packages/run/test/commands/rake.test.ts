@@ -15,11 +15,4 @@ describe('rake', () => {
   .it('runs rake', () => {
     expect(dynoOpts.command).to.equal('rake test')
   })
-
-  test
-  .command(['rake', '--size=free', '--app=heroku-cli-ci-smoke-test-app', 'test'])
-  .catch(error => {
-    expect(error.message).to.include('Free dynos are no longer available.')
-  })
-  .it('errors if free flag is passed')
 })
