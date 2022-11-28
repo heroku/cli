@@ -1,4 +1,4 @@
-import { CliUx } from '@oclif/core'
+require('@oclif/core')
 const {default: c} = require('@heroku-cli/color')
 
 const COLORS = [
