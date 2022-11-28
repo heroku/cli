@@ -10,8 +10,6 @@ display autocomplete installation instructions
 display autocomplete installation instructions
 
 ```
-display autocomplete installation instructions
-
 USAGE
   $ heroku autocomplete [SHELL]
 
@@ -28,4 +26,4 @@ EXAMPLES
   $ heroku autocomplete --refresh-cache
 ```
 
-_See code: [@heroku-cli/plugin-autocomplete](https://github.com/heroku/cli/blob/v7.60.0/packages/autocomplete/src/commands/autocomplete/index.ts)_
+_See code: [@heroku-cli/plugin-autocomplete](https://github.com/heroku/cli/blob/v7.66.3/packages/autocomplete/src/commands/autocomplete/index.ts)_

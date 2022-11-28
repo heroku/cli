@@ -2,8 +2,8 @@
 
 set -e
 
-if [[ "${CIRCLECI:-}" != "true" ]]; then
-  echo "skipping github setup since not on circle"
+if [[ "${CI:-}" != "true" ]]; then
+  echo "skipping github setup since not on CI"
   exit
 fi
 

@@ -105,21 +105,21 @@ OPTIONS
 
 DESCRIPTION
   Set the configuration to enable keyspace notification events:
-       K     Keyspace events, published with __keyspace@<db>__ prefix.
-       E     Keyevent events, published with __keyevent@<db>__ prefix.
-       g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
-       $     String commands
-       l     List commands
-       s     Set commands
-       h     Hash commands
-       z     Sorted set commands
-       t     Stream commands
-       x     Expired events (events generated every time a key expires)
-       e     Evicted events (events generated when a key is evicted for maxmemory)
-       m     Key miss events (events generated when a key that doesn't exist is accessed)
-       A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
+      K     Keyspace events, published with __keyspace@<db>__ prefix.
+      E     Keyevent events, published with __keyevent@<db>__ prefix.
+      g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
+      $     String commands
+      l     List commands
+      s     Set commands
+      h     Hash commands
+      z     Sorted set commands
+      t     Stream commands
+      x     Expired events (events generated every time a key expires)
+      e     Evicted events (events generated when a key is evicted for maxmemory)
+      m     Key miss events (events generated when a key that doesn't exist is accessed)
+      A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
 
-       pass an empty string ('') to disable keyspace notifications
+      pass an empty string ('') to disable keyspace notifications
 ```
 
 ## `heroku redis:maintenance [DATABASE]`
@@ -157,14 +157,14 @@ OPTIONS
 DESCRIPTION
   Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 
-       noeviction      # returns errors when memory limit is reached
-       allkeys-lfu     # removes less frequently used keys first
-       volatile-lfu    # removes less frequently used keys first that have an expiry set
-       allkeys-lru     # removes less recently used keys first
-       volatile-lru    # removes less recently used keys first that have an expiry set
-       allkeys-random  # evicts random keys
-       volatile-random # evicts random keys but only those that have an expiry set
-       volatile-ttl    # only evicts keys with an expiry set and a short TTL
+      noeviction      # returns errors when memory limit is reached
+      allkeys-lfu     # removes less frequently used keys first
+      volatile-lfu    # removes less frequently used keys first that have an expiry set
+      allkeys-lru     # removes less recently used keys first
+      volatile-lru    # removes less recently used keys first that have an expiry set
+      allkeys-random  # evicts random keys
+      volatile-random # evicts random keys but only those that have an expiry set
+      volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
 ## `heroku redis:promote DATABASE`
@@ -208,8 +208,8 @@ OPTIONS
   -s, --seconds=seconds  set timeout value
 
 DESCRIPTION
-  Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be 
-  closed.
+  Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be
+   closed.
 ```
 
 ## `heroku redis:upgrade [DATABASE]`
