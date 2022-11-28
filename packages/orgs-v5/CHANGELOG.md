@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-orgs-v5

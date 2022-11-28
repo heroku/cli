@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-container-registry-v5",
   "description": "Use containers to build and deploy Heroku apps",
-  "version": "7.60.0",
+  "version": "7.66.3",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -19,8 +19,7 @@
     "inquirer": "^6.2.2"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.2.0",
+    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
