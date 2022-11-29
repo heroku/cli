@@ -1,7 +1,7 @@
+import {Flags, CliUx } from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
@@ -17,11 +17,11 @@ export default class DomainsAdd extends Command {
   static examples = ['heroku domains:add www.example.com']
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: Flags.help({char: 'h'}),
     app: flags.app({required: true}),
-    cert: flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
-    json: flags.boolean({description: 'output in json format', char: 'j'}),
-    wait: flags.boolean(),
+    cert: Flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
+    json: Flags.boolean({description: 'output in json format', char: 'j'}),
+    wait: Flags.boolean(),
     remote: flags.remote(),
   }
 
@@ -71,7 +71,7 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(DomainsAdd)
+    const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
     const domainCreatePayload: DomainCreatePayload = {
@@ -81,7 +81,9 @@ export default class DomainsAdd extends Command {
 
     let certs: Array<Heroku.SniEndpoint> = []
 
-    cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+    if (flags.app) { 
+      CliUx.ux.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+    }
     if (flags.cert) {
       domainCreatePayload.sni_endpoint = flags.cert
     } else {
@@ -91,14 +93,16 @@ export default class DomainsAdd extends Command {
     }
 
     if (certs.length > 1) {
-      cli.action.stop('resolving SNI endpoint')
+      CliUx.ux.action.stop('resolving SNI endpoint')
       const certSelection = await this.certSelect(certs)
 
       if (certSelection) {
         domainCreatePayload.sni_endpoint = certSelection
       }
 
-      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+      if (flags.app) {
+        CliUx.ux.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+      }
     }
 
     try {
@@ -107,25 +111,25 @@ export default class DomainsAdd extends Command {
       })
 
       if (flags.json) {
-        cli.styledJSON(domain)
+        CliUx.ux.styledJSON(domain)
       } else {
-        cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
+        CliUx.ux.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
     For help, see https://devcenter.heroku.com/articles/custom-domains`)
         if (domain.status !== 'none') {
-          if (flags.wait) {
+          if (flags.wait && flags.app) {
             await waitForDomain(flags.app, this.heroku, domain)
           } else {
-            cli.log('')
-            cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
+            CliUx.ux.log('')
+            CliUx.ux.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
             const command = `heroku domains:wait ${shellescape([hostname])}`
-            cli.log(`Run ${color.cmd(command)} to wait for completion`)
+            CliUx.ux.log(`Run ${color.cmd(command)} to wait for completion`)
           }
         }
       }
-    } catch (error) {
-      cli.error(error)
+    } catch (error: any) {
+      CliUx.ux.error(error)
     } finally {
-      cli.action.stop()
+      CliUx.ux.action.stop()
     }
   }
 }

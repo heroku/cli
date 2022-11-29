@@ -7,8 +7,7 @@
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
+    "@oclif/core": "^1.20.4",
     "cli-ux": "^5.3.2",
     "inquirer": "^7.0.1",
     "shell-escape": "^0.2.0",
@@ -17,8 +16,6 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "^1",
-    "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
     "@types/mocha": "^5",

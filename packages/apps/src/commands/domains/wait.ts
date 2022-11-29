@@ -1,3 +1,4 @@
+import {Flags} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -7,7 +8,7 @@ export default class DomainsWait extends Command {
   static description = 'wait for domain to be active for an app'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: Flags.help({char: 'h'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
@@ -15,7 +16,7 @@ export default class DomainsWait extends Command {
   static args = [{name: 'hostname'}]
 
   async run() {
-    const {args, flags} = this.parse(DomainsWait)
+    const {args, flags} = await this.parse(DomainsWait)
 
     let domains
     if (args.hostname) {
@@ -26,9 +27,11 @@ export default class DomainsWait extends Command {
       domains = apiDomains.filter(domain => domain.status === 'pending')
     }
 
-    for (const domain of domains) {
-      // eslint-disable-next-line no-await-in-loop
-      await waitForDomain(flags.app, this.heroku, domain)
+    if (flags.app){
+      for (const domain of domains) {
+        // eslint-disable-next-line no-await-in-loop
+        await waitForDomain(flags.app, this.heroku, domain)
+      }
     }
   }
 }
