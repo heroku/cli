@@ -88,7 +88,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku run bash
-  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+  $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
 _See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.67.0/src/commands/run/index.ts)_
