@@ -14,7 +14,7 @@ export default class Run extends Command {
 
   static examples = [
     '$ heroku run bash',
-    '$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2',
+    '$ heroku run -s basic -- myscript.sh -a arg1 -s arg2',
   ]
 
   // This is to allow for variable length arguments
