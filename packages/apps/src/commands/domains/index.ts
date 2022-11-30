@@ -1,7 +1,7 @@
 import {Flags, CliUx } from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as Uri from 'urijs'
+import Uri from 'urijs'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false

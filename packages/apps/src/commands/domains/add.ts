@@ -3,8 +3,8 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {prompt} from 'inquirer'
-import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
+const shellescape = require('shell-escape')
 
 interface DomainCreatePayload {
   hostname: string;
@@ -126,8 +126,10 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error: any) {
-      CliUx.ux.error(error)
+    } catch (error) {
+      if (error instanceof Error) {
+        CliUx.ux.error(error)
+      }
     } finally {
       CliUx.ux.action.stop()
     }

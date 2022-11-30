@@ -27,8 +27,10 @@ export default class DomainsUpdate extends Command {
       await this.heroku.patch<string>(`/apps/${flags.app}/domains/${hostname}`, {
         body: {sni_endpoint: flags.cert},
       })
-    } catch (error: any) {
-      CliUx.ux.error(error)
+    } catch (error) {
+      if (error instanceof Error) {
+        CliUx.ux.error(error)
+      }
     } finally {
       CliUx.ux.action.stop()
     }
