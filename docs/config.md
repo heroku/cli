@@ -18,7 +18,7 @@ USAGE
   $ heroku config
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -j, --json           output config vars in json format
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config vars in shell format
@@ -38,7 +38,7 @@ ARGUMENTS
   KEY  edit a single key
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -67,7 +67,7 @@ USAGE
   $ heroku config:get KEY...
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config vars in shell format
 
@@ -87,7 +87,7 @@ USAGE
   $ heroku config:set
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -110,7 +110,7 @@ USAGE
   $ heroku config:unset
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 ALIASES

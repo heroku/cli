@@ -47,7 +47,7 @@ ARGUMENTS
   PIPELINE  name of pipeline
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
 
@@ -93,7 +93,7 @@ ARGUMENTS
   NAME  name of pipeline (defaults to basename of the app)
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
   -t, --team=team      the team which will own the apps
@@ -137,7 +137,7 @@ USAGE
   $ heroku pipelines:diff
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -192,7 +192,7 @@ USAGE
   $ heroku pipelines:promote
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -t, --to=to          comma separated list of apps to promote to
 
@@ -211,7 +211,7 @@ USAGE
   $ heroku pipelines:remove
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -291,7 +291,7 @@ USAGE
   $ heroku pipelines:update
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    (required) new stage of app
 

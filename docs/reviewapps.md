@@ -15,7 +15,7 @@ USAGE
   $ heroku reviewapps:disable
 
 OPTIONS
-  -a, --app=app            parent app used by review apps
+  -a, --app=app            [default: z-test-app-1] parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
   -r, --remote=remote      git remote of app to use
   --no-autodeploy          disable autodeployments
@@ -37,7 +37,7 @@ USAGE
   $ heroku reviewapps:enable
 
 OPTIONS
-  -a, --app=app            parent app used by review apps
+  -a, --app=app            [default: z-test-app-1] parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
   -r, --remote=remote      git remote of app to use
   --autodeploy             autodeploy the review app

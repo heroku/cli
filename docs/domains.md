@@ -20,7 +20,7 @@ USAGE
   $ heroku domains
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -j, --json           output in json format
   -r, --remote=remote  git remote of app to use
@@ -54,7 +54,7 @@ USAGE
   $ heroku domains:add HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -c, --cert=cert      the name of the SSL cert you want to use for this domain
   -h, --help           show CLI help
   -j, --json           output in json format
@@ -76,7 +76,7 @@ USAGE
   $ heroku domains:clear
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -r, --remote=remote  git remote of app to use
 
@@ -95,7 +95,7 @@ USAGE
   $ heroku domains:info HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -r, --remote=remote  git remote of app to use
 
@@ -114,7 +114,7 @@ USAGE
   $ heroku domains:remove HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -r, --remote=remote  git remote of app to use
 
@@ -133,7 +133,7 @@ USAGE
   $ heroku domains:update [HOSTNAME]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -r, --remote=remote  git remote of app to use
   --cert=cert          (required) the name or id of the certificate you want to use for this domain
@@ -153,7 +153,7 @@ USAGE
   $ heroku domains:wait [HOSTNAME]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -h, --help           show CLI help
   -r, --remote=remote  git remote of app to use
 ```

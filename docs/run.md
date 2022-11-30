@@ -15,7 +15,7 @@ USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) parent app used by review apps
+  -a, --app=app        (required) [default: z-test-app-1] parent app used by review apps
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -29,10 +29,10 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku run bash
-  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+  $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.0/src/commands/run/index.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.1/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -43,7 +43,7 @@ USAGE
   $ heroku run:detached
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -54,4 +54,4 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.0/src/commands/run/detached.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.1/src/commands/run/detached.ts)_

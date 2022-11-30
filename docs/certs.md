@@ -25,7 +25,7 @@ USAGE
   $ heroku certs
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -40,7 +40,7 @@ USAGE
   $ heroku certs:add CRT KEY
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --bypass             bypass the trust chain completion step
 
@@ -65,7 +65,7 @@ USAGE
   $ heroku certs:auto
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --wait               watch ACM status and display the status when complete
 ```
@@ -81,7 +81,7 @@ USAGE
   $ heroku certs:auto:disable
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -96,7 +96,7 @@ USAGE
   $ heroku certs:auto:enable
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --wait               watch ACM status and exit when complete
 ```
@@ -112,7 +112,7 @@ USAGE
   $ heroku certs:auto:refresh
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -127,7 +127,7 @@ USAGE
   $ heroku certs:chain
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -142,7 +142,7 @@ USAGE
   $ heroku certs:generate DOMAIN
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --area=area          sub-country area (state, province, etc.) of owner
   --city=city          city of owner
@@ -174,7 +174,7 @@ USAGE
   $ heroku certs:info
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --endpoint=endpoint  endpoint to check info on
   --name=name          name to check info on
@@ -192,7 +192,7 @@ USAGE
   $ heroku certs:key
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -214,7 +214,7 @@ USAGE
   $ heroku certs:remove
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --endpoint=endpoint  endpoint to remove
   --name=name          name to remove
@@ -231,7 +231,7 @@ USAGE
   $ heroku certs:update CRT KEY
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --bypass             bypass the trust chain completion step
   --endpoint=endpoint  endpoint to update

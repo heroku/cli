@@ -25,7 +25,7 @@ USAGE
   $ heroku redis [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               format output as JSON
 ```
@@ -39,7 +39,7 @@ USAGE
   $ heroku redis:cli [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) app to run command against
+  -a, --app=app          (required) [default: z-test-app-1] app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -53,7 +53,7 @@ USAGE
   $ heroku redis:credentials [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --reset              reset credentials
 ```
@@ -67,7 +67,7 @@ USAGE
   $ heroku redis:info [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               format output as JSON
 ```
@@ -81,7 +81,7 @@ USAGE
   $ heroku redis:keyspace-notifications [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -c, --config=config  (required) set keyspace notifications configuration
   -r, --remote=remote  git remote of app to use
 
@@ -113,7 +113,7 @@ USAGE
   $ heroku redis:maintenance [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -f, --force          start maintenance without entering application maintenance mode
   -r, --remote=remote  git remote of app to use
   -w, --window=window  set weekly UTC maintenance window
@@ -132,7 +132,7 @@ USAGE
   $ heroku redis:maxmemory [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -p, --policy=policy  (required) set policy name
   -r, --remote=remote  git remote of app to use
 
@@ -158,7 +158,7 @@ USAGE
   $ heroku redis:promote DATABASE
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -171,7 +171,7 @@ USAGE
   $ heroku redis:stats-reset [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) app to run command against
+  -a, --app=app          (required) [default: z-test-app-1] app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -185,7 +185,7 @@ USAGE
   $ heroku redis:timeout [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) app to run command against
+  -a, --app=app          (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote    git remote of app to use
   -s, --seconds=seconds  set timeout value
 
@@ -203,7 +203,7 @@ USAGE
   $ heroku redis:upgrade [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) app to run command against
+  -a, --app=app          (required) [default: z-test-app-1] app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
   -v, --version=version
@@ -218,7 +218,7 @@ USAGE
   $ heroku redis:wait [DATABASE]
 
 OPTIONS
-  -a, --app=app                  (required) app to run command against
+  -a, --app=app                  (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote            git remote of app to use
   --wait-interval=wait-interval  how frequently to poll in seconds
 ```

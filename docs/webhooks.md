@@ -22,7 +22,7 @@ USAGE
   $ heroku webhooks
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -40,7 +40,7 @@ USAGE
   $ heroku webhooks:add
 
 OPTIONS
-  -a, --app=app                      app to run command against
+  -a, --app=app                      [default: z-test-app-1] app to run command against
   -i, --include=include              (required) comma delimited event types your server will receive
   -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=remote                git remote of app to use
@@ -63,7 +63,7 @@ USAGE
   $ heroku webhooks:deliveries
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --status=status  filter deliveries by status
 
@@ -82,7 +82,7 @@ USAGE
   $ heroku webhooks:deliveries:info ID
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -100,7 +100,7 @@ USAGE
   $ heroku webhooks:events
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -118,7 +118,7 @@ USAGE
   $ heroku webhooks:events:info ID
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -136,7 +136,7 @@ USAGE
   $ heroku webhooks:info ID
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -157,7 +157,7 @@ ARGUMENTS
   ID  id of webhook to remove
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLE
@@ -175,7 +175,7 @@ USAGE
   $ heroku webhooks:update ID
 
 OPTIONS
-  -a, --app=app                      app to run command against
+  -a, --app=app                      [default: z-test-app-1] app to run command against
   -i, --include=include              (required) comma delimited event types your server will receive
   -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=remote                git remote of app to use

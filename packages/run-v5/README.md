@@ -19,7 +19,7 @@ USAGE
   $ heroku logs
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use
@@ -36,7 +36,7 @@ EXAMPLES
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
 
-_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.66.3/packages/run-v5/commands/logs.js)_
+_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.67.1/packages/run-v5/commands/logs.js)_
 
 ## `heroku run`
 
@@ -47,7 +47,7 @@ USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -64,11 +64,11 @@ EXAMPLES
   Running bash on app.... up, run.1
   ~ $
 
-  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+  $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.66.3/packages/run-v5/commands/run.js)_
+_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.67.1/packages/run-v5/commands/run.js)_
 
 ## `heroku run:detached`
 
@@ -79,7 +79,7 @@ USAGE
   $ heroku run:detached
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -92,5 +92,5 @@ EXAMPLES
   Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.66.3/packages/run-v5/commands/run/detached.js)_
+_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.67.1/packages/run-v5/commands/run/detached.js)_
 <!-- commandsstop -->

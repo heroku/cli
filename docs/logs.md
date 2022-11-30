@@ -14,7 +14,7 @@ USAGE
   $ heroku logs
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use
@@ -32,4 +32,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.0/src/commands/logs.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.1/src/commands/logs.ts)_

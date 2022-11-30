@@ -27,7 +27,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 
@@ -53,7 +53,7 @@ USAGE
   $ heroku ps:autoscale:disable
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -68,7 +68,7 @@ USAGE
   $ heroku ps:autoscale:enable
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --max=max            (required) maximum number of dynos
   --min=min            (required) minimum number of dynos
@@ -152,7 +152,7 @@ USAGE
   $ heroku ps:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -175,7 +175,7 @@ USAGE
   $ heroku ps:resize
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -196,7 +196,7 @@ USAGE
   $ heroku ps:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -222,7 +222,7 @@ USAGE
   $ heroku ps:scale
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -270,7 +270,7 @@ USAGE
   $ heroku ps:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -293,7 +293,7 @@ USAGE
   $ heroku ps:type
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -315,7 +315,7 @@ USAGE
 
 OPTIONS
   -R, --with-run                     whether to wait for one-off run dynos
-  -a, --app=app                      (required) app to run command against
+  -a, --app=app                      (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote                git remote of app to use
   -t, --type=type                    wait for one specific dyno type
 

@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-run/7.67.0 darwin-x64 node-v16.13.2
+@heroku-cli/plugin-run/7.67.1 darwin-x64 node-v16.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -45,7 +45,7 @@ USAGE
   $ heroku logs
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use
@@ -63,7 +63,7 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.67.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.67.1/src/commands/logs.ts)_
 
 ## `heroku run`
 
@@ -74,7 +74,7 @@ USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) parent app used by review apps
+  -a, --app=app        (required) [default: z-test-app-1] parent app used by review apps
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -91,7 +91,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.67.0/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.67.1/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -102,7 +102,7 @@ USAGE
   $ heroku run:detached
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -113,5 +113,5 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.67.0/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.67.1/src/commands/run/detached.ts)_
 <!-- commandsstop -->

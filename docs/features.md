@@ -17,7 +17,7 @@ USAGE
   $ heroku features
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -31,7 +31,7 @@ USAGE
   $ heroku features:disable FEATURE
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -44,7 +44,7 @@ USAGE
   $ heroku features:enable FEATURE
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -57,7 +57,7 @@ USAGE
   $ heroku features:info FEATURE
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: z-test-app-1] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
