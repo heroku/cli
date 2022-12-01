@@ -27,7 +27,7 @@ export default class DomainsWait extends Command {
       domains = apiDomains.filter(domain => domain.status === 'pending')
     }
 
-    if (flags.app){
+    if (flags.app) {
       for (const domain of domains) {
         // eslint-disable-next-line no-await-in-loop
         await waitForDomain(flags.app, this.heroku, domain)

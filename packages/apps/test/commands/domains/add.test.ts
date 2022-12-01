@@ -72,6 +72,7 @@ describe('domains:add', () => {
         return Promise.resolve({cert: 'my-cert'})
       })
       .nock('https://api.heroku.com', api => api
+      .log(console.log)
       .post('/apps/myapp/domains', {
         hostname: 'example.com',
         sni_endpoint: 'my-cert',

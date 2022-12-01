@@ -1,4 +1,4 @@
-import {Flags, CliUx } from '@oclif/core'
+import {Flags, CliUx} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -24,6 +24,7 @@ export default class DomainsClear extends Command {
         // eslint-disable-next-line no-await-in-loop
         await this.heroku.delete(`/apps/${flags.app}/domains/${domain.hostname}`)
       }
+
       CliUx.ux.action.stop()
     }
   }

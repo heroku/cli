@@ -1,4 +1,4 @@
-import {Flags, CliUx } from '@oclif/core'
+import {Flags, CliUx} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -81,9 +81,10 @@ export default class DomainsAdd extends Command {
 
     let certs: Array<Heroku.SniEndpoint> = []
 
-    if (flags.app) { 
+    if (flags.app) {
       CliUx.ux.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     }
+
     if (flags.cert) {
       domainCreatePayload.sni_endpoint = flags.cert
     } else {

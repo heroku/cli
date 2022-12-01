@@ -1,4 +1,4 @@
-import {Flags, CliUx } from '@oclif/core'
+import {Flags, CliUx} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 
@@ -20,6 +20,7 @@ export default class DomainsRemove extends Command {
     if (flags.app) {
       CliUx.ux.action.start(`Removing ${color.green(args.hostname)} from ${color.app(flags.app)}`)
     }
+
     await this.heroku.delete(`/apps/${flags.app}/domains/${args.hostname}`)
     CliUx.ux.action.stop()
   }

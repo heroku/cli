@@ -1,4 +1,4 @@
-import {Flags, CliUx } from '@oclif/core'
+import {Flags, CliUx} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
