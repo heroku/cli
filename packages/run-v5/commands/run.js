@@ -41,7 +41,7 @@ module.exports = {
 Running bash on app.... up, run.1
 ~ $
 
-$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+$ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 Running myscript.sh -a arg1 -s arg2 on app.... up, run.1`,
   variableArgs: true,
   needsAuth: true,
