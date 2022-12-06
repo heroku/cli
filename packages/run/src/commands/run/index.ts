@@ -14,7 +14,7 @@ export default class Run extends Command {
 
   static examples = [
     '$ heroku run bash',
-    '$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2',
+    '$ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2',
   ]
 
   // This is to allow for variable length arguments
@@ -52,6 +52,7 @@ export default class Run extends Command {
     if (!opts.command) {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
+
     await this.heroku.get<Heroku.Account>('/account')
     const dyno = new Dyno(opts)
     try {
