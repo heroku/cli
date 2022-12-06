@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.60.0",
+  "version": "7.67.1",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -15,8 +15,8 @@
     "tslib": "^1"
   },
   "devDependencies": {
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
