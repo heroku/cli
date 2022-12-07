@@ -39,8 +39,8 @@ describe('addons:info', function () {
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:hobby-dev
-Price:        free
+Plan:         heroku-postgresql:mini
+Price:        $5/month
 State:        created
 `)
       })
@@ -71,8 +71,8 @@ State:        created
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:hobby-dev
-Price:        free
+Plan:         heroku-postgresql:mini
+Price:        $5/month
 State:        created
 `)
       })
@@ -109,8 +109,8 @@ State:        created
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
-Plan:         heroku-postgresql:hobby-dev
-Price:        free
+Plan:         heroku-postgresql:mini
+Price:        $5/month
 State:        created
 `)
       })
