@@ -30,7 +30,7 @@ function printExtended (dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
+async function printAccountQuota (context, heroku, app, account) {
   if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
@@ -83,9 +83,7 @@ async function printAccountQuota(context, heroku, app, account) {
     cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
     cli.log()
   }
-
 }
-
 
 function printDynos (dynos) {
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
@@ -113,7 +111,7 @@ function printDynos (dynos) {
   })
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   const { app, flags, args } = context
   const types = args
   const { json, extended } = flags
