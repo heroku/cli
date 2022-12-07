@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.66.4",
+  "version": "7.67.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -10,9 +10,9 @@
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^8.4.1",
-    "@heroku-cli/plugin-addons-v5": "^7.66.3",
+    "@heroku-cli/plugin-addons-v5": "^7.67.0",
     "@heroku-cli/plugin-apps": "^7.66.3",
-    "@heroku-cli/plugin-apps-v5": "^7.66.3",
+    "@heroku-cli/plugin-apps-v5": "^7.67.0",
     "@heroku-cli/plugin-auth": "^7.66.3",
     "@heroku-cli/plugin-autocomplete": "^7.66.3",
     "@heroku-cli/plugin-buildpacks": "^7.66.3",
@@ -31,7 +31,7 @@
     "@heroku-cli/plugin-ps": "^7.66.3",
     "@heroku-cli/plugin-ps-exec": "^2.4.0",
     "@heroku-cli/plugin-redis-v5": "^7.66.3",
-    "@heroku-cli/plugin-run": "^7.66.3",
+    "@heroku-cli/plugin-run": "^7.67.1",
     "@heroku-cli/plugin-spaces": "^7.66.3",
     "@heroku-cli/plugin-status": "^7.66.3",
     "@heroku-cli/plugin-webhooks": "^7.66.3",
@@ -83,7 +83,7 @@
     "qqjs": "0.3.10",
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
-    "ts-node": "^8.0.2",
+    "ts-node": "^10.9.1",
     "typescript": "3.7.5"
   },
   "engines": {
