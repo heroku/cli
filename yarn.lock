@@ -283,6 +283,22 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
+"@heroku-cli/command@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-9.0.0.tgz#71a6cfbdd05a2e1a0dc0707d002daf43de5c6cfd"
+  integrity sha512-XrBmgtiZ4kRm0udpiep30cx3VEPZNMfGXop0UivZCv7qsfPZ8RviC461KRfpiyB0mQq5BNAGmAfEkYO/Bq/Owg==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/core" "^1.20.4"
+    cli-ux "^6.0.9"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.1.0"
+    http-call "^5.2.4"
+    netrc-parser "^3.1.6"
+    open "^6.2.0"
+    uuid "^8.3.0"
+
 "@heroku-cli/command@^8.4.1":
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.4.1.tgz#7efe7f7f2a368369108f12540760fe67405a517c"
@@ -1304,7 +1320,7 @@
     is-wsl "^2.1.1"
     tslib "^2.3.1"
 
-"@oclif/core@^1.20.2", "@oclif/core@^1.20.4":
+"@oclif/core@^1.1.1", "@oclif/core@^1.20.2", "@oclif/core@^1.20.4", "@oclif/core@^1.21.0":
   version "1.21.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.21.0.tgz#d91b2f40a4f446279ab6335c619fc1716fc23ab6"
   integrity sha512-B/AKYfHcNRAbb6Xz2kj0FlH9gWEi8aFS4iEr7EzguP3E2DpDk4wcf7eOMOfJYEmhuVd9sOpVWSnI2yP+FL/3Sg==
@@ -1625,7 +1641,7 @@
     cli-ux "^4.9.1"
     tslib "^1.9.3"
 
-"@oclif/screen@^1.0.3", "@oclif/screen@^1.0.4":
+"@oclif/screen@^1.0.3", "@oclif/screen@^1.0.4", "@oclif/screen@^1.0.4 ":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
@@ -1642,7 +1658,7 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/test@^2.2.8":
+"@oclif/test@^2.2.13", "@oclif/test@^2.2.8":
   version "2.2.13"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.13.tgz#bd926584440bd81bc359c7f209421c0a914099e6"
   integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
@@ -3268,6 +3284,37 @@ cli-ux@^5.5.1:
     string-width "^4.2.0"
     strip-ansi "^6.0.0"
     supports-color "^7.1.0"
+    supports-hyperlinks "^2.1.0"
+    tslib "^2.0.0"
+
+cli-ux@^6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-6.0.9.tgz#b5ab690314348b45b2c7458dad7621ae1be7c61d"
+  integrity sha512-0Ku29QLf+P6SeBNWM7zyoJ49eKKOjxZBZ4OH2aFeRtC0sNXU3ftdJxQPKJ1SJ+axX34I1NsfTFahpXdnxklZgA==
+  dependencies:
+    "@oclif/core" "^1.1.1"
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.4 "
+    ansi-escapes "^4.3.0"
+    ansi-styles "^4.2.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.0"
+    clean-stack "^3.0.0"
+    cli-progress "^3.10.0"
+    extract-stack "^2.0.0"
+    fs-extra "^8.1"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.13.1"
+    lodash "^4.17.21"
+    natural-orderby "^2.0.1"
+    object-treeify "^1.1.4"
+    password-prompt "^1.1.2"
+    semver "^7.3.2"
+    string-width "^4.2.0"
+    strip-ansi "^6.0.0"
+    supports-color "^8.1.0"
     supports-hyperlinks "^2.1.0"
     tslib "^2.0.0"
 
