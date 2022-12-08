@@ -33,7 +33,7 @@
     "mocha": "^5",
     "nyc": "^13",
     "sinon": "^7.4.1",
-    "ts-node": "^8",
+    "ts-node": "^10",
     "typescript": "3.7.5"
   },
   "engines": {
