@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.66.3](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds to run in ci round 2 ([#2132](https://github.com/heroku/heroku-cli-plugin-apps/issues/2132)) ([bd32cdc](https://github.com/heroku/heroku-cli-plugin-apps/commit/bd32cdcee3a7a214b6aea6f309aae1a8ac2ae65e))
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+
+### Bug Fixes
+
+* **certs-v5:** Removing references to SSL endpoints in the CLI ([#1885](https://github.com/heroku/heroku-cli-plugin-apps/issues/1885)) ([94c1d98](https://github.com/heroku/heroku-cli-plugin-apps/commit/94c1d98dfb171824e7aea8c9377ad68dae79caca))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps
+
+
+
+
+
 ## [7.59.1](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.59.0...v7.59.1) (2021-10-21)
 
 

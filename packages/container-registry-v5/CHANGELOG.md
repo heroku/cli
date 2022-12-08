@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* **container-registry-v5:** Increase number of retries when fetching container logs ([#1947](https://github.com/heroku/cli/issues/1947)) ([04e2dd0](https://github.com/heroku/cli/commit/04e2dd08d7d2c71c7df9e8126496ce50c3813196))
+
+
+
+
+
+## [7.59.3](https://github.com/heroku/cli/compare/v7.59.2...v7.59.3) (2022-02-28)
+
+
+### Bug Fixes
+
+* **container-registry-v5:** Increase number of retries when fetching container logs ([#1947](https://github.com/heroku/cli/issues/1947)) ([04e2dd0](https://github.com/heroku/cli/commit/04e2dd08d7d2c71c7df9e8126496ce50c3813196))
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5

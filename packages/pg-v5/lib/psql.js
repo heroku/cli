@@ -240,6 +240,11 @@ class Tunnel {
   }
 }
 
+async function fetchVersion (db) {
+  var output = await exec(db, 'SHOW server_version', ['-X', '-q'])
+  return output.match(/[0-9]{1,}\.[0-9]{1,}/)[0]
+}
+
 async function exec (db, query, cmdArgs=[]) {
   const configs = bastion.getConfigs(db)
   const options = psqlQueryOptions(query, configs.dbEnv, cmdArgs)
@@ -266,5 +271,6 @@ async function interactive (db) {
 module.exports = {
   exec,
   execFile,
-  interactive,
+  fetchVersion,
+  interactive
 }

@@ -2,10 +2,7 @@ Heroku CLI
 ==========
 
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
-
-[![CircleCI](https://circleci.com/gh/heroku/cli.svg?style=svg&circle-token=40b6a6c06ece93bccf45e2c648b39e1db3763c97)](https://circleci.com/gh/heroku/cli/tree/master)
-[![CircleCI](https://circleci.com/gh/heroku/cli-macos-installer/tree/master.svg?style=svg&circle-token=90b3b4392dc1668e97108edabdfc2c6baddc3a17)](https://circleci.com/gh/heroku/cli-macos-installer/tree/master)
-[![Snap Status](https://build.snapcraft.io/badge/heroku/cli.svg)](https://build.snapcraft.io/user/heroku/cli)
+[![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
 [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
 
@@ -83,9 +80,29 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 Developing
 ==========
 
-This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
+This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). 
 
-The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
+After cloning the repo
+1. Run `yarn` to install dependencies
+2. Run `yarn lerna bootstrap` set up Lerna and link the packages together
+    - This repo currently uses an older version of Lerna. We recommend using the version specified in the package.json instead of a newer version that you may have installed globally.
+
+To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
+
+Testing
+=======
+
+Run all tests with `yarn lerna run test`.
+
+Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku-cli/plugin-certs-v5 test`.
+
+## Debugging
+
+Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+
+- Create a new run/debug configuration
+- Select the 'Mocha' type
+- Set the working directory to the directory of the package you are using.  (i.e. ~/Heroku/Repos/cli/packages/certs-v5)
 
 Releasing
 =========

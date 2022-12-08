@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-apps",
-  "version": "7.59.1",
+  "version": "7.66.3",
   "author": "Brett @brettgoulder",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-apps/issues",
   "dependencies": {
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "^1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
@@ -33,11 +33,11 @@
     "globby": "^10",
     "mocha": "^5",
     "nyc": "^13",
-    "ts-node": "^8",
+    "ts-node": "^10",
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "files": [
     "/lib",

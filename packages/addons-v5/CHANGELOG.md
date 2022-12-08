@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.67.0](https://github.com/heroku/cli/compare/v7.66.4...v7.67.0) (2022-11-29)
+
+
+### Features
+
+* **cli:** remove references to free ([#2145](https://github.com/heroku/cli/issues/2145)) ([0f52326](https://github.com/heroku/cli/commit/0f52326c087f470e41000d25a25b126294df866a)), closes [#2142](https://github.com/heroku/cli/issues/2142) [#2141](https://github.com/heroku/cli/issues/2141) [#2137](https://github.com/heroku/cli/issues/2137) [#2146](https://github.com/heroku/cli/issues/2146)
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
+# [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-addons-v5
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 

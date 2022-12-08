@@ -9,8 +9,6 @@ var sinon = require('sinon')
 let certs = require('../../../commands/certs/update.js')
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
-let shared = require('./shared.js')
-let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
 
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
@@ -18,7 +16,6 @@ let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
-const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 function mockFile (fs, file, content) {
   fs.readFile
@@ -34,14 +31,8 @@ describe('heroku certs:update', function () {
     error.exit.mock()
 
     nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [])
-
-    nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStable])
-
-    mockSniFeatureFlag(nock, 'example')
   })
 
   afterEach(function () {
@@ -147,67 +138,8 @@ ${certificateDetails}
 `
     }
 
-    shared.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
-    })
-
-    sharedSsl.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
-    })
-
     sharedSni.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
       stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
-    })
-  })
-})
-
-describe('heroku certs:update (dogwood)', function () {
-  beforeEach(function () {
-    cli.mockConsole()
-    sinon.stub(fs, 'readFile')
-    nock.cleanAll()
-    mockSniFeatureFlag(nock, 'example')
-  })
-
-  afterEach(function () {
-    fs.readFile.restore()
-  })
-
-  it('# updates an endpoint when sni-endpoints 422s', function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, {
-        'space': { 'name': 'spacely-space-1234' }
-      })
-
-    let mockSni = nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(422, {
-        'id': 'space_app_not_supported',
-        'message': 'App heroku-certs-test is in a space, but space apps are not supported on this endpoint. Try `/apps/:id/ssl-endpoints` instead.'
-      })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/ssl-endpoints')
-      .reply(200, [endpointStable])
-
-    mockFile(fs, 'pem_file', 'pem content')
-    mockFile(fs, 'key_file', 'key content')
-
-    let mockPut = nock('https://api.heroku.com')
-      .patch('/apps/example/ssl-endpoints/tokyo-1050', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpointStable)
-
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { name: 'tokyo-1050', confirm: 'example' } }).then(function () {
-      mockSni.done()
-      mockPut.done()
-      expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 for example... done\n')
-      expect(cli.stdout).to.equal(
-        `Updated certificate details:
-${certificateDetails}
-`)
     })
   })
 })

@@ -26,9 +26,9 @@ describe('host', () => {
     })
   })
 
-  context('with HEROKU_POSTGRESQL_STARTER_HOST set', () => {
-    beforeEach(() => { process.env.HEROKU_POSTGRESQL_STARTER_HOST = 'bar.herokuapp.com' })
-    afterEach(() => delete process.env.HEROKU_POSTGRESQL_STARTER_HOST)
+  context('with HEROKU_POSTGRESQL_ESSENTIAL_HOST set', () => {
+    beforeEach(() => { process.env.HEROKU_POSTGRESQL_ESSENTIAL_HOST = 'bar.herokuapp.com' })
+    afterEach(() => delete process.env.HEROKU_POSTGRESQL_ESSENTIAL_HOST)
 
     it('shows dev host', () => {
       expect(host({ plan: { name: 'heroku-postgresql:hobby-dev' } })).to.equal('https://bar.herokuapp.com')

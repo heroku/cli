@@ -1,5 +1,4 @@
-heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=svg)](https://circleci.com/gh/heroku/heroku-apps)
-===========
+# heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=svg)](https://circleci.com/gh/heroku/heroku-apps)
 
 [![Code Climate](https://codeclimate.com/github/heroku/heroku-apps/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-apps)
 [![npm version](https://badge.fury.io/js/heroku-apps.svg)](https://badge.fury.io/js/heroku-apps)
@@ -14,7 +13,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.54.1 darwin-x64 node-v12.18.4
+@heroku-cli/plugin-apps-v5/7.67.0 darwin-x64 node-v16.13.2
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -116,11 +115,10 @@ OPTIONS
   --json                     output in json format
   --region=region            specify region for the app to run in
   --space=space              the private space to create the app in
-  --ssh-git                  use SSH git protocol for local git remote
 
 EXAMPLES
   $ heroku apps:create
-  Creating app... done, stack is heroku-20
+  Creating app... done, stack is heroku-22
   https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
   # or just
@@ -272,7 +270,6 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
-  --ssh-git            use ssh git protocol instead of https
 
 DESCRIPTION
   This will locally update the git remote if it is set to the old app.
@@ -309,8 +306,8 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
-  $ heroku stack:set heroku-20 -a myapp
-  Setting stack to heroku-20... done
+  $ heroku stack:set heroku-22 -a myapp
+  Setting stack to heroku-22... done
   You will need to redeploy myapp for the change to take effect.
   Run git push heroku main to trigger a new build on myapp.
 ```
@@ -417,7 +414,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -772,7 +769,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -868,7 +865,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```

@@ -111,7 +111,7 @@ module.exports = [
   },
   {
     'name': 'H82',
-    'title': 'Free dyno quota exhausted',
+    'title': "You've used up your dyno hour pool",
     'level': 'info'
   },
   {

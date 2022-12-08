@@ -11,8 +11,6 @@ manage reviewapps in pipelines
 disable review apps and/or settings on an existing pipeline
 
 ```
-disable review apps and/or settings on an existing pipeline
-
 USAGE
   $ heroku reviewapps:disable
 
@@ -28,15 +26,13 @@ EXAMPLE
   $ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.54.0/src/commands/reviewapps/disable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.66.3/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
 enable review apps and/or settings on an existing pipeline
 
 ```
-enable review apps and/or settings on an existing pipeline
-
 USAGE
   $ heroku reviewapps:enable
 
@@ -52,4 +48,4 @@ EXAMPLE
   $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.54.0/src/commands/reviewapps/enable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.66.3/src/commands/reviewapps/enable.ts)_

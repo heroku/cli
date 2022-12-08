@@ -10,9 +10,6 @@ display recent log output
 display recent log output
 
 ```
-display recent log output
-disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
-
 USAGE
   $ heroku logs
 
@@ -35,4 +32,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.56.0/src/commands/logs.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.67.0/src/commands/logs.ts)_

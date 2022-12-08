@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-addons-v5",
   "description": "`heroku addons:*` commands",
-  "version": "7.54.0",
+  "version": "7.67.0",
   "author": "Bo Jeanes @bjeanes",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -16,10 +16,10 @@
   "dependencies": {
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
-    "printf": "0.5.1"
+    "printf": "0.6.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
