@@ -11,7 +11,7 @@ describe('addons:docs', function () {
       .get('/addon-services/slowdb')
       .reply(200, { name: 'slowdb' })
 
-    return cmd.run({ args: { addon: 'slowdb:free' }, flags: { 'show-url': true } })
+    return cmd.run({ args: { addon: 'slowdb' }, flags: { 'show-url': true } })
       .then(() => expect(cli.stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n'))
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => api.done())

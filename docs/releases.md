@@ -13,9 +13,6 @@ display the releases for an app
 display the releases for an app
 
 ```
-display the releases for an app
-
-
 USAGE
   $ heroku releases
 
@@ -38,9 +35,6 @@ EXAMPLES
 view detailed information for a release
 
 ```
-view detailed information for a release
-
-
 USAGE
   $ heroku releases:info [RELEASE]
 
@@ -56,9 +50,6 @@ OPTIONS
 View the release command output
 
 ```
-View the release command output
-
-
 USAGE
   $ heroku releases:output [RELEASE]
 
@@ -72,9 +63,6 @@ OPTIONS
 rollback to a previous release
 
 ```
-rollback to a previous release
-If RELEASE is not specified, it will rollback one release
-
 USAGE
   $ heroku releases:rollback [RELEASE]
 

@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-autocomplete",
-  "version": "7.60.0",
+  "version": "7.66.3",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "1.21.3",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-help": "2.1.6",
     "@oclif/test": "1.2.4",
     "@types/chai": "4.1.7",
@@ -33,7 +33,7 @@
     "mocha": "5.2.0",
     "nock": "^10.0.6",
     "nyc": "13.2.0",
-    "ts-node": "8.0.2",
+    "ts-node": "10.9.1",
     "typescript": "3.7.5"
   },
   "engines": {

@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-spaces",
   "description": "Heroku plugin to manage Heroku Private Spaces",
-  "version": "7.54.0",
+  "version": "7.66.3",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -24,7 +24,7 @@
     "strftime": "^0.10.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

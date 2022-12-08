@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "7.60.0",
+  "version": "7.66.3",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/tslint": "1.1.4",
-    "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-help": "^2.1.6",
     "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/test": "^1.2.4",
@@ -46,7 +46,7 @@
     "globby": "^9.0.0",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
-    "ts-node": "^8.0.2",
+    "ts-node": "^10.9.1",
     "typescript": "3.7.5"
   },
   "engines": {
