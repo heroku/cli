@@ -3,6 +3,73 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+
+### Bug Fixes
+
+* upgrade debug from 4.1.1 to 4.3.4 ([#2024](https://github.com/heroku/cli/issues/2024)) ([14c8752](https://github.com/heroku/cli/commit/14c87526111c6fe86733a0c785045abf6e0c157c))
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+
+### Bug Fixes
+
+* upgrade debug from 4.1.1 to 4.3.4 ([#2024](https://github.com/heroku/cli/issues/2024)) ([14c8752](https://github.com/heroku/cli/commit/14c87526111c6fe86733a0c785045abf6e0c157c))
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+# [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
+
+
+### Bug Fixes
+
+* upgrade debug from 4.1.1 to 4.3.4 ([#2024](https://github.com/heroku/cli/issues/2024)) ([14c8752](https://github.com/heroku/cli/commit/14c87526111c6fe86733a0c785045abf6e0c157c))
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-git
+
+
+
+
+
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-git

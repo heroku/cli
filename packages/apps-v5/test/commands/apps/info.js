@@ -24,7 +24,7 @@ let app = {
 }
 
 let appStackChange = Object.assign({}, app, {
-  build_stack: { name: 'heroku-20' }
+  build_stack: { name: 'heroku-22' }
 })
 
 let appExtended = Object.assign({}, app, {
@@ -356,7 +356,7 @@ Region:           eu
 Repo Size:        1000 B
 Slug Size:        1000 B
 Space:            myspace
-Stack:            cedar-14 (next build will use heroku-20)
+Stack:            cedar-14 (next build will use heroku-22)
 Web URL:          https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())

@@ -12,9 +12,6 @@ enable/disable access to app
 display the current maintenance status of app
 
 ```
-display the current maintenance status of app
-
-
 USAGE
   $ heroku maintenance
 
@@ -28,9 +25,6 @@ OPTIONS
 take the app out of maintenance mode
 
 ```
-take the app out of maintenance mode
-
-
 USAGE
   $ heroku maintenance:off
 
@@ -44,9 +38,6 @@ OPTIONS
 put the app into maintenance mode
 
 ```
-put the app into maintenance mode
-
-
 USAGE
   $ heroku maintenance:on
 

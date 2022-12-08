@@ -40,11 +40,7 @@ async function run(context, heroku) {
     })
   }
 
-  if (flags.reset) {
-    cli.error(`${cli.color.cmd('pg:credentials --reset')} is deprecated. Please use ${cli.color.cmd('pg:credentials:rotate')} instead.`)
-  } else {
-    await showCredentials()
-  }
+  await showCredentials()
 }
 
 module.exports = {
@@ -53,7 +49,6 @@ module.exports = {
   description: 'show information on credentials in the database',
   needsApp: true,
   needsAuth: true,
-  flags: [{ name: 'reset', description: 'DEPRECATED' }],
   args: [{ name: 'database', optional: true }],
   run: cli.command({ preauth: true }, run)
 }

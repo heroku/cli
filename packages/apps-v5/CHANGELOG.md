@@ -3,6 +3,118 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.67.0](https://github.com/heroku/cli/compare/v7.66.4...v7.67.0) (2022-11-29)
+
+
+### Features
+
+* **cli:** remove references to free ([#2145](https://github.com/heroku/cli/issues/2145)) ([0f52326](https://github.com/heroku/cli/commit/0f52326c087f470e41000d25a25b126294df866a)), closes [#2142](https://github.com/heroku/cli/issues/2142) [#2141](https://github.com/heroku/cli/issues/2141) [#2137](https://github.com/heroku/cli/issues/2137) [#2146](https://github.com/heroku/cli/issues/2146)
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+## [7.66.2](https://github.com/heroku/cli/compare/v7.66.0...v7.66.2) (2022-11-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.66.1](https://github.com/heroku/cli/compare/v7.66.0...v7.66.1) (2022-11-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.66.0](https://github.com/heroku/cli/compare/v7.65.0...v7.66.0) (2022-11-07)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+# [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
+
+
+### Features
+
+* remove git ssh ([#2018](https://github.com/heroku/cli/issues/2018)) ([cabb90f](https://github.com/heroku/cli/commit/cabb90f802cee31059d62c8b4c813452fd78a6f1))
+
+
+
+
+
+## [7.60.2](https://github.com/heroku/cli/compare/v7.60.1...v7.60.2) (2022-04-27)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1979](https://github.com/heroku/cli/issues/1979)) ([36fb4d4](https://github.com/heroku/cli/commit/36fb4d4ad29f7800a095a9d14390f7d0c909a5da))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1957](https://github.com/heroku/cli/issues/1957)) ([e5656b0](https://github.com/heroku/cli/commit/e5656b08a241b203a72cfff2c722f64241260c51))
+
+
+
+
+
+## [7.59.4](https://github.com/heroku/cli/compare/v7.59.3...v7.59.4) (2022-03-08)
+
+
+### Bug Fixes
+
+* packages/apps-v5/package.json to reduce vulnerabilities ([#1957](https://github.com/heroku/cli/issues/1957)) ([e5656b0](https://github.com/heroku/cli/commit/e5656b08a241b203a72cfff2c722f64241260c51))
+
+
+
+
+
 ## [7.54.1](https://github.com/heroku/cli/compare/v7.54.0...v7.54.1) (2021-06-08)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5

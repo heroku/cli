@@ -11,9 +11,6 @@ manage organizations
 list the teams that you are a member of
 
 ```
-list the teams that you are a member of
-
-
 USAGE
   $ heroku orgs
 
@@ -27,9 +24,6 @@ OPTIONS
 open the team interface in a browser window
 
 ```
-open the team interface in a browser window
-
-
 USAGE
   $ heroku orgs:open
 

@@ -4,6 +4,7 @@
 list installed plugins
 
 * [`heroku plugins`](#heroku-plugins)
+* [`heroku plugins:inspect PLUGIN...`](#heroku-pluginsinspect-plugin)
 * [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin)
 * [`heroku plugins:link PLUGIN`](#heroku-pluginslink-plugin)
 * [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin)
@@ -14,8 +15,6 @@ list installed plugins
 list installed plugins
 
 ```
-list installed plugins
-
 USAGE
   $ heroku plugins
 
@@ -26,21 +25,34 @@ EXAMPLE
   $ heroku plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/index.ts)_
+
+## `heroku plugins:inspect PLUGIN...`
+
+displays installation properties of a plugin
+
+```
+USAGE
+  $ heroku plugins:inspect PLUGIN...
+
+ARGUMENTS
+  PLUGIN  [default: .] plugin to inspect
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+EXAMPLE
+  $ heroku plugins:inspect myplugin
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/inspect.ts)_
 
 ## `heroku plugins:install PLUGIN...`
 
 installs a plugin into the CLI
 
 ```
-installs a plugin into the CLI
-Can be installed from npm or a git url.
-
-Installation of a user-installed plugin will override a core plugin.
-
-e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in the CLI without the need to patch and update the whole CLI.
-
-
 USAGE
   $ heroku plugins:install PLUGIN...
 
@@ -70,19 +82,13 @@ EXAMPLES
   $ heroku plugins:install someuser/someplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/install.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/install.ts)_
 
 ## `heroku plugins:link PLUGIN`
 
 links a plugin into the CLI for development
 
 ```
-links a plugin into the CLI for development
-Installation of a linked plugin will override a user-installed or core plugin.
-
-e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' command will override the user-installed or core plugin implementation. This is useful for development work.
-
-
 USAGE
   $ heroku plugins:link PLUGIN
 
@@ -96,22 +102,20 @@ OPTIONS
 DESCRIPTION
   Installation of a linked plugin will override a user-installed or core plugin.
 
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
-  command will override the user-installed or core plugin implementation. This is useful for development work.
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
+   command will override the user-installed or core plugin implementation. This is useful for development work.
 
 EXAMPLE
   $ heroku plugins:link myplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/link.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/link.ts)_
 
 ## `heroku plugins:uninstall PLUGIN...`
 
 removes a plugin from the CLI
 
 ```
-removes a plugin from the CLI
-
 USAGE
   $ heroku plugins:uninstall PLUGIN...
 
@@ -127,15 +131,13 @@ ALIASES
   $ heroku plugins:remove
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/uninstall.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/uninstall.ts)_
 
 ## `heroku plugins:update`
 
 update installed plugins
 
 ```
-update installed plugins
-
 USAGE
   $ heroku plugins:update
 
@@ -144,4 +146,4 @@ OPTIONS
   -v, --verbose
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.9/src/commands/plugins/update.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.10.1/src/commands/plugins/update.ts)_
