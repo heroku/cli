@@ -12,7 +12,7 @@ export default class Index extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Index)
+    const {flags} = await this.parse(Index)
     const buildpacksCommand = new BuildpackCommand(this.heroku)
 
     const buildpacks = await buildpacksCommand.fetch(flags.app)

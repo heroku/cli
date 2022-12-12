@@ -23,7 +23,7 @@ export default class Remove extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Remove)
+    const {args, flags} = await this.parse(Remove)
     const buildpackCommand = new BuildpackCommand(this.heroku)
 
     if (flags.index && args.buildpack) {

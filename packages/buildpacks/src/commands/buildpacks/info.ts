@@ -16,7 +16,7 @@ export default class Info extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(Info)
+    const {args} = await this.parse(Info)
     const registry = new BuildpackRegistry()
 
     Result.match({

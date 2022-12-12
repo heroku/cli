@@ -21,7 +21,7 @@ export default class Search extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Search)
+    const {args, flags} = await this.parse(Search)
     let searchResults: BuildpackBody[]
     const registry = new BuildpackRegistry()
 

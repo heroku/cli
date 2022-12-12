@@ -67,7 +67,7 @@ export class BuildpackCommand {
       const response = await this.registry.buildpackExists(buildpack)
       const body = await response.json()
       return body.blob_url
-    } catch (error) {
+    } catch (error: any) {
       if (error.statusCode === 404) {
         cli.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
       } else if (error.statusCode) {

@@ -16,7 +16,7 @@ export default class Versions extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(Versions)
+    const {args} = await this.parse(Versions)
     const herokuAuth = this.heroku.auth || ''
     if (herokuAuth === '') {
       this.error('You need to be logged in to run this command.')
