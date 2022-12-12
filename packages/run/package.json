@@ -21,7 +21,7 @@
     "@types/node-notifier": "^5.4.0",
     "bats": "^1.1.0",
     "chai": "^4",
-    "eslint": "^7.32.0",
+    "eslint": "^8.29.0",
     "eslint-config-oclif": "^3.1.0",
     "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^10",
