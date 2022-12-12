@@ -13,7 +13,7 @@ export default class Git {
       const {stdout, stderr} = await execFile('git', args)
       if (stderr) process.stderr.write(stderr)
       return stdout.trim()
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
         ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
       }
