@@ -17,7 +17,7 @@ export class ConfigIndex extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ConfigIndex)
+    const {flags} = await this.parse(ConfigIndex)
     const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
     if (flags.shell) {
       Object.entries(config)

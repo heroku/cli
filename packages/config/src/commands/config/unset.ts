@@ -26,7 +26,7 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
   }
 
   async run() {
-    const {argv, flags} = this.parse(ConfigUnset)
+    const {argv, flags} = await this.parse(ConfigUnset)
     const lastRelease = async () => {
       const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${flags.app}/releases`, {
         partial: true,

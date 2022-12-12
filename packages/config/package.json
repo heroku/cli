@@ -5,9 +5,8 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
-    "@oclif/command": "^1.5.11",
-    "@oclif/config": "^1.12.10",
+    "@heroku-cli/command": "^9.0.1",
+    "@oclif/core": "^1.21.0",
     "cli-ux": "^4.9.3",
     "edit-string": "^1.1.6",
     "lodash": "^4.17.11",
@@ -15,10 +14,8 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/plugin-help": "^2.1.6",
-    "@oclif/test": "^1.2.4",
+    "@oclif/test": "^2.2.15",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.14.123",
@@ -37,7 +34,7 @@
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
-    "typescript": "3.7.5"
+    "typescript": "4.8.4"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -52,11 +49,10 @@
   ],
   "license": "MIT",
   "oclif": {
-    "commands": "./lib/commands",
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
+    "commands": "./lib/commands",
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/config/<%- commandPath %>"
   },
   "repository": "heroku/cli",

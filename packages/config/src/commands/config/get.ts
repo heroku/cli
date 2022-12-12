@@ -22,7 +22,7 @@ production`
   }
 
   async run() {
-    const {flags, argv} = this.parse(ConfigGet)
+    const {flags, argv} = await this.parse(ConfigGet)
     const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
     for (const key of argv) {
       const v = config[key]

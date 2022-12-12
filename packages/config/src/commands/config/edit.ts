@@ -91,7 +91,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
   app!: string
 
   async run() {
-    const {flags: {app}, args: {key}} = this.parse(ConfigEdit)
+    const {flags: {app}, args: {key}} = await this.parse(ConfigEdit)
     this.app = app
     cli.action.start('Fetching config')
     const original = await this.fetchLatestConfig()
