@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {Hook} from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -8,7 +8,7 @@ import * as path from 'path'
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
 
-export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout'; app?: string}) {
+export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logout'> = async function ({type, app}) {
   // autocomplete is now in core, skip windows
   if (this.config.windows) return
   const logInOut = type === 'login' || type === 'logout'
