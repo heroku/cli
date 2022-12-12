@@ -1,4 +1,4 @@
-import {Command} from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -11,7 +11,7 @@ export default class Create extends AutocompleteBase {
 
   static description = 'create autocomplete setup scripts and completion functions'
 
-  private _commands?: Command[]
+  private _commands?: Interfaces.Command[]
 
   async run() {
     this.errorIfWindows()
@@ -59,11 +59,11 @@ export default class Create extends AutocompleteBase {
     return process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS === '1'
   }
 
-  private get commands(): Command[] {
+  private get commands(): Interfaces.Command[] {
     if (this._commands) return this._commands
 
     const plugins = this.config.plugins
-    const commands: Command[] = []
+    const commands: Interfaces.Command[] = []
 
     plugins.forEach(p => {
       p.commands.forEach(c => {
@@ -130,7 +130,7 @@ export default class Create extends AutocompleteBase {
     }).join('\n')
   }
 
-  private genCmdPublicFlags(Command: Command): string {
+  private genCmdPublicFlags(Command: Interfaces.Command): string {
     const Flags = Command.flags || {}
     return Object.keys(Flags)
     .filter(flag => !Flags[flag].hidden)
@@ -138,7 +138,7 @@ export default class Create extends AutocompleteBase {
     .join(' ')
   }
 
-  private genCmdWithDescription(Command: Command): string {
+  private genCmdWithDescription(Command: Interfaces.Command): string {
     let description = ''
     if (Command.description) {
       const text = Command.description.split('\n')[0]
@@ -147,7 +147,7 @@ export default class Create extends AutocompleteBase {
     return `"${Command.id.replace(/:/g, '\\:')}"${description}`
   }
 
-  private genZshCmdFlagsSetter(Command: Command): string {
+  private genZshCmdFlagsSetter(Command: Interfaces.Command): string {
     const id = Command.id
     const flagscompletions = Object.keys(Command.flags || {})
     .filter(flag => Command.flags && !Command.flags[flag].hidden)

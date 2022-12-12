@@ -4,6 +4,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
+import {Interfaces} from '@oclif/core'
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true
@@ -14,12 +15,12 @@ export default class Doctor extends AutocompleteBase {
     {name: 'shell', description: 'shell type', required: false},
   ]
 
-  static flags = {
+  static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 
   async run() {
-    const {args, flags} = this.parse(Doctor)
+    const {args, flags} = await this.parse(Doctor)
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 

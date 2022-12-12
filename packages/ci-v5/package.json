@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci-v5",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.62.0",
+  "version": "7.66.3",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.4.1",
-    "@heroku-cli/plugin-run-v5": "^7.56.0",
+    "@heroku-cli/plugin-run-v5": "^7.66.3",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
     "github-url-to-object": "^4.0.4",
@@ -27,8 +27,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.2.0",
+    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",

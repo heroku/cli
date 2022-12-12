@@ -2,6 +2,7 @@ import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import chalk from 'chalk'
 import {cli} from 'cli-ux'
+import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
@@ -14,7 +15,7 @@ export default class Index extends AutocompleteBase {
 
   static args = [{name: 'shell', description: 'shell type', required: false}]
 
-  static flags = {
+  static flags: Interfaces.FlagInput = {
     'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
   }
 
@@ -26,7 +27,7 @@ export default class Index extends AutocompleteBase {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Index)
+    const {args, flags} = await this.parse(Index)
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 

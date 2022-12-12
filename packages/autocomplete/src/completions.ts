@@ -1,20 +1,20 @@
-import {APIClient, flags} from '@heroku-cli/command'
+import {APIClient} from '@heroku-cli/command'
 import {deps} from '@heroku-cli/command/lib/deps'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git'
-import * as Config from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 import flatten = require('lodash.flatten')
 
 export const oneDay = 60 * 60 * 24
 
-export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
+export const herokuGet = async (resource: string, ctx: Interfaces.CompletionContext): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
   let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
   if (typeof body === 'string') body = JSON.parse(body)
   return (body as any[]).map((a: any) => a.name).sort()
 }
 
-export const AppCompletion: flags.ICompletion = {
+export const AppCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   options: async ctx => {
     const teams = await herokuGet('teams', ctx)
@@ -26,7 +26,7 @@ export const AppCompletion: flags.ICompletion = {
   },
 }
 
-export const AppAddonCompletion: flags.ICompletion = {
+export const AppAddonCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   cacheKey: async ctx => {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_addons` : ''
@@ -37,7 +37,7 @@ export const AppAddonCompletion: flags.ICompletion = {
   },
 }
 
-export const AppDynoCompletion: flags.ICompletion = {
+export const AppDynoCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   cacheKey: async ctx => {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_dynos` : ''
@@ -48,7 +48,7 @@ export const AppDynoCompletion: flags.ICompletion = {
   },
 }
 
-export const BuildpackCompletion: flags.ICompletion = {
+export const BuildpackCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -66,7 +66,7 @@ export const BuildpackCompletion: flags.ICompletion = {
   },
 }
 
-const ConfigCompletion: flags.ICompletion = {
+const ConfigCompletion: Interfaces.Completion = {
   cacheDuration: 60 * 60 * 24 * 7,
   cacheKey: async (ctx: any) => {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_vars` : ''
@@ -81,7 +81,7 @@ const ConfigCompletion: flags.ICompletion = {
   },
 }
 
-const ConfigSetCompletion: flags.ICompletion = {
+const ConfigSetCompletion: Interfaces.Completion = {
   cacheDuration: 60 * 60 * 24 * 7,
   cacheKey: async (ctx: any) => {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_set_vars` : ''
@@ -96,7 +96,7 @@ const ConfigSetCompletion: flags.ICompletion = {
   },
 }
 
-export const DynoSizeCompletion: flags.ICompletion = {
+export const DynoSizeCompletion: Interfaces.Completion = {
   cacheDuration: oneDay * 90,
   options: async ctx => {
     let sizes = await herokuGet('dyno-sizes', ctx)
@@ -105,7 +105,7 @@ export const DynoSizeCompletion: flags.ICompletion = {
   },
 }
 
-export const FileCompletion: flags.ICompletion = {
+export const FileCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -114,7 +114,7 @@ export const FileCompletion: flags.ICompletion = {
   },
 }
 
-export const PipelineCompletion: flags.ICompletion = {
+export const PipelineCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   options: async ctx => {
     const pipelines = await herokuGet('pipelines', ctx)
@@ -122,7 +122,7 @@ export const PipelineCompletion: flags.ICompletion = {
   },
 }
 
-export const ProcessTypeCompletion: flags.ICompletion = {
+export const ProcessTypeCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -146,7 +146,7 @@ export const ProcessTypeCompletion: flags.ICompletion = {
   },
 }
 
-export const RegionCompletion: flags.ICompletion = {
+export const RegionCompletion: Interfaces.Completion = {
   cacheDuration: oneDay * 7,
   options: async ctx => {
     const regions = await herokuGet('regions', ctx)
@@ -154,7 +154,7 @@ export const RegionCompletion: flags.ICompletion = {
   },
 }
 
-export const RemoteCompletion: flags.ICompletion = {
+export const RemoteCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -163,7 +163,7 @@ export const RemoteCompletion: flags.ICompletion = {
   },
 }
 
-export const RoleCompletion: flags.ICompletion = {
+export const RoleCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -171,7 +171,7 @@ export const RoleCompletion: flags.ICompletion = {
   },
 }
 
-export const ScopeCompletion: flags.ICompletion = {
+export const ScopeCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -179,7 +179,7 @@ export const ScopeCompletion: flags.ICompletion = {
   },
 }
 
-export const SpaceCompletion: flags.ICompletion = {
+export const SpaceCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   options: async ctx => {
     const spaces = await herokuGet('spaces', ctx)
@@ -187,7 +187,7 @@ export const SpaceCompletion: flags.ICompletion = {
   },
 }
 
-export const StackCompletion: flags.ICompletion = {
+export const StackCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   options: async ctx => {
     const stacks = await herokuGet('stacks', ctx)
@@ -195,7 +195,7 @@ export const StackCompletion: flags.ICompletion = {
   },
 }
 
-export const StageCompletion: flags.ICompletion = {
+export const StageCompletion: Interfaces.Completion = {
   skipCache: true,
 
   options: async () => {
@@ -203,7 +203,7 @@ export const StageCompletion: flags.ICompletion = {
   },
 }
 
-export const TeamCompletion: flags.ICompletion = {
+export const TeamCompletion: Interfaces.Completion = {
   cacheDuration: oneDay,
   options: async ctx => {
     const teams = await herokuGet('teams', ctx)
@@ -211,7 +211,7 @@ export const TeamCompletion: flags.ICompletion = {
   },
 }
 
-export const CompletionMapping: { [key: string]: flags.ICompletion } = {
+export const CompletionMapping: { [key: string]: Interfaces.Completion } = {
   app: AppCompletion,
   addon: AppAddonCompletion,
   dyno: AppDynoCompletion,
@@ -257,7 +257,7 @@ export class CompletionLookup {
   constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
   }
 
-  run(): flags.ICompletion | undefined {
+  run(): Interfaces.Completion | undefined {
     if (this.blocklisted()) return
     return CompletionMapping[this.key]
   }
