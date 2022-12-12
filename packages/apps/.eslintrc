@@ -4,5 +4,6 @@
     "oclif-typescript"
   ],
   "rules": {
+    "no-await-in-loop":"warn"
   }
 }

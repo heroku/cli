@@ -28,8 +28,7 @@ export default class DomainsWait extends Command {
     }
 
     if (flags.app) {
-      for (const domain of domains) {
-        // eslint-disable-next-line no-await-in-loop
+      for (const domain of domains) { // eslint-disable-next-line no-await-in-loop
         await waitForDomain(flags.app, this.heroku, domain)
       }
     }

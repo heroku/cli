@@ -20,8 +20,7 @@ export default class DomainsClear extends Command {
       CliUx.ux.action.start(`Removing all domains from ${color.app(flags.app)}`)
       let {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
       domains = domains.filter((d: Heroku.Domain) => d.kind === 'custom')
-      for (const domain of domains) {
-        // eslint-disable-next-line no-await-in-loop
+      for (const domain of domains) { // eslint-disable-next-line no-await-in-loop
         await this.heroku.delete(`/apps/${flags.app}/domains/${domain.hostname}`)
       }
 
