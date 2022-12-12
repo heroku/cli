@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import cli from 'cli-ux'
