@@ -10,7 +10,7 @@
     "@heroku/eventsource": "^1.0.7",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
-    "cli-ux": "^5.3.1",
+    "cli-ux": "^6.0.9",
     "debug": "^4.1.1",
     "tslib": "^1"
   },

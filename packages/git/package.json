@@ -9,7 +9,7 @@
     "@heroku-cli/command": "^8.4.1",
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
-    "cli-ux": "^4.9.3",
+    "cli-ux": "^6.0.9",
     "debug": "4.3.4"
   },
   "devDependencies": {

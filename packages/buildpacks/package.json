@@ -9,7 +9,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@oclif/config": "^1.12.10",
     "@oclif/plugin-legacy": "^1.2.0",
-    "cli-ux": "^4.9.3",
+    "cli-ux": "^6.0.9",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.3",
     "lodash": "^4.17.11",
