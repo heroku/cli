@@ -1,10 +1,11 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import ux from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {quote} from '../../quote'
+const ux = CliUx.ux
 
 export class ConfigIndex extends Command {
   static description = 'display the config vars for an app'

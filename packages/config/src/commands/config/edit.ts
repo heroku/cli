@@ -1,13 +1,14 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../quote'
 import {Editor} from '../../util'
 
 const editor = new Editor()
+const cli = CliUx.ux
 
 interface Config {
   [key: string]: string;
