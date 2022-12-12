@@ -5,16 +5,14 @@
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.4.1",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
+    "@heroku-cli/command": "9.0.0",
+    "@oclif/core": "^1.21.0",
     "foreman": "^3.0.1",
     "tslib": "^1"
   },
   "devDependencies": {
     "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
+    "@oclif/test": "^2.2.13",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -26,8 +24,8 @@
     "globby": "^8",
     "mocha": "^5",
     "nyc": "^13",
-    "ts-node": "^8",
-    "typescript": "3.3.3333"
+    "ts-node": "^10",
+    "typescript": "4.8.4"
   },
   "engines": {
     "node": ">=10.0.0"
