@@ -8,7 +8,6 @@
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "9.0.0",
     "@oclif/core": "^1.21.0",
-    "cli-ux": "^4.9.3",
     "debug": "4.3.4"
   },
   "devDependencies": {
