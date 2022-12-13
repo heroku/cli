@@ -1,13 +1,8 @@
-import Nock from '@fancy-test/nock'
-import * as Test from '@oclif/test'
+import {expect, test} from '@oclif/test'
 import * as fs from 'async-file'
 
 import * as git from '../../../src/utils/git'
 const got = require('got')
-
-const test = Test.test
-.register('nock', Nock)
-const expect = Test.expect
 
 describe('ci:run', () => {
   test
@@ -207,6 +202,8 @@ describe('ci:run', () => {
       .stub(git, 'createArchive', gitFake.createArchive)
       .stub(fs, 'stat', fsFake.stat)
       .stub(fs, 'createReadStream', fsFake.createReadStream)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore-next-line
       .stub(got, 'stream', gotFake.stream)
       .command(['ci:run', `--pipeline=${pipeline.name}`])
       .it('it runs the test and displays the test output for the first node', ({stdout}) => {
