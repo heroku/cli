@@ -47,7 +47,7 @@
     "@oclif/plugin-warn-if-update-available": "1.7.0",
     "@oclif/plugin-which": "1.0.3",
     "cli-ux": "4.9.3",
-    "debug": "4.1.1",
+    "debug": "4.3.4",
     "execa": "1.0.0",
     "fs-extra": "7.0.1",
     "http-call": "5.3.0",
