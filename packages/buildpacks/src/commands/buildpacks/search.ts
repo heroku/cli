@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {truncate} from 'lodash'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
@@ -54,7 +54,7 @@ export default class Search extends Command {
     })
     const trunc = (value: string, _: string) => truncate(value, {length: 35, omission: '…'})
     const displayTable = (buildpacks: TableRow[]) => {
-      cli.table(buildpacks, {
+      CliUx.ux.table(buildpacks, {
         columns: [
           {key: 'buildpack', label: 'Buildpack'},
           {key: 'category', label: 'Category'},
@@ -64,13 +64,13 @@ export default class Search extends Command {
     }
 
     if (buildpacks.length === 0) {
-      cli.log('No buildpacks found')
+      CliUx.ux.log('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      cli.log('\n1 buildpack found')
+      CliUx.ux.log('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      cli.log(`\n${buildpacks.length} buildpacks found`)
+      CliUx.ux.log(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }
