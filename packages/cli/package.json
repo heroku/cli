@@ -44,7 +44,7 @@
     "@oclif/plugin-not-found": "1.2.2",
     "@oclif/plugin-plugins": "1.10.1",
     "@oclif/plugin-update": "1.5.0",
-    "@oclif/plugin-warn-if-update-available": "1.7.0",
+    "@oclif/plugin-warn-if-update-available": "1.7.3",
     "@oclif/plugin-which": "1.0.3",
     "cli-ux": "4.9.3",
     "debug": "4.1.1",
