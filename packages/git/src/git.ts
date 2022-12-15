@@ -1,6 +1,6 @@
 import {vars} from '@heroku-cli/command'
 import * as cp from 'child_process'
-import ux from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {promisify} from 'util'
 const execFile = promisify(cp.execFile)
 
@@ -13,9 +13,9 @@ export default class Git {
       const {stdout, stderr} = await execFile('git', args)
       if (stderr) process.stderr.write(stderr)
       return stdout.trim()
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ENOENT') {
-        ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+        CliUx.ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
       }
       throw error
     }
@@ -27,7 +27,7 @@ export default class Git {
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {
-          ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+          CliUx.ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
         } else reject(err)
       })
       s.on('close', resolve)
