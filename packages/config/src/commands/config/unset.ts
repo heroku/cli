@@ -1,8 +1,10 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import ux from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
+
+const ux = CliUx.ux
 
 export class ConfigUnset extends Command {
   static aliases = [
@@ -26,7 +28,7 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
   }
 
   async run() {
-    const {argv, flags} = this.parse(ConfigUnset)
+    const {argv, flags} = await this.parse(ConfigUnset)
     const lastRelease = async () => {
       const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${flags.app}/releases`, {
         partial: true,

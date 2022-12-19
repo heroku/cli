@@ -395,6 +395,22 @@
     open "^6.2.0"
     uuid "^8.3.0"
 
+"@heroku-cli/command@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-9.0.1.tgz#b7717b5770966d7db59be67d0d624885e1985347"
+  integrity sha512-RyVK88qFcsUSuZob2nE1foVGk0pyyTFzkMq8iBTuRPLfmyx/SpFaVX0jpkAnUbxMa6XAC1JwDHBkXMdM3yL/UQ==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/core" "^1.20.4"
+    cli-ux "^6.0.9"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.1.0"
+    http-call "^5.2.4"
+    netrc-parser "^3.1.6"
+    open "^6.2.0"
+    uuid "^8.3.0"
+
 "@heroku-cli/dev-cli@^1.26.13":
   version "1.26.13"
   resolved "https://registry.yarnpkg.com/@heroku-cli/dev-cli/-/dev-cli-1.26.13.tgz#512fe202b93c1161ccf176259ad942d5d75f3218"
@@ -1639,14 +1655,15 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/test@^1", "@oclif/test@^1.2.4":
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.9.tgz#bfd0bd3de6d2309f779b8f445a163db2fd48e72b"
-  integrity sha512-op+ak0NTyeBKqjLVH1jfPCRGWK5befIoQpCL/xwekjucUEmMfCbUpV1Sa60f9rU8X58HEqrclwWbAH+DtQR6FQ==
+"@oclif/test@2.2.13", "@oclif/test@^2.2.13", "@oclif/test@^2.2.8":
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.13.tgz#bd926584440bd81bc359c7f209421c0a914099e6"
+  integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
   dependencies:
-    fancy-test "^1.4.10"
+    "@oclif/core" "^1.21.0"
+    fancy-test "^2.0.9"
 
-"@oclif/test@^2.2.13", "@oclif/test@^2.2.8":
+"@oclif/test@^2.2.15":
   version "2.2.15"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.15.tgz#9f5a4477eb6f32ea361cae781c7f28ce5697d1e1"
   integrity sha512-IItdu34/nIn46qYg2PxeAA7fgW+y3KTUM+UCEaRvaFxEfQiHG173ohFJu7HPVsMfAS+RuTQfmAd/c0xKVQLGUQ==
@@ -4879,7 +4896,7 @@ fancy-test@^1.4.10, fancy-test@^1.4.3:
     nock "^13.0.0"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.9:
+fancy-test@^2.0.7, fancy-test@^2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.9.tgz#c3145c8024802404baf1dfcc19711198ee74a012"
   integrity sha512-sQ/tAoUiEcNkwg454GCCGWZaERQ48AV6WJZDJzRLwBI4k5M0OrzWME98Cqv3Vribnbe9rJlVb5hOcQmyZjrOBg==
@@ -10851,11 +10868,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
-
-typescript@3.3.3333:
-  version "3.3.3333"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
-  integrity sha512-JjSKsAfuHBE/fB2oZ8NxtRTk5iGcg6hkYXMnZ3Wc+b2RSqejEqTaem11mHASMnFilHrax3sLK0GDzcJrekZYLw==
 
 typescript@3.7.5:
   version "3.7.5"
