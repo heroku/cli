@@ -1713,13 +1713,14 @@
   dependencies:
     fancy-test "^1.4.3"
 
+
 "@oclif/test@2.2.13", "@oclif/test@^2.2.13", "@oclif/test@^2.2.8":
   version "2.2.13"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.13.tgz#bd926584440bd81bc359c7f209421c0a914099e6"
   integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
   dependencies:
-    "@oclif/core" "^1.20.4"
-    fancy-test "^2.0.7"
+    "@oclif/core" "^1.22.0"
+    fancy-test "^2.0.9"
 
 "@oclif/test@^2.2.15":
   version "2.2.15"
