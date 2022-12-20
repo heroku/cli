@@ -350,7 +350,7 @@
     open "^6.2.0"
     uuid "^8.3.0"
 
-"@heroku-cli/command@^9.0.1":
+"@heroku-cli/command@^9.0.0", "@heroku-cli/command@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-9.0.1.tgz#b7717b5770966d7db59be67d0d624885e1985347"
   integrity sha512-RyVK88qFcsUSuZob2nE1foVGk0pyyTFzkMq8iBTuRPLfmyx/SpFaVX0jpkAnUbxMa6XAC1JwDHBkXMdM3yL/UQ==
@@ -1713,14 +1713,13 @@
   dependencies:
     fancy-test "^1.4.3"
 
-
 "@oclif/test@2.2.13", "@oclif/test@^2.2.13", "@oclif/test@^2.2.8":
   version "2.2.13"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.13.tgz#bd926584440bd81bc359c7f209421c0a914099e6"
   integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
   dependencies:
-    "@oclif/core" "^1.22.0"
-    fancy-test "^2.0.9"
+    "@oclif/core" "^1.20.4"
+    fancy-test "^2.0.7"
 
 "@oclif/test@^2.2.15":
   version "2.2.15"
@@ -4950,7 +4949,7 @@ fancy-test@^1.4.3:
     mock-stdin "^0.3.1"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.7, fancy-test@^2.0.9:
+fancy-test@^2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.9.tgz#c3145c8024802404baf1dfcc19711198ee74a012"
   integrity sha512-sQ/tAoUiEcNkwg454GCCGWZaERQ48AV6WJZDJzRLwBI4k5M0OrzWME98Cqv3Vribnbe9rJlVb5hOcQmyZjrOBg==
