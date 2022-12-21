@@ -15,8 +15,6 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/plugin-help": "^2.1.6",
     "@oclif/test": "^2.2.15",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
