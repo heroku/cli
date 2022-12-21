@@ -1,14 +1,12 @@
-import Nock from '@fancy-test/nock'
-import {expect, test as otest} from '@oclif/test'
+import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
 nock.disableNetConnect()
-const test = otest.register('nock', Nock)
 
 describe('buildpacks', () => {
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
   })
   .stdout()
@@ -18,12 +16,13 @@ describe('buildpacks', () => {
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 https://github.com/heroku/heroku-buildpack-ruby
 `)
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api, [{url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}])
   })
   .stdout()
@@ -33,12 +32,13 @@ https://github.com/heroku/heroku-buildpack-ruby
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 heroku/ruby
 `)
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api, ['https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz'])
   })
   .stdout()
@@ -48,12 +48,13 @@ heroku/ruby
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
 `)
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api)
   })
   .stdout()
@@ -67,7 +68,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api, [
       'https://github.com/heroku/heroku-buildpack-java',
       'https://github.com/heroku/heroku-buildpack-ruby',
@@ -80,13 +81,14 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URLs
+
 1. https://github.com/heroku/heroku-buildpack-java
 2. https://github.com/heroku/heroku-buildpack-ruby
 `)
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.Scope) => {
+  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
     Stubber.get(api, [
       'https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/java.tgz',
       'https://buildpack-registry.s3.amazonaws.com/buildpacks/rust-lang/rust.tgz',
@@ -99,6 +101,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URLs
+
 1. heroku/java
 2. rust-lang/rust
 `)
