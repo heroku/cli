@@ -14,7 +14,7 @@ export default class Pipelines extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Pipelines)
+    const {flags} = await this.parse(Pipelines)
 
     const {body: pipelines} = await this.heroku.get<Heroku.Pipeline[]>('/pipelines')
 

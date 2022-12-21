@@ -51,7 +51,7 @@ export default class Setup extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Setup)
+    const {args, flags} = await this.parse(Setup)
 
     const errors = nameAndRepo(args)
 
@@ -106,7 +106,7 @@ export default class Setup extends Command {
     try {
       await setup
       await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
-    } catch (error) {
+    } catch (error: any) {
       debug(error)
       cli.error(error)
     } finally {

@@ -26,7 +26,7 @@ export default class PipelinesRename extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(PipelinesRename)
+    const {args} = await this.parse(PipelinesRename)
 
     const pipeline = await disambiguate(this.heroku, args.pipeline)
 

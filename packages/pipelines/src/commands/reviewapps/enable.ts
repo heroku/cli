@@ -33,7 +33,7 @@ export default class ReviewappsEnable extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ReviewappsEnable)
+    const {flags} = await this.parse(ReviewappsEnable)
 
     if (flags.app) {
       // remove app & remote flags when Review Apps 1.0 is deprecated

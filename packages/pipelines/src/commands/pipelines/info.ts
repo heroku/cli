@@ -30,7 +30,7 @@ export default class PipelinesInfo extends Command {
   }]
 
   async run() {
-    const {args, flags} = this.parse(PipelinesInfo)
+    const {args, flags} = await this.parse(PipelinesInfo)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
     const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
 
