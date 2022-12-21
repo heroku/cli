@@ -81,7 +81,7 @@ export default class ReviewappsEnable extends Command {
       const {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
 
       if (feature.enabled) {
-        const {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
+        const {body: repo} = await this.heroku.get<{full_name: string}>(`/pipelines/${pipeline.id}/repo`, {
           headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
         })
         settings.repo = repo.full_name
