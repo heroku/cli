@@ -37,11 +37,15 @@ export default class Versions extends Command {
         CliUx.ux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
           return a.release > b.release ? -1 : 1
         }), {
-          columns: [
-            {key: 'release', label: 'Version'},
-            {key: 'created_at', label: 'Released At'},
-            {key: 'status', label: 'Status'},
-          ],
+          release: {
+            header: 'Version',
+          },
+          created_at: {
+            header: 'Released At',
+          },
+          status: {
+            header: 'Status',
+          },
         })
       },
       Err: err => {

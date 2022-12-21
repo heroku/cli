@@ -1,6 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
-import {truncate} from 'lodash'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -52,14 +51,17 @@ export default class Search extends Command {
         description: buildpack.description,
       }
     })
-    const trunc = (value: string, _: string) => truncate(value, {length: 35, omission: '…'})
     const displayTable = (buildpacks: TableRow[]) => {
       CliUx.ux.table(buildpacks, {
-        columns: [
-          {key: 'buildpack', label: 'Buildpack'},
-          {key: 'category', label: 'Category'},
-          {key: 'description', label: 'Description', format: trunc},
-        ],
+        buildpack: {
+          header: 'Buildpack',
+        },
+        category: {
+          header: 'Category',
+        },
+        description: {
+          header: 'Description',
+        },
       })
     }
 
