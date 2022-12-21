@@ -1730,6 +1730,14 @@
     "@oclif/core" "^1.21.0"
     fancy-test "^2.0.9"
 
+"@oclif/test@^2.2.15":
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.16.tgz#2241f79a8d779c3b6a28671f097fa903795fe001"
+  integrity sha512-N7w7NHn+klyHXAOWcA8Vgmy/eFfU9Niwp2P/rkvmNg9NfWDHB+RAgjqnVMYDYYdXIDu3/DXdS90NXrIIhvPcHA==
+  dependencies:
+    "@oclif/core" "^1.22.0"
+    fancy-test "^2.0.9"
+
 "@oclif/tslint@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@oclif/tslint/-/tslint-3.1.1.tgz#e055cdf158630862fd44546f6b8fb1266c9778e7"
@@ -4954,6 +4962,20 @@ fancy-test@^2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.9.tgz#c3145c8024802404baf1dfcc19711198ee74a012"
   integrity sha512-sQ/tAoUiEcNkwg454GCCGWZaERQ48AV6WJZDJzRLwBI4k5M0OrzWME98Cqv3Vribnbe9rJlVb5hOcQmyZjrOBg==
+  dependencies:
+    "@types/chai" "*"
+    "@types/lodash" "*"
+    "@types/node" "*"
+    "@types/sinon" "*"
+    lodash "^4.17.13"
+    mock-stdin "^1.0.0"
+    nock "^13.0.0"
+    stdout-stderr "^0.1.9"
+
+fancy-test@^2.0.9:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.10.tgz#4c96b34cb15ad49693634fd1df9a28bb2086253f"
+  integrity sha512-gt2C/1DrFLyXNEkPHpltol0osCFEj5c3TFs3gu4EhIbnKEU9AW+lK0pWf1wRXhKs/FtcijnfODaO90d1HlTulQ==
   dependencies:
     "@types/chai" "*"
     "@types/lodash" "*"
