@@ -16,6 +16,7 @@ describe('buildpacks', () => {
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 https://github.com/heroku/heroku-buildpack-ruby
 `)
   })
@@ -31,6 +32,7 @@ https://github.com/heroku/heroku-buildpack-ruby
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 heroku/ruby
 `)
   })
@@ -46,6 +48,7 @@ heroku/ruby
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URL
+
 https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
 `)
   })
@@ -78,6 +81,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URLs
+
 1. https://github.com/heroku/heroku-buildpack-java
 2. https://github.com/heroku/heroku-buildpack-ruby
 `)
@@ -97,6 +101,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
     expect(ctx.stderr).to.equal('')
     expect(ctx.stdout).to.equal(
       `=== example Buildpack URLs
+
 1. heroku/java
 2. rust-lang/rust
 `)
