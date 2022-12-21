@@ -5,11 +5,9 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/command": "^9.0.0",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@oclif/config": "^1.12.10",
-    "@oclif/plugin-legacy": "^1.2.0",
-    "cli-ux": "^4.9.3",
+    "@oclif/core": "^1.21.0",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.3",
     "lodash": "^4.17.11",
@@ -17,10 +15,7 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/plugin-help": "^2.1.6",
-    "@oclif/test": "^1.2.4",
+    "@oclif/test": "^2.2.15",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.123",
@@ -40,10 +35,10 @@
     "tmp": "^0.0.33",
     "ts-node": "^10.9.1",
     "tslib": "^1",
-    "typescript": "3.7.5"
+    "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/lib",
