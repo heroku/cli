@@ -1,14 +1,12 @@
-import Nock from '@fancy-test/nock'
 import {Fixture} from '@heroku/buildpack-registry'
-import {expect, test as otest} from '@oclif/test'
+import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 nock.disableNetConnect()
-const test = otest.register('nock', Nock)
 
 describe('buildpacks:search', () => {
   test
-  .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
+  .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
     api
     .get('/buildpacks?in[namespace][]=heroku')
     .reply(200, [
@@ -26,7 +24,7 @@ describe('buildpacks:search', () => {
   })
 
   test
-  .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
+  .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
     const rubyBuildpack = Fixture.buildpack({
       name: 'ruby',
       description: 'Official Heroku Buildpack for Ruby',

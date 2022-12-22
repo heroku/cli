@@ -15,7 +15,7 @@ export default class RunConsole extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(RunConsole)
+    const {flags} = await this.parse(RunConsole)
 
     const opts = {
       heroku: this.heroku,

@@ -1,5 +1,5 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
-import {Command, flags} from '@oclif/command'
+import {Command, Flags} from '@oclif/core'
 
 import {fork as foreman} from '../../fork-foreman'
 
@@ -23,26 +23,26 @@ $ heroku local web=1,worker=2`,
   ]
 
   static flags = {
-    procfile: flags.string({
+    procfile: Flags.string({
       char: 'f',
       description: 'use a different Procfile',
       completion: FileCompletion,
     }),
-    env: flags.string({
+    env: Flags.string({
       char: 'e',
       description: 'location of env file (defaults to .env)',
       completion: FileCompletion,
     }),
-    port: flags.string({
+    port: Flags.string({
       char: 'p',
       description: 'port to listen on',
     }),
-    restart: flags.boolean({
+    restart: Flags.boolean({
       char: 'r',
       description: 'restart process if it dies',
       hidden: true,
     }),
-    concurrency: flags.string({
+    concurrency: Flags.string({
       char: 'c',
       description: 'number of processes to start',
       hidden: true,
@@ -51,7 +51,7 @@ $ heroku local web=1,worker=2`,
 
   async run() {
     const execArgv = ['start']
-    const {args, flags} = this.parse(Index)
+    const {args, flags} = await this.parse(Index)
 
     if (flags.restart) {
       this.error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
