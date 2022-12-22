@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -33,7 +33,7 @@ export default class Run extends Command {
   }
 
   async run() {
-    const {argv, flags} = this.parse(Run)
+    const {argv, flags} = await this.parse(Run)
 
     const opts = {
       'exit-code': flags['exit-code'],
@@ -61,7 +61,7 @@ export default class Run extends Command {
     } catch (error) {
       debug(error)
       if (error.exitCode) {
-        cli.error(error.message, {code: error.exitCode, exit: error.exitCode})
+        CliUx.ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
       } else {
         throw error
       }

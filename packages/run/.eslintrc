@@ -4,6 +4,6 @@
     "oclif-typescript"
   ],
   "rules": {
-    "unicorn/no-abusive-eslint-disable": "off"
+    "unicorn/no-abusive-eslint-disable": 0
   }
 }
