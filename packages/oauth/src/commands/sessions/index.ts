@@ -24,10 +24,11 @@ export default class SessionsIndex extends Command {
     } else if (sessions.length === 0) {
       CliUx.ux.log('No OAuth sessions.')
     } else {
+      const printLine: typeof this.log = (...args) => this.log(...args)
       CliUx.ux.table(sessions, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
-      }, {'no-header': true, printLine: this.log})
+      }, {'no-header': true, printLine})
     }
   }
 }

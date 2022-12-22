@@ -23,11 +23,12 @@ export default class ClientsIndex extends Command {
     } else if (clients.length === 0) {
       CliUx.ux.log('No OAuth clients.')
     } else {
+      const printLine: typeof this.log = (...args) => this.log(...args)
       CliUx.ux.table(clients, {
         name: {get: (w: any) => color.green(w.name)},
         id: {},
         redirect_uri: {},
-      }, {'no-header': true, printLine: this.log})
+      }, {'no-header': true, printLine})
     }
   }
 }

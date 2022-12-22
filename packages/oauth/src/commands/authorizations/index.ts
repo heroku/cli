@@ -27,11 +27,12 @@ export default class AuthorizationsIndex extends Command {
     } else if (authorizations.length === 0) {
       CliUx.ux.log('No OAuth authorizations.')
     } else {
+      const printLine: typeof this.log = (...args) => this.log(...args)
       CliUx.ux.table(authorizations, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
         scope: {get: (v: any) => v.scope.join(',')},
-      }, {'no-header': true, printLine: this.log})
+      }, {'no-header': true, printLine})
     }
   }
 }
