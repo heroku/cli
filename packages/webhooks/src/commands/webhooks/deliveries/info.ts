@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import BaseCommand from '../../../base'
 
@@ -21,10 +21,10 @@ export default class DeliveriesInfo extends BaseCommand {
   ]
 
   async run() {
-    const {flags, args} = this.parse(DeliveriesInfo)
+    const {flags, args} = await this.parse(DeliveriesInfo)
     const {path} = this.webhookType(flags)
 
-    const {body: delivery} = await this.webhooksClient.get(`${path}/webhook-deliveries/${args.id}`)
+    const {body: delivery}: {body: any} = await this.webhooksClient.get(`${path}/webhook-deliveries/${args.id}`)
 
     const {body: event} = await this.webhooksClient.get(`${path}/webhook-events/${delivery.event.id}`)
 
@@ -41,7 +41,7 @@ export default class DeliveriesInfo extends BaseCommand {
       'Next Attempt': delivery.next_attempt_at,
     }
 
-    cli.styledHeader(delivery.id)
+    CliUx.ux.styledHeader(delivery.id)
     cli.styledObject(obj)
 
     cli.styledHeader('Event Payload')
