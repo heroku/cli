@@ -27,8 +27,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/plugin-legacy": "^1.2.0",
+    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",

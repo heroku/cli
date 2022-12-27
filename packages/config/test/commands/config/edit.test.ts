@@ -1,9 +1,11 @@
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import sinon from 'sinon'
 
 import {stringToConfig} from '../../../src/commands/config/edit'
 import {Editor} from '../../../src/util'
 import {expect, test} from '../../test'
+
+const cli = CliUx.ux
 
 let sandbox: any
 let updated: {}
