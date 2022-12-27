@@ -1,7 +1,8 @@
 import {expect, test} from '@oclif/test'
 
 describe('webhooks:events:info', () => {
-  const deprecationWarning = 'Warning: heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info'
+  const deprecationWarning = 'Warning: heroku webhooks:event:info is deprecated, please use heroku'
+  const deprecationWarning2 = 'webhooks:deliveries:info'
 
   test
   .stdout()
@@ -28,6 +29,7 @@ describe('webhooks:events:info', () => {
   ])
   .it('lists webhooks events info for app webhooks', ctx => {
     expect(ctx.stderr).to.include(deprecationWarning)
+    expect(ctx.stderr).to.include(deprecationWarning2)
     expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
     expect(ctx.stdout).to.contain('payload: {')
     expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
@@ -62,6 +64,7 @@ describe('webhooks:events:info', () => {
   ])
   .it('lists webhooks events info for pipeline webhooks', ctx => {
     expect(ctx.stderr).to.include(deprecationWarning)
+    expect(ctx.stderr).to.include(deprecationWarning2)
     expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
     expect(ctx.stdout).to.contain('payload: {')
     expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
