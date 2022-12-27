@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
 describe('webhooks:events:info', () => {
-  const deprecationWarning = 'Warning: heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n'
+  const deprecationWarning = 'Warning: heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info'
 
   test
   .stdout()
