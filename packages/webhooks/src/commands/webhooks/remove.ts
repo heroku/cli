@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import BaseCommand from '../../base'
 export default class WebhooksRemove extends BaseCommand {
@@ -20,13 +20,13 @@ export default class WebhooksRemove extends BaseCommand {
   ]
 
   async run() {
-    const {flags, args} = this.parse(WebhooksRemove)
+    const {flags, args} = await this.parse(WebhooksRemove)
     const {path, display} = this.webhookType(flags)
 
-    cli.action.start(`Removing webhook ${args.id} from ${display}`)
+    CliUx.ux.action.start(`Removing webhook ${args.id} from ${display}`)
 
     await this.webhooksClient.delete(`${path}/webhooks/${args.id}`)
 
-    cli.action.stop()
+    CliUx.ux.action.stop()
   }
 }

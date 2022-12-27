@@ -65,7 +65,7 @@ payload: {
   ])
   .it('lists webhooks events info for pipeline webhooks', ctx => {
     expect(ctx.stderr).to.include(deprecationWarning)
-    expect(ctx.stdout).to.equal(`=== 99999999-9999-9999-9999-999999999999
+    expect(ctx.stdout).to.equal(` === 99999999-9999-9999-9999-999999999999
 payload: {
   "published_at": "2016-08-31T21:55:06Z",
   "resource": "api:release",

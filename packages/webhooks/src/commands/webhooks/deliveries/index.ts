@@ -50,6 +50,8 @@ export default class Deliveries extends BaseCommand {
         this.warn('It is possible to filter deliveries by using the --status flag')
       }
 
+      const printLine: typeof this.log = (...args) => this.log(...args)
+      
       CliUx.ux.table(deliveries, {
         id: {
           header: 'Delivery ID',
@@ -79,7 +81,7 @@ export default class Deliveries extends BaseCommand {
           header: 'Next Attempt', get: (w: any) => w.next_attempt_at || '',
         },
       }, {
-        printLine: this.log,
+        'no-header': true, printLine,
       })
     }
   }
