@@ -47,7 +47,7 @@ export default class Webhooks extends BaseCommand {
       },
       level: {},
     }, {
-      'no-header': true, printLine,
+      'no-header': false, printLine,
     })
   }
 }

@@ -45,7 +45,7 @@ export default class EventsIndex extends BaseCommand {
           header: 'Published At', get: (w: any) => w.payload.published_at,
         },
       }, {
-        'no-header': true, printLine,
+        'no-header': false, printLine,
       })
     }
   }

@@ -28,16 +28,13 @@ describe('webhooks:events:info', () => {
   ])
   .it('lists webhooks events info for app webhooks', ctx => {
     expect(ctx.stderr).to.include(deprecationWarning)
-    expect(ctx.stdout).to.equal(`=== 99999999-9999-9999-9999-999999999999
-payload: {
-  "published_at": "2016-08-31T21:55:06Z",
-  "resource": "api:release",
-  "action": "create",
-  "data": {
-    "foo": "bar"
-  }
-}
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('payload: {')
+    expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(ctx.stdout).to.contain('"resource": "api:release",')
+    expect(ctx.stdout).to.contain('"action": "create",')
+    expect(ctx.stdout).to.contain('"data": {')
+    expect(ctx.stdout).to.contain('"foo": "bar"')
   })
 
   test
@@ -65,15 +62,12 @@ payload: {
   ])
   .it('lists webhooks events info for pipeline webhooks', ctx => {
     expect(ctx.stderr).to.include(deprecationWarning)
-    expect(ctx.stdout).to.equal(` === 99999999-9999-9999-9999-999999999999
-payload: {
-  "published_at": "2016-08-31T21:55:06Z",
-  "resource": "api:release",
-  "action": "create",
-  "data": {
-    "foo": "bar"
-  }
-}
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('payload: {')
+    expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(ctx.stdout).to.contain('"resource": "api:release",')
+    expect(ctx.stdout).to.contain('"action": "create",')
+    expect(ctx.stdout).to.contain('"data": {')
+    expect(ctx.stdout).to.contain('"foo": "bar"')
   })
 })

@@ -24,9 +24,8 @@ describe('webhooks:events', () => {
     .command(['webhooks:events', '--app', 'example-app'])
     .it('lists app webhook events', ctx => {
       expect(ctx.stderr).to.include(deprecationWarning)
-      expect(ctx.stdout).to.equal(`Event ID                             Resource    Action Published At         
-99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z 
-`)
+      expect(ctx.stdout).to.contain('Event ID                             Resource    Action Published At')
+      expect(ctx.stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
     })
 
     test
@@ -63,9 +62,8 @@ describe('webhooks:events', () => {
     .command(['webhooks:events', '--pipeline', 'example-pipeline'])
     .it('lists pipeline webhook events', ctx => {
       expect(ctx.stderr).to.include(deprecationWarning)
-      expect(ctx.stdout).to.equal(`Event ID                             Resource    Action Published At         
-99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z 
-`)
+      expect(ctx.stdout).to.contain('Event ID                             Resource    Action Published At')
+      expect(ctx.stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
     })
 
     test
@@ -82,7 +80,7 @@ describe('webhooks:events', () => {
     })
   })
 
-  describe('by default the table is sorted by `created_at`', () => {
+  describe('by default the table is sorted by "created_at"', () => {
     const firstDate = parse('2019-06-11T14:20:42Z')
     const secondDate = addDays(parse(firstDate), 1)
     const thirdDate = addDays(parse(firstDate), 2)
@@ -94,8 +92,8 @@ describe('webhooks:events', () => {
     .get('/apps/example-app/webhook-events')
     .reply(200, [
       // the returned ordered from the api is not ordered by
-      // `created_at` but the results displayed by the cli
-      // in thae table *are* ordered by `created_at`
+      // "created_at" but the results displayed by the cli
+      // in thae table *are* ordered by "created_at"
 
       // first date
       {
@@ -132,16 +130,15 @@ describe('webhooks:events', () => {
     ]),
     )
     .command(['webhooks:events', '--app', 'example-app'])
-    .it('displays webhooks sorted by `created_at`', ctx => {
+    .it('displays webhooks sorted by "created_at"', ctx => {
       expect(ctx.stderr).to.include(deprecationWarning)
 
-      // Note: The table is sorted by `created_at` date even though
+      // Note: The table is sorted by "created_at" date even though
       // it is not displayed in the table
-      expect(ctx.stdout).to.equal(`Event ID                             Resource    Action Published At         
-00000000-0000-0000-0000-000000000000 api:release create 2019-06-15T14:20:42Z 
-22222222-2222-2222-2222-222222222222 api:release create 2019-06-15T14:20:42Z 
-11111111-1111-1111-1111-111111111111 api:release create 2019-06-15T14:20:42Z 
-`)
+      expect(ctx.stdout).to.contain('Event ID                             Resource    Action Published At')
+      expect(ctx.stdout).to.contain('00000000-0000-0000-0000-000000000000 api:release create 2019-06-15T14:20:42Z')
+      expect(ctx.stdout).to.contain('22222222-2222-2222-2222-222222222222 api:release create 2019-06-15T14:20:42Z')
+      expect(ctx.stdout).to.contain('11111111-1111-1111-1111-111111111111 api:release create 2019-06-15T14:20:42Z')
     })
   })
 })
