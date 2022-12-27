@@ -76,7 +76,7 @@ describe('pipelines:add', () => {
   // question
   .stub(inquirer, 'prompt', function () {
     // eslint-disable-next-line prefer-rest-params
-    const question = arguments[0]
+    const question = arguments[0][0]
 
     if (question && question.name === 'pipeline') {
       return Promise.resolve({pipeline: {
