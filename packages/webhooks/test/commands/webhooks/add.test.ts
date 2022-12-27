@@ -28,7 +28,7 @@ describe('webhooks:add', () => {
   ])
   .it('adds a specific app webhook', ctx => {
     expect(ctx.stdout).to.equal('')
-    expect(ctx.stderr).to.contain('Adding webhook to example-app... done')
+    expect(ctx.stderr).to.contain('Adding webhook to example-app...')
   })
 
   test
