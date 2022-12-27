@@ -49,18 +49,10 @@ describe('ci', () => {
       expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
       for (let i = 5; i < 10; i++) {
-        expect(stdout).to.contain(`${statusIcon[i % 4]} `)
-        expect(stdout).to.contain(` ${testRuns[i].number}  `)
-        expect(stdout).to.contain(' main   ')
-        expect(stdout).to.contain(` ${testRuns[i].commit_sha} `)
-        expect(stdout).to.contain(` ${testRuns[i].status} `)
+        expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
       }
       for (let i = 10; i < 20; i++) {
-        expect(stdout).to.contain(`${statusIcon[i % 4]} `)
-        expect(stdout).to.contain(` ${testRuns[i].number} `)
-        expect(stdout).to.contain(' main   ')
-        expect(stdout).to.contain(` ${testRuns[i].commit_sha} `)
-        expect(stdout).to.contain(` ${testRuns[i].status} `)
+        expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
       }
 
       expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
