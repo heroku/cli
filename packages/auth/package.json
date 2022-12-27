@@ -46,11 +46,10 @@
   ],
   "license": "MIT",
   "oclif": {
-    "commands": "./lib/commands",
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
+    "commands": "./lib/commands",
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/auth/<%- commandPath %>"
   },
   "repository": "heroku/cli",

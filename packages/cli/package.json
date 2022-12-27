@@ -101,9 +101,10 @@
   "license": "ISC",
   "main": "lib/index.js",
   "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "commands": "./lib/commands",
     "plugins": [
-      "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",
@@ -130,7 +131,6 @@
       "@heroku-cli/plugin-status",
       "@heroku-cli/plugin-webhooks",
       "@oclif/plugin-commands",
-      "@oclif/plugin-help",
       "@oclif/plugin-not-found",
       "@oclif/plugin-plugins",
       "@oclif/plugin-update",
@@ -276,7 +276,7 @@
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },

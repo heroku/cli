@@ -38,12 +38,14 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
 
   const backboard = createBackboardMock(expectedCbk, actual)
   await analytics.record({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     Command: Login, argv: ['foo', 'bar'],
   })
   backboard.done()
 }
 
-describe('analytics (backboard has an error)', () => {
+describe.only('analytics (backboard has an error)', () => {
   let sandbox: any
 
   before(async () => {
@@ -69,6 +71,8 @@ describe('analytics (backboard has an error)', () => {
 
     try {
       await analytics.record({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
         Command: Login, argv: ['foo', 'bar'],
       })
     } catch {
