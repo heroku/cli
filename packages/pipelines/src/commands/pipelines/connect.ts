@@ -32,7 +32,7 @@ export default class Connect extends Command {
   }]
 
   async run() {
-    const {args, flags} = this.parse(Connect)
+    const {args, flags} = await this.parse(Connect)
 
     const combinedInputs = {
       name: args.name,

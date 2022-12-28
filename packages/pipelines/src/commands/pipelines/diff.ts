@@ -111,7 +111,7 @@ export default class PipelinesDiff extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(PipelinesDiff)
+    const {flags} = await this.parse(PipelinesDiff)
     const targetAppName = flags.app
 
     const coupling = await getCoupling(this.heroku, targetAppName)
