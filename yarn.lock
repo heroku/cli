@@ -1423,6 +1423,40 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
+"@oclif/core@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.23.0.tgz#4bad6f950dd9431f90f481c7253b67857540def4"
+  integrity sha512-LnQoRtyQLQCsEHQsY7Ju0Z+g84XIVTxtVWr9hq81Juzj0o2f4zaFZ3f39VfnXvxI4m+QmROaoUJvr417eSEuhg==
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^3.0.3"
+    ansi-escapes "^4.3.2"
+    ansi-styles "^4.3.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    clean-stack "^3.0.1"
+    cli-progress "^3.10.0"
+    debug "^4.3.4"
+    ejs "^3.1.6"
+    fs-extra "^9.1.0"
+    get-package-type "^0.1.0"
+    globby "^11.1.0"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.14.1"
+    natural-orderby "^2.0.3"
+    object-treeify "^1.1.33"
+    password-prompt "^1.1.2"
+    semver "^7.3.7"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+    supports-color "^8.1.1"
+    supports-hyperlinks "^2.2.0"
+    tslib "^2.4.1"
+    widest-line "^3.1.0"
+    wrap-ansi "^7.0.0"
+
 "@oclif/errors@1.2.2", "@oclif/errors@^1.2.1":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.2.2.tgz#9d8f269b15f13d70aa93316fed7bebc24688edc2"
@@ -1728,6 +1762,14 @@
   dependencies:
     "@oclif/core" "^1.22.0"
     fancy-test "^2.0.9"
+
+"@oclif/test@^2.2.17":
+  version "2.2.17"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.17.tgz#82a1cec2321552e3bcc2cbc30546bbceaacdde6d"
+  integrity sha512-biReDlW5a6YkiJoMPa4tQYWQ8sXkBBMD94P7/NgqAL06wE62x4cyK8V55hcbV10QPe82IUl0w3Zx09zYsoLUyQ==
+  dependencies:
+    "@oclif/core" "^1.22.0"
+    fancy-test "^2.0.10"
 
 "@oclif/tslint@^3.1.1":
   version "3.1.1"
@@ -3238,36 +3280,6 @@ cli-ux@^5.2.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.3.1.tgz#3bed8b37c44b03a5d1b9d71d39a69a919a101835"
   integrity sha512-l2MXbitx0FjtHKSbHytuxfxWv6MdWBRh23ItRJjU17cjj0dqZxfAL863tzbR1FIs7jccPllPUvn3QWK6BQg3Pg==
-  dependencies:
-    "@oclif/command" "^1.5.1"
-    "@oclif/errors" "^1.2.1"
-    "@oclif/linewrap" "^1.0.0"
-    "@oclif/screen" "^1.0.3"
-    ansi-escapes "^3.1.0"
-    ansi-styles "^3.2.1"
-    cardinal "^2.1.1"
-    chalk "^2.4.1"
-    clean-stack "^2.0.0"
-    extract-stack "^1.0.0"
-    fs-extra "^7.0.1"
-    hyperlinker "^1.0.0"
-    indent-string "^3.2.0"
-    is-wsl "^1.1.0"
-    lodash "^4.17.11"
-    natural-orderby "^2.0.1"
-    password-prompt "^1.1.2"
-    semver "^5.6.0"
-    string-width "^3.1.0"
-    strip-ansi "^5.1.0"
-    supports-color "^5.5.0"
-    supports-hyperlinks "^1.0.1"
-    treeify "^1.1.0"
-    tslib "^1.9.3"
-
-cli-ux@^5.3.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.3.2.tgz#6f433539bf17a61eb6dbe8fb6a6cd8d7bdf3b96f"
-  integrity sha512-H7gFNM5FxAZ+DUGTQNZfKs6lUOPKZGCIUNsYiQ1FuoeJjo9RLnBbUUnKhQ68DqfrH6i/BRmv8edOY0EfUHD6Mg==
   dependencies:
     "@oclif/command" "^1.5.1"
     "@oclif/errors" "^1.2.1"
@@ -4949,7 +4961,7 @@ fancy-test@^1.4.3:
     mock-stdin "^0.3.1"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.9:
+fancy-test@^2.0.10, fancy-test@^2.0.7, fancy-test@^2.0.9:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.10.tgz#4c96b34cb15ad49693634fd1df9a28bb2086253f"
   integrity sha512-gt2C/1DrFLyXNEkPHpltol0osCFEj5c3TFs3gu4EhIbnKEU9AW+lK0pWf1wRXhKs/FtcijnfODaO90d1HlTulQ==

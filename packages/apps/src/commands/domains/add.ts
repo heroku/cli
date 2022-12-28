@@ -71,7 +71,7 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(DomainsAdd)
+    const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
     const domainCreatePayload: DomainCreatePayload = {
@@ -122,7 +122,7 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       cli.error(error)
     } finally {
       cli.action.stop()

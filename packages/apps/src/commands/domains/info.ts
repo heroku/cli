@@ -18,7 +18,7 @@ export default class DomainsInfo extends Command {
   static args = [{name: 'hostname', required: true}]
 
   async run() {
-    const {args, flags} = this.parse(DomainsInfo)
+    const {args, flags} = await this.parse(DomainsInfo)
     const {body: res} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
     const domain = {
       ...res,
