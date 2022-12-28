@@ -13,7 +13,7 @@ export default class Open extends Command {
   }]
 
   async run() {
-    const {args} = this.parse(Open)
+    const {args} = await this.parse(Open)
 
     const pipeline: any = await disambiguate(this.heroku, args.pipeline)
     await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)

@@ -24,7 +24,7 @@ export default class PipelinesUpdate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(PipelinesUpdate)
+    const {flags} = await this.parse(PipelinesUpdate)
 
     const app = flags.app
     const stage = flags.stage

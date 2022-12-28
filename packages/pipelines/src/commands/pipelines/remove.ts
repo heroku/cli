@@ -17,7 +17,7 @@ export default class PipelinesRemove extends Command {
   }
 
   async run() {
-    const {flags: {app}} = this.parse(PipelinesRemove)
+    const {flags: {app}} = await this.parse(PipelinesRemove)
 
     cli.action.start(`Removing ${color.app(app)}`)
     await removeCoupling(this.heroku, app)

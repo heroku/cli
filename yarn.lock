@@ -1389,7 +1389,7 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^1.1.1", "@oclif/core@^1.20.2", "@oclif/core@^1.20.4", "@oclif/core@^1.21.0", "@oclif/core@^1.22.0":
+"@oclif/core@1.22.0", "@oclif/core@^1.1.1", "@oclif/core@^1.20.2", "@oclif/core@^1.20.4", "@oclif/core@^1.21.0", "@oclif/core@^1.22.0":
   version "1.22.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.22.0.tgz#dfdd76db6435cc1be2de7bbe25c23302332b9297"
   integrity sha512-Bvyi6uFbmpkFl9XUATsGMlqEDGfqMKWL0Mu5VQTuPg7/NIyfygYkaburn11uGkOp0a8yG6fPpyVBfGmztjNPGA==
@@ -3242,7 +3242,7 @@ cli-ux@5.6.7:
     supports-hyperlinks "^2.1.0"
     tslib "^2.0.0"
 
-cli-ux@^5.2.1, cli-ux@^5.3.1:
+cli-ux@^5.2.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.3.1.tgz#3bed8b37c44b03a5d1b9d71d39a69a919a101835"
   integrity sha512-l2MXbitx0FjtHKSbHytuxfxWv6MdWBRh23ItRJjU17cjj0dqZxfAL863tzbR1FIs7jccPllPUvn3QWK6BQg3Pg==

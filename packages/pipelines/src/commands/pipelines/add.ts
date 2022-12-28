@@ -35,7 +35,7 @@ The stage of the app will be guessed based on its name if not specified.`
   }]
 
   async run() {
-    const {args, flags} = this.parse(PipelinesAdd)
+    const {args, flags} = await this.parse(PipelinesAdd)
     const app = flags.app
 
     let stage

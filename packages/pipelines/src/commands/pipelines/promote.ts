@@ -88,7 +88,7 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
     cli.log(`${label}...`)
     const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
     return promotions
-  } catch (error) {
+  } catch (error: any) {
     if (!error.body || error.body.id !== 'two_factor') {
       throw error
     }
@@ -185,7 +185,7 @@ export default class Promote extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Promote)
+    const {flags} = await this.parse(Promote)
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
     cli.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
@@ -235,7 +235,7 @@ export default class Promote extends Command {
 
     try {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
-    } catch (error) {
+    } catch (error: any) {
       cli.error(error)
     }
 
