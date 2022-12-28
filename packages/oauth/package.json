@@ -47,6 +47,8 @@
   "license": "MIT",
   "main": "lib/index.js",
   "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "commands": "./lib/commands",
     "bin": "heroku",
     "plugins": [
