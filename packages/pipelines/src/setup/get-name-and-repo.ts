@@ -1,6 +1,8 @@
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {pipelineName, repoName} from './validate'
+
+const cli = CliUx.ux
 
 function filter(obj: any) {
   const ret: any = {}

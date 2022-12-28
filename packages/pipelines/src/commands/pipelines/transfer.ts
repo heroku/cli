@@ -1,10 +1,12 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../api'
 import disambiguate from '../../disambiguate'
 import renderPipeline from '../../render-pipeline'
+
+const cli = CliUx.ux
 
 async function getTeamOwner(heroku: APIClient, name: string) {
   const {body: team} = await getTeam(heroku, name)

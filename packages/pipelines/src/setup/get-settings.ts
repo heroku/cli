@@ -1,4 +1,6 @@
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 const DEFAULT_SETTINGS = {
   auto_deploy: true,
