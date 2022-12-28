@@ -1,10 +1,11 @@
 import {flags} from '@heroku-cli/command'
-import {ux} from 'cli-ux'
+import {CliUx, Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
-import {Interfaces} from '@oclif/core'
+
+const ux = CliUx.ux
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true
@@ -64,12 +65,9 @@ export default class Doctor extends AutocompleteBase {
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
     ux.table(data, {
-      printHeader: undefined,
-      columns: [
-        {key: 'name'},
-        {key: 'value'},
-      ],
-    })
+      name: {},
+      value: {},
+    }, {'no-header': true})
 
     if (flags.verbose) this.printList()
   }

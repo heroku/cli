@@ -70,7 +70,7 @@ export default class Create extends AutocompleteBase {
         if (c.hidden) return
         try {
           commands.push(c)
-        } catch (error) {
+        } catch (error: any) {
           debug(`Error creating completions for command ${c.id}`)
           debug(error.message)
           this.writeLogFile(error.message)
@@ -87,7 +87,7 @@ export default class Create extends AutocompleteBase {
       try {
         const publicFlags = this.genCmdPublicFlags(c).trim()
         return `${c.id} ${publicFlags}`
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating bash completion for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)
@@ -106,7 +106,7 @@ export default class Create extends AutocompleteBase {
     const cmdsWithDescriptions = this.commands.map(c => {
       try {
         return this.genCmdWithDescription(c)
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)
@@ -121,7 +121,7 @@ export default class Create extends AutocompleteBase {
     return this.commands.map(c => {
       try {
         return this.genZshCmdFlagsSetter(c)
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)

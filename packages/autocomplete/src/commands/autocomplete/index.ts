@@ -1,14 +1,14 @@
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
+import {CliUx, Interfaces} from '@oclif/core'
 import chalk from 'chalk'
-import {cli} from 'cli-ux'
-import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
 import {updateCache} from '../../cache'
 
 import Create from './create'
+const cli = CliUx.ux
 
 export default class Index extends AutocompleteBase {
   static description = 'display autocomplete installation instructions'
