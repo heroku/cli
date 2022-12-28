@@ -41,7 +41,7 @@ export default class Create extends Command {
   }]
 
   async run() {
-    const {args, flags} = this.parse(Create)
+    const {args, flags} = await this.parse(Create)
 
     let name
     let stage

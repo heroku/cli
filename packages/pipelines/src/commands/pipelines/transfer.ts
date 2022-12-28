@@ -48,7 +48,7 @@ export default class PipelinesTransfer extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(PipelinesTransfer)
+    const {args, flags} = await this.parse(PipelinesTransfer)
     const pipeline = await disambiguate(this.heroku, flags.pipeline)
     const newOwner = await getOwner(this.heroku, args.owner)
     const apps = await listPipelineApps(this.heroku, pipeline.id!)

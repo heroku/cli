@@ -5,12 +5,9 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/command": "^9.0.0",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/errors": "^1.3.4",
-    "cli-ux": "^5.5.1",
+    "@oclif/core": "^1.22.0",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
     "inquirer": "^7.0.0",
@@ -20,9 +17,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
+    "@oclif/test": "^2.2.15",
     "@types/chai": "^4",
     "@types/got": "^9.6.7",
     "@types/lodash.keyby": "^4.6.6",
@@ -41,10 +36,10 @@
     "sinon": "^7.4.1",
     "ts-node": "^10",
     "tslib": "^1",
-    "typescript": "3.7.5"
+    "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/lib",
@@ -57,11 +52,10 @@
   ],
   "license": "MIT",
   "oclif": {
-    "commands": "./lib/commands",
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
+    "commands": "./lib/commands",
     "topics": {
       "pipelines": {
         "description": "manage pipelines"

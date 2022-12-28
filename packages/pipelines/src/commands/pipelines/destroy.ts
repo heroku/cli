@@ -20,7 +20,7 @@ export default class PipelinesDestroy extends Command {
   }]
 
   async run() {
-    const {args} = this.parse(PipelinesDestroy)
+    const {args} = await this.parse(PipelinesDestroy)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
 
     cli.action.start(`Destroying ${color.pipeline(pipeline.name!)} pipeline`)
