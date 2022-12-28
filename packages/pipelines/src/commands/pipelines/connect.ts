@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {getPipeline} from '../../api'
 import GitHubAPI from '../../github-api'
@@ -8,6 +8,8 @@ import getGitHubToken from '../../setup/get-github-token'
 import getNameAndRepo from '../../setup/get-name-and-repo'
 import getRepo from '../../setup/get-repo'
 import {nameAndRepo} from '../../setup/validate'
+
+const cli = CliUx.ux
 
 export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'

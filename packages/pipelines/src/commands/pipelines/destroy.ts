@@ -1,10 +1,12 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {destroyPipeline} from '../../api'
 import disambiguate from '../../disambiguate'
+
+const cli = CliUx.ux
 
 export default class PipelinesDestroy extends Command {
   static description = 'destroy a pipeline'

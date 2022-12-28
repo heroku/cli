@@ -1,14 +1,16 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
+import {CliUx} from '@oclif/core'
 import assert from 'assert'
-import cli from 'cli-ux'
 import fetch from 'node-fetch'
-import util from 'util'
 import Stream from 'stream'
+import util from 'util'
 
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
+
+const cli = CliUx.ux
 
 export const sleep  = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time))
