@@ -1,7 +1,8 @@
 
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
 import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../api'
@@ -19,6 +20,8 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
 // eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
+
+const cli = CliUx.ux
 
 export default class Setup extends Command {
   static description =

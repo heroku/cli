@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import KolkrabbiAPI from '../../kolkrabbi-api'
+
+const cli = CliUx.ux
 
 export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'

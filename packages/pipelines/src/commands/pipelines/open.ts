@@ -1,7 +1,9 @@
 import {Command} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import disambiguate from '../../disambiguate'
+
+const cli = CliUx.ux
 
 export default class Open extends Command {
   static description = 'open a pipeline in dashboard'

@@ -1,4 +1,6 @@
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default async function getCISettings(yes: any, organization: any) {
   const settings = {

@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
