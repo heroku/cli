@@ -138,7 +138,6 @@ describe('webhooks:events', () => {
     .it('displays webhooks sorted by "created_at"', ctx => {
       expect(ctx.stderr).to.include(deprecationWarning)
       expect(ctx.stderr).to.include(deprecationWarning2)
-      
       // Note: The table is sorted by "created_at" date even though
       // it is not displayed in the table
       expect(ctx.stdout).to.contain('Event ID                             Resource    Action Published At')

@@ -1718,16 +1718,8 @@
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.13.tgz#bd926584440bd81bc359c7f209421c0a914099e6"
   integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
   dependencies:
-    "@oclif/core" "^1.22.0"
-    fancy-test "^2.0.9"
-
-"@oclif/test@^2.2.15":
-  version "2.2.15"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.15.tgz#9f5a4477eb6f32ea361cae781c7f28ce5697d1e1"
-  integrity sha512-IItdu34/nIn46qYg2PxeAA7fgW+y3KTUM+UCEaRvaFxEfQiHG173ohFJu7HPVsMfAS+RuTQfmAd/c0xKVQLGUQ==
-  dependencies:
-    "@oclif/core" "^1.21.0"
-    fancy-test "^2.0.9"
+    "@oclif/core" "^1.20.4"
+    fancy-test "^2.0.7"
 
 "@oclif/test@^2.2.15":
   version "2.2.16"
@@ -1736,6 +1728,14 @@
   dependencies:
     "@oclif/core" "^1.22.0"
     fancy-test "^2.0.9"
+
+"@oclif/test@^2.2.16":
+  version "2.2.17"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-2.2.17.tgz#82a1cec2321552e3bcc2cbc30546bbceaacdde6d"
+  integrity sha512-biReDlW5a6YkiJoMPa4tQYWQ8sXkBBMD94P7/NgqAL06wE62x4cyK8V55hcbV10QPe82IUl0w3Zx09zYsoLUyQ==
+  dependencies:
+    "@oclif/core" "^1.22.0"
+    fancy-test "^2.0.10"
 
 "@oclif/tslint@^3.1.1":
   version "3.1.1"
@@ -4957,21 +4957,7 @@ fancy-test@^1.4.3:
     mock-stdin "^0.3.1"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.9.tgz#c3145c8024802404baf1dfcc19711198ee74a012"
-  integrity sha512-sQ/tAoUiEcNkwg454GCCGWZaERQ48AV6WJZDJzRLwBI4k5M0OrzWME98Cqv3Vribnbe9rJlVb5hOcQmyZjrOBg==
-  dependencies:
-    "@types/chai" "*"
-    "@types/lodash" "*"
-    "@types/node" "*"
-    "@types/sinon" "*"
-    lodash "^4.17.13"
-    mock-stdin "^1.0.0"
-    nock "^13.0.0"
-    stdout-stderr "^0.1.9"
-
-fancy-test@^2.0.9:
+fancy-test@^2.0.10, fancy-test@^2.0.9:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.10.tgz#4c96b34cb15ad49693634fd1df9a28bb2086253f"
   integrity sha512-gt2C/1DrFLyXNEkPHpltol0osCFEj5c3TFs3gu4EhIbnKEU9AW+lK0pWf1wRXhKs/FtcijnfODaO90d1HlTulQ==
@@ -11129,6 +11115,11 @@ typescript@4.8.4:
   version "4.8.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
   integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
+
+typescript@^4.8.4:
+  version "4.9.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.4.tgz#a2a3d2756c079abda241d75f149df9d561091e78"
+  integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
 
 uglify-js@^3.1.4:
   version "3.13.5"
