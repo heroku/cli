@@ -1,10 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {listPipelineApps} from '../../api'
 import disambiguate from '../../disambiguate'
 import renderPipeline from '../../render-pipeline'
+
+const cli = CliUx.ux
 
 export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'

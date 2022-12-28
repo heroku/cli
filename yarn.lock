@@ -4949,7 +4949,7 @@ fancy-test@^1.4.3:
     mock-stdin "^0.3.1"
     stdout-stderr "^0.1.9"
 
-fancy-test@^2.0.9:
+fancy-test@^2.0.7, fancy-test@^2.0.9:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.10.tgz#4c96b34cb15ad49693634fd1df9a28bb2086253f"
   integrity sha512-gt2C/1DrFLyXNEkPHpltol0osCFEj5c3TFs3gu4EhIbnKEU9AW+lK0pWf1wRXhKs/FtcijnfODaO90d1HlTulQ==

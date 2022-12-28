@@ -1,11 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 
 import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
+
+const cli = CliUx.ux
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 

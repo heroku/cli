@@ -1,9 +1,11 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {getTeam} from './api'
+
+const cli = CliUx.ux
 
 export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: Heroku.Pipeline, owner: string) {
   const hasMixedOwnership = pipelineApps.some(app => {
