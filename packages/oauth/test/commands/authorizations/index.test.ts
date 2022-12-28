@@ -23,8 +23,8 @@ describe('authorizations', () => {
   .command(['authorizations'])
   .it('lists the authorizations alphabetically by description', ctx => {
     expect(ctx.stdout).to.equal(
-      'awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user \n' +
-        'b description aBcD1234-129f-42d2-854b-dEf123abc123 global   \n',
+      ' awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user \n' +
+        ' b description aBcD1234-129f-42d2-854b-dEf123abc123 global   \n',
     )
   })
 
