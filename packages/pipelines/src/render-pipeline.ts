@@ -1,10 +1,12 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import cli, {Table} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import sortBy from 'lodash.sortby'
 
 import {getOwner, warnMixedOwnership} from './ownership'
+
+const cli = CliUx.ux
 
 export default async function renderPipeline(
   heroku: APIClient,
@@ -22,7 +24,7 @@ export default async function renderPipeline(
 
   cli.log('')
 
-  const columns: Table.table.Columns<Heroku.App> = {
+  const columns: CliUx.Table.table.Columns<Heroku.App> = {
     name: {
       header: 'app name',
       get(row) {
