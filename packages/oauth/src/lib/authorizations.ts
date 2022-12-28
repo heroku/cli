@@ -1,7 +1,7 @@
 'use strict'
 
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as addSeconds from 'date-fns/add_seconds'
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
@@ -40,7 +40,7 @@ export function display(auth: Heroku.OAuthAuthorization) {
     }
   }
 
-  cli.styledObject(obj, [
+  CliUx.ux.styledObject(obj, [
     'Client',
     'Redirect URI',
     'ID',
