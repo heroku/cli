@@ -1,6 +1,8 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default class DomainsRemove extends Command {
   static description = 'remove a domain from an app'

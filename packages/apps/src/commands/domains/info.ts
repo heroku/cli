@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default class DomainsInfo extends Command {
   static description = 'show detailed information for a domain on an app'
