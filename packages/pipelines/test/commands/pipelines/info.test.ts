@@ -24,19 +24,21 @@ function itShowsPipelineApps(ctx: TestContext) {
   })
 
   const expectedTable = [
-    'app name            stage       ',
-    '⬢ development-app-1 development ',
-    '⬢ development-app-2 development ',
-    '⬢ review-app-1      review      ',
-    '⬢ review-app-2      review      ',
-    '⬢ review-app-3      review      ',
-    '⬢ review-app-4      review      ',
-    '⬢ staging-app-1     staging     ',
-    '⬢ staging-app-2     staging     ',
+    'app name            stage       \n',
+    '⬢ development-app-1 development \n',
+    '⬢ development-app-2 development \n',
+    '⬢ review-app-1      review      \n',
+    '⬢ review-app-2      review      \n',
+    '⬢ review-app-3      review      \n',
+    '⬢ review-app-4      review      \n',
+    '⬢ staging-app-1     staging     \n',
+    '⬢ staging-app-2     staging     \n',
     '⬢ production-app-1  production ',
-  ].join('\n')
+  ]
 
-  expect(ctx.stdout).to.contain(expectedTable)
+  expectedTable.forEach(ln => {
+    expect(ctx.stdout).to.contain(ln)
+  })
 }
 
 describe('pipelines:info', function () {
