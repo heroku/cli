@@ -1,4 +1,3 @@
-import Login from '@heroku-cli/plugin-auth/src/commands/auth/login'
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -6,6 +5,14 @@ import sinon from 'sinon'
 
 import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
 import UserConfig from '../src/user-config'
+
+const mockCommand = {
+  plugin: {
+    name: 'foo',
+    version: '123',
+  },
+  id: 'login',
+}
 
 function createBackboardMock(expectedGetter: (data: AnalyticsInterface) => any, actual: any) {
   const backboard = nock('https://backboard.heroku.com/', {
@@ -33,12 +40,10 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   config.userAgent = '@oclif/command/1.5.6 darwin-x64 node-v10.2.1'
   config.name = 'heroku'
   const analytics = new AnalyticsCommand(config)
-  Login.plugin = {name: 'foo', version: '123'} as any
-  Login.id = 'login'
 
   const backboard = createBackboardMock(expectedCbk, actual)
   await analytics.record({
-    Command: Login, argv: ['foo', 'bar'],
+    Command: mockCommand as any, argv: ['foo', 'bar'],
   })
   backboard.done()
 }
@@ -64,12 +69,10 @@ describe('analytics (backboard has an error)', () => {
     config.userAgent = '@oclif/command/1.5.6 darwin-x64 node-v10.2.1'
     config.name = 'heroku'
     const analytics = new AnalyticsCommand(config)
-    Login.plugin = {name: 'foo', version: '123'} as any
-    Login.id = 'login'
 
     try {
       await analytics.record({
-        Command: Login, argv: ['foo', 'bar'],
+        Command: mockCommand as any, argv: ['foo', 'bar'],
       })
     } catch {
       throw new Error('Expected analytics hook to 🦃 error')
