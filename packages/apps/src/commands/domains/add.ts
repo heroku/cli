@@ -85,7 +85,9 @@ export default class DomainsAdd extends Command {
 
     cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     if (flags.cert) {
+      cli.action.stop('resolving SNI endpoint')
       domainCreatePayload.sni_endpoint = flags.cert
+      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     } else {
       const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
 
