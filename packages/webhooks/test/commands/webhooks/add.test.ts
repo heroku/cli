@@ -27,8 +27,6 @@ describe('webhooks:add', () => {
     'http://foobar.com',
   ])
   .it('adds a specific app webhook', ctx => {
-    console.log("stdout=" + ctx.stdout)
-    console.log("stderr=" + ctx.stderr)
     expect(ctx.stdout.trim()).to.equal('')
     expect(ctx.stderr).to.include('Adding webhook to example-app... done')
   })
