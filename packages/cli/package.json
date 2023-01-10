@@ -37,7 +37,6 @@
     "@heroku-cli/plugin-webhooks": "^7.66.3",
     "@oclif/core": "^1.21.0",
     "@oclif/plugin-commands": "^1.2.2",
-    "@oclif/plugin-help": "2.2.0",
     "@oclif/plugin-not-found": "1.2.2",
     "@oclif/plugin-plugins": "1.10.1",
     "@oclif/plugin-update": "1.5.0",
@@ -84,7 +83,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/oclif.manifest.json",
