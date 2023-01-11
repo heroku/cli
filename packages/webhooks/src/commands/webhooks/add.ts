@@ -37,7 +37,7 @@ export default class WebhooksAdd extends BaseCommand {
       },
     })
 
-    CliUx.ux.action.stop()
+    CliUx.ux.action.stop('creating secret')
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
     CliUx.ux.action.start(`Adding webhook to ${display}`)
     if (secret) {
