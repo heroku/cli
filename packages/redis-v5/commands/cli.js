@@ -92,6 +92,7 @@ function redisCLI (uri, client) {
     client.on('end', function () {
       console.log('\nDisconnected from instance.')
       resolve()
+      cli.exit()
     })
   })
 }
