@@ -73,7 +73,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -96,7 +96,7 @@ jobs:
 
   sign_deb:
     needs: [pack_deb]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: SignDebian
     env:
