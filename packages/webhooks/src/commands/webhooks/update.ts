@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import BaseCommand from '../../base'
 
@@ -26,10 +26,10 @@ export default class WebhooksUpdate extends BaseCommand {
   ]
 
   async run() {
-    const {flags, args} = this.parse(WebhooksUpdate)
+    const {flags, args} = await this.parse(WebhooksUpdate)
     const {path, display} = this.webhookType(flags)
 
-    cli.action.start(`Updating webhook ${args.id} for ${display}`)
+    CliUx.ux.action.start(`Updating webhook ${args.id} for ${display}`)
 
     await this.webhooksClient.patch(`${path}/webhooks/${args.id}`, {
       body: {
@@ -40,6 +40,6 @@ export default class WebhooksUpdate extends BaseCommand {
       },
     })
 
-    cli.action.stop()
+    CliUx.ux.action.stop()
   }
 }
