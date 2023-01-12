@@ -37,6 +37,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Yarn install
+        # this should be unnecessary once we upgrade to Yarn 2 or higher.
+        # https://github.com/yarnpkg/yarn/issues/8242
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 10
