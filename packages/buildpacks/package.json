@@ -32,6 +32,7 @@
     "mocha": "^5",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
+    "oclif": "3.4.3",
     "tmp": "^0.0.33",
     "ts-node": "^10.9.1",
     "tslib": "^1",
@@ -63,11 +64,11 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json npm-shrinkwrap.json",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }

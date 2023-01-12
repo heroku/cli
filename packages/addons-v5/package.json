@@ -20,12 +20,14 @@
     "printf": "0.6.1"
   },
   "devDependencies": {
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^15.1.0",
+    "oclif": "3.4.3",
     "sinon": "^6.3.5"
   },
   "files": [
@@ -43,9 +45,9 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "release": "np",
     "test": "nyc mocha",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }

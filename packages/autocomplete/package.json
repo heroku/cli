@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/test": "1.2.4",
     "@types/chai": "4.1.7",
     "@types/fs-extra": "^5.0.5",
@@ -49,8 +48,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "hooks": {
@@ -65,7 +68,7 @@
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "lint": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest",
+    "prepack": "rm -rf lib && tsc && oclif manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

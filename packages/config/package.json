@@ -30,6 +30,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
+    "oclif": "3.4.3",
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
@@ -48,8 +49,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "bin": "heroku",
     "commands": "./lib/commands",
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/config/<%- commandPath %>"
@@ -58,10 +63,10 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }
