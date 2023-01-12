@@ -41,10 +41,10 @@ jobs:
         # https://github.com/yarnpkg/yarn/issues/8242
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 10
+          timeout_minutes: 100
           max_attempts: 3
           retry_on: timeout
-          command: yarn --frozen-lockfile --network-timeout 1000000
+          command: yarn --frozen-lockfile --network-timeout 100000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
