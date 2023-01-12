@@ -36,15 +36,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Yarn install
-        # this should be unnecessary once we upgrade to Yarn 2 or higher.
-        # https://github.com/yarnpkg/yarn/issues/8242
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 100
-          max_attempts: 3
-          retry_on: timeout
-          command: yarn --frozen-lockfile --network-timeout 100000
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
