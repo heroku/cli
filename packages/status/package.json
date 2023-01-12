@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/tslint": "1.1.4",
     "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/test": "^2.2.8",
