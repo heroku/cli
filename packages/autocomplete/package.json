@@ -49,8 +49,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "hooks": {
@@ -65,7 +69,7 @@
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "lint": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest",
+    "prepack": "rm -rf lib && tsc && oclif manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

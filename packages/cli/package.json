@@ -80,6 +80,7 @@
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
+    "oclif": "^3.4.3",
     "qqjs": "0.3.10",
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
@@ -277,11 +278,11 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
-    "prepack": "yarn run build && oclif-dev manifest",
+    "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme --multi && git add README.md ../../docs"
+    "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }

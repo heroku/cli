@@ -33,6 +33,7 @@
     "globby": "^10",
     "mocha": "^5",
     "nyc": "^13",
+    "oclif": "^3.4.3",
     "ts-node": "^10",
     "typescript": "3.7.5"
   },
@@ -63,8 +64,8 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b && oclif manifest && oclif readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }
