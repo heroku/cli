@@ -9769,7 +9769,7 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oclif@^3.4.3:
+oclif@3.4.3:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/oclif/-/oclif-3.4.3.tgz#8db95c7d1f0c8c82fb3037545f78e65fa7769a4a"
   integrity sha512-Kg8ezSJvDluazG6eyN+TeoryaFn3i9utKVty2hy6I0FUy6QcPnbl8+MCha4Jwc+x5+pA46Tu0n2cnjUcWqp56w==
