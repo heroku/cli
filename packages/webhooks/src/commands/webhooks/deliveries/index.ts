@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import BaseCommand from '../../../base'
 
@@ -18,7 +18,7 @@ export default class Deliveries extends BaseCommand {
   }
 
   async run() {
-    const {flags} = this.parse(Deliveries)
+    const {flags} = await this.parse(Deliveries)
     const webhookType = this.webhookType(flags)
     let {path} = webhookType
     const {display} = webhookType
@@ -29,7 +29,7 @@ export default class Deliveries extends BaseCommand {
       path += `?eq[status]=${encodeURIComponent(flags.status)}`
     }
 
-    const {body: deliveries} = await this.webhooksClient.get(path, {
+    const {body: deliveries}: { body: any[]} = await this.webhooksClient.get(path, {
       headers: {
         Range: `seq ..; order=desc,max=${max}`,
       },
@@ -50,7 +50,8 @@ export default class Deliveries extends BaseCommand {
         this.warn('It is possible to filter deliveries by using the --status flag')
       }
 
-      cli.table(deliveries, {
+      const printLine: typeof this.log = (...args) => this.log(...args)
+      CliUx.ux.table(deliveries, {
         id: {
           header: 'Delivery ID',
         },
@@ -79,7 +80,7 @@ export default class Deliveries extends BaseCommand {
           header: 'Next Attempt', get: (w: any) => w.next_attempt_at || '',
         },
       }, {
-        printLine: this.log,
+        'no-header': false, printLine,
       })
     }
   }

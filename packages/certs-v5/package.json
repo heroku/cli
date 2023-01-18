@@ -22,7 +22,6 @@
     "psl": "^1.1.29"
   },
   "devDependencies": {
-    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -30,6 +29,7 @@
     "mocha": "^5.2.0",
     "nock": "^9.3.3",
     "nyc": "^13.2.0",
+    "oclif": "3.4.3",
     "proxyquire": "^2.1.0",
     "sinon": "^2.3.6",
     "sinon-chai": "^2.14.0"
@@ -48,8 +48,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "test": "nyc mocha",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }
