@@ -921,8 +921,8 @@ __metadata:
     mocha: ^5
     nyc: ^13
     ts-node: ^10
-    tslib: ^1
-    typescript: 3.3.3333
+    tslib: ^1.9.3
+    typescript: 3.7.5
   languageName: unknown
   linkType: soft
 
