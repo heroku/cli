@@ -9,6 +9,7 @@ if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
 describeOrSkip('@acceptance logs', () => {
   test
   .stdout()
+    // Should be a nock call here. the POST this leads to should not be made.
   .command(['logs', '--app=heroku-cli-ci-smoke-test-app'])
   .it('shows the logs', ctx => {
     // This is asserting that logs are returned by checking for the presence of the first two
