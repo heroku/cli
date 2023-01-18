@@ -17,6 +17,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           yarn: cache
+      - run: echo "yarn version initial:"
+      - run: yarn -v
+      - run: yarn set version 3.x
+      - run: echo "yarn version set:"
+      - run: yarn -v
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn test
 

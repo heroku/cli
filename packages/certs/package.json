@@ -8,8 +8,8 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.8",
     "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/test": "^2.2.8",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.24",

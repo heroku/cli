@@ -47,12 +47,15 @@
   "license": "MIT",
   "main": "lib/index.js",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
-    "plugins": [
-    ]
+    "plugins": []
   },
   "repository": "heroku/cli",
   "scripts": {
