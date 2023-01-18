@@ -21,6 +21,7 @@
   "engines": {
     "node": ">=10.0.0"
   },
+  "packageManager": "yarn@3.3.1",
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency 4",
