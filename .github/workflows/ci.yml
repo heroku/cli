@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           yarn: cache
+      - run: yarn set version 3.3.1
       - run: yarn --immutable --network-timeout 1000000
       - run: yarn test
 
