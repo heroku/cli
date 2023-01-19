@@ -13,13 +13,11 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/plugin-run-v5": "^7.66.3",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
     "github-url-to-object": "^4.0.4",
     "got": "^8.3.2",
-    "heroku-cli-util": "^8.0.11",
     "inquirer": "^7.0.0",
     "lodash.flatten": "^4.4.0",
     "shell-escape": "^0.2.0",
@@ -27,12 +25,10 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
     "nock": "^9.2.5",
-    "oclif": "3.4.3",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
   },

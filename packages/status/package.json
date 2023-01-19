@@ -17,16 +17,11 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/status/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@oclif/core": "^1.20.4",
     "date-fns": "^1.29.0",
     "http-call": "^5.2.3"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/tslint": "1.1.4",
-    "@oclif/plugin-legacy": "^1.2.0",
-    "@oclif/test": "^2.2.8",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
@@ -36,8 +31,7 @@
     "chai": "^4.2.0",
     "globby": "^9.0.0",
     "mocha": "^5.1.1",
-    "nock": "^10.0.6",
-    "oclif": "3.4.3"
+    "nock": "^10.0.6"
   },
   "engines": {
     "node": ">=10.0.0"

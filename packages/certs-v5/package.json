@@ -16,20 +16,17 @@
   },
   "dependencies": {
     "date-fns": "^1.29.0",
-    "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
     "lodash": "^4.17.13",
     "psl": "^1.1.29"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
     "mocha": "^5.2.0",
     "nock": "^9.3.3",
     "nyc": "^13.2.0",
-    "oclif": "3.4.3",
     "proxyquire": "^2.1.0",
     "sinon": "^2.3.6",
     "sinon-chai": "^2.14.0"

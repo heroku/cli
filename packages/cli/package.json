@@ -54,7 +54,6 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@oclif/test": "^1.2.4",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/debug": "^4.1.2",

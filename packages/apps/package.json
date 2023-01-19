@@ -4,16 +4,11 @@
   "author": "Brett @brettgoulder",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-apps/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.1",
-    "@heroku-cli/schema": "^1.0.25",
-    "@oclif/core": "^1.23.0",
     "inquirer": "^7.0.1",
     "shell-escape": "^0.2.0",
     "urijs": "^1.19.1"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.17",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",

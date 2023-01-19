@@ -27,11 +27,9 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
-    "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
     "nock": "9.2.6",
     "nyc": "^13.2.0",

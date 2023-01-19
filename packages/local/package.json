@@ -5,12 +5,9 @@
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "9.0.0",
-    "@oclif/core": "^1.21.0",
     "foreman": "^3.0.1"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.13",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -18,8 +15,7 @@
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
-    "nyc": "^13",
-    "oclif": "3.4.3"
+    "nyc": "^13"
   },
   "engines": {
     "node": ">=10.0.0"

@@ -1,7 +1,6 @@
 {
   "extends": [
-    "oclif",
-    "oclif-typescript"
+    "../../.eslintrc"
   ],
   "rules": {
     "unicorn/no-abusive-eslint-disable": "off"

@@ -15,7 +15,6 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.15",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.123",
@@ -29,7 +28,6 @@
     "mocha": "^5",
     "nock": "^10.0.6",
     "nyc": "^13.2.0",
-    "oclif": "3.4.3",
     "tmp": "^0.0.33"
   },
   "engines": {

@@ -5,16 +5,12 @@
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
-    "@oclif/core": "^1.20.2",
     "cli-ux": "^4.9.3",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.8",
     "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.123",
     "@types/mocha": "^5.2.6",
@@ -24,8 +20,7 @@
     "chai": "^4.2.0",
     "globby": "^9.0.0",
     "mocha": "^5.2.0",
-    "nock": "^10.0.6",
-    "oclif": "3.4.3"
+    "nock": "^10.0.6"
   },
   "engines": {
     "node": ">=10.0.0"

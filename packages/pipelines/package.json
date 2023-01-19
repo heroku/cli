@@ -4,11 +4,6 @@
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.0",
-    "@heroku-cli/schema": "^1.0.25",
-    "@oclif/core": "^1.22.0",
-    "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
@@ -17,7 +12,6 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.15",
     "@types/chai": "^4",
     "@types/got": "^9.6.7",
     "@types/lodash.keyby": "^4.6.6",
@@ -30,9 +24,7 @@
     "mocha": "^5",
     "nock": "^10.0.6",
     "nyc": "^13",
-    "oclif": "3.4.3",
-    "sinon": "^7.4.1",
-    "ts-node": "^10"
+    "sinon": "^7.4.1"
   },
   "engines": {
     "node": ">=12.0.0"
