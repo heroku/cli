@@ -2,6 +2,8 @@
   "devDependencies": {
     "@oclif/tslint": "^3.1.1",
     "eslint": "5.13.0",
+    "eslint-config-oclif": "3.1.0",
+    "eslint-config-oclif-typescript": "0.1.0",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
@@ -10,7 +12,10 @@
     "lerna": "^3.22.1",
     "promise-request-retry": "^1.0.2",
     "standard": "12.0.1",
-    "tmp": "^0.2.1"
+    "tmp": "^0.2.1",
+    "ts-node": "10.9.1",
+    "tslib": "1.9.3",
+    "typescript": "4.8.4"
   },
   "standard": {
     "env": "mocha",
@@ -25,6 +30,7 @@
   },
   "private": true,
   "scripts": {
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules & rm -rf ./node_modules",
     "test": "lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md"
   },
