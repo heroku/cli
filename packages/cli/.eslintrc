@@ -1,6 +1,7 @@
 {
   "extends": [
-    "../../.eslintrc"
+    "oclif",
+    "oclif-typescript"
   ],
   "rules": {
   }
