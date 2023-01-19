@@ -28,7 +28,20 @@
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules & rm -rf ./node_modules"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@oclif/core",
+      "**/@oclif/test",
+      "**/@heroku-cli/color",
+      "**/@heroku-cli/command",
+      "**/@heroku-cli/schema",
+      "**/heroku-cli-util",
+      "**/http-call",
+      "**/node-fetch",
+      "**/nock"
+    ]
+  }
 }
