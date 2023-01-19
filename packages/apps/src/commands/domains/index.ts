@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
-import * as Uri from 'urijs'
+import {default as Uri} from 'urijs'
 
 const cli = CliUx.ux
 

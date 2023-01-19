@@ -20,8 +20,7 @@
     ]
   },
   "engines": {
-    "node": ">=10.0.0",
-    "yarn": ">=3.0.0"
+    "node": ">=10.0.0"
   },
   "private": true,
   "scripts": {
@@ -30,6 +29,5 @@
   },
   "workspaces": [
     "packages/*"
-  ],
-  "packageManager": "yarn@3.3.1"
+  ]
 }
