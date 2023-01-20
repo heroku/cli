@@ -18,7 +18,7 @@ async function getAccountOwner(heroku: APIClient, name: string) {
   return {id: account.id, type: 'user'}
 }
 
-function getOwner(heroku: APIClient, name: string) {
+async function getOwner(heroku: APIClient, name: string) {
   return getTeamOwner(heroku, name)
   .catch(() => {
     return getAccountOwner(heroku, name)
