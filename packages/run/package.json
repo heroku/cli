@@ -8,13 +8,13 @@
     "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
-    "@oclif/core": "1.21.0",
+    "@oclif/core": "1.22.0",
     "debug": "^4.1.1",
     "tslib": "^1"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -46,6 +46,8 @@
   ],
   "license": "MIT",
   "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "commands": "./lib/commands",
     "bin": "heroku",
     "topics": {

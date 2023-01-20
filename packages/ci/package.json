@@ -7,7 +7,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^9.0.1",
-    "@oclif/core": "^1.21.0",
+    "@oclif/core": "^1.22.0",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
     "debug": "^4.1.1",
@@ -26,7 +26,7 @@
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4.1.7",
     "@types/inquirer": "7.3.0",
     "@types/mocha": "^5.2.6",
@@ -48,7 +48,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/lib",

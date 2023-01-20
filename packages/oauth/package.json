@@ -17,7 +17,7 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -50,9 +50,7 @@
     "additionalHelpFlags": ["-h"],
     "additionalVersionFlags": ["-v"],
     "commands": "./lib/commands",
-    "bin": "heroku",
-    "plugins": [
-    ]
+    "bin": "heroku"
   },
   "repository": "heroku/cli",
   "scripts": {

@@ -40,7 +40,7 @@ export default class Options extends AutocompleteBase {
       const completion = this.determineCompletion(commandStateVars)
       const options = await this.fetchOptions(completion)
       if (options) this.log(options)
-    } catch (error) {
+    } catch (error: any) {
       // write to ac log
       this.writeLogFile(error.message)
     }
