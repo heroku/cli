@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "fs-extra": "^7.0.1",
@@ -27,7 +27,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
+    "@oclif/core": "^1.22.0",
     "chai": "^4.2.0",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",
@@ -48,7 +48,10 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "repository": "heroku/cli",
+  "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"]
+  },"repository": "heroku/cli",
   "scripts": {
     "postpack": "rm oclif.manifest.json",
     "prepack": "oclif manifest",

@@ -1,13 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx, Interfaces} from '@oclif/core'
+import {Interfaces, CliUx} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
-
-const cli = CliUx.ux
 
 export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logout'> = async function ({type, app}) {
   // autocomplete is now in core, skip windows
@@ -38,7 +36,7 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
     return
   }
 
-  cli.action.start('Updating completions')
+  CliUx.ux.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
 
@@ -50,5 +48,5 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
   } catch (error: any) {
     this.debug(error.message)
   }
-  cli.action.stop()
+  CliUx.ux.action.stop()
 }

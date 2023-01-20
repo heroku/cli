@@ -15,8 +15,8 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.4.1",
-    "@oclif/core": "^1.20.2",
+    "@heroku-cli/command": "^9.0.1",
+    "@oclif/core": "^1.22.0",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
     "heroku-cli-util": "^8.0.11",
@@ -58,6 +58,10 @@
   "main": "src/index.js",
   "publishConfig": {
     "access": "public"
+  },
+  "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"]
   },
   "repository": "heroku/cli",
   "scripts": {

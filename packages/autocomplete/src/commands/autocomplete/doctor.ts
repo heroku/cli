@@ -23,6 +23,7 @@ export default class Doctor extends AutocompleteBase {
   async run() {
     const {args, flags} = await this.parse(Doctor)
     const shell = args.shell || this.config.shell
+    const printLine: typeof this.log = (...args) => this.log(...args)
     this.errorIfNotSupportedShell(shell)
 
     const data = []
@@ -64,10 +65,10 @@ export default class Doctor extends AutocompleteBase {
 
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
-    ux.table(data, {
+    CliUx.ux.table(data, {
       name: {},
       value: {},
-    }, {'no-header': true})
+    }, {'no-header': true, printLine})
 
     if (flags.verbose) this.printList()
   }

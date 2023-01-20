@@ -27,7 +27,8 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
+    "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/core": "^1.22.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
@@ -53,6 +54,10 @@
   ],
   "license": "ISC",
   "main": "index.js",
+  "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"]
+  },
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",

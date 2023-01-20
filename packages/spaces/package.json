@@ -44,6 +44,10 @@
   ],
   "license": "ISC",
   "main": "index.js",
+  "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"]
+  },
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",

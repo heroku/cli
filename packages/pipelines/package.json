@@ -5,7 +5,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.0",
+    "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/core": "^1.22.0",
     "heroku-cli-util": "^8.0.11",
@@ -17,7 +17,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4",
     "@types/got": "^9.6.7",
     "@types/lodash.keyby": "^4.6.6",

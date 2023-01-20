@@ -1,14 +1,13 @@
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx, Interfaces} from '@oclif/core'
 import chalk from 'chalk'
+import {Interfaces, CliUx} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
 import {updateCache} from '../../cache'
 
 import Create from './create'
-const cli = CliUx.ux
 
 export default class Index extends AutocompleteBase {
   static description = 'display autocomplete installation instructions'
@@ -31,13 +30,13 @@ export default class Index extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    cli.action.start(`${chalk.bold('Building the autocomplete cache')}`)
+    CliUx.ux.action.start(`${chalk.bold('Building the autocomplete cache')}`)
     await Create.run([], this.config)
     await this.updateCache(AppCompletion, 'app')
     await this.updateCache(PipelineCompletion, 'pipeline')
     await this.updateCache(SpaceCompletion, 'space')
     await this.updateCache(TeamCompletion, 'team')
-    cli.action.stop()
+    CliUx.ux.action.stop()
 
     if (!flags['refresh-cache']) {
       const bin = this.config.bin
