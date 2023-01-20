@@ -29,11 +29,17 @@ export default class Regions extends Command {
       CliUx.ux.styledJSON(regions)
     } else {
       CliUx.ux.table(regions, {
-        columns: [
-          {key: 'name', label: 'ID', format: (n: any) => color.green(n)},
-          {key: 'description', label: 'Location'},
-          {key: 'private_capable', label: 'Runtime', format: (c: any) => c ? 'Private Spaces' : 'Common Runtime'},
-        ],
+        name: {
+          header: 'ID',
+          get: ({name}: any) => color.green(name),
+        },
+        description: {
+          header: 'Location',
+        },
+        private_capable: {
+          header: 'Runtime',
+          get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
+        },
       })
     }
   }
