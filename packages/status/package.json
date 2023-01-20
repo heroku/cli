@@ -55,7 +55,9 @@
   "license": "ISC",
   "oclif": {
     "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"]
+    "additionalVersionFlags": ["-v"],
+    "commands": "./lib/commands",
+    "bin": "heroku"
   },
   "repository": "heroku/cli",
   "scripts": {
