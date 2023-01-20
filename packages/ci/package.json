@@ -5,9 +5,6 @@
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.1",
-    "@oclif/core": "^1.21.0",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
     "debug": "^4.1.1",

@@ -13,7 +13,7 @@ export default class Disable extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Disable)
+    const {flags} = await this.parse(Disable)
     cli.action.start('Disabling dyno autoscaling')
 
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)

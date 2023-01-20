@@ -16,7 +16,7 @@ export default class Regions extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Regions)
+    const {flags} = await this.parse(Regions)
     let {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
     if (flags.private) {
       regions = regions.filter((region: any) => region.private_capable)

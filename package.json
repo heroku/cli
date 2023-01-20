@@ -1,4 +1,10 @@
 {
+  "dependencies": {
+    "@heroku-cli/color": "1.1.14",
+    "@heroku-cli/command": "9.0.1",
+    "@heroku-cli/schema": "1.0.25",
+    "@oclif/core": "1.22.0"
+  },
   "devDependencies": {
     "@oclif/tslint": "^3.1.1",
     "eslint": "5.13.0",
@@ -33,15 +39,7 @@
       "packages/*"
     ],
     "nohoist": [
-      "**/@oclif/core",
-      "**/@oclif/test",
-      "**/@heroku-cli/color",
-      "**/@heroku-cli/command",
-      "**/@heroku-cli/schema",
-      "**/heroku-cli-util",
-      "**/http-call",
-      "**/node-fetch",
-      "**/nock"
+      "**/heroku-cli-util"
     ]
   }
 }

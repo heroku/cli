@@ -16,7 +16,7 @@ export default class Wait extends Command {
     'wait-interval': flags.integer({
       char: 'w',
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
-      parse: input => {
+      parse: async input => {
         const w = parseInt(input, 10)
         if (w < 10) {
           cli.error('wait-interval must be at least 10', {exit: 1})
@@ -33,7 +33,7 @@ export default class Wait extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Wait)
+    const {flags} = await this.parse(Wait)
 
     const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
       partial: true,

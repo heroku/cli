@@ -27,7 +27,6 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/core": "^1.20.4",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",

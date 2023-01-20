@@ -5,8 +5,6 @@
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "9.0.0",
-    "@oclif/core": "^1.21.0",
     "foreman": "^3.0.1",
     "tslib": "^1"
   },

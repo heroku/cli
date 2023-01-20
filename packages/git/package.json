@@ -5,9 +5,6 @@
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "9.0.0",
-    "@oclif/core": "^1.21.0",
     "debug": "4.3.4"
   },
   "devDependencies": {
