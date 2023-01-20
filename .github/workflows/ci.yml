@@ -40,6 +40,21 @@ jobs:
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
+  snyk:
+    runs-on: ubuntu-latest
+    environment: Snyk
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - run: yarn global add snyk
+      - run: yarn --frozen-lockfile
+      - run: snyk test --all-projects --fail-on=all
+      - run: snyk monitor --org=hit
+
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
