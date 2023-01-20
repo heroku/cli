@@ -32,7 +32,7 @@
     "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^10",
     "mocha": "^5",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
     "ts-node": "^10",
     "typescript": "3.7.5"
   },
