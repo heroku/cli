@@ -5,8 +5,6 @@ import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
 
-const ux = CliUx.ux
-
 export default class Doctor extends AutocompleteBase {
   static hidden = true
 
