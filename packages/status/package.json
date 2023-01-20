@@ -56,8 +56,7 @@
   "oclif": {
     "additionalHelpFlags": ["-h"],
     "additionalVersionFlags": ["-v"],
-    "commands": "./lib/commands",
-    "bin": "heroku"
+    "commands": "./lib/commands"
   },
   "repository": "heroku/cli",
   "scripts": {
