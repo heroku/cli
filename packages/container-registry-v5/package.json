@@ -29,6 +29,7 @@
     "mockdate": "^2.0.2",
     "nock": "^9.2.3",
     "nyc": "^13.2.0",
+    "oclif": "3.4.3",
     "sinon": "^5.0.7",
     "std-mocks": "^1.0.1"
   },
@@ -55,9 +56,9 @@
   "scripts": {
     "depcheck": "depcheck || true",
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "test": "cross-env TZ=utc nyc mocha",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   },
   "topic": "container"
 }

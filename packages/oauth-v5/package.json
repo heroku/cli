@@ -33,7 +33,8 @@
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",
     "nock": "10.0.6",
-    "nyc": "^13.2.0"
+    "nyc": "^13.2.0",
+    "oclif": "3.4.3"
   },
   "files": [
     "oclif.manifest.json",
@@ -55,8 +56,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "test": "cross-env TZ=UTC nyc mocha",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }

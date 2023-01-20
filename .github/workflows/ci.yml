@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn --frozen-lockfile
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 

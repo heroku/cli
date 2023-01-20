@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
-    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/plugin-addons-v5": "^7.67.0",
     "@heroku-cli/plugin-apps": "^7.66.3",
     "@heroku-cli/plugin-apps-v5": "^7.67.0",
@@ -35,18 +35,13 @@
     "@heroku-cli/plugin-spaces": "^7.66.3",
     "@heroku-cli/plugin-status": "^7.66.3",
     "@heroku-cli/plugin-webhooks": "^7.66.3",
-    "@oclif/command": "1.8.16",
-    "@oclif/config": "1.13.2",
-    "@oclif/errors": "1.2.2",
+    "@oclif/core": "^1.22.0",
     "@oclif/plugin-commands": "^1.2.2",
-    "@oclif/plugin-help": "2.2.0",
-    "@oclif/plugin-legacy": "1.2.0",
     "@oclif/plugin-not-found": "1.2.2",
     "@oclif/plugin-plugins": "1.10.1",
     "@oclif/plugin-update": "1.5.0",
     "@oclif/plugin-warn-if-update-available": "1.7.0",
     "@oclif/plugin-which": "1.0.3",
-    "cli-ux": "4.9.3",
     "debug": "4.1.1",
     "execa": "1.0.0",
     "fs-extra": "7.0.1",
@@ -57,8 +52,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@heroku-cli/dev-cli": "^1.26.13",
-    "@oclif/test": "^1.2.4",
+    "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/debug": "^4.1.2",
@@ -80,14 +74,15 @@
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
+    "oclif": "3.4.3",
     "qqjs": "0.3.10",
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
-    "typescript": "3.7.5"
+    "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/oclif.manifest.json",
@@ -104,6 +99,8 @@
   "license": "ISC",
   "main": "lib/index.js",
   "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v"],
     "commands": "./lib/commands",
     "plugins": [
       "@oclif/plugin-legacy",
@@ -277,11 +274,11 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
-    "prepack": "yarn run build && oclif-dev manifest",
+    "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme --multi && git add README.md ../../docs"
+    "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }

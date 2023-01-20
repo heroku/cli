@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
 import * as path from 'path'
 
@@ -24,7 +24,7 @@ export const brewHook: Hook<'update'> = async function () {
   let binPath
   try {
     binPath = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 'ENOENT') return
     throw error
   }

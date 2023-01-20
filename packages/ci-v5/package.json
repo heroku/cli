@@ -32,6 +32,7 @@
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
     "nock": "^9.2.5",
+    "oclif": "3.4.3",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
   },
@@ -57,8 +58,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "prepack": "oclif manifest",
     "test": "mocha -R tap",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }
