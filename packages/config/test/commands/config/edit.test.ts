@@ -8,7 +8,7 @@ import {expect, test} from '../../test'
 const cli = CliUx.ux
 
 let sandbox: any
-let updated: {}
+let updated: Record<string, unknown>
 let editedConfig = ''
 
 describe('config:edit', () => {
@@ -61,7 +61,7 @@ describe('config:edit', () => {
       )
       .nock('https://api.heroku.com', api => api
       .patch('/apps/myapp/config-vars')
-      .reply(function (_uri: string, requestBody: {}) {
+      .reply(function (_uri: string, requestBody: Record<string, unknown>) {
         updated = requestBody
         return [200, {}]
       }),
@@ -86,7 +86,7 @@ describe('config:edit', () => {
       )
       .nock('https://api.heroku.com', api => api
       .patch('/apps/myapp/config-vars')
-      .reply(function (_uri: string, requestBody: {}) {
+      .reply(function (_uri: string, requestBody: Record<string, unknown>) {
         updated = requestBody
         return [200, {NOT_BLANK: 'not blank', BLANK: ''}]
       }),
