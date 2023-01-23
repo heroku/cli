@@ -17,4 +17,9 @@ ignore:
         reason: None Given
         expires: 2023-04-30T00:00:00.000Z
         created: 2023-01-20T22:04:04.082Z
+  SNYK-JS-MINIMATCH-3050818:
+    - '*':
+        reason: None Given
+        expires: 2023-04-30T00:00:00.000Z
+        created: 2023-01-20T22:11:19.406Z
 patch: {}

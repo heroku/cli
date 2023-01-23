@@ -52,6 +52,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
+          cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn snyk test --all-projects --fail-on=all
       - run: yarn snyk monitor --org=hit
