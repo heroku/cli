@@ -91,6 +91,7 @@ function redisCLI (uri, client) {
     client.on('error', reject)
     client.on('end', function () {
       console.log('\nDisconnected from instance.')
+      io.close()
       resolve()
     })
   })
@@ -104,6 +105,7 @@ function bastionConnect ({ uri, bastions, config, prefer_native_tls }) {
       tunnel.forwardOut('localhost', localPort, uri.hostname, uri.port, function (err, stream) {
         if (err) return reject(err)
         stream.on('close', () => tunnel.end())
+        stream.on('end', () => client.end()) 
 
         let client
         if (prefer_native_tls) {
