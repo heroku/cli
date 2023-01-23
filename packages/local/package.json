@@ -25,7 +25,7 @@
     "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^8",
     "mocha": "^5",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
     "ts-node": "^10",
     "tslib": "^1.9.3",
     "typescript": "3.7.5"
