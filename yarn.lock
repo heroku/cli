@@ -13480,6 +13480,7 @@ __metadata:
     eslint-plugin-standard: ^4.0.0
     lerna: ^3.22.1
     promise-request-retry: ^1.0.2
+    snyk: ^1.1089.0
     standard: 12.0.1
     tmp: ^0.2.1
   languageName: unknown
@@ -13972,6 +13973,15 @@ __metadata:
     source-map-resolve: ^0.5.0
     use: ^3.1.0
   checksum: a197f242a8f48b11036563065b2487e9b7068f50a20dd81d9161eca6af422174fc158b8beeadbe59ce5ef172aa5718143312b3aebaae551c124b7824387c8312
+  languageName: node
+  linkType: hard
+
+"snyk@npm:^1.1089.0":
+  version: 1.1089.0
+  resolution: "snyk@npm:1.1089.0"
+  bin:
+    snyk: bin/snyk
+  checksum: 219868a4b921cb1ec81eb870fc3ce655416640e3ebab901d851b0964811529e410eb104e0102fcc324a0327bba163931e07cb606b66f7d6992e26ca99f2b1be4
   languageName: node
   linkType: hard
 
