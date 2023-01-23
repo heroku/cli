@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.67.2](https://github.com/heroku/cli/compare/v7.66.3...v7.67.2) (2023-01-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
 ## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
 
 
