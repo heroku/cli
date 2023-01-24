@@ -36,6 +36,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: yarn
       - run: yarn --immutable --network-timeout 1000000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
