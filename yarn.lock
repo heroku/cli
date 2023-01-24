@@ -3571,13 +3571,13 @@ __metadata:
   linkType: hard
 
 "@types/got@npm:^9.6.7":
-  version: 9.6.7
-  resolution: "@types/got@npm:9.6.7"
+  version: 9.6.12
+  resolution: "@types/got@npm:9.6.12"
   dependencies:
     "@types/node": "*"
     "@types/tough-cookie": "*"
     form-data: ^2.5.0
-  checksum: 245e1205ed7c40489a868392b27b23d20050db6de1c4f5f9ebfd8cedb5111b39afa39c2a558b3819cd413c93fd93f4bc5bd368f59d3a74c90cee15bae12b7321
+  checksum: e6c17cf49107064bc0c4371efaef6855d4753b0e17b615da1a9ab7dcd10c6208c48620c7309e96861a4ea1a0d8b9e7cdda67316b4075d4ba2aff4d7400f92f53
   languageName: node
   linkType: hard
 
@@ -3624,20 +3624,20 @@ __metadata:
   linkType: hard
 
 "@types/lodash.keyby@npm:^4.6.6":
-  version: 4.6.6
-  resolution: "@types/lodash.keyby@npm:4.6.6"
+  version: 4.6.7
+  resolution: "@types/lodash.keyby@npm:4.6.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: c76d4aab6c3e2820bd1b59c179f8076f27b297711a9c5e5953ed77e2fc9d2b343b5954e4f1519cfcb70fe99c55c5e40d8550a58f28fce9dc2a9a051ac7d0c23b
+  checksum: 599ecefd8d4a1eb06c277b5f3f14e82ef9e58a1b7d8fc75490f0d5ee5e43069bae08f0408cb54675e7c1005c9f280ee57a537eafe69a22da5271cd6b815e4e1f
   languageName: node
   linkType: hard
 
 "@types/lodash.sortby@npm:^4.7.6":
-  version: 4.7.6
-  resolution: "@types/lodash.sortby@npm:4.7.6"
+  version: 4.7.7
+  resolution: "@types/lodash.sortby@npm:4.7.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: d7ec1aad2de3cf839c2572f331859e229b6aae25da198bf8452c544aae4c8756e1aa5af293e878e6ff4d7504a336b0ccf208cab7ff0ef6fd6fc236a101370b09
+  checksum: 94164b49810e37cc3795c133a6375245cdfc0e6804680e34d7039889954e7201c820d658fff89fcda0a1ce68774286f49ce95f83004d8188c4434cdfc2ca55c4
   languageName: node
   linkType: hard
 
@@ -3806,9 +3806,9 @@ __metadata:
   linkType: hard
 
 "@types/tough-cookie@npm:*":
-  version: 2.3.5
-  resolution: "@types/tough-cookie@npm:2.3.5"
-  checksum: 7f18233b3bdbaa9bd7b619df8284cd7e70cf666206ca17e2d0d627a70f42fbcb1da95eb3a989c1e79d46b030959723dc00a0526b7d039b81f2f7e12e67f404f5
+  version: 4.0.2
+  resolution: "@types/tough-cookie@npm:4.0.2"
+  checksum: e055556ffdaa39ad85ede0af192c93f93f986f4bd9e9426efdc2948e3e2632db3a4a584d4937dbf6d7620527419bc99e6182d3daf2b08685e710f2eda5291905
   languageName: node
   linkType: hard
 
