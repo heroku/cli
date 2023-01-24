@@ -1,4 +1,5 @@
-name: Snyk CI check
+name: Snyk nightly CI check
+# runs nightly at midnight
 
 on:
   schedule:
