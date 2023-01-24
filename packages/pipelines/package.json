@@ -13,7 +13,7 @@
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "validator": "^13.7.0"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "globby": "^8",
     "mocha": "^5",
     "nock": "^10.0.6",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "sinon": "^7.4.1",
     "ts-node": "^10",
