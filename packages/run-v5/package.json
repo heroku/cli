@@ -49,9 +49,14 @@
   ],
   "license": "ISC",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"]
-  },"repository": "heroku/cli",
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ]
+  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm oclif.manifest.json",
     "prepack": "oclif manifest",

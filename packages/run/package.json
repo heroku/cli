@@ -27,7 +27,7 @@
     "globby": "^10",
     "http-call": "^5.2.5",
     "mocha": "^5",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "sinon": "^7.4.1",
     "ts-node": "^10",
@@ -47,8 +47,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "topics": {

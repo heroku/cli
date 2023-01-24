@@ -19,11 +19,11 @@
     "filesize": "^4.0.0",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^0.5.2",
     "node-notifier": "^10.0.0",
     "smooth-progress": "^1.1.0",
     "strip-eof": "^2.0.0",
-    "tunnel-ssh": "^4.1.4",
+    "tunnel-ssh": "^4.1.6",
     "uuid": "^8.3.1"
   },
   "devDependencies": {
@@ -33,8 +33,8 @@
     "cross-env": "^7.0.2",
     "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
-    "nock": "9.2.6",
-    "nyc": "^13.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "proxyquire": "^2.1.0",
     "sinon": "^7.2.3",
@@ -54,8 +54,12 @@
   "license": "ISC",
   "main": "index.js",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"]
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ]
   },
   "repository": "heroku/cli",
   "scripts": {

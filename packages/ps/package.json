@@ -45,8 +45,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ps/<%- commandPath %>"

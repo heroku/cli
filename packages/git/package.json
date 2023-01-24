@@ -26,7 +26,7 @@
     "globby": "^9.0.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
-    "nyc": "^13.2.0",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
@@ -50,8 +50,12 @@
         "description": "manage local git repository for app"
       }
     },
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "oclif-example",
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/git/<%- commandPath %>"

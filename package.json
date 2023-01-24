@@ -20,8 +20,10 @@
     ]
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.0.0",
+    "yarn": ">=3.0.0"
   },
+  "packageManager": "yarn@3.3.1",
   "private": true,
   "scripts": {
     "lint": "lerna run lint --concurrency 4",

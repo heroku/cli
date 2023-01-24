@@ -31,7 +31,7 @@
     "globby": "^9.0.0",
     "mocha": "^5",
     "nock": "^10.0.6",
-    "nyc": "^13.2.0",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "tmp": "^0.0.33",
     "ts-node": "^10.9.1",
@@ -53,8 +53,12 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "devPlugins": [
