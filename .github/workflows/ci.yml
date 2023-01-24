@@ -17,8 +17,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: echo "yarn -v"
-      - run: yarn -v
       - run: yarn --immutable --network-timeout 1000000
       - run: yarn test
 
@@ -66,7 +64,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable
+          yarn --immutable --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
@@ -88,7 +86,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable
+          yarn --immutable --network-timeout 1000000
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
@@ -156,7 +154,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable --prefer-offline
+          yarn --immutable --prefer-offline --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
@@ -208,7 +206,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable
+          yarn --immutable --network-timeout 1000000
           ./scripts/release/homebrew.js
 
   change-management:
@@ -225,5 +223,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          yarn --immutable
+          yarn --immutable --network-timeout 1000000
           ./scripts/postrelease/change_management
