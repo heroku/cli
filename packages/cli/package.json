@@ -3,9 +3,7 @@
   "description": "CLI to interact with Heroku",
   "version": "7.67.2",
   "author": "Jeff Dickey @jdxcode",
-  "bin": {
-    "heroku": "./bin/run"
-  },
+  "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
