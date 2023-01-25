@@ -7,7 +7,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^9.0.1",
-    "@oclif/core": "^1.21.0",
+    "@oclif/core": "^1.22.0",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
     "debug": "^4.1.1",
@@ -15,17 +15,17 @@
     "github-url-to-object": "^4.0.4",
     "got": "^9.6.0",
     "inquirer": "^6.2.2",
-    "phoenix": "^1.4.3",
+    "phoenix": "^1.6.14",
     "tmp": "^0.0.33",
     "tslib": "^1.9.3",
     "uuid": "^8.3.0",
     "validator": "^13.7.0",
-    "ws": "^6.2.1"
+    "ws": "^6.2.2"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4.1.7",
     "@types/inquirer": "7.3.0",
     "@types/mocha": "^5.2.6",
@@ -41,14 +41,14 @@
     "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^9.0.0",
     "mocha": "^5",
-    "nock": "^9.6.1",
-    "nyc": "^13.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "ts-node": "^10.9.1",
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/lib",

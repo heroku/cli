@@ -44,6 +44,7 @@ describe('heroku redis:cli', function () {
         this.connect = sinon.stub().callsFake(() => {
           this.emit('ready')
         })
+        this.end = sinon.stub()
       }
     }
 

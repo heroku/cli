@@ -1,7 +1,9 @@
 import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default async function waitForDomain(app: string, heroku: APIClient, domain: Heroku.Domain) {
   cli.action.start(`Waiting for ${color.green(domain.hostname || 'domain')}`)

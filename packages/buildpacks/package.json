@@ -5,7 +5,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.0",
+    "@heroku-cli/command": "^9.0.1",
     "@heroku/buildpack-registry": "^1.0.1",
     "@oclif/core": "^1.21.0",
     "heroku-cli-util": "^8.0.11",
@@ -15,7 +15,7 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.15",
+    "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.123",
@@ -31,7 +31,7 @@
     "globby": "^9.0.0",
     "mocha": "^5",
     "nock": "^10.0.6",
-    "nyc": "^13.2.0",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "tmp": "^0.0.33",
     "ts-node": "^10.9.1",
@@ -53,6 +53,12 @@
   ],
   "license": "MIT",
   "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
     "devPlugins": [

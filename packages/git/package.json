@@ -6,13 +6,12 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "9.0.0",
-    "@oclif/core": "^1.21.0",
+    "@heroku-cli/command": "9.0.1",
+    "@oclif/core": "^1.22.0",
     "debug": "4.3.4"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/plugin-help": "^2.1.6",
     "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/test": "2.2.13",
     "@types/chai": "^4.1.7",
@@ -27,14 +26,14 @@
     "globby": "^9.0.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
-    "nyc": "^13.2.0",
+    "nyc": "^15.1.0",
     "oclif": "3.4.3",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "files": [
     "/lib",
@@ -51,11 +50,14 @@
         "description": "manage local git repository for app"
       }
     },
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "oclif-example",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/git/<%- commandPath %>"
   },
   "repository": "heroku/cli",

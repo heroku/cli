@@ -1,10 +1,12 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
+
+const cli = CliUx.ux
 
 interface DomainCreatePayload {
   hostname: string;
@@ -71,7 +73,7 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(DomainsAdd)
+    const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
     const domainCreatePayload: DomainCreatePayload = {
@@ -83,7 +85,9 @@ export default class DomainsAdd extends Command {
 
     cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     if (flags.cert) {
+      cli.action.stop('resolving SNI endpoint')
       domainCreatePayload.sni_endpoint = flags.cert
+      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     } else {
       const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
 
@@ -122,7 +126,7 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       cli.error(error)
     } finally {
       cli.action.stop()

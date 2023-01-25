@@ -1,6 +1,8 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default class DomainsUpdate extends Command {
   static description = 'update a domain to use a different SSL certificate on an app'
@@ -20,14 +22,14 @@ export default class DomainsUpdate extends Command {
   static args = [{name: 'hostname'}]
 
   async run() {
-    const {args, flags} = this.parse(DomainsUpdate)
+    const {args, flags} = await this.parse(DomainsUpdate)
     const {hostname} = args
     try {
       cli.action.start(`Updating ${color.cyan(hostname)} to use ${color.cyan(flags.cert)} certificate`)
       await this.heroku.patch<string>(`/apps/${flags.app}/domains/${hostname}`, {
         body: {sni_endpoint: flags.cert},
       })
-    } catch (error) {
+    } catch (error: any) {
       cli.error(error)
     } finally {
       cli.action.stop()

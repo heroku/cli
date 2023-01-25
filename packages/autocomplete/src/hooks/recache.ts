@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {Interfaces} from '@oclif/core'
-import cli from 'cli-ux'
+import {Interfaces, CliUx} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -32,12 +31,12 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
     const heroku = new APIClient(this.config)
     if (!heroku.auth) return
     await heroku.get('/account', {retryAuth: false})
-  } catch (error) {
+  } catch (error: any) {
     this.debug(error.message)
     return
   }
 
-  cli.action.start('Updating completions')
+  CliUx.ux.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
 
@@ -46,8 +45,8 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
     await update(PipelineCompletion, 'pipeline')
     await update(SpaceCompletion, 'space')
     await update(TeamCompletion, 'team')
-  } catch (error) {
+  } catch (error: any) {
     this.debug(error.message)
   }
-  cli.action.stop()
+  CliUx.ux.action.stop()
 }
