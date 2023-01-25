@@ -52,9 +52,6 @@
     ],
     "commands": "./lib/commands",
     "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/auth/<%- commandPath %>"
   },
   "repository": "heroku/cli",
