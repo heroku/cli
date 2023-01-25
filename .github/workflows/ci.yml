@@ -67,7 +67,7 @@ jobs:
           cp .yarnrc.yml packages/cli
           cp -r .yarn/ packages/cli/
           cd packages/cli
-          yarn --immutable --network-timeout 1000000
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
