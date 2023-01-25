@@ -7,7 +7,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
-    "@heroku-cli/command": "^9.0.0",
+    "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/plugin-addons-v5": "^7.67.0",
     "@heroku-cli/plugin-apps": "^7.66.3",
     "@heroku-cli/plugin-apps-v5": "^7.67.0",
@@ -33,14 +33,13 @@
     "@heroku-cli/plugin-spaces": "^7.66.3",
     "@heroku-cli/plugin-status": "^7.66.3",
     "@heroku-cli/plugin-webhooks": "^7.66.3",
-    "@oclif/core": "^1.21.0",
+    "@oclif/core": "^1.22.0",
     "@oclif/plugin-commands": "^1.2.2",
     "@oclif/plugin-not-found": "1.2.2",
     "@oclif/plugin-plugins": "1.10.1",
     "@oclif/plugin-update": "1.5.0",
     "@oclif/plugin-warn-if-update-available": "1.7.0",
     "@oclif/plugin-which": "1.0.3",
-    "cli-ux": "4.9.3",
     "debug": "4.1.1",
     "execa": "1.0.0",
     "fs-extra": "7.0.1",
@@ -51,7 +50,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.13",
+    "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/debug": "^4.1.2",
@@ -98,6 +97,12 @@
   "license": "ISC",
   "main": "lib/index.js",
   "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "plugins": [
       "@oclif/plugin-legacy",

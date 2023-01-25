@@ -74,7 +74,7 @@ const ConfigCompletion: Interfaces.Completion = {
   options: async (ctx: any) => {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
-      const {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
+      const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs)
     }
     return []
@@ -89,7 +89,7 @@ const ConfigSetCompletion: Interfaces.Completion = {
   options: async (ctx: any) => {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
-      const {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
+      const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs).map(k => `${k}=`)
     }
     return []
@@ -139,7 +139,7 @@ export const ProcessTypeCompletion: Interfaces.Completion = {
         return m ? m[0] : false
       })
       .filter(t => t) as string[]
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
     }
     return types

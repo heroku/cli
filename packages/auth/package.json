@@ -6,13 +6,13 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.0",
-    "@oclif/core": "^1.21.0",
+    "@heroku-cli/command": "^9.0.1",
+    "@oclif/core": "^1.22.0",
     "date-fns": "^2.0.0-alpha.8"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.13",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/nock": "^9.3.1",
@@ -44,11 +44,14 @@
   ],
   "license": "MIT",
   "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ],
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/auth/<%- commandPath %>"
   },
   "repository": "heroku/cli",

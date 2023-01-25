@@ -3,6 +3,5 @@
     "oclif",
     "oclif-typescript"
   ],
-  "rules": {
-  }
+  "rules": {}
 }

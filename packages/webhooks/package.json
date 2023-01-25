@@ -11,7 +11,7 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/test": "^2.2.16",
+    "@oclif/test": "^2.2.20",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
@@ -41,6 +41,12 @@
   ],
   "license": "MIT",
   "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
     "commands": "./lib/commands",
     "bin": "heroku"
   },

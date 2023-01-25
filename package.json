@@ -20,14 +20,15 @@
     ]
   },
   "engines": {
-    "node": ">=10.0.0",
+    "node": ">=12.0.0",
     "yarn": ">=3.0.0"
   },
   "packageManager": "yarn@3.3.1",
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency 4",
-    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md"
+    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
   },
   "workspaces": [
     "packages/*"

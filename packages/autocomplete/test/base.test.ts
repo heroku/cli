@@ -34,7 +34,7 @@ runtest('AutocompleteBase', () => {
   it('#errorIfWindows', async () => {
     try {
       new AutocompleteTest([], config).errorIfWindows()
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.eq('Autocomplete is not currently supported in Windows')
     }
   })

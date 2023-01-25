@@ -7,6 +7,12 @@ import HTTP from 'http-call'
 import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
 
+interface AppInfo {
+  name: string;
+  repo?: string;
+  hash?: string;
+}
+
 const cli = CliUx.ux
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
@@ -65,12 +71,6 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
     cli.log('are you sure you have pushed your latest commits to GitHub?')
   }
-}
-
-interface AppInfo {
-  name: string;
-  repo?: string;
-  hash?: string;
 }
 
 export default class PipelinesDiff extends Command {
