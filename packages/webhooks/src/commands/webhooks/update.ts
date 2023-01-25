@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../base'
 
@@ -28,8 +28,9 @@ export default class WebhooksUpdate extends BaseCommand {
   async run() {
     const {flags, args} = await this.parse(WebhooksUpdate)
     const {path, display} = this.webhookType(flags)
+    const action = new Spinner()
 
-    CliUx.ux.action.start(`Updating webhook ${args.id} for ${display}`)
+    action.start(`Updating webhook ${args.id} for ${display}`)
 
     await this.webhooksClient.patch(`${path}/webhooks/${args.id}`, {
       body: {
@@ -40,6 +41,6 @@ export default class WebhooksUpdate extends BaseCommand {
       },
     })
 
-    CliUx.ux.action.stop()
+    action.stop()
   }
 }
