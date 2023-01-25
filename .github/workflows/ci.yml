@@ -50,7 +50,7 @@ jobs:
         working-directory: /
 
   pack_deb:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     env:
       HEROKU_AUTHOR: 'Heroku'
@@ -64,6 +64,8 @@ jobs:
       - name: Install package deps
         run: |
           cp yarn.lock packages/cli
+          cp .yarnrc.yml packages/cli
+          cp ./yarn packages/cli/
           cd packages/cli
           yarn --immutable --network-timeout 1000000
       - name: Building deb
