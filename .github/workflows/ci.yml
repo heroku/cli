@@ -63,12 +63,8 @@ jobs:
       - run: sudo mkdir -p /build
       - name: Install package deps
         run: |
-          cp yarn.lock packages/cli
-          cp .yarnrc.yml packages/cli
-          cp -r .yarn/ packages/cli/
-          cd packages/cli
-          ls .yarn
           yarn --frozen-lockfile --network-timeout 1000000
+          cd packages/cli
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
