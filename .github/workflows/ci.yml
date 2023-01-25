@@ -63,7 +63,8 @@ jobs:
       - run: sudo mkdir -p /build
       - name: Install package deps
         run: |
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
+          cp -r node_modules/ packages/cli/
           cd packages/cli
       - name: Building deb
         run: ./scripts/pack/deb
