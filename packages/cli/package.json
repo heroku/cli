@@ -105,7 +105,6 @@
     ],
     "commands": "./lib/commands",
     "plugins": [
-      "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",
