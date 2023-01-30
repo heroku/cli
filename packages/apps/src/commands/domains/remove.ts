@@ -1,8 +1,6 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 export default class DomainsRemove extends Command {
   static description = 'remove a domain from an app'
@@ -19,8 +17,10 @@ export default class DomainsRemove extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DomainsRemove)
-    cli.action.start(`Removing ${color.green(args.hostname)} from ${color.app(flags.app)}`)
+    const action = new Spinner()
+
+    action.start(`Removing ${color.green(args.hostname)} from ${color.app(flags.app)}`)
     await this.heroku.delete(`/apps/${flags.app}/domains/${args.hostname}`)
-    cli.action.stop()
+    action.stop()
   }
 }
