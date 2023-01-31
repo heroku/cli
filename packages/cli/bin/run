@@ -2,6 +2,6 @@
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
-require('@oclif/command').run()
-.then(require('@oclif/command/flush'))
-.catch(require('@oclif/errors/handle'))
+const oclif = require('@oclif/core')
+
+oclif.run().then(require('@oclif/core/flush')).catch(require('@oclif/core/handle'))

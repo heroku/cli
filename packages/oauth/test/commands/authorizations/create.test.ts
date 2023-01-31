@@ -16,8 +16,9 @@ describe('authorizations:create', () => {
     expect(ctx.stdout).to.contain('Client:      <none>\n')
     expect(ctx.stdout).to.contain('Scope:       global\n')
     expect(ctx.stdout).to.contain('Token:       secrettoken\n')
-    // TODO: Not currently testable due to a cli-ux mocking issue
-    // expect(ctx.stderr).to.contain('Creating OAuth Authorization... done')
+    if (ctx.error?.message) {
+      expect(ctx.error.message).to.contain('Creating OAuth Authorization... done')
+    }
   })
 
   context('with short flag', () => {

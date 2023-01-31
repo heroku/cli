@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "module": "commonjs",
@@ -9,6 +10,7 @@
     "rootDirs": [
       "./src"
     ],
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2017"
   },

@@ -1,23 +1,21 @@
-import Nock from '@fancy-test/nock'
 import {Fixture} from '@heroku/buildpack-registry'
-import {expect, test as otest} from '@oclif/test'
+import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
 nock.disableNetConnect()
-const test = otest.register('nock', Nock)
 
 describe('buildpacks:add', () => {
   describe('URL', () => {
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       const registry = new Map()
       registry.set('https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz', {url: 'urn:buildpack:hone/test', name: 'hone/test'})
 
       Stubber.get(api)
       Stubber.put(api, ['https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz'], registry)
     })
-    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
       const buildpack = Fixture.buildpack({
         namespace: 'hone',
         name: 'test',
@@ -36,7 +34,7 @@ describe('buildpacks:add', () => {
       // TODO: On the upgrade to Node 12 this produced an error related to
       // an older version of nock used by fancy-nock
       // ctx.stderr contained: 'OutgoingMessage.prototype._headers is deprecated'
-      // expect(ctx.stderr).to.equal('')
+      expect(ctx.stderr).to.equal('')
 
       expect(ctx.stdout).to.equal(
         `Buildpack added. Next release on example will use hone/test.
@@ -45,7 +43,7 @@ Run git push heroku main to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api)
       Stubber.put(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
     })
@@ -61,7 +59,7 @@ Run git push heroku main to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-java'])
       Stubber.put(api, [
         'https://github.com/heroku/heroku-buildpack-java',
@@ -82,7 +80,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -108,7 +106,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, ['https://github.com/foobar/foobar'])
     })
     .stderr()
@@ -117,7 +115,7 @@ Run git push heroku main to create a new release using these buildpacks.
     .it('# errors out when already exists')
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, ['https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz'])
     })
     .stderr()
@@ -126,7 +124,7 @@ Run git push heroku main to create a new release using these buildpacks.
     .it('# errors out on unmapped codon urls')
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, [
         {
           url: 'urn:buildpack:heroku/ruby',
@@ -134,7 +132,7 @@ Run git push heroku main to create a new release using these buildpacks.
         },
       ])
     })
-    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
       const buildpack = Fixture.buildpack({
         namespace: 'heroku',
         name: 'ruby',
@@ -152,7 +150,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
   describe('-i INDEX URL', () => {
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api)
       Stubber.put(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
     })
@@ -168,7 +166,7 @@ Run git push heroku main to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-java'])
       Stubber.put(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -189,7 +187,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
+    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',

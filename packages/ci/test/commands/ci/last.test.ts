@@ -1,9 +1,4 @@
-import Nock from '@fancy-test/nock'
-import * as Test from '@oclif/test'
-
-const test = Test.test
-.register('nock', Nock)
-const expect = Test.expect
+import {expect, test} from '@oclif/test'
 
 describe('ci:last', () => {
   const testRunNumber = 10
