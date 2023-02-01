@@ -61,8 +61,7 @@
     "depcheck": "depcheck || true",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "cross-env TZ=utc nyc mocha",
-    "version": "oclif readme && git add README.md"
+    "test": "cross-env TZ=utc nyc mocha"
   },
   "topic": "container"
 }

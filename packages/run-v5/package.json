@@ -61,7 +61,6 @@
     "postpack": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "mocha",
-    "test:acceptance": "yarn test --grep='@acceptance'",
-    "version": "oclif readme && git add README.md"
+    "test:acceptance": "yarn test --grep='@acceptance'"
   }
 }
