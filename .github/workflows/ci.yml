@@ -67,11 +67,11 @@ jobs:
           yarn --frozen-lockfile --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
+      - uses: actions/upload-artifact@v3
         if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-          - uses: actions/upload-artifact@v3
-            with:
-              name: packed-deb
-              path: /home/runner/work/cli/cli/packages/cli/dist
+        with:
+          name: packed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
     runs-on: ubuntu-latest
@@ -89,11 +89,11 @@ jobs:
           yarn --frozen-lockfile --network-timeout 1000000
       - name: Building tarballs
         run: ./scripts/pack/tarballs
+      - uses: actions/upload-artifact@v3
         if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-          - uses: actions/upload-artifact@v3
-            with:
-              name: packed-tarballs
-              path: /home/runner/work/cli/cli/packages/cli/dist
+        with:
+          name: packed-tarballs
+          path: /home/runner/work/cli/cli/packages/cli/dist
 
   sign_deb:
     needs: [pack_deb]
