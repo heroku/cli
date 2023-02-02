@@ -90,10 +90,10 @@ jobs:
       - name: Building tarballs
         run: ./scripts/pack/tarballs
         if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-      - uses: actions/upload-artifact@v3
-        with:
-          name: packed-tarballs
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          - uses: actions/upload-artifact@v3
+            with:
+              name: packed-tarballs
+              path: /home/runner/work/cli/cli/packages/cli/dist
 
   sign_deb:
     needs: [pack_deb]
