@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.1](https://github.com/heroku/cli/compare/v8.0.0...v8.0.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* yarn downgrade for oclif linux release fixes ([#2230](https://github.com/heroku/cli/issues/2230)) ([d0f9234](https://github.com/heroku/cli/commit/d0f9234b9bc836264cd463dabca1b686329fa3be))
+
+
+
+
+
 # [8.0.0](https://github.com/heroku/cli/compare/v7.67.2...v8.0.0) (2023-01-31)
 
 **Note:** Version bump only for package @heroku-cli/plugin-buildpacks
