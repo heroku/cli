@@ -562,7 +562,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.0.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@^7.67.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -594,7 +594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.0.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^7.67.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -627,7 +627,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-apps@^8.0.0, @heroku-cli/plugin-apps@workspace:packages/apps":
+"@heroku-cli/plugin-apps@^7.66.3, @heroku-cli/plugin-apps@workspace:packages/apps":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps@workspace:packages/apps"
   dependencies:
@@ -660,7 +660,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-auth@^8.0.0, @heroku-cli/plugin-auth@workspace:packages/auth":
+"@heroku-cli/plugin-auth@^7.66.3, @heroku-cli/plugin-auth@workspace:packages/auth":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-auth@workspace:packages/auth"
   dependencies:
@@ -690,7 +690,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-autocomplete@^8.0.0, @heroku-cli/plugin-autocomplete@workspace:packages/autocomplete":
+"@heroku-cli/plugin-autocomplete@^7.66.3, @heroku-cli/plugin-autocomplete@workspace:packages/autocomplete":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-autocomplete@workspace:packages/autocomplete"
   dependencies:
@@ -724,7 +724,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-buildpacks@^8.0.0, @heroku-cli/plugin-buildpacks@workspace:packages/buildpacks":
+"@heroku-cli/plugin-buildpacks@^7.66.3, @heroku-cli/plugin-buildpacks@workspace:packages/buildpacks":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-buildpacks@workspace:packages/buildpacks"
   dependencies:
@@ -762,7 +762,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs-v5@^8.0.0, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
+"@heroku-cli/plugin-certs-v5@^7.66.3, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
   dependencies:
@@ -785,7 +785,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs@^8.0.0, @heroku-cli/plugin-certs@workspace:packages/certs":
+"@heroku-cli/plugin-certs@^7.66.3, @heroku-cli/plugin-certs@workspace:packages/certs":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs@workspace:packages/certs"
   dependencies:
@@ -808,12 +808,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^8.0.0, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
+"@heroku-cli/plugin-ci-v5@^7.66.3, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.1
-    "@heroku-cli/plugin-run-v5": ^8.0.0
+    "@heroku-cli/plugin-run-v5": ^7.66.3
     "@oclif/core": ^1.22.0
     ansi-escapes: 3.2.0
     bluebird: ^3.5.3
@@ -835,7 +835,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci@^8.0.0, @heroku-cli/plugin-ci@workspace:packages/ci":
+"@heroku-cli/plugin-ci@^7.66.3, @heroku-cli/plugin-ci@workspace:packages/ci":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ci@workspace:packages/ci"
   dependencies:
@@ -881,7 +881,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-config@^8.0.0, @heroku-cli/plugin-config@workspace:packages/config":
+"@heroku-cli/plugin-config@^7.66.3, @heroku-cli/plugin-config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-config@workspace:packages/config"
   dependencies:
@@ -917,7 +917,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-container-registry-v5@^8.0.0, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
+"@heroku-cli/plugin-container-registry-v5@^7.66.3, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
@@ -941,7 +941,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-git@^8.0.0, @heroku-cli/plugin-git@workspace:packages/git":
+"@heroku-cli/plugin-git@^7.66.3, @heroku-cli/plugin-git@workspace:packages/git":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-git@workspace:packages/git"
   dependencies:
@@ -971,7 +971,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-local@^8.0.0, @heroku-cli/plugin-local@workspace:packages/local":
+"@heroku-cli/plugin-local@^7.66.3, @heroku-cli/plugin-local@workspace:packages/local":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-local@workspace:packages/local"
   dependencies:
@@ -997,7 +997,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-oauth-v5@^8.0.0, @heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5":
+"@heroku-cli/plugin-oauth-v5@^7.66.3, @heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5"
   dependencies:
@@ -1046,7 +1046,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^8.0.0, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
+"@heroku-cli/plugin-orgs-v5@^7.66.3, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
@@ -1064,7 +1064,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.0.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^7.66.3, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -1095,7 +1095,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pipelines@^8.0.0, @heroku-cli/plugin-pipelines@workspace:packages/pipelines":
+"@heroku-cli/plugin-pipelines@^7.66.3, @heroku-cli/plugin-pipelines@workspace:packages/pipelines":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pipelines@workspace:packages/pipelines"
   dependencies:
@@ -1147,7 +1147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps@^8.0.0, @heroku-cli/plugin-ps@workspace:packages/ps":
+"@heroku-cli/plugin-ps@^7.66.3, @heroku-cli/plugin-ps@workspace:packages/ps":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ps@workspace:packages/ps"
   dependencies:
@@ -1178,7 +1178,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-redis-v5@^8.0.0, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
+"@heroku-cli/plugin-redis-v5@^7.67.2, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
@@ -1198,7 +1198,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run-v5@^8.0.0, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
+"@heroku-cli/plugin-run-v5@^7.66.3, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
@@ -1221,7 +1221,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run@^8.0.0, @heroku-cli/plugin-run@workspace:packages/run":
+"@heroku-cli/plugin-run@^7.67.1, @heroku-cli/plugin-run@workspace:packages/run":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run@workspace:packages/run"
   dependencies:
@@ -1254,7 +1254,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-spaces@^8.0.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
+"@heroku-cli/plugin-spaces@^7.66.3, @heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
   dependencies:
@@ -1273,7 +1273,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-status@^8.0.0, @heroku-cli/plugin-status@workspace:packages/status":
+"@heroku-cli/plugin-status@^7.66.3, @heroku-cli/plugin-status@workspace:packages/status":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-status@workspace:packages/status"
   dependencies:
@@ -1303,7 +1303,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-webhooks@^8.0.0, @heroku-cli/plugin-webhooks@workspace:packages/webhooks":
+"@heroku-cli/plugin-webhooks@^7.66.3, @heroku-cli/plugin-webhooks@workspace:packages/webhooks":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-webhooks@workspace:packages/webhooks"
   dependencies:
@@ -9014,31 +9014,31 @@ __metadata:
   dependencies:
     "@heroku-cli/color": 1.1.14
     "@heroku-cli/command": ^9.0.1
-    "@heroku-cli/plugin-addons-v5": ^8.0.0
-    "@heroku-cli/plugin-apps": ^8.0.0
-    "@heroku-cli/plugin-apps-v5": ^8.0.0
-    "@heroku-cli/plugin-auth": ^8.0.0
-    "@heroku-cli/plugin-autocomplete": ^8.0.0
-    "@heroku-cli/plugin-buildpacks": ^8.0.0
-    "@heroku-cli/plugin-certs": ^8.0.0
-    "@heroku-cli/plugin-certs-v5": ^8.0.0
-    "@heroku-cli/plugin-ci": ^8.0.0
-    "@heroku-cli/plugin-ci-v5": ^8.0.0
-    "@heroku-cli/plugin-config": ^8.0.0
-    "@heroku-cli/plugin-container-registry-v5": ^8.0.0
-    "@heroku-cli/plugin-git": ^8.0.0
-    "@heroku-cli/plugin-local": ^8.0.0
-    "@heroku-cli/plugin-oauth-v5": ^8.0.0
-    "@heroku-cli/plugin-orgs-v5": ^8.0.0
-    "@heroku-cli/plugin-pg-v5": ^8.0.0
-    "@heroku-cli/plugin-pipelines": ^8.0.0
-    "@heroku-cli/plugin-ps": ^8.0.0
+    "@heroku-cli/plugin-addons-v5": ^7.67.0
+    "@heroku-cli/plugin-apps": ^7.66.3
+    "@heroku-cli/plugin-apps-v5": ^7.67.0
+    "@heroku-cli/plugin-auth": ^7.66.3
+    "@heroku-cli/plugin-autocomplete": ^7.66.3
+    "@heroku-cli/plugin-buildpacks": ^7.66.3
+    "@heroku-cli/plugin-certs": ^7.66.3
+    "@heroku-cli/plugin-certs-v5": ^7.66.3
+    "@heroku-cli/plugin-ci": ^7.66.3
+    "@heroku-cli/plugin-ci-v5": ^7.66.3
+    "@heroku-cli/plugin-config": ^7.66.3
+    "@heroku-cli/plugin-container-registry-v5": ^7.66.3
+    "@heroku-cli/plugin-git": ^7.66.3
+    "@heroku-cli/plugin-local": ^7.66.3
+    "@heroku-cli/plugin-oauth-v5": ^7.66.3
+    "@heroku-cli/plugin-orgs-v5": ^7.66.3
+    "@heroku-cli/plugin-pg-v5": ^7.66.3
+    "@heroku-cli/plugin-pipelines": ^7.66.3
+    "@heroku-cli/plugin-ps": ^7.66.3
     "@heroku-cli/plugin-ps-exec": ^2.4.0
-    "@heroku-cli/plugin-redis-v5": ^8.0.0
-    "@heroku-cli/plugin-run": ^8.0.0
-    "@heroku-cli/plugin-spaces": ^8.0.0
-    "@heroku-cli/plugin-status": ^8.0.0
-    "@heroku-cli/plugin-webhooks": ^8.0.0
+    "@heroku-cli/plugin-redis-v5": ^7.67.2
+    "@heroku-cli/plugin-run": ^7.67.1
+    "@heroku-cli/plugin-spaces": ^7.66.3
+    "@heroku-cli/plugin-status": ^7.66.3
+    "@heroku-cli/plugin-webhooks": ^7.66.3
     "@oclif/core": ^1.22.0
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-not-found": 2.3.16
