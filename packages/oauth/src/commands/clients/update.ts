@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import {validateURL} from '../../lib/clients'
 
@@ -36,18 +36,18 @@ export default class ClientsUpdate extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args, flags} = await this.parse(ClientsUpdate)
+    const {args, flags} = this.parse(ClientsUpdate)
     const body = getUpdates(flags)
 
     if (isEmpty(body)) this.error('No changes provided.')
 
-    CliUx.ux.action.start(`Updating ${color.cyan(args.id)}`)
+    cli.action.start(`Updating ${color.cyan(args.id)}`)
 
     await this.heroku.patch<Heroku.OAuthClient>(
       `/oauth/clients/${encodeURIComponent(args.id)}`,
       {body},
     )
 
-    CliUx.ux.action.stop()
+    cli.action.stop()
   }
 }

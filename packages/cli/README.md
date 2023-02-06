@@ -80,10 +80,12 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 Developing
 ==========
 
-This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages).
+This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). 
 
 After cloning the repo
 1. Run `yarn` to install dependencies
+2. Run `yarn lerna bootstrap` set up Lerna and link the packages together
+    - This repo currently uses an older version of Lerna. We recommend using the version specified in the package.json instead of a newer version that you may have installed globally.
 
 To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
 

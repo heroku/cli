@@ -1,15 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 import * as http from 'http'
 import {get, RequestOptions} from 'https'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
 import {v4 as uuid} from 'uuid'
 import WebSocket = require('ws')
-
-const cli = CliUx.ux
 
 const debug = require('debug')('ci')
 const ansiEscapes = require('ansi-escapes')
@@ -21,7 +19,7 @@ function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage)
 }
 
 function stream(url: string) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const request = logStream(url, output => {
       output.on('data', data => {
         if (data.toString() === Buffer.from('').toString()) {
@@ -129,20 +127,16 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     )
   })
 
-  cli.table(
-    data,
-    {
-      iconStatus: {
-        minWidth: 1, header: '', // header '' is to make sure that width is 1 character
-      },
-      number: {
-        header: '', // header '' is to make sure that width is 1 character
-      },
-      branch: {},
-      sha: {},
-      status: {},
-    },
-    {printHeader: undefined})
+  cli.table(data, {
+    printHeader: undefined,
+    columns: [
+      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
+      {key: 'number', label: ''},
+      {key: 'branch'},
+      {key: 'sha'},
+      {key: 'status'},
+    ],
+  })
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))

@@ -15,7 +15,7 @@ export default class DomainsWait extends Command {
   static args = [{name: 'hostname'}]
 
   async run() {
-    const {args, flags} = await this.parse(DomainsWait)
+    const {args, flags} = this.parse(DomainsWait)
 
     let domains
     if (args.hostname) {

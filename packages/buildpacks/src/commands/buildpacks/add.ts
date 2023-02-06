@@ -23,7 +23,7 @@ export default class Add extends Command {
   ]
 
   async run() {
-    const {args, flags} = await this.parse(Add)
+    const {args, flags} = this.parse(Add)
     const buildpackCommand = new BuildpackCommand(this.heroku)
 
     if (flags.index !== undefined) {

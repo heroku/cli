@@ -1,6 +1,11 @@
-import {test, expect} from '@oclif/test'
+import Nock from '@fancy-test/nock'
+import * as Test from '@oclif/test'
 
 import * as git from '../../../src/utils/git'
+
+const test = Test.test
+.register('nock', Nock)
+const expect = Test.expect
 
 describe('ci:rerun', () => {
   test

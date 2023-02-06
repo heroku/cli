@@ -3,7 +3,5 @@
     "oclif",
     "oclif-typescript"
   ],
-  "rules": {
-    "camelcase": "off"
-  }
+  "rules": {}
 }

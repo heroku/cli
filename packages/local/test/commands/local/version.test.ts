@@ -4,9 +4,7 @@ import * as foreman from '../../../src/fork-foreman'
 
 describe('local:version', () => {
   test
-  .stub(foreman, 'fork', function () {
-    // eslint-disable-next-line prefer-rest-params
-    const argv = arguments[0]
+  .stub(foreman, 'fork', (argv: string[]) => {
     expect(argv).is.eql(['--version'])
   })
   .command(['local:version'])

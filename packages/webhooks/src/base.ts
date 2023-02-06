@@ -1,12 +1,12 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 
-import {Config} from '@oclif/core'
+import {IConfig} from '@oclif/config'
 
 export default abstract class extends Command {
   webhooksClient: APIClient
 
-  protected constructor(argv: string[], config: Config) {
+  protected constructor(argv: string[], config: IConfig) {
     super(argv, config)
 
     const client = new APIClient(this.config, {})

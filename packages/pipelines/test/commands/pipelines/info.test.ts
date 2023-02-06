@@ -24,21 +24,19 @@ function itShowsPipelineApps(ctx: TestContext) {
   })
 
   const expectedTable = [
-    'app name            stage       \n',
-    '⬢ development-app-1 development \n',
-    '⬢ development-app-2 development \n',
-    '⬢ review-app-1      review      \n',
-    '⬢ review-app-2      review      \n',
-    '⬢ review-app-3      review      \n',
-    '⬢ review-app-4      review      \n',
-    '⬢ staging-app-1     staging     \n',
-    '⬢ staging-app-2     staging     \n',
+    'app name            stage       ',
+    '⬢ development-app-1 development ',
+    '⬢ development-app-2 development ',
+    '⬢ review-app-1      review      ',
+    '⬢ review-app-2      review      ',
+    '⬢ review-app-3      review      ',
+    '⬢ review-app-4      review      ',
+    '⬢ staging-app-1     staging     ',
+    '⬢ staging-app-2     staging     ',
     '⬢ production-app-1  production ',
-  ]
+  ].join('\n')
 
-  expectedTable.forEach(ln => {
-    expect(ctx.stdout).to.contain(ln)
-  })
+  expect(ctx.stdout).to.contain(expectedTable)
 }
 
 describe('pipelines:info', function () {
@@ -116,8 +114,7 @@ describe('pipelines:info', function () {
         `Warning: Some apps in this pipeline do not belong to ${owner}.`,
         'All apps in a pipeline must have the same owner as the pipeline owner.',
         'Transfer these apps or change the pipeline owner in pipeline settings.',
-        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
-        'for more info.',
+        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.',
       ]
 
       warningMessage.forEach(message => {

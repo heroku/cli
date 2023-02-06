@@ -37,9 +37,7 @@ describe('pipelines:add', () => {
   // the inqurier package to simulate what would be
   // returned from answering if "development" was
   // selected by the user
-  .stub(inquirer, 'prompt', function () {
-    // eslint-disable-next-line prefer-rest-params
-    const questions = arguments[0]
+  .stub(inquirer, 'prompt', (questions: any) => {
     if (questions[0].name === 'stage') {
       return Promise.resolve({stage: 'development'})
     }
@@ -74,9 +72,8 @@ describe('pipelines:add', () => {
   // similuating that the user picked the identical
   // pipeline value with id: '0987' for the pipeline
   // question
-  .stub(inquirer, 'prompt', function () {
-    // eslint-disable-next-line prefer-rest-params
-    const question = arguments[0][0]
+  .stub(inquirer, 'prompt', (questions: any) => {
+    const question = questions[0]
 
     if (question && question.name === 'pipeline') {
       return Promise.resolve({pipeline: {

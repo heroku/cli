@@ -9,7 +9,6 @@
     "rootDirs": [
       "./src"
     ],
-    "skipLibCheck": true,
     "strict": true,
     "target": "es2017"
   },

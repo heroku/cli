@@ -1,15 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 
 import {createCoupling} from '../../api'
 import disambiguate from '../../disambiguate'
 import infer from '../../infer'
 import {inferrableStageNames as stageNames} from '../../stages'
-
-const cli = CliUx.ux
 
 export default class PipelinesAdd extends Command {
   static description = `add this app to a pipeline
@@ -37,7 +35,7 @@ The stage of the app will be guessed based on its name if not specified.`
   }]
 
   async run() {
-    const {args, flags} = await this.parse(PipelinesAdd)
+    const {args, flags} = this.parse(PipelinesAdd)
     const app = flags.app
 
     let stage

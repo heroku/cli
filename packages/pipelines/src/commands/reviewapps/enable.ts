@@ -1,10 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 import KolkrabbiAPI from '../../kolkrabbi-api'
-
-const cli = CliUx.ux
 
 export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
@@ -35,7 +33,7 @@ export default class ReviewappsEnable extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(ReviewappsEnable)
+    const {flags} = this.parse(ReviewappsEnable)
 
     if (flags.app) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
@@ -83,7 +81,7 @@ export default class ReviewappsEnable extends Command {
       const {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
 
       if (feature.enabled) {
-        const {body: repo} = await this.heroku.get<{full_name: string}>(`/pipelines/${pipeline.id}/repo`, {
+        const {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
           headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
         })
         settings.repo = repo.full_name
