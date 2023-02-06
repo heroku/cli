@@ -14,19 +14,19 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/addons-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@oclif/core": "^1.22.0",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
     "printf": "0.6.1"
   },
   "devDependencies": {
+    "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^15.1.0",
-    "oclif": "3.4.3",
     "sinon": "^6.3.5"
   },
   "files": [
@@ -41,20 +41,12 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ]
-  },
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif-dev manifest",
     "release": "np",
     "test": "nyc mocha",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md"
   }
 }

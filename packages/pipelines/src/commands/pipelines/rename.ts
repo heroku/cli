@@ -1,11 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 import {updatePipeline} from '../../api'
 import disambiguate from '../../disambiguate'
-
-const cli = CliUx.ux
 
 export default class PipelinesRename extends Command {
   static description = 'rename a pipeline'
@@ -28,7 +26,7 @@ export default class PipelinesRename extends Command {
   ]
 
   async run() {
-    const {args} = await this.parse(PipelinesRename)
+    const {args} = this.parse(PipelinesRename)
 
     const pipeline = await disambiguate(this.heroku, args.pipeline)
 

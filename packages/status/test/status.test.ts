@@ -79,7 +79,6 @@ Data:      No known issues at this time.
 Tools:     No known issues at this time.
 
 === incident title ${time.toISOString()} https://status.heroku.com
-
 update type ${time.toISOString()} (less than a minute ago)
 update contents
 

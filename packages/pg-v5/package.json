@@ -27,7 +27,8 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "@oclif/core": "^1.22.0",
+    "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
@@ -35,7 +36,6 @@
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.4.3",
     "proxyquire": "^2.1.0",
     "sinon": "^7.2.3",
     "standard": "^12.0.1"
@@ -53,20 +53,12 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ]
-  },
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif-dev manifest",
     "release": "np",
     "test": "cross-env TZ=utc nyc mocha",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md"
   }
 }

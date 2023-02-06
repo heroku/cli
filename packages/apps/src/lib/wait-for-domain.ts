@@ -1,21 +1,18 @@
 import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
+import cli from 'cli-ux'
 
 export default async function waitForDomain(app: string, heroku: APIClient, domain: Heroku.Domain) {
-  const action = new Spinner()
-
-  action.start(`Waiting for ${color.green(domain.hostname || 'domain')}`)
+  cli.action.start(`Waiting for ${color.green(domain.hostname || 'domain')}`)
   while (domain.status === 'pending') {
     // eslint-disable-next-line no-await-in-loop
-    await CliUx.ux.wait(5000)
+    await cli.wait(5000)
     // eslint-disable-next-line no-await-in-loop
     const {body: updatedDomain} = await heroku.get<Heroku.Domain>(`/apps/${app}/domains/${domain.id}`)
     domain = updatedDomain
   }
-  action.stop()
+  cli.action.stop()
   if (domain.status === 'succeeded' || domain.status === 'none') return
   throw new Error(`The domain creation finished with status ${domain.status}`)
 }

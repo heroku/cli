@@ -1,4 +1,4 @@
-import {Config} from '@oclif/core'
+import {Config, IConfig} from '@oclif/config'
 import {expect, test} from '@oclif/test'
 import * as path from 'path'
 
@@ -6,7 +6,7 @@ import webhooksAbstractClass from '../../src/base'
 
 class Webhooks extends webhooksAbstractClass {
   // eslint-disable-next-line no-useless-constructor
-  constructor(argv: string[], config: Config) {
+  constructor(argv: string[], config: IConfig) {
     super(argv, config)
   }
 

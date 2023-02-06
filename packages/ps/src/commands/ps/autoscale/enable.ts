@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
@@ -22,8 +22,8 @@ export default class Enable extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(Enable)
-    CliUx.ux.action.start('Enabling dyno autoscaling')
+    const {flags} = this.parse(Enable)
+    cli.action.start('Enabling dyno autoscaling')
 
     const [appResponse, formationResponse] = await Promise.all([
       this.heroku.get<Heroku.App>(`/apps/${flags.app}`),
@@ -80,6 +80,6 @@ export default class Enable extends Command {
       })
     }
 
-    CliUx.ux.action.stop()
+    cli.action.stop()
   }
 }

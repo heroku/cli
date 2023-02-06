@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import {display} from '../../lib/authorizations'
 
@@ -16,9 +16,9 @@ export default class AuthorizationsUpdate extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args, flags} = await this.parse(AuthorizationsUpdate)
+    const {args, flags} = this.parse(AuthorizationsUpdate)
 
-    CliUx.ux.action.start('Updating OAuth Authorization')
+    cli.action.start('Updating OAuth Authorization')
 
     let client
     if (flags['client-id']) {
@@ -38,7 +38,7 @@ export default class AuthorizationsUpdate extends Command {
       },
     )
 
-    CliUx.ux.action.stop()
+    cli.action.stop()
 
     display(authentication)
   }

@@ -20,19 +20,19 @@ describeOrSkip('@acceptance run', () => {
   testFactory()
   .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
   .it('runs a command', async ctx => {
-    expect(ctx.stdout).to.include('1 2 3')
+    expect(ctx.stdout).to.include('1 2 3\n')
   })
 
   testFactory()
   .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
   .it('runs a command with spaces', ctx => {
-    expect(ctx.stdout).to.contain('{foo: bar}')
+    expect(ctx.stdout).to.contain('{foo: bar} \n')
   })
 
   testFactory()
   .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo":"bar"}"'])
   .it('runs a command with quotes', ctx => {
-    expect(ctx.stdout).to.contain('{foo:bar}')
+    expect(ctx.stdout).to.contain('{foo:bar}\n')
   })
 
   testFactory()

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
 
-const oclif = require('@oclif/core')
-
-oclif.run().catch(require('@oclif/core/handle'))
+require('@oclif/command').run()
+.catch(require('@oclif/errors/handle'))
