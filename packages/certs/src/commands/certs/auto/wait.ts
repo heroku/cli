@@ -1,4 +1,4 @@
-import {Command, Flags} from '@oclif/core'
+import {Command, flags} from '@oclif/command'
 
 export default class CertsAutoWait extends Command {
   static description = 'waits for the certificate to be activated'
@@ -6,7 +6,7 @@ export default class CertsAutoWait extends Command {
   static hidden = true
 
   static flags = {
-    help: Flags.help({char: 'h'}),
+    help: flags.help({char: 'h'}),
   }
 
   async run() {

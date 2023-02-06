@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/config'
 
 import Analytics from '../../analytics'
 

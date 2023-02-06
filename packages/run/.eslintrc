@@ -4,7 +4,6 @@
     "oclif-typescript"
   ],
   "rules": {
-    "unicorn/no-abusive-eslint-disable": 0,
-    "camelcase": "off"
+    "unicorn/no-abusive-eslint-disable": "off"
   }
 }

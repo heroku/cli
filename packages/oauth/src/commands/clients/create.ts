@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import {validateURL} from '../../lib/clients'
 
@@ -22,24 +22,24 @@ export default class ClientsCreate extends Command {
   ]
 
   async run() {
-    const {args, flags} = await this.parse(ClientsCreate)
+    const {args, flags} = this.parse(ClientsCreate)
 
     const {redirect_uri, name} = args
     validateURL(redirect_uri)
 
-    CliUx.ux.action.start(`Creating ${args.name}`)
+    cli.action.start(`Creating ${args.name}`)
 
     const {body: client} = await this.heroku.post<Heroku.OAuthClient>('/oauth/clients', {
       body: {name, redirect_uri},
     })
 
-    CliUx.ux.action.stop()
+    cli.action.stop()
 
     if (flags.json) {
-      CliUx.ux.styledJSON(client)
+      cli.styledJSON(client)
     } else {
-      CliUx.ux.log(`HEROKU_OAUTH_ID=${client.id}`)
-      CliUx.ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      cli.log(`HEROKU_OAUTH_ID=${client.id}`)
+      cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
     }
   }
 }

@@ -4,8 +4,6 @@ name: Snyk nightly CI check
 on:
   schedule:
     - cron: '0 0 * * *'
-
-jobs:
   snyk:
     runs-on: ubuntu-latest
     environment: Snyk

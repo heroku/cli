@@ -1,4 +1,4 @@
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 export function buildCommand(args: Array<string>) {
   if (args.length === 1) {
@@ -21,7 +21,7 @@ export function buildEnvFromFlag(flag: string) {
   for (const v of flag.split(';')) {
     const m = v.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
     if (m) env[m[1]] = m[2]
-    else CliUx.ux.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`)
+    else cli.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`)
   }
   return env
 }

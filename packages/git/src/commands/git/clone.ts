@@ -22,7 +22,7 @@ remote: Counting objects: 42, done.
 
   async run() {
     const git = new Git()
-    const {flags, args} = await this.parse(GitClone)
+    const {flags, args} = this.parse(GitClone)
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const directory = args.DIRECTORY || app.name
     const remote = flags.remote || 'heroku'

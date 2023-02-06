@@ -9,7 +9,7 @@ describe('config', () => {
   .stdout()
   .command(['config', '--app=myapp'])
   .it('shows config vars', ({stdout}) => {
-    expect(stdout).to.equal('=== myapp Config Vars\n\nLANG:     en_US.UTF-8\nRACK_ENV: production\n')
+    expect(stdout).to.equal('=== myapp Config Vars\nLANG:     en_US.UTF-8\nRACK_ENV: production\n')
   })
 
   test

@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const apps = commands.find(c => c.topic === 'apps' && c.command === 'create')
-const { Config } = require('@oclif/core')
+const Config = require('@oclif/config')
 let config
 
 describe('apps:create', function () {

@@ -1,6 +1,6 @@
 import * as inquirer from 'inquirer'
 
-import {expect, test} from '@oclif/test'
+import {expect, test} from '../../test'
 
 describe('domains:add', () => {
   const domainsResponse = {

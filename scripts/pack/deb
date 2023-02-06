@@ -8,7 +8,7 @@ const CLI_ROOT = path.join(root, 'packages', 'cli')
 
 async function main() {
   await require('../utils/_update_channel')()
-  await execa('./node_modules/.bin/oclif', ['pack:deb'], {
+  await execa('./node_modules/.bin/oclif-dev', ['pack:deb'], {
     cwd: CLI_ROOT,
     stdio: 'inherit'
   })

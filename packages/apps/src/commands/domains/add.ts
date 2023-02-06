@@ -1,13 +1,10 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
+import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
-
-const cli = CliUx.ux
 
 interface DomainCreatePayload {
   hostname: string;
@@ -74,9 +71,8 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    const {args, flags} = await this.parse(DomainsAdd)
+    const {args, flags} = this.parse(DomainsAdd)
     const {hostname} = args
-    const action = new Spinner()
 
     const domainCreatePayload: DomainCreatePayload = {
       hostname,
@@ -85,7 +81,7 @@ export default class DomainsAdd extends Command {
 
     let certs: Array<Heroku.SniEndpoint> = []
 
-    action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+    cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     if (flags.cert) {
       domainCreatePayload.sni_endpoint = flags.cert
     } else {
@@ -95,14 +91,14 @@ export default class DomainsAdd extends Command {
     }
 
     if (certs.length > 1) {
-      action.stop('resolving SNI endpoint')
+      cli.action.stop('resolving SNI endpoint')
       const certSelection = await this.certSelect(certs)
 
       if (certSelection) {
         domainCreatePayload.sni_endpoint = certSelection
       }
 
-      action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     }
 
     try {
@@ -126,10 +122,10 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       cli.error(error)
     } finally {
-      action.stop()
+      cli.action.stop()
     }
   }
 }

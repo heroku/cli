@@ -35,7 +35,7 @@ export async function removeEmptyDirs(dir: string): Promise<void> {
   let files
   try {
     files = await ls(dir)
-  } catch (error: any) {
+  } catch (error) {
     if (error.code === 'ENOENT') return
     throw error
   }

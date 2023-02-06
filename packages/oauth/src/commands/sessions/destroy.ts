@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import {OAuthSession} from '../../lib/sessions'
 
@@ -10,14 +10,14 @@ export default class SessionsDestroy extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args: {id}} = await this.parse(SessionsDestroy)
+    const {args: {id}} = this.parse(SessionsDestroy)
 
-    CliUx.ux.action.start(`Destroying ${color.cyan(id)}`)
+    cli.action.start(`Destroying ${color.cyan(id)}`)
 
     await this.heroku.delete<OAuthSession>(
       `/oauth/sessions/${encodeURIComponent(id)}`,
     )
 
-    CliUx.ux.action.stop()
+    cli.action.stop()
   }
 }

@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
@@ -16,7 +16,7 @@ export default class Info extends Command {
   ]
 
   async run() {
-    const {args} = await this.parse(Info)
+    const {args} = this.parse(Info)
     const registry = new BuildpackRegistry()
 
     Result.match({
@@ -30,14 +30,14 @@ export default class Info extends Command {
     const result = await registry.info(args.buildpack)
     Result.match({
       Ok: buildpack => {
-        CliUx.ux.styledHeader(args.buildpack)
-        CliUx.ux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+        cli.styledHeader(args.buildpack)
+        cli.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
       },
       Err: err => {
         if (err.status === 404) {
-          CliUx.ux.error(`Could not find the buildpack '${args.buildpack}'`)
+          cli.error(`Could not find the buildpack '${args.buildpack}'`)
         } else {
-          CliUx.ux.error(`Problems finding buildpack info: ${err.description}`)
+          cli.error(`Problems finding buildpack info: ${err.description}`)
         }
       },
     }, result)
