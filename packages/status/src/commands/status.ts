@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, Flags, CliUx} from '@oclif/core'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 import HTTP from 'http-call'
 
 import {maxBy} from '../util'
