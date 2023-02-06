@@ -5,6 +5,7 @@
   ],
   "rules": {
     "unicorn/no-abusive-eslint-disable": "off",
+    "camelcase": "off",
 
   }
 }

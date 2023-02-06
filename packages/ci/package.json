@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.66.3",
+  "version": "8.0.1",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -43,7 +43,7 @@
     "mocha": "^5",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.4.3",
+    "oclif": "3.6.1",
     "ts-node": "^10.9.1",
     "typescript": "4.8.4"
   },
@@ -76,11 +76,10 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json npm-shrinkwrap.json",
-    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
+    "prepack": "rm -rf lib && tsc && oclif manifest",
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

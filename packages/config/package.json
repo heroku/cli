@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-config",
-  "version": "7.66.3",
+  "version": "8.0.1",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -30,7 +30,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.4.3",
+    "oclif": "3.6.1",
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
@@ -63,10 +63,9 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
+    "prepack": "rm -rf lib && tsc && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

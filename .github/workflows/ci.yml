@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --immutable --network-timeout 1000000
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn test
 
   acceptance:
@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --immutable --network-timeout 1000000
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
@@ -65,7 +65,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable --network-timeout 1000000
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
@@ -87,7 +87,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable --network-timeout 1000000
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
@@ -155,7 +155,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable --prefer-offline --network-timeout 1000000
+          yarn --frozen-lockfile --prefer-offline --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
@@ -207,7 +207,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --immutable --network-timeout 1000000
+          yarn --frozen-lockfile --network-timeout 1000000
           ./scripts/release/homebrew.js
 
   change-management:
@@ -224,5 +224,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          yarn --immutable --network-timeout 1000000
+          yarn --frozen-lockfile --network-timeout 1000000
           ./scripts/postrelease/change_management

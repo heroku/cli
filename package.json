@@ -7,7 +7,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "lerna": "^3.22.1",
+    "lerna": "^6.4.1",
     "promise-request-retry": "^1.0.2",
     "standard": "12.0.1",
     "tmp": "^0.2.1"
@@ -20,10 +20,8 @@
     ]
   },
   "engines": {
-    "node": ">=12.0.0",
-    "yarn": ">=3.0.0"
+    "node": ">=12.0.0"
   },
-  "packageManager": "yarn@3.3.1",
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency 4",
