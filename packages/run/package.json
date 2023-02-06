@@ -68,10 +68,11 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif manifest",
+    "prepack": "rm -rf lib && tsc -b && oclif manifest && oclif readme",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "test:acceptance": "yarn test --grep='@acceptance'",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme && git add README.md"
   }
 }

@@ -278,7 +278,8 @@
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }

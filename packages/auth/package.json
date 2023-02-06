@@ -60,8 +60,9 @@
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "lint": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc && oclif manifest",
-    "prepare": "rm -rf lib && tsc && oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
+    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
+    "prepare": "rm -rf lib && tsc && oclif manifest && oclif readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   }
 }

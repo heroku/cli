@@ -63,9 +63,10 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc && oclif manifest",
+    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
     "pretest": "tsc -p test --noEmit",
     "test": "echo NO TESTS",
-    "posttest": "yarn  lint"
+    "posttest": "yarn  lint",
+    "version": "oclif readme && git add README.md"
   }
 }

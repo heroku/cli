@@ -63,8 +63,9 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "posttest": "yarn lint",
     "postpublish": "yarn run clean",
-    "prepack": "yarn run build && oclif manifest",
+    "prepack": "yarn run build && oclif manifest && oclif readme",
     "preversion": "yarn run clean",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   }
 }

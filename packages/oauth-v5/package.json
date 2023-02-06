@@ -61,6 +61,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "cross-env TZ=UTC nyc mocha"
+    "test": "cross-env TZ=UTC nyc mocha",
+    "version": "oclif readme && git add README.md"
   }
 }

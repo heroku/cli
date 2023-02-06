@@ -67,10 +67,11 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json npm-shrinkwrap.json",
-    "prepack": "rm -rf lib && tsc && oclif manifest",
+    "prepack": "rm -rf lib && tsc && oclif manifest && oclif readme",
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme && git add README.md"
   }
 }

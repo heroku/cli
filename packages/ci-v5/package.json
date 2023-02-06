@@ -63,6 +63,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "mocha -R tap"
+    "test": "mocha -R tap",
+    "version": "oclif readme && git add README.md"
   }
 }
