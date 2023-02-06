@@ -493,7 +493,7 @@ __metadata:
     mocha: ^5.2.0
     nock: 9.0.13
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     printf: 0.6.1
     sinon: ^6.3.5
   languageName: unknown
@@ -531,7 +531,7 @@ __metadata:
     mockdate: ^2.0.2
     netrc-parser: ^3.1.6
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     proxyquire: ^2.1.0
     set-tz: ^0.1.0
     shell-escape: ^0.2.0
@@ -569,7 +569,7 @@ __metadata:
     mocha: ^5
     nock: ^13.0.1
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     shell-escape: ^0.2.0
     ts-node: ^10
     tslib: ^1
@@ -601,7 +601,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10.9.1
     tslib: ^1.9.3
     typescript: 4.8.4
@@ -635,7 +635,7 @@ __metadata:
     mocha: 5.2.0
     nock: ^10.0.6
     nyc: 15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: 10.9.1
     tslib: 1.9.3
     typescript: 4.8.4
@@ -670,7 +670,7 @@ __metadata:
     mocha: ^5
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     tmp: ^0.0.33
     true-myth: 2.2.3
     ts-node: ^10.9.1
@@ -695,7 +695,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     proxyquire: ^2.1.0
     psl: ^1.1.29
     sinon: ^2.3.6
@@ -719,7 +719,7 @@ __metadata:
     globby: ^9.0.0
     mocha: ^5
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10.9.1
     tslib: ^1.9.3
     typescript: 4.8.4
@@ -744,7 +744,7 @@ __metadata:
     lodash.flatten: ^4.4.0
     mocha: ^5.1.1
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     shell-escape: ^0.2.0
     sinon: ^1.17.6
     std-mocks: ^1.0.1
@@ -787,7 +787,7 @@ __metadata:
     mocha: ^5
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     phoenix: ^1.6.14
     tmp: ^0.0.33
     ts-node: ^10.9.1
@@ -826,7 +826,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     shell-quote: ^1.6.1
     sinon: ^7.2.4
     ts-node: ^10.9.1
@@ -853,7 +853,7 @@ __metadata:
     mockdate: ^2.0.2
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     sinon: ^5.0.7
     std-mocks: ^1.0.1
   languageName: unknown
@@ -882,7 +882,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10.9.1
     tslib: ^1.9.3
     typescript: 4.8.4
@@ -908,7 +908,7 @@ __metadata:
     globby: ^8
     mocha: ^5
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10
     tslib: ^1.9.3
     typescript: 4.8.4
@@ -930,7 +930,7 @@ __metadata:
     mocha-junit-reporter: 1.18.0
     nock: 10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
   languageName: unknown
   linkType: soft
 
@@ -955,7 +955,7 @@ __metadata:
     lodash.sortby: ^4.7.0
     mocha: ^5
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10
     tslib: ^1
     typescript: 4.8.4
@@ -977,7 +977,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     proxyquire: ^2.1.0
   languageName: unknown
   linkType: soft
@@ -1002,7 +1002,7 @@ __metadata:
     nock: ^10.0.6
     node-notifier: ^10.0.0
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     proxyquire: ^2.1.0
     sinon: ^7.2.3
     smooth-progress: ^1.1.0
@@ -1046,7 +1046,7 @@ __metadata:
     nock: ^10.0.6
     node-fetch: ^2.6.7
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     sinon: ^7.4.1
     ts-node: 10.9.1
     typescript: 4.8.4
@@ -1089,7 +1089,7 @@ __metadata:
     lodash: ^4.17.11
     mocha: ^5.2.0
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: 10.9.1
     tslib: ^1.9.3
     typescript: 4.8.4
@@ -1108,7 +1108,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     proxyquire: ^2.1.0
     redis-parser: ^3.0.0
     sinon: ^7.2.3
@@ -1133,7 +1133,7 @@ __metadata:
     mocha-junit-reporter: 1.18.0
     netrc: 0.1.4
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     shellwords: ^0.1.1
     sinon: ^7.2.3
   languageName: unknown
@@ -1164,7 +1164,7 @@ __metadata:
     http-call: ^5.2.5
     mocha: ^5
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     sinon: ^7.4.1
     ts-node: ^10
     tslib: ^1
@@ -1185,7 +1185,7 @@ __metadata:
     mocha: ^5.2.0
     nock: ^10.0.6
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     sinon: ^7.2.3
     strftime: ^0.10.0
   languageName: unknown
@@ -1215,7 +1215,7 @@ __metadata:
     http-call: ^5.2.3
     mocha: ^5.1.1
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10.9.1
     typescript: 4.8.4
   languageName: unknown
@@ -1240,7 +1240,7 @@ __metadata:
     globby: ^8
     mocha: ^5
     nyc: ^15.1.0
-    oclif: 3.6.1
+    oclif: 3.4.3
     ts-node: ^10
     tslib: ^1
     typescript: ^4.8.4
@@ -2722,42 +2722,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.0.3":
-  version: 2.0.8
-  resolution: "@oclif/core@npm:2.0.8"
-  dependencies:
-    "@types/cli-progress": ^3.11.0
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.10.0
-    debug: ^4.3.4
-    ejs: ^3.1.6
-    fs-extra: ^9.1.0
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    semver: ^7.3.7
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    tslib: ^2.4.1
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: e3736c78d61c696d1f6eafa6084e50ea56a2d7c948a5c23cff5372a571055316539665b70403f90597d11c08cfb920f76fed074eb9a2b5d6ed0498a2b0fec63f
-  languageName: node
-  linkType: hard
-
 "@oclif/linewrap@npm:^1.0.0":
   version: 1.0.0
   resolution: "@oclif/linewrap@npm:1.0.0"
@@ -3408,15 +3372,6 @@ __metadata:
   version: 4.1.7
   resolution: "@types/chai@npm:4.1.7"
   checksum: 55b3d33a9a7b8a6993342e801d3f65381ee327e5838b390bfe97c4b84a3dfeaf7cdadbedf6d81443d49dbfdf39c858342eb17179e513f4668f2f9fe666ec7069
-  languageName: node
-  linkType: hard
-
-"@types/cli-progress@npm:^3.11.0":
-  version: 3.11.0
-  resolution: "@types/cli-progress@npm:3.11.0"
-  dependencies:
-    "@types/node": "*"
-  checksum: d4401622333e888925b47c5d5bb0b89dddae17cc020f909a64ad7275b326bf3c6e9cd467f625a197fd958a1e49220d32f4a2b0bf2948fee330c719a9b985674e
   languageName: node
   linkType: hard
 
@@ -6000,7 +5955,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.0.0-alpha.8, date-fns@npm:^2.29.1":
+"date-fns@npm:^2.0.0-alpha.8":
+  version: 2.0.0-alpha.26
+  resolution: "date-fns@npm:2.0.0-alpha.26"
+  checksum: 7b4b5e34840f2d2b8170b89330c7f296bbf5b912f19b29522a097c29390d52068510399c9977927e8216afa35213e61782e6b92cb725f44a956a65f8ad3c6775
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^2.29.1":
   version: 2.29.3
   resolution: "date-fns@npm:2.29.3"
   checksum: e01cf5b62af04e05dfff921bb9c9933310ed0e1ae9a81eb8653452e64dc841acf7f6e01e1a5ae5644d0337e9a7f936175fd2cb6819dc122fdd9c5e86c56be484
@@ -9077,7 +9039,7 @@ __metadata:
     mocha: ^5.2.0
     netrc-parser: 3.1.6
     nock: ^10.0.6
-    oclif: 3.6.1
+    oclif: 3.4.3
     qqjs: 0.3.10
     read-pkg: ^4.0.1
     semver: 5.6.0
@@ -12623,11 +12585,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oclif@npm:3.6.1":
-  version: 3.6.1
-  resolution: "oclif@npm:3.6.1"
+"oclif@npm:3.4.3":
+  version: 3.4.3
+  resolution: "oclif@npm:3.4.3"
   dependencies:
-    "@oclif/core": ^2.0.3
+    "@oclif/core": ^1.20.4
     "@oclif/plugin-help": ^5.1.19
     "@oclif/plugin-not-found": ^2.3.7
     "@oclif/plugin-warn-if-update-available": ^2.0.14
@@ -12641,14 +12603,13 @@ __metadata:
     lodash: ^4.17.21
     normalize-package-data: ^3.0.3
     semver: ^7.3.8
-    shelljs: ^0.8.5
     tslib: ^2.3.1
     yeoman-environment: ^3.11.1
     yeoman-generator: ^5.6.1
     yosay: ^2.0.2
   bin:
     oclif: bin/run
-  checksum: b6b255d8fb27f7c9a7492021c8c25b9037dc47fe98468c7c65bbd09549ee8a19db13b594d9204474acf2af07a74a03e990ba195b2e17c2bbcc1b6c748ae8931b
+  checksum: 56752202ce3892618891d4ab3d0ce7a1efb9d75d0f9173c8dc2df88bdfacfb5ca7e2278cc914bd38b73a6e56089810d5d9acb2644b9f971f2e71d15bf4258e59
   languageName: node
   linkType: hard
 
