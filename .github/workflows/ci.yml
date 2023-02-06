@@ -50,7 +50,6 @@ jobs:
         working-directory: /
 
   pack_deb:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     env:
       HEROKU_AUTHOR: 'Heroku'
@@ -69,12 +68,12 @@ jobs:
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
+        if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -91,6 +90,7 @@ jobs:
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
+        if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
