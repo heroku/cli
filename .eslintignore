@@ -1,5 +1,3 @@
 node_modules
 packages/*/lib
 packages/*/tmp
-tmp
-dst

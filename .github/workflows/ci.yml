@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - run: yarn --immutable --network-timeout 1000000
       - run: yarn test
 
   acceptance:
@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - run: yarn --immutable --network-timeout 1000000
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
@@ -50,6 +50,7 @@ jobs:
         working-directory: /
 
   pack_deb:
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     env:
       HEROKU_AUTHOR: 'Heroku'
@@ -64,16 +65,16 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
-        if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -86,11 +87,10 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
-        if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -155,7 +155,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --prefer-offline --network-timeout 1000000
+          yarn --immutable --prefer-offline --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
@@ -207,7 +207,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
           ./scripts/release/homebrew.js
 
   change-management:
@@ -224,5 +224,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
           ./scripts/postrelease/change_management
