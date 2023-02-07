@@ -50,7 +50,7 @@
     "additionalVersionFlags": [
       "-v"
     ],
-    "commands": "./lib",
+    "commands": "./commands",
     "topics": {
       "ci": {
         "description": "run an application test suite on Heroku"

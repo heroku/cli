@@ -39,7 +39,7 @@
       "-v"
     ],
     "bin": "heroku",
-    "commands": "./lib",
+    "commands": "./commands",
     "topics": {
       "access": {
         "description": "manage user access to apps"

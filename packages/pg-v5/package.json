@@ -52,7 +52,7 @@
     "additionalVersionFlags": [
       "-v"
     ],
-    "commands": "./lib",
+    "commands": "./commands",
     "topics": {
       "pg": {
         "description": "manage postgresql databases"
