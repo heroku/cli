@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {CliUx, Interfaces} from '@oclif/core'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 
 import {AutocompleteBase} from '../../base'
 

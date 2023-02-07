@@ -1,7 +1,7 @@
 import {Config, Plugin} from '@oclif/core'
 import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
-import * as path from 'path'
+import path from 'path'
 
 import Create from '../../../src/commands/autocomplete/create'
 

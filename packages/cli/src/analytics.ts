@@ -1,7 +1,7 @@
 import {vars} from '@heroku-cli/command'
 import {Interfaces} from '@oclif/core'
 import netrc from 'netrc-parser'
-import * as path from 'path'
+import path from 'path'
 
 import deps from './deps'
 

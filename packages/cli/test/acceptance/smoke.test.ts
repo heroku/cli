@@ -1,8 +1,8 @@
 // tslint:disable no-console
 
 import {expect} from 'chai'
-import * as path from 'path'
-import * as qq from 'qqjs'
+import path from 'path'
+import qq from 'qqjs'
 
 const globby = require('globby')
 

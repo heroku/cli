@@ -1,9 +1,9 @@
 'use strict'
 
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
-import * as addSeconds from 'date-fns/add_seconds'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import addSeconds from 'date-fns/add_seconds'
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 export function display(auth: Heroku.OAuthAuthorization) {
   interface StyledObject {

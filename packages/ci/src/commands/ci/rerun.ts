@@ -1,9 +1,9 @@
 
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import * as Kolkrabbi from '../../interfaces/kolkrabbi'
+import Kolkrabbi from '../../interfaces/kolkrabbi'
 import {getPipeline} from '../../utils/pipelines'
 import {createSourceBlob} from '../../utils/source'
 import {displayAndExit} from '../../utils/test-run'

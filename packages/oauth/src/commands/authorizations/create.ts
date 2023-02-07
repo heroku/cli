@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
 import {display} from '../../lib/authorizations'

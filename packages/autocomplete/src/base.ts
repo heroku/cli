@@ -1,6 +1,6 @@
 import Command from '@heroku-cli/command'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 
 import {CompletionLookup} from './completions'
 import {Interfaces} from '@oclif/core'

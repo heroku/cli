@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 
 export default class AuthWhoami extends Command {
   static description = 'display the current logged in user'

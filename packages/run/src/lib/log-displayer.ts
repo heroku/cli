@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import * as EventSource from '@heroku/eventsource'
+import EventSource from '@heroku/eventsource'
 import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 import {URL} from 'url'

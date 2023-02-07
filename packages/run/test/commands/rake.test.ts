@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 
 import Dyno from '../../src/lib/dyno'
 

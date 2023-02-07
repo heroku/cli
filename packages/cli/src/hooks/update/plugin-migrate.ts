@@ -1,6 +1,6 @@
 import {Hook} from '@oclif/core'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 
 const exec = (cmd: string, args: string[]) => {
   const execa = require('execa')

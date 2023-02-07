@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 
 import {getPipeline} from '../../utils/pipelines'
 import {renderList} from '../../utils/test-run'

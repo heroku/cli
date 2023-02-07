@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import execa from 'execa'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 
 const readPkg = require('read-pkg')
 

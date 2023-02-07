@@ -1,4 +1,4 @@
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 
 const gh = require('github-url-to-object')
 const spawn = require('child_process').spawn

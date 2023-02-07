@@ -1,8 +1,8 @@
 import {Hook} from '@oclif/core'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
-import * as path from 'path'
+import path from 'path'
 
-import * as fs from '../../file'
+import fs from '../../file'
 
 const debug = require('debug')('heroku:brewhook')
 

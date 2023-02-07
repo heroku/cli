@@ -1,10 +1,10 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
-import * as shellescape from 'shell-escape'
+import shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
 
 const cli = CliUx.ux

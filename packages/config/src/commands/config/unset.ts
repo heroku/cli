@@ -1,8 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 const ux = CliUx.ux
 

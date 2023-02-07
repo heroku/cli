@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 import keyBy from 'lodash.keyby'

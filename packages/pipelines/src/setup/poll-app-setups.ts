@@ -1,4 +1,4 @@
-import * as api from '../api'
+import api from '../api'
 
 const cli = require('heroku-cli-util')
 

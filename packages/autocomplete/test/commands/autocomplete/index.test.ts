@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import Nock from '@fancy-test/nock'
-import * as Test from '@oclif/test'
+import Test from '@oclif/test'
 
 const test = Test.test
 .register('nock', Nock)

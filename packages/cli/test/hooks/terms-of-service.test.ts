@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {afterEach, beforeEach} from 'mocha'
 import {checkTos} from '../../src/hooks/init/terms-of-service'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import {join} from 'path'
 
 const options = {

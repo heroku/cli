@@ -1,4 +1,4 @@
-import * as stream from 'stream'
+import stream from 'stream'
 
 // this splits a stream into lines
 const transform = new stream.Transform({decodeStrings: false})

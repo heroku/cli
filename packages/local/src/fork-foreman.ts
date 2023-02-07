@@ -1,6 +1,6 @@
 import {fork as forkChildProcess} from 'child_process'
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'fs'
+import path from 'path'
 
 // depending if this is being ran before or after compilation
 // we need to check for `.ts` and `.js` extensions and use

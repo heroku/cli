@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {Interfaces} from '@oclif/core'
 
 export default class Login extends Command {

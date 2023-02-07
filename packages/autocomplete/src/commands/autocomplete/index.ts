@@ -2,7 +2,7 @@ import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import chalk from 'chalk'
 import {Interfaces, CliUx} from '@oclif/core'
-import * as path from 'path'
+import path from 'path'
 
 import {AutocompleteBase} from '../../base'
 import {updateCache} from '../../cache'

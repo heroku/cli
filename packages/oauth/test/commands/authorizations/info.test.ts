@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 describe('authorizations:info', () => {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'

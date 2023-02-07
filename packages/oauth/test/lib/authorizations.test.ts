@@ -1,7 +1,7 @@
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import {expect, test} from '@oclif/test'
-import * as addSeconds from 'date-fns/add_seconds'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import addSeconds from 'date-fns/add_seconds'
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 import {display} from '../../src/lib/authorizations'
 

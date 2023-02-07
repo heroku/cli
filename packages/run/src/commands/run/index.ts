@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import {CliUx} from '@oclif/core'
 import debugFactory from 'debug'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 
 import Dyno from '../../lib/dyno'
 import {buildCommand} from '../../lib/helpers'

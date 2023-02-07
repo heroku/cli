@@ -1,6 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {Interfaces} from '@oclif/core'
-import * as path from 'path'
+import path from 'path'
 
 import {AutocompleteBase} from '../../base'
 import {fetchCache} from '../../cache'

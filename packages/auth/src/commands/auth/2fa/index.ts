@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 
 export default class TwoFactor extends Command {
   static description = 'check 2fa status'

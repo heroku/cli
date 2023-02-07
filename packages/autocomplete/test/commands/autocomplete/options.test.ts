@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
-import * as path from 'path'
+import path from 'path'
 
 import Options from '../../../src/commands/autocomplete/options'
 

@@ -1,5 +1,5 @@
-import * as FS from 'fs-extra'
-import * as path from 'path'
+import FS from 'fs-extra'
+import path from 'path'
 
 import deps from './deps'
 

@@ -1,8 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import {Interfaces, CliUx} from '@oclif/core'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import fs from 'fs-extra'
+import path from 'path'
 
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
