@@ -4,39 +4,6 @@
   "version": "8.0.0",
   "author": "Raul Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "topics": {
-      "access": {
-        "description": "manage user access to apps"
-      },
-      "orgs": {
-        "description": "manage organizations"
-      },
-      "members": {
-        "description": "manage organization members"
-      },
-      "teams": {
-        "description": "manage teams"
-      },
-      "sharing": {
-        "hidden": true
-      },
-      "join": {
-        "hidden": true
-      },
-      "leave": {
-        "hidden": true
-      },
-      "lock": {
-        "hidden": true
-      },
-      "unlock": {
-        "hidden": true
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/command": "^9.0.1",
     "heroku-cli-util": "^8.0.11",
@@ -70,7 +37,39 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./lib",
+    "topics": {
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
+      "members": {
+        "description": "manage organization members"
+      },
+      "teams": {
+        "description": "manage teams"
+      },
+      "sharing": {
+        "hidden": true
+      },
+      "join": {
+        "hidden": true
+      },
+      "leave": {
+        "hidden": true
+      },
+      "lock": {
+        "hidden": true
+      },
+      "unlock": {
+        "hidden": true
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

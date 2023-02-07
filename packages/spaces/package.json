@@ -4,18 +4,6 @@
   "version": "8.0.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "topics": {
-      "spaces": {
-        "description": "manage heroku private spaces"
-      },
-      "trusted-ips": {
-        "hidden": true
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/spaces/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/notifications": "^1.2.2",
@@ -50,7 +38,18 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "spaces": {
+        "description": "manage heroku private spaces"
+      },
+      "trusted-ips": {
+        "hidden": true
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/spaces/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

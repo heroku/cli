@@ -4,15 +4,6 @@
   "version": "8.0.1",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "commands": "./lib/commands",
-    "topics": {
-      "status": {
-        "description": "status of the Heroku platform"
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/status/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@oclif/core": "^1.22.0",
@@ -59,7 +50,13 @@
     "additionalVersionFlags": [
       "-v"
     ],
-    "commands": "./lib/commands"
+    "commands": "./lib/commands",
+    "topics": {
+      "status": {
+        "description": "status of the Heroku platform"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/status/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

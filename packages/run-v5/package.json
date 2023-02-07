@@ -4,19 +4,6 @@
   "version": "8.0.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "commands": "commands",
-    "topics": {
-      "run": {
-        "description": "run a one-off process inside a Heroku dyno"
-      },
-      "logs": {
-        "description": "display recent log output"
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/run-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^9.0.1",
@@ -54,7 +41,18 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
+      },
+      "logs": {
+        "description": "display recent log output"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/run-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

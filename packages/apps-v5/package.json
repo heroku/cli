@@ -4,16 +4,6 @@
   "version": "8.0.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "topics": {
-      "stack": {
-        "description": "manage heroku stacks",
-        "hidden": true
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/command": "^9.0.1",
     "@oclif/core": "^1.22.0",
@@ -64,7 +54,16 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "stack": {
+        "description": "manage heroku stacks",
+        "hidden": true
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

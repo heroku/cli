@@ -8,10 +8,10 @@
     "noUnusedParameters": true,
     "outDir": "./lib",
     "pretty": true,
-    "skipLibCheck": true,
     "rootDirs": [
       "./src"
     ],
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2017"
   },

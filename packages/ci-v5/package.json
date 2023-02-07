@@ -4,14 +4,6 @@
   "version": "8.0.0",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "topics": {
-      "ci": {
-        "description": "run an application test suite on Heroku"
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/plugin-run-v5": "^8.0.0",
@@ -57,7 +49,14 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "commands": "./lib",
+    "topics": {
+      "ci": {
+        "description": "run an application test suite on Heroku"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

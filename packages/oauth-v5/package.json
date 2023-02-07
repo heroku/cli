@@ -4,22 +4,6 @@
   "version": "8.0.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "commands": "lib/commands",
-    "topics": {
-      "authorizations": {
-        "description": "OAuth authorizations"
-      },
-      "clients": {
-        "description": "OAuth clients on the platform"
-      },
-      "sessions": {
-        "description": "OAuth sessions"
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/oauth-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
@@ -55,7 +39,21 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./lib/commands",
+    "topics": {
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/oauth-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

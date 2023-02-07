@@ -1,0 +1,382 @@
+{
+  "version": "8.0.1",
+  "commands": {
+    "domains:add": {
+      "id": "domains:add",
+      "description": "add a domain to an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "heroku domains:add www.example.com"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "cert": {
+          "name": "cert",
+          "type": "option",
+          "char": "c",
+          "description": "the name of the SSL cert you want to use for this domain",
+          "multiple": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "wait": {
+          "name": "wait",
+          "type": "boolean",
+          "allowNo": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {
+        "hostname": {
+          "name": "hostname",
+          "required": true
+        }
+      }
+    },
+    "domains:clear": {
+      "id": "domains:clear",
+      "description": "remove all domains from an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "heroku domains:clear"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "domains": {
+      "id": "domains",
+      "description": "list domains for an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku domains\n=== example Heroku Domain\nexample.herokuapp.com\n\n=== example Custom Domains\nDomain Name      DNS Record Type  DNS Target\nwww.example.com  CNAME            www.example.herokudns.com\n",
+        "$ heroku domains --filter 'Domain Name=www.example.com'"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "columns": {
+          "name": "columns",
+          "type": "option",
+          "description": "only show provided columns (comma-separated)",
+          "multiple": false,
+          "exclusive": [
+            "extended"
+          ]
+        },
+        "sort": {
+          "name": "sort",
+          "type": "option",
+          "description": "property to sort by (prepend '-' for descending)",
+          "multiple": false
+        },
+        "filter": {
+          "name": "filter",
+          "type": "option",
+          "description": "filter property by partial string matching, ex: name=foo",
+          "multiple": false
+        },
+        "csv": {
+          "name": "csv",
+          "type": "boolean",
+          "description": "output is csv format [alias: --output=csv]",
+          "allowNo": false,
+          "exclusive": [
+            "no-truncate"
+          ]
+        },
+        "output": {
+          "name": "output",
+          "type": "option",
+          "description": "output in a more machine friendly format",
+          "multiple": false,
+          "options": [
+            "csv",
+            "json",
+            "yaml"
+          ],
+          "exclusive": [
+            "no-truncate",
+            "csv"
+          ]
+        },
+        "extended": {
+          "name": "extended",
+          "type": "boolean",
+          "char": "x",
+          "description": "show extra columns",
+          "allowNo": false,
+          "exclusive": [
+            "columns"
+          ]
+        },
+        "no-header": {
+          "name": "no-header",
+          "type": "boolean",
+          "description": "hide table header from output",
+          "allowNo": false,
+          "exclusive": [
+            "csv"
+          ]
+        }
+      },
+      "args": {}
+    },
+    "domains:info": {
+      "id": "domains:info",
+      "description": "show detailed information for a domain on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku domains:info www.example.com"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {
+        "hostname": {
+          "name": "hostname",
+          "required": true
+        }
+      }
+    },
+    "domains:remove": {
+      "id": "domains:remove",
+      "description": "remove a domain from an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "heroku domains:remove www.example.com"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {
+        "hostname": {
+          "name": "hostname",
+          "required": true
+        }
+      }
+    },
+    "domains:update": {
+      "id": "domains:update",
+      "description": "update a domain to use a different SSL certificate on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "heroku domains:update www.example.com --cert mycert"
+      ],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "cert": {
+          "name": "cert",
+          "type": "option",
+          "description": "the name or id of the certificate you want to use for this domain",
+          "required": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "hostname": {
+          "name": "hostname"
+        }
+      }
+    },
+    "domains:wait": {
+      "id": "domains:wait",
+      "description": "wait for domain to be active for an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-apps",
+      "pluginAlias": "@heroku-cli/plugin-apps",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {
+        "hostname": {
+          "name": "hostname"
+        }
+      }
+    }
+  }
+}

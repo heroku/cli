@@ -4,16 +4,6 @@
   "version": "8.0.0",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
-  "cli-engine": {
-    "bin": "heroku",
-    "commands": "./commands",
-    "topics": {
-      "certs": {
-        "description": "a topic for the ssl plugin"
-      }
-    },
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
-  },
   "dependencies": {
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
@@ -51,7 +41,15 @@
     ],
     "additionalVersionFlags": [
       "-v"
-    ]
+    ],
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "certs": {
+        "description": "a topic for the ssl plugin"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

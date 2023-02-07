@@ -11,10 +11,7 @@
     ],
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2017",
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "target": "es2017"
   },
   "include": [
     "./src/**/*"

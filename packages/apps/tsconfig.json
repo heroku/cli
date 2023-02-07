@@ -3,8 +3,11 @@
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",
-    "outDir": "lib",
-    "rootDir": "src",
+    "outDir": "./lib",
+    "pretty": true,
+    "rootDirs": [
+      "./src"
+    ],
     "skipLibCheck": true,
     "strict": true,
     "target": "es2017"
