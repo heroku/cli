@@ -38,6 +38,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
+      # build packages/**/lib artifacts so ./bin/run commands work in tests
+      - run: yarn lerna run prepack
+      - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build

@@ -85,7 +85,11 @@ This project is built with [lerna](https://lerna.js.org/). The core plugins are 
 After cloning the repo
 1. Run `yarn` to install dependencies
 
-To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
+To execute Heroku CLI commands locally
+1. Run `yarn lerna run prepack` to build packages
+2. use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
+Step 1 above can be replaced with `yarn lerna run --scope @heroku-cli/plugin-<package> prepack` after initial run.
+
 
 Testing
 =======
