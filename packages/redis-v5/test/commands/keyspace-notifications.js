@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/keyspace-notifications')
+let command = require('../../commands/redis/keyspace-notifications')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:keyspace-notifications', function () {

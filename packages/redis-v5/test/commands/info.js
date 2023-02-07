@@ -5,8 +5,8 @@ let expect = require('chai').expect
 let nock = require('nock')
 
 let commands = [
-  { txt: ':info', command: require('../../commands/info') },
-  { txt: '', command: require('../../commands/index') },
+  { txt: ':info', command: require('../../commands/redis/info') },
+  { txt: '', command: require('../../commands/redis') }
 ]
 
 commands.forEach((cmd) => {
@@ -31,7 +31,7 @@ commands.forEach((cmd) => {
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons')
         .reply(200, [
-          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] },
+          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
         ])
 
       let redis = nock('https://redis-api.heroku.com:443')
@@ -47,8 +47,8 @@ commands.forEach((cmd) => {
             `=== redis-haiku (REDIS_FOO, REDIS_BAR)
 Foo: Bar
      Biz
-`,
-          ),
+`
+          )
         )
         .then(() => expect(cli.stderr).to.equal(''))
     })
@@ -57,7 +57,7 @@ Foo: Bar
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons')
         .reply(200, [
-          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] },
+          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
         ])
 
       let redis = nock('https://redis-api.heroku.com:443')
@@ -87,8 +87,8 @@ Foo: Bar
     ]
   }
 ]
-`,
-          ),
+`
+          )
         )
         .then(() => expect(cli.stderr).to.equal(''))
     })
@@ -97,7 +97,7 @@ Foo: Bar
       let app = nock('https://api.heroku.com:443')
         .get('/apps/example/addons')
         .reply(200, [
-          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] },
+          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
         ])
 
       let redis = nock('https://redis-api.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(404, {})
@@ -114,13 +114,13 @@ Foo: Bar
       nock('https://api.heroku.com:443')
         .get('/apps/example/addons')
         .reply(200, [
-          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] },
+          { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
         ])
 
       nock('https://redis-api.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(503, {})
 
       return expect(
-        command.run({ app: 'example', args: {}, flags: {}, auth: { username: 'foobar', password: 'password' } }),
+        command.run({ app: 'example', args: {}, flags: {}, auth: { username: 'foobar', password: 'password' } })
       ).to.be.rejectedWith(/Expected response to be successful, got 503/)
     })
   })

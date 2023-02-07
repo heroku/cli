@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 let nock = require('nock')
 let expect = require('chai').expect
 const unwrap = require('../unwrap')
-let cmd = require('../../commands/wait')
+let cmd = require('../../commands/redis/wait')
 
 describe('heroku redis:wait ', () => {
   beforeEach(() => {

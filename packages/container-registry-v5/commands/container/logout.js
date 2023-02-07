@@ -1,0 +1,33 @@
+const cli = require('heroku-cli-util')
+const Sanbashi = require('../../lib/sanbashi')
+const debug = require('../../lib/debug')
+
+function dockerLogout (registry) {
+  let args = [
+    'logout',
+    registry
+  ]
+  return Sanbashi.cmd('docker', args)
+}
+
+async function logout (context, heroku) {
+  if (context.flags.verbose) debug.enabled = true
+  let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
+  let registry = `registry.${herokuHost}`
+
+  try {
+    await dockerLogout(registry)
+  } catch (err) {
+    cli.error(`Error: docker logout exited with ${err}`)
+  }
+}
+
+module.exports = {
+  topic: 'container',
+  command: 'logout',
+  flags: [{ name: 'verbose', char: 'v', hasValue: false }],
+  description: 'log out from Heroku Container Registry',
+  needsApp: false,
+  needsAuth: false,
+  run: cli.command(logout)
+}

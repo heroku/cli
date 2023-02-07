@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/timeout')
+let command = require('../../commands/redis/timeout')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:timeout', function () {

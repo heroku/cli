@@ -4,7 +4,7 @@
 let nock = require('nock')
 let expect = require('chai').expect
 
-let command = require('../../commands/credentials')
+let command = require('../../commands/redis/credentials')
 
 describe('heroku redis:credentials', function () {
   require('../lib/shared').shouldHandleArgs(command)

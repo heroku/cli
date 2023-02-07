@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/vpn/index')
+const cmd = require('../../../commands/spaces/vpn/index')
 const expect = require('chai').expect
 
 describe('spaces:vpn:connections', function () {

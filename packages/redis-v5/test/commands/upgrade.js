@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/upgrade')
+let command = require('../../commands/redis/upgrade')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:upgrade', () => {

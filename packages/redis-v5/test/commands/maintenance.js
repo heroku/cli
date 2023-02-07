@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/maintenance')
+let command = require('../../commands/redis/maintenance')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:maintenance', function () {

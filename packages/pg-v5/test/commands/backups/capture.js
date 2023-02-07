@@ -7,7 +7,7 @@ const nock = require('nock')
 
 const addon = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:standard-0' }, app: { name: 'myapp' } }
 
-const cmd = require('../../../commands/backups/capture')
+const cmd = require('../../../commands/pg/backups/capture')
 
 let captureText = () => {
   if (process.stderr.isTTY) {

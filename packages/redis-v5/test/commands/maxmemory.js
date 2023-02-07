@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/maxmemory')
+let command = require('../../commands/redis/maxmemory')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:maxmemory', function () {

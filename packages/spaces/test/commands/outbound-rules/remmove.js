@@ -2,7 +2,7 @@
 /* globals describe it beforeEach */
 
 let nock = require('nock')
-let cmd = require('../../../commands/outbound-rules/remove')
+let cmd = require('../../../commands/spaces/outbound-rules/remove')
 let cli = require('heroku-cli-util')
 
 describe('outbound-rules:remove', function () {

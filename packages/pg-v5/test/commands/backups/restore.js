@@ -7,7 +7,7 @@ const nock = require('nock')
 
 const addon = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:standard-0' }, app: { name: 'myapp' } }
 
-const cmd = require('../../../commands/backups/restore')
+const cmd = require('../../../commands/pg/backups/restore')
 
 let restoringText = () => {
   return process.stderr.isTTY ? 'Restoring... pending\nRestoring... done\n' : 'Restoring... done\n'

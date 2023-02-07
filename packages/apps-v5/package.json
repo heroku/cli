@@ -56,7 +56,7 @@
       "-v"
     ],
     "bin": "heroku",
-    "commands": "./commands",
+    "commands": "./src/commands",
     "topics": {
       "stack": {
         "description": "manage heroku stacks",
