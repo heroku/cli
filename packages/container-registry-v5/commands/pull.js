@@ -26,22 +26,20 @@ let pull = async function (context, heroku) {
   }
 }
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'pull',
-    description: 'pulls an image from an app\'s process type',
-    needsApp: true,
-    needsAuth: true,
-    variableArgs: true,
-    help: usage,
-    flags: [
-      {
-        name: 'verbose',
-        char: 'v',
-        hasValue: false
-      }
-    ],
-    run: cli.command(pull)
-  }
+module.exports = {
+  topic: 'container',
+  command: 'pull',
+  description: 'pulls an image from an app\'s process type',
+  needsApp: true,
+  needsAuth: true,
+  variableArgs: true,
+  help: usage,
+  flags: [
+    {
+      name: 'verbose',
+      char: 'v',
+      hasValue: false
+    }
+  ],
+  run: cli.command(pull)
 }

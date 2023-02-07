@@ -7,24 +7,22 @@ let usage = `
     ${cli.color.cmd('heroku container:release web')}                       # Releases the previously pushed web process type
     ${cli.color.cmd('heroku container:release web worker')}                # Releases the previously pushed web and worker process types`
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'release',
-    description: 'Releases previously pushed Docker images to your Heroku app',
-    needsApp: true,
-    needsAuth: true,
-    variableArgs: true,
-    help: usage,
-    flags: [
-      {
-        name: 'verbose',
-        char: 'v',
-        hasValue: false
-      }
-    ],
-    run: cli.command(release)
-  }
+module.exports = {
+  topic: 'container',
+  command: 'release',
+  description: 'Releases previously pushed Docker images to your Heroku app',
+  needsApp: true,
+  needsAuth: true,
+  variableArgs: true,
+  help: usage,
+  flags: [
+    {
+      name: 'verbose',
+      char: 'v',
+      hasValue: false
+    }
+  ],
+  run: cli.command(release)
 }
 
 let release = async function (context, heroku) {

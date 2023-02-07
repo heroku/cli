@@ -1,11 +1,11 @@
-module.exports = function index (pkg) {
-  return {
-    topic: pkg.topic,
-    description: pkg.description,
-    run: showVersion
-  }
+const pkg = require('../package.json')
 
-  function showVersion (context) {
-    console.log(pkg.version)
-  }
+function showVersion (context) {
+  console.log(pkg.version)
+}
+
+module.exports = {
+  topic: pkg.topic,
+  description: pkg.description,
+  run: showVersion
 }

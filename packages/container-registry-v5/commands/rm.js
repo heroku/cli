@@ -5,18 +5,16 @@ let usage = `
     ${cli.color.cmd('heroku container:rm web')}        # Destroys the web container
     ${cli.color.cmd('heroku container:rm web worker')} # Destroys the web and worker containers`
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'rm',
-    description: 'remove the process type from your app',
-    needsApp: true,
-    needsAuth: true,
-    variableArgs: true,
-    help: usage,
-    flags: [],
-    run: cli.command(rm)
-  }
+module.exports = {
+  topic: 'container',
+  command: 'rm',
+  description: 'remove the process type from your app',
+  needsApp: true,
+  needsAuth: true,
+  variableArgs: true,
+  help: usage,
+  flags: [],
+  run: cli.command(rm)
 }
 
 let rm = async function (context, heroku) {

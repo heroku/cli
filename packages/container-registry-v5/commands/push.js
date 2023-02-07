@@ -2,47 +2,45 @@ const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'push',
-    description: 'builds, then pushes Docker images to deploy your Heroku app',
-    needsApp: true,
-    needsAuth: true,
-    variableArgs: true,
-    examples: [
-      `${cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type`,
-      `${cli.color.cmd('heroku container:push worker')}                       # Pushes Dockerfile to worker process type`,
-      `${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker`,
-      `${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*`,
-      `${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
-      `${cli.color.cmd('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`
-    ],
-    flags: [
-      {
-        name: 'verbose',
-        char: 'v',
-        hasValue: false
-      },
-      {
-        name: 'recursive',
-        char: 'R',
-        hasValue: false,
-        description: 'pushes Dockerfile.<process> found in current and subdirectories'
-      },
-      {
-        name: 'arg',
-        hasValue: true,
-        description: 'set build-time variables'
-      },
-      {
-        name: 'context-path',
-        hasValue: true,
-        description: 'path to use as build context (defaults to Dockerfile dir)'
-      }
-    ],
-    run: cli.command(push)
-  }
+module.exports = {
+  topic: 'container',
+  command: 'push',
+  description: 'builds, then pushes Docker images to deploy your Heroku app',
+  needsApp: true,
+  needsAuth: true,
+  variableArgs: true,
+  examples: [
+    `${cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type`,
+    `${cli.color.cmd('heroku container:push worker')}                       # Pushes Dockerfile to worker process type`,
+    `${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker`,
+    `${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*`,
+    `${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
+    `${cli.color.cmd('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`
+  ],
+  flags: [
+    {
+      name: 'verbose',
+      char: 'v',
+      hasValue: false
+    },
+    {
+      name: 'recursive',
+      char: 'R',
+      hasValue: false,
+      description: 'pushes Dockerfile.<process> found in current and subdirectories'
+    },
+    {
+      name: 'arg',
+      hasValue: true,
+      description: 'set build-time variables'
+    },
+    {
+      name: 'context-path',
+      hasValue: true,
+      description: 'path to use as build context (defaults to Dockerfile dir)'
+    }
+  ],
+  run: cli.command(push)
 }
 
 let push = async function (context, heroku) {

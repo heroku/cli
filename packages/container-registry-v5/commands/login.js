@@ -2,18 +2,16 @@ const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'login',
-    flags: [{ name: 'verbose', char: 'v', hasValue: false }],
-    description: 'log in to Heroku Container Registry',
-    help: `Usage:
+module.exports = {
+  topic: 'container',
+  command: 'login',
+  flags: [{ name: 'verbose', char: 'v', hasValue: false }],
+  description: 'log in to Heroku Container Registry',
+  help: `Usage:
         heroku container:login`,
-    needsApp: false,
-    needsAuth: true,
-    run: cli.command(login)
-  }
+  needsApp: false,
+  needsAuth: true,
+  run: cli.command(login)
 }
 
 async function login (context, heroku) {

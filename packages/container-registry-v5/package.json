@@ -47,7 +47,6 @@
     "additionalVersionFlags": [
       "-v"
     ],
-    "bin": "heroku",
     "commands": "./commands",
     "topics": {
       "container": {

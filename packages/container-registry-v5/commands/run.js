@@ -7,30 +7,28 @@ let usage = `
     ${cli.color.cmd('heroku container:run web bash')} # Runs bash on the local web docker container
     ${cli.color.cmd('heroku container:run worker')}   # Runs the container CMD on the local worker container`
 
-module.exports = function (topic) {
-  return {
-    topic: topic,
-    command: 'run',
-    description: 'builds, then runs the docker image locally',
-    needsApp: true,
-    needsAuth: true,
-    variableArgs: true,
-    help: usage,
-    flags: [
-      {
-        name: 'port',
-        char: 'p',
-        hasValue: true,
-        description: 'port the app will run on'
-      },
-      {
-        name: 'verbose',
-        char: 'v',
-        hasValue: false
-      }
-    ],
-    run: cli.command(run)
-  }
+module.exports = {
+  topic: 'container',
+  command: 'run',
+  description: 'builds, then runs the docker image locally',
+  needsApp: true,
+  needsAuth: true,
+  variableArgs: true,
+  help: usage,
+  flags: [
+    {
+      name: 'port',
+      char: 'p',
+      hasValue: true,
+      description: 'port the app will run on'
+    },
+    {
+      name: 'verbose',
+      char: 'v',
+      hasValue: false
+    }
+  ],
+  run: cli.command(run)
 }
 
 let run = async function (context, heroku) {
