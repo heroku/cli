@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 let nock = require('nock')
-let cmd = require('../../commands')
+let cmd = require('../../commands/spaces')
 
 let chai = require('chai')
 let expect = chai.expect

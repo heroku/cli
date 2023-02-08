@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "commands": "./commands",
     "topics": {
       "spaces": {
         "description": "manage heroku private spaces"
@@ -24,6 +25,8 @@
     "strftime": "^0.10.0"
   },
   "devDependencies": {
+    "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
@@ -43,19 +46,10 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
-  "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ]
-  },
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif-dev manifest",
     "test": "nyc mocha",
     "posttest": "standard"
   }

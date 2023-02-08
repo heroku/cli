@@ -35,6 +35,7 @@
     "@heroku-cli/plugin-webhooks": "^8.0.1",
     "@oclif/core": "^1.22.0",
     "@oclif/plugin-commands": "2.2.2",
+    "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/plugin-not-found": "2.3.16",
     "@oclif/plugin-plugins": "2.1.12",
     "@oclif/plugin-help": "^5",
@@ -107,6 +108,7 @@
     ],
     "commands": "./lib/commands",
     "plugins": [
+      "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",

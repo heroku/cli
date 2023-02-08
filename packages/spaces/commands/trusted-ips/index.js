@@ -16,7 +16,6 @@ async function run (context, heroku) {
 }
 
 module.exports = {
-  topic: 'trusted-ips',
   description: 'list trusted IP ranges for a space',
   help: `
 Trusted IP ranges are only available on Private Spaces.

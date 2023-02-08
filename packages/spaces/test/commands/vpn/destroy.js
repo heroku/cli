@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 const nock = require('nock')
-const cmd = require('../../../commands/vpn/destroy')
+const cmd = require('../../../commands/spaces/vpn/destroy')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 

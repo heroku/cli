@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 let nock = require('nock')
-let cmd = require('../../commands/rename')
+let cmd = require('../../commands/spaces/rename')
 let cli = require('heroku-cli-util')
 
 describe('spaces:rename', function () {

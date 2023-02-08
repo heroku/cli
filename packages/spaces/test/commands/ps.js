@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 const nock = require('nock')
-const cmd = require('../../commands/ps')
+const cmd = require('../../commands/spaces/ps')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 const strftime = require('strftime')

@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 const nock = require('nock')
-const cmd = require('../../commands/topology')
+const cmd = require('../../commands/spaces/topology')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 

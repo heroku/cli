@@ -3,7 +3,7 @@
 
 let nock = require('nock')
 let chai = require('chai')
-let cmd = require('../../../commands/outbound-rules/add')
+let cmd = require('../../../commands/spaces/outbound-rules/add')
 let cli = require('heroku-cli-util')
 
 describe('outbound-rules:add', function () {

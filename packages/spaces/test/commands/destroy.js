@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 let nock = require('nock')
-let cmd = require('../../commands/destroy')
+let cmd = require('../../commands/spaces/destroy')
 let cli = require('heroku-cli-util')
 
 let now = new Date()

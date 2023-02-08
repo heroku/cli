@@ -15,8 +15,6 @@ async function run (context, heroku) {
 }
 
 module.exports = {
-  topic: 'trusted-ips',
-  command: 'add',
   description: 'Add one range to the list of trusted IP ranges',
   help: `
 Uses CIDR notation.

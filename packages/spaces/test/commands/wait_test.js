@@ -3,7 +3,7 @@
 
 let sinon = require('sinon')
 let nock = require('nock')
-let cmd = require('../../commands/wait')
+let cmd = require('../../commands/spaces/wait')
 let expect = require('chai').expect
 let cli = require('heroku-cli-util')
 

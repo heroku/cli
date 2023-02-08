@@ -2,7 +2,7 @@
 /* globals describe beforeEach it */
 
 let nock = require('nock')
-let cmd = require('../../../commands/peering/info')
+let cmd = require('../../../commands/spaces/peering/info')
 let expect = require('chai').expect
 let cli = require('heroku-cli-util')
 let info = {
