@@ -26,7 +26,7 @@
     "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "@oclif/core": "^1.22.0",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
@@ -34,7 +34,7 @@
     "mocha-junit-reporter": "1.18.0",
     "nock": "10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.6.1"
+    "oclif": "3.6.4"
   },
   "files": [
     "oclif.manifest.json",
@@ -48,14 +48,6 @@
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  },
-  "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ]
   },
   "repository": "heroku/cli",
   "scripts": {

@@ -19,7 +19,7 @@
     "inquirer": "^6.2.2"
   },
   "devDependencies": {
-    "@oclif/core": "^1.22.0",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
@@ -29,7 +29,7 @@
     "mockdate": "^2.0.2",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.6.1",
+    "oclif": "3.6.4",
     "sinon": "^5.0.7",
     "std-mocks": "^1.0.1"
   },
@@ -48,14 +48,6 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ]
-  },
   "repository": "heroku/cli",
   "scripts": {
     "depcheck": "depcheck || true",

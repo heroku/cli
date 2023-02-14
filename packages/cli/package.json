@@ -50,6 +50,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
@@ -72,7 +73,7 @@
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
-    "oclif": "3.6.1",
+    "oclif": "3.6.4",
     "qqjs": "0.3.10",
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
@@ -105,6 +106,7 @@
     ],
     "commands": "./lib/commands",
     "plugins": [
+      "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",

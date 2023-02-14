@@ -17,6 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/spaces/<%- commandPath %>"
   },
   "dependencies": {
+    "@oclif/core": "^1.22.0",
     "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/notifications": "^1.2.2",
     "heroku-cli-util": "^8.0.11",
@@ -24,12 +25,13 @@
     "strftime": "^0.10.0"
   },
   "devDependencies": {
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.6.1",
+    "oclif": "3.6.4",
     "sinon": "^7.2.3"
   },
   "files": [
