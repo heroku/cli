@@ -18,6 +18,7 @@ function printExtended (dynos) {
       { key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}` },
       { key: 'extended.region', label: 'Region' },
       { key: 'extended.execution_plane', label: 'Execution Plane' },
+      { key: 'extended.fleet', label: 'Fleet' },
       { key: 'extended.instance', label: 'Instance' },
       { key: 'extended.ip', label: 'IP' },
       { key: 'extended.port', label: 'Port' },
@@ -30,8 +31,8 @@ function printExtended (dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
-  if (app.process_tier !== 'free') {
+async function printAccountQuota (context, heroku, app, account) {
+  if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
 
@@ -68,11 +69,21 @@ async function printAccountQuota(context, heroku, app, account) {
   let appHours = Math.floor(appQuotaUsed / 60)
   let appMinutes = Math.floor(appQuotaUsed % 60)
 
-  cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-  cli.log(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-  cli.log('For more information on dyno sleeping and how to upgrade, see:')
-  cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
-  cli.log()
+  if (app.process_tier === 'eco') {
+    cli.log(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
+    cli.log(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
+    cli.log('For more information on Eco dyno hours, see:')
+    cli.log('https://devcenter.heroku.com/articles/eco-dyno-hours')
+    cli.log()
+  }
+
+  if (app.process_tier === 'free') {
+    cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
+    cli.log(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
+    cli.log('For more information on dyno sleeping and how to upgrade, see:')
+    cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
+    cli.log()
+  }
 }
 
 function printDynos (dynos) {
@@ -101,7 +112,7 @@ function printDynos (dynos) {
   })
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   const { app, flags, args } = context
   const types = args
   const { json, extended } = flags

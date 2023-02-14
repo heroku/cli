@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.68.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v8.0.1...v7.68.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* revert to v7.67.2 ([#2235](https://github.com/heroku/heroku-cli-plugin-apps/issues/2235)) ([0955a24](https://github.com/heroku/heroku-cli-plugin-apps/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/heroku-cli-plugin-apps/issues/2231) [#2230](https://github.com/heroku/heroku-cli-plugin-apps/issues/2230) [#2229](https://github.com/heroku/heroku-cli-plugin-apps/issues/2229) [#2228](https://github.com/heroku/heroku-cli-plugin-apps/issues/2228) [#2227](https://github.com/heroku/heroku-cli-plugin-apps/issues/2227) [#2225](https://github.com/heroku/heroku-cli-plugin-apps/issues/2225) [#2144](https://github.com/heroku/heroku-cli-plugin-apps/issues/2144) [#2216](https://github.com/heroku/heroku-cli-plugin-apps/issues/2216) [#2207](https://github.com/heroku/heroku-cli-plugin-apps/issues/2207) [#2212](https://github.com/heroku/heroku-cli-plugin-apps/issues/2212) [#2212](https://github.com/heroku/heroku-cli-plugin-apps/issues/2212)
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds to run in ci round 2 ([#2132](https://github.com/heroku/heroku-cli-plugin-apps/issues/2132)) ([bd32cdc](https://github.com/heroku/heroku-cli-plugin-apps/commit/bd32cdcee3a7a214b6aea6f309aae1a8ac2ae65e))
+
+
+
+
+
 # [7.62.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.60.2...v7.62.0) (2022-08-04)
 
 

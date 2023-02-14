@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "7.62.0",
+  "version": "7.68.0",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -16,11 +16,11 @@
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@types/chai": "^4",
@@ -37,9 +37,9 @@
     "globby": "^8",
     "mocha": "^5",
     "nock": "^10.0.6",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
     "sinon": "^7.4.1",
-    "ts-node": "^8",
+    "ts-node": "^10",
     "tslib": "^1",
     "typescript": "3.7.5"
   },

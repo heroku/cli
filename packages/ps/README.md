@@ -32,7 +32,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -51,7 +51,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:wait`
 
@@ -71,7 +71,7 @@ OPTIONS
                                      limits)
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/ps/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/wait.ts)_
 
 ## `heroku regions`
 
@@ -87,5 +87,5 @@ OPTIONS
   --private  show regions for private spaces
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.60.0/packages/ps/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/regions.ts)_
 <!-- commandsstop -->

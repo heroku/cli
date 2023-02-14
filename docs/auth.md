@@ -15,8 +15,6 @@ check 2fa status
 check 2fa status
 
 ```
-check 2fa status
-
 USAGE
   $ heroku auth:2fa
 
@@ -25,15 +23,13 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/2fa/index.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
 disables 2fa on account
 
 ```
-disables 2fa on account
-
 USAGE
   $ heroku auth:2fa:disable
 
@@ -45,15 +41,13 @@ EXAMPLES
   $ heroku auth:2fa:disable
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/2fa/disable.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:login`
 
 login with your Heroku credentials
 
 ```
-login with your Heroku credentials
-
 USAGE
   $ heroku auth:login
 
@@ -66,15 +60,13 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/login.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
 clears local login credentials and invalidates API session
 
 ```
-clears local login credentials and invalidates API session
-
 USAGE
   $ heroku auth:logout
 
@@ -82,16 +74,13 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/logout.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
 outputs current CLI authentication token.
 
 ```
-outputs current CLI authentication token.
-By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create
-
 USAGE
   $ heroku auth:token
 
@@ -103,15 +92,13 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/token.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
 display the current logged in user
 
 ```
-display the current logged in user
-
 USAGE
   $ heroku auth:whoami
 
@@ -119,4 +106,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.60.0/packages/auth/src/commands/auth/whoami.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.68.0/packages/auth/src/commands/auth/whoami.ts)_

@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-oauth-v5",
   "description": "Heroku CLI plugin to manage OAuth clients.",
-  "version": "7.54.0",
+  "version": "7.68.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -26,7 +26,7 @@
     "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -34,7 +34,7 @@
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",
     "nock": "10.0.6",
-    "nyc": "^13.2.0"
+    "nyc": "^15.1.0"
   },
   "files": [
     "oclif.manifest.json",
