@@ -1733,6 +1733,40 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
+"@oclif/core@^2.0.8":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.1.4.tgz#536cf9d2367ba96c625076588b0cbccf3341829c"
+  integrity sha512-8rPS/gsjLgWp//nraRs5/yf7EkueFHBLRTMUli3yTu88XrQ2czbXIP2HsF2rxmtCqUUfXUTllHfr8OzqBs0Dcw==
+  dependencies:
+    "@types/cli-progress" "^3.11.0"
+    ansi-escapes "^4.3.2"
+    ansi-styles "^4.3.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    clean-stack "^3.0.1"
+    cli-progress "^3.11.2"
+    debug "^4.3.4"
+    ejs "^3.1.6"
+    fs-extra "^9.1.0"
+    get-package-type "^0.1.0"
+    globby "^11.1.0"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.14.1"
+    natural-orderby "^2.0.3"
+    object-treeify "^1.1.33"
+    password-prompt "^1.1.2"
+    semver "^7.3.7"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+    supports-color "^8.1.1"
+    supports-hyperlinks "^2.2.0"
+    tslib "^2.5.0"
+    widest-line "^3.1.0"
+    wordwrap "^1.0.0"
+    wrap-ansi "^7.0.0"
+
 "@oclif/errors@1.3.6", "@oclif/errors@^1.2.2", "@oclif/errors@^1.3.5", "@oclif/errors@^1.3.6":
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.3.6.tgz#e8fe1fc12346cb77c4f274e26891964f5175f75d"
@@ -1781,6 +1815,13 @@
   dependencies:
     "@oclif/core" "^1.2.0"
     lodash "^4.17.11"
+
+"@oclif/plugin-help@^5":
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-5.2.4.tgz#57b87b05b1cddc10c4958f93f6320424bb9e3ec6"
+  integrity sha512-7fVB/M1cslwHJTmyNGGDYBizi54NHcKCxHAbDSD16EbjosKxFwncRylVC/nsMgKZEufMDKZaVYI2lYRY3GHlSQ==
+  dependencies:
+    "@oclif/core" "^2.0.8"
 
 "@oclif/plugin-help@^5.1.19":
   version "5.1.22"
@@ -1856,6 +1897,13 @@
     log-chopper "^1.0.2"
     semver "^7.3.8"
     tar-fs "^2.1.1"
+
+"@oclif/plugin-version@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-version/-/plugin-version-1.2.1.tgz#b1e36dc6dfd4a228e3b45f675b53a10b2b8b4c01"
+  integrity sha512-Xb7MECv9uSaxIuzPbgJnOZEf0gnHlcLdncBkJCn5vsMnt1hC91j65feGeY8c68vsrAi6SumOfI8C63v8gC+FEA==
+  dependencies:
+    "@oclif/core" "^2.0.3"
 
 "@oclif/plugin-warn-if-update-available@2.0.20":
   version "2.0.20"
@@ -3746,7 +3794,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-progress@^3.10.0:
+cli-progress@^3.10.0, cli-progress@^3.11.2:
   version "3.11.2"
   resolved "https://registry.yarnpkg.com/cli-progress/-/cli-progress-3.11.2.tgz#f8c89bd157e74f3f2c43bcfb3505670b4d48fc77"
   integrity sha512-lCPoS6ncgX4+rJu5bS3F/iCz17kZ9MPZ6dpuTtI0KXKABkhyXIdYB3Inby1OpaGti3YlI3EeEkM9AuWpelJrVA==
