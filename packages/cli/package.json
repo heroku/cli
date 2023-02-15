@@ -33,6 +33,7 @@
     "@heroku-cli/plugin-spaces": "^8.0.0",
     "@heroku-cli/plugin-status": "^8.0.1",
     "@heroku-cli/plugin-webhooks": "^8.0.1",
+    "@oclif/command": "1.8.16",
     "@oclif/core": "^1.22.0",
     "@oclif/plugin-commands": "2.2.2",
     "@oclif/plugin-help": "^5",
