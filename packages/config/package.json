@@ -6,7 +6,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^9.0.1",
-    "@oclif/core": "^1.22.0",
+    "@oclif/core": "^1.26.2",
     "edit-string": "^1.1.6",
     "lodash": "^4.17.11",
     "shell-quote": "^1.6.1"

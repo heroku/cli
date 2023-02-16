@@ -7,7 +7,7 @@
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^9.0.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/core": "^1.22.0",
+    "@oclif/core": "^1.26.2",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
     "inquirer": "^7.0.0",

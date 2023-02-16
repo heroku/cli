@@ -6,7 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "9.0.1",
-    "@oclif/core": "^1.22.0",
+    "@oclif/core": "^1.26.2",
     "foreman": "^3.0.1",
     "tslib": "^1"
   },
