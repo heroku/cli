@@ -156,7 +156,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --frozen-lockfile --prefer-offline --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
