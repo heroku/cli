@@ -64,9 +64,9 @@ jobs:
       - run: sudo mkdir -p /build
       - name: Install package deps
         run: |
-          yarn --frozen-lockfile --network-timeout 1000000
-          cp -r ./node_modules packages/cli
+          cp yarn.lock packages/cli
           cd packages/cli
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
@@ -86,9 +86,9 @@ jobs:
       - run: sudo mkdir -p /build
       - name: Install package deps
         run: |
-          yarn --frozen-lockfile --network-timeout 1000000
-          cp -r ./node_modules packages/cli
+          cp yarn.lock packages/cli
           cd packages/cli
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
@@ -154,9 +154,9 @@ jobs:
           sudo apt-get install -y awscli
       - name: yarn install
         run: |
-          yarn --frozen-lockfile --network-timeout 1000000
-          cp -r ./node_modules packages/cli
+          cp yarn.lock packages/cli
           cd packages/cli
+          yarn --frozen-lockfile --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
@@ -206,9 +206,9 @@ jobs:
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
       - run: |
-          yarn --frozen-lockfile --network-timeout 1000000
-          cp -r ./node_modules packages/cli
+          cp yarn.lock packages/cli
           cd packages/cli
+          yarn --frozen-lockfile --network-timeout 1000000
           ./scripts/release/homebrew.js
 
   change-management:
