@@ -4,3 +4,4 @@ process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS 
 
 require('@oclif/command').run()
 .then(require('@oclif/command/flush'))
+.catch(require('@oclif/errors/handle'))
