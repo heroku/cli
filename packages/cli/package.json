@@ -21,6 +21,7 @@
     "@heroku-cli/plugin-config": "^8.0.1",
     "@heroku-cli/plugin-container-registry-v5": "^8.0.0",
     "@heroku-cli/plugin-git": "^8.0.1",
+    "@oclif/plugin-legacy": "^1.2.0",
     "@heroku-cli/plugin-local": "^8.0.1",
     "@heroku-cli/plugin-oauth-v5": "^8.0.0",
     "@heroku-cli/plugin-orgs-v5": "^8.0.0",
@@ -53,7 +54,6 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "@oclif/plugin-legacy": "^1.2.0",
     "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
