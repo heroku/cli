@@ -50,7 +50,7 @@ jobs:
 
   pack_deb:
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       HEROKU_AUTHOR: 'Heroku'
     steps:
