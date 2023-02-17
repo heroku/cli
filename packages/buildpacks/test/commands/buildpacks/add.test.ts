@@ -214,7 +214,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
     test
     .command(['buildpacks:add', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', 'notinteger', '-a', 'example'])
-    .catch('Expected an integer but received: notinteger')
+    .catch('Parsing --index \\n\\tExpected an integer but received: notinteger\\nSee more help with --help')
     .it('# returns an error message when i is not an integer')
 
     test
