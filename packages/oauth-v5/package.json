@@ -54,6 +54,5 @@
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "cross-env TZ=UTC nyc mocha"
-  },
-  "gitHead": "ed118416bdc5d7d4a888e7c7b7b9f2f2a1c31695"
+  }
 }
