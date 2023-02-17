@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-oauth-v5",
   "description": "Heroku CLI plugin to manage OAuth clients.",
-  "version": "8.0.0",
+  "version": "7.68.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -53,6 +53,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "cross-env TZ=UTC nyc mocha"
+    "test": "cross-env TZ=UTC nyc mocha",
+    "version": "oclif readme && git add README.md"
   }
 }

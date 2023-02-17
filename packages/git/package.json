@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-git",
   "description": "Heroku CLI plugin to manage local git repos.",
-  "version": "8.0.1",
+  "version": "7.68.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -66,6 +66,7 @@
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "echo NO TESTS",
-    "posttest": "yarn  lint"
+    "posttest": "yarn  lint",
+    "version": "oclif readme && git add README.md"
   }
 }

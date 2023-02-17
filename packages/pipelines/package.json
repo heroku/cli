@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "8.0.0",
+  "version": "7.68.0",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -79,6 +79,7 @@
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme && git add README.md"
   }
 }

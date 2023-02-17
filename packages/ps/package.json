@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ps",
   "description": "ps core plugin for Heroku CLI",
-  "version": "8.0.1",
+  "version": "7.68.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -65,6 +65,7 @@
     "postpublish": "yarn run clean",
     "prepack": "yarn run build && oclif manifest",
     "preversion": "yarn run clean",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   }
 }

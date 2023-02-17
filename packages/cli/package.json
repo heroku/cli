@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "8.0.1",
+  "version": "7.68.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -284,7 +284,8 @@
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }

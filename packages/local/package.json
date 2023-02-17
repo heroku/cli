@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local",
   "description": "run heroku apps locally",
-  "version": "8.0.1",
+  "version": "7.68.0",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -60,6 +60,7 @@
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "test:acceptance": "node ./bin/bats-test-runner"
+    "test:acceptance": "node ./bin/bats-test-runner",
+    "version": "oclif readme && git add README.md"
   }
 }

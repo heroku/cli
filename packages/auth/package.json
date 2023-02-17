@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-auth",
   "description": "auth core plugin for Heroku CLI",
-  "version": "8.0.1",
+  "version": "7.68.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -62,6 +62,7 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "prepare": "rm -rf lib && tsc && oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   }
 }
