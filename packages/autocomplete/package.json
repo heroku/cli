@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-autocomplete",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -70,7 +70,6 @@
     "posttest": "yarn lint",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc && oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

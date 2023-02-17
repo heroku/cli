@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-webhooks",
   "description": "Heroku CLI plugin to manage webhooks",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -57,7 +57,6 @@
     "posttest": "yarn lint",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

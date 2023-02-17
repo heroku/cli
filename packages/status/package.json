@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -70,7 +70,6 @@
     "preversion": "yarn run postpublish",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

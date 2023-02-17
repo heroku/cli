@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -72,7 +72,6 @@
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "test:acceptance": "yarn test --grep='@acceptance'",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

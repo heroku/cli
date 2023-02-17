@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-apps",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Brett @brettgoulder",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-apps/issues",
   "dependencies": {
@@ -64,7 +64,6 @@
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

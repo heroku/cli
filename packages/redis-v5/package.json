@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-redis-v5",
   "description": "Heroku plugin to manage Heroku Redis",
-  "version": "7.68.0",
+  "version": "8.0.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -46,7 +46,6 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "nyc mocha",
-    "version": "oclif readme && git add README.md"
+    "test": "nyc mocha"
   }
 }

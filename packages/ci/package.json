@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -80,7 +80,6 @@
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

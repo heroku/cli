@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-buildpacks",
-  "version": "7.68.0",
+  "version": "8.0.1",
   "author": "Terence Lee @hone",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -71,7 +71,6 @@
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "posttest": "yarn lint"
   }
 }

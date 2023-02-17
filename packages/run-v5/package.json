@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-run-v5",
   "description": "Heroku CLI plugin to run one-off dyno processes.",
-  "version": "7.68.0",
+  "version": "8.0.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -62,7 +62,6 @@
     "postpack": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "mocha",
-    "test:acceptance": "yarn test --grep='@acceptance'",
-    "version": "oclif readme && git add README.md"
+    "test:acceptance": "yarn test --grep='@acceptance'"
   }
 }
