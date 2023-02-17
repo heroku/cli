@@ -50,6 +50,7 @@
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "nyc mocha",
-    "posttest": "standard"
+    "posttest": "standard",
+    "version": "oclif readme && git add README.md"
   }
 }

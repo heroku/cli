@@ -70,6 +70,7 @@
     "posttest": "yarn lint",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc && oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
   }
 }

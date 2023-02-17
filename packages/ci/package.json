@@ -80,6 +80,7 @@
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "version": "oclif readme && git add README.md"
   }
 }

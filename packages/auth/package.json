@@ -62,6 +62,7 @@
     "lint": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "prepare": "rm -rf lib && tsc && oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+
   }
 }

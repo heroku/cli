@@ -60,6 +60,7 @@
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "test:acceptance": "node ./bin/bats-test-runner"
+    "test:acceptance": "node ./bin/bats-test-runner",
+    "version": "oclif readme && git add README.md"
   }
 }

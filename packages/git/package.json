@@ -66,6 +66,7 @@
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "echo NO TESTS",
-    "posttest": "yarn  lint"
+    "posttest": "yarn  lint",
+    "version": "oclif readme && git add README.md"
   }
 }

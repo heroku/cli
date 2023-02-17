@@ -70,6 +70,7 @@
     "preversion": "yarn run postpublish",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+
   }
 }
