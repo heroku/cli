@@ -24,7 +24,7 @@
   },
   "private": true,
   "resolutions": {
-    "@oclif/core": "1.26.2"
+    "@heroku-cli/command/**/@oclif/core": "1.26.2"
   },
   "scripts": {
     "test": "lerna run test --concurrency 4",
