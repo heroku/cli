@@ -38,7 +38,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn lerna run prepack
+      - name: Build packages
+        run: yarn lerna run prepack
       - run: ./bin/run whoami
       - run: ./scripts/run-acceptance
 
