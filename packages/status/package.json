@@ -71,6 +71,6 @@
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-
+    "version": "oclif readme && git add README.md"
   }
 }
