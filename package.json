@@ -20,7 +20,7 @@
     ]
   },
   "engines": {
-    "node": "16"
+    "node": ">=16"
   },
   "private": true,
   "resolutions": {
