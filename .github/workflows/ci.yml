@@ -52,7 +52,7 @@ jobs:
         working-directory: /
 
   pack_deb:
-#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     # ubuntu started using a compression method after this version that debian currently does not support
     # https://github.com/heroku/cli/pull/2245#issue-1590017122
     runs-on: ubuntu-20.04
@@ -78,7 +78,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-#    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
