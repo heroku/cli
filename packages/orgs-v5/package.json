@@ -38,7 +38,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^9.0.1",
+    "@heroku-cli/command": "^9.0.2",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
     "lodash": "^4.17.11",

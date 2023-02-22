@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.1",
+    "@heroku-cli/command": "^9.0.2",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/core": "1.22.0",
     "date-fns": "^1.30.1",
