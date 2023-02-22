@@ -23,9 +23,6 @@
     "node": ">=16"
   },
   "private": true,
-  "resolutions": {
-    "@heroku-cli/command/**/@oclif/core": "1.26.2"
-  },
   "scripts": {
     "test": "lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
