@@ -339,7 +339,7 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@9.0.1", "@heroku-cli/command@^9.0.1":
+"@heroku-cli/command@9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-9.0.1.tgz#b7717b5770966d7db59be67d0d624885e1985347"
   integrity sha512-RyVK88qFcsUSuZob2nE1foVGk0pyyTFzkMq8iBTuRPLfmyx/SpFaVX0jpkAnUbxMa6XAC1JwDHBkXMdM3yL/UQ==
@@ -355,7 +355,7 @@
     open "^6.2.0"
     uuid "^8.3.0"
 
-"@heroku-cli/command@^8.4.1", "@heroku-cli/command@^8.5.0":
+"@heroku-cli/command@^8.5.0":
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.5.0.tgz#1a9d977c85d5581622699d9a819d6da24a037993"
   integrity sha512-HtjnammJPaoYkcrhmQM5sJCUueJ80KbZHUo3SldAEXmy9hefk34mk524nKS7ZlrABEiBilv4XYHCkrWCoq94uQ==
@@ -428,19 +428,6 @@
     "@heroku-cli/heroku-exec-util" "0.7.6"
     heroku-cli-util "^8.0.8"
     lodash "^4.17.13"
-
-"@heroku-cli/plugin-run-v5@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run-v5/-/plugin-run-v5-8.0.0.tgz#8fe3a25195a7b6e44ea243868f1e32f488107e1e"
-  integrity sha512-EdNZ5oz0ni/uWYfjNCZl4DVZ227mZIuvpo3LtT5/sgOeGIUH7717wDYcHfpDxHfVBl/TY+BEhcQ6ZNefX6MvLQ==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@heroku-cli/command" "^9.0.1"
-    "@heroku-cli/notifications" "^1.2.2"
-    "@heroku/eventsource" "^1.0.7"
-    fs-extra "^7.0.1"
-    heroku-cli-util "^8.0.11"
-    shellwords "^0.1.1"
 
 "@heroku-cli/schema@^1.0.25":
   version "1.0.25"
