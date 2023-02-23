@@ -5,8 +5,8 @@ OAuth authorizations
 
 * [`heroku authorizations`](#heroku-authorizations)
 * [`heroku authorizations:create`](#heroku-authorizationscreate)
+* [`heroku authorizations:destroy ID`](#heroku-authorizationsdestroy-id)
 * [`heroku authorizations:info ID`](#heroku-authorizationsinfo-id)
-* [`heroku authorizations:revoke ID`](#heroku-authorizationsrevoke-id)
 * [`heroku authorizations:rotate ID`](#heroku-authorizationsrotate-id)
 * [`heroku authorizations:update ID`](#heroku-authorizationsupdate-id)
 
@@ -16,13 +16,14 @@ list OAuth authorizations
 
 ```
 USAGE
-  $ heroku authorizations
+  $ heroku authorizations [-j]
 
-OPTIONS
+FLAGS
   -j, --json  output in json format
-```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/index.js)_
+DESCRIPTION
+  list OAuth authorizations
+```
 
 ## `heroku authorizations:create`
 
@@ -30,20 +31,35 @@ create a new OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:create
+  $ heroku authorizations:create [-d <value>] [-s <value>] [-e <value>] [-S] [-j]
 
-OPTIONS
-  -S, --short                    only output token
-  -d, --description=description  set a custom authorization description
-  -e, --expires-in=expires-in    set expiration in seconds (default no expiration)
-  -j, --json                     output in json format
-  -s, --scope=scope              set custom OAuth scopes
+FLAGS
+  -S, --short                only output token
+  -d, --description=<value>  set a custom authorization description
+  -e, --expires-in=<value>   set expiration in seconds (default no expiration)
+  -j, --json                 output in json format
+  -s, --scope=<value>        set custom OAuth scopes
 
 DESCRIPTION
+  create a new OAuth authorization
   This creates an authorization with access to your Heroku account.
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/create.js)_
+## `heroku authorizations:destroy ID`
+
+revoke OAuth authorization
+
+```
+USAGE
+  $ heroku authorizations:destroy ID
+
+DESCRIPTION
+  revoke OAuth authorization
+
+
+ALIASES
+  $ heroku authorizations:destroy
+```
 
 ## `heroku authorizations:info ID`
 
@@ -51,27 +67,14 @@ show an existing OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:info ID
+  $ heroku authorizations:info ID [-j]
 
-OPTIONS
+FLAGS
   -j, --json  output in json format
+
+DESCRIPTION
+  show an existing OAuth authorization
 ```
-
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/info.js)_
-
-## `heroku authorizations:revoke ID`
-
-revoke OAuth authorization
-
-```
-USAGE
-  $ heroku authorizations:revoke ID
-
-ALIASES
-  $ heroku authorizations:destroy
-```
-
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/revoke.js)_
 
 ## `heroku authorizations:rotate ID`
 
@@ -80,9 +83,10 @@ updates an OAuth authorization token
 ```
 USAGE
   $ heroku authorizations:rotate ID
-```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/rotate.js)_
+DESCRIPTION
+  updates an OAuth authorization token
+```
 
 ## `heroku authorizations:update ID`
 
@@ -90,12 +94,13 @@ updates an OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:update ID
+  $ heroku authorizations:update ID [-d <value>] [--client-id <value>] [--client-secret <value>]
 
-OPTIONS
-  -d, --description=description  set a custom authorization description
-  --client-id=client-id          identifier of OAuth client to set
-  --client-secret=client-secret  secret of OAuth client to set
+FLAGS
+  -d, --description=<value>  set a custom authorization description
+  --client-id=<value>        identifier of OAuth client to set
+  --client-secret=<value>    secret of OAuth client to set
+
+DESCRIPTION
+  updates an OAuth authorization
 ```
-
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/authorizations/update.js)_
