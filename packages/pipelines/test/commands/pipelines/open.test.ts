@@ -1,5 +1,7 @@
+import {CliUx} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import cli from 'cli-ux'
+
+const cli = CliUx.ux
 
 describe('pipelines:open', () => {
   const pipeline = {id: '0123', name: 'Rigel'}

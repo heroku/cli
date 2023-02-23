@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 export default class ClientsRotate extends Command {
   static description = 'rotate OAuth client secret'
@@ -14,24 +14,24 @@ export default class ClientsRotate extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args, flags} = this.parse(ClientsRotate)
+    const {args, flags} = await this.parse(ClientsRotate)
 
-    cli.action.start(`Updating ${color.cyan(args.id)}`)
+    CliUx.ux.action.start(`Updating ${color.cyan(args.id)}`)
 
     const {body: client} = await this.heroku.post<Heroku.OAuthClient>(
       `/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`,
     )
 
-    cli.action.stop()
+    CliUx.ux.action.stop()
 
     if (flags.json) {
-      cli.styledJSON(client)
+      CliUx.ux.styledJSON(client)
     } else if (flags.shell) {
-      cli.log(`HEROKU_OAUTH_ID=${client.id}`)
-      cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      CliUx.ux.log(`HEROKU_OAUTH_ID=${client.id}`)
+      CliUx.ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
     } else {
-      cli.styledHeader(`${client.name}`)
-      cli.styledObject(client)
+      CliUx.ux.styledHeader(`${client.name}`)
+      CliUx.ux.styledObject(client)
     }
   }
 }

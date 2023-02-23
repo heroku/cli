@@ -1,9 +1,11 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {updateCoupling} from '../../api'
+
+const cli = CliUx.ux
 
 export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
@@ -24,7 +26,7 @@ export default class PipelinesUpdate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(PipelinesUpdate)
+    const {flags} = await this.parse(PipelinesUpdate)
 
     const app = flags.app
     const stage = flags.stage

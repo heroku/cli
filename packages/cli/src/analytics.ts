@@ -1,5 +1,5 @@
 import {vars} from '@heroku-cli/command'
-import * as Config from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 
@@ -8,7 +8,7 @@ import deps from './deps'
 const debug = require('debug')('heroku:analytics')
 
 export interface RecordOpts {
-  Command: Config.Command.Class;
+  Command: Interfaces.Command.Class;
   argv: string[];
 }
 
@@ -31,13 +31,13 @@ export interface AnalyticsInterface {
 }
 
 export default class AnalyticsCommand {
-  config: Config.IConfig
+  config: Interfaces.Config
 
   userConfig!: typeof deps.UserConfig.prototype
 
   http: typeof deps.HTTP
 
-  constructor(config: Config.IConfig) {
+  constructor(config: Interfaces.Config) {
     this.config = config
     this.http = deps.HTTP.create({
       headers: {'user-agent': config.userAgent},

@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../base'
 export default class WebhooksRemove extends BaseCommand {
@@ -20,13 +20,14 @@ export default class WebhooksRemove extends BaseCommand {
   ]
 
   async run() {
-    const {flags, args} = this.parse(WebhooksRemove)
+    const {flags, args} = await this.parse(WebhooksRemove)
     const {path, display} = this.webhookType(flags)
+    const action = new Spinner()
 
-    cli.action.start(`Removing webhook ${args.id} from ${display}`)
+    action.start(`Removing webhook ${args.id} from ${display}`)
 
     await this.webhooksClient.delete(`${path}/webhooks/${args.id}`)
 
-    cli.action.stop()
+    action.stop()
   }
 }

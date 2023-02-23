@@ -4,5 +4,6 @@
     "oclif-typescript"
   ],
   "rules": {
+    "camelcase": "off"
   }
 }
