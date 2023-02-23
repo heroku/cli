@@ -152,7 +152,7 @@ DESCRIPTION
   list OAuth authorizations
 ```
 
-_See code: [lib/commands/authorizations/index.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/index.js)_
+_See code: [lib/commands/authorizations/index.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/index.js)_
 
 ## `heroku authorizations:create`
 
@@ -173,7 +173,7 @@ DESCRIPTION
   create a new OAuth authorization
 ```
 
-_See code: [lib/commands/authorizations/create.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/create.js)_
+_See code: [lib/commands/authorizations/create.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/create.js)_
 
 ## `heroku authorizations:destroy [ID]`
 
@@ -205,7 +205,7 @@ DESCRIPTION
   show an existing OAuth authorization
 ```
 
-_See code: [lib/commands/authorizations/info.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/info.js)_
+_See code: [lib/commands/authorizations/info.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/info.js)_
 
 ## `heroku authorizations:revoke [ID]`
 
@@ -222,7 +222,7 @@ ALIASES
   $ heroku authorizations:destroy
 ```
 
-_See code: [lib/commands/authorizations/revoke.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/revoke.js)_
+_See code: [lib/commands/authorizations/revoke.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/revoke.js)_
 
 ## `heroku authorizations:rotate [ID]`
 
@@ -236,7 +236,7 @@ DESCRIPTION
   updates an OAuth authorization token
 ```
 
-_See code: [lib/commands/authorizations/rotate.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/rotate.js)_
+_See code: [lib/commands/authorizations/rotate.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/rotate.js)_
 
 ## `heroku authorizations:update [ID]`
 
@@ -255,7 +255,7 @@ DESCRIPTION
   updates an OAuth authorization
 ```
 
-_See code: [lib/commands/authorizations/update.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/authorizations/update.js)_
+_See code: [lib/commands/authorizations/update.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/authorizations/update.js)_
 
 ## `heroku clients`
 
@@ -272,7 +272,7 @@ DESCRIPTION
   list your OAuth clients
 ```
 
-_See code: [lib/commands/clients/index.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/index.js)_
+_See code: [lib/commands/clients/index.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/index.js)_
 
 ## `heroku clients:create [NAME] [REDIRECT_URI]`
 
@@ -290,7 +290,7 @@ DESCRIPTION
   create a new OAuth client
 ```
 
-_See code: [lib/commands/clients/create.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/create.js)_
+_See code: [lib/commands/clients/create.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/create.js)_
 
 ## `heroku clients:destroy [ID]`
 
@@ -304,7 +304,7 @@ DESCRIPTION
   delete client by ID
 ```
 
-_See code: [lib/commands/clients/destroy.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/destroy.js)_
+_See code: [lib/commands/clients/destroy.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/destroy.js)_
 
 ## `heroku clients:info [ID]`
 
@@ -322,7 +322,7 @@ DESCRIPTION
   show details of an oauth client
 ```
 
-_See code: [lib/commands/clients/info.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/info.js)_
+_See code: [lib/commands/clients/info.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/info.js)_
 
 ## `heroku clients:rotate [ID]`
 
@@ -340,7 +340,7 @@ DESCRIPTION
   rotate OAuth client secret
 ```
 
-_See code: [lib/commands/clients/rotate.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/rotate.js)_
+_See code: [lib/commands/clients/rotate.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/rotate.js)_
 
 ## `heroku clients:update [ID]`
 
@@ -358,7 +358,7 @@ DESCRIPTION
   update OAuth client
 ```
 
-_See code: [lib/commands/clients/update.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/clients/update.js)_
+_See code: [lib/commands/clients/update.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/clients/update.js)_
 
 ## `heroku sessions`
 
@@ -375,7 +375,7 @@ DESCRIPTION
   list your OAuth sessions
 ```
 
-_See code: [lib/commands/sessions/index.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/sessions/index.js)_
+_See code: [lib/commands/sessions/index.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/sessions/index.js)_
 
 ## `heroku sessions:destroy [ID]`
 
@@ -389,5 +389,5 @@ DESCRIPTION
   delete (logout) OAuth session by ID
 ```
 
-_See code: [lib/commands/sessions/destroy.js](https://github.com/heroku/cli/blob/v7.68.3/packages/oauth-v5/lib/commands/sessions/destroy.js)_
+_See code: [lib/commands/sessions/destroy.js](https://github.com/heroku/cli/blob/v7.69.0/packages/oauth-v5/lib/commands/sessions/destroy.js)_
 <!-- commandsstop -->

@@ -20,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-autocomplete
 $ heroku COMMAND
 running command...
 $ heroku (--version|-v)
-@heroku-cli/plugin-autocomplete/7.68.3 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-autocomplete/7.69.0 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -58,5 +58,5 @@ EXAMPLES
   $ heroku autocomplete --refresh-cache
 ```
 
-_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v7.68.3/packages/autocomplete/src/commands/autocomplete/index.ts)_
+_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/autocomplete/src/commands/autocomplete/index.ts)_
 <!-- commandsstop -->
