@@ -11,13 +11,11 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku teams [--json]
+  $ heroku teams
 
-FLAGS
+OPTIONS
   --json  output in json format
 
 DESCRIPTION
-  list the teams that you are a member of
-
   Use heroku members:* to manage team members.
 ```

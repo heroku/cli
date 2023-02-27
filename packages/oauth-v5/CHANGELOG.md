@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [7.69.0](https://github.com/heroku/cli/compare/v7.68.2...v7.69.0) (2023-02-27)
-
-
-### Bug Fixes
-
-* re-add authorizations:revoke to usable commands. ([a3c3134](https://github.com/heroku/cli/commit/a3c3134f10845b598f9b30062cfdeef000288afd))
-
-
-
-
-
 # [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
 
 

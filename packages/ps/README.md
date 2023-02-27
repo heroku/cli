@@ -25,17 +25,14 @@ disable web dyno autoscaling
 
 ```
 USAGE
-  $ heroku ps:autoscale:disable -a <value> [-r <value>]
+  $ heroku ps:autoscale:disable
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  disable web dyno autoscaling
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -43,21 +40,18 @@ enable web dyno autoscaling
 
 ```
 USAGE
-  $ heroku ps:autoscale:enable -a <value> --min <value> --max <value> [-r <value>] [--p95 <value>] [--notifications]
+  $ heroku ps:autoscale:enable
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --max=<value>         (required) maximum number of dynos
-  --min=<value>         (required) minimum number of dynos
-  --notifications       receive email notifications when the max dyno limit is reached
-  --p95=<value>         desired p95 response time
-
-DESCRIPTION
-  enable web dyno autoscaling
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --max=max            (required) maximum number of dynos
+  --min=min            (required) minimum number of dynos
+  --notifications      receive email notifications when the max dyno limit is reached
+  --p95=p95            desired p95 response time
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:wait`
 
@@ -65,20 +59,19 @@ wait for all dynos to be running latest version after a release
 
 ```
 USAGE
-  $ heroku ps:wait -a <value> [-r <value>] [-w <value>] [-R | -t <value>]
+  $ heroku ps:wait
 
-FLAGS
-  -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) app to run command against
-  -r, --remote=<value>         git remote of app to use
-  -t, --type=<value>           wait for one specific dyno type
-  -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)
+OPTIONS
+  -R, --with-run                     whether to wait for one-off run dynos
+  -a, --app=app                      (required) app to run command against
+  -r, --remote=remote                git remote of app to use
+  -t, --type=type                    wait for one specific dyno type
 
-DESCRIPTION
-  wait for all dynos to be running latest version after a release
+  -w, --wait-interval=wait-interval  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate
+                                     limits)
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ps/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/ps/wait.ts)_
 
 ## `heroku regions`
 
@@ -86,16 +79,13 @@ list available regions for deployment
 
 ```
 USAGE
-  $ heroku regions [--json] [--private] [--common]
+  $ heroku regions
 
-FLAGS
+OPTIONS
   --common   show regions for common runtime
   --json     output in json format
   --private  show regions for private spaces
-
-DESCRIPTION
-  list available regions for deployment
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ps/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ps/src/commands/regions.ts)_
 <!-- commandsstop -->

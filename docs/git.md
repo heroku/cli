@@ -12,17 +12,14 @@ clones a heroku app to your local machine at DIRECTORY (defaults to app name)
 
 ```
 USAGE
-  $ heroku git:clone [DIRECTORY] -a <value> [-r <value>]
+  $ heroku git:clone [DIRECTORY]
 
 ARGUMENTS
   DIRECTORY  where to clone the app
 
-FLAGS
-  -a, --app=<value>     (required) the Heroku app to use
-  -r, --remote=<value>  the git remote to create, default "heroku"
-
-DESCRIPTION
-  clones a heroku app to your local machine at DIRECTORY (defaults to app name)
+OPTIONS
+  -a, --app=app        (required) the Heroku app to use
+  -r, --remote=remote  the git remote to create, default "heroku"
 
 EXAMPLES
   $ heroku git:clone -a example
@@ -31,26 +28,29 @@ EXAMPLES
   ...
 ```
 
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.68.0/packages/git/src/commands/git/clone.ts)_
+
 ## `heroku git:remote`
 
 adds a git remote to an app repo
 
 ```
 USAGE
-  $ heroku git:remote [-a <value>] [-r <value>]
+  $ heroku git:remote
 
-FLAGS
-  -a, --app=<value>     the Heroku app to use
-  -r, --remote=<value>  the git remote to create
+OPTIONS
+  -a, --app=app        the Heroku app to use
+  -r, --remote=remote  the git remote to create
 
 DESCRIPTION
-  adds a git remote to an app repo
   extra arguments will be passed to git remote add
-
 
 EXAMPLES
   # set git remote heroku to https://git.heroku.com/example.git
       $ heroku git:remote -a example
+
       # set git remote heroku-staging to https://git.heroku.com/example.git
       $ heroku git:remote --remote heroku-staging -a example
 ```
+
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/cli/blob/v7.68.0/packages/git/src/commands/git/remote.ts)_

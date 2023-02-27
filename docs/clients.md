@@ -16,14 +16,13 @@ list your OAuth clients
 
 ```
 USAGE
-  $ heroku clients [-j]
+  $ heroku clients
 
-FLAGS
+OPTIONS
   -j, --json  output in json format
-
-DESCRIPTION
-  list your OAuth clients
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/index.js)_
 
 ## `heroku clients:create NAME REDIRECT_URI`
 
@@ -31,15 +30,14 @@ create a new OAuth client
 
 ```
 USAGE
-  $ heroku clients:create NAME REDIRECT_URI [-s] [-j]
+  $ heroku clients:create NAME REDIRECT_URI
 
-FLAGS
+OPTIONS
   -j, --json   output in json format
   -s, --shell  output in shell format
-
-DESCRIPTION
-  create a new OAuth client
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/create.js)_
 
 ## `heroku clients:destroy ID`
 
@@ -48,10 +46,9 @@ delete client by ID
 ```
 USAGE
   $ heroku clients:destroy ID
-
-DESCRIPTION
-  delete client by ID
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/destroy.js)_
 
 ## `heroku clients:info ID`
 
@@ -59,15 +56,14 @@ show details of an oauth client
 
 ```
 USAGE
-  $ heroku clients:info ID [-j] [-s]
+  $ heroku clients:info ID
 
-FLAGS
+OPTIONS
   -j, --json   output in json format
   -s, --shell  output in shell format
-
-DESCRIPTION
-  show details of an oauth client
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/info.js)_
 
 ## `heroku clients:rotate ID`
 
@@ -75,15 +71,14 @@ rotate OAuth client secret
 
 ```
 USAGE
-  $ heroku clients:rotate ID [-j] [-s]
+  $ heroku clients:rotate ID
 
-FLAGS
+OPTIONS
   -j, --json   output in json format
   -s, --shell  output in shell format
-
-DESCRIPTION
-  rotate OAuth client secret
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/rotate.js)_
 
 ## `heroku clients:update ID`
 
@@ -91,12 +86,11 @@ update OAuth client
 
 ```
 USAGE
-  $ heroku clients:update ID [-n <value>] [--url <value>]
+  $ heroku clients:update ID
 
-FLAGS
-  -n, --name=<value>  change the client name
-  --url=<value>       change the client redirect URL
-
-DESCRIPTION
-  update OAuth client
+OPTIONS
+  -n, --name=name  change the client name
+  --url=url        change the client redirect URL
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.68.0/packages/oauth-v5/lib/commands/clients/update.js)_

@@ -22,15 +22,12 @@ gets information about redis
 
 ```
 USAGE
-  $ heroku redis [DATABASE] -a <value> [--json] [-r <value>]
+  $ heroku redis [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                format output as JSON
-
-DESCRIPTION
-  gets information about redis
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:cli [DATABASE]`
@@ -39,15 +36,12 @@ opens a redis prompt
 
 ```
 USAGE
-  $ heroku redis:cli [DATABASE] -a <value> [-c <value>] [-r <value>]
+  $ heroku redis:cli [DATABASE]
 
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -c, --confirm=<value>
-  -r, --remote=<value>   git remote of app to use
-
-DESCRIPTION
-  opens a redis prompt
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -c, --confirm=confirm
+  -r, --remote=remote    git remote of app to use
 ```
 
 ## `heroku redis:credentials [DATABASE]`
@@ -56,15 +50,12 @@ display credentials information
 
 ```
 USAGE
-  $ heroku redis:credentials [DATABASE] -a <value> [--reset] [-r <value>]
+  $ heroku redis:credentials [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --reset               reset credentials
-
-DESCRIPTION
-  display credentials information
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --reset              reset credentials
 ```
 
 ## `heroku redis:info [DATABASE]`
@@ -73,15 +64,12 @@ gets information about redis
 
 ```
 USAGE
-  $ heroku redis:info [DATABASE] -a <value> [--json] [-r <value>]
+  $ heroku redis:info [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                format output as JSON
-
-DESCRIPTION
-  gets information about redis
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               format output as JSON
 ```
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
@@ -90,31 +78,30 @@ set the keyspace notifications configuration
 
 ```
 USAGE
-  $ heroku redis:keyspace-notifications [DATABASE] -c <value> -a <value> [-r <value>]
+  $ heroku redis:keyspace-notifications [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -c, --config=<value>  (required) set keyspace notifications configuration
-  -r, --remote=<value>  git remote of app to use
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -c, --config=config  (required) set keyspace notifications configuration
+  -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-  set the keyspace notifications configuration
   Set the configuration to enable keyspace notification events:
-  K     Keyspace events, published with __keyspace@<db>__ prefix.
-  E     Keyevent events, published with __keyevent@<db>__ prefix.
-  g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
-  $     String commands
-  l     List commands
-  s     Set commands
-  h     Hash commands
-  z     Sorted set commands
-  t     Stream commands
-  x     Expired events (events generated every time a key expires)
-  e     Evicted events (events generated when a key is evicted for maxmemory)
-  m     Key miss events (events generated when a key that doesn't exist is accessed)
-  A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
+      K     Keyspace events, published with __keyspace@<db>__ prefix.
+      E     Keyevent events, published with __keyevent@<db>__ prefix.
+      g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
+      $     String commands
+      l     List commands
+      s     Set commands
+      h     Hash commands
+      z     Sorted set commands
+      t     Stream commands
+      x     Expired events (events generated every time a key expires)
+      e     Evicted events (events generated when a key is evicted for maxmemory)
+      m     Key miss events (events generated when a key that doesn't exist is accessed)
+      A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
 
-  pass an empty string ('') to disable keyspace notifications
+      pass an empty string ('') to disable keyspace notifications
 ```
 
 ## `heroku redis:maintenance [DATABASE]`
@@ -123,17 +110,16 @@ manage maintenance windows
 
 ```
 USAGE
-  $ heroku redis:maintenance [DATABASE] -a <value> [-w <value>] [--run] [-f] [-r <value>]
+  $ heroku redis:maintenance [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -f, --force           start maintenance without entering application maintenance mode
-  -r, --remote=<value>  git remote of app to use
-  -w, --window=<value>  set weekly UTC maintenance window
-  --run                 start maintenance
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -f, --force          start maintenance without entering application maintenance mode
+  -r, --remote=remote  git remote of app to use
+  -w, --window=window  set weekly UTC maintenance window
+  --run                start maintenance
 
 DESCRIPTION
-  manage maintenance windows
   Set or change the maintenance window for your Redis instance
 ```
 
@@ -143,25 +129,24 @@ set the key eviction policy
 
 ```
 USAGE
-  $ heroku redis:maxmemory [DATABASE] -p <value> -a <value> [-r <value>]
+  $ heroku redis:maxmemory [DATABASE]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -p, --policy=<value>  (required) set policy name
-  -r, --remote=<value>  git remote of app to use
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -p, --policy=policy  (required) set policy name
+  -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-  set the key eviction policy
   Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 
-  noeviction      # returns errors when memory limit is reached
-  allkeys-lfu     # removes less frequently used keys first
-  volatile-lfu    # removes less frequently used keys first that have an expiry set
-  allkeys-lru     # removes less recently used keys first
-  volatile-lru    # removes less recently used keys first that have an expiry set
-  allkeys-random  # evicts random keys
-  volatile-random # evicts random keys but only those that have an expiry set
-  volatile-ttl    # only evicts keys with an expiry set and a short TTL
+      noeviction      # returns errors when memory limit is reached
+      allkeys-lfu     # removes less frequently used keys first
+      volatile-lfu    # removes less frequently used keys first that have an expiry set
+      allkeys-lru     # removes less recently used keys first
+      volatile-lru    # removes less recently used keys first that have an expiry set
+      allkeys-random  # evicts random keys
+      volatile-random # evicts random keys but only those that have an expiry set
+      volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
 ## `heroku redis:promote DATABASE`
@@ -170,14 +155,11 @@ sets DATABASE as your REDIS_URL
 
 ```
 USAGE
-  $ heroku redis:promote DATABASE -a <value> [-r <value>]
+  $ heroku redis:promote DATABASE
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  sets DATABASE as your REDIS_URL
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku redis:stats-reset [DATABASE]`
@@ -186,15 +168,12 @@ reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat
 
 ```
 USAGE
-  $ heroku redis:stats-reset [DATABASE] -a <value> [-c <value>] [-r <value>]
+  $ heroku redis:stats-reset [DATABASE]
 
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -c, --confirm=<value>
-  -r, --remote=<value>   git remote of app to use
-
-DESCRIPTION
-  reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -c, --confirm=confirm
+  -r, --remote=remote    git remote of app to use
 ```
 
 ## `heroku redis:timeout [DATABASE]`
@@ -203,17 +182,16 @@ set the number of seconds to wait before killing idle connections
 
 ```
 USAGE
-  $ heroku redis:timeout [DATABASE] -a <value> [-s <value>] [-r <value>]
+  $ heroku redis:timeout [DATABASE]
 
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -r, --remote=<value>   git remote of app to use
-  -s, --seconds=<value>  set timeout value
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -r, --remote=remote    git remote of app to use
+  -s, --seconds=seconds  set timeout value
 
 DESCRIPTION
-  set the number of seconds to wait before killing idle connections
   Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be
-  closed.
+   closed.
 ```
 
 ## `heroku redis:upgrade [DATABASE]`
@@ -222,16 +200,13 @@ perform in-place version upgrade
 
 ```
 USAGE
-  $ heroku redis:upgrade [DATABASE] -a <value> [-c <value>] [-v <value>] [-r <value>]
+  $ heroku redis:upgrade [DATABASE]
 
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -c, --confirm=<value>
-  -r, --remote=<value>   git remote of app to use
-  -v, --version=<value>
-
-DESCRIPTION
-  perform in-place version upgrade
+OPTIONS
+  -a, --app=app          (required) app to run command against
+  -c, --confirm=confirm
+  -r, --remote=remote    git remote of app to use
+  -v, --version=version
 ```
 
 ## `heroku redis:wait [DATABASE]`
@@ -240,13 +215,10 @@ wait for Redis instance to be available
 
 ```
 USAGE
-  $ heroku redis:wait [DATABASE] -a <value> [--wait-interval <value>] [-r <value>]
+  $ heroku redis:wait [DATABASE]
 
-FLAGS
-  -a, --app=<value>        (required) app to run command against
-  -r, --remote=<value>     git remote of app to use
-  --wait-interval=<value>  how frequently to poll in seconds
-
-DESCRIPTION
-  wait for Redis instance to be available
+OPTIONS
+  -a, --app=app                  (required) app to run command against
+  -r, --remote=remote            git remote of app to use
+  --wait-interval=wait-interval  how frequently to poll in seconds
 ```

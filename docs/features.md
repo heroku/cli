@@ -14,15 +14,12 @@ list available app features
 
 ```
 USAGE
-  $ heroku features -a <value> [--json] [-r <value>]
+  $ heroku features
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                output in json format
-
-DESCRIPTION
-  list available app features
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               output in json format
 ```
 
 ## `heroku features:disable FEATURE`
@@ -31,14 +28,11 @@ disables an app feature
 
 ```
 USAGE
-  $ heroku features:disable FEATURE -a <value> [-r <value>]
+  $ heroku features:disable FEATURE
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  disables an app feature
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku features:enable FEATURE`
@@ -47,14 +41,11 @@ enables an app feature
 
 ```
 USAGE
-  $ heroku features:enable FEATURE -a <value> [-r <value>]
+  $ heroku features:enable FEATURE
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  enables an app feature
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku features:info FEATURE`
@@ -63,13 +54,10 @@ display information about a feature
 
 ```
 USAGE
-  $ heroku features:info FEATURE -a <value> [--json] [-r <value>]
+  $ heroku features:info FEATURE
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                output in json format
-
-DESCRIPTION
-  display information about a feature
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               output in json format
 ```

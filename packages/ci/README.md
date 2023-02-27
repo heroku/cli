@@ -22,8 +22,8 @@ Heroku CLI plugin for Heroku CI
 $ npm install -g @heroku-cli/plugin-ci
 $ heroku COMMAND
 running command...
-$ heroku (--version|-v)
-@heroku-cli/plugin-ci/7.69.0 darwin-x64 node-v16.19.0
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-ci/7.68.0 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -44,22 +44,19 @@ display the most recent CI runs for the given pipeline
 
 ```
 USAGE
-  $ heroku ci [-a <value>] [--watch] [-p <value>] [--json]
+  $ heroku ci
 
-FLAGS
-  -a, --app=<value>       app name
-  -p, --pipeline=<value>  name of pipeline
-  --json                  output in json format
-  --watch                 keep running and watch for new and update tests
+OPTIONS
+  -a, --app=app            app name
+  -p, --pipeline=pipeline  name of pipeline
+  --json                   output in json format
+  --watch                  keep running and watch for new and update tests
 
-DESCRIPTION
-  display the most recent CI runs for the given pipeline
-
-EXAMPLES
+EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ci/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -67,21 +64,18 @@ show the status of a specific test run
 
 ```
 USAGE
-  $ heroku ci:info TEST-RUN [-a <value>] [--node <value>] [-p <value>]
+  $ heroku ci:info TEST-RUN
 
-FLAGS
-  -a, --app=<value>       app name
-  -p, --pipeline=<value>  name of pipeline
-  --node=<value>          the node number to show its setup and output
+OPTIONS
+  -a, --app=app            app name
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
 
-DESCRIPTION
-  show the status of a specific test run
-
-EXAMPLES
+EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ci/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ci/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -89,21 +83,18 @@ looks for the most recent run and returns the output of that run
 
 ```
 USAGE
-  $ heroku ci:last [-a <value>] [--node <value>] [-p <value>]
+  $ heroku ci:last
 
-FLAGS
-  -a, --app=<value>       app name
-  -p, --pipeline=<value>  name of pipeline
-  --node=<value>          the node number to show its setup and output
+OPTIONS
+  -a, --app=app            app name
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
 
-DESCRIPTION
-  looks for the most recent run and returns the output of that run
-
-EXAMPLES
+EXAMPLE
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ci/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ci/src/commands/ci/last.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -111,20 +102,17 @@ rerun tests against current directory
 
 ```
 USAGE
-  $ heroku ci:rerun [NUMBER] [-a <value>] [-p <value>]
+  $ heroku ci:rerun [NUMBER]
 
-FLAGS
-  -a, --app=<value>       app name
-  -p, --pipeline=<value>  name of pipeline
+OPTIONS
+  -a, --app=app            app name
+  -p, --pipeline=pipeline  name of pipeline
 
-DESCRIPTION
-  rerun tests against current directory
-
-EXAMPLES
+EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ci/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ci/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -132,20 +120,17 @@ run tests against current directory
 
 ```
 USAGE
-  $ heroku ci:run [-a <value>] [-p <value>]
+  $ heroku ci:run
 
-FLAGS
-  -a, --app=<value>       app name
-  -p, --pipeline=<value>  name of pipeline
+OPTIONS
+  -a, --app=app            app name
+  -p, --pipeline=pipeline  name of pipeline
 
-DESCRIPTION
-  run tests against current directory
-
-EXAMPLES
+EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.69.0/packages/ci/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/ci/src/commands/ci/run.ts)_
 <!-- commandsstop -->
 * [`heroku ci:info`](#heroku-ci-info)
 * [`heroku ci:last`](#heroku-ci-last)
