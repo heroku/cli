@@ -22,7 +22,6 @@ jobs:
 
   build-for-acceptance:
     runs-on: ${{ matrix.os }}
-    name: build-for-acceptance-${{ matrix.os }}
     strategy:
       matrix:
         node-version: [16.x]
@@ -47,7 +46,7 @@ jobs:
           path: /home/runner/work/cli/acceptance
 
   acceptance:
-#    needs: [build-for-acceptance-${{ matrix.os }}]
+    needs: [build-for-acceptance]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -68,6 +67,7 @@ jobs:
           name: prepacked-cli-${{ matrix.os }}
           path: /home/runner/work/cli/acceptance
       - run: cd /home/runner/work/cli/acceptance
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./scripts/run-acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
