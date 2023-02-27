@@ -43,7 +43,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: prepacked-cli-${{ matrix.os }}
-          path: /home/runner/work/cli/acceptance
+          path: /home/runner/work/cli/
 
   acceptance:
     needs: [build-for-acceptance]
