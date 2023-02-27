@@ -66,6 +66,7 @@
     "@types/node": "^10.12.24",
     "@types/supports-color": "^5.3.0",
     "@types/write-json-file": "^3.2.1",
+    "abortcontroller-polyfill": "~1.7.3",
     "aws-sdk": "^2.421.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
