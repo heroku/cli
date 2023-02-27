@@ -7,6 +7,7 @@ const execa = require('execa')
 // polyfill AbortController
 global.fetch = require('node-fetch');
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
+require('abortcontroller-polyfill/dist/abortcontroller-polyfill-only')
 
 const packages = glob.sync(
   path.join(__dirname, '..', 'packages/*/package.json')
