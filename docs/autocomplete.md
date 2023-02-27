@@ -11,19 +11,23 @@ display autocomplete installation instructions
 
 ```
 USAGE
-  $ heroku autocomplete [SHELL]
+  $ heroku autocomplete [SHELL] [-r]
 
 ARGUMENTS
   SHELL  shell type
 
-OPTIONS
+FLAGS
   -r, --refresh-cache  refresh cache only (ignores displaying instructions)
+
+DESCRIPTION
+  display autocomplete installation instructions
 
 EXAMPLES
   $ heroku autocomplete
+
   $ heroku autocomplete bash
+
   $ heroku autocomplete zsh
+
   $ heroku autocomplete --refresh-cache
 ```
-
-_See code: [@heroku-cli/plugin-autocomplete](https://github.com/heroku/cli/blob/v7.68.0/packages/autocomplete/src/commands/autocomplete/index.ts)_
