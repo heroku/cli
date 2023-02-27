@@ -22,7 +22,7 @@ jobs:
 
   build-for-acceptance:
     runs-on: ${{ matrix.os }}
-#    name: build-for-acceptance-${{ matrix.os }}
+    name: build-for-acceptance-${{ matrix.os }}
     strategy:
       matrix:
         node-version: [16.x]
@@ -41,13 +41,13 @@ jobs:
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: Build packages
         run: yarn lerna run prepack
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: prepacked-cli-${{ matrix.os }}
-#          path: /home/runner/work/cli/acceptance
+      - uses: actions/upload-artifact@v3
+        with:
+          name: prepacked-cli-${{ matrix.os }}
+          path: /home/runner/work/cli/acceptance
 
   acceptance:
-    needs: [build-for-acceptance-${{ matrix.os }}]
+#    needs: [build-for-acceptance-${{ matrix.os }}]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
