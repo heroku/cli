@@ -30,6 +30,7 @@ jobs:
     env:
       RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    name: build-for-acceptance-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -46,8 +47,8 @@ jobs:
           path: /home/runner/work/cli/acceptance
 
   acceptance:
-    needs: [build-for-acceptance]
     runs-on: ${{ matrix.os }}
+    needs: [build-for-acceptance-${{ matrix.os }}]
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
