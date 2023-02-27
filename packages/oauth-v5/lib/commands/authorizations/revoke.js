@@ -13,7 +13,7 @@ async function run(context, heroku) {
 module.exports = {
   topic: 'authorizations',
   command: 'revoke',
-  aliases: ['authorizations:destroy'],
+  aliases: ['authorizations:destroy', 'authorizations:revoke'],
   description: 'revoke OAuth authorization',
   needsAuth: true,
   args: [{name: 'id'}],
