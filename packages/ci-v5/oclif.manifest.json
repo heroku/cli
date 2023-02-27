@@ -1,0 +1,243 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "ci:config:get": {
+      "id": "ci:config:get",
+      "description": "get a CI config var\nExamples:\n\n    $ heroku ci:config:get RAILS_ENV\n    test\n",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output config var in shell format",
+          "required": false,
+          "allowNo": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "key",
+          "required": true
+        }
+      ]
+    },
+    "ci:config": {
+      "id": "ci:config",
+      "description": "display CI config vars\nExample:\n\n    $ heroku ci:config --app murmuring-headland-14719 --json",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output config vars in shell format",
+          "required": false,
+          "allowNo": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output config vars in json format",
+          "required": false,
+          "allowNo": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "ci:config:set": {
+      "id": "ci:config:set",
+      "description": "set CI config vars\nExamples:\n\n    $ heroku ci:config:set RAILS_ENV=test\n    Setting test config vars... done\n\n    RAILS_ENV: test\n",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "ci:config:unset": {
+      "id": "ci:config:unset",
+      "description": "unset CI config vars\nExamples:\n\n    $ heroku ci:config:uset RAILS_ENV\n    Unsetting RAILS_ENV... done\n",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "ci:debug": {
+      "id": "ci:debug",
+      "description": "opens an interactive test debugging session with the contents of the current directory\nExample:\n\n    $ heroku ci:debug\n    Preparing source... done\n    Creating test run... done\n    Running setup and attaching to test dyno...\n\n~ $\n",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "no-setup": {
+          "name": "no-setup",
+          "type": "boolean",
+          "description": "start test dyno without running test-setup",
+          "required": false,
+          "allowNo": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "no-cache": {
+          "name": "no-cache",
+          "type": "boolean",
+          "description": "start test run with an empty cache",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "ci:migrate-manifest": {
+      "id": "ci:migrate-manifest",
+      "description": "app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.\nExample:\n\n    $ heroku ci:migrate-manifest\n    Writing app.json file... done\n    Deleting app-ci.json file... done\n    Please check the contents of your app.json before committing to your repo\n    You're all set! 🎉.",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {},
+      "args": []
+    },
+    "ci:open": {
+      "id": "ci:open",
+      "description": "open the Dashboard version of Heroku CI\nopens a browser to view the Dashboard version of Heroku CI\n\n    Example:\n\n    $ heroku ci:open --app murmuring-headland-14719",
+      "pluginName": "@heroku-cli/plugin-ci-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "status": {
+      "id": "status",
+      "description": "display current status of the Heroku platform",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-status",
+      "pluginAlias": "@heroku-cli/plugin-status",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    }
+  }
+}

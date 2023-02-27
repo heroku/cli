@@ -1,0 +1,447 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "redis": {
+      "id": "redis",
+      "description": "gets information about redis\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "format output as JSON",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:cli": {
+      "id": "redis:cli",
+      "description": "opens a redis prompt\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:info": {
+      "id": "redis:info",
+      "description": "gets information about redis\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "format output as JSON",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:wait": {
+      "id": "redis:wait",
+      "description": "wait for Redis instance to be available\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "wait-interval": {
+          "name": "wait-interval",
+          "type": "option",
+          "description": "how frequently to poll in seconds",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:credentials": {
+      "id": "redis:credentials",
+      "description": "display credentials information\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "reset": {
+          "name": "reset",
+          "type": "boolean",
+          "description": "reset credentials",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:promote": {
+      "id": "redis:promote",
+      "description": "sets DATABASE as your REDIS_URL\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": true
+        }
+      ]
+    },
+    "redis:timeout": {
+      "id": "redis:timeout",
+      "description": "set the number of seconds to wait before killing idle connections\nSets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be closed.",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "seconds": {
+          "name": "seconds",
+          "type": "option",
+          "char": "s",
+          "description": "set timeout value",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:maxmemory": {
+      "id": "redis:maxmemory",
+      "description": "set the key eviction policy\nSet the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:\n\n    noeviction      # returns errors when memory limit is reached\n    allkeys-lfu     # removes less frequently used keys first\n    volatile-lfu    # removes less frequently used keys first that have an expiry set\n    allkeys-lru     # removes less recently used keys first\n    volatile-lru    # removes less recently used keys first that have an expiry set\n    allkeys-random  # evicts random keys\n    volatile-random # evicts random keys but only those that have an expiry set\n    volatile-ttl    # only evicts keys with an expiry set and a short TTL\n  ",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "policy": {
+          "name": "policy",
+          "type": "option",
+          "char": "p",
+          "description": "set policy name",
+          "required": true
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:maintenance": {
+      "id": "redis:maintenance",
+      "description": "manage maintenance windows\nSet or change the maintenance window for your Redis instance",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "window": {
+          "name": "window",
+          "type": "option",
+          "char": "w",
+          "description": "set weekly UTC maintenance window",
+          "required": false
+        },
+        "run": {
+          "name": "run",
+          "type": "boolean",
+          "description": "start maintenance",
+          "required": false,
+          "allowNo": false
+        },
+        "force": {
+          "name": "force",
+          "type": "boolean",
+          "char": "f",
+          "description": "start maintenance without entering application maintenance mode",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:keyspace-notifications": {
+      "id": "redis:keyspace-notifications",
+      "description": "set the keyspace notifications configuration\nSet the configuration to enable keyspace notification events:\n    K     Keyspace events, published with __keyspace@<db>__ prefix.\n    E     Keyevent events, published with __keyevent@<db>__ prefix.\n    g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...\n    $     String commands\n    l     List commands\n    s     Set commands\n    h     Hash commands\n    z     Sorted set commands\n    t     Stream commands\n    x     Expired events (events generated every time a key expires)\n    e     Evicted events (events generated when a key is evicted for maxmemory)\n    m     Key miss events (events generated when a key that doesn't exist is accessed)\n    A     Alias for \"g$lshztxe\", so that the \"AKE\" string means all the events except \"m\".\n\n    pass an empty string ('') to disable keyspace notifications\n  ",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "config": {
+          "name": "config",
+          "type": "option",
+          "char": "c",
+          "description": "set keyspace notifications configuration",
+          "required": true
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:stats-reset": {
+      "id": "redis:stats-reset",
+      "description": "reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    },
+    "redis:upgrade": {
+      "id": "redis:upgrade",
+      "description": "perform in-place version upgrade\n",
+      "pluginName": "@heroku-cli/plugin-redis-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "required": false
+        },
+        "version": {
+          "name": "version",
+          "type": "option",
+          "char": "v",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "database",
+          "required": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,596 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "addons": {
+      "id": "addons",
+      "description": "lists your add-ons and attachments\nThe default filter applied depends on whether you are in a Heroku app\ndirectory. If so, the --app flag is implied. If not, the default of --all\nis implied. Explicitly providing either flag overrides the default\nbehavior.",
+      "usage": "addons [--all|--app APP]",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "examples": [
+        "$ heroku addons --all",
+        "$ heroku addons --app acme-inc-www"
+      ],
+      "flags": {
+        "all": {
+          "name": "all",
+          "type": "boolean",
+          "char": "A",
+          "description": "show add-ons and attachments for all accessible apps",
+          "required": false,
+          "allowNo": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "return add-ons in json format",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "addons:attach": {
+      "id": "addons:attach",
+      "description": "attach an existing add-on resource to an app\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "as": {
+          "name": "as",
+          "type": "option",
+          "description": "name for add-on attachment",
+          "required": false
+        },
+        "credential": {
+          "name": "credential",
+          "type": "option",
+          "description": "credential name for scoped access to Heroku Postgres",
+          "required": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "description": "overwrite existing add-on attachment with same name",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon_name",
+          "required": true
+        }
+      ]
+    },
+    "addons:create": {
+      "id": "addons:create",
+      "description": "create a new add-on resource\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "name": {
+          "name": "name",
+          "type": "option",
+          "description": "name for the add-on resource",
+          "required": false
+        },
+        "as": {
+          "name": "as",
+          "type": "option",
+          "description": "name for the initial add-on attachment",
+          "required": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "description": "overwrite existing config vars or existing add-on attachments",
+          "required": false
+        },
+        "wait": {
+          "name": "wait",
+          "type": "boolean",
+          "description": "watch add-on creation status and exit when complete",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "service:plan",
+          "required": true
+        }
+      ]
+    },
+    "addons:add": {
+      "id": "addons:add",
+      "description": "create a new add-on resource\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {
+        "name": {
+          "name": "name",
+          "type": "option",
+          "description": "name for the add-on resource",
+          "required": false
+        },
+        "as": {
+          "name": "as",
+          "type": "option",
+          "description": "name for the initial add-on attachment",
+          "required": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "description": "overwrite existing config vars or existing add-on attachments",
+          "required": false
+        },
+        "wait": {
+          "name": "wait",
+          "type": "boolean",
+          "description": "watch add-on creation status and exit when complete",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "service:plan",
+          "required": true
+        }
+      ]
+    },
+    "addons:destroy": {
+      "id": "addons:destroy",
+      "description": "permanently destroy an add-on resource\n",
+      "usage": "addons:destroy [ADDON]... [flags]",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "force": {
+          "name": "force",
+          "type": "boolean",
+          "char": "f",
+          "description": "allow destruction even if connected to other apps",
+          "required": false,
+          "allowNo": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "addons:remove": {
+      "id": "addons:remove",
+      "description": "permanently destroy an add-on resource\n",
+      "usage": "addons:destroy [ADDON]... [flags]",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {
+        "force": {
+          "name": "force",
+          "type": "boolean",
+          "char": "f",
+          "description": "allow destruction even if connected to other apps",
+          "required": false,
+          "allowNo": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": []
+    },
+    "addons:detach": {
+      "id": "addons:detach",
+      "description": "detach an existing add-on resource from an app\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "attachment_name",
+          "required": true
+        }
+      ]
+    },
+    "addons:docs": {
+      "id": "addons:docs",
+      "description": "open an add-on's Dev Center documentation in your browser\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "show-url": {
+          "name": "show-url",
+          "type": "boolean",
+          "description": "show URL, do not open browser",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        }
+      ]
+    },
+    "addons:info": {
+      "id": "addons:info",
+      "description": "show detailed add-on resource and attachment information\n",
+      "usage": "addons:info ADDON",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        }
+      ]
+    },
+    "addons:open": {
+      "id": "addons:open",
+      "description": "open an add-on's dashboard in your browser\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "show-url": {
+          "name": "show-url",
+          "type": "boolean",
+          "description": "show URL, do not open browser",
+          "required": false,
+          "allowNo": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        }
+      ]
+    },
+    "addons:plans": {
+      "id": "addons:plans",
+      "description": "list all available plans for an add-on services\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format",
+          "required": false,
+          "allowNo": false
+        }
+      },
+      "args": [
+        {
+          "name": "service",
+          "required": true
+        }
+      ]
+    },
+    "addons:rename": {
+      "id": "addons:rename",
+      "description": "rename an add-on\n",
+      "usage": "addons:rename ADDON NEW_NAME",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        },
+        {
+          "name": "name",
+          "required": true
+        }
+      ]
+    },
+    "addons:services": {
+      "id": "addons:services",
+      "description": "list all available add-on services\n",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format",
+          "required": false,
+          "allowNo": false
+        }
+      },
+      "args": []
+    },
+    "addons:upgrade": {
+      "id": "addons:upgrade",
+      "description": "change add-on plan\nSee available plans with `heroku addons:plans SERVICE`.\n\nNote that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.\nEither one can be used to change an add-on plan up or down.\n\nhttps://devcenter.heroku.com/articles/managing-add-ons",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "examples": [
+        "Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        },
+        {
+          "name": "plan",
+          "required": false
+        }
+      ]
+    },
+    "addons:downgrade": {
+      "id": "addons:downgrade",
+      "description": "change add-on plan\nSee available plans with `heroku addons:plans SERVICE`.\n\nNote that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.\nEither one can be used to change an add-on plan up or down.\n\nhttps://devcenter.heroku.com/articles/managing-add-ons",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "examples": [
+        "Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": true
+        },
+        {
+          "name": "plan",
+          "required": false
+        }
+      ]
+    },
+    "addons:wait": {
+      "id": "addons:wait",
+      "description": "show provisioning status of the add-ons on the app\n",
+      "usage": "addons:wait ADDON",
+      "pluginName": "@heroku-cli/plugin-addons-v5",
+      "pluginType": "core",
+      "hidden": false,
+      "aliases": [],
+      "flags": {
+        "wait-interval": {
+          "name": "wait-interval",
+          "type": "option",
+          "description": "how frequently to poll in seconds",
+          "required": false
+        },
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use"
+        }
+      },
+      "args": [
+        {
+          "name": "addon",
+          "required": false
+        }
+      ]
+    }
+  }
+}

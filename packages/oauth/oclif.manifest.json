@@ -1,0 +1,384 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "authorizations:create": {
+      "id": "authorizations:create",
+      "description": "create a new OAuth authorization",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku authorizations:create --description \"For use with Anvil\""
+      ],
+      "flags": {
+        "description": {
+          "name": "description",
+          "type": "option",
+          "char": "d",
+          "description": "set a custom authorization",
+          "multiple": false
+        },
+        "short": {
+          "name": "short",
+          "type": "boolean",
+          "char": "S",
+          "description": "only output token",
+          "allowNo": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "option",
+          "char": "s",
+          "description": "set custom OAuth scopes",
+          "multiple": false
+        },
+        "expires-in": {
+          "name": "expires-in",
+          "type": "option",
+          "char": "e",
+          "description": "set expiration in seconds (default no expiration)",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "authorizations": {
+      "id": "authorizations",
+      "description": "list OAuth authorizations",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku authorizations"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    },
+    "authorizations:info": {
+      "id": "authorizations:info",
+      "description": "show an existing OAuth authorization",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "authorizations:revoke": {
+      "id": "authorizations:revoke",
+      "description": "revoke OAuth authorization",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb"
+      ],
+      "flags": {},
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "authorizations:rotate": {
+      "id": "authorizations:rotate",
+      "description": "updates an OAuth authorization token",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "authorizations:update": {
+      "id": "authorizations:update",
+      "description": "updates an OAuth authorization",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "description": {
+          "name": "description",
+          "type": "option",
+          "char": "d",
+          "description": "set a custom authorization description",
+          "multiple": false
+        },
+        "client-id": {
+          "name": "client-id",
+          "type": "option",
+          "description": "identifier of OAuth client to set",
+          "multiple": false,
+          "dependsOn": [
+            "client-secret"
+          ]
+        },
+        "client-secret": {
+          "name": "client-secret",
+          "type": "option",
+          "description": "secret of OAuth client to set",
+          "multiple": false,
+          "dependsOn": [
+            "client-id"
+          ]
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "clients:create": {
+      "id": "clients:create",
+      "description": "create a new OAuth client",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku clients:create \"Amazing\" https://amazing-client.herokuapp.com/auth/heroku/callback"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output in shell format",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "name": {
+          "name": "name",
+          "required": true
+        },
+        "redirect_uri": {
+          "name": "redirect_uri",
+          "required": true
+        }
+      }
+    },
+    "clients:destroy": {
+      "id": "clients:destroy",
+      "description": "delete client by ID",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "clients": {
+      "id": "clients",
+      "description": "list your OAuth clients",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    },
+    "clients:info": {
+      "id": "clients:info",
+      "description": "show details of an oauth client",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output in shell format",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "clients:rotate": {
+      "id": "clients:rotate",
+      "description": "rotate OAuth client secret",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output in shell format",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "clients:update": {
+      "id": "clients:update",
+      "description": "update OAuth client",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback"
+      ],
+      "flags": {
+        "name": {
+          "name": "name",
+          "type": "option",
+          "char": "n",
+          "description": "change the client name",
+          "multiple": false
+        },
+        "url": {
+          "name": "url",
+          "type": "option",
+          "description": "change the client redirect URL",
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "sessions:destroy": {
+      "id": "sessions:destroy",
+      "description": "delete (logout) OAuth session by ID",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "sessions": {
+      "id": "sessions",
+      "description": "list your OAuth sessions",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-oauth",
+      "pluginAlias": "@heroku-cli/plugin-oauth",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    }
+  }
+}

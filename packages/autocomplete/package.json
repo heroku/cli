@@ -35,7 +35,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=14"
   },
   "files": [
     "/oclif.manifest.json",

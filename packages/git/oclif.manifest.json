@@ -1,0 +1,84 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "git:clone": {
+      "id": "git:clone",
+      "description": "clones a heroku app to your local machine at DIRECTORY (defaults to app name)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-git",
+      "pluginAlias": "@heroku-cli/plugin-git",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": "$ heroku git:clone -a example\nCloning into 'example'...\nremote: Counting objects: 42, done.\n...",
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "the Heroku app to use",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "the git remote to create, default \"heroku\"",
+          "multiple": false
+        }
+      },
+      "args": {
+        "DIRECTORY": {
+          "name": "DIRECTORY",
+          "description": "where to clone the app"
+        }
+      },
+      "example": "$ heroku git:clone -a example\nCloning into 'example'...\nremote: Counting objects: 42, done.\n..."
+    },
+    "git:credentials": {
+      "id": "git:credentials",
+      "description": "internal command for git-credentials",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-git",
+      "pluginAlias": "@heroku-cli/plugin-git",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "command": {
+          "name": "command",
+          "required": true
+        }
+      }
+    },
+    "git:remote": {
+      "id": "git:remote",
+      "description": "adds a git remote to an app repo\nextra arguments will be passed to git remote add\n",
+      "strict": false,
+      "pluginName": "@heroku-cli/plugin-git",
+      "pluginAlias": "@heroku-cli/plugin-git",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": "# set git remote heroku to https://git.heroku.com/example.git\n    $ heroku git:remote -a example\n\n    # set git remote heroku-staging to https://git.heroku.com/example.git\n    $ heroku git:remote --remote heroku-staging -a example",
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "the Heroku app to use",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "the git remote to create",
+          "multiple": false
+        }
+      },
+      "args": {},
+      "example": "# set git remote heroku to https://git.heroku.com/example.git\n    $ heroku git:remote -a example\n\n    # set git remote heroku-staging to https://git.heroku.com/example.git\n    $ heroku git:remote --remote heroku-staging -a example"
+    }
+  }
+}

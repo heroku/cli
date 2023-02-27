@@ -1,0 +1,246 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "buildpacks:add": {
+      "id": "buildpacks:add",
+      "description": "add new app buildpack, inserting into list of buildpacks if necessary",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "index": {
+          "name": "index",
+          "type": "option",
+          "char": "i",
+          "description": "the 1-based index of the URL in the list of URLs",
+          "multiple": false
+        }
+      },
+      "args": {
+        "buildpack": {
+          "name": "buildpack",
+          "description": "namespace/name of the buildpack",
+          "required": true
+        }
+      }
+    },
+    "buildpacks:clear": {
+      "id": "buildpacks:clear",
+      "description": "clear all buildpacks set on the app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "buildpacks": {
+      "id": "buildpacks",
+      "description": "display the buildpacks for an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "buildpacks:info": {
+      "id": "buildpacks:info",
+      "description": "fetch info about a buildpack",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "buildpack": {
+          "name": "buildpack",
+          "description": "namespace/name of the buildpack",
+          "required": true
+        }
+      }
+    },
+    "buildpacks:remove": {
+      "id": "buildpacks:remove",
+      "description": "remove a buildpack set on the app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "index": {
+          "name": "index",
+          "type": "option",
+          "char": "i",
+          "description": "the 1-based index of the URL to remove from the list of URLs",
+          "multiple": false
+        }
+      },
+      "args": {
+        "buildpack": {
+          "name": "buildpack",
+          "description": "namespace/name of the buildpack"
+        }
+      }
+    },
+    "buildpacks:search": {
+      "id": "buildpacks:search",
+      "description": "search for buildpacks",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "namespace": {
+          "name": "namespace",
+          "type": "option",
+          "description": "buildpack namespaces to filter on using a comma separated list",
+          "multiple": false
+        },
+        "name": {
+          "name": "name",
+          "type": "option",
+          "description": "buildpack names to filter on using a comma separated list ",
+          "multiple": false
+        },
+        "description": {
+          "name": "description",
+          "type": "option",
+          "description": "buildpack description to filter on",
+          "multiple": false
+        }
+      },
+      "args": {
+        "term": {
+          "name": "term",
+          "description": "search term that searches across name, namespace, and description"
+        }
+      }
+    },
+    "buildpacks:set": {
+      "id": "buildpacks:set",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "index": {
+          "name": "index",
+          "type": "option",
+          "char": "i",
+          "description": "the 1-based index of the URL in the list of URLs",
+          "multiple": false
+        }
+      },
+      "args": {
+        "buildpack": {
+          "name": "buildpack",
+          "description": "namespace/name of the buildpack",
+          "required": true
+        }
+      }
+    },
+    "buildpacks:versions": {
+      "id": "buildpacks:versions",
+      "description": "list versions of a buildpack",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-buildpacks",
+      "pluginAlias": "@heroku-cli/plugin-buildpacks",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "buildpack": {
+          "name": "buildpack",
+          "description": "namespace/name of the buildpack",
+          "required": true
+        }
+      }
+    }
+  }
+}

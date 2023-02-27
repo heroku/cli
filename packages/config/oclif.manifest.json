@@ -1,0 +1,159 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "config:edit": {
+      "id": "config:edit",
+      "description": "interactively edit config vars\nThis command opens the app config in a text editor set by $VISUAL or $EDITOR.\nAny variables added/removed/changed will be updated on the app after saving and closing the file.",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-config",
+      "pluginAlias": "@heroku-cli/plugin-config",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "# edit with vim\n$ EDITOR=\"vim\" heroku config:edit",
+        "# edit with emacs\n$ EDITOR=\"emacs\" heroku config:edit",
+        "# edit with pico\n$ EDITOR=\"pico\" heroku config:edit",
+        "# edit with atom editor\n$ VISUAL=\"atom --wait\" heroku config:edit"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {
+        "key": {
+          "name": "key",
+          "description": "edit a single key"
+        }
+      }
+    },
+    "config:get": {
+      "id": "config:get",
+      "description": "display a single config value for an app",
+      "strict": false,
+      "usage": "config:get KEY...",
+      "pluginName": "@heroku-cli/plugin-config",
+      "pluginAlias": "@heroku-cli/plugin-config",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": "$ heroku config:get RAILS_ENV\nproduction",
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output config vars in shell format",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "KEY": {
+          "name": "KEY",
+          "required": true
+        }
+      },
+      "example": "$ heroku config:get RAILS_ENV\nproduction"
+    },
+    "config": {
+      "id": "config",
+      "description": "display the config vars for an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-config",
+      "pluginAlias": "@heroku-cli/plugin-config",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "shell": {
+          "name": "shell",
+          "type": "boolean",
+          "char": "s",
+          "description": "output config vars in shell format",
+          "allowNo": false
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "char": "j",
+          "description": "output config vars in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    },
+    "config:unset": {
+      "id": "config:unset",
+      "description": "unset one or more config vars",
+      "strict": false,
+      "pluginName": "@heroku-cli/plugin-config",
+      "pluginAlias": "@heroku-cli/plugin-config",
+      "pluginType": "core",
+      "aliases": [
+        "config:remove"
+      ],
+      "examples": [
+        "$ heroku config:unset RAILS_ENV\nUnsetting RAILS_ENV and restarting example... done, v10",
+        "$ heroku config:unset RAILS_ENV RACK_ENV\nUnsetting RAILS_ENV, RACK_ENV and restarting example... done, v10"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    }
+  }
+}

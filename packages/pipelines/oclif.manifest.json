@@ -1,0 +1,590 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "pipelines:add": {
+      "id": "pipelines:add",
+      "description": "add this app to a pipeline\nThe app and pipeline names must be specified.\nThe stage of the app will be guessed based on its name if not specified.",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:add my-pipeline -a my-app -s production"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "stage": {
+          "name": "stage",
+          "type": "option",
+          "char": "s",
+          "description": "stage of first app in pipeline",
+          "multiple": false
+        }
+      },
+      "args": {
+        "pipeline": {
+          "name": "pipeline",
+          "description": "name of pipeline",
+          "required": true
+        }
+      }
+    },
+    "pipelines:connect": {
+      "id": "pipelines:connect",
+      "description": "connect a github repo to an existing pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:connect my-pipeline -r githuborg/reponame"
+      ],
+      "flags": {
+        "repo": {
+          "name": "repo",
+          "type": "option",
+          "char": "r",
+          "description": "the GitHub repository to connect to",
+          "required": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "name": {
+          "name": "name",
+          "description": "name of pipeline",
+          "required": true
+        }
+      }
+    },
+    "pipelines:create": {
+      "id": "pipelines:create",
+      "description": "create a new pipeline\n  An existing app must be specified as the first app in the pipeline.\n  The pipeline name will be inferred from the app name if not specified.\n  The stage of the app will be guessed based on its name if not specified.\n  The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:create -a my-app-staging",
+        "$ heroku pipelines:create my-pipeline -a my-app-staging"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "stage": {
+          "name": "stage",
+          "type": "option",
+          "char": "s",
+          "description": "stage of first app in pipeline",
+          "multiple": false
+        },
+        "team": {
+          "name": "team",
+          "type": "option",
+          "char": "t",
+          "description": "the team which will own the apps",
+          "multiple": false
+        }
+      },
+      "args": {
+        "name": {
+          "name": "name",
+          "description": "name of pipeline (defaults to basename of the app)",
+          "required": false
+        }
+      }
+    },
+    "pipelines:destroy": {
+      "id": "pipelines:destroy",
+      "description": "destroy a pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:destroy my-pipeline"
+      ],
+      "flags": {},
+      "args": {
+        "pipeline": {
+          "name": "pipeline",
+          "description": "name of pipeline",
+          "required": true
+        }
+      }
+    },
+    "pipelines:diff": {
+      "id": "pipelines:diff",
+      "description": "compares the latest release of this app to its downstream app(s)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:diff -a my-app-staging"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "pipelines": {
+      "id": "pipelines",
+      "description": "list pipelines you have access to",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    },
+    "pipelines:info": {
+      "id": "pipelines:info",
+      "description": "show list of apps in a pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:info my-pipeline"
+      ],
+      "flags": {
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format",
+          "allowNo": false
+        },
+        "with-owners": {
+          "name": "with-owners",
+          "type": "boolean",
+          "description": "shows owner of every app",
+          "hidden": true,
+          "allowNo": false
+        }
+      },
+      "args": {
+        "pipeline": {
+          "name": "pipeline",
+          "description": "pipeline to show list of apps for",
+          "required": true
+        }
+      }
+    },
+    "pipelines:open": {
+      "id": "pipelines:open",
+      "description": "open a pipeline in dashboard",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:open my-pipeline"
+      ],
+      "flags": {},
+      "args": {
+        "pipeline": {
+          "name": "pipeline",
+          "description": "name of pipeline",
+          "required": true
+        }
+      }
+    },
+    "pipelines:promote": {
+      "id": "pipelines:promote",
+      "description": "promote the latest release of this app to its downstream app(s)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:promote -a my-app-staging"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "to": {
+          "name": "to",
+          "type": "option",
+          "char": "t",
+          "description": "comma separated list of apps to promote to",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "pipelines:remove": {
+      "id": "pipelines:remove",
+      "description": "remove this app from its pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:remove -a my-app"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "pipelines:rename": {
+      "id": "pipelines:rename",
+      "description": "rename a pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:rename my-pipeline new-pipeline-name"
+      ],
+      "flags": {},
+      "args": {
+        "pipeline": {
+          "name": "pipeline",
+          "description": "current name of pipeline",
+          "required": true
+        },
+        "name": {
+          "name": "name",
+          "description": "new name of pipeline",
+          "required": true
+        }
+      }
+    },
+    "pipelines:setup": {
+      "id": "pipelines:setup",
+      "description": "bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team"
+      ],
+      "flags": {
+        "team": {
+          "name": "team",
+          "type": "option",
+          "char": "t",
+          "description": "the team to assign pipeline ownership to (defaults to current user)",
+          "multiple": false
+        },
+        "yes": {
+          "name": "yes",
+          "type": "boolean",
+          "char": "y",
+          "description": "accept all default settings without prompting",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "name": {
+          "name": "name",
+          "description": "name of pipeline",
+          "required": false
+        },
+        "repo": {
+          "name": "repo",
+          "description": "a GitHub repository to connect the pipeline to",
+          "required": false
+        }
+      }
+    },
+    "pipelines:transfer": {
+      "id": "pipelines:transfer",
+      "description": "transfer ownership of a pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:transfer admin@example.com -p my-pipeline",
+        "$ heroku pipelines:transfer admin-team -p my-pipeline"
+      ],
+      "flags": {
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "name of pipeline",
+          "required": true,
+          "multiple": false
+        },
+        "confirm": {
+          "name": "confirm",
+          "type": "option",
+          "char": "c",
+          "multiple": false
+        }
+      },
+      "args": {
+        "owner": {
+          "name": "owner",
+          "description": "the owner to transfer the pipeline to",
+          "required": true
+        }
+      }
+    },
+    "pipelines:update": {
+      "id": "pipelines:update",
+      "description": "update the app's stage in a pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku pipelines:update -s staging -a my-app"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "required": true,
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "stage": {
+          "name": "stage",
+          "type": "option",
+          "char": "s",
+          "description": "new stage of app",
+          "required": true,
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "reviewapps:disable": {
+      "id": "reviewapps:disable",
+      "description": "disable review apps and/or settings on an existing pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "parent app used by review apps",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "name of pipeline",
+          "required": true,
+          "multiple": false
+        },
+        "autodeploy": {
+          "name": "autodeploy",
+          "type": "boolean",
+          "description": "disable autodeployments",
+          "hidden": true,
+          "allowNo": false
+        },
+        "autodestroy": {
+          "name": "autodestroy",
+          "type": "boolean",
+          "description": "disable automatically destroying review apps",
+          "hidden": true,
+          "allowNo": false
+        },
+        "wait-for-ci": {
+          "name": "wait-for-ci",
+          "type": "boolean",
+          "description": "disable wait for CI",
+          "hidden": true,
+          "allowNo": false
+        },
+        "no-autodeploy": {
+          "name": "no-autodeploy",
+          "type": "boolean",
+          "description": "disable autodeployments",
+          "allowNo": false
+        },
+        "no-autodestroy": {
+          "name": "no-autodestroy",
+          "type": "boolean",
+          "description": "disable automatically destroying review apps",
+          "allowNo": false
+        },
+        "no-wait-for-ci": {
+          "name": "no-wait-for-ci",
+          "type": "boolean",
+          "description": "disable wait for CI",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    },
+    "reviewapps:enable": {
+      "id": "reviewapps:enable",
+      "description": "enable review apps and/or settings on an existing pipeline",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-pipelines",
+      "pluginAlias": "@heroku-cli/plugin-pipelines",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "parent app used by review apps",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "name of pipeline",
+          "required": true,
+          "multiple": false
+        },
+        "autodeploy": {
+          "name": "autodeploy",
+          "type": "boolean",
+          "description": "autodeploy the review app",
+          "allowNo": false
+        },
+        "autodestroy": {
+          "name": "autodestroy",
+          "type": "boolean",
+          "description": "autodestroy the review app",
+          "allowNo": false
+        },
+        "wait-for-ci": {
+          "name": "wait-for-ci",
+          "type": "boolean",
+          "description": "wait for CI to pass before deploying",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    }
+  }
+}

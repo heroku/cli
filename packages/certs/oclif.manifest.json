@@ -1,0 +1,25 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "certs:auto:wait": {
+      "id": "certs:auto:wait",
+      "description": "waits for the certificate to be activated",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-certs",
+      "pluginAlias": "@heroku-cli/plugin-certs",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {
+        "help": {
+          "name": "help",
+          "type": "boolean",
+          "char": "h",
+          "description": "Show CLI help.",
+          "allowNo": false
+        }
+      },
+      "args": {}
+    }
+  }
+}

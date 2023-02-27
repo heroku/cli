@@ -1,0 +1,117 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "autocomplete:create": {
+      "id": "autocomplete:create",
+      "description": "create autocomplete setup scripts and completion functions",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginAlias": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {},
+      "args": {}
+    },
+    "autocomplete:doctor": {
+      "id": "autocomplete:doctor",
+      "description": "autocomplete diagnostic",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginAlias": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {
+        "verbose": {
+          "name": "verbose",
+          "type": "boolean",
+          "description": "list completable commands",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "shell": {
+          "name": "shell",
+          "description": "shell type",
+          "required": false
+        }
+      }
+    },
+    "autocomplete": {
+      "id": "autocomplete",
+      "description": "display autocomplete installation instructions",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginAlias": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku autocomplete",
+        "$ heroku autocomplete bash",
+        "$ heroku autocomplete zsh",
+        "$ heroku autocomplete --refresh-cache"
+      ],
+      "flags": {
+        "refresh-cache": {
+          "name": "refresh-cache",
+          "type": "boolean",
+          "char": "r",
+          "description": "refresh cache only (ignores displaying instructions)",
+          "allowNo": false
+        }
+      },
+      "args": {
+        "shell": {
+          "name": "shell",
+          "description": "shell type",
+          "required": false
+        }
+      }
+    },
+    "autocomplete:options": {
+      "id": "autocomplete:options",
+      "description": "display arg or flag completion options (used internally by completion functions)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginAlias": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "hidden": true,
+          "required": false,
+          "multiple": false
+        }
+      },
+      "args": {
+        "completion": {
+          "name": "completion"
+        }
+      }
+    },
+    "autocomplete:script": {
+      "id": "autocomplete:script",
+      "description": "display autocomplete setup script for shell",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginAlias": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "hidden": true,
+      "aliases": [],
+      "flags": {},
+      "args": {
+        "shell": {
+          "name": "shell",
+          "description": "shell type",
+          "required": true
+        }
+      }
+    }
+  }
+}

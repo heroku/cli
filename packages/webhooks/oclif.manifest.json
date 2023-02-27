@@ -1,0 +1,450 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "webhooks:add": {
+      "id": "webhooks:add",
+      "description": "add a webhook to an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        },
+        "include": {
+          "name": "include",
+          "type": "option",
+          "char": "i",
+          "description": "comma delimited event types your server will receive ",
+          "required": true,
+          "multiple": false
+        },
+        "level": {
+          "name": "level",
+          "type": "option",
+          "char": "l",
+          "description": "notify does not retry, sync will retry until successful or timeout",
+          "required": true,
+          "multiple": false
+        },
+        "secret": {
+          "name": "secret",
+          "type": "option",
+          "char": "s",
+          "description": "value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header",
+          "multiple": false
+        },
+        "authorization": {
+          "name": "authorization",
+          "type": "option",
+          "char": "t",
+          "description": "authoriation header to send with webhooks",
+          "multiple": false
+        },
+        "url": {
+          "name": "url",
+          "type": "option",
+          "char": "u",
+          "description": "URL for receiver",
+          "required": true,
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "webhooks": {
+      "id": "webhooks",
+      "description": "list webhooks on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "webhooks:info": {
+      "id": "webhooks:info",
+      "description": "info for a webhook on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:info 99999999-9999-9999-9999-999999999999"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      },
+      "example": [
+        "$ heroku webhooks:info 99999999-9999-9999-9999-999999999999"
+      ]
+    },
+    "webhooks:remove": {
+      "id": "webhooks:remove",
+      "description": "removes a webhook from an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:remove 99999999-9999-9999-9999-999999999999"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "description": "id of webhook to remove",
+          "required": true
+        }
+      }
+    },
+    "webhooks:update": {
+      "id": "webhooks:update",
+      "description": "updates a webhook in an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        },
+        "include": {
+          "name": "include",
+          "type": "option",
+          "char": "i",
+          "description": "comma delimited event types your server will receive ",
+          "required": true,
+          "multiple": false
+        },
+        "level": {
+          "name": "level",
+          "type": "option",
+          "char": "l",
+          "description": "notify does not retry, sync will retry until successful or timeout",
+          "required": true,
+          "multiple": false
+        },
+        "secret": {
+          "name": "secret",
+          "type": "option",
+          "char": "s",
+          "description": "value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header",
+          "multiple": false
+        },
+        "authorization": {
+          "name": "authorization",
+          "type": "option",
+          "char": "t",
+          "description": "authoriation header to send with webhooks",
+          "multiple": false
+        },
+        "url": {
+          "name": "url",
+          "type": "option",
+          "char": "u",
+          "description": "URL for receiver",
+          "required": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "webhooks:deliveries": {
+      "id": "webhooks:deliveries",
+      "description": "list webhook deliveries on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:deliveries"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "status": {
+          "name": "status",
+          "type": "option",
+          "char": "s",
+          "description": "filter deliveries by status",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "webhooks:deliveries:info": {
+      "id": "webhooks:deliveries:info",
+      "description": "info for a webhook event on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    },
+    "webhooks:events": {
+      "id": "webhooks:events",
+      "description": "list webhook events on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:events"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "webhooks:events:info": {
+      "id": "webhooks:events:info",
+      "description": "info for a webhook event on an app",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-webhooks",
+      "pluginAlias": "@heroku-cli/plugin-webhooks",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999"
+      ],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "char": "a",
+          "description": "app to run command against",
+          "multiple": false
+        },
+        "remote": {
+          "name": "remote",
+          "type": "option",
+          "char": "r",
+          "description": "git remote of app to use",
+          "multiple": false
+        },
+        "pipeline": {
+          "name": "pipeline",
+          "type": "option",
+          "char": "p",
+          "description": "pipeline on which to list",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "id": {
+          "name": "id",
+          "required": true
+        }
+      }
+    }
+  }
+}

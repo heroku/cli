@@ -1,0 +1,102 @@
+{
+  "version": "7.68.0",
+  "commands": {
+    "local": {
+      "id": "local",
+      "description": "run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile)",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-local",
+      "pluginAlias": "@heroku-cli/plugin-local",
+      "pluginType": "core",
+      "aliases": [
+        "local:start"
+      ],
+      "examples": [
+        "$ heroku local\n$ heroku local web\n$ heroku local web=2\n$ heroku local web=1,worker=2"
+      ],
+      "flags": {
+        "procfile": {
+          "name": "procfile",
+          "type": "option",
+          "char": "f",
+          "description": "use a different Procfile",
+          "multiple": false
+        },
+        "env": {
+          "name": "env",
+          "type": "option",
+          "char": "e",
+          "description": "location of env file (defaults to .env)",
+          "multiple": false
+        },
+        "port": {
+          "name": "port",
+          "type": "option",
+          "char": "p",
+          "description": "port to listen on",
+          "multiple": false
+        },
+        "restart": {
+          "name": "restart",
+          "type": "boolean",
+          "char": "r",
+          "description": "restart process if it dies",
+          "hidden": true,
+          "allowNo": false
+        },
+        "concurrency": {
+          "name": "concurrency",
+          "type": "option",
+          "char": "c",
+          "description": "number of processes to start",
+          "hidden": true,
+          "multiple": false
+        }
+      },
+      "args": {
+        "processname": {
+          "name": "processname",
+          "required": false
+        }
+      }
+    },
+    "local:run": {
+      "id": "local:run",
+      "description": "run a one-off command",
+      "strict": false,
+      "pluginName": "@heroku-cli/plugin-local",
+      "pluginAlias": "@heroku-cli/plugin-local",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku local:run bin/migrate"
+      ],
+      "flags": {
+        "env": {
+          "name": "env",
+          "type": "option",
+          "char": "e",
+          "multiple": false
+        },
+        "port": {
+          "name": "port",
+          "type": "option",
+          "char": "p",
+          "multiple": false
+        }
+      },
+      "args": {}
+    },
+    "local:version": {
+      "id": "local:version",
+      "description": "display node-foreman version",
+      "strict": true,
+      "pluginName": "@heroku-cli/plugin-local",
+      "pluginAlias": "@heroku-cli/plugin-local",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {},
+      "args": {}
+    }
+  }
+}
