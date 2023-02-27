@@ -30,7 +30,6 @@ jobs:
     env:
       RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    name: build-for-acceptance-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -47,8 +46,8 @@ jobs:
           path: /home/runner/work/cli/acceptance
 
   acceptance:
+    needs: [build-for-acceptance]
     runs-on: ${{ matrix.os }}
-    needs: [build-for-acceptance-${{ matrix.os }}]
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
@@ -58,15 +57,15 @@ jobs:
       RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: prepacked-cli-${{ matrix.os }}
+          path: /home/runner/work/cli/acceptance
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - uses: actions/download-artifact@v3
-        with:
-          name: prepacked-cli-${{ matrix.os }}
-          path: /home/runner/work/cli/acceptance
       - run: cd /home/runner/work/cli/acceptance
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./scripts/run-acceptance
