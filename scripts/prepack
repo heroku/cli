@@ -17,12 +17,12 @@ async function main() {
   for (const packageJSON of packages) {
     const pjson = require(packageJSON)
     if (pjson.scripts && pjson.scripts["prepack"]) {
-      const {exitCode} = await execa('yarn', ['prepack'], {
+      const {exitCode, message} = await execa('yarn', ['prepack'], {
         cwd: path.dirname(packageJSON),
         stdio: 'inherit'
       })
       if (exitCode !== 0) {
-        return exitCode
+        throw new Error(message)
       }
     }
   }
