@@ -8,6 +8,7 @@ const execa = require('execa')
 global.fetch = require('node-fetch');
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 require('abortcontroller-polyfill/dist/abortcontroller-polyfill-only')
+const c = require('@heroku-cli/color')
 
 const packages = glob.sync(
   path.join(__dirname, '..', 'packages/*/package.json')
@@ -17,16 +18,18 @@ async function main() {
   for (const packageJSON of packages) {
     const pjson = require(packageJSON)
     if (pjson.scripts && pjson.scripts["prepack"]) {
-      const {exitCode, message} = await execa('yarn', ['prepack'], {
-        cwd: path.dirname(packageJSON),
-        stdio: 'inherit'
-      })
-      if (exitCode !== 0) {
-        throw new Error(message)
+      try {
+        await execa('yarn', ['prepack'], {
+          cwd: path.dirname(packageJSON),
+          stdio: 'inherit'
+        })
+      } catch(e) {
+        process.exit(1)
+        return
       }
     }
   }
 }
 
 
-main().catch((error) => 1)
+main()
