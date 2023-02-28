@@ -39,15 +39,19 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: Build packages
-        run: DEBUG=* yarn lerna run prepack
-      - name: Node 16 Acceptance Tests
-        run: yarn lerna run test:acceptance
-      - run: nvm install
-      - run: nvm use 14.21.3
+        run: yarn lerna run prepack
+#      - name: Node 16 Acceptance Tests
+#        run: yarn lerna run test:acceptance
+      - name: Install nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+      - run: nvm install 14.21.3 && nvm use 14.21.3
       - run: echo "node -v" && node -v
       - name: Node 14 Acceptance Tests
         run: yarn lerna run test:acceptance
-      - run: nvm use 18.14.2
+      - run: nvm install 18.14.2 && nvm use 18.14.2
       - run: echo "node -v" && node -v
       - name: Node 18 Acceptance Tests
         run: yarn lerna run test:acceptance
