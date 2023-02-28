@@ -224,7 +224,21 @@
         "hidden": true
       }
     },
-   
+    "hooks": {
+      "init": [
+        "./lib/hooks/init/version",
+        "./lib/hooks/init/terms-of-service"
+      ],
+      "prerun": [
+        "./lib/hooks/prerun/analytics"
+      ],
+      "update": [
+        "./lib/hooks/update/plugin-migrate",
+        "./lib/hooks/update/b",
+        "./lib/hooks/update/completions",
+        "./lib/hooks/update/tidy"
+      ]
+    },
     "update": {
       "node": {
         "version": "14.19.0"
