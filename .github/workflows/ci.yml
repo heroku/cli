@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     environment: AcceptanceTests
     env:
@@ -40,8 +40,17 @@ jobs:
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: Build packages
         run: DEBUG=* yarn lerna run prepack
-      - run: ./bin/run whoami
-      - run: yarn lerna run test:acceptance
+      - name: Node 16 Acceptance Tests
+        run: yarn lerna run test:acceptance
+      - run: nvm install
+      - run: nvm use 14.21.3
+      - run: echo "node -v" && node -v
+      - name: Node 14 Acceptance Tests
+        run: yarn lerna run test:acceptance
+      - run: nvm use 18.14.2
+      - run: echo "node -v" && node -v
+      - name: Node 18 Acceptance Tests
+        run: yarn lerna run test:acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
