@@ -12,10 +12,15 @@ async function main() {
   for (const packageJSON of packages) {
     const pjson = require(packageJSON)
     if (pjson.scripts && pjson.scripts["test:acceptance"]) {
-      await execa('yarn', ['test:acceptance'], {
-        cwd: path.dirname(packageJSON),
-        stdio: 'inherit'
-      })
+      try {
+        await execa('yarn', ['test:acceptance'], {
+          cwd: path.dirname(packageJSON),
+          stdio: 'inherit'
+        })
+      } catch(e) {
+        process.exit(1)
+        return
+      }
     }
   }
 }
