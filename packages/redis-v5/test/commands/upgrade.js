@@ -29,7 +29,8 @@ describe('heroku redis:upgrade', () => {
     return command.run({ app: 'example', flags: { confirm: 'example', version: '6.2' }, args: {}, auth: { username: 'foobar', password: 'password' } })
       .then(() => app.done())
       .then(() => redis.done())
-      .then(() => expect(cli.stderr).to.equal('Requesting upgrade of redis-haiku to 6.2... upgrade has started!\n'))
+      .then(() => expect(cli.stderr).to.equal('Requesting upgrade of redis-haiku to 6.2... Upgrading version now!\n'))
+      .then(() => expect(cli.stdout).to.equal('Upgrading version now!\n')
   })
 
   it('# errors on missing version', function () {
