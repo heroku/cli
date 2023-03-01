@@ -37,7 +37,7 @@
     "std-mocks": "^1.0.1"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=14"
   },
   "files": [
     "oclif.manifest.json",
