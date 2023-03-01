@@ -41,7 +41,7 @@ jobs:
       - name: Build packages
         run: yarn lerna run prepack
       - run: ./bin/run whoami
-      - run: ./scripts/run-acceptance
+      - run: yarn lerna run test:acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
