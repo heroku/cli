@@ -25,7 +25,7 @@ module.exports = {
     await cli.confirmApp(context.app, context.flags.confirm, `WARNING: Irreversible action.\nRedis database will be upgraded to ${cli.color.configVar(version)}. This cannot be undone.`)
     await cli.action(`Requesting upgrade of ${cli.color.addon(addon.name)} to ${version}`, async function () {
       let res = await api.request(`/redis/v0/databases/${addon.name}/upgrade`, 'POST', { version: version })
-      cli.log(res.message)
+      cli.action.done(res.message)
     }())
   })
 }
