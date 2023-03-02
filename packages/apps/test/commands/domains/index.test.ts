@@ -1,4 +1,4 @@
-import {expect, test} from '@oclif/test'
+import {expect, test} from '../../test'
 
 describe('domains', () => {
   const herokuOnlyDomainsResponse = [{
@@ -96,7 +96,7 @@ describe('domains', () => {
   .stdout()
   .command(['domains', '--app', 'myapp'])
   .it('does not show the custom domain header if there are no custom domains', ctx => {
-    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\nmyapp.herokuapp.com')
     expect(ctx.stdout).to.contain('myapp.herokuapp.com')
     expect(ctx.stdout).to.not.contain('=== myapp Custom Domains')
   })
@@ -109,7 +109,7 @@ describe('domains', () => {
   .stdout()
   .command(['domains', '--app', 'myapp'])
   .it('shows a list of domains and their DNS targets when there are custom domains', ctx => {
-    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\nmyapp.herokuapp.com')
     expect(ctx.stdout).to.contain('myapp.herokuapp.com')
     expect(ctx.stdout).to.contain('=== myapp Custom Domains')
     expect(ctx.stdout).to.contain('Domain Name     DNS Record Type DNS Target')

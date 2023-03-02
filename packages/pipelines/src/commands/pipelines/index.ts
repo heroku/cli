@@ -1,8 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import cli from 'cli-ux'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
@@ -16,7 +14,7 @@ export default class Pipelines extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(Pipelines)
+    const {flags} = this.parse(Pipelines)
 
     const {body: pipelines} = await this.heroku.get<Heroku.Pipeline[]>('/pipelines')
 

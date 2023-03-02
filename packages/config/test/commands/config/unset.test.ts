@@ -1,4 +1,4 @@
-import {test} from '@oclif/test'
+import {test} from '../../test'
 
 describe('config', () => {
   test

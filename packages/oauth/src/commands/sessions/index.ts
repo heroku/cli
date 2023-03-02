@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import {OAuthSession} from '../../lib/sessions'
 const sortBy = require('lodash.sortby')
@@ -13,22 +13,21 @@ export default class SessionsIndex extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(SessionsIndex)
+    const {flags} = this.parse(SessionsIndex)
 
     let {body: sessions} = await this.heroku.get<Array<OAuthSession>>('/oauth/sessions')
 
     sessions = sortBy(sessions, 'description')
 
     if (flags.json) {
-      CliUx.ux.styledJSON(sessions)
+      cli.styledJSON(sessions)
     } else if (sessions.length === 0) {
-      CliUx.ux.log('No OAuth sessions.')
+      cli.log('No OAuth sessions.')
     } else {
-      const printLine: typeof this.log = (...args) => this.log(...args)
-      CliUx.ux.table(sessions, {
+      cli.table(sessions, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
-      }, {'no-header': true, printLine})
+      }, {'no-header': true, printLine: this.log})
     }
   }
 }

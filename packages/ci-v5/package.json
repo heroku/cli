@@ -13,7 +13,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^9.0.2",
+    "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/plugin-run-v5": "^7.68.0",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
@@ -27,17 +27,17 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/plugin-legacy": "^1.3.0",
+    "@heroku-cli/dev-cli": "^1.26.13",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
-    "oclif": "3.6.4",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=10.0.0"
   },
   "files": [
     "oclif.manifest.json",
@@ -54,8 +54,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif manifest",
+    "prepack": "oclif-dev manifest",
     "test": "mocha -R tap",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md"
   }
 }

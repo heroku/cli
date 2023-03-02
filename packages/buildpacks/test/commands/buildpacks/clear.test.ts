@@ -1,13 +1,15 @@
-import {expect, test} from '@oclif/test'
+import Nock from '@fancy-test/nock'
+import {expect, test as otest} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
 import {unwrap} from '../../unwrap'
 nock.disableNetConnect()
+const test = otest.register('nock', Nock)
 
 describe('buildpacks:clear', () => {
   test
-  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+  .nock('https://api.heroku.com', (api: nock.Scope) => {
     Stubber.put(api)
     api
     .get('/apps/example/config-vars')
@@ -22,7 +24,7 @@ describe('buildpacks:clear', () => {
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+  .nock('https://api.heroku.com', (api: nock.Scope) => {
     Stubber.put(api)
     api
     .get('/apps/example/config-vars')
@@ -37,7 +39,7 @@ describe('buildpacks:clear', () => {
   })
 
   test
-  .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+  .nock('https://api.heroku.com', (api: nock.Scope) => {
     Stubber.put(api)
     api
     .get('/apps/example/config-vars')

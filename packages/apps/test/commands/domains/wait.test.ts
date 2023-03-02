@@ -1,4 +1,4 @@
-import {expect, test} from '@oclif/test'
+import {expect, test} from '../../test'
 
 describe('domains:wait', () => {
   test

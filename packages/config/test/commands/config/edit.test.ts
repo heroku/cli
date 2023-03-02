@@ -1,14 +1,12 @@
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 import sinon from 'sinon'
 
 import {stringToConfig} from '../../../src/commands/config/edit'
 import {Editor} from '../../../src/util'
-import {expect, test} from '@oclif/test'
-
-const cli = CliUx.ux
+import {expect, test} from '../../test'
 
 let sandbox: any
-let updated: string | Record<string, unknown>
+let updated: {}
 let editedConfig = ''
 
 describe('config:edit', () => {
@@ -61,7 +59,7 @@ describe('config:edit', () => {
       )
       .nock('https://api.heroku.com', api => api
       .patch('/apps/myapp/config-vars')
-      .reply(function (_uri, requestBody) {
+      .reply(function (_uri: string, requestBody: {}) {
         updated = requestBody
         return [200, {}]
       }),
@@ -86,7 +84,7 @@ describe('config:edit', () => {
       )
       .nock('https://api.heroku.com', api => api
       .patch('/apps/myapp/config-vars')
-      .reply(function (_uri, requestBody) {
+      .reply(function (_uri: string, requestBody: {}) {
         updated = requestBody
         return [200, {NOT_BLANK: 'not blank', BLANK: ''}]
       }),

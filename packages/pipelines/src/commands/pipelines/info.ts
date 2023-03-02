@@ -1,12 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 import {listPipelineApps} from '../../api'
 import disambiguate from '../../disambiguate'
 import renderPipeline from '../../render-pipeline'
-
-const cli = CliUx.ux
 
 export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
@@ -32,7 +30,7 @@ export default class PipelinesInfo extends Command {
   }]
 
   async run() {
-    const {args, flags} = await this.parse(PipelinesInfo)
+    const {args, flags} = this.parse(PipelinesInfo)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
     const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
 

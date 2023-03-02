@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 export default class Auth2faGenerate extends Command {
   static description = 'disables 2fa on account'
@@ -12,7 +12,7 @@ export default class Auth2faGenerate extends Command {
   ]
 
   async run() {
-    CliUx.ux.error('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
-    CliUx.ux.exit(1)
+    cli.error('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
+    cli.exit(1)
   }
 }

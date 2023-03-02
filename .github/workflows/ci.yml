@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
+          yarn: cache
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn test
 
@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [14.x, 16.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     environment: AcceptanceTests
     env:
@@ -36,12 +36,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: Build packages
-        run: yarn lerna run prepack
+      - run: yarn --frozen-lockfile
       - run: ./bin/run whoami
-      - run: yarn lerna run test:acceptance
+      - run: ./scripts/run-acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
@@ -69,7 +66,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --frozen-lockfile
       - name: Building deb
         run: ./scripts/pack/deb
       - uses: actions/upload-artifact@v3
@@ -91,7 +88,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --frozen-lockfile
       - name: Building tarballs
         run: ./scripts/pack/tarballs
       - uses: actions/upload-artifact@v3
@@ -159,7 +156,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --prefer-offline --network-timeout 1000000
+          yarn --frozen-lockfile --prefer-offline
       - name: Upload production artifacts
         run: |
           cd packages/cli
@@ -211,7 +208,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --frozen-lockfile
           ./scripts/release/homebrew.js
 
   change-management:
@@ -228,5 +225,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --frozen-lockfile
           ./scripts/postrelease/change_management
