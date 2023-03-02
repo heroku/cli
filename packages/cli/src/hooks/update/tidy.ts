@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/config'
 import * as path from 'path'
 
 import deps from '../../deps'
@@ -10,11 +10,11 @@ export const tidy: Hook<'update'> = async function () {
     let pjson
     try {
       pjson = await deps.file.readJSON(path.join(pluginsDir, 'package.json'))
-    } catch (error: any) {
+    } catch (error) {
       if (error.code !== 'ENOENT') throw error
       return
     }
-    if (!pjson.dependencies || Object.keys(pjson.dependencies).length === 0) {
+    if (!pjson.dependencies || pjson.dependencies === {}) {
       await deps.file.remove(path.join(pluginsDir))
     }
   }

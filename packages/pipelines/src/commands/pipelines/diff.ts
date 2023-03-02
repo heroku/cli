@@ -1,19 +1,11 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 import HTTP from 'http-call'
 
 import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
-
-interface AppInfo {
-  name: string;
-  repo?: string;
-  hash?: string;
-}
-
-const cli = CliUx.ux
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
@@ -73,6 +65,12 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
   }
 }
 
+interface AppInfo {
+  name: string;
+  repo?: string;
+  hash?: string;
+}
+
 export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
 
@@ -113,7 +111,7 @@ export default class PipelinesDiff extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(PipelinesDiff)
+    const {flags} = this.parse(PipelinesDiff)
     const targetAppName = flags.app
 
     const coupling = await getCoupling(this.heroku, targetAppName)

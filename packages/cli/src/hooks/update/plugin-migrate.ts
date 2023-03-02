@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/config'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -34,7 +34,7 @@ export const migrate: Hook<'init'> = async function () {
           await exec('heroku', ['plugins:install', plugin])
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       this.warn(error)
     }
     try {
@@ -47,7 +47,7 @@ export const migrate: Hook<'init'> = async function () {
           await exec('heroku', ['plugins:link', root])
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       this.warn(error)
     }
     await fs.remove(pluginsDir)

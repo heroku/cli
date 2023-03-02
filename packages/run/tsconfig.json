@@ -6,7 +6,6 @@
     "outDir": "lib",
     "rootDir": "src",
     "strict": false,
-    "skipLibCheck": true,
     "target": "es2017"
   },
   "include": [

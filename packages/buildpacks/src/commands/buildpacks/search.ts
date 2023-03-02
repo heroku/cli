@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
+import {truncate} from 'lodash'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -20,7 +21,7 @@ export default class Search extends Command {
   ]
 
   async run() {
-    const {args, flags} = await this.parse(Search)
+    const {args, flags} = this.parse(Search)
     let searchResults: BuildpackBody[]
     const registry = new BuildpackRegistry()
 
@@ -51,28 +52,25 @@ export default class Search extends Command {
         description: buildpack.description,
       }
     })
+    const trunc = (value: string, _: string) => truncate(value, {length: 35, omission: '…'})
     const displayTable = (buildpacks: TableRow[]) => {
-      CliUx.ux.table(buildpacks, {
-        buildpack: {
-          header: 'Buildpack',
-        },
-        category: {
-          header: 'Category',
-        },
-        description: {
-          header: 'Description',
-        },
+      cli.table(buildpacks, {
+        columns: [
+          {key: 'buildpack', label: 'Buildpack'},
+          {key: 'category', label: 'Category'},
+          {key: 'description', label: 'Description', format: trunc},
+        ],
       })
     }
 
     if (buildpacks.length === 0) {
-      CliUx.ux.log('No buildpacks found')
+      cli.log('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      CliUx.ux.log('\n1 buildpack found')
+      cli.log('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      CliUx.ux.log(`\n${buildpacks.length} buildpacks found`)
+      cli.log(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }

@@ -5,16 +5,20 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^9.0.2",
-    "@oclif/core": "^1.26.2",
+    "@heroku-cli/command": "^8.4.1",
+    "@oclif/command": "^1.5.11",
+    "@oclif/config": "^1.12.10",
+    "cli-ux": "^4.9.3",
     "edit-string": "^1.1.6",
     "lodash": "^4.17.11",
     "shell-quote": "^1.6.1"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
+    "@heroku-cli/dev-cli": "^1.26.13",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.20",
+    "@oclif/plugin-help": "^2.1.6",
+    "@oclif/test": "^1.2.4",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.14.123",
@@ -30,14 +34,13 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.6.4",
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
     "tslib": "^1.9.3",
-    "typescript": "4.8.4"
+    "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=10.0.0"
   },
   "files": [
     "oclif.manifest.json",
@@ -49,24 +52,21 @@
   ],
   "license": "MIT",
   "oclif": {
-    "additionalHelpFlags": [
-      "-h"
-    ],
-    "additionalVersionFlags": [
-      "-v"
-    ],
-    "bin": "heroku",
     "commands": "./lib/commands",
+    "bin": "heroku",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ],
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/config/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc && oclif manifest",
+    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md"
   }
 }

@@ -1,12 +1,10 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 import {destroyPipeline} from '../../api'
 import disambiguate from '../../disambiguate'
-
-const cli = CliUx.ux
 
 export default class PipelinesDestroy extends Command {
   static description = 'destroy a pipeline'
@@ -22,7 +20,7 @@ export default class PipelinesDestroy extends Command {
   }]
 
   async run() {
-    const {args} = await this.parse(PipelinesDestroy)
+    const {args} = this.parse(PipelinesDestroy)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
 
     cli.action.start(`Destroying ${color.pipeline(pipeline.name!)} pipeline`)

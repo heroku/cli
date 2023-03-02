@@ -44,7 +44,7 @@ describe('without specifying an app', () => {
   test
   .stderr()
   .command(['ps:autoscale:enable', '--min', '1', '--max', '2'])
-  .catch(error => expect(error.message).to.contain('Missing required flag app'))
+  .catch(error => expect(error.message).to.contain('--app'))
   .it('aborts the command')
 })
 
@@ -52,7 +52,7 @@ describe('without specify a minimum', () => {
   test
   .stderr()
   .command(['ps:autoscale:enable', '--max', '2', '--app', APP_NAME])
-  .catch(error => expect(error.message).to.contain('Missing required flag min'))
+  .catch(error => expect(error.message).to.contain('--min'))
   .it('aborts the command')
 })
 
@@ -60,7 +60,7 @@ describe('without specify a maximum', () => {
   test
   .stderr()
   .command(['ps:autoscale:enable', '--min', '1', '--app', APP_NAME])
-  .catch(error => expect(error.message).to.contain('Missing required flag max'))
+  .catch(error => expect(error.message).to.contain('--max'))
   .it('aborts the command')
 })
 

@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 import BaseCommand from '../../../base'
 
@@ -21,18 +21,18 @@ export default class Info extends BaseCommand {
   ]
 
   async run() {
-    const {flags, args} = await this.parse(Info)
+    const {flags, args} = this.parse(Info)
     const {path} = this.webhookType(flags)
 
-    CliUx.ux.warn('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info')
+    cli.warn('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info')
 
-    const {body: webhookEvent}: {body: any} = await this.webhooksClient.get(`${path}/webhook-events/${args.id}`)
+    const {body: webhookEvent} = await this.webhooksClient.get(`${path}/webhook-events/${args.id}`)
 
     const obj = {
       payload: JSON.stringify(webhookEvent.payload, null, 2),
     }
 
-    CliUx.ux.styledHeader(webhookEvent.id)
-    CliUx.ux.styledObject(obj)
+    cli.styledHeader(webhookEvent.id)
+    cli.styledObject(obj)
   }
 }

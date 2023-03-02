@@ -27,8 +27,8 @@ describe('webhooks:add', () => {
     'http://foobar.com',
   ])
   .it('adds a specific app webhook', ctx => {
-    expect(ctx.stdout.trim()).to.equal('')
-    expect(ctx.stderr).to.include('Adding webhook to example-app... done')
+    expect(ctx.stdout).to.equal('')
+    expect(ctx.stderr).to.contain('Adding webhook to example-app... done\n')
   })
 
   test
@@ -84,8 +84,7 @@ describe('webhooks:add', () => {
     'http://foobar.com',
   ])
   .it('adds a specific pipeline webhook', ctx => {
-    expect(ctx.stdout).to.contain('=== Webhooks Signing Secret')
-    expect(ctx.stdout).to.contain('1234')
-    expect(ctx.stderr).to.contain('Adding webhook to example-pipeline... done')
+    expect(ctx.stdout).to.equal('=== Webhooks Signing Secret\n1234\n')
+    expect(ctx.stderr).to.contain('Adding webhook to example-pipeline... done\n')
   })
 })

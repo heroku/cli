@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {CliUx} from '@oclif/core'
+import {cli} from 'cli-ux'
 
 const API_HOST = 'https://api.heroku.com'
 const APP_NAME = 'wubalubadubdub'
@@ -65,7 +65,7 @@ describe('heroku ps:wait', () => {
   ]),
   )
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  .stub(CliUx.ux, 'wait', () => () => {})
+  .stub(cli, 'wait', () => () => {})
   .command(['ps:wait', '--app', APP_NAME])
   .it('waits for all dynos to be on latest release', ctx => {
     expect(ctx.stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
@@ -114,7 +114,7 @@ describe('heroku ps:wait', () => {
   ]),
   )
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  .stub(CliUx.ux, 'wait', () => () => {})
+  .stub(cli, 'wait', () => () => {})
   .command(['ps:wait', '--with-run', '--app', APP_NAME])
   .it('includes run dynos with the --with-run flag', ctx => {
     expect(ctx.stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')

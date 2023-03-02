@@ -1,13 +1,11 @@
 
 import Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import cli from 'cli-ux'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 
 import {createAppSetup} from '../api'
-
-const cli = CliUx.ux
 
 interface CreateAppOptions {
   archiveURL: string;

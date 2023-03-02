@@ -1,16 +1,14 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
 import assert from 'assert'
+import cli from 'cli-ux'
 import fetch from 'node-fetch'
-import Stream from 'stream'
 import util from 'util'
+import Stream from 'stream'
 
 import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
-
-const cli = CliUx.ux
 
 export const sleep  = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time))
@@ -90,7 +88,7 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
     cli.log(`${label}...`)
     const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
     return promotions
-  } catch (error: any) {
+  } catch (error) {
     if (!error.body || error.body.id !== 'two_factor') {
       throw error
     }
@@ -187,7 +185,7 @@ export default class Promote extends Command {
   }
 
   async run() {
-    const {flags} = await this.parse(Promote)
+    const {flags} = this.parse(Promote)
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
     cli.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
@@ -237,7 +235,7 @@ export default class Promote extends Command {
 
     try {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
-    } catch (error: any) {
+    } catch (error) {
       cli.error(error)
     }
 

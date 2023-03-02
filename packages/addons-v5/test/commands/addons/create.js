@@ -5,7 +5,7 @@ const cmd = commands.find(c => c.topic === 'addons' && c.command === 'create')
 const { expect } = require('chai')
 const lolex = require('lolex')
 const _ = require('lodash')
-const { Config } = require('@oclif/core')
+const Config = require('@oclif/config')
 const sinon = require('sinon')
 let config
 

@@ -1,5 +1,5 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
-import {Command, Flags} from '@oclif/core'
+import {Command, flags} from '@oclif/command'
 
 import {fork as foreman} from '../../fork-foreman'
 
@@ -13,18 +13,18 @@ export default class Run extends Command {
   static strict = false
 
   static flags = {
-    env: Flags.string({
+    env: flags.string({
       char: 'e',
       completion: FileCompletion,
     }),
-    port: Flags.string({
+    port: flags.string({
       char: 'p',
     }),
   }
 
   async run() {
     const execArgv: string[] = ['run']
-    const {argv, flags} = await this.parse(Run)
+    const {argv, flags} = this.parse(Run)
 
     if (argv.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'

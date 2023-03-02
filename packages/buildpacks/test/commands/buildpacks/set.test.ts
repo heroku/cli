@@ -1,13 +1,15 @@
-import {expect, test} from '@oclif/test'
+import Nock from '@fancy-test/nock'
+import {expect, test as otest} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
 nock.disableNetConnect()
+const test = otest.register('nock', Nock)
 
 describe('buildpacks:set', () => {
   describe('URL', () => {
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api)
       Stubber.put(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -25,7 +27,7 @@ Run git push heroku main to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/foobar/foobar',
       ])
@@ -35,7 +37,7 @@ Run git push heroku main to create a new release using this buildpack.
     .it('# errors out when already exists')
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/foo/foo',
         'https://github.com/baz/baz',
@@ -63,7 +65,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
   describe('-i INDEX URL', () => {
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api)
       Stubber.put(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -81,7 +83,7 @@ Run git push heroku main to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
       ])
@@ -100,7 +102,7 @@ Run git push heroku main to create a new release using this buildpack.
 `)
     })
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
@@ -112,7 +114,7 @@ Run git push heroku main to create a new release using this buildpack.
     .it('# with one existing buildpack unsuccessfully fails if buildpack is already set')
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -136,7 +138,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -162,7 +164,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -188,7 +190,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -202,7 +204,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
     test
     .command(['buildpacks:set', 'https://github.com/bar/bar', '-i', 'notaninteger', '-a', 'example'])
-    .catch('Parsing --index \n\tExpected an integer but received: notaninteger\nSee more help with --help')
+    .catch('Expected an integer but received: notaninteger')
     .it('# returns an error message when i is not an integer')
 
     test
@@ -218,3 +220,8 @@ See more help with --help`)
     .it('# handles a missing buildpack URL arg')
   })
 })
+
+//
+//
+//
+// })
