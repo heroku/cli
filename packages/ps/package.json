@@ -18,6 +18,7 @@
     "@types/lodash": "^4.14.123",
     "@types/mocha": "^5.2.6",
     "@types/nock": "^9.3.1",
+    "@types/node": "^10.12.24",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
@@ -32,7 +33,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "files": [
     "oclif.manifest.json",

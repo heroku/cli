@@ -16,6 +16,7 @@
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
     "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.24",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
@@ -31,7 +32,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "files": [
     "/lib",
