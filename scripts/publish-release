@@ -55,15 +55,16 @@ yarn lerna publish --yes from-package
 
 
 LAST_PUBLISHED_TAG=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)" | head -n1)
+PRERELEASE_TAG_MARKER="beta"
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
 
-if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
+if [[ "${CURRENT_BRANCH}" == "${MAIN_BRANCH}" ]]; then
   RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}...${TAG_NAME}~1")
   gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
 fi
 
-if [[ "${CURRENT_BRANCH}" != *"${PRERELEASE_PREFIX}"* ]]; then
+if [[ "${CURRENT_BRANCH}" == *"${PRERELEASE_PREFIX}"* && "${TAG_NAME}" == *"${PRERELEASE_TAG_MARKER}"* ]]; then
   gh release create "${TAG_NAME}" --title="${TAG_NAME}" --prerelease # don't add release notes to a pre-release
 fi
