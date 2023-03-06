@@ -10,6 +10,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
 
+* **redis-v5:** CLI to log Shogun upgrade response ([#2255](https://github.com/heroku/cli/issues/2255)) ([27b7553](https://github.com/heroku/cli/commit/27b75537645333bea104896b2788120031093dc2))
+
 
 
 
