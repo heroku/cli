@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.68.3](https://github.com/heroku/cli/compare/v7.68.2...v7.68.3) (2023-03-06)
+
+
+### Bug Fixes
+
+* add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
+
+
+
+
+
 ## [7.68.2](https://github.com/heroku/cli/compare/v7.68.1...v7.68.2) (2023-02-21)
 
 **Note:** Version bump only for package heroku
