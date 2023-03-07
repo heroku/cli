@@ -7,6 +7,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package heroku
 
+### Features
+
+* **local:** change default starting port ([#2261](https://github.com/heroku/cli/issues/2261)) ([88ff4d7](https://github.com/heroku/cli/commit/88ff4d74be7da5a8683869e9b612dea9dd069dfa))
+
 
 
 
@@ -18,7 +22,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
 
-
+* **redis-v5:** CLI to log Shogun upgrade response ([#2255](https://github.com/heroku/cli/issues/2255)) ([27b7553](https://github.com/heroku/cli/commit/27b75537645333bea104896b2788120031093dc2))
 
 
 
