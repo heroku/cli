@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.69.0](https://github.com/heroku/cli/compare/v7.68.3...v7.69.0) (2023-03-07)
+
+
+### Features
+
+* **local:** change default starting port ([#2261](https://github.com/heroku/cli/issues/2261)) ([88ff4d7](https://github.com/heroku/cli/commit/88ff4d74be7da5a8683869e9b612dea9dd069dfa))
+
+
+
+
+
 # [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
 
 
