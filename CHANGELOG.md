@@ -3,13 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [7.69.0](https://github.com/heroku/cli/compare/v7.68.3...v7.69.0) (2023-03-07)
+## [7.69.1](https://github.com/heroku/cli/compare/v7.69.0...v7.69.1) (2023-03-09)
 
 **Note:** Version bump only for package heroku
 
-### Features
 
-* **local:** change default starting port ([#2261](https://github.com/heroku/cli/issues/2261)) ([88ff4d7](https://github.com/heroku/cli/commit/88ff4d74be7da5a8683869e9b612dea9dd069dfa))
+
+
+
+# [7.69.0](https://github.com/heroku/cli/compare/v7.68.3...v7.69.0) (2023-03-07)
+
+**Note:** Version bump only for package heroku
 
 
 
@@ -22,7 +26,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
 
-* **redis-v5:** CLI to log Shogun upgrade response ([#2255](https://github.com/heroku/cli/issues/2255)) ([27b7553](https://github.com/heroku/cli/commit/27b75537645333bea104896b2788120031093dc2))
+
 
 
 
