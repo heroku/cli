@@ -34,6 +34,7 @@ git fetch origin  --force --tags
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
+PRERELEASE_TAG_MARKER="beta"
 
 echo "tag name ${TAG_NAME}"
 
@@ -44,6 +45,12 @@ echo "tag name ${TAG_NAME}"
 #   echo "You may need to run scripts/create-release-pr to create a new release before running this script"
 #   exit 1
 # fi
+
+if [[ "${TAG_NAME}" == *"${PRERELEASE_TAG_MARKER}"* ]]; then
+  echo "scripts/publish-prerelease must be run on a branch with a beta tag."
+  echo "to create a beta tag, see the Heroku CLI release instructions on creating a prerelease"
+  exit 1
+fi
 
 # echo "Installing dependencies with yarn..."
 # yarn
