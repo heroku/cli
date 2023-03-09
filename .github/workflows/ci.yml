@@ -49,7 +49,7 @@ jobs:
         working-directory: /
 
   pack_deb:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta'))
     # ubuntu started using a compression method after this version that debian currently does not support
     # https://github.com/heroku/cli/pull/2245#issue-1590017122
     runs-on: ubuntu-20.04
@@ -75,7 +75,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -98,7 +98,7 @@ jobs:
 
   sign_deb:
     needs: [pack_deb]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta'))
     runs-on: ubuntu-latest
     environment: SignDebian
     env:
@@ -125,7 +125,7 @@ jobs:
   # TODO: the circle job ran `install_scripts` but this isn't, do we need to add that?
   release-deb-and-tarballs:
     needs: [test, acceptance, sign_deb, pack_tarballs]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta'))
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -171,7 +171,7 @@ jobs:
   ## POST release jobs
   invalidate-cdn-cache:
     needs: [release-deb-and-tarballs]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta'))
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -190,7 +190,7 @@ jobs:
 
   release-homebrew:
     needs: [release-deb-and-tarballs]
-    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta')
     runs-on: ubuntu-latest
     environment: ReleaseHomebrew
     steps:
@@ -213,7 +213,7 @@ jobs:
 
   change-management:
     needs: [release-deb-and-tarballs]
-    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta')
     runs-on: ubuntu-latest
     environment: ChangeManagement
     env:
