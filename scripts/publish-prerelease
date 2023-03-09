@@ -46,7 +46,7 @@ echo "tag name ${TAG_NAME}"
 #   exit 1
 # fi
 
-if [[ "${TAG_NAME}" == *"${PRERELEASE_TAG_MARKER}"* ]]; then
+if [[ "${TAG_NAME}" != *"${PRERELEASE_TAG_MARKER}"* ]]; then
   echo "scripts/publish-prerelease must be run on a branch with a beta tag."
   echo "to create a beta tag, see the Heroku CLI release instructions on creating a prerelease"
   exit 1
