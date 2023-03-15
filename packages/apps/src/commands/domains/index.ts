@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as Uri from 'urijs'
+
+const cli = CliUx.ux
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -71,7 +73,7 @@ www.example.com  CNAME            www.example.herokudns.com
   }
 
   async run() {
-    const {flags} = this.parse(DomainsIndex)
+    const {flags} = await this.parse(DomainsIndex)
     const {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')

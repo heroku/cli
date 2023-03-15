@@ -1,10 +1,12 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../api'
 import disambiguate from '../../disambiguate'
 import renderPipeline from '../../render-pipeline'
+
+const cli = CliUx.ux
 
 async function getTeamOwner(heroku: APIClient, name: string) {
   const {body: team} = await getTeam(heroku, name)
@@ -48,7 +50,7 @@ export default class PipelinesTransfer extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(PipelinesTransfer)
+    const {args, flags} = await this.parse(PipelinesTransfer)
     const pipeline = await disambiguate(this.heroku, flags.pipeline)
     const newOwner = await getOwner(this.heroku, args.owner)
     const apps = await listPipelineApps(this.heroku, pipeline.id!)

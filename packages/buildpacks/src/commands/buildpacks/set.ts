@@ -23,7 +23,7 @@ export default class Set extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Set)
+    const {args, flags} = await this.parse(Set)
 
     if (flags.index && flags.index < 0) {
       this.error('Invalid index. Must be greater than 0.')

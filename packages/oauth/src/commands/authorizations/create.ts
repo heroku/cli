@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {display} from '../../lib/authorizations'
 
@@ -21,9 +21,9 @@ export default class AuthorizationsCreate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(AuthorizationsCreate)
+    const {flags} = await this.parse(AuthorizationsCreate)
 
-    cli.action.start('Creating OAuth Authorization')
+    CliUx.ux.action.start('Creating OAuth Authorization')
 
     const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
       body: {
@@ -33,12 +33,12 @@ export default class AuthorizationsCreate extends Command {
       },
     })
 
-    cli.action.stop()
+    CliUx.ux.action.stop()
 
     if (flags.short) {
-      cli.log(auth.access_token && auth.access_token.token)
+      CliUx.ux.log(auth.access_token && auth.access_token.token)
     } else if (flags.json) {
-      cli.styledJSON(auth)
+      CliUx.ux.styledJSON(auth)
     } else {
       display(auth)
     }

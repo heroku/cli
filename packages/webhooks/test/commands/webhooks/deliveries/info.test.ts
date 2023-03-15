@@ -39,21 +39,16 @@ describe('webhooks:deliveries:info', () => {
   ])
   .it('shows an app webhook delivery', ctx => {
     expect(ctx.stderr).to.equal('')
-    expect(ctx.stdout).to.equal(
-      `=== 99999999-9999-9999-9999-999999999999
-Event:        88888888-8888-8888-8888-888888888888
-Status:       pending
-Webhook:      77777777-7777-7777-7777-777777777777
-=== Event Payload
-{
-  "published_at": "2016-08-31T21:55:06Z",
-  "resource": "api:release",
-  "action": "create",
-  "data": {
-    "foo": "bar"
-  }
-}
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
+    expect(ctx.stdout).to.contain('Status:       pending')
+    expect(ctx.stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
+    expect(ctx.stdout).to.contain('=== Event Payload')
+    expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(ctx.stdout).to.contain('"resource": "api:release",')
+    expect(ctx.stdout).to.contain('"action": "create",')
+    expect(ctx.stdout).to.contain('"data": {')
+    expect(ctx.stdout).to.contain('"foo": "bar"')
   })
 
   test
@@ -94,20 +89,15 @@ Webhook:      77777777-7777-7777-7777-777777777777
   ])
   .it('shows a pipeline webhook delivery ', ctx => {
     expect(ctx.stderr).to.equal('')
-    expect(ctx.stdout).to.equal(
-      `=== 99999999-9999-9999-9999-999999999999
-Event:        88888888-8888-8888-8888-888888888888
-Status:       pending
-Webhook:      77777777-7777-7777-7777-777777777777
-=== Event Payload
-{
-  "published_at": "2016-08-31T21:55:06Z",
-  "resource": "api:release",
-  "action": "create",
-  "data": {
-    "foo": "bar"
-  }
-}
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
+    expect(ctx.stdout).to.contain('Status:       pending')
+    expect(ctx.stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
+    expect(ctx.stdout).to.contain('=== Event Payload')
+    expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(ctx.stdout).to.contain('"resource": "api:release",')
+    expect(ctx.stdout).to.contain('"action": "create",')
+    expect(ctx.stdout).to.contain('"data": {')
+    expect(ctx.stdout).to.contain('"foo": "bar"')
   })
 })

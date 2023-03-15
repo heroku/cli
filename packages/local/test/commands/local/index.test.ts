@@ -14,7 +14,9 @@ describe('local', () => {
   describe('with the local:start alias', function () {
     test
     .stub(procfile, 'loadProc', loadProcMock)
-    .stub(foreman, 'fork', (argv: string[]) => {
+    .stub(foreman, 'fork', function () {
+      // eslint-disable-next-line prefer-rest-params
+      const argv = arguments[0]
       expect(argv).is.eql(['start', 'web,other'])
     })
     .command(['local:start'])
@@ -24,16 +26,18 @@ describe('local', () => {
   describe('without arguments', function () {
     describe('without flags', function () {
       test
-      .stub(procfile, 'loadProc', function (procfile: any) {
-        expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
+      .stub(procfile, 'loadProc', function () {
+        // eslint-disable-next-line prefer-rest-params
+        expect(arguments[0]).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
         return {
           web: './web-command',
           other: './other-command',
         }
       })
-      .stub(foreman, 'fork', (argv: string[]) => {
-        expect(argv).is.eql(['start', 'web,other'])
+      .stub(foreman, 'fork', function () {
+        // eslint-disable-next-line prefer-rest-params
+        expect(arguments[0]).is.eql(['start', 'web,other'])
       })
       .command(['local'])
       .it('can call foreman start with no arguments')
@@ -41,8 +45,9 @@ describe('local', () => {
 
     describe('with a --procfile flag', function () {
       test
-      .stub(procfile, 'loadProc', (procfile: string) => {
-        expect(procfile).is.equal('Procfile.other')
+      .stub(procfile, 'loadProc', function () {
+        // eslint-disable-next-line prefer-rest-params
+        expect(arguments[0]).is.equal('Procfile.other')
 
         return {
           release: './release',
@@ -50,7 +55,9 @@ describe('local', () => {
           background: './background',
         }
       })
-      .stub(foreman, 'fork', (argv: string[]) => {
+      .stub(foreman, 'fork', function () {
+        // eslint-disable-next-line prefer-rest-params
+        const argv = arguments[0]
         expect(argv).is.eql(['start', '--procfile', 'Procfile.other', 'web,background'])
         expect(argv).to.not.include('release', 'the release process is not included')
       })
@@ -61,7 +68,9 @@ describe('local', () => {
     describe('with --procfile, --env, --port flags together', function () {
       test
       .stub(procfile, 'loadProc', loadProcMock)
-      .stub(foreman, 'fork', (argv: string[]) => {
+      .stub(foreman, 'fork', function () {
+        // eslint-disable-next-line prefer-rest-params
+        const argv = arguments[0]
         expect(argv).is.eql([
           'start',
           '--procfile',
@@ -81,15 +90,19 @@ describe('local', () => {
   describe('with arguments', function () {
     describe('without flags', function () {
       test
-      .stub(procfile, 'loadProc', function (procfile: any) {
-        expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
+      .stub(procfile, 'loadProc', function () {
+        // eslint-disable-next-line prefer-rest-params
+        const [procArg] = arguments
+        expect(procArg).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
         return {
           web: './web-command',
           other: './other-command',
         }
       })
-      .stub(foreman, 'fork', (argv: string[]) => {
+      .stub(foreman, 'fork', function () {
+        // eslint-disable-next-line prefer-rest-params
+        const argv = arguments[0]
         expect(argv).is.eql(['start', 'web,other'])
       })
       .command(['local', 'web,other'])
@@ -99,7 +112,9 @@ describe('local', () => {
     describe('with --port, --env and --procfile flags', function () {
       test
       .stub(procfile, 'loadProc', loadProcMock)
-      .stub(foreman, 'fork', (argv: string[]) => {
+      .stub(foreman, 'fork', function () {
+        // eslint-disable-next-line prefer-rest-params
+        const argv = arguments[0]
         expect(argv).is.eql([
           'start',
           '--procfile',

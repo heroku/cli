@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {Dyno, Release} from '@heroku-cli/schema'
 
@@ -16,10 +16,10 @@ export default class Wait extends Command {
     'wait-interval': flags.integer({
       char: 'w',
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
-      parse: input => {
+      parse: async input => {
         const w = parseInt(input, 10)
         if (w < 10) {
-          cli.error('wait-interval must be at least 10', {exit: 1})
+          CliUx.ux.error('wait-interval must be at least 10', {exit: 1})
         }
         return w
       },
@@ -33,7 +33,7 @@ export default class Wait extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Wait)
+    const {flags} = await this.parse(Wait)
 
     const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
       partial: true,
@@ -70,20 +70,20 @@ export default class Wait extends Command {
       const releasedFraction = `${onLatest.length} / ${relevantDynos.length}`
       if (onLatest.length === relevantDynos.length) {
         if (!released) {
-          cli.action.stop(`${releasedFraction}, done`)
+          CliUx.ux.action.stop(`${releasedFraction}, done`)
         }
         break
       }
 
       if (released) {
         released = false
-        cli.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
+        CliUx.ux.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
       }
 
-      cli.action.status = releasedFraction
+      CliUx.ux.action.status = releasedFraction
 
       // eslint-disable-next-line no-await-in-loop
-      await cli.wait(interval * 1000)
+      await CliUx.ux.wait(interval * 1000)
     }
   }
 }

@@ -1,4 +1,6 @@
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
+const cli = CliUx.ux
 
 export default function setupPipeline(kolkrabbi: any, app: any, settings: any, pipelineID: any, ciSettings: any = {}) {
   const promises = [kolkrabbi.updateAppLink(app, settings)]

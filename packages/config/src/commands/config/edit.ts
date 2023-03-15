@@ -1,13 +1,14 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../quote'
 import {Editor} from '../../util'
 
 const editor = new Editor()
+const cli = CliUx.ux
 
 interface Config {
   [key: string]: string;
@@ -91,7 +92,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
   app!: string
 
   async run() {
-    const {flags: {app}, args: {key}} = this.parse(ConfigEdit)
+    const {flags: {app}, args: {key}} = await this.parse(ConfigEdit)
     this.app = app
     cli.action.start('Fetching config')
     const original = await this.fetchLatestConfig()

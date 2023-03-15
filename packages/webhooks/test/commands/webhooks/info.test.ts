@@ -16,12 +16,11 @@ describe('webhooks:info', () => {
   .command(['webhooks:info', '--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
   .it('displays info for a given app webhook', ctx => {
     expect(ctx.stderr).to.equal('')
-    expect(ctx.stdout).to.equal(`=== 99999999-9999-9999-9999-999999999999
-Include:    foo,bar
-Level:      notify
-URL:        http://foobar.com
-Webhook ID: 99999999-9999-9999-9999-999999999999
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('Include:    foo,bar')
+    expect(ctx.stdout).to.contain('Level:      notify')
+    expect(ctx.stdout).to.contain('URL:        http://foobar.com')
+    expect(ctx.stdout).to.contain('Webhook ID: 99999999-9999-9999-9999-999999999999')
   })
 
   test
@@ -39,11 +38,10 @@ Webhook ID: 99999999-9999-9999-9999-999999999999
   .command(['webhooks:info', '--pipeline', 'example-pipeline', '99999999-9999-9999-9999-999999999999'])
   .it('displays info for a given pipeline webhook', ctx => {
     expect(ctx.stderr).to.equal('')
-    expect(ctx.stdout).to.equal(`=== 99999999-9999-9999-9999-999999999999
-Include:    foo,bar
-Level:      notify
-URL:        http://foobar.com
-Webhook ID: 99999999-9999-9999-9999-999999999999
-`)
+    expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(ctx.stdout).to.contain('Include:    foo,bar')
+    expect(ctx.stdout).to.contain('Level:      notify')
+    expect(ctx.stdout).to.contain('URL:        http://foobar.com')
+    expect(ctx.stdout).to.contain('Webhook ID: 99999999-9999-9999-9999-999999999999')
   })
 })

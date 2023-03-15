@@ -1,4 +1,4 @@
-import {expect, test} from '../test'
+import {expect, test} from '@oclif/test'
 
 const withRegions = test
 .nock('https://api.heroku.com', api => api
@@ -15,33 +15,21 @@ describe('regions', () => {
   .stdout()
   .command(['regions'])
   .it('list regions', async ({stdout}) => {
-    expect(stdout).to.equal(`ID      Location               Runtime
-──────  ─────────────────────  ──────────────
-eu      Europe                 Common Runtime
-us      United States          Common Runtime
-oregon  Oregon, United States  Private Spaces
-`)
+    expect(stdout).to.equal(' ID     Location              Runtime        \n ────── ───────────────────── ────────────── \n eu     Europe                Common Runtime \n us     United States         Common Runtime \n oregon Oregon, United States Private Spaces \n')
   })
 
   withRegions
   .stdout()
   .command(['regions', '--private'])
   .it('--private', async ({stdout}) => {
-    expect(stdout).to.equal(`ID      Location               Runtime
-──────  ─────────────────────  ──────────────
-oregon  Oregon, United States  Private Spaces
-`)
+    expect(stdout).to.equal(' ID     Location              Runtime        \n ────── ───────────────────── ────────────── \n oregon Oregon, United States Private Spaces \n')
   })
 
   withRegions
   .stdout()
   .command(['regions', '--common'])
   .it('--common', async ({stdout}) => {
-    expect(stdout).to.equal(`ID  Location       Runtime
-──  ─────────────  ──────────────
-eu  Europe         Common Runtime
-us  United States  Common Runtime
-`)
+    expect(stdout).to.equal(' ID Location      Runtime        \n ── ───────────── ────────────── \n eu Europe        Common Runtime \n us United States Common Runtime \n')
   })
 
   withRegions

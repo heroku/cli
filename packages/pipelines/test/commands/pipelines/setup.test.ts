@@ -1,6 +1,8 @@
+import {CliUx} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import {cli} from 'cli-ux'
 import sinon from 'sinon'
+
+const cli = CliUx.ux
 
 describe('pipelines:setup', () => {
   test

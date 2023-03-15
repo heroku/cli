@@ -1,4 +1,4 @@
-const {default: ux} = require('cli-ux')
+const {CliUx} = require('@oclif/core')
 const {default: c} = require('@heroku-cli/color')
 
 const COLORS = [
@@ -87,7 +87,7 @@ function colorizeRouter (body) {
       return other(k + '=') + v
     }).join(' ')
   } catch (err) {
-    ux.warn(err)
+    CliUx.ux.warn(err)
     return body
   }
 }
@@ -131,7 +131,7 @@ function colorizeRun (body) {
       ].join('')
     }
   } catch (err) {
-    ux.warn(err)
+    CliUx.ux.warn(err)
   }
   return body
 }
@@ -189,7 +189,7 @@ function colorizeWeb (body) {
       ].join('')
     }
   } catch (err) {
-    ux.warn(err)
+    CliUx.ux.warn(err)
   }
   return body
 }
