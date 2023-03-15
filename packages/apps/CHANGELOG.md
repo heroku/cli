@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.2-beta.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.69.1...v8.0.2-beta.0) (2023-03-15)
+
+
+### Reverts
+
+* Revert "refactor: revert oclif upgrade (#2256)" ([c970fed](https://github.com/heroku/heroku-cli-plugin-apps/commit/c970fed7c76ee613b935a0b7930ed327068bf627)), closes [#2256](https://github.com/heroku/heroku-cli-plugin-apps/issues/2256)
+
+
+
+
+
 # [7.68.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v8.0.1...v7.68.0) (2023-02-06)
 
 
