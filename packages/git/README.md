@@ -19,8 +19,8 @@ Heroku CLI plugin to manage local git repos.
 $ npm install -g @heroku-cli/plugin-git
 $ oclif-example COMMAND
 running command...
-$ oclif-example (--version|-v)
-@heroku-cli/plugin-git/8.0.2-beta.0 darwin-arm64 node-v16.19.0
+$ oclif-example (-v|--version|version)
+@heroku-cli/plugin-git/7.68.0 darwin-x64 node-v16.19.0
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -29,5 +29,55 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`oclif-example git:clone [DIRECTORY]`](#oclif-example-gitclone-directory)
+* [`oclif-example git:remote`](#oclif-example-gitremote)
 
+## `oclif-example git:clone [DIRECTORY]`
+
+clones a heroku app to your local machine at DIRECTORY (defaults to app name)
+
+```
+USAGE
+  $ oclif-example git:clone [DIRECTORY]
+
+ARGUMENTS
+  DIRECTORY  where to clone the app
+
+OPTIONS
+  -a, --app=app        (required) the Heroku app to use
+  -r, --remote=remote  the git remote to create, default "heroku"
+
+EXAMPLES
+  $ heroku git:clone -a example
+  Cloning into 'example'...
+  remote: Counting objects: 42, done.
+  ...
+```
+
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/git/src/commands/git/clone.ts)_
+
+## `oclif-example git:remote`
+
+adds a git remote to an app repo
+
+```
+USAGE
+  $ oclif-example git:remote
+
+OPTIONS
+  -a, --app=app        the Heroku app to use
+  -r, --remote=remote  the git remote to create
+
+DESCRIPTION
+  extra arguments will be passed to git remote add
+
+EXAMPLES
+  # set git remote heroku to https://git.heroku.com/example.git
+      $ heroku git:remote -a example
+
+      # set git remote heroku-staging to https://git.heroku.com/example.git
+      $ heroku git:remote --remote heroku-staging -a example
+```
+
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->

@@ -13,15 +13,12 @@ display the log drains of an app
 
 ```
 USAGE
-  $ heroku drains -a <value> [--json] [-r <value>]
+  $ heroku drains
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                output in json format
-
-DESCRIPTION
-  display the log drains of an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               output in json format
 ```
 
 ## `heroku drains:add URL`
@@ -30,14 +27,11 @@ adds a log drain to an app
 
 ```
 USAGE
-  $ heroku drains:add URL -a <value> [-r <value>]
+  $ heroku drains:add URL
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  adds a log drain to an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku drains:remove [URL|TOKEN]`
@@ -48,10 +42,7 @@ removes a log drain from an app
 USAGE
   $ heroku drains:remove [URL|TOKEN]
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  removes a log drain from an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```

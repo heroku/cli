@@ -14,15 +14,12 @@ list who has access to an app
 
 ```
 USAGE
-  $ heroku access -a <value> [--json] [-r <value>]
+  $ heroku access
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                output in json format
-
-DESCRIPTION
-  list who has access to an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               output in json format
 ```
 
 ## `heroku access:add EMAIL`
@@ -31,20 +28,15 @@ add new users to your app
 
 ```
 USAGE
-  $ heroku access:add EMAIL -a <value> [-p <value>] [-r <value>]
+  $ heroku access:add EMAIL
 
-FLAGS
-  -a, --app=<value>          (required) app to run command against
-  -p, --permissions=<value>  list of permissions comma separated
-  -r, --remote=<value>       git remote of app to use
-
-DESCRIPTION
-  add new users to your app
-
+OPTIONS
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  list of permissions comma separated
+  -r, --remote=remote            git remote of app to use
 
 EXAMPLES
   $ heroku access:add user@email.com --app APP # add a collaborator to your app
-
   $ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated
 ```
 
@@ -54,15 +46,11 @@ remove users from a team app
 
 ```
 USAGE
-  $ heroku access:remove EMAIL -a <value> [-r <value>]
+  $ heroku access:remove EMAIL
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  remove users from a team app
-
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 
 EXAMPLES
   $ heroku access:remove user@email.com --app APP
@@ -74,16 +62,12 @@ update existing collaborators on an team app
 
 ```
 USAGE
-  $ heroku access:update EMAIL -a <value> [-p <value>] [-r <value>]
+  $ heroku access:update EMAIL
 
-FLAGS
-  -a, --app=<value>          (required) app to run command against
-  -p, --permissions=<value>  comma-delimited list of permissions to update (deploy,manage,operate)
-  -r, --remote=<value>       git remote of app to use
-
-DESCRIPTION
-  update existing collaborators on an team app
-
+OPTIONS
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  comma-delimited list of permissions to update (deploy,manage,operate)
+  -r, --remote=remote            git remote of app to use
 
 EXAMPLES
   $ heroku access:update user@email.com --app APP --permissions deploy,manage,operate

@@ -60,15 +60,12 @@ list who has access to an app
 
 ```
 USAGE
-  $ heroku access -a <value> [--json] [-r <value>]
+  $ heroku access
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --json                output in json format
-
-DESCRIPTION
-  list who has access to an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               output in json format
 ```
 
 ## `heroku access:add EMAIL`
@@ -77,20 +74,15 @@ add new users to your app
 
 ```
 USAGE
-  $ heroku access:add EMAIL -a <value> [-p <value>] [-r <value>]
+  $ heroku access:add EMAIL
 
-FLAGS
-  -a, --app=<value>          (required) app to run command against
-  -p, --permissions=<value>  list of permissions comma separated
-  -r, --remote=<value>       git remote of app to use
-
-DESCRIPTION
-  add new users to your app
-
+OPTIONS
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  list of permissions comma separated
+  -r, --remote=remote            git remote of app to use
 
 EXAMPLES
   $ heroku access:add user@email.com --app APP # add a collaborator to your app
-
   $ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated
 ```
 
@@ -100,15 +92,11 @@ remove users from a team app
 
 ```
 USAGE
-  $ heroku access:remove EMAIL -a <value> [-r <value>]
+  $ heroku access:remove EMAIL
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  remove users from a team app
-
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 
 EXAMPLES
   $ heroku access:remove user@email.com --app APP
@@ -120,16 +108,12 @@ update existing collaborators on an team app
 
 ```
 USAGE
-  $ heroku access:update EMAIL -a <value> [-p <value>] [-r <value>]
+  $ heroku access:update EMAIL
 
-FLAGS
-  -a, --app=<value>          (required) app to run command against
-  -p, --permissions=<value>  comma-delimited list of permissions to update (deploy,manage,operate)
-  -r, --remote=<value>       git remote of app to use
-
-DESCRIPTION
-  update existing collaborators on an team app
-
+OPTIONS
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  comma-delimited list of permissions to update (deploy,manage,operate)
+  -r, --remote=remote            git remote of app to use
 
 EXAMPLES
   $ heroku access:update user@email.com --app APP --permissions deploy,manage,operate
@@ -141,14 +125,11 @@ add yourself to a team app
 
 ```
 USAGE
-  $ heroku apps:join -a <value> [-r <value>]
+  $ heroku apps:join
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  add yourself to a team app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku apps:leave`
@@ -157,14 +138,11 @@ remove yourself from a team app
 
 ```
 USAGE
-  $ heroku apps:leave -a <value> [-r <value>]
+  $ heroku apps:leave
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  remove yourself from a team app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku apps:lock`
@@ -173,14 +151,11 @@ prevent team members from joining an app
 
 ```
 USAGE
-  $ heroku apps:lock -a <value> [-r <value>]
+  $ heroku apps:lock
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  prevent team members from joining an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku apps:transfer RECIPIENT`
@@ -189,26 +164,24 @@ transfer applications to another user or team
 
 ```
 USAGE
-  $ heroku apps:transfer RECIPIENT [-l] [--bulk] [-a <value>] [-r <value>]
+  $ heroku apps:transfer RECIPIENT
 
 ARGUMENTS
   RECIPIENT  user or team to transfer applications to
 
-FLAGS
-  -a, --app=<value>     app to run command against
-  -l, --locked          lock the app upon transfer
-  -r, --remote=<value>  git remote of app to use
-  --bulk                transfer applications in bulk
-
-DESCRIPTION
-  transfer applications to another user or team
-
+OPTIONS
+  -a, --app=app        app to run command against
+  -l, --locked         lock the app upon transfer
+  -r, --remote=remote  git remote of app to use
+  --bulk               transfer applications in bulk
 
 EXAMPLES
   $ heroku apps:transfer collaborator@example.com
   Transferring example to collaborator@example.com... done
+
   $ heroku apps:transfer acme-widgets
   Transferring example to acme-widgets... done
+
   $ heroku apps:transfer --bulk acme-widgets
   ...
 ```
@@ -219,14 +192,11 @@ unlock an app so any team member can join
 
 ```
 USAGE
-  $ heroku apps:unlock -a <value> [-r <value>]
+  $ heroku apps:unlock
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  unlock an app so any team member can join
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku join`
@@ -235,14 +205,11 @@ add yourself to a team app
 
 ```
 USAGE
-  $ heroku join -a <value> [-r <value>]
+  $ heroku join
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  add yourself to a team app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku leave`
@@ -251,14 +218,11 @@ remove yourself from a team app
 
 ```
 USAGE
-  $ heroku leave -a <value> [-r <value>]
+  $ heroku leave
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  remove yourself from a team app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku lock`
@@ -267,14 +231,11 @@ prevent team members from joining an app
 
 ```
 USAGE
-  $ heroku lock -a <value> [-r <value>]
+  $ heroku lock
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  prevent team members from joining an app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku members`
@@ -283,16 +244,13 @@ list members of a team
 
 ```
 USAGE
-  $ heroku members [-r <value>] [--pending] [--json] [-t <value>]
+  $ heroku members
 
-FLAGS
-  -r, --role=<value>  filter by role
-  -t, --team=<value>  team to use
-  --json              output in json format
-  --pending           filter by pending team invitations
-
-DESCRIPTION
-  list members of a team
+OPTIONS
+  -r, --role=role  filter by role
+  -t, --team=team  team to use
+  --json           output in json format
+  --pending        filter by pending team invitations
 ```
 
 ## `heroku members:add EMAIL`
@@ -301,14 +259,11 @@ adds a user to a team
 
 ```
 USAGE
-  $ heroku members:add EMAIL -r <value> [-t <value>]
+  $ heroku members:add EMAIL
 
-FLAGS
-  -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  team to use
-
-DESCRIPTION
-  adds a user to a team
+OPTIONS
+  -r, --role=role  (required) member role (admin, collaborator, member, owner)
+  -t, --team=team  team to use
 ```
 
 ## `heroku members:remove EMAIL`
@@ -317,13 +272,10 @@ removes a user from a team
 
 ```
 USAGE
-  $ heroku members:remove EMAIL [-t <value>]
+  $ heroku members:remove EMAIL
 
-FLAGS
-  -t, --team=<value>  team to use
-
-DESCRIPTION
-  removes a user from a team
+OPTIONS
+  -t, --team=team  team to use
 ```
 
 ## `heroku members:set EMAIL`
@@ -332,14 +284,11 @@ sets a members role in a team
 
 ```
 USAGE
-  $ heroku members:set EMAIL -r <value> [-t <value>]
+  $ heroku members:set EMAIL
 
-FLAGS
-  -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  team to use
-
-DESCRIPTION
-  sets a members role in a team
+OPTIONS
+  -r, --role=role  (required) member role (admin, collaborator, member, owner)
+  -t, --team=team  team to use
 ```
 
 ## `heroku orgs`
@@ -348,14 +297,11 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku orgs [--json] [--enterprise]
+  $ heroku orgs
 
-FLAGS
+OPTIONS
   --enterprise  filter by enterprise teams
   --json        output in json format
-
-DESCRIPTION
-  list the teams that you are a member of
 ```
 
 ## `heroku orgs:open`
@@ -364,13 +310,10 @@ open the team interface in a browser window
 
 ```
 USAGE
-  $ heroku orgs:open [-t <value>]
+  $ heroku orgs:open
 
-FLAGS
-  -t, --team=<value>  team to use
-
-DESCRIPTION
-  open the team interface in a browser window
+OPTIONS
+  -t, --team=team  team to use
 ```
 
 ## `heroku teams`
@@ -379,14 +322,12 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku teams [--json]
+  $ heroku teams
 
-FLAGS
+OPTIONS
   --json  output in json format
 
 DESCRIPTION
-  list the teams that you are a member of
-
   Use heroku members:* to manage team members.
 ```
 
@@ -396,13 +337,10 @@ unlock an app so any team member can join
 
 ```
 USAGE
-  $ heroku unlock -a <value> [-r <value>]
+  $ heroku unlock
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  unlock an app so any team member can join
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 <!-- commandsstop -->

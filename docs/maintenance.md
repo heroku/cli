@@ -13,14 +13,11 @@ display the current maintenance status of app
 
 ```
 USAGE
-  $ heroku maintenance -a <value> [-r <value>]
+  $ heroku maintenance
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  display the current maintenance status of app
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku maintenance:off`
@@ -29,14 +26,11 @@ take the app out of maintenance mode
 
 ```
 USAGE
-  $ heroku maintenance:off -a <value> [-r <value>]
+  $ heroku maintenance:off
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  take the app out of maintenance mode
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku maintenance:on`
@@ -45,12 +39,9 @@ put the app into maintenance mode
 
 ```
 USAGE
-  $ heroku maintenance:on -a <value> [-r <value>]
+  $ heroku maintenance:on
 
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  put the app into maintenance mode
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
