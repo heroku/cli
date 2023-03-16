@@ -10,7 +10,7 @@ export class GitCredentials extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(GitCredentials)
+    const {args} = await this.parse(GitCredentials)
     switch (args.command) {
     case 'get':
       if (!this.heroku.auth) throw new Error('not logged in')

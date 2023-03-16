@@ -1,12 +1,15 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
 import * as git from '../../utils/git'
 import {getPipeline} from '../../utils/pipelines'
 import {createSourceBlob} from '../../utils/source'
 import {displayAndExit} from '../../utils/test-run'
+
+const cli = CliUx.ux
+
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
 
@@ -21,7 +24,7 @@ export default class CiRun extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(CiRun)
+    const {flags} = await this.parse(CiRun)
     const pipeline = await getPipeline(flags, this)
     const commit = await git.readCommit('HEAD')
 

@@ -12,7 +12,7 @@ const assertExit = require('../../assert_exit.js')
 
 describe('config:set', () => {
   beforeEach(async () => {
-    config = await require('@oclif/config').load()
+    config = await require('@oclif/core').Config.load()
     cli.mockConsole()
     cli.exit.mock()
   })
