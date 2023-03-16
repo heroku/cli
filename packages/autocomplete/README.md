@@ -20,7 +20,7 @@ $ npm install -g @heroku-cli/plugin-autocomplete
 $ heroku COMMAND
 running command...
 $ heroku (--version|-v)
-@heroku-cli/plugin-autocomplete/8.0.2-beta.1 darwin-arm64 node-v16.19.0
+@heroku-cli/plugin-autocomplete/8.0.2-beta.0 darwin-arm64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -29,34 +29,5 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`heroku autocomplete [SHELL]`](#heroku-autocomplete-shell)
 
-## `heroku autocomplete [SHELL]`
-
-display autocomplete installation instructions
-
-```
-USAGE
-  $ heroku autocomplete [SHELL] [-r]
-
-ARGUMENTS
-  SHELL  shell type
-
-FLAGS
-  -r, --refresh-cache  refresh cache only (ignores displaying instructions)
-
-DESCRIPTION
-  display autocomplete installation instructions
-
-EXAMPLES
-  $ heroku autocomplete
-
-  $ heroku autocomplete bash
-
-  $ heroku autocomplete zsh
-
-  $ heroku autocomplete --refresh-cache
-```
-
-_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v8.0.2-beta.1/packages/autocomplete/src/commands/autocomplete/index.ts)_
 <!-- commandsstop -->

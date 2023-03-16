@@ -4,8 +4,6 @@
 Client tools for Heroku Exec
 
 * [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
-* [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
-* [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
 * [`heroku ps:copy FILE`](#heroku-pscopy-file)
 * [`heroku ps:exec`](#heroku-psexec)
 * [`heroku ps:forward PORT`](#heroku-psforward-port)
@@ -16,7 +14,6 @@ Client tools for Heroku Exec
 * [`heroku ps:socks`](#heroku-pssocks)
 * [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
 * [`heroku ps:type`](#heroku-pstype)
-* [`heroku ps:wait`](#heroku-pswait)
 
 ## `heroku ps [TYPE [TYPE ...]]`
 
@@ -44,42 +41,6 @@ EXAMPLES
   $ heroku ps run # specifying types
   === run: one-off dyno
   run.1: up for 5m: bash
-```
-
-## `heroku ps:autoscale:disable`
-
-disable web dyno autoscaling
-
-```
-USAGE
-  $ heroku ps:autoscale:disable -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  disable web dyno autoscaling
-```
-
-## `heroku ps:autoscale:enable`
-
-enable web dyno autoscaling
-
-```
-USAGE
-  $ heroku ps:autoscale:enable -a <value> --min <value> --max <value> [-r <value>] [--p95 <value>] [--notifications]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  --max=<value>         (required) maximum number of dynos
-  --min=<value>         (required) minimum number of dynos
-  --notifications       receive email notifications when the max dyno limit is reached
-  --p95=<value>         desired p95 response time
-
-DESCRIPTION
-  enable web dyno autoscaling
 ```
 
 ## `heroku ps:copy FILE`
@@ -316,23 +277,4 @@ DESCRIPTION
   Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
-```
-
-## `heroku ps:wait`
-
-wait for all dynos to be running latest version after a release
-
-```
-USAGE
-  $ heroku ps:wait -a <value> [-r <value>] [-w <value>] [-R | -t <value>]
-
-FLAGS
-  -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) app to run command against
-  -r, --remote=<value>         git remote of app to use
-  -t, --type=<value>           wait for one specific dyno type
-  -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)
-
-DESCRIPTION
-  wait for all dynos to be running latest version after a release
 ```
