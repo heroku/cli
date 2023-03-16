@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.2-beta.1](https://github.com/heroku/cli/compare/v8.0.2-beta.0...v8.0.2-beta.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* enable version command ([f770288](https://github.com/heroku/cli/commit/f77028874a4b533424c0b934affc2141f81b73e5))
+
+
+
+
+
 ## [8.0.2-beta.0](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2-beta.0) (2023-03-15)
 
 
