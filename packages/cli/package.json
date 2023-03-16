@@ -103,7 +103,8 @@
       "-h"
     ],
     "additionalVersionFlags": [
-      "-v"
+      "-v",
+      "version"
     ],
     "commands": "./lib/commands",
     "plugins": [
