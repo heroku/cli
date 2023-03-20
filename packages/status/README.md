@@ -58,8 +58,8 @@ $ npm install -g @heroku-cli/plugin-status
 $ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
-$ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/7.68.0 darwin-x64 node-v16.19.0
+$ @heroku-cli/plugin-status (--version|-v)
+@heroku-cli/plugin-status/8.0.2 darwin-arm64 node-v16.19.0
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
   $ @heroku-cli/plugin-status COMMAND
@@ -75,11 +75,14 @@ display current status of the Heroku platform
 
 ```
 USAGE
-  $ @heroku-cli/plugin-status status
+  $ @heroku-cli/plugin-status status [--json]
 
-OPTIONS
+FLAGS
   --json  output in json format
+
+DESCRIPTION
+  display current status of the Heroku platform
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.68.0/packages/status/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v8.0.2/src/commands/status.ts)_
 <!-- commandsstop -->

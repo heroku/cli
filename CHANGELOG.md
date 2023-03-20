@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.69.2](https://github.com/heroku/cli/compare/v7.69.1...v7.69.2) (2023-03-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 ## [7.69.1](https://github.com/heroku/cli/compare/v7.69.0...v7.69.1) (2023-03-09)
 
 **Note:** Version bump only for package heroku
