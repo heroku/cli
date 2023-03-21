@@ -5,6 +5,10 @@ on:
         description: version to promote to latest
         type: string
         required: true
+      buildSha:
+        description: version to promote to latest
+        type: string
+        required: true
 
 jobs:
   promote:
@@ -25,4 +29,4 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: cd packages/cli
-      - run: yarn oclif promote --deb --version=${{ inputs.version }}
+      - run: yarn oclif promote --deb --version=${{ inputs.version }} --sha=${{ inputs.buildSha }}
