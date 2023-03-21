@@ -6,7 +6,7 @@ on:
         type: string
         required: true
       buildSha:
-        description: version to promote to latest
+        description: sha of version in S3
         type: string
         required: true
 
@@ -28,5 +28,4 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: cd packages/cli
-      - run: yarn oclif promote --deb --version=${{ inputs.version }} --sha=${{ inputs.buildSha }}
+      - run: yarn oclif promote --deb --root="./packages/cli" --version=${{ inputs.version }} --sha=${{ inputs.buildSha }}
