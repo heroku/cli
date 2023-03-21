@@ -25,4 +25,4 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: cd packages/cli
-      - run: oclif promote --deb --version=${{ inputs.version }}
+      - run: yarn oclif promote --deb --version=${{ inputs.version }}
