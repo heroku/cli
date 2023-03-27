@@ -7,3 +7,4 @@
 /package-lock.json
 /tmp
 package-lock.json
+/.nyc_output

@@ -26,6 +26,7 @@
     "globby": "^9.0.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
+    "nyc": "^15.1.0",
     "oclif": "3.6.4",
     "ts-node": "10.9.1",
     "tslib": "^1.9.3",
@@ -64,7 +65,7 @@
     "postpublish": "yarn run clean",
     "prepack": "yarn run build && oclif manifest",
     "preversion": "yarn run clean",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   }
 }
