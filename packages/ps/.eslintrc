@@ -5,6 +5,7 @@
   ],
   "rules": {
     "unicorn/no-abusive-eslint-disable": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "camelcase": "off"
   }
 }
