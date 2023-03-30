@@ -64,7 +64,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "nyc --extension .js mocha --forbid-only \"test/commands/**/*.js\"",
+    "test": "nyc --extension .js mocha --forbid-only \"test/**/*.js\"",
     "version": "oclif readme && git add README.md"
   }
 }
