@@ -84,6 +84,9 @@ FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
 
+GLOBAL FLAGS
+  --json  Format output as json.
+
 DESCRIPTION
   Displays installation properties of a plugin.
 
