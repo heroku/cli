@@ -1898,10 +1898,10 @@
     fast-levenshtein "^3.0.0"
     lodash "^4.17.21"
 
-"@oclif/plugin-plugins@2.4.4-beta.4":
-  version "2.4.4-beta.4"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-2.4.4-beta.4.tgz#69a21784891a1d33a2916f6362c413d39475c5b5"
-  integrity sha512-TcabGqpbYmapbjqxK8M8I4Ww7mSinNqaHxTZd8ltLc/ZKWKfsBJrn+D3zmdkHjEUaKKbPLAIXDTTQhUmOsyFwA==
+"@oclif/plugin-plugins@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-2.4.4.tgz#4a77408c06f8f020b7883059d18d8010ae35be94"
+  integrity sha512-ieqwznpReiP8ER4Qrkzn084Xp47FLT4gpsUSL/b71o+1QhMqj4sOpLT/XW+Hf1O9zDJg4KyF99Z892FBhNfvVQ==
   dependencies:
     "@oclif/color" "^1.0.4"
     "@oclif/core" "^2.6.4"
