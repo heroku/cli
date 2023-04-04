@@ -8,7 +8,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* update @oclif/plugin-plugins to bug fix to allow installing Legacy plugins ([#2281](https://github.com/heroku/cli/issues/2281)) ([1feb0b0](https://github.com/heroku/cli/commit/1feb0b0e2092378a6ef017d7123d9d8dce465471))
+* update @oclif/plugin-plugins to include bug fix allowing installs of Legacy plugins ([#2281](https://github.com/heroku/cli/issues/2281)) ([1feb0b0](https://github.com/heroku/cli/commit/1feb0b0e2092378a6ef017d7123d9d8dce465471))
 
 
 
