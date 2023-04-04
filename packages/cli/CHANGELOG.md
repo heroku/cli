@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.3](https://github.com/heroku/cli/compare/v8.0.2...v8.0.3) (2023-04-04)
+
+
+### Bug Fixes
+
+* update @oclif/plugin-plugins to bug fix to allow installing Legacy plugins ([#2281](https://github.com/heroku/cli/issues/2281)) ([1feb0b0](https://github.com/heroku/cli/commit/1feb0b0e2092378a6ef017d7123d9d8dce465471))
+* update to latest @oclif/plugin-plugins ([#2283](https://github.com/heroku/cli/issues/2283)) ([9176549](https://github.com/heroku/cli/commit/9176549f7047c64719f3000220d8643fdd1cdaf7))
+
+
+
+
+
 ## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
 
 **Note:** Version bump only for package heroku

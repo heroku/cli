@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.3](https://github.com/heroku/cli/compare/v8.0.2...v8.0.3) (2023-04-04)
+
+**Note:** Version bump only for package @heroku-cli/plugin-ps
+
+
+
+
+
 ## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ps
