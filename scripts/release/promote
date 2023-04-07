@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const qq = require('qqjs')
+
+qq.config.silent = false
+qq.run(async () => {
+  await require('../utils/_update_channel')()
+  await qq.x(`./node_modules/.bin/oclif promote --deb --root="./packages/cli" --version=${process.env.VERSION} --sha=\`git rev-parse --short=7 HEAD\``)
+  // copy apt files to root /apt so that install-ubuntu.sh works correctly
+  await qq.x(`aws s3 cp --recursive --cache-control "max-age: 604800" /home/runner/work/cli/cli/packages/cli/dist/apt/ "s3://${process.env.HEROKU_S3_BUCKET}/apt/"`)
+})

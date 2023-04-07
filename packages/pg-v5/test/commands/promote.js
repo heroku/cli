@@ -548,7 +548,6 @@ Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
   })
 })
 
-
 describe('pg:promote when promoted database is a follower', () => {
   let api
   let pg
@@ -605,13 +604,12 @@ describe('pg:promote when promoted database is a follower', () => {
       confirm: 'myapp'
     }).reply(201)
 
-    pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, { 
+    pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, {
       'following': 'postgres://xxx.com:5432/abcdefghijklmn',
-      'leader' :{"addon_id":"5ba2ba8b-07a9-4a65-a808-585a50e37f98","name":"postgresql-leader"}
-     })
-  
+      'leader': { 'addon_id': '5ba2ba8b-07a9-4a65-a808-585a50e37f98', 'name': 'postgresql-leader' }
+    })
+
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr).to.include('Your database has been promoted but it is currently a follower'))
-  }) 
-
+  })
 })
