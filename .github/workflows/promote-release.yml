@@ -12,6 +12,8 @@ on:
 
 jobs:
   promote:
+    name: Promote version to stable
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -29,3 +31,63 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn oclif promote --deb --root="./packages/cli" --version=${{ inputs.version }} --sha=${{ inputs.buildSha }}
+
+  ## POST release jobs
+  invalidate-cdn-cache:
+    needs: [ promote ]
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    runs-on: ubuntu-latest
+    environment: CLIS3BucketAndCloudfront
+    env:
+      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+      HEROKU_S3_BUCKET: ${{ secrets.HEROKU_S3_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+          aws configure set preview.cloudfront true
+      - run: ./scripts/postrelease/invalidate_cdn_cache
+
+  release-homebrew:
+    needs: [ promote ]
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ) && !contains(github.ref_name, 'beta')
+    runs-on: ubuntu-latest
+    environment: ReleaseHomebrew
+    steps:
+      - uses: actions/checkout@v3
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: all-dist
+          path: /home/runner/work/cli/cli/packages/cli/dist
+      - name: List all the downloaded files (for debugging)
+        run: ls -R
+        working-directory: /home/runner/work/cli/cli/packages/cli/dist
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn --frozen-lockfile --network-timeout 1000000
+          ./scripts/release/homebrew.js
+
+  change-management:
+    needs: [ promote ]
+    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    runs-on: ubuntu-latest
+    environment: ChangeManagement
+    env:
+      TPS_API_APP_ID: ${{ secrets.TPS_API_APP_ID }}
+      TPS_API_RELEASE_ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
+      TPS_API_STAGE: ${{ secrets.TPS_API_STAGE }}
+      TPS_API_TOKEN_PARAM: ${{ secrets.TPS_API_TOKEN_PARAM }}
+      TPS_API_URL_PARAM: ${{ secrets.TPS_API_URL_PARAM }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          yarn --frozen-lockfile --network-timeout 1000000
+          ./scripts/postrelease/change_management
