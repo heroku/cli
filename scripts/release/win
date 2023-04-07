@@ -7,6 +7,10 @@ qq.run(async () => {
   await require('../utils/_update_channel')()
   const version = await require('../utils/_version')()
   await qq.x('./node_modules/.bin/oclif pack:win')
+  /*
+   todo: path will need to change to accommodate to change from root of the bucket to
+   new oclif/core s3 locations: : s3:heroku-cli-assets/versions/v*
+  */
   await qq.x(`mv dist/win/heroku-v${version}-x86.exe dist/win/heroku-v${version}-x86-unsigned.exe`)
   await qq.x(`mv dist/win/heroku-v${version}-x64.exe dist/win/heroku-v${version}-x64-unsigned.exe`)
   // await qq.x('echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key')
