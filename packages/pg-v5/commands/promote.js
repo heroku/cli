@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const host = require('../lib/host')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const { app, args, flags } = context
   const { force } = flags
@@ -12,7 +12,7 @@ async function run (context, heroku) {
   let current
   let attachments
 
-  await cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, (async function () {
+  await cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, async function () {
     // Finds or creates a non-DATABASE attachment for the DB currently
     // attached as DATABASE.
     //
@@ -46,7 +46,7 @@ async function run (context, heroku) {
       }
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
-  }()))
+  }())
 
   if (!force) {
     let status = await heroku.request({
@@ -68,7 +68,7 @@ async function run (context, heroku) {
     promotionMessage = `Promoting ${cli.color.addon(attachment.addon.name)} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
   }
 
-  await cli.action(promotionMessage, (async function () {
+  await cli.action(promotionMessage, async function () {
     await heroku.post('/addon-attachments', {
       body: {
         name: 'DATABASE',
@@ -78,21 +78,21 @@ async function run (context, heroku) {
         confirm: app
       }
     })
-  }()))
+  }())
 
-  let currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon.id == current.addon.id && a.name == 'DATABASE_CONNECTION_POOL')
+  let currentPooler = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id && a.name == "DATABASE_CONNECTION_POOL")
   if (currentPooler) {
-    await cli.action(`Reattaching pooler to new leader`, (async function () {
+    await cli.action(`Reattaching pooler to new leader`, async function () {
       await heroku.post('/addon-attachments', {
         body: {
           name: currentPooler.name,
           app: { name: app },
           addon: { name: attachment.addon.name },
-          namespace: 'connection-pooling:default',
+          namespace: "connection-pooling:default",
           confirm: app
         }
       })
-    }()))
+    }())
     return cli.action.done()
   }
 
@@ -101,18 +101,19 @@ async function run (context, heroku) {
     path: `/client/v11/databases/${attachment.addon.id}`
   })
 
-  if (promotedDatabaseDetails['following']) {
+  if (!!promotedDatabaseDetails['following']){
     let unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
     cli.warn(`WARNING: Your database has been promoted but it is currently a follower database in read-only mode.
       \n Promoting a database with ${cli.color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
       \n Use ${cli.color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${cli.color.addon(promotedDatabaseDetails['leader']['name'])}) and convert it into a writable database.`)
   }
+  
 
   let releasePhase = ((await heroku.get(`/apps/${app}/formation`)))
     .find((formation) => formation.type === 'release')
 
   if (releasePhase) {
-    await cli.action('Checking release phase', (async function () {
+    await cli.action('Checking release phase', async function () {
       let releases = await heroku.request({
         path: `/apps/${app}/releases`,
         partial: true,
@@ -154,7 +155,7 @@ async function run (context, heroku) {
 
         await new Promise((resolve) => setTimeout(resolve, 5000))
       }
-    }()))
+    }())
   }
 }
 
