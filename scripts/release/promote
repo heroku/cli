@@ -8,6 +8,8 @@ qq.run(async () => {
 
   const shortSha = await qq.x('git rev-parse --short=7 HEAD')
   await qq.x(`./node_modules/.bin/oclif promote --deb --root="./packages/cli" --version=${process.env.VERSION} --sha=${shortSha}`)
-  // copy apt files to root /apt so that install-ubuntu.sh works correctly
-  await qq.x(`aws s3 cp --recursive --cache-control "max-age: 604800" "s3://${process.env.HEROKU_S3_BUCKET}/versions/${process.env.VERSION}/${shortSha}/apt/" "s3://${process.env.HEROKU_S3_BUCKET}/apt/"`)
+  // copy apt files to root /apt so that install-ubuntu.sh installs latest
+  const origin = `s3://${process.env.HEROKU_S3_BUCKET}/versions/${process.env.VERSION}/${shortSha}/apt/`
+  const destination = `s3://${process.env.HEROKU_S3_BUCKET}/apt/`
+  await qq.x(`aws s3 cp --recursive --cache-control "max-age: 604800" "${origin}" "${destination}"`)
 })
