@@ -117,8 +117,8 @@ jobs:
         run: |
           cd packages/cli
           pwd
-          ./scripts/pack/tarballs
-          ./scripts/pack/deb
+          ./scripts/upload/tarballs
+          ./scripts/upload/deb
       - uses: actions/upload-artifact@v3
         with:
           name: all-dist
