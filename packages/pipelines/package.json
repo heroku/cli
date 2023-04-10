@@ -68,7 +68,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
