@@ -1,9 +1,0 @@
-{
-  "extends": [
-    "oclif",
-    "oclif-typescript"
-  ],
-  "rules": {
-    "camelcase": "off"
-  }
-}
