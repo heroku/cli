@@ -275,7 +275,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc",
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
