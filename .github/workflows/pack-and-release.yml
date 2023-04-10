@@ -130,6 +130,7 @@ jobs:
 
   promote:
     name: Promote version to stable
+    needs: [upload-deb-and-tarballs]
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
