@@ -5,8 +5,8 @@ import {CliUx, Interfaces} from '@oclif/core'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
-    async prompt(out: any, app: string): Promise<string> {
-      out.warn('Insecure Action')
+    async prompt(app: string): Promise<string> {
+      CliUx.ux.warn('Insecure Action')
       const name = await CliUx.ux.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
 To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
@@ -34,7 +34,7 @@ export default class LabsDisable extends Command {
     if (SecurityExceptionFeatures[feature]) {
       if (flags.confirm !== flags.app) {
         const prompt = SecurityExceptionFeatures[feature].prompt
-        const confirm = await prompt(CliUx, flags.app)
+        const confirm = await prompt(flags.app)
         if (confirm !== flags.app) {
           this.error('Confirmation name did not match app name. Try again.')
         }
