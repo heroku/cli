@@ -153,7 +153,7 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: |
-          shortSHA="${{ inputs.commitSHA }}"
+          shortSHA=${{ inputs.commitSHA }}
           if [ -z $shortSHA ]; then
             shortSHA=`git rev-parse --short=7 HEAD`
           fi
