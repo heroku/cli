@@ -247,7 +247,7 @@
       },
       "s3": {
         "xz": true,
-        "host": "https://cli-assets.heroku.com"
+        "host": "https://cli-assets-dev.heroku.com"
       }
     },
     "aliases": {
