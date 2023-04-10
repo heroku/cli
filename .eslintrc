@@ -6,6 +6,7 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "camelcase":"off",
-    "unicorn/no-abusive-eslint-disable": "off",
+    "no-constant-condition": ["error", {"checkLoops": false }],
+    "unicorn/no-abusive-eslint-disable": "off"
   }
 }
