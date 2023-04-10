@@ -62,7 +62,7 @@
     "postpublish": "rm -f oclif.manifest.json",
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
-    "lint": "eslint . --ext .ts --config ../../.eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"

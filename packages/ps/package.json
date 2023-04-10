@@ -57,7 +57,7 @@
     "build": "rm -rf lib && tsc",
     "clean": "rm -f oclif.manifest.json",
     "pretest": "tsc -p test --noEmit",
-    "lint": "eslint . --ext .ts --config ../../.eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "posttest": "yarn lint",
     "postpublish": "yarn run clean",
     "prepack": "yarn run build && oclif manifest",
