@@ -125,12 +125,8 @@ jobs:
         run: |
           cd packages/cli
           pwd
-          ./scripts/release/tarballs
-          ./scripts/release/deb
-      - uses: actions/upload-artifact@v3
-        with:
-          name: all-dist
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          ./scripts/upload/tarballs
+          ./scripts/upload/deb
 
   promote:
     name: Promote version to stable
