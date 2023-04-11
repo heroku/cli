@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "author": "Jeff Dickey @jdxcode",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -11,7 +11,7 @@
     "@heroku-cli/plugin-addons-v5": "^8.0.2",
     "@heroku-cli/plugin-apps": "^8.0.2",
     "@heroku-cli/plugin-apps-v5": "^8.0.2",
-    "@heroku-cli/plugin-auth": "^8.0.2",
+    "@heroku-cli/plugin-auth": "^8.0.4",
     "@heroku-cli/plugin-autocomplete": "^8.0.2",
     "@heroku-cli/plugin-buildpacks": "^8.0.2",
     "@heroku-cli/plugin-certs": "^8.0.2",

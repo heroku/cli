@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.4](https://github.com/heroku/cli/compare/v8.0.3...v8.0.4) (2023-04-11)
+
+
+### Bug Fixes
+
+* remove call to missing function. No longer passing cliUx as arg. ([#2287](https://github.com/heroku/cli/issues/2287)) ([f8467ff](https://github.com/heroku/cli/commit/f8467ff5e0767d797071284ba3b979a20d0f576b))
+
+
+
+
+
 ## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
