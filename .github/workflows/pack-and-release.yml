@@ -126,7 +126,7 @@ jobs:
           pwd
           ./scripts/upload/tarballs
           ./scripts/upload/deb
-#      uploading artifacts appears necessary here, but the prior scripts changes files in a way needed for downstream steps
+#      uploading artifacts appears unnecessary here, but the prior scripts changes files in a way needed for downstream steps
       - uses: actions/upload-artifact@v3
         with:
           name: all-dist
