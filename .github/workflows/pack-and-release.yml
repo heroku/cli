@@ -86,7 +86,6 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
 
-  # TODO: the circle job ran `install_scripts` but this isn't, do we need to add that?
   upload-deb-and-tarballs:
     needs: [sign_deb, pack_tarballs]
     if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
@@ -148,6 +147,12 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: install AWS cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+      - name: update Linux install scripts
+        run: ./scripts/postrelease/install_scripts
       - name: promote
         run: |
           shortSHA=${{ inputs.commitSHA }}
