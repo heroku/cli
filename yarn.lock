@@ -1819,6 +1819,41 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
+"@oclif/core@^2.7.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.1.tgz#3e00562bec5232886557355aad73e248097664b9"
+  integrity sha512-GnJNTR6+TmrvBBHTXFPV7oqhEbJ6Rv+pnG6XVag6MUwzKjIrhotyT2DH2/QkIQ+J2wgsqQvo2hcB9QuoBC3Ipg==
+  dependencies:
+    "@types/cli-progress" "^3.11.0"
+    ansi-escapes "^4.3.2"
+    ansi-styles "^4.3.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    clean-stack "^3.0.1"
+    cli-progress "^3.12.0"
+    debug "^4.3.4"
+    ejs "^3.1.8"
+    fs-extra "^9.1.0"
+    get-package-type "^0.1.0"
+    globby "^11.1.0"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.14.1"
+    natural-orderby "^2.0.3"
+    object-treeify "^1.1.33"
+    password-prompt "^1.1.2"
+    semver "^7.3.7"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+    supports-color "^8.1.1"
+    supports-hyperlinks "^2.2.0"
+    ts-node "^10.9.1"
+    tslib "^2.5.0"
+    widest-line "^3.1.0"
+    wordwrap "^1.0.0"
+    wrap-ansi "^7.0.0"
+
 "@oclif/errors@1.3.6", "@oclif/errors@^1.2.2", "@oclif/errors@^1.3.5", "@oclif/errors@^1.3.6":
   version "1.3.6"
   resolved "https://registry.npmjs.org/@oclif/errors/-/errors-1.3.6.tgz"
@@ -1915,13 +1950,13 @@
     tslib "^2.4.1"
     yarn "^1.22.18"
 
-"@oclif/plugin-update@3.0.13":
-  version "3.0.13"
-  resolved "https://registry.npmjs.org/@oclif/plugin-update/-/plugin-update-3.0.13.tgz"
-  integrity sha512-qr3Y2meL7DQpSTjaXmQgfHuLRWM+/ZsMFm6HirqdiV3BtWNxvtu/hicySvSgmE73O5Wh0G0H3RHmPdoddhbr2A==
+"@oclif/plugin-update@3.1.10":
+  version "3.1.10"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-3.1.10.tgz#b5d8d76c35f767dc37fc7d5bc9062a9eb43f924f"
+  integrity sha512-Bv7IP8sB3S0yNiJF4LRcJj6nAYA4l22RgpsOSWC7IO5X6LwXVZvvI6EGTLAlgF0HYIa7bwEgug/7wAun0v7k4A==
   dependencies:
-    "@oclif/color" "^1.0.3"
-    "@oclif/core" "^1.25.0"
+    "@oclif/color" "^1.0.4"
+    "@oclif/core" "^2.7.1"
     cross-spawn "^7.0.3"
     debug "^4.3.1"
     filesize "^6.1.0"
