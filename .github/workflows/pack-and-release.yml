@@ -151,8 +151,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-      - name: update Linux install scripts
-        run: ./scripts/postrelease/install_scripts
       - name: promote
         run: |
           shortSHA=${{ inputs.commitSHA }}
@@ -160,6 +158,9 @@ jobs:
             shortSHA=`git rev-parse --short=7 HEAD`
           fi
           yarn oclif promote --deb --xz --root="./packages/cli"  --version=${{ inputs.version }} --sha=$shortSHA
+        continue-on-error: true # temporary work around for https://github.com/oclif/oclif/issues/770
+      - name: update Linux install scripts
+        run: ./scripts/postrelease/install_scripts
 
   ## POST release jobs
   invalidate-cdn-cache:
