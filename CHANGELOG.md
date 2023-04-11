@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.4](https://github.com/heroku/cli/compare/v8.0.3...v8.0.4) (2023-04-11)
+
+
+### Bug Fixes
+
+* update plugin-update bump for WSL fix. ([#2291](https://github.com/heroku/cli/issues/2291)) ([a939d6e](https://github.com/heroku/cli/commit/a939d6e32e8c7a0469fe430a38775b8faec4b11b))
+
+
+
+
+
 ## [8.0.3](https://github.com/heroku/cli/compare/v8.0.2...v8.0.3) (2023-04-04)
 
 
