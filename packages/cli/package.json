@@ -245,18 +245,13 @@
       "node": {
         "version": "16.19.0",
         "targets": [
-          {
-            "platform": "linux",
-            "arch": "x86"
-          },
-          {
-            "platform": "linux",
-            "arch": "arm"
-          },
-          {
-            "platform": "linux",
-            "arch": "x64"
-          }
+          "linux-x64",
+          "linux-x86",
+          "linux-arm",
+          "win32-x64",
+          "win32-x86",
+          "darwin-x64",
+          "darwin-arm64"
         ]
       },
       "s3": {
