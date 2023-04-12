@@ -20,6 +20,7 @@
     "import/no-unresolved": "error",
     "no-constant-condition": ["error", {"checkLoops": false }],
     "node/no-missing-import": "off", //using import/no-unresolved instead
-    "unicorn/no-abusive-eslint-disable": "off"
+    "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/no-lonely-if":"off"
   }
 }
