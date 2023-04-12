@@ -23,6 +23,7 @@ export default class Regions extends Command {
     } else if (flags.common) {
       regions = regions.filter((region: any) => !region.private_capable)
     }
+
     regions = _.sortBy(regions, ['private_capable', 'name'])
 
     if (flags.json) {

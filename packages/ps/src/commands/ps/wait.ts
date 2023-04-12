@@ -17,10 +17,11 @@ export default class Wait extends Command {
       char: 'w',
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
       parse: async input => {
-        const w = parseInt(input, 10)
+        const w = Number.parseInt(input, 10)
         if (w < 10) {
           CliUx.ux.error('wait-interval must be at least 10', {exit: 1})
         }
+
         return w
       },
       default: 10,
@@ -72,6 +73,7 @@ export default class Wait extends Command {
         if (!released) {
           CliUx.ux.action.stop(`${releasedFraction}, done`)
         }
+
         break
       }
 
