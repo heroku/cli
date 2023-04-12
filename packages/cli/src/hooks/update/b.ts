@@ -28,6 +28,7 @@ export const brewHook: Hook<'update'> = async function () {
     if (error.code === 'ENOENT') return
     throw error
   }
+
   let cellarPath: string
   if (binPath && binPath.startsWith(path.join(brewRoot, 'Cellar'))) {
     cellarPath = path.resolve(binPath, path.dirname(path.relative(binPath, path.join(brewRoot, 'Cellar/heroku'))))
