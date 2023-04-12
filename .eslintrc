@@ -19,13 +19,15 @@
     "camelcase":"off",
     "import/no-unresolved": "error",
     "no-constant-condition": ["error", {"checkLoops": false }],
-    "node/no-missing-import": "off", //using import/no-unresolved instead
+    "node/no-missing-import": "off", // using import/no-unresolved instead
+    "unicorn/better-regex": "off", // TODO: fix issues and turn this back on
     "unicorn/import-style": "off",
     "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-lonely-if":"off",
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
-    "unicorn/prefer-regexp-test": "off"
+    "unicorn/prefer-regexp-test": "off",
+    "unicorn/prefer-spread": "off" // TODO: fix issues and turn this back on
   }
 }
