@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-string-slice */
 import {expect, test} from '@oclif/test'
 
 describe('ci:info', () => {

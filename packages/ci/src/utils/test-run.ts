@@ -184,7 +184,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
     testRuns = handleTestRunEvent(data, testRuns)
     draw(testRuns, watchOption)
   })
-
+  // eslint-disable-next-line unicorn/require-array-join-separator
   channel.join()
 }
 
@@ -208,6 +208,7 @@ async function waitForStates(states: string[], testRun: Heroku.TestRun, command:
     const {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)
     newTestRun = bodyTestRun
   }
+
   return newTestRun
 }
 
@@ -228,6 +229,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
     if (testRun) {
       testRun = await waitForStates(RUNNING_STATES, testRun, command)
     }
+
     if (firstTestNode) {
       await stream(firstTestNode.output_stream_url!)
     }
@@ -245,6 +247,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
       command.log()
       command.log(printLine(testRun))
     }
+
     return firstTestNode
   }
 }
@@ -259,7 +262,7 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
   let testNode: Heroku.TestNode
 
   if (nodeArg) {
-    const nodeIndex = parseInt(nodeArg, 2)
+    const nodeIndex = Number.parseInt(nodeArg, 2)
     testNode = testNodes.length > 1 ? testNodes[nodeIndex] : testNodes[0]
 
     await renderNodeOutput(command, testRun, testNode)
@@ -269,6 +272,7 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
       command.warn('This pipeline doesn\'t have parallel test runs, but you specified a node')
       command.warn('See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info')
     }
+
     processExitCode(command, testNode)
   } else if (testNodes.length > 1) {
     command.log(printLine(testRun))

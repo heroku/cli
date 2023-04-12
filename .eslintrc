@@ -25,6 +25,7 @@
     "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-lonely-if":"off",
+    "unicorn/numeric-separators-style":"off",
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-regexp-test": "off",
