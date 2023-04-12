@@ -21,6 +21,7 @@ export default class Doctor extends AutocompleteBase {
   async run() {
     const {args, flags} = await this.parse(Doctor)
     const shell = args.shell || this.config.shell
+    // eslint-disable-next-line unicorn/consistent-function-scoping
     const printLine: typeof this.log = (...args) => this.log(...args)
     this.errorIfNotSupportedShell(shell)
 
