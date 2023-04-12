@@ -60,6 +60,7 @@ export default class Options extends AutocompleteBase {
       const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, Klass)
       return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
     }
+
     this.throwError(`Command ${id} not found`)
   }
 
@@ -98,6 +99,7 @@ export default class Options extends AutocompleteBase {
     if (!cacheCompletion) {
       cacheCompletion = this.findCompletion(cacheKey, id)
     }
+
     return {cacheKey, cacheCompletion}
   }
 
@@ -144,6 +146,7 @@ export default class Options extends AutocompleteBase {
 
   private findFlagFromWildArg(wild: string, Klass: Interfaces.Command.Class): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
+    // eslint-disable-next-line unicorn/better-regex
     name = name.replace(/[=](.+)?$/, '')
 
     const unknown = {flag: undefined, name: undefined}

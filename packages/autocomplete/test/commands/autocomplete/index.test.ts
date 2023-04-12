@@ -1,10 +1,5 @@
 /* eslint-disable no-useless-escape */
-import Nock from '@fancy-test/nock'
-import * as Test from '@oclif/test'
-
-const test = Test.test
-.register('nock', Nock)
-const expect = Test.expect
+import {expect, test} from '@oclif/test'
 
 // autocomplete will throw error on windows
 const {default: runtest} = require('../../helpers/runtest')
