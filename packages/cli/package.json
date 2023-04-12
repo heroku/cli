@@ -246,7 +246,7 @@
         "version": "16.19.0",
         "targets": [
           "linux-x64",
-          "linux-x86",
+          "linux-i386",
           "linux-arm",
           "win32-x64",
           "win32-x86",
