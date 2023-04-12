@@ -95,7 +95,7 @@ describe('pipelines:setup', () => {
         })
         .stub(cli, 'prompt', () => promptStub)
         .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve())
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
         .command(['pipelines:setup'])
         .it('creates apps in the personal account with CI enabled')
 
@@ -119,7 +119,7 @@ describe('pipelines:setup', () => {
         })
         .stub(cli, 'prompt', () => promptStub)
         .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve())
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
         .command(['pipelines:setup', pipeline.name.toUpperCase()])
         .it('downcases capitalised pipeline names')
 
@@ -141,7 +141,7 @@ describe('pipelines:setup', () => {
           .reply(200)
         })
         .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve())
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
         .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
         .it('does not prompt for options with the -y flag', () => {
           // Since we're passing the `yes` flag here, we should always return default settings and
@@ -197,7 +197,7 @@ describe('pipelines:setup', () => {
         })
         .stub(cli, 'prompt', () => promptStub)
         .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve())
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
         .command(['pipelines:setup', '--team', team])
         .it('creates apps in a team with CI enabled')
       })
