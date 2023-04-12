@@ -122,4 +122,84 @@ describe('apps:create', function () {
       expect(JSON.parse(cli.stdout), 'to satisfy', json)
     })
   })
+
+  it('sets config vars when manifest flag is present', function () {
+    const appName = 'foo'
+
+    let mock = nock('https://api.heroku.com')
+      .post('/apps', { name: 'foo', stack: 'container' })
+      .reply(200, {
+        name: appName,
+        stack: { name: 'cedar-14' },
+        web_url: 'https://foobar.com'
+      })
+      .post(`/apps/${appName}/addons`)
+      .reply(200, [])
+      .patch(`/apps/${appName}/config-vars`, { S3_BUCKET: 'my-example-bucket' })
+      .reply(200, [])
+
+    return apps.run({ flags: { app: appName, manifest: true }, args: {}, config }).then(function () {
+      mock.done()
+
+      expect(mock.isDone()).to.equal(true)
+    })
+  })
+
+  describe('apps:create with buildpack & addon flags', function () {
+    beforeEach(async () => {
+      config = await Config.load()
+      config.channel = 'alpha'
+      cli.mockConsole()
+      nock.cleanAll()
+    })
+
+    it('adds addon if addons flag is present', function () {
+      const appName = 'foo'
+      const addon = 'foobar, secondPlan'
+
+      let mock = nock('https://api.heroku.com')
+        .post('/apps', { name: 'foo' })
+        .reply(200, {
+          name: appName,
+          stack: { name: 'cedar-14' },
+          web_url: 'https://foobar.com'
+        })
+        .post(`/apps/${appName}/addons`, { plan: 'foobar' })
+        .reply(200, [])
+        .post(`/apps/${appName}/addons`, { plan: 'secondPlan' })
+        .reply(200, [])
+
+      return apps.run({ flags: { app: appName, addons: addon }, args: {}, config }).then(function () {
+        mock.done()
+
+        expect(mock.isDone()).to.equal(true)
+      })
+    })
+
+    it('sets buildpack if buildpack flag is present', function () {
+      const appName = 'foo'
+      const addon = 'foobar, secondPlan'
+      const exampleBuildpack = 'https://github.com/some/buildpack.git'
+
+      let mock = nock('https://api.heroku.com')
+        .post('/apps', { name: 'foo' })
+        .reply(200, {
+          name: appName,
+          stack: { name: 'cedar-14' },
+          web_url: 'https://foobar.com'
+        })
+        .post(`/apps/${appName}/addons`, { plan: 'foobar' })
+        .reply(200, [])
+        .post(`/apps/${appName}/addons`, { plan: 'secondPlan' })
+        .reply(200, [])
+        .put(`/apps/${appName}/buildpack-installations`, { updates: [{ buildpack: 'https://github.com/some/buildpack.git' }] })
+        .reply(200, [])
+
+      return apps.run({ flags: { app: appName, addons: addon, buildpack: exampleBuildpack }, args: {}, config }).then(function () {
+        mock.done()
+
+        expect(mock.isDone()).to.equal(true)
+      })
+    })
+  })
 })
