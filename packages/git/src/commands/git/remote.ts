@@ -34,6 +34,7 @@ extra arguments will be passed to git remote add
     const remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
     const remotes = await git.exec(['remote'])
     const url = git.url(app.name!)
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (remotes.split('\n').includes(remote)) {
       await git.exec(['remote', 'set-url', remote, url].concat(argv))
     } else {
