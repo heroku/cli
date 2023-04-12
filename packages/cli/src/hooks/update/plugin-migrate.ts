@@ -37,6 +37,7 @@ export const migrate: Hook<'init'> = async function () {
     } catch (error: any) {
       this.warn(error)
     }
+
     try {
       const p = path.join(pluginsDir, 'link.json')
       if (await fs.pathExists(p)) {
@@ -50,6 +51,7 @@ export const migrate: Hook<'init'> = async function () {
     } catch (error: any) {
       this.warn(error)
     }
+
     await fs.remove(pluginsDir)
     process.stderr.write('heroku: done migrating plugins\n')
   }
