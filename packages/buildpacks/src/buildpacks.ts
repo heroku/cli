@@ -99,6 +99,7 @@ export class BuildpackCommand {
         return b.ordinal + 1 === index
       })
     }
+
     return -1
   }
 

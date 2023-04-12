@@ -1,4 +1,3 @@
-/* eslint-disable no-inner-declarations */
 import {Scope} from 'nock'
 
 export namespace BuildpackInstallationsStub {
@@ -6,21 +5,21 @@ export namespace BuildpackInstallationsStub {
     let response: any
 
     if (buildpacks && buildpacks.length > 0) {
-      if (typeof (buildpacks[0]) === 'string') {
+      typeof (buildpacks[0]) === 'string' ? (
         response = buildpacks.map((b, i) => {
           return {
             buildpack: {url: b},
             ordinal: i,
           }
         })
-      } else {
+      ) : (
         response = buildpacks.map((b, i) => {
           return {
             buildpack: b,
             ordinal: i,
           }
         })
-      }
+      )
     } else {
       response = []
     }

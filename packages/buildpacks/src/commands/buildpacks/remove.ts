@@ -29,6 +29,7 @@ export default class Remove extends Command {
     if (flags.index && args.buildpack) {
       CliUx.ux.error('Please choose either index or Buildpack, but not both.', {exit: 1})
     }
+
     if (!flags.index && !args.buildpack) {
       CliUx.ux.error('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.')
     }
@@ -41,6 +42,7 @@ export default class Remove extends Command {
     let spliceIndex: number
     if (flags.index) {
       buildpackCommand.validateIndexInRange(buildpacks, flags.index)
+      // eslint-disable-next-line unicorn/no-array-method-this-argument
       spliceIndex = await buildpackCommand.findIndex(buildpacks, flags.index)
     } else {
       spliceIndex = await buildpackCommand.findUrl(buildpacks, args.buildpack)

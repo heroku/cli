@@ -21,6 +21,7 @@ export default class Versions extends Command {
     if (herokuAuth === '') {
       this.error('You need to be logged in to run this command.')
     }
+
     const registry = new BuildpackRegistry()
 
     Result.match({
