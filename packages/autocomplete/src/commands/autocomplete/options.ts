@@ -146,6 +146,7 @@ export default class Options extends AutocompleteBase {
 
   private findFlagFromWildArg(wild: string, Klass: Interfaces.Command.Class): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
+    // eslint-disable-next-line unicorn/better-regex
     name = name.replace(/[=](.+)?$/, '')
 
     const unknown = {flag: undefined, name: undefined}
