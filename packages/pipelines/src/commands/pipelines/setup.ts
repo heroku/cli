@@ -58,7 +58,7 @@ export default class Setup extends Command {
 
     const errors = nameAndRepo(args)
 
-    if (errors.length !== 0) {
+    if (errors.length > 0) {
       this.error(errors.join(', '))
       return
     }

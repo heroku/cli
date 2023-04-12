@@ -63,6 +63,7 @@ export default class Create extends Command {
         default: guesses[0],
       })
     }
+
     if (flags.stage) {
       stage = flags.stage
     } else {

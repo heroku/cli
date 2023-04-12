@@ -43,7 +43,7 @@ export default class Connect extends Command {
 
     const errors = nameAndRepo({repo: flags.repo})
 
-    if (errors.length !== 0) {
+    if (errors.length > 0) {
       this.error(errors.join(', '))
       return
     }
