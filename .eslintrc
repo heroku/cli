@@ -5,6 +5,16 @@
     "oclif",
     "oclif-typescript"
   ],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "project": "packages/*/tsconfig.json"
+      }
+    }
+  },
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "camelcase":"off",
