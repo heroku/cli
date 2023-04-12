@@ -12,6 +12,7 @@ export function quote(s: string): string {
       '"'
     return "'" + s.replace(/(['\\])/g, '\\$1') + "'"
   }
+
   return s
 }
 
@@ -21,6 +22,7 @@ export function parse(a: string): string {
   } else if (a.startsWith("'")) {
     a = a.replace(/\\\\/g, '\\')
   }
+
   const parsed = shell.parse(a)
   if (parsed.length > 1) throw new Error(`Invalid token: ${a}`)
   return parsed[0]
