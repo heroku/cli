@@ -25,6 +25,7 @@ export default class DomainsClear extends Command {
       // eslint-disable-next-line no-await-in-loop
       await this.heroku.delete(`/apps/${flags.app}/domains/${domain.hostname}`)
     }
+
     action.stop()
   }
 }
