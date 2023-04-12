@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-string-slice */
 import {test, expect} from '@oclif/test'
 
 import * as git from '../../../src/utils/git'
