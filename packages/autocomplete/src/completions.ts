@@ -22,7 +22,6 @@ export const AppCompletion: Interfaces.Completion = {
       personal: await herokuGet('users/~/apps', ctx),
       teams: flatten(await Promise.all(teams.map((team: string) => herokuGet(`teams/${team}/apps`, ctx)))),
     }
-
     return apps.personal.concat(apps.teams)
   },
 }
@@ -138,6 +137,7 @@ export const ProcessTypeCompletion: Interfaces.Completion = {
       .split('\n')
       .map(s => {
         if (!s) return false
+        // eslint-disable-next-line unicorn/better-regex
         const m = s.match(/^([A-Za-z0-9_-]+)/)
         return m ? m[0] : false
       })
