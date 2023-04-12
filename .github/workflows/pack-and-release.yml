@@ -86,7 +86,6 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
 
-  # TODO: the circle job ran `install_scripts` but this isn't, do we need to add that?
   upload-deb-and-tarballs:
     needs: [sign_deb, pack_tarballs]
     if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
@@ -125,8 +124,9 @@ jobs:
         run: |
           cd packages/cli
           pwd
-          ./scripts/release/tarballs
-          ./scripts/release/deb
+          ./scripts/upload/tarballs
+          ./scripts/upload/deb
+#      uploading artifacts appears unnecessary here, but the prior scripts changes files in a way needed for downstream steps
       - uses: actions/upload-artifact@v3
         with:
           name: all-dist
@@ -152,6 +152,10 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: install AWS cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
       - name: promote
         run: |
           shortSHA=${{ inputs.commitSHA }}
@@ -159,6 +163,9 @@ jobs:
             shortSHA=`git rev-parse --short=7 HEAD`
           fi
           yarn oclif promote --deb --xz --root="./packages/cli"  --version=${{ inputs.version }} --sha=$shortSHA
+        continue-on-error: true # temporary work around for https://github.com/oclif/oclif/issues/770
+      - name: update Linux install scripts
+        run: ./scripts/postrelease/install_scripts
 
   ## POST release jobs
   invalidate-cdn-cache:
