@@ -1,19 +1,10 @@
 {
+  // Global settings
   "plugins": ["import"],
   "extends": [
     "oclif",
     "oclif-typescript"
   ],
-  "settings": {
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "import/resolver": {
-      "typescript": {
-        "project": "packages/*/tsconfig.json"
-      }
-    }
-  },
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "camelcase":"off",
@@ -21,6 +12,8 @@
     "no-constant-condition": ["error", {"checkLoops": false }],
     "node/no-missing-import": "off", // using import/no-unresolved instead
     "unicorn/better-regex": "off", // TODO: fix issues and turn this back on
+    "unicorn/consistent-function-scoping": "off", // TODO: fix issues and turn this back on
+    "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-abusive-eslint-disable": "off",
     "unicorn/no-array-for-each": "off",
@@ -29,6 +22,24 @@
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-regexp-test": "off",
-    "unicorn/prefer-spread": "off" // TODO: fix issues and turn this back on
-  }
+    "unicorn/prefer-spread": "off", // TODO: fix issues and turn this back on
+    "unicorn/prefer-ternary": "off" // TODO: fix issues and turn this back on
+  },
+
+  // Typescript settings
+  "overrides": [
+    {
+      "files": ["**/*{.ts,tsx}"],
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "project": "packages/*/tsconfig.json"
+          }
+        }
+      }
+    }
+  ]
 }

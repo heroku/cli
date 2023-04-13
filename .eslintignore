@@ -1,7 +1,6 @@
 node_modules
 **/dist
 **/tmp
-**/lib
 tmp
 dst
 packages/ci/src/interfaces/kolkrabbi.ts

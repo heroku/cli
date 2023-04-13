@@ -133,7 +133,6 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
 
   cli.log('Running release command...')
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   async function streamReleaseOutput(releaseStreamUrl: string) {
     const finished = util.promisify(Stream.finished)
     const fetchResponse = await fetch(releaseStreamUrl)
@@ -147,7 +146,6 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
     await finished(fetchResponse.body)
   }
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   async function retry(maxAttempts: number, fn: () => Promise<any>) {
     let currentAttempt = 0
 
