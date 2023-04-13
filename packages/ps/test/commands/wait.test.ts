@@ -64,7 +64,7 @@ describe('heroku ps:wait', () => {
     {release: CURRENT, state: 'up', type: 'web'},
   ]),
   )
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/consistent-function-scoping
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   .stub(CliUx.ux, 'wait', () => () => {})
   .command(['ps:wait', '--app', APP_NAME])
   .it('waits for all dynos to be on latest release', ctx => {
@@ -113,7 +113,7 @@ describe('heroku ps:wait', () => {
     {release: CURRENT, state: 'up', type: 'run'},
   ]),
   )
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/consistent-function-scoping
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   .stub(CliUx.ux, 'wait', () => () => {})
   .command(['ps:wait', '--with-run', '--app', APP_NAME])
   .it('includes run dynos with the --with-run flag', ctx => {
