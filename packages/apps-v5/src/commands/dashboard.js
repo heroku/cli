@@ -13,16 +13,14 @@ function displayFormation (formation) {
 
 function displayErrors (metrics) {
   let errors = []
-  metrics.then((metricsData) => {
-    if (metricsData.routerErrors) {
-      errors = errors.concat(toPairs(metricsData.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
-    }
-    if (metricsData.dynoErrors) {
-      metricsData.dynoErrors.filter((d) => d).forEach((dynoErrors) => {
-        errors = errors.concat(toPairs(dynoErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
-      })
-    }
-  })
+  if (metrics.routerErrors) {
+    errors = errors.concat(toPairs(metrics.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
+  }
+  if (metrics.dynoErrors) {
+    metrics.dynoErrors.filter((d) => d).forEach((dynoErrors) => {
+      errors = errors.concat(toPairs(dynoErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
+    })
+  }
   if (errors.length > 0) cli.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${cli.color.cmd('heroku apps:errors')})`)
 }
 
@@ -31,14 +29,11 @@ function displayMetrics (metrics) {
     if (['win32', 'windows'].includes(process.platform)) return ''
     let sparkline = require('sparkline')
     let points = []
-
-    metrics.then((metricsData) => {
-      Object.values(metricsData.routerStatus.data).forEach((cur) => {
-        for (let i = 0; i < cur.length; i++) {
-          let j = Math.floor(i / 3)
-          points[j] = (points[j] || 0) + cur[i]
-        }
-      })
+    Object.values(metrics.routerStatus.data).forEach((cur) => {
+      for (let i = 0; i < cur.length; i++) {
+        let j = Math.floor(i / 3)
+        points[j] = (points[j] || 0) + cur[i]
+      }
     })
 
     points.pop()
@@ -47,15 +42,13 @@ function displayMetrics (metrics) {
   let ms = ''
   let rpm = ''
 
-  metrics.then((metricsData) => {
-    if (metricsData.routerLatency && !empty(metricsData.routerLatency.data)) {
-      let latency = metricsData.routerLatency.data['latency.ms.p50']
-      if (!empty(latency)) ms = `${round(mean(latency))} ms `
-    }
-    if (metricsData.routerStatus && !empty(metricsData.routerStatus.data)) {
-      rpm = `${round(sum(flatten(Object.values(metricsData.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
-    }
-  })
+  if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
+    let latency = metrics.routerLatency.data['latency.ms.p50']
+    if (!empty(latency)) ms = `${round(mean(latency))} ms `
+  }
+  if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
+    rpm = `${round(sum(flatten(Object.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
+  }
   if (rpm || ms) cli.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
@@ -113,27 +106,31 @@ async function run (context, heroku) {
     }).then((apps) => apps.map((app) => app.resource_name))
   }
 
-  function fetchMetrics (apps) {
+  async function fetchMetrics (apps) {
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(new Date().getTime() - (24 * 60 * 60 * 1000)).toISOString()
     let date = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
-    return apps.map(async (app) => {
-      let types = app.formation.map((p) => p.type)
+    const metricsData = await Promise.all(
+      apps.map((app) => {
+        let types = app.formation.map((p) => p.type)
 
-      let [dynoErrors, routerLatency, routerErrors, routerStatus] = await Promise.all([
-        Promise.all(types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null))),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
-      ])
+        return Promise.all([
+          Promise.all(types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null))),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
+        ])
+      })
+    )
 
-      return {
+    return metricsData.map(([dynoErrors, routerLatency, routerErrors, routerStatus]) => (
+      {
         dynoErrors,
         routerLatency,
         routerErrors,
         routerStatus
       }
-    })
+    ))
   }
 
   let apps, data, metrics
