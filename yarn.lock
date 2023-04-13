@@ -1577,20 +1577,6 @@
     supports-color "^8.1.1"
     tslib "^2"
 
-<<<<<<< HEAD
-=======
-"@oclif/color@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@oclif/color/-/color-1.0.3.tgz"
-  integrity sha512-E+KKAE5CKhXRBZEoZLe5yNR0VHmba1m1fxz8HlpcWjHF5Pdhhf6W/0XMmed6vwQCmyzL/YLwdspCRfu0A1cgGA==
-  dependencies:
-    ansi-styles "^4.2.1"
-    chalk "^4.1.0"
-    strip-ansi "^6.0.1"
-    supports-color "^8.1.1"
-    tslib "^2"
-
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
 "@oclif/command@1.8.15":
   version "1.8.15"
   resolved "https://registry.npmjs.org/@oclif/command/-/command-1.8.15.tgz"
@@ -1947,7 +1933,6 @@
     fast-levenshtein "^3.0.0"
     lodash "^4.17.21"
 
-<<<<<<< HEAD
 "@oclif/plugin-plugins@2.4.4":
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-2.4.4.tgz#4a77408c06f8f020b7883059d18d8010ae35be94"
@@ -1955,15 +1940,6 @@
   dependencies:
     "@oclif/color" "^1.0.4"
     "@oclif/core" "^2.6.4"
-=======
-"@oclif/plugin-plugins@2.1.12":
-  version "2.1.12"
-  resolved "https://registry.npmjs.org/@oclif/plugin-plugins/-/plugin-plugins-2.1.12.tgz"
-  integrity sha512-vvste+qfmuAZVO+LEhJbBm7kLAtWCFFyfoAFCpe061i8KRnsl8/f0l+/VLAUWiYB3c5M518knIi/UfIvGPV/Ew==
-  dependencies:
-    "@oclif/color" "^1.0.2"
-    "@oclif/core" "^1.23.0"
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
     chalk "^4.1.2"
     debug "^4.3.4"
     fs-extra "^9.0"
@@ -1974,17 +1950,10 @@
     tslib "^2.4.1"
     yarn "^1.22.18"
 
-<<<<<<< HEAD
 "@oclif/plugin-update@3.1.10":
   version "3.1.10"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-3.1.10.tgz#b5d8d76c35f767dc37fc7d5bc9062a9eb43f924f"
   integrity sha512-Bv7IP8sB3S0yNiJF4LRcJj6nAYA4l22RgpsOSWC7IO5X6LwXVZvvI6EGTLAlgF0HYIa7bwEgug/7wAun0v7k4A==
-=======
-"@oclif/plugin-update@3.0.13":
-  version "3.0.13"
-  resolved "https://registry.npmjs.org/@oclif/plugin-update/-/plugin-update-3.0.13.tgz"
-  integrity sha512-qr3Y2meL7DQpSTjaXmQgfHuLRWM+/ZsMFm6HirqdiV3BtWNxvtu/hicySvSgmE73O5Wh0G0H3RHmPdoddhbr2A==
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
   dependencies:
     "@oclif/color" "^1.0.4"
     "@oclif/core" "^2.7.1"
@@ -2896,7 +2865,7 @@ ajv-keywords@^3.0.0:
   resolved "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-3.2.0.tgz"
   integrity sha1-6GuBnGAs+IIa1jdBNpjx3sAhhHo=
 
-ajv@^6.0.1, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.0, ajv@^6.5.3, ajv@^6.5.5:
+ajv@^6.0.1, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.0, ajv@^6.5.3, ajv@^6.5.5, ajv@^6.6.1:
   version "6.12.6"
   resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -4444,7 +4413,7 @@ debug@4, debug@4.3.4, debug@^4.3.1, debug@^4.3.2, debug@^4.3.3, debug@^4.3.4:
   dependencies:
     ms "2.1.2"
 
-debug@4.1.1, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+debug@4.1.1, debug@^4.1.0, debug@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/debug/-/debug-4.1.1.tgz"
   integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
@@ -4458,8 +4427,6 @@ debug@^3.1.0:
   dependencies:
     ms "^2.1.1"
 
-<<<<<<< HEAD
-=======
 debug@^4.0.1:
   version "4.1.0"
   resolved "https://registry.npmjs.org/debug/-/debug-4.1.0.tgz"
@@ -4467,7 +4434,6 @@ debug@^4.0.1:
   dependencies:
     ms "^2.1.1"
 
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
 debuglog@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/debuglog/-/debuglog-1.0.1.tgz"
@@ -5511,8 +5477,6 @@ external-editor@^2.1.0:
     iconv-lite "^0.4.17"
     tmp "^0.0.33"
 
-<<<<<<< HEAD
-=======
 external-editor@^3.0.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/external-editor/-/external-editor-3.1.0.tgz"
@@ -5522,7 +5486,6 @@ external-editor@^3.0.0:
     iconv-lite "^0.4.24"
     tmp "^0.0.33"
 
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
 external-editor@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npmjs.org/external-editor/-/external-editor-3.0.3.tgz"
@@ -7052,9 +7015,6 @@ inquirer@^5.2.0:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-<<<<<<< HEAD
-inquirer@^6.1.0, inquirer@^6.2.2:
-=======
 inquirer@^6.1.0:
   version "6.2.1"
   resolved "https://registry.npmjs.org/inquirer/-/inquirer-6.2.1.tgz"
@@ -7075,7 +7035,6 @@ inquirer@^6.1.0:
     through "^2.3.6"
 
 inquirer@^6.2.2:
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
   version "6.2.2"
   resolved "https://registry.npmjs.org/inquirer/-/inquirer-6.2.2.tgz"
   integrity sha512-Z2rREiXA6cHRR9KBOarR3WuLlFzlIfAEIiB45ll5SSadMg7WqOh1MKEjjndfuH5ewXdixWCxqnVfGOQzPeiztA==
@@ -8462,16 +8421,12 @@ merge-stream@^2.0.0:
   resolved "https://registry.npmjs.org/merge-stream/-/merge-stream-2.0.0.tgz"
   integrity sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
 
-<<<<<<< HEAD
-merge2@^1.2.3, merge2@^1.3.0, merge2@^1.4.1:
-=======
 merge2@^1.2.3:
   version "1.3.0"
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.3.0.tgz"
   integrity sha512-2j4DAdlBOkiSZIsaXk4mTE3sRS02yBHAtfy127xRV3bQUFqXkjHCHLW6Scv7DwNRbIWNHH8zpnz9zMaKXIdvYw==
 
 merge2@^1.3.0, merge2@^1.4.1:
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
   version "1.4.1"
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
@@ -10830,6 +10785,13 @@ rxjs@^5.5.2:
   dependencies:
     symbol-observable "1.0.1"
 
+rxjs@^6.1.0:
+  version "6.6.7"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
+  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
+  dependencies:
+    tslib "^1.9.0"
+
 rxjs@^6.4.0, rxjs@^6.5.3:
   version "6.5.3"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.5.3.tgz"
@@ -11128,8 +11090,6 @@ slice-ansi@1.0.0:
   dependencies:
     is-fullwidth-code-point "^2.0.0"
 
-<<<<<<< HEAD
-=======
 slice-ansi@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/slice-ansi/-/slice-ansi-2.0.0.tgz"
@@ -11139,7 +11099,6 @@ slice-ansi@2.0.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
 slice-ansi@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/slice-ansi/-/slice-ansi-2.1.0.tgz"
@@ -11718,9 +11677,6 @@ table@^4.0.3:
     slice-ansi "1.0.0"
     string-width "^2.1.1"
 
-<<<<<<< HEAD
-table@^5.0.2, table@^5.2.3:
-=======
 table@^5.0.2:
   version "5.1.1"
   resolved "https://registry.npmjs.org/table/-/table-5.1.1.tgz"
@@ -11732,7 +11688,6 @@ table@^5.0.2:
     string-width "^2.1.1"
 
 table@^5.2.3:
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
   version "5.4.6"
   resolved "https://registry.npmjs.org/table/-/table-5.4.6.tgz"
   integrity sha512-wmEc8m4fjnob4gt5riFRtTu/6+4rSe12TpAELNSqHMfF3IqnA+CH37USM6/YR3qRZv7e56kAEAtd6nKZaxe0Ug==
@@ -12169,15 +12124,13 @@ tsutils@^2.27.2, tsutils@^2.29.0:
   dependencies:
     tslib "^1.8.1"
 
-tsutils@^3.0.0, tsutils@^3.17.1, tsutils@^3.5.0:
+tsutils@^3.0.0, tsutils@^3.5.0:
   version "3.21.0"
   resolved "https://registry.npmjs.org/tsutils/-/tsutils-3.21.0.tgz"
   integrity sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
   dependencies:
     tslib "^1.8.1"
 
-<<<<<<< HEAD
-=======
 tsutils@^3.17.1:
   version "3.17.1"
   resolved "https://registry.npmjs.org/tsutils/-/tsutils-3.17.1.tgz"
@@ -12185,7 +12138,6 @@ tsutils@^3.17.1:
   dependencies:
     tslib "^1.8.1"
 
->>>>>>> 8fd1d856c (Add nyc with working script & update .gitignore)
 tunnel-agent@^0.6.0:
   version "0.6.0"
   resolved "https://registry.npmjs.org/tunnel-agent/-/tunnel-agent-0.6.0.tgz"
