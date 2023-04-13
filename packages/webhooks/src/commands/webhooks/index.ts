@@ -33,7 +33,8 @@ export default class Webhooks extends BaseCommand {
 
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
-    const printLine: typeof this.log = (...args) => this.log(...args)
+    const printLine: typeof this.log = (...args) => this.log(...args) // eslint-disable-line unicorn/consistent-function-scoping
+
     CliUx.ux.table(webhooks, {
       id: {
         header: 'Webhook ID',
