@@ -48,6 +48,7 @@
     "fs-extra": "7.0.1",
     "http-call": "5.3.0",
     "netrc-parser": "3.1.6",
+    "oclif": "3.3.1",
     "semver": "5.6.0",
     "tslib": "1.14.1",
     "uuid": "3.3.2"
@@ -243,16 +244,7 @@
     },
     "update": {
       "node": {
-        "version": "16.19.0",
-        "targets": [
-          "linux-x64",
-          "linux-i386",
-          "linux-arm",
-          "win32-x64",
-          "win32-x86",
-          "darwin-x64",
-          "darwin-arm64"
-        ]
+        "version": "16.19.0"
       },
       "s3": {
         "xz": true,
