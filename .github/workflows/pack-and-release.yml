@@ -93,7 +93,6 @@ jobs:
     environment: CLIS3BucketAndCloudfront
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      HEROKU_S3_BUCKET: ${{ secrets.HEROKU_S3_BUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_EC2_METADATA_DISABLED: true
@@ -140,7 +139,6 @@ jobs:
     environment: CLIS3BucketAndCloudfront
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      HEROKU_S3_BUCKET: ${{ secrets.HEROKU_S3_BUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_EC2_METADATA_DISABLED: true
@@ -165,7 +163,7 @@ jobs:
           yarn oclif promote --deb --xz --root="./packages/cli"  --version=${{ inputs.version }} --sha=$shortSHA
         continue-on-error: true # temporary work around for https://github.com/oclif/oclif/issues/770
       - name: update Linux install scripts
-        run: ./scripts/postrelease/install_scripts
+        run: node ./scripts/postrelease/install_scripts.js
 
   ## POST release jobs
   invalidate-cdn-cache:
@@ -175,7 +173,6 @@ jobs:
     environment: CLIS3BucketAndCloudfront
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      HEROKU_S3_BUCKET: ${{ secrets.HEROKU_S3_BUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_EC2_METADATA_DISABLED: true
