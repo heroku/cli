@@ -5,6 +5,20 @@ import HTTP from 'http-call'
 
 import {maxBy} from '../util'
 
+// eslint-disable-next-line unicorn/prefer-string-slice
+const capitalize = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1)
+
+const printStatus = (status: string) => {
+  const colorize = (color as any)[status]
+  let message = capitalize(status)
+
+  if (status === 'green') {
+    message = 'No known issues at this time.'
+  }
+
+  return colorize(message)
+}
+
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
 
@@ -15,17 +29,6 @@ export default class Status extends Command {
   async run() {
     const {flags} = await this.parse(Status)
     const apiPath = '/api/v4/current-status'
-
-    const capitalize = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1)
-    const printStatus = (status: string) => {
-      const colorize = (color as any)[status]
-      let message = capitalize(status)
-
-      if (status === 'green') {
-        message = 'No known issues at this time.'
-      }
-      return colorize(message)
-    }
 
     const host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
     const {body} = await HTTP.get<any>(host + apiPath)
