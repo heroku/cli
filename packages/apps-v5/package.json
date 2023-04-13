@@ -62,6 +62,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "nyc --extension .js mocha --forbid-only \"test/**/*.js\"",

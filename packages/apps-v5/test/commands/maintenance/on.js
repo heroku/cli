@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe beforeEach it */
 
 const cli = require('heroku-cli-util')
@@ -10,9 +11,9 @@ describe('maintenance:on', function () {
 
   it('turns maintenance mode on', function () {
     let api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp', { maintenance: true })
-      .reply(200)
-    return cmd.run({ app: 'myapp' })
-      .then(() => api.done())
+    .patch('/apps/myapp', {maintenance: true})
+    .reply(200)
+    return cmd.run({app: 'myapp'})
+    .then(() => api.done())
   })
 })

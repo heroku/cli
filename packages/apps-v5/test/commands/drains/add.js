@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe beforeEach it */
 
 const cli = require('heroku-cli-util')
@@ -11,10 +12,10 @@ describe('drains:add', function () {
 
   it('adds a log drain', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/log-drains', { url: 'syslog://logs.example.com' })
-      .reply(200, { url: 'syslog://logs.example.com' })
-    return cmd.run({ app: 'myapp', args: { url: 'syslog://logs.example.com' } })
-      .then(() => expect(cli.stdout).to.equal('Successfully added drain syslog://logs.example.com\n'))
-      .then(() => api.done())
+    .post('/apps/myapp/log-drains', {url: 'syslog://logs.example.com'})
+    .reply(200, {url: 'syslog://logs.example.com'})
+    return cmd.run({app: 'myapp', args: {url: 'syslog://logs.example.com'}})
+    .then(() => expect(cli.stdout).to.equal('Successfully added drain syslog://logs.example.com\n'))
+    .then(() => api.done())
   })
 })
