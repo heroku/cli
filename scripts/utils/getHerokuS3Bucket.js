@@ -1,4 +1,4 @@
-import path from 'path'
+const path = require('path')
 
 const getHerokuS3Bucket = () => {
   const pjsonPath = path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')
