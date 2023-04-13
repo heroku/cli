@@ -12,5 +12,5 @@ let Stream = function (url) {
 }
 
 module.exports = {
-  Stream
+  Stream,
 }

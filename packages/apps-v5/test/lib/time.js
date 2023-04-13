@@ -1,7 +1,8 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it */
 
-const { expect } = require('chai')
+const {expect} = require('chai')
 const time = require('../../src/time')
 const now = new Date()
 

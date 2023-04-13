@@ -1,11 +1,12 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe beforeEach it commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const apps = commands.find(c => c.topic === 'apps' && c.command === 'create')
-const { Config } = require('@oclif/core')
+const {Config} = require('@oclif/core')
 let config
 
 describe('apps:create', function () {
@@ -22,15 +23,14 @@ describe('apps:create', function () {
 
   it('creates an app', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/apps', {
-      })
-      .reply(200, {
-        name: 'foobar',
-        stack: { name: 'cedar-14' },
-        web_url: 'https://foobar.com'
-      })
+    .post('/apps', {})
+    .reply(200, {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
 
-    return apps.run({ flags: {}, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+    return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -39,16 +39,16 @@ describe('apps:create', function () {
 
   it('creates an app with feature flags', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/apps', {
-        feature_flags: 'feature-1,feature-2'
-      })
-      .reply(200, {
-        name: 'foobar',
-        stack: { name: 'cedar-14' },
-        web_url: 'https://foobar.com'
-      })
+    .post('/apps', {
+      feature_flags: 'feature-1,feature-2',
+    })
+    .reply(200, {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
 
-    return apps.run({ flags: { features: 'feature-1,feature-2' }, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+    return apps.run({flags: {features: 'feature-1,feature-2'}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -57,16 +57,16 @@ describe('apps:create', function () {
 
   it('creates an app in a space', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/teams/apps', {
-        space: 'my-space-name'
-      })
-      .reply(200, {
-        name: 'foobar',
-        stack: { name: 'cedar-14' },
-        web_url: 'https://foobar.com'
-      })
+    .post('/teams/apps', {
+      space: 'my-space-name',
+    })
+    .reply(200, {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
 
-    return apps.run({ flags: { space: 'my-space-name' }, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+    return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -75,18 +75,18 @@ describe('apps:create', function () {
 
   it('creates an Internal Web App in a space', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/teams/apps', {
-        space: 'my-space-name',
-        internal_routing: true
-      })
-      .reply(200, {
-        name: 'foobar',
-        stack: { name: 'cedar-14' },
-        internal_routing: true,
-        web_url: 'https://foobar.com'
-      })
+    .post('/teams/apps', {
+      space: 'my-space-name',
+      internal_routing: true,
+    })
+    .reply(200, {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      internal_routing: true,
+      web_url: 'https://foobar.com',
+    })
 
-    return apps.run({ flags: { space: 'my-space-name', 'internal-routing': true }, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+    return apps.run({flags: {space: 'my-space-name', 'internal-routing': true}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -95,27 +95,26 @@ describe('apps:create', function () {
 
   it('does not create an Internal Web App outside of a space', function () {
     let thrown = false
-    return apps.run({ flags: { 'internal-routing': true }, args: {}, httpGitHost: 'git.heroku.com', config })
-      .catch(function (err) {
-        expect(err).to.be.an.instanceof(Error)
-        expect(err.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
-        thrown = true
-      })
-      .then(() => expect(thrown).to.equal(true))
+    return apps.run({flags: {'internal-routing': true}, args: {}, httpGitHost: 'git.heroku.com', config})
+    .catch(function (error) {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
+      thrown = true
+    })
+    .then(() => expect(thrown).to.equal(true))
   })
 
   it('creates an app & returns as json', function () {
     const json = {
       name: 'foobar',
-      stack: { name: 'cedar-14' },
-      web_url: 'https://foobar.com'
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
     }
     let mock = nock('https://api.heroku.com')
-      .post('/apps', {
-      })
-      .reply(200, json)
+    .post('/apps', {})
+    .reply(200, json)
 
-    return apps.run({ flags: { json: true }, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
 
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')

@@ -12,7 +12,7 @@ async function run(context, heroku) {
     cli.styledObject({
       Description: feature.description,
       Enabled: feature.enabled ? cli.color.green(feature.enabled) : cli.color.red(feature.enabled),
-      Docs: feature.doc_url
+      Docs: feature.doc_url,
     })
   }
 }
@@ -21,9 +21,9 @@ module.exports = {
   topic: 'features',
   command: 'info',
   description: 'display information about a feature',
-  args: [{ name: 'feature' }],
-  flags: [{ name: 'json', description: 'output in json format' }],
+  args: [{name: 'feature'}],
+  flags: [{name: 'json', description: 'output in json format'}],
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

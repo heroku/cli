@@ -2,6 +2,7 @@ const nock = require('nock')
 
 nock.disableNetConnect()
 
+// eslint-disable-next-line no-undef
 afterEach(() => {
   nock.cleanAll()
 })

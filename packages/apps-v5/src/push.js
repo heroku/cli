@@ -1,3 +1,4 @@
-module.exports = function push (remote) {
+// eslint-disable-next-line func-names
+module.exports = function push(remote) {
   return `git push ${remote || 'heroku'} main`
 }
