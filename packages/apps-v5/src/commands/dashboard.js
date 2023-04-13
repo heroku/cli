@@ -35,13 +35,11 @@ function displayMetrics (metrics) {
         points[j] = (points[j] || 0) + cur[i]
       }
     })
-
     points.pop()
     return dim(sparkline(points)) + ' last 24 hours rpm'
   }
   let ms = ''
   let rpm = ''
-
   if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
     let latency = metrics.routerLatency.data['latency.ms.p50']
     if (!empty(latency)) ms = `${round(mean(latency))} ms `
