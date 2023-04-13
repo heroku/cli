@@ -13,14 +13,16 @@ function displayFormation (formation) {
 
 function displayErrors (metrics) {
   let errors = []
-  if (metrics.routerErrors) {
-    errors = errors.concat(toPairs(metrics.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
-  }
-  if (metrics.dynoErrors) {
-    metrics.dynoErrors.filter((d) => d).forEach((dynoErrors) => {
-      errors = errors.concat(toPairs(dynoErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
-    })
-  }
+  metrics.then((metricsData) => {
+    if (metricsData.routerErrors) {
+      errors = errors.concat(toPairs(metricsData.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
+    }
+    if (metricsData.dynoErrors) {
+      metricsData.dynoErrors.filter((d) => d).forEach((dynoErrors) => {
+        errors = errors.concat(toPairs(dynoErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
+      })
+    }
+  })
   if (errors.length > 0) cli.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${cli.color.cmd('heroku apps:errors')})`)
 }
 
@@ -29,24 +31,31 @@ function displayMetrics (metrics) {
     if (['win32', 'windows'].includes(process.platform)) return ''
     let sparkline = require('sparkline')
     let points = []
-    Object.values(metrics.routerStatus.data).forEach((cur) => {
-      for (let i = 0; i < cur.length; i++) {
-        let j = Math.floor(i / 3)
-        points[j] = (points[j] || 0) + cur[i]
-      }
+
+    metrics.then((metricsData) => {
+      Object.values(metricsData.routerStatus.data).forEach((cur) => {
+        for (let i = 0; i < cur.length; i++) {
+          let j = Math.floor(i / 3)
+          points[j] = (points[j] || 0) + cur[i]
+        }
+      })
     })
+
     points.pop()
     return dim(sparkline(points)) + ' last 24 hours rpm'
   }
   let ms = ''
   let rpm = ''
-  if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
-    let latency = metrics.routerLatency.data['latency.ms.p50']
-    if (!empty(latency)) ms = `${round(mean(latency))} ms `
-  }
-  if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
-    rpm = `${round(sum(flatten(Object.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
-  }
+
+  metrics.then((metricsData) => {
+    if (metricsData.routerLatency && !empty(metricsData.routerLatency.data)) {
+      let latency = metricsData.routerLatency.data['latency.ms.p50']
+      if (!empty(latency)) ms = `${round(mean(latency))} ms `
+    }
+    if (metricsData.routerStatus && !empty(metricsData.routerStatus.data)) {
+      rpm = `${round(sum(flatten(Object.values(metricsData.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
+    }
+  })
   if (rpm || ms) cli.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
@@ -85,7 +94,7 @@ function displayApps (apps, appsMetrics) {
   }
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   const img = require('term-img')
   const path = require('path')
 
@@ -133,7 +142,7 @@ async function run(context, heroku) {
     img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), { fallback: () => {} })
   } catch (err) { }
 
-  await cli.action('Loading', { clear: true }, async function () {
+  await cli.action('Loading', { clear: true }, (async function () {
     apps = await favoriteApps()
 
     let [ teams, notifications, appsWithMoreInfo ] = await Promise.all([
@@ -160,7 +169,7 @@ async function run(context, heroku) {
     }
 
     metrics = await fetchMetrics(data.apps)
-  }())
+  }()))
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)

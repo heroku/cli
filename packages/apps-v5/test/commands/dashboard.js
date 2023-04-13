@@ -16,6 +16,7 @@ runtest('Dashboard', () => {
 
     const yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000))
     const now = new Date()
+    const pipeline = { pipeline: { name: 'foobar' } }
     const formation = [
       { command: 'rails s -p $PORT', quantity: 1, size: 'Standard-1X', type: 'web' },
       { command: 'npm start', quantity: 0, size: 'Standard-1X', type: 'node' }
@@ -52,8 +53,8 @@ runtest('Dashboard', () => {
       }
     }
 
-    describe('with no favorites', () => {
-      it('shows the dashboard', () => {
+    describe('with no favorites', async () => {
+      it('shows the dashboard', async () => {
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [])
         let heroku = nock('https://api.heroku.com:443')
@@ -92,6 +93,23 @@ See other CLI commands with heroku help
 
 `))
           .then(() => expect(unwrap(cli.stderr), 'to be', 'Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+          .then(() => longboard.done())
+          .then(() => telex.done())
+          .then(() => heroku.done())
+      })
+    })
+
+    describe('with notifications', () => {
+      it('shows the dashboard', () => {
+        let longboard = nock('https://particleboard.heroku.com:443')
+          .get('/favorites?type=app').reply(200, [])
+        let heroku = nock('https://api.heroku.com:443')
+          .get('/teams').reply(200, [])
+        let telex = nock('https://telex.heroku.com:443')
+          .get('/user/notifications').reply(200, [{ read: false }])
+
+        return cmd.run({})
+          .then(() => expect(cli.stdout).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nYou have 1 unread notifications. Read them with heroku notifications\n\nSee other CLI commands with heroku help\n\n'))
           .then(() => longboard.done())
           .then(() => telex.done())
           .then(() => heroku.done())
@@ -139,6 +157,43 @@ See other CLI commands with heroku help
 
 `))
           .then(() => expect(cli.stderr, 'to be', 'Loading... done\n'))
+          .then(() => metrics.done())
+          .then(() => longboard.done())
+          .then(() => telex.done())
+          .then(() => heroku.done())
+      })
+    })
+
+    describe('with a apps and metrics', () => {
+      it('shows the dashboard', () => {
+        let longboard = nock('https://particleboard.heroku.com:443')
+          .get('/favorites?type=app').reply(200, [{ resource_name: 'myapp' }])
+        let heroku = nock('https://api.heroku.com:443')
+          .get('/teams').reply(200, [])
+          .get('/apps/myapp').reply(200, {
+            name: 'myapp',
+            owner: { email: 'foo@bar.com' },
+            released_at: now.toString()
+          })
+          .get('/apps/myapp/formation').reply(200, formation)
+          .get('/apps/myapp/pipeline-couplings').reply(200, pipeline)
+        let telex = nock('https://telex.heroku.com:443')
+          .get('/user/notifications').reply(200, [])
+        let metrics = nock('https://api.metrics.herokai.com:443')
+          .get(`/apps/myapp/router-metrics/status?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+          .reply(200, router.status)
+          .get(`/apps/myapp/router-metrics/latency?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+          .reply(200, router.latency)
+          .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+          .reply(200, router.errors)
+          .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+          .reply(200, { data: {} })
+          .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+          .reply(200, { data: {} })
+
+        return cmd.run({})
+          .then(() => expect(cli.stdout).to.include('Pipeline: foobar'))
+          .then(() => expect(metrics.isDone()).to.be.true)
           .then(() => metrics.done())
           .then(() => longboard.done())
           .then(() => telex.done())
