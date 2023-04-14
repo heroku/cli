@@ -8,6 +8,34 @@ let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'open')
 describe('addons:open', function () {
   beforeEach(() => cli.mockConsole())
 
+  describe('testing sudo', function () {
+    beforeEach(() => {
+      process.env.HEROKU_SUDO = true
+    })
+
+    it('with sudo && sso.method is true', function () {
+      let api = nock('https://api.heroku.com:443')
+
+      api.get('/apps/myapp/addons/db2/sso')
+        .reply(200, { action: 'exampleURL', method: 'get' })
+
+      return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
+        .then(() => expect(cli.stdout).to.equal('Opening exampleURL...\n'))
+        .then(() => api.done())
+    })
+
+    it('with sudo && sso.method is false', function () {
+      let api = nock('https://api.heroku.com:443')
+
+      api.get('/apps/myapp/addons/db2/sso')
+        .reply(200, { action: 'exampleURL' })
+
+      return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
+        .then(() => expect(cli.stdout).to.equal('Opening file:///var/folders/xs/t_c4cq1j2gsf8mctmkyggsrw0000gp/T/heroku-sso.html...\n'))
+        .then(() => api.done())
+    })
+  })
+
   it('only prints the URL when --show-url passed', function () {
     let api = nock('https://api.heroku.com:443')
 
