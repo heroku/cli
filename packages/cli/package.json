@@ -247,8 +247,8 @@
       },
       "s3": {
         "xz": true,
-        "host": "https://d2sojwakzh88r6.cloudfront.net",
-        "bucket": "heroku-cli-assets-dev"
+        "host": "https://cli-assets.heroku.com",
+        "bucket": "heroku-cli-assets"
       }
     },
     "aliases": {
