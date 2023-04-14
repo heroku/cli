@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.5-beta.1](https://github.com/heroku/cli/compare/v8.0.5-beta.0...v8.0.5-beta.1) (2023-04-14)
+
+
+### Bug Fixes
+
+* oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
+
+
+
+
+
 ## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs

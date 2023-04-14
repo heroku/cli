@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-apps",
-  "version": "8.0.2",
+  "version": "8.0.5-beta.1",
   "author": "Brett @brettgoulder",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-apps/issues",
   "dependencies": {

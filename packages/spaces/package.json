@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-spaces",
   "description": "Heroku plugin to manage Heroku Private Spaces",
-  "version": "8.0.2",
+  "version": "8.0.5-beta.1",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
