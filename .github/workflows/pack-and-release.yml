@@ -6,6 +6,10 @@ on:
         description: version to promote to latest
         type: string
         required: true
+      channel:
+        description: \'beta\' or \'stable\' release
+        type: string
+        required: true
       commitSHA:
         description: 1st 7 chars of release commit SHA (heroku-cli-assets/versions/v:VERSION/:THIS in S3)
         type: string
@@ -160,7 +164,7 @@ jobs:
           if [ -z $shortSHA ]; then
             shortSHA=`git rev-parse --short=7 HEAD`
           fi
-          yarn oclif promote --deb --xz --root="./packages/cli"  --version=${{ inputs.version }} --sha=$shortSHA
+          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=$shortSHA --channel=${{ inputs.channel }}
         continue-on-error: true # temporary work around for https://github.com/oclif/oclif/issues/770
       - name: update Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
