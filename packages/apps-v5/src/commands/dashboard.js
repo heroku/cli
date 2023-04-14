@@ -85,7 +85,7 @@ function displayApps (apps, appsMetrics) {
   }
 }
 
-async function run(context, heroku) {
+async function run (context, heroku) {
   const img = require('term-img')
   const path = require('path')
 
@@ -104,27 +104,31 @@ async function run(context, heroku) {
     }).then((apps) => apps.map((app) => app.resource_name))
   }
 
-  function fetchMetrics (apps) {
+  async function fetchMetrics (apps) {
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(new Date().getTime() - (24 * 60 * 60 * 1000)).toISOString()
     let date = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
-    return apps.map(async (app) => {
-      let types = app.formation.map((p) => p.type)
+    const metricsData = await Promise.all(
+      apps.map((app) => {
+        let types = app.formation.map((p) => p.type)
 
-      let [dynoErrors, routerLatency, routerErrors, routerStatus] = await Promise.all([
-        Promise.all(types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null))),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
-        heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
-      ])
+        return Promise.all([
+          Promise.all(types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null))),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+          heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
+        ])
+      })
+    )
 
-      return {
+    return metricsData.map(([dynoErrors, routerLatency, routerErrors, routerStatus]) => (
+      {
         dynoErrors,
         routerLatency,
         routerErrors,
         routerStatus
       }
-    })
+    ))
   }
 
   let apps, data, metrics
@@ -133,7 +137,7 @@ async function run(context, heroku) {
     img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), { fallback: () => {} })
   } catch (err) { }
 
-  await cli.action('Loading', { clear: true }, async function () {
+  await cli.action('Loading', { clear: true }, (async function () {
     apps = await favoriteApps()
 
     let [ teams, notifications, appsWithMoreInfo ] = await Promise.all([
@@ -160,7 +164,7 @@ async function run(context, heroku) {
     }
 
     metrics = await fetchMetrics(data.apps)
-  }())
+  }()))
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)
