@@ -31,7 +31,7 @@ describe('addons:open', function () {
         .reply(200, { action: 'exampleURL' })
 
       return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
-        .then(() => expect(cli.stdout).to.equal('Opening file:///var/folders/xs/t_c4cq1j2gsf8mctmkyggsrw0000gp/T/heroku-sso.html...\n'))
+        .then(() => expect(cli.stdout).to.contain('Opening file://'))
         .then(() => api.done())
     })
   })
