@@ -47,6 +47,7 @@ exports.commands = flatten([
   require('./commands/repoint'),
   require('./commands/reset'),
   require('./commands/settings'),
+  require('./commands/settings/auto_explain'),
   require('./commands/settings/log_lock_waits'),
   require('./commands/settings/log_min_duration_statement'),
   require('./commands/settings/log_statement'),
