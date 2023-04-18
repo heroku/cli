@@ -5,16 +5,16 @@ const settings = require('../../lib/setter')
 
 function explain (setting) {
   if (setting.value) {
-    return `TODO value`
+    return `Execution plans of queries will be logged for future connections.`
   }
-  return `TODO`
+  return `Execution plans of queries will not be logged for future connections.`
 }
 
 module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain',
-  description: 'TODO',
-  help: 'TODO',
+  description: 'Automatically log execution plans of queries without running EXPLAIN by hand.',
+  help: 'The auto_explain module is loaded at session-time so existing connections will not be logged. Restart your Heroku app and/or terminate existing connections for logging to start taking place.',
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
