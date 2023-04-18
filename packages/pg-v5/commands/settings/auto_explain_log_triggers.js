@@ -12,11 +12,11 @@ function explain (setting) {
 
 module.exports = {
   topic: 'pg',
-  command: 'settings:auto-explain:log-min-duration',
-  description: 'Minimum duration to log queries.',
-  help: ' -1 disables query logging entirely, 0 logs all queries.',
+  command: 'settings:auto-explain:log-triggers',
+  description: 'TODO',
+  help: 'TODO',
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_min_duration', settings.numeric, explain))
+  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_triggers', settings.numeric, explain))
 }
