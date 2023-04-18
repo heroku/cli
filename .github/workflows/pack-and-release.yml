@@ -136,7 +136,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   promote:
-    name: Promote version to stable
+    name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
     needs: [upload-deb-and-tarballs]
     if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
