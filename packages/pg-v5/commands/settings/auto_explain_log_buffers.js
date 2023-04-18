@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const settings = require('../../lib/setter')
 
 function explain (setting) {
-  if (setting.value) {
+  if (setting.value === "on") {
     return `Buffer statistics have been enabled for auto_explain.`
   }
   return `Buffer statistics have been disabled for auto_explain.`
