@@ -25,13 +25,13 @@ describe('apps:favorites:add', () => {
 
   it('errors if app is already favorited', () => {
     nock('https://particleboard.heroku.com')
-      .get('/favorites?type=app')
-      .reply(200, [{ resource_name: 'myapp' }])
+    .get('/favorites?type=app')
+    .reply(200, [{resource_name: 'myapp'}])
 
-    return cmd.run({ app: 'myapp' })
-      .catch(function (err) {
-        expect(err).to.be.an.instanceof(Error)
-        expect(err.message).to.equal('myapp is already a favorite app.')
-      })
+    return cmd.run({app: 'myapp'})
+    .catch(function (error) {
+      expect(error).to.be.an.instanceof(Error)
+      expect(error.message).to.equal('myapp is already a favorite app.')
+    })
   })
 })
