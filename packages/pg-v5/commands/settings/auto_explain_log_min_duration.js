@@ -12,6 +12,7 @@ function explain (setting) {
     return `All execution plans will be logged for queries taking up to ${setting.value} milliseconds or more.`
   }
 }
+
 module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-min-duration',

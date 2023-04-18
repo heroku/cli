@@ -14,7 +14,8 @@ module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain',
   description: 'Automatically log execution plans of queries without running EXPLAIN by hand.',
-  help: 'The auto_explain module is loaded at session-time so existing connections will not be logged. Restart your Heroku app and/or terminate existing connections for logging to start taking place.',
+  help: `The auto_explain module is loaded at session-time so existing connections will not be logged.
+Restart your Heroku app and/or restart existing connections for logging to start taking place.`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
