@@ -21,5 +21,5 @@ module.exports = {
   description: 'list SSL certificates for an app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
