@@ -6,6 +6,7 @@ module.exports = function (endpoint) {
   let warnings = endpoint.warnings
   if (warnings) {
     for (var field in warnings) {
+      // eslint-disable-next-line no-prototype-builtins
       if (warnings.hasOwnProperty(field) && endpoint.warnings[field].length > 0) {
         cli.warn(`WARNING: ${field} ${endpoint.warnings[field]}`)
       }

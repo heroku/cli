@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
 
 let chai = require('chai')
@@ -17,12 +18,12 @@ describe('heroku certs:auto:disable', function () {
 
   it('disables acm', function () {
     let api = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     })
 
-    api.delete('/apps/example/acm').reply(200, { acm: true })
+    api.delete('/apps/example/acm').reply(200, {acm: true})
 
-    return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
+    return certs.run({app: 'example', flags: {confirm: 'example'}}).then(function () {
       expect(cli.stderr).to.equal('Disabling Automatic Certificate Management... done\n')
       expect(cli.stdout).to.equal('')
       api.done()
@@ -30,7 +31,7 @@ describe('heroku certs:auto:disable', function () {
   })
 
   it('confirms that they want to disable', function () {
-    return expect(certs.run({ app: 'example', flags: { confirm: 'notexample' } }))
-      .to.be.rejectedWith('Confirmation notexample did not match example. Aborted.')
+    return expect(certs.run({app: 'example', flags: {confirm: 'notexample'}}))
+    .to.be.rejectedWith('Confirmation notexample did not match example. Aborted.')
   })
 })

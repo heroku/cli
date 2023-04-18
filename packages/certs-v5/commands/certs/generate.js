@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 'use strict'
 
 let cli = require('heroku-cli-util')
@@ -5,9 +6,9 @@ let cli = require('heroku-cli-util')
 let openssl = require('../../lib/openssl.js')
 let endpoints = require('../../lib/endpoints.js').all
 
-function valEmpty(val) {
-  if (val) {
-    return val.length === 0
+function valueEmpty(value) {
+  if (value) {
+    return value.length === 0
   // eslint-disable-next-line no-else-return
   } else {
     return true
@@ -24,21 +25,21 @@ function getSubject(context) {
 
   let subject = context.flags.subject
 
-  if (valEmpty(subject)) {
+  if (valueEmpty(subject)) {
     subject = ''
-    if (!valEmpty(country)) {
+    if (!valueEmpty(country)) {
       subject += `/C=${country}`
     }
 
-    if (!valEmpty(area)) {
+    if (!valueEmpty(area)) {
       subject += `/ST=${area}`
     }
 
-    if (!valEmpty(city)) {
+    if (!valueEmpty(city)) {
       subject += `/L=${city}`
     }
 
-    if (!valEmpty(owner)) {
+    if (!valueEmpty(owner)) {
       subject += `/O=${owner}`
     }
 
@@ -49,10 +50,11 @@ function getSubject(context) {
 }
 
 function requiresPrompt(context) {
-  if (valEmpty(context.flags.subject)) {
+  if (valueEmpty(context.flags.subject)) {
+    // eslint-disable-next-line unicorn/prevent-abbreviations
     let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city]
     if (!context.flags.now && args.every(function (v) {
-      return valEmpty(v)
+      return valueEmpty(v)
     })) {
       return true
     }

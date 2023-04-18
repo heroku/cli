@@ -1,18 +1,19 @@
 'use strict'
 
-function sniCertsPromise (app, heroku) {
+function sniCertsPromise(app, heroku) {
   return heroku.request({path: `/apps/${app}/sni-endpoints`}).then(function (data) {
     return data
   })
 }
 
-function meta (app, t, name) {
+function meta(app, t, name) {
   var path
   if (t === 'sni') {
     path = `/apps/${app}/sni-endpoints`
   } else {
-    throw Error('Unknown type ' + t)
+    throw new Error('Unknown type ' + t)
   }
+
   if (name) {
     path = `${path}/${name}`
   }
@@ -20,7 +21,7 @@ function meta (app, t, name) {
   return {path, flag: t}
 }
 
-function tagAndSort (app, sniCerts) {
+function tagAndSort(app, sniCerts) {
   sniCerts.forEach(function (cert) {
     cert._meta = meta(app, 'sni', cert.name)
   })
@@ -38,5 +39,5 @@ async function all(appName, heroku) {
 
 module.exports = {
   meta,
-  all
+  all,
 }

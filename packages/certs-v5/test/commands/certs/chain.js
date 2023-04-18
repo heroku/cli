@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach afterEach cli */
 
 let expect = require('chai').expect
