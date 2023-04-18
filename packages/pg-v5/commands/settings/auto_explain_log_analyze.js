@@ -13,8 +13,10 @@ function explain (setting) {
 module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-analyze',
-  description: 'Logs EXPLAIN ANALYZE execution plans. This can cause SIGNIFICANT performance impacts. Use with caution.',
-  help: `Valid values for VALUE:
+  description: 'Logs EXPLAIN ANALYZE execution plans.',
+  help: `This can cause SIGNIFICANT performance impacts. Use with caution.
+
+Valid values for VALUE:
 on  - Includes EXPLAIN ANALYZE execution plans.
 off - Does not include EXPLAIN ANALYZE execution plans.`,
   needsApp: true,
