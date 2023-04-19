@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const settings = require('../../lib/setter')
 
 function explain (setting) {
-  if (setting.value === "on") {
+  if (setting.value) {
     return `EXPLAIN ANALYZE execution plans will be logged.`
   }
   return `EXPLAIN ANALYZE execution plans will not be logged.`
@@ -13,14 +13,10 @@ function explain (setting) {
 module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-analyze',
-  description: 'Logs EXPLAIN ANALYZE execution plans.',
-  help: `This can cause SIGNIFICANT performance impacts. Use with caution.
-
-Valid values for VALUE:
-on  - Includes EXPLAIN ANALYZE execution plans.
-off - Does not include EXPLAIN ANALYZE execution plans.`,
+  description: 'Shows actual run times on the execution plan.',
+  help: `This is equivalent to calling EXPLAIN ANALYZE and can cause SIGNIFICANT performance impacts. Use with caution.`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_analyze', settings.enum, explain))
+  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_analyze', settings.boolean, explain))
 }
