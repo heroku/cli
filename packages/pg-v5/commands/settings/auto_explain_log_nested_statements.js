@@ -13,7 +13,7 @@ function explain (setting) {
 module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-nested-statements',
-  description: 'Logs nested statements to be included in the execution plan\'s log.',
+  description: 'Nested statements are included in the execution plan\'s log.',
   help: ``,
   needsApp: true,
   needsAuth: true,
