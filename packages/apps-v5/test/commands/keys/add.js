@@ -6,7 +6,6 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const {expect} = require('chai')
 const proxyquire = require('proxyquire')
-// eslint-disable-next-line node/no-extraneous-require
 const rimraf = require('rimraf')
 const fs = require('fs-extra')
 const path = require('path')

@@ -26,6 +26,7 @@
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
+    "strip-ansi": "^7.0.1",
     "term-img": "^4.1.0",
     "urijs": "1.19.11"
   },
@@ -41,6 +42,7 @@
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
     "proxyquire": "^2.1.0",
+    "rimraf": "^5.0.0",
     "set-tz": "^0.1.0",
     "sinon": "^7.4.1",
     "std-mocks": "1.0.1",

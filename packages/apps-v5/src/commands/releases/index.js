@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-// eslint-disable-next-line node/no-extraneous-require
 const stripAnsi = require('strip-ansi')
 
 async function run(context, heroku) {
