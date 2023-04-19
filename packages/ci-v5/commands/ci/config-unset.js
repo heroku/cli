@@ -3,7 +3,7 @@ const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function validateArgs (args) {
+function validateArgs(args) {
   if (args.length === 0) {
     cli.exit(1, 'Usage: heroku ci:config:set KEY1 [KEY2 ...]\nMust specify KEY to unset.')
   }
@@ -12,6 +12,7 @@ function validateArgs (args) {
 async function run(context, heroku) {
   validateArgs(context.args)
 
+  // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
   const vars = context.args.reduce((memo, key) => {
     memo[key] = null
     return memo
@@ -21,7 +22,7 @@ async function run(context, heroku) {
 
   await cli.action(
     `Unsetting ${Object.keys(vars).join(', ')}`,
-    api.setConfigVars(heroku, pipeline.id, vars)
+    api.setConfigVars(heroku, pipeline.id, vars),
   )
 }
 
@@ -38,13 +39,13 @@ module.exports = {
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
-    }
+      completion: PipelineCompletion,
+    },
   ],
   help: `Examples:
 
     $ heroku ci:config:uset RAILS_ENV
     Unsetting RAILS_ENV... done
 `,
-  run: cli.command(run)
+  run: cli.command(run),
 }
