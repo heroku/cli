@@ -4,10 +4,11 @@ let cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
   let id = context.args.id
+  // eslint-disable-next-line wrap-iife
   await cli.action(`Destroying ${cli.color.cyan(id)}`, async function () {
     await heroku.request({
       method: 'DELETE',
-      path: `/oauth/sessions/${id}`
+      path: `/oauth/sessions/${id}`,
     })
   }())
 }
@@ -18,5 +19,5 @@ module.exports = {
   description: 'delete (logout) OAuth session by ID',
   needsAuth: true,
   args: [{name: 'id'}],
-  run: cli.command(run)
+  run: cli.command(run),
 }

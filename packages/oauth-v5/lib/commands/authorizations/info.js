@@ -18,8 +18,8 @@ module.exports = {
   description: 'show an existing OAuth authorization',
   needsAuth: true,
   flags: [
-    {char: 'j', name: 'json', description: 'output in json format'}
+    {char: 'j', name: 'json', description: 'output in json format'},
   ],
   args: [{name: 'id'}],
-  run: cli.command(run)
+  run: cli.command(run),
 }
