@@ -9,6 +9,7 @@ function fetch(s: string) {
   if (!cache[s]) {
     cache[s] = require(s)
   }
+
   return cache[s]
 }
 

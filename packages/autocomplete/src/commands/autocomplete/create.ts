@@ -144,6 +144,7 @@ export default class Create extends AutocompleteBase {
       const text = Command.description.split('\n')[0]
       description = `:"${text}"`
     }
+
     return `"${Command.id.replace(/:/g, '\\:')}"${description}`
   }
 
@@ -160,9 +161,11 @@ export default class Create extends AutocompleteBase {
       if (hasCompletion) {
         cachecompl = ': :_compadd_flag_options'
       }
+
       if (this.wantsLocalFiles(flag)) {
         cachecompl = ': :_files'
       }
+
       const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
       const completion = `--${name}[${help}${f.description}]${cachecompl}`
       return `"${completion}"`
@@ -177,6 +180,7 @@ ${flagscompletions}
 }
 `
     }
+
     return `# no flags for ${id}`
   }
 

@@ -18,9 +18,6 @@
     "@types/mocha": "^5.2.6",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
-    "eslint": "^6.7.2",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^9.0.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
@@ -60,7 +57,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "pretest": "tsc -p test --noEmit",

@@ -51,7 +51,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     cli.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
     const mapped = githubDiff.commits.map((commit: any) => {
       return {
-        sha: commit.sha.substring(0, 7),
+        sha: commit.sha.substring(0, 7), // eslint-disable-line unicorn/prefer-string-slice
         date: commit.commit.author.date,
         author: commit.commit.author.name,
         message: commit.commit.message.split('\n')[0],
@@ -67,7 +67,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     })
     cli.log(`\nhttps://github.com/${path}`)
   // tslint:disable-next-line: no-unused
-  } catch (error) {
+  } catch {
     cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
     cli.log('are you sure you have pushed your latest commits to GitHub?')
   }
@@ -102,13 +102,15 @@ export default class PipelinesDiff extends Command {
       if (!release || !release.slug) {
         throw new Error(`no release found for ${appName}`)
       }
+
       slug = await this.heroku.get<Heroku.Slug>(`/apps/${appId}/slugs/${release.slug.id}`, {
         headers: {Accept: V3_HEADER},
       }).then(res => res.body)
     // tslint:disable-next-line: no-unused
-    } catch (error) {
+    } catch {
       return {name: appName, repo: githubApp.repo, hash: undefined}
     }
+
     return {name: appName, repo: githubApp.repo, hash: slug.commit!}
   }
 
@@ -118,7 +120,7 @@ export default class PipelinesDiff extends Command {
 
     const coupling = await getCoupling(this.heroku, targetAppName)
     .then(res => res.body)
-    .catch(() => undefined)
+    .catch(() => undefined) // eslint-disable-line unicorn/no-useless-undefined
 
     if (!coupling) {
       cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
@@ -138,7 +140,7 @@ export default class PipelinesDiff extends Command {
     }
 
     const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1]
-    if (!downstreamStage || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
+    if (!downstreamStage || PROMOTION_ORDER.indexOf(sourceStage) < 0) { // eslint-disable-line unicorn/prefer-includes
       return cli.error(`Unable to diff ${targetAppName}`)
     }
 

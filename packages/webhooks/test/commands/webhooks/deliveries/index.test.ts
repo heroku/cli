@@ -112,7 +112,7 @@ describe('webhooks:deliveries', () => {
         created_at: '2017-08-17T20:22:38Z',
       }
 
-      return new Array(1000).fill(delivery)
+      return new Array(1000).fill(delivery) // eslint-disable-line unicorn/no-new-array
     }),
     )
     .command(['webhooks:deliveries', '--app', 'example-app'])

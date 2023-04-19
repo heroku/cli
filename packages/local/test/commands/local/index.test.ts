@@ -5,12 +5,12 @@ import * as foreman from '../../../src/fork-foreman'
 // eslint-disable-next-line node/no-missing-require
 const procfile = require('../../../src/load-foreman-procfile')
 
-describe('local', () => {
-  const loadProcMock = () => ({
-    web: './web-command',
-    other: './other-command',
-  })
+const loadProcMock = () => ({
+  web: './web-command',
+  other: './other-command',
+})
 
+describe('local', () => {
   describe('with the local:start alias', function () {
     test
     .stub(procfile, 'loadProc', loadProcMock)

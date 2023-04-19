@@ -26,6 +26,7 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
     } catch (error: any) {
       this.warn(error)
     }
+
     this.log(this.heroku.auth)
   }
 }

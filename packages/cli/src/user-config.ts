@@ -38,6 +38,7 @@ export default class UserConfig {
       this.body.skipAnalytics = false
       this.needsSave = true
     }
+
     return this.body.skipAnalytics
   }
 
@@ -80,6 +81,7 @@ export default class UserConfig {
       if (!await this.canWrite()) {
         throw new Error('file modified, cannot save')
       }
+
       await deps.file.outputJSON(this.file, this.body)
     })()
   }

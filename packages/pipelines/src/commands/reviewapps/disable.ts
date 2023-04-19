@@ -106,6 +106,7 @@ export default class ReviewappsDisable extends Command {
       settings.repo = repository.name
     }
 
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (flags.autodeploy || flags['no-autodeploy'] || flags.autodestroy || flags['no-autodestroy'] || flags['wait-for-ci'] || flags['no-wait-for-ci']) {
       await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,

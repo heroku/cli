@@ -25,12 +25,14 @@ export default abstract class extends Command {
         display: context.pipeline,
       }
     }
+
     if (context.app) {
       return {
         path: `/apps/${context.app}`,
         display: color.app(context.app),
       }
     }
+
     return this.error('No app specified')
   }
 }

@@ -10,6 +10,7 @@ export async function disambiguatePipeline(pipelineIDOrName: any, command: Comma
     const {body: pipeline} = await command.heroku.get<Heroku.Pipeline>(`/pipelines/${pipelineIDOrName}`, {headers})
     return pipeline
   }
+
   const {body: pipelines} = await command.heroku.get<Heroku.Pipeline>(`/pipelines?eq[name]=${pipelineIDOrName}`, {headers})
 
   let choices

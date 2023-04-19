@@ -26,7 +26,9 @@ export default class Search extends Command {
 
     if (args.term) {
       const uniqueBuildpacks = new Map<string, BuildpackBody>()
+      // eslint-disable-next-line unicorn/no-useless-undefined
       const array = ((await registry.search(args.term, undefined, undefined)).unwrapOr([]))
+      // eslint-disable-next-line unicorn/no-useless-undefined
       .concat((await registry.search(undefined, args.term, undefined)).unwrapOr([]))
       .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
       array

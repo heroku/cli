@@ -1,15 +1,15 @@
 import {expect, test} from '@oclif/test'
 
-describe('authorizations:create', () => {
-  const testWithAuthorizationsCreate = (requestBody = {}) =>
-    test
-    .stdout()
-    .nock('https://api.heroku.com:443', api => {
-      api
-      .post('/oauth/authorizations', requestBody)
-      .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
-    })
+const testWithAuthorizationsCreate = (requestBody = {}) =>
+  test
+  .stdout()
+  .nock('https://api.heroku.com:443', api => {
+    api
+    .post('/oauth/authorizations', requestBody)
+    .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+  })
 
+describe('authorizations:create', () => {
   testWithAuthorizationsCreate({description: 'awesome'})
   .command(['authorizations:create', '--description', 'awesome'])
   .it('creates the authorization', ctx => {

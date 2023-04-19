@@ -27,7 +27,7 @@ export default class ClientsCreate extends Command {
     const {redirect_uri, name} = args
     validateURL(redirect_uri)
 
-    CliUx.ux.action.start(`Creating ${args.name}`)
+    CliUx.ux.action.start(`Creating ${name}`)
 
     const {body: client} = await this.heroku.post<Heroku.OAuthClient>('/oauth/clients', {
       body: {name, redirect_uri},

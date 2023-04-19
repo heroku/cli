@@ -22,6 +22,7 @@ export const AppCompletion: Interfaces.Completion = {
       personal: await herokuGet('users/~/apps', ctx),
       teams: flatten(await Promise.all(teams.map((team: string) => herokuGet(`teams/${team}/apps`, ctx)))),
     }
+
     return apps.personal.concat(apps.teams)
   },
 }
@@ -77,6 +78,7 @@ const ConfigCompletion: Interfaces.Completion = {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs)
     }
+
     return []
   },
 }
@@ -92,6 +94,7 @@ const ConfigSetCompletion: Interfaces.Completion = {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs).map(k => `${k}=`)
     }
+
     return []
   },
 }
@@ -142,6 +145,7 @@ export const ProcessTypeCompletion: Interfaces.Completion = {
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
     }
+
     return types
   },
 }
@@ -254,8 +258,7 @@ export class CompletionLookup {
   }
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
-  }
+  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {}
 
   run(): Interfaces.Completion | undefined {
     if (this.blocklisted()) return

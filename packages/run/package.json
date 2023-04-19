@@ -20,9 +20,6 @@
     "@types/node-notifier": "^5.4.0",
     "bats": "^1.1.0",
     "chai": "^4",
-    "eslint": "^6.7.2",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^10",
     "http-call": "^5.2.5",
     "mocha": "^5",
@@ -65,7 +62,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
