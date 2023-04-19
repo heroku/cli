@@ -14,7 +14,10 @@ module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-analyze',
   description: 'Shows actual run times on the execution plan.',
-  help: `This is equivalent to calling EXPLAIN ANALYZE and can cause SIGNIFICANT performance impacts. Use with caution.`,
+  help: `This is equivalent to calling EXPLAIN ANALYZE.
+
+WARNING: EXPLAIN ANALYZE will be run on ALL queries, not just logged queries. This can cause significant performance impacts to your database and should be used with caution.
+`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],

@@ -14,7 +14,7 @@ module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-triggers',
   description: 'Includes trigger execution statistics in execution plan logs.',
-  help: `This parameter can only be used in conjunction with pg:settings:auto_explain:log_analyze turned on.`,
+  help: `This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],

@@ -14,7 +14,7 @@ module.exports = {
   topic: 'pg',
   command: 'settings:auto-explain:log-buffers',
   description: 'Includes buffer usage statistics when execution plans are logged.',
-  help: `This is equivalent to calling EXPLAIN BUFFERS and can only be used in conjunction with pg:settings:auto_explain:log_analyze turned on.`,
+  help: `This is equivalent to calling EXPLAIN BUFFERS and can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
