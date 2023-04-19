@@ -217,7 +217,6 @@ Use heroku addons:docs heroku-db3 to view documentation
       })
 
       it('waits for response and notifies', () => {
-        // eslint-disable-next-line node/no-extraneous-require
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         const asyncAddon = _.clone(addon)
@@ -256,7 +255,6 @@ Use heroku addons:docs heroku-db3 to view documentation
       })
 
       it('notifies when provisioning failure occurs', () => {
-        // eslint-disable-next-line node/no-extraneous-require
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         const asyncAddon = _.clone(addon)
