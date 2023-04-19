@@ -13,7 +13,7 @@ describe('addons:open', function () {
       process.env.HEROKU_SUDO = true
     })
 
-    it('with sudo && sso.method is true', function () {
+    it('uses file path via sso to open url', function () {
       let api = nock('https://api.heroku.com:443')
 
       api.get('/apps/myapp/addons/db2/sso')
@@ -24,7 +24,7 @@ describe('addons:open', function () {
         .then(() => api.done())
     })
 
-    it('with sudo && sso.method is false', function () {
+    it('writes sudo template to file and opens url', function () {
       let api = nock('https://api.heroku.com:443')
 
       api.get('/apps/myapp/addons/db2/sso')
