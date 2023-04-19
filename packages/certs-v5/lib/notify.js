@@ -7,7 +7,6 @@ module.exports = {
   notify: function (subtitle, message, success = true) {
     const contentImage = path.join(__dirname, `../assets/${success ? 'success' : 'error'}.png`)
     try {
-      // eslint-disable-next-line node/no-extraneous-require
       const {notify} = require('@heroku-cli/notifications')
       notify({
         title: 'heroku cli',

@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 'use strict'
 // eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
@@ -116,7 +115,7 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
       nock.cleanAll()
       sandbox = sinon.sandbox.create()
       clock = lolex.install()
-      // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       clock.setTimeout = function (fn, timeout) {
         fn()
       }
@@ -128,7 +127,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
 
     it('waits until all certs are issued and notifies', () => {
-      // eslint-disable-next-line node/no-extraneous-require
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
       let acmApi = nock('https://api.heroku.com', {
@@ -182,7 +180,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
 
     it('waits until all certs are issued or failed and notifies', () => {
-      // eslint-disable-next-line node/no-extraneous-require
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
       let acmApi = nock('https://api.heroku.com', {
@@ -232,7 +229,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
 
     it('waits until all certs are failed and notifies', () => {
-      // eslint-disable-next-line node/no-extraneous-require
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
       let acmApi = nock('https://api.heroku.com', {
@@ -282,7 +278,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
 
     it('does not wait if all certs are issued when first checked', () => {
-      // eslint-disable-next-line node/no-extraneous-require
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
       let acmApi = nock('https://api.heroku.com', {
