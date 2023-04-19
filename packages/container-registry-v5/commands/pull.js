@@ -9,7 +9,7 @@ let usage = `
     ${cli.color.cmd('heroku container:pull web worker')} # Pulls both the web and worker images from the app
     ${cli.color.cmd('heroku container:pull web:latest')} # Pulls the latest tag from the web image`
 
-let pull = async function (context, heroku) {
+let pull = async function (context) {
   if (context.flags.verbose) debug.enabled = true
 
   if (context.args.length === 0) {
@@ -22,6 +22,7 @@ let pull = async function (context, heroku) {
   for (let process of context.args) {
     let tag = `${registry}/${context.app}/${process}`
     cli.styledHeader(`Pulling ${process} as ${tag}`)
+    // eslint-disable-next-line no-await-in-loop
     await Sanbashi.pullImage(tag)
   }
 }
@@ -39,9 +40,9 @@ module.exports = function (topic) {
       {
         name: 'verbose',
         char: 'v',
-        hasValue: false
-      }
+        hasValue: false,
+      },
     ],
-    run: cli.command(pull)
+    run: cli.command(pull),
   }
 }
