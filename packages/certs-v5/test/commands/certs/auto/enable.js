@@ -1,8 +1,8 @@
+/* eslint-env mocha */
 'use strict'
 // eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
 
-let {afterEach} = require('mocha')
 let expect = require('chai').expect
 let nock = require('nock')
 let certs = require('../../../../commands/certs/auto/enable.js')
@@ -105,7 +105,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
     })
   })
 
-  // eslint-disable-next-line no-undef
   context('--wait', function () {
     let clock
     let sandbox

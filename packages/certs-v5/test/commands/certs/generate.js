@@ -1,7 +1,6 @@
+/* eslint-env mocha */
 'use strict'
-/* eslint-disable no-unused-expressions */
 
-let {afterEach, beforeEach} = require('mocha')
 let chai = require('chai')
 let expect = require('chai').expect
 let nock = require('nock')

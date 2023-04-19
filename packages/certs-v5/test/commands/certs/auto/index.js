@@ -1,9 +1,8 @@
-/* eslint-disable unicorn/no-null */
+/* eslint-env mocha */
 'use strict'
 // eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
 
-let {afterEach} = require('mocha')
 let expect = require('chai').expect
 let nock = require('nock')
 let certs = require('../../../../commands/certs/auto')
@@ -439,8 +438,6 @@ heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than
       apiCerts.done()
     })
   })
-
-  // eslint-disable-next-line no-undef
   context('--wait', function () {
     let clock
     let sandbox
@@ -448,7 +445,7 @@ heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       clock = lolex.install()
-      // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       clock.setTimeout = function (fn, timeout) {
         fn()
       }
