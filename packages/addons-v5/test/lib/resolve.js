@@ -4,7 +4,6 @@
 
 let resolve = require('../../lib/resolve')
 const {expect} = require('chai')
-// eslint-disable-next-line node/no-extraneous-require
 let Heroku = require('heroku-client')
 
 describe('resolve', () => {
