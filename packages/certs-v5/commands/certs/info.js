@@ -16,7 +16,7 @@ async function run(context, heroku) {
   if (context.flags['show-domains']) {
     let domains = await Promise.all(endpoint.domains.map(domain => {
       return heroku.request({
-        path: `/apps/${context.flags.app}/domains/${domain}`
+        path: `/apps/${context.app}/domains/${domain}`
       }).then(response => response.hostname)
     }))
     cert.domains = domains
