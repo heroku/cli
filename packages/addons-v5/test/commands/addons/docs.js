@@ -1,10 +1,11 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
+// eslint-disable-next-line no-redeclare, @typescript-eslint/no-unused-vars
 /* globals describe beforeEach it commands cli expect nock */
 
 let cli = require('heroku-cli-util')
 let proxyquire = require('proxyquire')
 const sinon = require('sinon')
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 let openStub = sinon.stub(cli, 'open').callsFake(() => {})
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'docs')
 let docs
@@ -25,16 +26,16 @@ describe('addons:docs', function () {
 
   it('opens an addon by name with no url flag passed', function () {
     let api = nock('https://api.heroku.com:443')
-      .get('/addon-services/slowdb')
-      .reply(200, { name: 'slowdb' })
+    .get('/addon-services/slowdb')
+    .reply(200, {name: 'slowdb'})
 
     docs = proxyquire('../../../commands/addons/docs', {
-      'heroku-cli-util': openStub
+      'heroku-cli-util': openStub,
     })
 
-    return docs.run({ args: { addon: 'slowdb' }, flags: {} })
-      .then(() => expect(cli.stdout).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n'))
-      .then(() => api.done())
+    return docs.run({args: {addon: 'slowdb'}, flags: {}})
+    .then(() => expect(cli.stdout).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n'))
+    .then(() => api.done())
   })
 
   it('opens an addon by attachment name', function () {

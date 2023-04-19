@@ -18,22 +18,22 @@ describe('addons:open', function () {
       let api = nock('https://api.heroku.com:443')
 
       api.get('/apps/myapp/addons/db2/sso')
-        .reply(200, { action: 'exampleURL', method: 'get' })
+      .reply(200, {action: 'exampleURL', method: 'get'})
 
-      return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
-        .then(() => expect(cli.stdout).to.equal('Opening exampleURL...\n'))
-        .then(() => api.done())
+      return cmd.run({app: 'myapp', args: {addon: 'db2'}, flags: {'show-url': true}})
+      .then(() => expect(cli.stdout).to.equal('Opening exampleURL...\n'))
+      .then(() => api.done())
     })
 
     it('writes sudo template to file and opens url', function () {
       let api = nock('https://api.heroku.com:443')
 
       api.get('/apps/myapp/addons/db2/sso')
-        .reply(200, { action: 'exampleURL' })
+      .reply(200, {action: 'exampleURL'})
 
-      return cmd.run({ app: 'myapp', args: { addon: 'db2' }, flags: { 'show-url': true } })
-        .then(() => expect(cli.stdout).to.contain('Opening file://'))
-        .then(() => api.done())
+      return cmd.run({app: 'myapp', args: {addon: 'db2'}, flags: {'show-url': true}})
+      .then(() => expect(cli.stdout).to.contain('Opening file://'))
+      .then(() => api.done())
     })
   })
 
