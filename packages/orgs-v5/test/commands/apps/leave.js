@@ -39,7 +39,7 @@ describe('heroku apps:leave', () => {
     })
   })
 
-  describe('error occurs when trying to leave the app', () => {
+  describe('when the user tries to leave the app', () => {
     before(() => {
       apiGetUserAccount = stubGet.userAccount()
       apiDeletePersonalAppCollaborator = stubDeleteError.collaboratorsPersonalAppDeleteFailure('myapp', 'raulb%40heroku.com')
