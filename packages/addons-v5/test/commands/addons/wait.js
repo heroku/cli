@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe context it beforeEach afterEach */
+/* globals context beforeEach afterEach */
 
 let fixtures = require('../../fixtures')
 let cli = require('heroku-cli-util')

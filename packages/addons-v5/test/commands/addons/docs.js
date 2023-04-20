@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare, @typescript-eslint/no-unused-vars
-/* globals describe beforeEach it commands cli expect nock */
+/* globals beforeEach commands expect nock */
 
 let cli = require('heroku-cli-util')
 let proxyquire = require('proxyquire')

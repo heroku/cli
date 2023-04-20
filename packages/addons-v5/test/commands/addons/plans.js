@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe beforeEach cli commands it nock expect */
+/* globals beforeEach cli commands nock expect */
 
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'plans')
 

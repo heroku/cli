@@ -1,6 +1,4 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it */
 
 let util = require('../../lib/util')
 let expect = require('chai').expect

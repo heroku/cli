@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach context */
+/* globals beforeEach context */
 
 let fixtures = require('../../fixtures')
 let util = require('../../util')

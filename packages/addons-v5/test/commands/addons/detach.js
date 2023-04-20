@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe beforeEach afterEach it nock cli commands */
+/* globals beforeEach afterEach nock cli commands */
 
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'detach')
 const {expect} = require('chai')

@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe beforeEach afterEach cli it nock */
+/* globals beforeEach afterEach cli nock */
 
 let resolve = require('../../lib/resolve')
 const {expect} = require('chai')
