@@ -1,8 +1,8 @@
 const nock = require('nock')
+/* globals afterEach */
 
 nock.disableNetConnect()
 
-// eslint-disable-next-line no-undef
 afterEach(() => {
   nock.cleanAll()
 })

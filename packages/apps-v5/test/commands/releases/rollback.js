@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach commands */
+/* globals afterEach beforeEach commands */
 
 const unwrap = require('../../unwrap')
 const cli = require('heroku-cli-util')
@@ -12,7 +11,6 @@ const stdMocks = require('std-mocks')
 describe('releases:rollback', function () {
   beforeEach(() => cli.mockConsole())
 
-  // eslint-disable-next-line no-undef
   afterEach(() => {
     stdMocks.restore()
   })

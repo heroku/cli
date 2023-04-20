@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe beforeEach it commands */
+/* globals beforeEach commands */
 
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
@@ -35,8 +34,7 @@ describe('heroku apps:rename', function () {
     })
 
     return cmd.run({app: 'myapp', flags: {}, args: {newname: 'newname'}, httpGitHost: 'git.heroku.com'})
-    // eslint-disable-next-line no-useless-escape
-    .then(() => expect(unwrap(cli.stderr)).to.contain(`Renaming myapp to newname... done Don\'t forget to update git remotes for all other local checkouts of the app.
+    .then(() => expect(unwrap(cli.stderr)).to.contain(`Renaming myapp to newname... done Don't forget to update git remotes for all other local checkouts of the app.
 `))
     .then(() => expect(cli.stdout).to.equal('http://foobar.com | https://git.heroku.com/foobar.git\nPlease note that it may take a few minutes for Heroku to provision a SSL certificate for your application.\n'))
     .then(() => api.done())

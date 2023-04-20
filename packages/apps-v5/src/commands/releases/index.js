@@ -106,8 +106,7 @@ async function run(context, heroku) {
 
     let concatArguments = function (args) {
       return Array.prototype.map.call(args, function (arg) {
-        // eslint-disable-next-line no-implicit-coercion
-        return arg + ''
+        return String(arg)
       }).join(' ')
     }
 

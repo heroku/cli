@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals commands describe beforeEach it */
+/* globals commands beforeEach */
 
 const cli = require('heroku-cli-util')
 const cmd = commands.find(c => c.topic === 'ps' && c.command === 'type')

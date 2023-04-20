@@ -145,8 +145,7 @@ async function run(context, heroku) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback: () => {}})
-  // eslint-disable-next-line unicorn/prefer-optional-catch-binding
-  } catch (error) {}
+  } catch {}
 
   // eslint-disable-next-line wrap-iife
   await cli.action('Loading', {clear: true}, (async function () {

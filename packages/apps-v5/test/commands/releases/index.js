@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe beforeEach it */
+/* globals afterEach beforeEach */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
@@ -17,7 +16,6 @@ const assertLineWidths = function (blob, lineWidth) {
 
 describe('releases', () => {
   beforeEach(() => cli.mockConsole())
-  // eslint-disable-next-line no-undef
   afterEach(() => {
     process.stdout.isTTY = isTTY
   })

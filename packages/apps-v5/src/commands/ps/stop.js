@@ -5,7 +5,6 @@ let cli = require('heroku-cli-util')
 async function run(context, heroku) {
   let app = context.app
   let dyno = context.args.dyno
-  // eslint-disable-next-line no-negated-condition
   let type = dyno.includes('.') ? 'ps' : 'type'
 
   await cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`,

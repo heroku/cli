@@ -93,8 +93,7 @@ async function printAccountQuota(context, heroku, app, account) {
 function printDynos(dynos) {
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
-    // eslint-disable-next-line unicorn/explicit-length-check
-    let size = dyno.size || '1X'
+    let size = dyno.size > 0 || '1X'
 
     if (dyno.type === 'run') {
       let key = 'run: one-off processes'

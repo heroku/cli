@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals commands describe beforeEach afterEach it */
+/* globals commands beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
