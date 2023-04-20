@@ -21,7 +21,6 @@ async function run(context, heroku) {
         name: 'yes',
         message: message,
       }])
-    // eslint-disable-next-line no-else-return
     } else {
       return cli.prompt(message + ' [Y/n]').then(function (data) {
         return {yes: /^y(es)?/i.test(data)}
@@ -65,7 +64,6 @@ async function run(context, heroku) {
       }
 
       return key
-    // eslint-disable-next-line no-else-return
     } else {
       let resp = await inquirer.prompt([{
         type: 'list',

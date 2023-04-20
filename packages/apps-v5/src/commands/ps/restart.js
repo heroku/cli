@@ -11,7 +11,6 @@ async function run(context, heroku) {
   msg += (dyno && dyno.includes('.')) ? ' dyno' : ' dynos'
   msg += ` on ${cli.color.app(app)}`
 
-  // eslint-disable-next-line wrap-iife
   await cli.action(msg, async function () {
     await heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
   }())

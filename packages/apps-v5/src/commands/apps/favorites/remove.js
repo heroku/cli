@@ -5,7 +5,6 @@ let cli = require('heroku-cli-util')
 async function run(context, heroku) {
   let app = context.app
 
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Removing ${cli.color.app(app)} from favorites`, async function () {
     let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
     let favorite = favorites.find(f => f.resource_name === app)

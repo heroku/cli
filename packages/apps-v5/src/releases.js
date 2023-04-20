@@ -14,7 +14,6 @@ let FindByLatestOrId = function (heroku, app, release) {
   if (id === 'current') {
     // eslint-disable-next-line new-cap
     return FindRelease(heroku, app, releases => releases[0])
-  // eslint-disable-next-line no-else-return
   } else {
     return heroku.get(`/apps/${app}/releases/${id}`)
   }

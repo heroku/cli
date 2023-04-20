@@ -5,7 +5,6 @@ function ago(since) {
   let elapsed = Math.floor((Date.now() - since) / 1000)
   let message = strftime('%Y/%m/%d %H:%M:%S %z', since)
   if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`
-  // eslint-disable-next-line no-else-return
   else if (elapsed < 60 * 60) return `${message} (~ ${Math.floor(elapsed / 60)}m ago)`
   else if (elapsed < 60 * 60 * 25) return `${message} (~ ${Math.floor(elapsed / 60 / 60)}h ago)`
   else return message

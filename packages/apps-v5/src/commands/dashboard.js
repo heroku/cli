@@ -147,7 +147,6 @@ async function run(context, heroku) {
     img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback: () => {}})
   } catch {}
 
-  // eslint-disable-next-line wrap-iife
   await cli.action('Loading', {clear: true}, (async function () {
     apps = await favoriteApps()
 

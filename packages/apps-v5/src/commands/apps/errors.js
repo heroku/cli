@@ -28,7 +28,6 @@ function buildErrorTable(errors, source) {
 async function run(context, heroku) {
   const {sum} = require('lodash')
 
-  // eslint-disable-next-line radix
   const hours = Number.parseInt(context.flags.hours) || 24
   const NOW = new Date().toISOString()
   const YESTERDAY = new Date(Date.now() - (hours * 60 * 60 * 1000)).toISOString()

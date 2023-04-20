@@ -16,7 +16,6 @@ async function run(context, heroku) {
   }
 
   let latest
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Rolling back ${cli.color.app(context.app)} to ${cli.color.green('v' + release.version)}`, {success: false}, async function () {
     latest = await heroku.post(`/apps/${context.app}/releases`, {body: {release: release.id}})
 

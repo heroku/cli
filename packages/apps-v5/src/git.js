@@ -25,7 +25,6 @@ module.exports = function (context) {
 
   function createRemote(remote, url) {
     return hasGitRemote(remote)
-    // eslint-disable-next-line no-negated-condition
     .then(exists => !exists ? git(['remote', 'add', remote, url]) : null)
   }
 

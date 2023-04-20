@@ -6,7 +6,6 @@ async function run(context, heroku) {
   let app = context.app
   let feature = context.args.feature
 
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Enabling ${cli.color.green(feature)} for ${cli.color.app(app)}`, async function () {
     let f = await heroku.get(`/apps/${app}/features/${feature}`)
     if (f.enabled) throw new Error(`${cli.color.red(feature)} is already enabled.`)

@@ -53,7 +53,6 @@ async function addAddons(heroku, app, addons) {
     }
 
     let request = heroku.post(`/apps/${app.name}/addons`, {body})
-    // eslint-disable-next-line no-await-in-loop
     await cli.action(`Adding ${cli.color.green(addon.plan)}`, request)
   }
 }

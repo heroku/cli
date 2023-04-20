@@ -5,7 +5,6 @@ let cli = require('heroku-cli-util')
 async function run(context, heroku) {
   let app = context.app
 
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Adding ${cli.color.app(app)} to favorites`, async function () {
     let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
     // eslint-disable-next-line unicorn/prefer-array-some

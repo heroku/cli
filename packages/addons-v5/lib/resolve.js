@@ -28,7 +28,6 @@ const appAddon = function (heroku, app, id, options = {}) {
 const handleNotFound = function (err, resource) {
   if (err.statusCode === 404 && err.body && err.body.resource === resource) {
     return true
-  // eslint-disable-next-line no-else-return
   } else {
     throw err
   }
@@ -170,7 +169,6 @@ exports.attachment = function (heroku, app, id, options = {}) {
     // If we were passed an add-on slug, there still could be an attachment
     // to the context app. Try to find and use it so `context_app` is set
     // correctly in the SSO payload.
-    // eslint-disable-next-line no-else-return
     else if (app) {
       return exports.addon(heroku, app, id, options)
       .then(addon => getAppAddonAttachment(addon, app))

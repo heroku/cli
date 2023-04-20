@@ -41,7 +41,6 @@ async function run(context, heroku) {
   await cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
     {success: false},
-    // eslint-disable-next-line wrap-iife
     async function () {
       let releases = await heroku.get(`/apps/${app}/releases`, {
         partial: true,

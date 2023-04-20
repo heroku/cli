@@ -57,7 +57,6 @@ describe('keys:add', () => {
       let choice = choices[0]
       if (choice.message === 'Would you like to generate a new one?') {
         return Promise.resolve({yes: true})
-      // eslint-disable-next-line no-else-return
       } else {
         console.error(choices)
         throw new Error('unexpected choices')
@@ -106,7 +105,6 @@ Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
       let choice = choices[0]
       if (choice.message === 'Would you like to upload it to Heroku?') {
         return Promise.resolve({yes: true})
-      // eslint-disable-next-line no-else-return
       } else {
         console.error(choices)
         throw new Error('unexpected choices')
@@ -157,7 +155,6 @@ Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
       let choice = choices[0]
       if (choice.message === 'Which SSH key would you like to upload?') {
         return Promise.resolve({key: choice.choices[0]})
-      // eslint-disable-next-line no-else-return
       } else {
         console.error(choices)
         throw new Error('unexpected choices')

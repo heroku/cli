@@ -35,7 +35,6 @@ async function run(context, heroku) {
   await cli.action(
     `Setting ${context.args.map(v => cli.color.configVar(v.split('=')[0])).join(', ')} and restarting ${cli.color.app(context.app)}`,
     {success: false},
-    // eslint-disable-next-line wrap-iife
     async function () {
       config = await heroku.request({
         method: 'patch',

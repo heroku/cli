@@ -3,7 +3,6 @@
 let cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Removing ${cli.color.cyan(context.args.key)} SSH key`, async function () {
     let keys = await heroku.get('/account/keys')
     if (keys.length === 0) throw new Error('No SSH keys on account')

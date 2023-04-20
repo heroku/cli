@@ -38,7 +38,6 @@ async function run(context, heroku) {
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map(d => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
-    // eslint-disable-next-line wrap-iife
     await cli.action('Scaling dynos', {success: false}, async function () {
       let formation = await heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
       const appProps = await heroku.get(`/apps/${app}`)

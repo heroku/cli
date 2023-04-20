@@ -5,7 +5,6 @@ let time = require('../../time')
 const {truncate, sortBy, reduce, forEach} = require('lodash')
 
 // gets the process number from a string like web.19 => 19
-// eslint-disable-next-line radix
 let getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
 
 function printExtended(dynos) {

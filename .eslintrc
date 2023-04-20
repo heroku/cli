@@ -9,10 +9,16 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "camelcase":"off",
     "import/no-unresolved": "error",
+    "no-await-in-loop": "warn", // TODO: fix issues and turn this back on
     "no-constant-condition": ["error", {"checkLoops": false }],
-    "node/no-missing-import": "off", // using import/no-unresolved instead
-    "unicorn/better-regex": "off", // TODO: fix issues and turn this back on
-    "unicorn/consistent-function-scoping": "off", // TODO: fix issues and turn this back on
+    "no-else-return":"warn", // TODO: fix issues and turn this back on
+    "no-negated-condition":"warn", // TODO: fix issues and turn this back on
+    "no-promise-executor-return": "warn", // TODO: fix issues and turn this back on
+    "radix":"warn", // TODO: fix issues and turn this back on
+    "wrap-iife":"warn", // TODO: fix issues and turn this back on
+    "node/no-missing-import": "warn", // using import/no-unresolved instead
+    "unicorn/better-regex": "warn", // TODO: fix issues and turn this back on
+    "unicorn/consistent-function-scoping": "warn", // TODO: fix issues and turn this back on
     "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-abusive-eslint-disable": "off",
@@ -22,8 +28,8 @@
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-regexp-test": "off",
-    "unicorn/prefer-spread": "off", // TODO: fix issues and turn this back on
-    "unicorn/prefer-ternary": "off" // TODO: fix issues and turn this back on
+    "unicorn/prefer-spread": "warn", // TODO: fix issues and turn this back on
+    "unicorn/prefer-ternary": "warn" // TODO: fix issues and turn this back on
   },
 
   // Typescript settings

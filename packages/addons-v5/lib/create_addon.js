@@ -8,7 +8,6 @@ function formatConfigVarsMessage(addon) {
   if (configVars.length > 0) {
     configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
     return `Created ${cli.color.addon(addon.name)} as ${configVars}`
-  // eslint-disable-next-line no-else-return
   } else {
     return `Created ${cli.color.addon(addon.name)}`
   }

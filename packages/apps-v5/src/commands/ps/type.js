@@ -31,7 +31,6 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
 
         return {type, size}
       }))
-    // eslint-disable-next-line no-else-return
     } else {
       return formation.map(p => ({type: p.type, size: args[0]}))
     }
