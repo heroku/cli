@@ -47,7 +47,7 @@ describe('heroku apps:leave', () => {
     })
     after(() => nock.cleanAll())
 
-    it('errors when leaving the app', () => {
+    it('shows an error if the heroku.delete() operation returns an error', () => {
       return cmd.run({ app: 'myapp' })
         .then(() => apiGetUserAccount.done())
         .then(() => apiDeletePersonalAppCollaborator.done())
