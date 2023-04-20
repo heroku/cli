@@ -201,6 +201,105 @@ describe('pipelines:setup', () => {
         .command(['pipelines:setup', '--team', team])
         .it('creates apps in a team with CI enabled')
       })
+
+      context('when pollAppSetup status fails', function () {
+        const team = 'test-org'
+        const promptStub = sinon.stub()
+        const confirmStub = sinon.stub()
+
+        test
+        .do(() => {
+          promptStub.onFirstCall().resolves(pipeline.name)
+          promptStub.onSecondCall().resolves(repo.name)
+
+          confirmStub.resolves(true)
+        })
+        .nock('https://api.heroku.com', api => {
+          api.post('/pipelines').reply(201, pipeline)
+
+          const couplings = [
+            {id: 1, stage: 'production', app: prodApp},
+            {id: 2, stage: 'staging', app: stagingApp},
+          ]
+
+          couplings.forEach(function (coupling) {
+            api
+            .post('/app-setups', {
+              source_blob: {url: archiveURL},
+              app: {name: coupling.app.name, organization: team},
+              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+            })
+            .reply(201, {id: coupling.id, app: coupling.app})
+
+            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'failed'})
+          })
+
+          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
+        })
+        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+          setupKolkrabbiNock(kolkrabbi)
+
+          kolkrabbi
+          .patch(`/pipelines/${pipeline.id}/repository`, {
+            organization: team,
+            ci: true,
+          })
+          .reply(200)
+        })
+        .stub(cli, 'prompt', () => promptStub)
+        .stub(cli, 'confirm', () => confirmStub)
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+        .command(['pipelines:setup', '--team', team])
+        .catch(error => {
+          expect(error.message).to.contain("Couldn't create application")
+        })
+        .it('shows error if getAppSetup returns body with setup.status === failed')
+      })
+
+      // context('when pollAppSetup status fails', function () {
+      //   const team = 'test-org'
+      //   const promptStub = sinon.stub()
+      //   const confirmStub = sinon.stub()
+
+      //   test
+      //   .do(() => {
+      //     promptStub.onFirstCall().resolves(pipeline.name)
+      //     promptStub.onSecondCall().resolves(repo.name)
+
+      //     confirmStub.resolves(true)
+      //   })
+      //   .nock('https://api.heroku.com', api => {
+      //     api.post('/pipelines').reply(201, pipeline)
+
+      //     const couplings = [
+      //       {id: 1, stage: 'production', app: prodApp},
+      //       {id: 2, stage: 'staging', app: stagingApp},
+      //     ]
+
+      //     couplings.forEach(function (coupling) {
+      //       api
+      //       .post('/app-setups', {
+      //         source_blob: {url: archiveURL},
+      //         app: {name: coupling.app.name, organization: team},
+      //         pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+      //       })
+      //       .reply(201, {id: coupling.id, app: coupling.app})
+
+      //       api.get(`/app-setups/${coupling.id}`).reply(401, {status: 'failed'})
+      //     })
+
+      //     api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
+      //   })
+      //   .stub(cli, 'prompt', () => promptStub)
+      //   .stub(cli, 'confirm', () => confirmStub)
+      //   .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+      //   .catch(error => {
+      //     expect(error.message).to.equal('we made it here')
+      //   })
+      //   .command(['pipelines:setup', '--team', team])
+      //   .it('shows error if getAppSetup returns body with setup.status === failed')
+      // })
     })
   })
 })
