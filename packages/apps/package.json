@@ -56,7 +56,7 @@
   "repository": "heroku/heroku-cli-plugin-apps",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",

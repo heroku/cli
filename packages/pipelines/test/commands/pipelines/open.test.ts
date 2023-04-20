@@ -17,7 +17,7 @@ describe('pipelines:open', () => {
     .query({eq: {name: pipeline.name}})
     .reply(200, [pipeline]),
   )
-  .stub(cli, 'open', () => (urlToOpen: string) => { // eslint-disable-line unicorn/consistent-function-scoping
+  .stub(cli, 'open', () => (urlToOpen: string) => {
     openWasCalled = true
     openedUrl = urlToOpen
     return Promise.resolve()
