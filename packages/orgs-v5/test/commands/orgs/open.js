@@ -31,7 +31,7 @@ describe('heroku org:open', () => {
     })
   })
 
-  it('if team flag is passed', function () {
+  it('opens org in dashboard via browser if team flag is passed', function () {
     return cmd.run({ flags: { team: 'myteam' } })
     .then(() => apiGetOrgInfo.done())
     .then(() => expect(openStub.called).to.equal(true))
