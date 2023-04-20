@@ -7,6 +7,5 @@
   ],
   "exclude": [
     "**/*.d.ts"
-  ],
-  "all": true
+  ]
 }
