@@ -25,7 +25,7 @@ describe('heroku org:open', () => {
     expect(cmd).to.have.own.property('wantsOrg', true)
   })
 
-  it('erros if team flag is not passed', function () {
+  it('shows an error if team flag is not passed', function () {
     cmd.run({}).catch((err) => {
       expect(err).to.be.instanceOf(Error)
     })
