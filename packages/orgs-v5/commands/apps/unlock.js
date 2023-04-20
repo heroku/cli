@@ -8,10 +8,11 @@ async function run(context, heroku) {
     throw new Error(`Error: cannot unlock ${cli.color.cyan(app.name)}
 This app is not locked.`)
   }
+
   let request = heroku.request({
     method: 'PATCH',
     path: `/teams/apps/${app.name}`,
-    body: { locked: false }
+    body: {locked: false},
   })
   await cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request)
 }
@@ -22,8 +23,8 @@ let cmd = {
   description: 'unlock an app so any team member can join',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
 
-let root = Object.assign({}, cmd, { topic: 'unlock', command: null })
+let root = Object.assign({}, cmd, {topic: 'unlock', command: null})
 module.exports = [cmd, root]

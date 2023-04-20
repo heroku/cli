@@ -2,8 +2,8 @@
 
 let cli = require('heroku-cli-util')
 let Utils = require('../../lib/utils')
-const { flags } = require('@heroku-cli/command')
-const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
+const {flags} = require('@heroku-cli/command')
+const {RoleCompletion} = require('@heroku-cli/command/lib/completions')
 
 async function run(context, heroku) {
   let teamInfo = await Utils.teamInfo(context, heroku)
@@ -21,12 +21,12 @@ let set = {
   description: 'sets a members role in a team',
   needsAuth: true,
   wantsOrg: true,
-  args: [{ name: 'email' }],
+  args: [{name: 'email'}],
   flags: [
-    { name: 'role', char: 'r', hasValue: true, required: true, description: 'member role (admin, collaborator, member, owner)', completion: RoleCompletion },
-    flags.team({ name: 'team', hasValue: true, hidden: true })
+    {name: 'role', char: 'r', hasValue: true, required: true, description: 'member role (admin, collaborator, member, owner)', completion: RoleCompletion},
+    flags.team({name: 'team', hasValue: true, hidden: true}),
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }
 
 module.exports = set

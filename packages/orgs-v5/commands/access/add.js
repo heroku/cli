@@ -5,7 +5,7 @@ let _ = require('lodash')
 let Utils = require('../../lib/utils')
 let error = require('../../lib/error')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let appName = context.app
   let permissions = context.flags.permissions || context.flags.privileges || ''
   let appInfo = await heroku.get(`/apps/${appName}`)
@@ -18,6 +18,7 @@ async function run (context, heroku) {
     teamFeatures = await heroku.get(`/teams/${teamName}/features`)
   }
 
+  // eslint-disable-next-line unicorn/prefer-array-some
   if (teamFeatures.find(feature => feature.name === 'org-access-controls')) {
     if (!permissions) error.exit(1, 'Missing argument: permissions')
 
@@ -31,11 +32,12 @@ async function run (context, heroku) {
     output += ` with ${cli.color.green(permissions)} permissions`
 
     request = heroku.post(`/teams/apps/${appName}/collaborators`, {
-      body: { user: context.args.email, permissions: permissions }
+      body: {user: context.args.email, permissions: permissions},
     })
   } else {
-    request = heroku.post(`/apps/${appName}/collaborators`, { body: { user: context.args.email } })
+    request = heroku.post(`/apps/${appName}/collaborators`, {body: {user: context.args.email}})
   }
+
   await cli.action(`${output}`, request)
 }
 
@@ -48,23 +50,24 @@ module.exports = [
     description: 'add new users to your app',
     examples: [
       '$ heroku access:add user@email.com --app APP # add a collaborator to your app',
-      '$ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated'
+      '$ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated',
     ],
-    args: [{ name: 'email', optional: false }],
+    args: [{name: 'email', optional: false}],
     flags: [
-      { name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true },
-      { name: 'privileges', hasValue: true, optional: true, hidden: true } // Deprecated flag
+      {name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true},
+      {name: 'privileges', hasValue: true, optional: true, hidden: true}, // Deprecated flag
     ],
-    run: cli.command(run)
+    run: cli.command(run),
   }, {
     topic: 'sharing',
     command: 'add',
-    help: `this command is now heroku access:add`,
+    help: 'this command is now heroku access:add',
     variableArgs: true,
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access:add')}`)
+      // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
       process.exit(1)
-    }
-  }
+    },
+  },
 ]

@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach context cli nock expect */
+/* globals beforeEach afterEach context cli nock expect */
 
 let cmd = require('../../../commands/access/update')
 let error = require('../../../lib/error')
@@ -17,39 +17,39 @@ describe('heroku access:update', () => {
 
     it('updates the app permissions, view being implicit', () => {
       apiGetApp = stubGet.teamApp()
-      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
+      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({email: 'raulb@heroku.com', permissions: ['deploy', 'view']})
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {permissions: 'deploy'}})
+      .then(() => expect('').to.eq(cli.stdout))
+      .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+      .then(() => apiGetApp.done())
+      .then(() => apiPatchAppCollaborators.done())
     })
 
     it('updates the app permissions, even specifying view as a permission', () => {
       apiGetApp = stubGet.teamApp()
-      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
+      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({email: 'raulb@heroku.com', permissions: ['deploy', 'view']})
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy,view' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {permissions: 'deploy,view'}})
+      .then(() => expect('').to.eq(cli.stdout))
+      .then(() => expect(`Updating raulb@heroku.com in application myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+      .then(() => apiGetApp.done())
+      .then(() => apiPatchAppCollaborators.done())
     })
 
     it('supports --privileges, but shows deprecation warning', () => {
       apiGetApp = stubGet.teamApp()
-      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
+      apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({email: 'raulb@heroku.com', permissions: ['deploy', 'view']})
 
-      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {privileges: 'deploy'}})
+      .then(() => expect('').to.eq(cli.stdout))
+      .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
 Updating raulb@heroku.com in application myapp with deploy,view permissions... done
 `))
-        .then(() => apiGetApp.done())
-        .then(() => apiPatchAppCollaborators.done())
+      .then(() => apiGetApp.done())
+      .then(() => apiPatchAppCollaborators.done())
     })
   })
 
@@ -65,8 +65,8 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
 
       return assertExit(1, cmd.run({
         app: 'myapp',
-        args: { email: 'raulb@heroku.com' },
-        flags: { permissions: 'view,deploy' }
+        args: {email: 'raulb@heroku.com'},
+        flags: {permissions: 'view,deploy'},
       }).then(() => apiGetApp.done())).then(function () {
         expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by a team\n')
       })
