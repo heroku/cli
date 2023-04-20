@@ -56,4 +56,21 @@ describe('pipelines:connect', () => {
       expect(ctx.stdout).to.equal('')
     })
   })
+
+  describe('with an account connected to Github experiencing request failures', () => {
+    test
+    .nock('https://api.github.com', github => {
+      const repo = {
+        id: 1235,
+        default_branch: 'main',
+        name: 'my-org/my-repo',
+      }
+      github.get(`/repos/${repo.name}`).reply(401, {})
+    })
+    .command(['pipelines:connect', 'my-pipeline', '--repo=my-org/my-repo'])
+    .catch(error => {
+      expect(error.message).to.contain('Could not access the my-org/my-repo repo')
+    })
+    .it('shows an error if github request fails')
+  })
 })
