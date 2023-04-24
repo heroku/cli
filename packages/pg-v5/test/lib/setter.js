@@ -39,7 +39,14 @@ describe('setter', () => {
     let settings = [
       ['log_statement', 'none', setter.enum],
       ['log_lock_wait', 'on', setter.boolean],
-      ['log_min_duration', 2000, setter.numeric]
+      ['log_min_duration', 2000, setter.numeric],
+      ['auto_explain', 'on', setter.boolean],
+      ['auto_explain.log_analyze', 'on', setter.boolean],
+      ['auto_explain.log_buffers', 'on', setter.boolean],
+      ['auto_explain.log_min_duration', 200, setter.numeric],
+      ['auto_explain.log_nested_statements', 'on', setter.boolean],
+      ['auto_explain.log_triggers', 'on', setter.boolean],
+      ['auto_explain.log_verbose', 'on', setter.boolean]
     ]
     settings.forEach(([name, value, convert]) => {
       let fn = setter.generate(name, convert, () => '')
