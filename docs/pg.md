@@ -993,7 +993,7 @@ DESCRIPTION
   Nested statements are included in the execution plan's log.
 ```
 
-## `heroku settings:auto-explain:log-triggers [VALUE] [DATABASE]`
+## `heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE]`
 
 Includes trigger execution statistics in execution plan logs.
 
@@ -1010,7 +1010,7 @@ DESCRIPTION
   This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-## `heroku settings:auto-explain:log-verbose [VALUE] [DATABASE]`
+## `heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE]`
 
 Include verbose details in execution plans.
 
