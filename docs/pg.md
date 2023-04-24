@@ -48,6 +48,13 @@ manage postgresql databases
 * [`heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-min-duration-statement-value-database)
 * [`heroku pg:settings:log-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-statement-value-database)
 * [`heroku pg:settings:track-functions [VALUE] [DATABASE]`](#heroku-pgsettingstrack-functions-value-database)
+* [`heroku pg:settings:auto-explain [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explain-value-database)
+* [`heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-analyze-value-database)
+* [`heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-buffers-value-database)
+* [`heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-min-duration-value-database)
+* [`heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-nested-statements-value-database)
+* [`heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-triggers-value-database)
+* [`heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-verbose-value-database)
 * [`heroku pg:unfollow DATABASE`](#heroku-pgunfollow-database)
 * [`heroku pg:upgrade [DATABASE]`](#heroku-pgupgrade-database)
 * [`heroku pg:vacuum-stats [DATABASE]`](#heroku-pgvacuum-stats-database)
@@ -893,6 +900,131 @@ DESCRIPTION
   pl   - Only procedural language functions are tracked
   all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are
   not tracked
+```
+
+## `heroku pg:settings:auto-explain [VALUE] [DATABASE]`
+
+auto_explain logs query execution plans automatically without having to run
+EXPLAIN by hand. Running auto-explain can help identify queries that run slowly
+and can help you understand how to optimize your database’s performance.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Automatically log execution plans of queries without running EXPLAIN by hand.
+  The auto_explain module is loaded at session-time so existing connections will not be logged.
+  Restart your Heroku app and/or restart existing connections for logging to start taking place.
+```
+
+## `heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE]`
+
+Shows actual run times on the execution plan.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Shows actual run times on the execution plan.
+  This is equivalent to calling EXPLAIN ANALYZE.
+
+  WARNING: EXPLAIN ANALYZE will be run on ALL queries, not just logged queries. This can cause significant performance impacts to your database and should be used with caution.
+```
+
+## `heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE]`
+
+Includes buffer usage statistics when execution plans are logged.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Includes buffer usage statistics when execution plans are logged.
+  This is equivalent to calling EXPLAIN BUFFERS and can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
+```
+
+## `heroku pg:settings:auto-explain:log-min-duration`
+
+Sets the minimum execution time in milliseconds for a statement\'s plan to be logged.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Sets the minimum execution time in milliseconds for a statement's plan to be logged.
+  Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
+
+  WARNING: Setting a low value may have performance impacts on your database as well as generate a large volume of logs.
+```
+
+## `heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE]`
+
+Nested statements are included in the execution plan's log.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Nested statements are included in the execution plan's log.
+```
+
+## `heroku settings:auto-explain:log-triggers [VALUE] [DATABASE]`
+
+Includes trigger execution statistics in execution plan logs.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Includes trigger execution statistics in execution plan logs.
+  This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
+```
+
+## `heroku settings:auto-explain:log-verbose [VALUE] [DATABASE]`
+
+Include verbose details in execution plans.
+
+```
+USAGE
+  $ heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Include verbose details in execution plans.
+  This is equivalent to calling EXPLAIN VERBOSE.
 ```
 
 ## `heroku pg:unfollow DATABASE`
