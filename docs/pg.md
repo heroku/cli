@@ -958,7 +958,7 @@ DESCRIPTION
   This is equivalent to calling EXPLAIN BUFFERS and can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-## `heroku pg:settings:auto-explain:log-min-duration`
+## `heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE]`
 
 Sets the minimum execution time in milliseconds for a statement\'s plan to be logged.
 
