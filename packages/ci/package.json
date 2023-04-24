@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "8.0.5",
+  "version": "8.0.6",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -35,9 +35,6 @@
     "@types/validator": "^10.9.0",
     "@types/ws": "^6.0.1",
     "chai": "^4.2.0",
-    "eslint": "^6.7.2",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^9.0.0",
     "mocha": "^5",
     "nock": "^10.0.6",
@@ -73,7 +70,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "postpack": "rm -f oclif.manifest.json npm-shrinkwrap.json",
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "prepare": "rm -rf lib && tsc",

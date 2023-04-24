@@ -46,6 +46,7 @@ export default class WebhooksAdd extends BaseCommand {
     } else {
       CliUx.ux.warn('no secret found')
     }
+
     action.stop()
   }
 }

@@ -2,12 +2,13 @@
 
 const cli = require('heroku-cli-util')
 
-function formatConfigVarsMessage (addon) {
+function formatConfigVarsMessage(addon) {
   let configVars = (addon.config_vars || [])
 
   if (configVars.length > 0) {
     configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
     return `Created ${cli.color.addon(addon.name)} as ${configVars}`
+  // eslint-disable-next-line no-else-return
   } else {
     return `Created ${cli.color.addon(addon.name)}`
   }
@@ -17,13 +18,13 @@ module.exports = async function (heroku, app, plan, confirm, wait, options) {
   const util = require('./util')
   const waitForAddonProvisioning = require('./addons_wait')
 
-  function createAddonRequest (confirm) {
+  function createAddonRequest(confirm) {
     let body = {
       confirm,
       name: options.name,
       config: options.config,
       plan: {name: plan},
-      attachment: {name: options.as}
+      attachment: {name: options.as},
     }
 
     return cli.action(`Creating ${plan} on ${cli.color.app(app)}`,
@@ -31,18 +32,20 @@ module.exports = async function (heroku, app, plan, confirm, wait, options) {
         body,
         headers: {
           'accept-expansion': 'plan',
-          'x-heroku-legacy-provider-messages': 'true'
-        }
+          'x-heroku-legacy-provider-messages': 'true',
+        },
       }).then(function (addon) {
         cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
         return addon
-      })
+      }),
     )
   }
 
-  let addon = await util.trapConfirmationRequired(app, confirm, (confirm) => (createAddonRequest(confirm)))
+  let addon = await util.trapConfirmationRequired(app, confirm, confirm => (createAddonRequest(confirm)))
 
-  if (addon.provision_message) { cli.log(addon.provision_message) }
+  if (addon.provision_message) {
+    cli.log(addon.provision_message)
+  }
 
   if (addon.state === 'provisioning') {
     if (wait) {

@@ -12,6 +12,7 @@ export default async function renderPipeline(
   heroku: APIClient,
   pipeline: Heroku.Pipeline,
   pipelineApps: Array<Heroku.App>,
+  // eslint-disable-next-line unicorn/no-object-as-default-parameter
   {withOwners, showOwnerWarning} = {withOwners: false, showOwnerWarning: false}) {
   cli.styledHeader(pipeline.name!)
 

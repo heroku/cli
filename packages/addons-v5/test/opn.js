@@ -2,7 +2,8 @@
 
 let opn = function (url) {
   opn.url = url
-  return new Promise((resolve) => resolve())
+  // eslint-disable-next-line no-promise-executor-return
+  return new Promise(resolve => resolve())
 }
 
 module.exports = opn

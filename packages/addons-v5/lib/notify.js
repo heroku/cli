@@ -3,19 +3,20 @@
 const path = require('path')
 
 module.exports = {
-  notify: function (subtitle, message, success=true) {
+  notify: function (subtitle, message, success = true) {
     const contentImage = path.join(__dirname, `../assets/${success ? 'success' : 'error'}.png`)
     try {
-      const { notify } = require('@heroku-cli/notifications')
+      const {notify} = require('@heroku-cli/notifications')
       notify({
         title: 'heroku cli',
         subtitle,
         message,
         contentImage,
-        sound: true
+        sound: true,
       })
-    } catch (err) {
-      cli.warn(err)
+    } catch (error) {
+      // eslint-disable-next-line no-undef
+      cli.warn(error)
     }
-  }
+  },
 }

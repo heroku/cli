@@ -4,6 +4,7 @@
 let cmd = require('../../../commands/apps/leave')[0]
 let stubGet = require('../../stub/get')
 let stubDelete = require('../../stub/delete')
+let stubDeleteError = require('../../stub/delete')
 
 describe('heroku apps:leave', () => {
   let apiGetUserAccount
@@ -35,6 +36,24 @@ describe('heroku apps:leave', () => {
 `).to.eq(cli.stderr))
         .then(() => apiGetUserAccount.done())
         .then(() => apiDeletePersonalAppCollaborator.done())
+    })
+  })
+
+  describe('when the user tries to leave the app', () => {
+    before(() => {
+      apiGetUserAccount = stubGet.userAccount()
+      apiDeletePersonalAppCollaborator = stubDeleteError.collaboratorsPersonalAppDeleteFailure('myapp', 'raulb%40heroku.com')
+      cli.mockConsole()
+    })
+    after(() => nock.cleanAll())
+
+    it('shows an error if the heroku.delete() operation returns an error', () => {
+      return cmd.run({ app: 'myapp' })
+        .then(() => apiGetUserAccount.done())
+        .then(() => apiDeletePersonalAppCollaborator.done())
+        .catch(function (err) {
+          expect(err).to.be.an.instanceof(Error)
+        })
     })
   })
 })

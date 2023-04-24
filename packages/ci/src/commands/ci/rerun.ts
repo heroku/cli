@@ -38,6 +38,7 @@ export default class CiReRun extends Command {
       const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers: {Range: 'number ..; order=desc,max=1'}})
       sourceTestRun = testRuns[0]
     }
+
     this.log(`Rerunning test run #${sourceTestRun.number}...`)
 
     cli.action.start('Preparing source')

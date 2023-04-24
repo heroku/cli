@@ -13,6 +13,7 @@ import keyBy from '../../key-by'
 const cli = CliUx.ux
 
 export const sleep  = (time: number) => {
+  // eslint-disable-next-line no-promise-executor-return
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
@@ -29,7 +30,7 @@ function findAppInPipeline(apps: Array<Heroku.App>, target: string) {
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
-// tslint:disable-next-line: no-string-based-set-timeout
+// eslint-disable-next-line no-promise-executor-return
 const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
 function isComplete(promotionTarget: Heroku.PipelinePromotionTarget) {
@@ -46,7 +47,7 @@ function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
 
 function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
   return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
-    if (targets.every(isComplete)) {
+    if (targets.every(isComplete)) { // eslint-disable-line unicorn/no-array-callback-reference
       return targets
     }
 
@@ -94,13 +95,14 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
     if (!error.body || error.body.id !== 'two_factor') {
       throw error
     }
+
     const secondFactor = await heroku.twoFactorPrompt()
     return promote(heroku, label, id, sourceAppId, targetApps, secondFactor)
   }
 }
 
 function assertValidPromotion(app: string, source: string, target?: string) {
-  if (!target || PROMOTION_ORDER.indexOf(source) < 0) {
+  if (!target || PROMOTION_ORDER.indexOf(source) < 0) { // eslint-disable-line unicorn/prefer-includes
     throw new Error(`Cannot promote ${app} from '${source}' stage`)
   }
 }
@@ -118,9 +120,10 @@ async function getRelease(heroku: APIClient, app: string, releaseId: string): Pr
 }
 
 async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
-  if (targets.length !== 1 || targets.every(isComplete)) {
+  if (targets.length !== 1 || targets.every(isComplete)) { // eslint-disable-line unicorn/no-array-callback-reference
     return pollPromotionStatus(heroku, promotion.id, false)
   }
+
   const target = targets[0]
   const release = await getRelease(heroku, target.app.id, target.release.id)
 
@@ -155,6 +158,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
         if (++currentAttempt === maxAttempts) {
           throw error
         }
+
         await sleep(1000)
         /* eslint-enable no-await-in-loop */
       }
@@ -201,16 +205,18 @@ export default class Promote extends Command {
       // We don't have to infer the apps or the stage they want to promote to
 
       // Strip out any empty app names due to something like a trailing comma
-      const targetAppNames = flags.to.split(',').filter(appName => appName.length >= 1)
+      const targetAppNames = flags.to.split(',').filter(appName => appName.length > 0)
 
       // Now let's make sure that we can find every target app they specified
       // The only requirement is that the app be in this pipeline. They can be at any stage.
+      // eslint-disable-next-line unicorn/no-array-reduce
       targetApps = targetAppNames.reduce((acc: Array<Heroku.App>, targetAppNameOrId) => {
         assertNotPromotingToSelf(appNameOrId, targetAppNameOrId)
         const app = findAppInPipeline(allApps, targetAppNameOrId)
         if (app) {
           acc.push(app)
         }
+
         return acc
       }, [])
 
@@ -243,6 +249,7 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
+    // eslint-disable-next-line unicorn/prefer-object-from-entries, unicorn/no-array-reduce
     const styledTargets = promotionTargets.reduce(function (memo: Heroku.App, target: Heroku.App) {
       const app = appsByID[target.app.id]
       const details = [target.status]
@@ -255,7 +262,7 @@ export default class Promote extends Command {
       return memo
     }, {})
 
-    if (promotionTargets.every(isSucceeded)) {
+    if (promotionTargets.every(isSucceeded)) { // eslint-disable-line unicorn/no-array-callback-reference
       cli.log('\nPromotion successful')
     } else {
       cli.warn('\nPromotion to some apps failed')

@@ -29,6 +29,7 @@ extra arguments will be passed to git remote add
     if (!appName) {
       this.error('Specify an app with --app')
     }
+
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     const remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
     const remotes = await git.exec(['remote'])
@@ -38,6 +39,7 @@ extra arguments will be passed to git remote add
     } else {
       await git.exec(['remote', 'add', remote, url].concat(argv))
     }
+
     const newRemote = await git.remoteUrl(remote)
     this.log(`set git remote ${color.cyan(remote)} to ${color.cyan(newRemote)}`)
   }

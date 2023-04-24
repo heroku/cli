@@ -48,5 +48,6 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
   } catch (error: any) {
     this.debug(error.message)
   }
+
   CliUx.ux.action.stop()
 }

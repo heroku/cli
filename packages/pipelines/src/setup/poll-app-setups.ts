@@ -3,6 +3,7 @@ import * as api from '../api'
 const cli = require('heroku-cli-util')
 
 function wait(ms: any) {
+  // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
 }
 

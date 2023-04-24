@@ -6,17 +6,17 @@ if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
   describeOrSkip = describe.skip.bind(describe)
 }
 
-describeOrSkip('@acceptance run', () => {
-  const testFactory = () => {
-    return test
-    .stdout()
-    .do(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      process.stdout.isTTY = false
-    })
-  }
+const testFactory = () => {
+  return test
+  .stdout()
+  .do(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    process.stdout.isTTY = false
+  })
+}
 
+describeOrSkip('@acceptance run', () => {
   testFactory()
   .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
   .it('runs a command', async ctx => {

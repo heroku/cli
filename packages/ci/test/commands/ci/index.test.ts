@@ -51,6 +51,7 @@ describe('ci', () => {
       for (let i = 5; i < 10; i++) {
         expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
       }
+
       for (let i = 10; i < 20; i++) {
         expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
       }

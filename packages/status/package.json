@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "8.0.5",
+  "version": "8.0.6",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -29,12 +29,10 @@
     "@types/nock": "^9.3.1",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
-    "eslint": "^6.7.2",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^9.0.0",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
+    "nyc": "^15.1.0",
     "oclif": "3.8.1",
     "ts-node": "^10.9.1",
     "typescript": "4.8.4"
@@ -63,12 +61,12 @@
   "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
     "preversion": "yarn run postpublish",
     "pretest": "tsc -p test --noEmit",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
     "version": "oclif readme && git add README.md"
   }

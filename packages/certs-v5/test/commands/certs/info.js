@@ -7,6 +7,7 @@ let expect = require('chai').expect
 
 let sharedSni = require('./shared_sni.js')
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
+let endpointWithDomains = require('../../stubs/sni-endpoints.js').endpoint_with_domains
 let endpointUntrusted = require('../../stubs/sni-endpoints.js').endpoint_untrusted
 let endpointTrusted = require('../../stubs/sni-endpoints.js').endpoint_trusted
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
@@ -34,6 +35,29 @@ describe('heroku certs:info', function () {
       expect(cli.stdout).to.equal(`Certificate details:
 ${certificateDetails}
 `)
+    })
+  })
+
+  it('returns domains when show-domains flag is passed', function () {
+    let mockSni = nock('https://api.heroku.com')
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointWithDomains])
+
+    let mock = nock('https://api.heroku.com', {
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
+    })
+      .get('/apps/example/sni-endpoints/tokyo-1050')
+      .reply(200, endpointWithDomains)
+
+    let mockDomains = nock('https://api.heroku.com')
+      .get('/apps/example/domains/example.heroku.com')
+      .reply(200, [endpointWithDomains])
+
+    return certs.run({ app: 'example', args: {}, flags: { 'show-domains': true } }).then(function () {
+      mockSni.done()
+      mock.done()
+      mockDomains.done()
+      expect(mockDomains.isDone()).to.equal(true)
     })
   })
 

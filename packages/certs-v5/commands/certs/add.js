@@ -3,58 +3,15 @@
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let inquirer = require('inquirer')
-
-let error = require('../../lib/error.js')
-let findMatch = require('../../lib/find_match.js')
 let endpoints = require('../../lib/endpoints.js')
 let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
-let isWildcard = require('../../lib/is_wildcard.js')
-let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
 let { waitForDomains } = require('../../lib/domains')
 
-function Domains (domains) {
-  this.domains = domains
-
-  this.added = this.domains.filter((domain) => !domain._failed)
-  this.failed = this.domains.filter((domain) => domain._failed)
-
-  this.hasFailed = this.failed.length > 0
-}
-
 async function getMeta(context, heroku) {
   return endpoints.meta(context.app, 'sni')
-}
-
-function hasMatch (certDomains, domain) {
-  return _.find(certDomains, (certDomain) => (certDomain === domain || isWildcardMatch(certDomain, domain)))
-}
-
-function getPromptChoices (context, certDomains, existingDomains, newDomains) {
-  let nonWildcardDomains = newDomains.filter((domain) => !isWildcard(domain))
-
-  if (nonWildcardDomains.length === 0) {
-    return Promise.resolve({ domains: [] })
-  }
-
-  return inquirer.prompt([{
-    type: 'checkbox',
-    name: 'domains',
-    message: 'Select domains you would like to add',
-    choices: nonWildcardDomains.map(function (domain) {
-      return { name: domain }
-    })
-  }])
-}
-
-async function getChoices(certDomains, newDomains, existingDomains, context) {
-  if (newDomains.length === 0) {
-    return []
-  } else {
-    return ((await getPromptChoices(context, certDomains, existingDomains, newDomains))).domains;
-  }
 }
 
 async function configureDomains(context, heroku, meta, cert) {

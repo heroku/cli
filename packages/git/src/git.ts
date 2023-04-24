@@ -17,6 +17,7 @@ export default class Git {
       if (error.code === 'ENOENT') {
         CliUx.ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
       }
+
       throw error
     }
   }

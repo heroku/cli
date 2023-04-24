@@ -90,6 +90,7 @@ export default class Doctor extends AutocompleteBase {
               if (hasCompletion) {
                 out += '(c)'
               }
+
               if (flag.hidden) out += '(h)'
               return out
             })

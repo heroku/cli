@@ -36,10 +36,12 @@ function removeDeleted(newConfig: UploadConfig, original: Config) {
 }
 
 export function stringToConfig(s: string): Config {
+  // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
   return s.split('\n').reduce((config: Config, line: string): Config => {
     const error = () => {
       throw new Error(`Invalid line: ${line}`)
     }
+
     if (!line) return config
     const i = line.indexOf('=')
     if (i === -1) error()
@@ -58,6 +60,7 @@ function showDiff(from: Config, to: Config) {
     if (k in from) {
       cli.log(color.red(`- ${k}=${quote(from[k])}`))
     }
+
     if (k in to) {
       cli.log(color.green(`+ ${k}=${quote(to[k])}`))
     }
@@ -106,6 +109,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
       const s = await editor.edit(configToString(original), {prefix, postfix: '.sh'})
       newConfig = stringToConfig(s)
     }
+
     if (!await this.diffPrompt(original, newConfig)) return
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
@@ -125,6 +129,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
       this.warn('no changes to config')
       return false
     }
+
     cli.log()
     cli.log('Config Diff:')
     showDiff(original, newConfig)

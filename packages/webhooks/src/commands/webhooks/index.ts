@@ -34,7 +34,6 @@ export default class Webhooks extends BaseCommand {
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
     const printLine: typeof this.log = (...args) => this.log(...args)
-
     CliUx.ux.table(webhooks, {
       id: {
         header: 'Webhook ID',

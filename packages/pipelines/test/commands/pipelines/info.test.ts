@@ -41,54 +41,73 @@ function itShowsPipelineApps(ctx: TestContext) {
   })
 }
 
-describe('pipelines:info', function () {
-  function setup(testInstance: typeof test, owner?: Heroku.Account) {
-    const pipeline = {name: 'example', id: '0123', owner}
-    const pipelines = [pipeline]
-    const apps: Array<Heroku.App> = []
-    const couplings: Array<Heroku.PipelineCoupling> = []
+function setup(testInstance: typeof test, owner?: Heroku.Account) {
+  const pipeline = {name: 'example', id: '0123', owner}
+  const pipelines = [pipeline]
+  const apps: Array<Heroku.App> = []
+  const couplings: Array<Heroku.PipelineCoupling> = []
 
-    // Build couplings
-    appNames.forEach((name, id) => {
-      const stage: Stage = name.split('-')[0] as Stage
-      couplings.push({
-        stage,
-        app: {id: `app-${id + 1}`},
+  // Build couplings
+  appNames.forEach((name, id) => {
+    const stage: Stage = name.split('-')[0] as Stage
+    couplings.push({
+      stage,
+      app: {id: `app-${id + 1}`},
+    })
+  })
+
+  // Build apps
+  appNames.forEach((name, id) => {
+    apps.push(
+      {
+        id: `app-${id + 1}`,
+        name,
+        pipeline,
+        owner: {id: '1234', email: 'foo@user.com'},
+      },
+    )
+  })
+
+  return testInstance
+  .nock('https://api.heroku.com', api => {
+    api
+    .get('/pipelines')
+    .query(true)
+    .reply(200, pipelines)
+    .get('/pipelines/0123/pipeline-couplings')
+    .reply(200, couplings)
+    .post('/filters/apps')
+    .reply(200, apps)
+
+    if (owner && owner.type === 'team') {
+      api.get(`/teams/${owner.id}`).reply(200, {
+        id: owner.id,
+        name: 'my-team',
       })
-    })
+    }
+  })
+}
 
-    // Build apps
-    appNames.forEach((name, id) => {
-      apps.push(
-        {
-          id: `app-${id + 1}`,
-          name,
-          pipeline,
-          owner: {id: '1234', email: 'foo@user.com'},
-        },
-      )
-    })
+function itDoesNotShowMixedOwnershipWarning(ctx: TestContext) {
+  const warningMessage = 'Some apps in this pipeline do not belong'
+  expect(ctx.stderr).to.not.contain(warningMessage)
+}
 
-    return testInstance
-    .nock('https://api.heroku.com', api => {
-      api
-      .get('/pipelines')
-      .query(true)
-      .reply(200, pipelines)
-      .get('/pipelines/0123/pipeline-couplings')
-      .reply(200, couplings)
-      .post('/filters/apps')
-      .reply(200, apps)
+function itShowsMixedOwnershipWarning(owner: string, ctx: TestContext) {
+  const warningMessage = [
+    `Warning: Some apps in this pipeline do not belong to ${owner}.`,
+    'All apps in a pipeline must have the same owner as the pipeline owner.',
+    'Transfer these apps or change the pipeline owner in pipeline settings.',
+    'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
+    'for more info.',
+  ]
 
-      if (owner && owner.type === 'team') {
-        api.get(`/teams/${owner.id}`).reply(200, {
-          id: owner.id,
-          name: 'my-team',
-        })
-      }
-    })
-  }
+  warningMessage.forEach(message => {
+    expect(ctx.stderr).to.contain(message)
+  })
+}
 
+describe('pipelines:info', function () {
   describe("when pipeline doesn't have an owner", function () {
     setup(test)
     .stdout()
@@ -111,25 +130,6 @@ describe('pipelines:info', function () {
   })
 
   describe('when it has an owner', () => {
-    function itShowsMixedOwnershipWarning(owner: string, ctx: TestContext) {
-      const warningMessage = [
-        `Warning: Some apps in this pipeline do not belong to ${owner}.`,
-        'All apps in a pipeline must have the same owner as the pipeline owner.',
-        'Transfer these apps or change the pipeline owner in pipeline settings.',
-        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
-        'for more info.',
-      ]
-
-      warningMessage.forEach(message => {
-        expect(ctx.stderr).to.contain(message)
-      })
-    }
-
-    function itDoesNotShowMixedOwnershipWarning(ctx: TestContext) {
-      const warningMessage = 'Some apps in this pipeline do not belong'
-      expect(ctx.stderr).to.not.contain(warningMessage)
-    }
-
     describe('and type is user', () => {
       describe('with mixed pipeline ownership', () => {
         const pipelineOwner = {id: '5678', type: 'user'}

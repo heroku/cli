@@ -36,16 +36,7 @@ async function all(appName, heroku) {
   return tagAndSort(appName, sniCerts)
 }
 
-async function hasSpace(app, heroku) {
-  return await heroku.request({
-    path: `/apps/${app}`
-  }).then(function (data) {
-    return !!data.space
-  });
-}
-
 module.exports = {
-  hasSpace,
   meta,
   all
 }

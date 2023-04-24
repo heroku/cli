@@ -60,6 +60,7 @@ export default class Options extends AutocompleteBase {
       const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, Klass)
       return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
     }
+
     this.throwError(`Command ${id} not found`)
   }
 
@@ -98,6 +99,7 @@ export default class Options extends AutocompleteBase {
     if (!cacheCompletion) {
       cacheCompletion = this.findCompletion(cacheKey, id)
     }
+
     return {cacheKey, cacheCompletion}
   }
 
