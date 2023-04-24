@@ -2,7 +2,6 @@
 
 const cli = require('heroku-cli-util')
 
-const getProcessType = (s) => s.split('-', 2)[0].split('.', 2)[0]
 const getProcessNum = (s) => parseInt(s.split('-', 2)[0].split('.', 2)[1])
 
 async function run (context, heroku) {
@@ -43,8 +42,8 @@ function render (spaceName, topology, appInfo, flags) {
         let domains = app.domains.sort()
         formations = formations.sort()
         dynos = dynos.sort((a, b) => {
-          let apt = getProcessType(a)
-          let bpt = getProcessType(b)
+          let apt = getProcessNum(a)
+          let bpt = getProcessNum(b)
           if (apt > bpt) {
             return 1
           } else if (apt < bpt) {
