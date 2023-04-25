@@ -18,24 +18,28 @@ async function run(context, heroku) {
                        pipelineRepository.organization.name
 
   const commit = await git.readCommit('HEAD')
+  // eslint-disable-next-line wrap-iife
   const sourceBlobUrl = await cli.action('Preparing source', async function () {
-    return await source.createSourceBlob(commit.ref, context, heroku);
+    // eslint-disable-next-line no-return-await
+    return await source.createSourceBlob(commit.ref, context, heroku)
   }())
 
   // Create test run and wait for it to transition to `debugging`
+  // eslint-disable-next-line wrap-iife
   const testRun = await cli.action('Creating test run', async function () {
     const run = await api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
       debug: true,
-      clear_cache: !!context.flags['no-cache'],
+      clear_cache: Boolean(context.flags['no-cache']),
       organization,
       pipeline: pipeline.id,
-      source_blob_url: sourceBlobUrl
+      source_blob_url: sourceBlobUrl,
     })
 
-    return await TestRun.waitForStates(['debugging', 'errored'], run, { heroku });
+    // eslint-disable-next-line no-return-await
+    return await TestRun.waitForStates(['debugging', 'errored'], run, {heroku})
   }())
 
   if (testRun.status === 'errored') {
@@ -58,12 +62,13 @@ async function run(context, heroku) {
   const dyno = new Dyno({
     heroku,
     app: appSetup.app.id,
-    showStatus: false
+    showStatus: false,
   })
 
-  dyno.dyno = { attach_url: Utils.dig(testNodes, 0, 'dyno', 'attach_url') }
+  dyno.dyno = {attach_url: Utils.dig(testNodes, 0, 'dyno', 'attach_url')}
 
-  function sendSetup (data, connection) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function sendSetup(data, connection) {
     if (data.toString().includes('$')) {
       dyno.write(SETUP_COMMAND + '\n')
       dyno.removeListener('data', sendSetup)
@@ -76,17 +81,17 @@ async function run(context, heroku) {
 
   try {
     await dyno.attach()
-  } catch (err) {
-    if (err.exitCode) cli.exit(err.exitCode, err)
-    else throw err
+  } catch (error) {
+    if (error.exitCode) cli.exit(error.exitCode, error)
+    else throw error
   }
 
   await cli.action(
     'Cleaning up',
     api.updateTestRun(heroku, testRun.id, {
       status: 'cancelled',
-      message: 'debug run cancelled by Heroku CLI'
-    })
+      message: 'debug run cancelled by Heroku CLI',
+    }),
   )
 }
 
@@ -109,20 +114,20 @@ module.exports = {
     {
       name: 'no-setup',
       hasValue: false,
-      description: 'start test dyno without running test-setup'
+      description: 'start test dyno without running test-setup',
     },
     {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
+      completion: PipelineCompletion,
     },
     {
       name: 'no-cache',
       hasValue: false,
-      description: 'start test run with an empty cache'
-    }
+      description: 'start test run with an empty cache',
+    },
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

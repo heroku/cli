@@ -30,6 +30,7 @@
     "@oclif/plugin-legacy": "^1.3.0",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
+    "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
     "oclif": "3.8.1",
@@ -53,6 +54,7 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "mocha -R tap",
