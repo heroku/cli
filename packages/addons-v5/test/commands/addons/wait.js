@@ -97,7 +97,6 @@ describe('addons:wait', () => {
       })
 
       it('notifies the user when provisioning takes longer than 5 seconds', () => {
-        // eslint-disable-next-line node/no-extraneous-require
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         // Call to resolve the add-on:
@@ -124,7 +123,6 @@ describe('addons:wait', () => {
 
     context('when add-on transitions to deprovisioned state', () => {
       it('shows notification', () => {
-        // eslint-disable-next-line node/no-extraneous-require
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         nock('https://api.heroku.com')
