@@ -120,6 +120,7 @@ export default class Dyno extends Duplex {
         if (this.dyno.name && this.opts.dyno === undefined) {
           this.opts.dyno = this.dyno.name
         }
+
         await this.attach()
       } else if (this.opts.showStatus) {
         CliUx.ux.action.stop(this._status('done'))
@@ -134,6 +135,7 @@ export default class Dyno extends Duplex {
       if (error.statusCode === 409 && retries > 0) {
         return this._doStart(retries - 1)
       }
+
       throw error
     } finally {
       CliUx.ux.action.stop()
@@ -147,11 +149,13 @@ export default class Dyno extends Duplex {
       this.uri = new URL(this.dyno.attach_url)
       this.legacyUri = parse(this.dyno.attach_url)
     }
+
     if (this._useSSH) {
       this.p = this._ssh()
     } else {
       this.p = this._rendezvous()
     }
+
     return this.p.then(() => {
       this.end()
     })
@@ -166,7 +170,7 @@ export default class Dyno extends Duplex {
         CliUx.ux.action.status = this._status('starting')
       }
 
-      const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
+      const c = tls.connect(Number.parseInt(this.uri.port, 10), this.uri.hostname, {
         rejectUnauthorized: this.heroku.options.rejectUnauthorized,
       })
       c.setTimeout(1000 * 60 * 60)
@@ -174,6 +178,7 @@ export default class Dyno extends Duplex {
       c.on('connect', () => {
         debug('connect')
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
+        // eslint-disable-next-line unicorn/prefer-string-slice
         c.write(pathnameWithSearchParams.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) {
             CliUx.ux.action.status = this._status('connecting')
@@ -287,6 +292,7 @@ export default class Dyno extends Duplex {
           params.push('-t')
         }
       }
+
       const sshProc = spawn('ssh', params, {stdio})
 
       // only receives stdout with --exit-code
@@ -310,10 +316,13 @@ export default class Dyno extends Duplex {
           if (process.env.SSH_AUTH_SOCK) {
             msgs.push('Confirm that your ssh key is added to your agent by running `ssh-add`.')
           }
+
           msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
+          // eslint-disable-next-line unicorn/no-array-push-push
           msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
           CliUx.ux.error(msgs.join('\n'))
         }
+
         // cleanup local server
         localServer.close()
       })
@@ -321,6 +330,7 @@ export default class Dyno extends Duplex {
       .then(() => sshProc.kill())
       .catch(() => sshProc.kill())
     }
+
     this._notify()
   }
 
@@ -336,10 +346,12 @@ export default class Dyno extends Duplex {
       c.COLUMNS = process.stdout.columns
       c.LINES = process.stdout.rows
     }
+
     return c
   }
 
   _status(status) {
+    // eslint-disable-next-line unicorn/explicit-length-check
     const size = this.dyno.size ? ` (${this.dyno.size})` : ''
     return `${status}, ${this.dyno.name || this.opts.dyno}${size}`
   }
@@ -355,11 +367,12 @@ export default class Dyno extends Duplex {
         this._readStdin(c)
         return
       }
+
       this._notify()
 
       // carriage returns break json parsing of output
       if (!process.stdout.isTTY) {
-        // eslint-disable-next-line no-control-regex
+        // eslint-disable-next-line no-control-regex, prefer-regex-literals
         data = data.replace(new RegExp('\r\n', 'g'), '\n')
       }
 
@@ -367,7 +380,7 @@ export default class Dyno extends Duplex {
       if (exitCode) {
         debug('got exit code: %d', exitCode[1])
         this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
-        const code = parseInt(exitCode[1], 10)
+        const code = Number.parseInt(exitCode[1], 10)
         if (code === 0) {
           this.resolve()
         } else {
@@ -375,13 +388,15 @@ export default class Dyno extends Duplex {
           err.exitCode = code
           this.reject(err)
         }
+
         return
       }
+
       this.push(data)
     }
   }
 
-  _readStdin(c) {
+  _readStdin(c: tls.TLSSocket) {
     this.input = c
     const stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
     stdin.setEncoding('utf8')
@@ -397,7 +412,7 @@ export default class Dyno extends Duplex {
       stdin.pipe(c)
       let sigints = []
       stdin.on('data', function (c) {
-        if (c === '\u0003') {
+        if (c.toString() === '\u0003') {
           sigints.push(Date.now())
         }
 
@@ -415,6 +430,7 @@ export default class Dyno extends Duplex {
         flush: done => c.write('\x04', done),
       }))
     }
+
     this.uncork()
   }
 
@@ -429,6 +445,7 @@ export default class Dyno extends Duplex {
     if (this.useSSH) {
       throw new Error('Cannot write stream to ssh dyno')
     }
+
     if (!this.input) throw new Error('no input')
     this.input.write(chunk, encoding, callback)
   }
