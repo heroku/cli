@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
 
 let expect = require('chai').expect
@@ -13,12 +14,12 @@ describe('heroku certs:auto:enable', function () {
 
   it('refreshes acm', function () {
     let api = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     })
 
-    api.patch('/apps/example/acm', { acm_refresh: true }).reply(200, { acm: true, acm_refresh: true })
+    api.patch('/apps/example/acm', {acm_refresh: true}).reply(200, {acm: true, acm_refresh: true})
 
-    return certs.run({ app: 'example' }).then(function () {
+    return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('Refreshing Automatic Certificate Management... done\n')
       expect(cli.stdout).to.equal('')
       api.done()

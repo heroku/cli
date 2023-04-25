@@ -8,9 +8,9 @@ let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-let { waitForDomains } = require('../../lib/domains')
+let {waitForDomains} = require('../../lib/domains')
 
-async function getMeta(context, heroku) {
+async function getMeta(context) {
   return endpoints.meta(context.app, 'sni')
 }
 
@@ -27,7 +27,7 @@ async function configureDomains(context, heroku, meta, cert) {
       type: 'checkbox',
       name: 'domains',
       message: 'Select domains',
-      choices: matchedDomains
+      choices: matchedDomains,
     }]))).domains
 
     if (selectedDomains.length > 0) {
@@ -35,7 +35,7 @@ async function configureDomains(context, heroku, meta, cert) {
         return heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
-          body: { sni_endpoint: cert.name }
+          body: {sni_endpoint: cert.name},
         })
       }))
     }
@@ -50,8 +50,8 @@ async function run(context, heroku) {
   let cert = await cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
-    body: { certificate_chain: files.crt, private_key: files.key },
-    headers: { 'Accept': `application/vnd.heroku+json; version=3${meta.variant ? '.' + meta.variant : ''}` }
+    body: {certificate_chain: files.crt, private_key: files.key},
+    headers: {Accept: `application/vnd.heroku+json; version=3${meta.variant ? '.' + meta.variant : ''}`},
   }))
 
   cert._meta = meta
@@ -76,11 +76,11 @@ module.exports = {
   command: 'add',
   variableArgs: true,
   args: [
-    { name: 'CRT', optional: false },
-    { name: 'KEY', optional: false }
+    {name: 'CRT', optional: false},
+    {name: 'KEY', optional: false},
   ],
   flags: [
-    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false }
+    {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',
@@ -90,5 +90,5 @@ module.exports = {
     https://help.salesforce.com/s/articleView?id=000333504&type=1`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

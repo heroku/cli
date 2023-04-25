@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach afterEach cli */
 
 let expect = require('chai').expect
@@ -11,16 +12,15 @@ let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let sharedSni = require('./shared_sni.js')
 
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
 
-function mockFile (fs, file, content) {
+function mockFile(fs, file, content) {
   fs.readFile
-    .withArgs(file, 'utf-8', sinon.match.func)
-    .callsArgWithAsync(2, null, content)
+  .withArgs(file, 'utf-8', sinon.match.func)
+  .callsArgWithAsync(2, null, content)
 }
 
 describe('heroku certs:update', function () {
@@ -31,8 +31,8 @@ describe('heroku certs:update', function () {
     error.exit.mock()
 
     nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointStable])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpointStable])
   })
 
   afterEach(function () {
@@ -44,9 +44,9 @@ describe('heroku certs:update', function () {
     mockFile(fs, 'key_file', 'key content')
 
     var thrown = false
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'notexample' } }).catch(function (err) {
+    return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'notexample'}}).catch(function (error_) {
       thrown = true
-      expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(error_.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
       expect(thrown).to.equal(true)
     })
@@ -54,10 +54,10 @@ describe('heroku certs:update', function () {
 
   it('# errors out when args < 2', function () {
     nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
+    .get('/apps/example')
+    .reply(200, {space: null})
 
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file'], flags: {} })).then(function () {
+    return assertExit(1, certs.run({app: 'example', args: ['pem_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
@@ -68,12 +68,12 @@ describe('heroku certs:update', function () {
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-      .patch('/apps/example/sni-endpoints/tokyo-1050', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpointStable)
+    .patch('/apps/example/sni-endpoints/tokyo-1050', {
+      certificate_chain: 'pem content', private_key: 'key content',
+    })
+    .reply(200, endpointStable)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'example' } }).then(function () {
+    return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'example'}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 for example... done\n')
       expect(cli.stdout).to.equal(
@@ -85,10 +85,10 @@ ${certificateDetails}
 
   it('# errors out with intermediaries', function () {
     nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, { 'space': null })
+    .get('/apps/example')
+    .reply(200, {space: null})
 
-    return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {} })).then(function () {
+    return assertExit(1, certs.run({app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
@@ -99,12 +99,12 @@ ${certificateDetails}
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-      .patch('/apps/example/sni-endpoints/tokyo-1050', {
-        certificate_chain: 'pem content', private_key: 'key content'
-      })
-      .reply(200, endpointWarning)
+    .patch('/apps/example/sni-endpoints/tokyo-1050', {
+      certificate_chain: 'pem content', private_key: 'key content',
+    })
+    .reply(200, endpointWarning)
 
-    return certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { confirm: 'example' } }).then(function () {
+    return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'example'}}).then(function () {
       mock.done()
       expect(unwrap(cli.stderr)).to.equal('Updating SSL certificate tokyo-1050 for example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n')
     })
@@ -119,12 +119,12 @@ ${certificateDetails}
     let callback = function (err, path, endpoint, variant) {
       if (err) throw err
       return nock('https://api.heroku.com', {
-        reqheaders: { 'Accept': `application/vnd.heroku+json; version=3.${variant}` }
+        reqheaders: {Accept: `application/vnd.heroku+json; version=3.${variant}`},
       })
-        .patch(path, {
-          certificate_chain: 'pem content', private_key: 'key content'
-        })
-        .reply(200, endpoint)
+      .patch(path, {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpoint)
     }
 
     let stderr = function (endpoint) {
@@ -139,7 +139,7 @@ ${certificateDetails}
     }
 
     sharedSni.shouldHandleArgs('certs:update', 'updates an endpoint', certs, callback, {
-      stderr, stdout, args: ['pem_file', 'key_file'], flags: { confirm: 'example' }
+      stderr, stdout, args: ['pem_file', 'key_file'], flags: {confirm: 'example'},
     })
   })
 })

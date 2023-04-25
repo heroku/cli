@@ -1,4 +1,5 @@
 'use strict'
+// eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach cli */
 
 let certs = require('../../../commands/certs/info.js')
@@ -19,16 +20,16 @@ describe('heroku certs:info', function () {
 
   it('shows certificate details when self-signed', function () {
     let mockSni = nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-      .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpoint)
+    .get('/apps/example/sni-endpoints/tokyo-1050')
+    .reply(200, endpoint)
 
-    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
+    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mockSni.done()
       mock.done()
       expect(cli.stderr).to.equal('Fetching SSL certificate tokyo-1050 info for example... done\n')
@@ -63,16 +64,16 @@ ${certificateDetails}
 
   it('shows certificate details when not trusted', function () {
     let mockSni = nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-      .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointUntrusted)
+    .get('/apps/example/sni-endpoints/tokyo-1050')
+    .reply(200, endpointUntrusted)
 
-    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
+    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mockSni.done()
       mock.done()
       expect(cli.stderr).to.equal('Fetching SSL certificate tokyo-1050 info for example... done\n')
@@ -89,18 +90,18 @@ SSL certificate is not trusted.
 
   it('shows certificate details when trusted', function () {
     let mockSni = nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
       reqheaders: {
-        'Accept': 'application/vnd.heroku+json; version=3'
-      }
+        Accept: 'application/vnd.heroku+json; version=3',
+      },
     })
-      .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointTrusted)
+    .get('/apps/example/sni-endpoints/tokyo-1050')
+    .reply(200, endpointTrusted)
 
-    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
+    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mockSni.done()
       mock.done()
       expect(cli.stderr).to.equal('Fetching SSL certificate tokyo-1050 info for example... done\n')
@@ -120,10 +121,10 @@ describe('heroku shared', function () {
   let callback = function (err, path, endpoint) {
     if (err) throw err
     return nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': `application/vnd.heroku+json; version=3` }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-      .get(path)
-      .reply(200, endpoint)
+    .get(path)
+    .reply(200, endpoint)
   }
 
   let stderr = function (endpoint) {
@@ -137,5 +138,5 @@ ${certificateDetails}
 `
   }
 
-  sharedSni.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, { stderr, stdout })
+  sharedSni.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, {stderr, stdout})
 })

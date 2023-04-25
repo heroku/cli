@@ -17,12 +17,12 @@ module.exports = function (cert, message) {
   let tableObject = {
     'Common Name(s)': cert.ssl_cert.cert_domains,
     'Expires At': formatDate(cert.ssl_cert.expires_at),
-    'Issuer': cert.ssl_cert.issuer,
+    Issuer: cert.ssl_cert.issuer,
     'Starts At': formatDate(cert.ssl_cert.starts_at),
-    'Subject': cert.ssl_cert.subject,
+    Subject: cert.ssl_cert.subject,
   }
 
-  if (cert.domains && cert.domains.length) {
+  if (cert.domains && cert.domains.length > 0) {
     tableObject['Domain(s)'] = cert.domains
   }
 

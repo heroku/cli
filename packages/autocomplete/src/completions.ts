@@ -22,6 +22,7 @@ export const AppCompletion: Interfaces.Completion = {
       personal: await herokuGet('users/~/apps', ctx),
       teams: flatten(await Promise.all(teams.map((team: string) => herokuGet(`teams/${team}/apps`, ctx)))),
     }
+
     return apps.personal.concat(apps.teams)
   },
 }

@@ -15,6 +15,8 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "dependencies": {
+    "@heroku-cli/color": "^1.1.14",
+    "@heroku-cli/notifications": "^1.2.2",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
@@ -31,6 +33,7 @@
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
     "proxyquire": "^2.1.0",
+    "set-tz": "^0.1.0",
     "sinon": "^2.3.6",
     "sinon-chai": "^2.14.0"
   },
@@ -47,6 +50,7 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "nyc mocha",
