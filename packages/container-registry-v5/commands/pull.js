@@ -22,7 +22,6 @@ let pull = async function (context) {
   for (let process of context.args) {
     let tag = `${registry}/${context.app}/${process}`
     cli.styledHeader(`Pulling ${process} as ${tag}`)
-    // eslint-disable-next-line no-await-in-loop
     await Sanbashi.pullImage(tag)
   }
 }

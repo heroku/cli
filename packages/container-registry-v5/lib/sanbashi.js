@@ -8,7 +8,6 @@ const Child = require('child_process')
 const debug = require('./debug')
 
 const DOCKERFILE_REGEX = /\bDockerfile(.\w*)?$/
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 let Sanbashi = function () {}
 
 Sanbashi.getDockerfiles = function (rootdir, recursive) {
@@ -47,7 +46,6 @@ Sanbashi.getJobs = function (resourceRoot, dockerfiles) {
     return a.depth - b.depth || a.postfix - b.postfix
   })
   // group all Dockerfiles for the same process type together
-  // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
   .reduce((jobs, job) => {
     jobs[job.name] = jobs[job.name] || []
     jobs[job.name].push(job)
@@ -67,7 +65,6 @@ Sanbashi.chooseJobs = async function (jobs) {
         choices: group.map(j => j.dockerfile),
         message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
       }
-      // eslint-disable-next-line no-await-in-loop
       let answer = await Inquirer.prompt(prompt)
       chosenJobs.push(group.find(o => o.dockerfile === answer[processType]))
     } else {
@@ -127,7 +124,6 @@ Sanbashi.version = function () {
   return Sanbashi
   .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
   .then(version => version.split(/\./))
-  // eslint-disable-next-line radix
   .then(([major, minor]) => [Number.parseInt(major) || 0, Number.parseInt(minor) || 0]) // ensure exactly 2 components
 }
 

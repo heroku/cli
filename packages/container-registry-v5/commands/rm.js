@@ -31,7 +31,6 @@ let rm = async function (context, heroku) {
       headers: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'},
       body: {docker_image: null},
     })
-    // eslint-disable-next-line no-await-in-loop
     await cli.action(`Removing container ${container} for ${cli.color.app(context.app)}`, r)
   }
 }

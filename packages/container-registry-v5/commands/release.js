@@ -44,7 +44,6 @@ let release = async function (context, heroku) {
     let image = `${context.app}/${process}`
     let tag = 'latest'
 
-    // eslint-disable-next-line no-await-in-loop
     let imageResp = await heroku.request({
       host: `registry.${herokuHost}`,
       path: `/v2/${image}/manifests/${tag}`,
