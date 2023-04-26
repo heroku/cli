@@ -28,6 +28,12 @@ describe('CIDRBlocksOrCIDRBlock', function () {
   })
 })
 
+describe('CIDR', function () {
+  it('returns empty string if cidr has no value', function () {
+    return expect(format.CIDR()).to.eq('')
+  })
+})
+
 describe('Percent', function () {
   it('formats a truthy number', function () {
     return expect(format.Percent(100)).to.eq('100%')
@@ -51,5 +57,34 @@ describe('Percent', function () {
 
   it('does not format undefined', function () {
     return expect(format.Percent(undefined)).to.eq(undefined)
+  })
+})
+
+describe('VPN Status', function () {
+  it('returns VPN status if status meets switch statement condition', function () {
+    expect(format.VPNStatus('pending')).to.eq('pending')
+    expect(format.VPNStatus('provisioning')).to.eq('provisioning')
+    expect(format.VPNStatus('deprovisioning')).to.eq('deprovisioning')
+  })
+
+  it('returns VPN status if status = "DOWN" or "deleting" or "deleted"', function () {
+    expect(format.VPNStatus('DOWN')).to.eq('DOWN')
+    expect(format.VPNStatus('deleting')).to.eq('deleting')
+    expect(format.VPNStatus('deleted')).to.eq('deleted')
+  })
+})
+
+describe('Peering Status', function () {
+  it('returns peering status if default case is reached in switch statement', function () {
+    return expect(format.PeeringStatus('foo')).to.eq('foo')
+  })
+})
+
+describe('Host Status', function () {
+  it('returns host status if status meets switch statement condition', function () {
+    expect(format.HostStatus('under-assessment')).to.eq('under-assessment')
+    expect(format.HostStatus('permanent-failure')).to.eq('permanent-failure')
+    expect(format.HostStatus('released-permanent-failure')).to.eq('released-permanent-failure')
+    expect(format.HostStatus('foo')).to.eq('foo')
   })
 })
