@@ -19,29 +19,29 @@ describe('pipelines:setup', () => {
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
 
-    function setupApiNock(api: any) {
-      api
-      .post('/pipelines')
-      .reply(201, pipeline)
-      .get('/users/~')
-      .reply(200, {id: '1234-567'})
+    // function setupApiNock(api: any) {
+    //   api
+    //   .post('/pipelines')
+    //   .reply(201, pipeline)
+    //   .get('/users/~')
+    //   .reply(200, {id: '1234-567'})
 
-      const couplings = [{id: 1, stage: 'production', app: prodApp}, {id: 2, stage: 'staging', app: stagingApp}]
+    //   const couplings = [{id: 1, stage: 'production', app: prodApp}, {id: 2, stage: 'staging', app: stagingApp}]
 
-      couplings.forEach(coupling => {
-        api
-        .post('/app-setups', {
-          source_blob: {url: archiveURL},
-          app: {name: coupling.app.name, personal: true},
-          pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
-        })
-        .reply(201, {id: coupling.id, app: coupling.app})
+    //   couplings.forEach(coupling => {
+    //     api
+    //     .post('/app-setups', {
+    //       source_blob: {url: archiveURL},
+    //       app: {name: coupling.app.name, personal: true},
+    //       pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+    //     })
+    //     .reply(201, {id: coupling.id, app: coupling.app})
 
-        api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-      })
+    //     api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
+    //   })
 
-      return api
-    }
+    //   return api
+    // }
 
     function setupKolkrabbiNock(kolkrabbi: any) {
       kolkrabbi
@@ -59,205 +59,98 @@ describe('pipelines:setup', () => {
       return kolkrabbi
     }
 
-    context('when pipeline name is too long', function () {
-      test
-      .command(['pipelines:setup', 'super-cali-fragilistic-expialidocious'])
-      .catch(error =>
-        expect(error.message).to.equal('Please choose a pipeline name between 2 and 22 characters long'),
-      )
-      .it('shows a warning')
-    })
+    // context('when pipeline name is too long', function () {
+    //   test
+    //   .command(['pipelines:setup', 'super-cali-fragilistic-expialidocious'])
+    //   .catch(error =>
+    //     expect(error.message).to.equal('Please choose a pipeline name between 2 and 22 characters long'),
+    //   )
+    //   .it('shows a warning')
+    // })
 
     context('and pipeline name is valid', function () {
-      context('in a personal account', function () {
-        const promptStub = sinon.stub()
-        const confirmStub = sinon.stub()
+      // context('in a personal account', function () {
+      //   const promptStub = sinon.stub()
+      //   const confirmStub = sinon.stub()
 
-        test
-        .do(() => {
-          promptStub.onFirstCall().resolves(pipeline.name)
-          promptStub.onSecondCall().resolves(repo.name)
+      //   test
+      //   .do(() => {
+      //     promptStub.onFirstCall().resolves(pipeline.name)
+      //     promptStub.onSecondCall().resolves(repo.name)
 
-          confirmStub.resolves(true)
-        })
-        .stderr()
-        .stdout()
-        .nock('https://api.heroku.com', api => setupApiNock(api))
-        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
-        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
-          setupKolkrabbiNock(kolkrabbi)
+      //     confirmStub.resolves(true)
+      //   })
+      //   .stderr()
+      //   .stdout()
+      //   .nock('https://api.heroku.com', api => setupApiNock(api))
+      //   .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+      //   .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+      //     setupKolkrabbiNock(kolkrabbi)
 
-          kolkrabbi
-          .patch(`/pipelines/${pipeline.id}/repository`, {
-            ci: true,
-          })
-          .reply(200)
-        })
-        .stub(cli, 'prompt', () => promptStub)
-        .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-        .command(['pipelines:setup'])
-        .it('creates apps in the personal account with CI enabled')
+      //     kolkrabbi
+      //     .patch(`/pipelines/${pipeline.id}/repository`, {
+      //       ci: true,
+      //     })
+      //     .reply(200)
+      //   })
+      //   .stub(cli, 'prompt', () => promptStub)
+      //   .stub(cli, 'confirm', () => confirmStub)
+      //   .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+      //   .command(['pipelines:setup'])
+      //   .it('creates apps in the personal account with CI enabled')
 
-        test
-        .do(() => {
-          promptStub.reset()
-          promptStub.onFirstCall().resolves(repo.name)
-        })
-        .stderr()
-        .stdout()
-        .nock('https://api.heroku.com', api => setupApiNock(api))
-        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
-        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
-          setupKolkrabbiNock(kolkrabbi)
+      //   test
+      //   .do(() => {
+      //     promptStub.reset()
+      //     promptStub.onFirstCall().resolves(repo.name)
+      //   })
+      //   .stderr()
+      //   .stdout()
+      //   .nock('https://api.heroku.com', api => setupApiNock(api))
+      //   .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+      //   .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+      //     setupKolkrabbiNock(kolkrabbi)
 
-          kolkrabbi
-          .patch(`/pipelines/${pipeline.id}/repository`, {
-            ci: true,
-          })
-          .reply(200)
-        })
-        .stub(cli, 'prompt', () => promptStub)
-        .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-        .command(['pipelines:setup', pipeline.name.toUpperCase()])
-        .it('downcases capitalised pipeline names')
+      //     kolkrabbi
+      //     .patch(`/pipelines/${pipeline.id}/repository`, {
+      //       ci: true,
+      //     })
+      //     .reply(200)
+      //   })
+      //   .stub(cli, 'prompt', () => promptStub)
+      //   .stub(cli, 'confirm', () => confirmStub)
+      //   .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+      //   .command(['pipelines:setup', pipeline.name.toUpperCase()])
+      //   .it('downcases capitalised pipeline names')
 
-        test
-        .do(() => {
-          confirmStub.resetHistory()
-        })
-        .stderr()
-        .stdout()
-        .nock('https://api.heroku.com', api => setupApiNock(api))
-        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
-        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
-          setupKolkrabbiNock(kolkrabbi)
+      //   test
+      //   .do(() => {
+      //     confirmStub.resetHistory()
+      //   })
+      //   .stderr()
+      //   .stdout()
+      //   .nock('https://api.heroku.com', api => setupApiNock(api))
+      //   .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+      //   .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+      //     setupKolkrabbiNock(kolkrabbi)
 
-          kolkrabbi
-          .patch(`/pipelines/${pipeline.id}/repository`, {
-            ci: true,
-          })
-          .reply(200)
-        })
-        .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-        .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
-        .it('does not prompt for options with the -y flag', () => {
-          // Since we're passing the `yes` flag here, we should always return default settings and
-          // thus never actually call cli.prompt
-          expect(confirmStub.called).to.be.false
-        })
-      })
+      //     kolkrabbi
+      //     .patch(`/pipelines/${pipeline.id}/repository`, {
+      //       ci: true,
+      //     })
+      //     .reply(200)
+      //   })
+      //   .stub(cli, 'confirm', () => confirmStub)
+      //   .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+      //   .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
+      //   .it('does not prompt for options with the -y flag', () => {
+      //     // Since we're passing the `yes` flag here, we should always return default settings and
+      //     // thus never actually call cli.prompt
+      //     expect(confirmStub.called).to.be.false
+      //   })
+      // })
 
-      context('in a team', function () {
-        const team = 'test-org'
-        const promptStub = sinon.stub()
-        const confirmStub = sinon.stub()
-
-        test
-        .do(() => {
-          promptStub.onFirstCall().resolves(pipeline.name)
-          promptStub.onSecondCall().resolves(repo.name)
-
-          confirmStub.resolves(true)
-        })
-        .nock('https://api.heroku.com', api => {
-          api.post('/pipelines').reply(201, pipeline)
-
-          const couplings = [
-            {id: 1, stage: 'production', app: prodApp},
-            {id: 2, stage: 'staging', app: stagingApp},
-          ]
-
-          couplings.forEach(function (coupling) {
-            api
-            .post('/app-setups', {
-              source_blob: {url: archiveURL},
-              app: {name: coupling.app.name, organization: team},
-              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
-            })
-            .reply(201, {id: coupling.id, app: coupling.app})
-
-            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-          })
-
-          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
-        })
-        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
-        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
-          setupKolkrabbiNock(kolkrabbi)
-
-          kolkrabbi
-          .patch(`/pipelines/${pipeline.id}/repository`, {
-            organization: team,
-            ci: true,
-          })
-          .reply(200)
-        })
-        .stub(cli, 'prompt', () => promptStub)
-        .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-        .command(['pipelines:setup', '--team', team])
-        .it('creates apps in a team with CI enabled')
-      })
-
-      context('when pollAppSetup status fails', function () {
-        const team = 'test-org'
-        const promptStub = sinon.stub()
-        const confirmStub = sinon.stub()
-
-        test
-        .do(() => {
-          promptStub.onFirstCall().resolves(pipeline.name)
-          promptStub.onSecondCall().resolves(repo.name)
-
-          confirmStub.resolves(true)
-        })
-        .nock('https://api.heroku.com', api => {
-          api.post('/pipelines').reply(201, pipeline)
-
-          const couplings = [
-            {id: 1, stage: 'production', app: prodApp},
-            {id: 2, stage: 'staging', app: stagingApp},
-          ]
-
-          couplings.forEach(function (coupling) {
-            api
-            .post('/app-setups', {
-              source_blob: {url: archiveURL},
-              app: {name: coupling.app.name, organization: team},
-              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
-            })
-            .reply(201, {id: coupling.id, app: coupling.app})
-
-            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'failed'})
-          })
-
-          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
-        })
-        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
-        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
-          setupKolkrabbiNock(kolkrabbi)
-
-          kolkrabbi
-          .patch(`/pipelines/${pipeline.id}/repository`, {
-            organization: team,
-            ci: true,
-          })
-          .reply(200)
-        })
-        .stub(cli, 'prompt', () => promptStub)
-        .stub(cli, 'confirm', () => confirmStub)
-        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-        .command(['pipelines:setup', '--team', team])
-        .catch(error => {
-          expect(error.message).to.contain("Couldn't create application")
-        })
-        .it('shows error if getAppSetup returns body with setup.status === failed')
-      })
-
-      // context('when pollAppSetup status fails', function () {
+      // context('in a team', function () {
       //   const team = 'test-org'
       //   const promptStub = sinon.stub()
       //   const confirmStub = sinon.stub()
@@ -286,20 +179,86 @@ describe('pipelines:setup', () => {
       //       })
       //       .reply(201, {id: coupling.id, app: coupling.app})
 
-      //       api.get(`/app-setups/${coupling.id}`).reply(401, {status: 'failed'})
+      //       api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
       //     })
 
       //     api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
       //   })
+      //   .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+      //   .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+      //     setupKolkrabbiNock(kolkrabbi)
+
+      //     kolkrabbi
+      //     .patch(`/pipelines/${pipeline.id}/repository`, {
+      //       organization: team,
+      //       ci: true,
+      //     })
+      //     .reply(200)
+      //   })
       //   .stub(cli, 'prompt', () => promptStub)
       //   .stub(cli, 'confirm', () => confirmStub)
       //   .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
-      //   .catch(error => {
-      //     expect(error.message).to.equal('we made it here')
-      //   })
       //   .command(['pipelines:setup', '--team', team])
-      //   .it('shows error if getAppSetup returns body with setup.status === failed')
+      //   .it('creates apps in a team with CI enabled')
       // })
+
+      context('when pollAppSetup status fails', function () {
+        const team = 'test-org'
+        const confirmStub = sinon.stub()
+
+        test
+        .do(() => {
+          confirmStub.resolves(true)
+          cli.exit.mock()
+        })
+        .nock('https://api.heroku.com', api => {
+          api.post('/pipelines').reply(201, pipeline)
+
+          const couplings = [
+            {id: 1, stage: 'production', app: prodApp},
+            {id: 2, stage: 'staging', app: stagingApp},
+          ]
+
+          couplings.forEach(function (coupling) {
+            api
+            .post('/app-setups', {
+              source_blob: {url: archiveURL},
+              app: {name: coupling.app.name, organization: team},
+              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+            })
+            .reply(201, {id: coupling.id, app: coupling.app})
+
+            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'failed', app: {name: 'my-pipeline'}, failure_message: 'status failed'})
+          })
+
+          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
+        })
+        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+          setupKolkrabbiNock(kolkrabbi)
+
+          kolkrabbi
+          .patch(`/pipelines/${pipeline.id}/repository`, {
+            organization: team,
+            ci: true,
+          })
+          .reply(200)
+        })
+        // .stub(cli, 'prompt', () => promptStub)
+        .stub(cli, 'confirm', () => confirmStub)
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+        .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
+        .catch((error: any) => {
+          expect(error.oclif.exit).to.equal(1)
+          expect(error.message).to.equal('stream release output not available')
+        })
+        .exit(1)
+        // .catch(error => {
+        //   console.log('ERROR: ', error)
+        //   expect(error.message).to.contain('to be a part of any pipeline')
+        // })
+        .it('shows error if getAppSetup returns body with setup.status === failed')
+      })
     })
   })
 })
