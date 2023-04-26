@@ -67,6 +67,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "postpublish": "rm oclif.manifest.json",
+    "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "test": "nyc --extension .js mocha --forbid-only \"test/**/*.js\"",
     "version": "oclif readme && git add README.md"
