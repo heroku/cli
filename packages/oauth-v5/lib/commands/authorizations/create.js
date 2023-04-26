@@ -10,8 +10,8 @@ async function run(context, heroku) {
     body: {
       description: context.flags.description,
       scope: context.flags.scope ? context.flags.scope.split(',') : undefined,
-      expires_in: context.flags['expires-in']
-    }
+      expires_in: context.flags['expires-in'],
+    },
   })
 
   if (!context.flags.short && !context.flags.json) {
@@ -31,9 +31,9 @@ async function run(context, heroku) {
 
 const ScopeCompletion = {
   skipCache: true,
-  options: (ctx) => {
+  options: () => {
     return ['global', 'identity', 'read', 'write', 'read-protected', 'write-protected']
-  }
+  },
 }
 
 module.exports = {
@@ -47,7 +47,7 @@ module.exports = {
     {char: 's', name: 'scope', hasValue: true, description: 'set custom OAuth scopes', completion: ScopeCompletion},
     {char: 'e', name: 'expires-in', hasValue: true, description: 'set expiration in seconds (default no expiration)'},
     {char: 'S', name: 'short', description: 'only output token'},
-    {char: 'j', name: 'json', description: 'output in json format'}
+    {char: 'j', name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }
