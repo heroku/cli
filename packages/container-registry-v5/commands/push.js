@@ -86,7 +86,6 @@ let push = async function (context, heroku) {
   }
 
   let flagsArg = context.flags.arg
-  // eslint-disable-next-line no-negated-condition
   let buildArg = (flagsArg !== undefined) ? flagsArg.split(',') : []
 
   try {
@@ -97,7 +96,6 @@ let push = async function (context, heroku) {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
       }
 
-      // eslint-disable-next-line no-await-in-loop
       await Sanbashi.buildImage(job.dockerfile, job.resource, buildArg, context.flags['context-path'])
     }
   } catch (error) {
@@ -113,7 +111,6 @@ let push = async function (context, heroku) {
         cli.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
       }
 
-      // eslint-disable-next-line no-await-in-loop
       await Sanbashi.pushImage(job.resource)
     }
 

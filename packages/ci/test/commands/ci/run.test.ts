@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prefer-string-slice  */
 import {expect, test} from '@oclif/test'
 import * as fs from 'async-file'
 
@@ -50,7 +49,6 @@ describe('ci:run', () => {
 
     const fsFake = {
       stat: () => Promise.resolve({size: 500}),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       createReadStream: () => ({pipe: () => {}}),
     }
 

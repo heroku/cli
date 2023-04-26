@@ -14,7 +14,6 @@ async function run(context, heroku) {
   if (teamInfo.type === 'team') {
     let orgFeatures = await heroku.get(`/teams/${groupName}/features`)
 
-    // eslint-disable-next-line unicorn/prefer-array-some
     if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
       teamInvites = await heroku.request({
         headers: {

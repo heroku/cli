@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach afterEach cli */
+/* globals beforeEach cli */
 
 let expect = require('chai').expect
 // let nock = require('nock')
@@ -30,7 +29,7 @@ describe('heroku certs:key', function () {
   // })
 
   it('# checks command does nothing', function () {
-    return certs.run({ app: 'example', args: [] }).then(function () {
+    return certs.run({app: 'example', args: []}).then(function () {
       expect(cli.stdout).to.equal('')
       expect(cli.stderr).to.equal('')
     })

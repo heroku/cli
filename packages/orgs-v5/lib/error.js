@@ -23,7 +23,6 @@ function exit(code, message) {
   if (mocking) {
     throw new ErrorExit(code)
   } else {
-    // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
     process.exit(code)
   }
 }

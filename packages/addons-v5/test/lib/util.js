@@ -21,7 +21,6 @@ describe('util.formatPrice', function () {
   })
 
   it('returns undefined when no pricing information given', function () {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     expect(util.formatPrice(null)).to.eq(undefined)
   })
 })

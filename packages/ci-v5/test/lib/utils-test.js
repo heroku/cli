@@ -40,7 +40,6 @@ describe('Utils', function () {
 
   describe('#dig', function () {
     it('is undefined given an undefined object', function () {
-      // eslint-disable-next-line unicorn/no-useless-undefined
       expect(Utils.dig(undefined)).to.be.undefined
     })
 

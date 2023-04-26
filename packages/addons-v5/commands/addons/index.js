@@ -224,7 +224,7 @@ async function run(ctx, api) {
         format: function (addon) {
           if (addon.app.name === app) {
             return formatPrice(addon.plan.price)
-          } else { // eslint-disable-line no-else-return
+          } else {
             return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
           }
         },

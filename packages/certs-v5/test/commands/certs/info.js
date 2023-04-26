@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach cli */
+/* globals beforeEach cli */
 
 let certs = require('../../../commands/certs/info.js')
 let nock = require('nock')
@@ -41,20 +40,20 @@ ${certificateDetails}
 
   it('returns domains when show-domains flag is passed', function () {
     let mockSni = nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWithDomains])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpointWithDomains])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3' }
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-      .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointWithDomains)
+    .get('/apps/example/sni-endpoints/tokyo-1050')
+    .reply(200, endpointWithDomains)
 
     let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains/example.heroku.com')
-      .reply(200, [endpointWithDomains])
+    .get('/apps/example/domains/example.heroku.com')
+    .reply(200, [endpointWithDomains])
 
-    return certs.run({ app: 'example', args: {}, flags: { 'show-domains': true } }).then(function () {
+    return certs.run({app: 'example', args: {}, flags: {'show-domains': true}}).then(function () {
       mockSni.done()
       mock.done()
       mockDomains.done()

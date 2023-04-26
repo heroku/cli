@@ -7,7 +7,6 @@ let _ = require('lodash')
 function type(f) {
   if (f.ssl_cert && f.ssl_cert.acm) {
     return 'ACM'
-  // eslint-disable-next-line no-else-return
   } else {
     return 'SNI'
   }
@@ -44,7 +43,6 @@ module.exports = function (certs) {
     columns.push({label: 'Display Name', key: 'display_name'})
   }
 
-  // eslint-disable-next-line unicorn/prefer-array-some
   if (_.find(mapped, row => row.cname)) {
     columns = columns.concat([{label: 'Endpoint', key: 'cname', format: function (f) {
       return f || '(Not applicable for SNI)'

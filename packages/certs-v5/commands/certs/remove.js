@@ -12,7 +12,6 @@ async function run(context, heroku) {
 
   await cli.confirmApp(context.app, context.flags.confirm, `WARNING: Destructive Action - you cannot rollback this change\nThis command will remove the endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let _ = await cli.action(`Removing SSL certificate ${formattedEndpoint} from ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     method: 'DELETE',

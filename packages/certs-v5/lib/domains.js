@@ -4,7 +4,6 @@ let _ = require('lodash')
 let cli = require('heroku-cli-util')
 let psl = require('psl')
 
-// eslint-disable-next-line no-promise-executor-return
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 function type(domain) {
@@ -31,9 +30,7 @@ async function waitForDomains(context, heroku) {
           throw new Error('Timed out while waiting for stable domains to be created')
         }
 
-        // eslint-disable-next-line no-await-in-loop
         await wait(1000)
-        // eslint-disable-next-line no-await-in-loop
         apiDomains = await apiRequest(context, heroku)
 
         index++
@@ -97,9 +94,7 @@ async function waitForCertIssuedOnDomains(context, heroku) {
     await cli.action('Waiting until the certificate is issued to all domains', (async function () {
       let retries = 0
       while (!certIssuedOrFailedForAllCustomDomains(domains)) {
-        // eslint-disable-next-line no-await-in-loop
         await wait(backoff(retries))
-        // eslint-disable-next-line no-await-in-loop
         domains = await apiRequest(context, heroku)
         retries++
       }

@@ -3,7 +3,6 @@
 let childProcess = require('child_process')
 
 module.exports = {
-  // eslint-disable-next-line unicorn/prevent-abbreviations
   spawn: function (args) {
     return new Promise(function (resolve, reject) {
       let s = childProcess.spawn('openssl', args, {stdio: 'inherit'})

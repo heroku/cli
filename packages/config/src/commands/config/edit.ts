@@ -36,7 +36,6 @@ function removeDeleted(newConfig: UploadConfig, original: Config) {
 }
 
 export function stringToConfig(s: string): Config {
-  // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
   return s.split('\n').reduce((config: Config, line: string): Config => {
     const error = () => {
       throw new Error(`Invalid line: ${line}`)

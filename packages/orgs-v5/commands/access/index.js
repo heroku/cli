@@ -85,7 +85,6 @@ module.exports = [
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access')}`)
-      // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
       process.exit(1)
     },
   },

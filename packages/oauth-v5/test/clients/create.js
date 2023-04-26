@@ -1,7 +1,5 @@
 /* eslint-env mocha */
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach */
 
 const cli = require('heroku-cli-util')
 const {expect} = require('chai')

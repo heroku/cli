@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach cli */
+/* globals cli */
 
 let expect = require('chai').expect
 let nock = require('nock')
@@ -445,7 +444,6 @@ heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       clock = lolex.install()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       clock.setTimeout = function (fn, timeout) {
         fn()
       }

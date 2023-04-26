@@ -42,7 +42,6 @@ async function run(context, heroku) {
           personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(app.owner),
           bulk: true,
         })
-        // eslint-disable-next-line no-await-in-loop
         await appTransfer.start()
       } catch (error) {
         cli.error(error)
@@ -104,7 +103,6 @@ module.exports = [
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
-      // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
       process.exit(1)
     },
   },

@@ -12,7 +12,6 @@ import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-// eslint-disable-next-line node/no-deprecated-api
 import {URL, parse} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'

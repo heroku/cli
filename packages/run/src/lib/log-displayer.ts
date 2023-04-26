@@ -78,7 +78,6 @@ function readLogs(logplexURL: string) {
 async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
   process.stdout.on('error', err => {
     if (err.code === 'EPIPE') {
-      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       process.exit(0)
     } else {
       CliUx.ux.error(err.stack, {exit: 1})

@@ -9,7 +9,7 @@ let style = require('../../lib/util').style
 
 let run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
-  return async function () { // eslint-disable-line wrap-iife
+  return async function () {
     let addon = await resolve.addon(api, ctx.app, ctx.args.addon)
     let attachments = await api.request({
       method: 'GET',

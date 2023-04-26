@@ -12,7 +12,6 @@ function validateArgs(args) {
 async function run(context, heroku) {
   validateArgs(context.args)
 
-  // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
   const vars = context.args.reduce((memo, key) => {
     memo[key] = null
     return memo

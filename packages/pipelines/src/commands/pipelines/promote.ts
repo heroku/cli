@@ -13,7 +13,6 @@ import keyBy from '../../key-by'
 const cli = CliUx.ux
 
 export const sleep  = (time: number) => {
-  // eslint-disable-next-line no-promise-executor-return
   return new Promise(resolve => setTimeout(resolve, time))
 }
 
@@ -30,7 +29,6 @@ function findAppInPipeline(apps: Array<Heroku.App>, target: string) {
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
-// eslint-disable-next-line no-promise-executor-return
 const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
 function isComplete(promotionTarget: Heroku.PipelinePromotionTarget) {
@@ -151,7 +149,6 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
 
     while (true) {
       try {
-        /* eslint-disable no-await-in-loop */
         await fn()
         return
       } catch (error) {
@@ -160,7 +157,6 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
         }
 
         await sleep(1000)
-        /* eslint-enable no-await-in-loop */
       }
     }
   }
@@ -209,7 +205,6 @@ export default class Promote extends Command {
 
       // Now let's make sure that we can find every target app they specified
       // The only requirement is that the app be in this pipeline. They can be at any stage.
-      // eslint-disable-next-line unicorn/no-array-reduce
       targetApps = targetAppNames.reduce((acc: Array<Heroku.App>, targetAppNameOrId) => {
         assertNotPromotingToSelf(appNameOrId, targetAppNameOrId)
         const app = findAppInPipeline(allApps, targetAppNameOrId)
@@ -249,7 +244,6 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    // eslint-disable-next-line unicorn/prefer-object-from-entries, unicorn/no-array-reduce
     const styledTargets = promotionTargets.reduce(function (memo: Heroku.App, target: Heroku.App) {
       const app = appsByID[target.app.id]
       const details = [target.status]

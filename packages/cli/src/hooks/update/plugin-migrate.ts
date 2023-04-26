@@ -30,7 +30,6 @@ export const migrate: Hook<'init'> = async function () {
         const {manifest} = await fs.readJSON(p)
         for (const plugin of Object.keys(manifest.plugins)) {
           process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
-          // eslint-disable-next-line no-await-in-loop
           await exec('heroku', ['plugins:install', plugin])
         }
       }
@@ -44,7 +43,6 @@ export const migrate: Hook<'init'> = async function () {
         const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
         for (const {root} of Object.values(manifest.plugins) as any) {
           process.stderr.write(`heroku-cli: migrating ${root}\n`)
-          // eslint-disable-next-line no-await-in-loop
           await exec('heroku', ['plugins:link', root])
         }
       }

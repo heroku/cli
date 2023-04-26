@@ -18,14 +18,11 @@ async function run(context, heroku) {
                        pipelineRepository.organization.name
 
   const commit = await git.readCommit('HEAD')
-  // eslint-disable-next-line wrap-iife
   const sourceBlobUrl = await cli.action('Preparing source', async function () {
-    // eslint-disable-next-line no-return-await
     return await source.createSourceBlob(commit.ref, context, heroku)
   }())
 
   // Create test run and wait for it to transition to `debugging`
-  // eslint-disable-next-line wrap-iife
   const testRun = await cli.action('Creating test run', async function () {
     const run = await api.createTestRun(heroku, {
       commit_branch: commit.branch,
@@ -38,7 +35,6 @@ async function run(context, heroku) {
       source_blob_url: sourceBlobUrl,
     })
 
-    // eslint-disable-next-line no-return-await
     return await TestRun.waitForStates(['debugging', 'errored'], run, {heroku})
   }())
 
@@ -67,7 +63,6 @@ async function run(context, heroku) {
 
   dyno.dyno = {attach_url: Utils.dig(testNodes, 0, 'dyno', 'attach_url')}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function sendSetup(data, connection) {
     if (data.toString().includes('$')) {
       dyno.write(SETUP_COMMAND + '\n')

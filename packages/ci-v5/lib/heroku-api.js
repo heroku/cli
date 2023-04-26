@@ -97,7 +97,6 @@ function logStream(url, fn) {
 }
 
 async function createSource(client) {
-  // eslint-disable-next-line no-return-await
   return await client.post('/sources')
 }
 

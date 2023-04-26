@@ -5,5 +5,6 @@ module.exports = function (endpoint) {
   if (endpoint.cname) {
     display += ` (${endpoint.cname})`
   }
+
   return display
 }
