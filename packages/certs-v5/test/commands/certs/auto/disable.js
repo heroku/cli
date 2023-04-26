@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach cli */
+/* globals beforeEach cli */
 
 let chai = require('chai')
 let chaiAsPromised = require('chai-as-promised')

@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach cli */
+/* globals cli */
 
 let expect = require('chai').expect
 let nock = require('nock')

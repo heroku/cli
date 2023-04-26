@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 'use strict'
 // eslint-disable-next-line no-redeclare
 /* globals describe it beforeEach afterEach cli */
@@ -93,13 +92,11 @@ describe('heroku certs:add', function () {
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
 `)
-      /* eslint-enable no-irregular-whitespace */
     })
   })
 
@@ -155,7 +152,6 @@ ${certificateDetails}
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -187,7 +183,6 @@ ${certificateDetails}
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
-      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -241,7 +236,6 @@ ${certificateDetails}
         domainsMock.done()
         domainsCreate.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
           `Certificate details:
 Common Name(s): foo.example.org
@@ -290,8 +284,6 @@ SSL certificate is self signed.
         domainsMock.done()
         domainsMockPatch.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-irregular-whitespace */
-        /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
           `Certificate details:
 Common Name(s): tokyo-1050.herokuapp.com
@@ -331,7 +323,6 @@ SSL certificate is not trusted.
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
           `Certificate details:
 Common Name(s): foo.example.org
@@ -367,8 +358,6 @@ SSL certificate is self signed.
         mock.done()
         domainsMock.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-trailing-spaces */
-        /* eslint-disable no-irregular-whitespace */
         expect(cli.stdout).to.equal(
           `Certificate details:
 Common Name(s): *.example.org
@@ -414,8 +403,6 @@ SSL certificate is self signed.
         domainsMock.done()
         domainsMockPatch.done()
         expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
-        /* eslint-disable no-trailing-spaces */
-        /* eslint-disable no-irregular-whitespace */
         expect(cli.stdout).to.equal(
           `Certificate details:
 Common Name(s): *.example.org
@@ -437,7 +424,7 @@ SSL certificate is self signed.
       beforeEach(function () {
         cli.mockConsole()
         clock = lolex.install()
-        // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         clock.setTimeout = function (fn, timeout) {
           fn()
         }
@@ -512,7 +499,6 @@ SSL certificate is self signed.
           domainsCreateBar.done()
           domainsCreateBiz.done()
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... done\n')
-          /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
             `Certificate details:
 Common Name(s): foo.example.org
@@ -550,7 +536,6 @@ SSL certificate is self signed.
           mock.done()
           domainsMock.done()
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !\n')
-          /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
             `Certificate details:
 Common Name(s): foo.example.org

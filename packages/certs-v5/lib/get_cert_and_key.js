@@ -10,7 +10,6 @@ function usageError() {
 }
 
 async function getFiles(context) {
-  // eslint-disable-next-line no-return-await
   return await Promise.all(
     context.args.map(argument => readFile(argument, 'utf-8')),
   )
@@ -28,6 +27,5 @@ module.exports = async function (context) {
     cli.warn('use of the --bypass flag is deprecated. The flag currently does not perform any additional behavior. Please remove --bypass')
   }
 
-  // eslint-disable-next-line no-return-await
   return await getFilesBypass(context)
 }

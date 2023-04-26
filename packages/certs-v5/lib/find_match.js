@@ -23,6 +23,5 @@ module.exports = function (certDomain, domains) {
     return wildcardMatch
   }
 
-  // eslint-disable-next-line unicorn/no-null
   return null
 }

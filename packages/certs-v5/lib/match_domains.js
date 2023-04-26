@@ -2,7 +2,6 @@
 
 function splitDomains(domains) {
   return domains.map(domain => {
-    // eslint-disable-next-line unicorn/prefer-string-slice
     return [domain.substring(0, 1), domain.substring(1)]
   })
 }
@@ -35,7 +34,7 @@ module.exports = function (certDomains, appDomains) {
   const matchers = splitCertDomains.map(splitDomain => createMatcherFromSplitDomain(splitDomain))
 
   if (includesWildcard(splitCertDomains)) {
-    // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prevent-abbreviations
+    // eslint-disable-next-line unicorn/prevent-abbreviations
     const matchedDomains = appDomains.reduce((acc, appDomain) => {
       if (matchers.some(matcher => matcher.test(appDomain))) {
         acc.push(appDomain)
@@ -45,7 +44,6 @@ module.exports = function (certDomains, appDomains) {
     }, [])
 
     return matchedDomains
-  // eslint-disable-next-line no-else-return
   } else {
     return certDomains.filter(domain => appDomains.includes(domain))
   }

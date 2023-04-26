@@ -1,6 +1,5 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it beforeEach cli */
+/* globals beforeEach cli */
 
 let expect = require('chai').expect
 let nock = require('nock')
@@ -36,7 +35,6 @@ describe('heroku certs', function () {
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('')
-      /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
         `Name        Common Name(s)  Expires               Trusted  Type
 ──────────  ──────────────  ────────────────────  ───────  ────
@@ -54,7 +52,6 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('')
-      /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
         `Name        Common Name(s)                                     Expires               Trusted  Type  Domains
 ──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────  ───────
@@ -74,7 +71,6 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('')
-      /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
         `Name        Common Name(s)  Expires               Trusted  Type  Domains
 ──────────  ──────────────  ────────────────────  ───────  ────  ───────
@@ -94,7 +90,6 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI   0
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('')
-      /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
         `Name        Common Name(s)  Expires               Trusted  Type  Domains
 ──────────  ──────────────  ────────────────────  ───────  ────  ───────
@@ -112,7 +107,6 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI   0
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
       expect(cli.stderr).to.equal('')
-      /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
         `Name        Common Name(s)                                     Expires               Trusted  Type  Domains
 ──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────  ───────

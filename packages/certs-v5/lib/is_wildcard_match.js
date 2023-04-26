@@ -12,7 +12,6 @@ module.exports = function (wildcard, hostname) {
     return false
   }
 
-  // eslint-disable-next-line unicorn/prefer-string-slice
   let baseDomain = wildcard.substring(2)
   let regex = new RegExp(`^[a-zA-Z0-9_-]+\\.${escapeRegExp(baseDomain)}$`)
   return hostname.match(regex)

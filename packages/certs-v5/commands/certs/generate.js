@@ -1,4 +1,3 @@
-/* eslint-disable require-atomic-updates */
 'use strict'
 
 let cli = require('heroku-cli-util')
@@ -9,7 +8,6 @@ let endpoints = require('../../lib/endpoints.js').all
 function valueEmpty(value) {
   if (value) {
     return value.length === 0
-  // eslint-disable-next-line no-else-return
   } else {
     return true
   }
@@ -51,7 +49,6 @@ function getSubject(context) {
 
 function requiresPrompt(context) {
   if (valueEmpty(context.flags.subject)) {
-    // eslint-disable-next-line unicorn/prevent-abbreviations
     let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city]
     if (!context.flags.now && args.every(function (v) {
       return valueEmpty(v)
@@ -64,14 +61,12 @@ function requiresPrompt(context) {
 }
 
 function getCommand(certs, domain) {
-  // eslint-disable-next-line unicorn/prefer-array-some
   if (certs.find(function (f) {
     return f.ssl_cert.cert_domains.find(function (d) {
       return d === domain
     })
   })) {
     return 'update'
-  // eslint-disable-next-line no-else-return
   } else {
     return 'add'
   }

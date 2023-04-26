@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 'use strict'
 
 function promisfy(mod, fn) {

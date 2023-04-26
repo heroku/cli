@@ -79,7 +79,6 @@ async function run(context, heroku) {
         {label: 'Domain', key: 'hostname'},
         {label: 'Status', key: 'acm_status', format: humanize},
       ]
-      // eslint-disable-next-line unicorn/prefer-array-some
       if (domains.find(d => d.acm_status_reason)) {
         columns.push({
           label: 'Reason',
