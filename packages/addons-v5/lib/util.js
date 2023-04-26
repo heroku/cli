@@ -42,7 +42,6 @@ module.exports = {
   },
 
   trapConfirmationRequired: async function (app, confirm, fn) {
-    // eslint-disable-next-line no-return-await
     return await fn(confirm)
     .catch(error => {
       if (!error.body || error.body.id !== 'confirmation_required') throw error

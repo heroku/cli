@@ -21,10 +21,10 @@ async function run(context, heroku) {
   for (let app of toPairs(groupBy(addons, 'app.name'))) {
     addons = app[1]
     app = app[0]
-    await cli.confirmApp(app, context.flags.confirm) // eslint-disable-line no-await-in-loop
+    await cli.confirmApp(app, context.flags.confirm)
     for (let addon of addons) {
       let msg = `Destroying ${cli.color.addon(addon.name)} on ${cli.color.app(addon.app.name)}`
-      await cli.action(msg, heroku.request({ // eslint-disable-line no-await-in-loop
+      await cli.action(msg, heroku.request({
         method: 'DELETE',
         path: `/apps/${addon.app.id}/addons/${addon.id}`,
         headers: {'Accept-Expansion': 'plan'},

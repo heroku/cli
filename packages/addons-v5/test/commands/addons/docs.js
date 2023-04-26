@@ -4,7 +4,6 @@
 let cli = require('heroku-cli-util')
 let proxyquire = require('proxyquire')
 const sinon = require('sinon')
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 let openStub = sinon.stub(cli, 'open').callsFake(() => {})
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'docs')
 let docs

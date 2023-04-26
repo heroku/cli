@@ -20,7 +20,7 @@ async function run(ctx, api) {
 
   addons = addons.filter(addon => addon.state === 'provisioning')
 
-  let interval = Number.parseInt(ctx.flags['wait-interval']) // eslint-disable-line radix
+  let interval = Number.parseInt(ctx.flags['wait-interval'])
   if (!interval || interval < 0) {
     interval = 5
   }
@@ -28,7 +28,7 @@ async function run(ctx, api) {
   for (let addon of addons) {
     const startTime = new Date()
     try {
-      addon = await waitForAddonProvisioning(api, addon, interval) // eslint-disable-line no-await-in-loop
+      addon = await waitForAddonProvisioning(api, addon, interval)
     } catch (error) {
       notify(`heroku addons:wait ${addon.name}`, 'Add-on failed to provision', false)
       throw error
