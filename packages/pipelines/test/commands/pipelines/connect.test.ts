@@ -59,6 +59,14 @@ describe('pipelines:connect', () => {
 
   describe('with an account connected to Github experiencing request failures', () => {
     test
+    .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+      const kolkrabbiAccount = {
+        github: {
+          token: '123-abc',
+        },
+      }
+      kolkrabbi.get('/account/github/token').reply(200, kolkrabbiAccount)
+    })
     .nock('https://api.github.com', github => {
       const repo = {
         id: 1235,
