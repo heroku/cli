@@ -20,7 +20,6 @@ function validateInput(str) {
 async function run(context, heroku) {
   validateArgs(context.args)
 
-  // eslint-disable-next-line unicorn/prefer-object-from-entries
   const vars = context.args.reduce((memo, str) => {
     validateInput(str)
     const [key, value] = str.split('=')
@@ -35,7 +34,6 @@ async function run(context, heroku) {
     api.setConfigVars(heroku, pipeline.id, vars),
   )
 
-  // eslint-disable-next-line unicorn/prefer-object-from-entries
   cli.styledObject(Object.keys(vars).reduce((memo, key) => {
     memo[cli.color.green(key)] = vars[key]
     return memo
