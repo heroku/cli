@@ -1,5 +1,5 @@
 'use strict'
-/* globals beforeEach afterEach cli nock context expect */
+/* globals after before beforeEach afterEach cli nock context expect */
 
 let cmd = require('../../../commands/apps/leave')[0]
 let stubGet = require('../../stub/get')
@@ -48,12 +48,12 @@ describe('heroku apps:leave', () => {
     after(() => nock.cleanAll())
 
     it('shows an error if the heroku.delete() operation returns an error', () => {
-      return cmd.run({ app: 'myapp' })
-        .then(() => apiGetUserAccount.done())
-        .then(() => apiDeletePersonalAppCollaborator.done())
-        .catch(function (err) {
-          expect(err).to.be.an.instanceof(Error)
-        })
+      return cmd.run({app: 'myapp'})
+      .then(() => apiGetUserAccount.done())
+      .then(() => apiDeletePersonalAppCollaborator.done())
+      .catch(function (error) {
+        expect(error).to.be.an.instanceof(Error)
+      })
     })
   })
 })

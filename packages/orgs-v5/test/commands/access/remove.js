@@ -1,5 +1,5 @@
 'use strict'
-/* globals beforeEach afterEach context cli nock expect */
+/* globals after before beforeEach afterEach context nock expect */
 
 let cli = require('heroku-cli-util')
 let cmd = require('../../../commands/access/remove')[0]
@@ -31,10 +31,12 @@ describe('heroku access:remove', () => {
     let processStub
 
     before(() => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       cliErrorStub = sinon.stub(cli, 'error').returns(() => {})
       cmd2 = proxyquire(('../../../commands/access/remove'), {
-        'cli': cliErrorStub
+        cli: cliErrorStub,
       })
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       processStub = sinon.stub(process, 'exit').returns(() => {})
       cli.mockConsole()
     })
@@ -46,7 +48,7 @@ describe('heroku access:remove', () => {
 
     it('errors when attempting to use old command', () => {
       cmd2[1].run({
-        app: 'myapp'
+        app: 'myapp',
       })
       expect(cliErrorStub.called).to.equal(true)
     })
