@@ -1,3 +1,5 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable quote-props */
 module.exports = [
   {
     'name': 'H10',

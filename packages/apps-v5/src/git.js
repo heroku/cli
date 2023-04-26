@@ -4,10 +4,10 @@ let exec = require('child_process').execFile
 let fs = require('fs')
 
 module.exports = function (context) {
-  let sshGitUrl = (app) => `git@${context.gitHost}:${app}.git`
-  let gitUrl = (app) => `https://${context.httpGitHost}/${app}.git`
+  let sshGitUrl = app => `git@${context.gitHost}:${app}.git`
+  let gitUrl = app => `https://${context.httpGitHost}/${app}.git`
 
-  function git (args) {
+  function git(args) {
     return new Promise(function (resolve, reject) {
       exec('git', args, function (error, stdout, stderr) {
         process.stderr.write(stderr)
@@ -17,32 +17,32 @@ module.exports = function (context) {
     })
   }
 
-  function hasGitRemote (remote) {
+  function hasGitRemote(remote) {
     return git(['remote'])
-      .then((remotes) => remotes.split('\n'))
-      .then((remotes) => remotes.find((r) => r === remote))
+    .then(remotes => remotes.split('\n'))
+    .then(remotes => remotes.find(r => r === remote))
   }
 
-  function createRemote (remote, url) {
+  function createRemote(remote, url) {
     return hasGitRemote(remote)
-      .then((exists) => !exists ? git(['remote', 'add', remote, url]) : null)
+    .then(exists => !exists ? git(['remote', 'add', remote, url]) : null)
   }
 
-  function listRemotes () {
+  function listRemotes() {
     return git(['remote', '-v'])
-      .then((remotes) => remotes.trim().split('\n').map((r) => r.split(/\s/)))
+    .then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)))
   }
 
-  function inGitRepo () {
+  function inGitRepo() {
     try {
       fs.lstatSync('.git')
       return true
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
     }
   }
 
-  function rmRemote (remote) {
+  function rmRemote(remote) {
     return git(['remote', 'rm', remote])
   }
 
@@ -52,6 +52,6 @@ module.exports = function (context) {
     createRemote,
     listRemotes,
     rmRemote,
-    inGitRepo
+    inGitRepo,
   }
 }
