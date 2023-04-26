@@ -3,11 +3,11 @@
 let cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
-  function enableFeature (feature, app) {
+  function enableFeature(feature, app) {
     return heroku.request({
       path: app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`,
       method: 'PATCH',
-      body: { enabled: true }
+      body: {enabled: true},
     })
   }
 
@@ -18,10 +18,10 @@ async function run(context, heroku) {
     await heroku.get(`/account/features/${feature}`)
     request = enableFeature(feature)
     target = ((await heroku.get('/account'))).email
-  } catch (err) {
-    if (err.statusCode !== 404) throw err
+  } catch (error) {
+    if (error.statusCode !== 404) throw error
     // might be an app feature
-    if (!context.app) throw err
+    if (!context.app) throw error
     await heroku.get(`/apps/${context.app}/features/${feature}`)
     request = enableFeature(feature, context.app)
     target = context.app
@@ -34,8 +34,8 @@ module.exports = {
   topic: 'labs',
   command: 'enable',
   description: 'enables an experimental feature',
-  args: [{ name: 'feature' }],
+  args: [{name: 'feature'}],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

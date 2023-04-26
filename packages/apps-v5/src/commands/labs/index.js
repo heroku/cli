@@ -2,15 +2,15 @@
 
 const cli = require('heroku-cli-util')
 
-function printJSON (features) {
+function printJSON(features) {
   cli.log(JSON.stringify(features, null, 2))
 }
 
-function printFeatures (features) {
-  const { sortBy } = require('lodash')
+function printFeatures(features) {
+  const {sortBy} = require('lodash')
 
   features = sortBy(features, 'name')
-  let longest = Math.max.apply(null, features.map((f) => f.name.length))
+  let longest = Math.max.apply(null, features.map(f => f.name.length))
   for (let f of features) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name.padEnd(longest)}`
     if (f.enabled) line = cli.color.green(line)
@@ -23,17 +23,17 @@ async function run(context, heroku) {
   let [currentUser, user, app] = await Promise.all([
     heroku.get('/account'),
     heroku.get('/account/features'),
-    context.app ? heroku.get(`/apps/${context.app}/features`) : null
+    context.app ? heroku.get(`/apps/${context.app}/features`) : null,
   ])
 
   let features = {
     currentUser,
     user,
-    app
+    app,
   }
   // general features are managed via `features` not `labs`
-  features.user = features.user.filter((f) => f.state !== 'general')
-  if (features.app) features.app = features.app.filter((f) => f.state !== 'general')
+  features.user = features.user.filter(f => f.state !== 'general')
+  if (features.app) features.app = features.app.filter(f => f.state !== 'general')
   if (context.flags.json) {
     delete features.currentUser
     printJSON(features)
@@ -52,9 +52,9 @@ module.exports = {
   topic: 'labs',
   description: 'list experimental features',
   flags: [
-    { name: 'json', description: 'display as json' }
+    {name: 'json', description: 'display as json'},
   ],
   needsAuth: true,
   wantsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
