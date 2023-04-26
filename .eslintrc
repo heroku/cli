@@ -20,6 +20,7 @@
     "no-promise-executor-return": "warn", // TODO: fix issues and turn this back on
     "no-prototype-builtins": "warn", // TODO: fix issues and turn this back on
     "no-return-await":"warn", // TODO: fix issues and turn this back on
+    "node/no-deprecated-api": "warn", // TODO: fix issues and turn this back on
     "node/no-missing-import": "off", // using import/no-unresolved instead
     "radix":"warn", // TODO: fix issues and turn this back on
     "wrap-iife": "warn", // TODO: fix issues and turn this back on

@@ -12,7 +12,6 @@ function insecureURL(uri) {
 }
 
 function validateURL(uri) {
-  // eslint-disable-next-line node/no-deprecated-api
   let u = url.parse(uri)
   if (!u.protocol) throw new Error('Invalid URL')
   if (insecureURL(u)) throw new Error('Unsupported callback URL. Clients have to use HTTPS for non-local addresses.')

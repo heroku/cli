@@ -1,6 +1,4 @@
 'use strict'
-// eslint-disable-next-line no-redeclare
-/* globals describe it */
 
 const {expect} = require('chai')
 let clients = require('../lib/clients')
