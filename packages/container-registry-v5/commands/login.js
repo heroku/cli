@@ -6,17 +6,17 @@ module.exports = function (topic) {
   return {
     topic: topic,
     command: 'login',
-    flags: [{ name: 'verbose', char: 'v', hasValue: false }],
+    flags: [{name: 'verbose', char: 'v', hasValue: false}],
     description: 'log in to Heroku Container Registry',
     help: `Usage:
         heroku container:login`,
     needsApp: false,
     needsAuth: true,
-    run: cli.command(login)
+    run: cli.command(login),
   }
 }
 
-async function login (context, heroku) {
+async function login(context) {
   if (context.flags.verbose) debug.enabled = true
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
@@ -25,36 +25,37 @@ async function login (context, heroku) {
 
   try {
     await dockerLogin(registry, password)
-  } catch (err) {
-    cli.exit(1, `Login failed with: ${err.message}`)
+  } catch (error) {
+    cli.exit(1, `Login failed with: ${error.message}`)
   }
 }
 
-async function dockerLogin (registry, password) {
+async function dockerLogin(registry, password) {
   let [major, minor] = await Sanbashi.version()
 
   if (major > 17 || (major === 17 && minor >= 7)) {
     return dockerLoginStdin(registry, password)
   }
+
   return dockerLoginArgv(registry, password)
 }
 
-function dockerLoginStdin (registry, password) {
+function dockerLoginStdin(registry, password) {
   let args = [
     'login',
     '--username=_',
     '--password-stdin',
-    registry
+    registry,
   ]
-  return Sanbashi.cmd('docker', args, { input: password })
+  return Sanbashi.cmd('docker', args, {input: password})
 }
 
-function dockerLoginArgv (registry, password) {
+function dockerLoginArgv(registry, password) {
   let args = [
     'login',
     '--username=_',
     `--password=${password}`,
-    registry
+    registry,
   ]
   return Sanbashi.cmd('docker', args)
 }
