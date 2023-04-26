@@ -36,7 +36,6 @@ export default class Git {
   }
 
   remoteFromGitConfig() {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return this.exec(['config', 'heroku.remote']).catch(() => {})
   }
 
