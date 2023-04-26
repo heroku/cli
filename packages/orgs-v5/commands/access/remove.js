@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let appName = context.app
   let request = heroku.delete(`/apps/${appName}/collaborators/${context.args.email}`)
   await cli.action(`Removing ${cli.color.cyan(context.args.email)} access from the app ${cli.color.magenta(appName)}`, request)
@@ -15,9 +15,9 @@ module.exports = [
     needsApp: true,
     command: 'remove',
     description: 'remove users from a team app',
-    example: `$ heroku access:remove user@email.com --app APP`,
-    args: [{ name: 'email', optional: false }],
-    run: cli.command(run)
+    example: '$ heroku access:remove user@email.com --app APP',
+    args: [{name: 'email', optional: false}],
+    run: cli.command(run),
   },
   {
     topic: 'sharing',
@@ -27,7 +27,8 @@ module.exports = [
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access:remove')}`)
+      // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
       process.exit(1)
-    }
-  }
+    },
+  },
 ]
