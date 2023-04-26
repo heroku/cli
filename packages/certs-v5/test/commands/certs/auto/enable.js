@@ -113,7 +113,6 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
       nock.cleanAll()
       sandbox = sinon.sandbox.create()
       clock = lolex.install()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       clock.setTimeout = function (fn, timeout) {
         fn()
       }

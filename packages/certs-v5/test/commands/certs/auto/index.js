@@ -444,7 +444,6 @@ heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       clock = lolex.install()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       clock.setTimeout = function (fn, timeout) {
         fn()
       }

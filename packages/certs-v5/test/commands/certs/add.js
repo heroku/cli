@@ -35,7 +35,6 @@ function mockDomains(inquirer) {
   .get('/apps/example/domains')
   .reply(200, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   inquirer.prompt = prompts => {
     return Promise.resolve({domains: []})
   }
@@ -314,7 +313,6 @@ SSL certificate is not trusted.
         // { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com' }
       ])
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       inquirer.prompt = prompts => {
         expect.fail('inquirer.prompt() should not be called')
       }
@@ -349,7 +347,6 @@ SSL certificate is self signed.
       .get('/apps/example/domains')
       .reply(200, [])
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       inquirer.prompt = prompts => {
         expect.fail('inquirer.prompt() should not be called')
       }
@@ -424,7 +421,6 @@ SSL certificate is self signed.
       beforeEach(function () {
         cli.mockConsole()
         clock = lolex.install()
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         clock.setTimeout = function (fn, timeout) {
           fn()
         }
