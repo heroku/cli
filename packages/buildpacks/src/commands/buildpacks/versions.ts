@@ -25,7 +25,6 @@ export default class Versions extends Command {
     const registry = new BuildpackRegistry()
 
     Result.match({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         this.error(`Could not find the buildpack.\n${err}`)
