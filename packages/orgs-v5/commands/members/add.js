@@ -27,7 +27,6 @@ async function run(context, heroku) {
     await cli.action(`Inviting ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
   }
 
-  // eslint-disable-next-line unicorn/prefer-array-some
   if (teamInfo.type === 'team' && groupFeatures.find(feature => {
     return feature.name === 'team-invite-acceptance' && feature.enabled
   })) {

@@ -18,7 +18,6 @@ async function run(context, heroku) {
     teamFeatures = await heroku.get(`/teams/${teamName}/features`)
   }
 
-  // eslint-disable-next-line unicorn/prefer-array-some
   if (teamFeatures.find(feature => feature.name === 'org-access-controls')) {
     if (!permissions) error.exit(1, 'Missing argument: permissions')
 
@@ -66,7 +65,6 @@ module.exports = [
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access:add')}`)
-      // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
       process.exit(1)
     },
   },

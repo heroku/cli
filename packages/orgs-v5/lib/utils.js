@@ -37,7 +37,6 @@ let printGroupsJSON = function (group) {
 let teamInfo = async function (context, heroku) {
   let teamName = context.flags.team
   if (!teamName) error.exit(1, 'No team or org specified.\nRun this command with --team')
-  // eslint-disable-next-line no-return-await
   return await heroku.get(`/teams/${teamName}`)
 }
 

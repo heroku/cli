@@ -31,12 +31,10 @@ describe('heroku access:remove', () => {
     let processStub
 
     before(() => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       cliErrorStub = sinon.stub(cli, 'error').returns(() => {})
       cmd2 = proxyquire(('../../../commands/access/remove'), {
         cli: cliErrorStub,
       })
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       processStub = sinon.stub(process, 'exit').returns(() => {})
       cli.mockConsole()
     })

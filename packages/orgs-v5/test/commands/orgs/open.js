@@ -11,7 +11,6 @@ let openStub
 describe('heroku org:open', () => {
   beforeEach(() => {
     apiGetOrgInfo = stubGet.teamInfo()
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     openStub = sinon.stub(cli, 'open').callsFake(() => {})
     cmd = proxyquire('../../../commands/orgs/open', {
       cli: openStub,

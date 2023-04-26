@@ -39,12 +39,10 @@ async function run(context, heroku) {
 
   if (teamInfo.type === 'team') {
     let teamFeatures = await heroku.get(`/teams/${groupName}/features`)
-    // eslint-disable-next-line unicorn/prefer-array-some
     teamInviteFeatureEnabled = Boolean(teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled))
 
     if (teamInviteFeatureEnabled) {
       let invites = await teamInvites()
-      // eslint-disable-next-line unicorn/prefer-array-some
       isInvitedUser = Boolean(invites.find(m => m.user.email === email))
     }
   }
