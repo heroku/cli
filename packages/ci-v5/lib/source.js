@@ -30,7 +30,6 @@ async function prepareSource(ref, context, heroku) {
 }
 
 async function urlExists(url) {
-  // eslint-disable-next-line no-return-await
   return await got.head(url)
 }
 

@@ -4,7 +4,6 @@ const BB = require('bluebird')
 const writeFile = BB.promisify(fs.writeFile)
 const unlinkFile = BB.promisify(fs.unlink)
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function run(context, heroku) {
   const appJSONPath = `${process.cwd()}/app.json`
   const appCiJSONPath = `${process.cwd()}/app-ci.json`

@@ -16,7 +16,7 @@ async function run(context, heroku) {
     cli.styledJSON(config)
   } else {
     cli.styledHeader(`${pipeline.name} test config vars`)
-    // eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-object-from-entries
+    // eslint-disable-next-line unicorn/prefer-object-from-entries
     cli.styledObject(Object.keys(config).reduce((memo, key) => {
       memo[cli.color.green(key)] = config[key]
       return memo
