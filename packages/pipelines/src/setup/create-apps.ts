@@ -2,7 +2,6 @@
 import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 
 import {createAppSetup} from '../api'
