@@ -3,11 +3,12 @@
 const cli = require('heroku-cli-util')
 const settings = require('../../lib/setter')
 
-function explain (setting) {
+function explain(setting) {
   if (setting.value) {
-    return `EXPLAIN ANALYZE execution plans will be logged.`
+    return 'EXPLAIN ANALYZE execution plans will be logged.'
   }
-  return `EXPLAIN ANALYZE execution plans will not be logged.`
+
+  return 'EXPLAIN ANALYZE execution plans will not be logged.'
 }
 
 module.exports = {
@@ -20,6 +21,6 @@ WARNING: EXPLAIN ANALYZE will be run on ALL queries, not just logged queries. Th
 `,
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_analyze', settings.boolean, explain))
+  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
+  run: cli.command({preauth: true}, settings.generate('auto_explain.log_analyze', settings.boolean, explain)),
 }

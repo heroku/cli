@@ -3,11 +3,12 @@
 const cli = require('heroku-cli-util')
 const settings = require('../../lib/setter')
 
-function explain (setting) {
+function explain(setting) {
   if (setting.value) {
-    return `Execution plans of queries will be logged for future connections.`
+    return 'Execution plans of queries will be logged for future connections.'
   }
-  return `Execution plans of queries will not be logged for future connections.`
+
+  return 'Execution plans of queries will not be logged for future connections.'
 }
 
 module.exports = {
@@ -18,6 +19,6 @@ module.exports = {
 Restart your Heroku app and/or restart existing connections for logging to start taking place.`,
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, settings.generate('auto_explain', settings.boolean, explain))
+  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
+  run: cli.command({preauth: true}, settings.generate('auto_explain', settings.boolean, explain)),
 }
