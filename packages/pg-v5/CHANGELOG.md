@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.1.0](https://github.com/heroku/cli/compare/v8.0.6...v8.1.0) (2023-04-27)
+
+
+### Features
+
+* **pg-v5:** Adding pg:settings for auto_explain ([#2310](https://github.com/heroku/cli/issues/2310)) ([fe98aec](https://github.com/heroku/cli/commit/fe98aecaef28f3306ae0ccab3cb21f6d87b47333))
+
+
+
+
+
 ## [8.0.5](https://github.com/heroku/cli/compare/v8.0.4...v8.0.5) (2023-04-18)
 
 
