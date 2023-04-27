@@ -55,7 +55,9 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
+    "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "release": "np",
     "test": "cross-env TZ=utc nyc mocha",
