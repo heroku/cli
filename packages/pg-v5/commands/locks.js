@@ -43,11 +43,11 @@ const cmd = {
   description: 'display queries with active locks',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  flags: [{ name: 'truncate', char: 't', description: 'truncates queries to 40 charaters' }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  flags: [{name: 'truncate', char: 't', description: 'truncates queries to 40 charaters'}],
+  run: cli.command({preauth: true}, run),
 }
 
 module.exports = [
-  Object.assign({ command: 'locks' }, cmd)
+  Object.assign({command: 'locks'}, cmd),
 ]

@@ -33,10 +33,10 @@ const cmd = {
   description: 'display queries holding locks other queries are waiting to be released',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }
 
 module.exports = [
-  Object.assign({ command: 'blocking' }, cmd)
+  Object.assign({command: 'blocking'}, cmd),
 ]

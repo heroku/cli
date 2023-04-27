@@ -9,7 +9,7 @@ const util = require('../lib/util')
 
 const env = process.env
 
-function parseExclusions (rawExcludeList) {
+function parseExclusions(rawExcludeList) {
   return (rawExcludeList || '').split(';').map(function (tname) {
     return tname.trim()
   }).filter(function (tname) {
@@ -17,14 +17,14 @@ function parseExclusions (rawExcludeList) {
   })
 }
 
-function exec (cmd, opts = {}) {
+function exec(cmd, opts = {}) {
   debug(cmd)
-  opts = Object.assign({}, opts, { stdio: 'inherit' })
+  opts = Object.assign({}, opts, {stdio: 'inherit'})
   try {
     return cp.execSync(cmd, opts)
-  } catch (err) {
-    if (err.status) process.exit(err.status)
-    throw err
+  } catch (error) {
+    if (error.status) process.exit(error.status)
+    throw error
   }
 }
 
@@ -43,7 +43,7 @@ const prepare = async function (target) {
   }
 }
 
-function connArgs (uri, skipDFlag) {
+function connArgs(uri, skipDFlag) {
   const args = []
 
   if (uri.user) args.push('-U', uri.user)
@@ -65,12 +65,12 @@ const verifyExtensionsMatch = async function (source, target) {
 
   let [extensionTarget, extensionSource] = await Promise.all([
     psql.exec(target, sql),
-    psql.exec(source, sql)
+    psql.exec(source, sql),
   ])
 
   let extensions = {
     target: extensionTarget,
-    source: extensionSource
+    source: extensionSource,
   }
 
   // TODO: it shouldn't matter if the target has *more* extensions than the source
@@ -97,15 +97,16 @@ const maybeTunnel = async function (herokuDb) {
     const tunnelHost = {
       host: 'localhost',
       port: configs.dbTunnelConfig.localPort,
-      _tunnel: tunnel
+      _tunnel: tunnel,
     }
 
     herokuDb = Object.assign(herokuDb, tunnelHost)
   }
+
   return herokuDb
 }
 
-function spawnPipe (pgDump, pgRestore) {
+function spawnPipe(pgDump, pgRestore) {
   return new Promise((resolve, reject) => {
     pgDump.stdout.pipe(pgRestore.stdin)
     pgDump.on('close', code => code ? reject(new Error(`pg_dump errored with ${code}`)) : pgRestore.stdin.end())
@@ -118,7 +119,9 @@ const run = async function (sourceIn, targetIn, exclusions) {
 
   const source = await maybeTunnel(sourceIn)
   const target = await maybeTunnel(targetIn)
-  const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
+  const exclude = exclusions.map(function (e) {
+    return '--exclude-table-data=' + e
+  }).join(' ')
 
   let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', ...connArgs(source, true)]
   if (exclude !== '') dumpFlags.push(exclude)
@@ -126,20 +129,20 @@ const run = async function (sourceIn, targetIn, exclusions) {
   const dumpOptions = {
     env: {
       PGSSLMODE: 'prefer',
-      ...env
+      ...env,
     },
     stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
-    shell: true
+    shell: true,
   }
   if (source.password) dumpOptions.env.PGPASSWORD = source.password
 
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
   const restoreOptions = {
-    env: { ...env },
+    env: {...env},
     stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
-    shell: true
+    shell: true,
   }
   if (target.password) restoreOptions.env.PGPASSWORD = target.password
 
@@ -156,7 +159,7 @@ const run = async function (sourceIn, targetIn, exclusions) {
 
 async function push(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const { app, args } = context
+  const {app, args} = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
@@ -170,7 +173,7 @@ async function push(context, heroku) {
 
 async function pull(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const { app, args } = context
+  const {app, args} = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
@@ -186,10 +189,10 @@ let cmd = {
   topic: 'pg',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'source' }, { name: 'target' }],
+  args: [{name: 'source'}, {name: 'target'}],
   flags: [
-    { name: 'exclude-table-data', hasValue: true, description: 'tables for which data should be excluded (use \';\' to split multiple names)' }
-  ]
+    {name: 'exclude-table-data', hasValue: true, description: 'tables for which data should be excluded (use \';\' to split multiple names)'},
+  ],
 }
 
 module.exports = [
@@ -211,7 +214,7 @@ Examples:
     # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
 `,
-    run: cli.command({ preauth: true }, push)
+    run: cli.command({preauth: true}, push),
   }, cmd),
   Object.assign({
     command: 'pull',
@@ -234,6 +237,6 @@ Examples:
     # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 `,
-    run: cli.command({ preauth: true }, pull)
-  }, cmd)
+    run: cli.command({preauth: true}, pull),
+  }, cmd),
 ]
