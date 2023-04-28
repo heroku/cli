@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 const nock = require('nock')
 const cmd = require('../../../commands/vpn/destroy')
@@ -11,11 +11,11 @@ describe('spaces:vpn:destroy', function () {
 
   it('destroys VPN Connection when name is specified', function () {
     let api = nock('https://api.heroku.com:443')
-      .delete('/spaces/my-space/vpn-connections/my-vpn-connection')
-      .reply(202)
-    return cmd.run({ args: { name: 'my-vpn-connection' }, flags: { space: 'my-space', confirm: 'my-vpn-connection' } })
-      .then(() => expect(cli.stderr).to.equal(
-        `Tearing down VPN Connection my-vpn-connection in space my-space... done\n`))
-      .then(() => api.done())
+    .delete('/spaces/my-space/vpn-connections/my-vpn-connection')
+    .reply(202)
+    return cmd.run({args: {name: 'my-vpn-connection'}, flags: {space: 'my-space', confirm: 'my-vpn-connection'}})
+    .then(() => expect(cli.stderr).to.equal(
+      'Tearing down VPN Connection my-vpn-connection in space my-space... done\n'))
+    .then(() => api.done())
   })
 })
