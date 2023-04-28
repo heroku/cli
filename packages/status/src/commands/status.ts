@@ -5,7 +5,6 @@ import HTTP from 'http-call'
 
 import {maxBy} from '../util'
 
-// eslint-disable-next-line unicorn/prefer-string-slice
 const capitalize = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1)
 
 const printStatus = (status: string) => {

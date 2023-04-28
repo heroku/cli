@@ -21,19 +21,19 @@ module.exports = function (topic) {
         name: 'port',
         char: 'p',
         hasValue: true,
-        description: 'port the app will run on'
+        description: 'port the app will run on',
       },
       {
         name: 'verbose',
         char: 'v',
-        hasValue: false
-      }
+        hasValue: false,
+      },
     ],
-    run: cli.command(run)
+    run: cli.command(run),
   }
 }
 
-let run = async function (context, heroku) {
+let run = async function (context) {
   if (context.flags.verbose) debug.enabled = true
   if (context.args.length === 0) {
     cli.exit(1, `Error: Requires one process type\n ${usage}`)
@@ -49,13 +49,17 @@ let run = async function (context, heroku) {
 
   let jobs = []
   if (possibleJobs.standard) {
-    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, processType) })
+    possibleJobs.standard.forEach(pj => {
+      pj.resource = pj.resource.replace(/standard$/, processType)
+    })
     jobs = possibleJobs.standard || []
   }
-  if (!jobs.length) {
+
+  if (jobs.length === 0) {
     cli.error('No images to run', 1)
     return
   }
+
   let job = jobs[0]
 
   if (command.length === 0) {
@@ -63,9 +67,10 @@ let run = async function (context, heroku) {
   } else {
     cli.styledHeader(`Running '${command}' on ${job.resource}`)
   }
+
   try {
     await Sanbashi.runImage(job.resource, command, context.flags.port || 5000)
-  } catch (err) {
-    cli.exit(1, `Error: docker run exited with ${err}`)
+  } catch (error) {
+    cli.exit(1, `Error: docker run exited with ${error}`)
   }
 }

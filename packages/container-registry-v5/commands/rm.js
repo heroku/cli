@@ -15,7 +15,7 @@ module.exports = function (topic) {
     variableArgs: true,
     help: usage,
     flags: [],
-    run: cli.command(rm)
+    run: cli.command(rm),
   }
 }
 
@@ -28,8 +28,8 @@ let rm = async function (context, heroku) {
     let r = heroku.request({
       method: 'PATCH',
       path: `/apps/${context.app}/formation/${container}`,
-      headers: { 'Accept': `application/vnd.heroku+json; version=3.docker-releases` },
-      body: { docker_image: null }
+      headers: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'},
+      body: {docker_image: null},
     })
     await cli.action(`Removing container ${container} for ${cli.color.app(context.app)}`, r)
   }

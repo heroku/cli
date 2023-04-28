@@ -8,8 +8,8 @@ const fs = Promise.promisifyAll(require('fs'))
 async function uploadArchive(url, filePath) {
   const request = got.stream.put(url, {
     headers: {
-      'content-length': ((await fs.statAsync(filePath))).size
-    }
+      'content-length': ((await fs.statAsync(filePath))).size,
+    },
   })
 
   fs.createReadStream(filePath).pipe(request)
@@ -23,26 +23,26 @@ async function uploadArchive(url, filePath) {
 async function prepareSource(ref, context, heroku) {
   const [filePath, source] = await Promise.all([
     git.createArchive(ref),
-    api.createSource(heroku)
+    api.createSource(heroku),
   ])
   await uploadArchive(source.source_blob.put_url, filePath)
   return Promise.resolve(source)
 }
 
 async function urlExists(url) {
-  return await got.head(url);
+  return await got.head(url)
 }
 
 async function createSourceBlob(ref, context, heroku) {
   try {
     const githubRepository = await git.githubRepository()
-    const { user, repo } = githubRepository
+    const {user, repo} = githubRepository
     const archiveLink = await api.githubArchiveLink(heroku, user, repo, ref)
 
     if (await urlExists(archiveLink.archive_link)) {
       return archiveLink.archive_link
     }
-  } catch (ex) { }
+  } catch {}
 
   const sourceBlob = await prepareSource(ref, context, heroku)
   return sourceBlob.source_blob.get_url
@@ -50,5 +50,5 @@ async function createSourceBlob(ref, context, heroku) {
 
 module.exports = {
   createSourceBlob,
-  prepareSource
+  prepareSource,
 }

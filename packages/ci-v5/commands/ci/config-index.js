@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const config = await api.configVars(heroku, pipeline.id)
 
   if (context.flags.shell) {
-    Object.keys(config).forEach((key) => {
+    Object.keys(config).forEach(key => {
       cli.log(`${key}=${shellescape([config[key]])}`)
     })
   } else if (context.flags.json) {
@@ -33,22 +33,22 @@ module.exports = {
     {
       name: 'shell',
       char: 's',
-      description: 'output config vars in shell format'
+      description: 'output config vars in shell format',
     },
     {
       name: 'json',
-      description: 'output config vars in json format'
+      description: 'output config vars in json format',
     },
     {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
-    }
+      completion: PipelineCompletion,
+    },
   ],
   run: cli.command(run),
   help: `Example:
 
-    $ heroku ci:config --app murmuring-headland-14719 --json`
+    $ heroku ci:config --app murmuring-headland-14719 --json`,
 }

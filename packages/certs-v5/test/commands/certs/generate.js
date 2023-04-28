@@ -1,5 +1,5 @@
+/* eslint-env mocha */
 'use strict'
-/* eslint-disable no-unused-expressions */
 
 let chai = require('chai')
 let expect = require('chai').expect
@@ -17,8 +17,8 @@ let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 
 let EventEmitter = require('events').EventEmitter
 
-function mockPrompt (arg, returns) {
-  return cli.prompt.withArgs(arg).returns(new Promise(function (resolve) {
+function mockPrompt(argument, returns) {
+  return cli.prompt.withArgs(argument).returns(new Promise(function (resolve) {
     resolve(returns)
   }))
 }
@@ -28,8 +28,8 @@ describe('heroku certs:generate', function () {
     cli.mockConsole()
 
     nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpoint])
 
     // stub cli here using sinon
     // if this works, remove proxyquire
@@ -55,7 +55,7 @@ describe('heroku certs:generate', function () {
     let area = mockPrompt('State/province/etc. of owner', 'California')
     let city = mockPrompt('City of owner', 'San Francisco')
 
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: {} }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {}}).then(function () {
       expect(owner).to.have.been.called
       expect(country).to.have.been.called
       expect(area).to.have.been.called
@@ -68,7 +68,7 @@ describe('heroku certs:generate', function () {
   })
 
   it('# not emitted if any part of subject is specified', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: { owner: 'Heroku' } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {owner: 'Heroku'}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -78,7 +78,7 @@ describe('heroku certs:generate', function () {
   })
 
   it('# not emitted if --now is specified', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: { now: true } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -88,7 +88,7 @@ describe('heroku certs:generate', function () {
   })
 
   it('# not emitted if --subject is specified', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: { subject: 'SOMETHING' } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {subject: 'SOMETHING'}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -98,7 +98,7 @@ describe('heroku certs:generate', function () {
   })
 
   it('# without --selfsigned does not request a self-signed certificate', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: { now: true } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -115,7 +115,7 @@ $ heroku certs:add CERTFILE example.com.key
   })
 
   it('# with --selfsigned does request a self-signed certificate', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.com' }, flags: { now: true, selfsigned: true } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true, selfsigned: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -131,7 +131,7 @@ $ heroku certs:add example.com.crt example.com.key
   })
 
   it('# suggests next step should be certs:update when domain is known in sni', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.org' }, flags: { now: true } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -151,10 +151,10 @@ $ heroku certs:update CERTFILE example.org.key
     nock.cleanAll()
 
     nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [])
 
-    return certs.run({ app: 'example', args: { domain: 'example.org' }, flags: { now: true } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')
@@ -171,7 +171,7 @@ $ heroku certs:add CERTFILE example.org.key
   })
 
   it('# key size can be changed using keysize', function () {
-    return certs.run({ app: 'example', args: { domain: 'example.org' }, flags: { now: true, keysize: '4096' } }).then(function () {
+    return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true, keysize: '4096'}}).then(function () {
       expect(cli.prompt).to.have.not.been.called
 
       expect(cli.stdout).to.equal('')

@@ -1,6 +1,8 @@
 import {CliUx} from '@oclif/core'
+import color from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
 import sinon from 'sinon'
+import pollAppSetups from '../../../src/setup/poll-app-setups'
 
 const cli = CliUx.ux
 
@@ -200,6 +202,112 @@ describe('pipelines:setup', () => {
         .stub(cli, 'open', () => () => Promise.resolve())
         .command(['pipelines:setup', '--team', team])
         .it('creates apps in a team with CI enabled')
+      })
+
+      context('when pollAppSetup status fails', function () {
+        const team = 'test-org'
+        const confirmStub = sinon.stub()
+
+        test
+        .do(() => {
+          confirmStub.resolves(true)
+        })
+        .nock('https://api.heroku.com', api => {
+          api.post('/pipelines').reply(201, pipeline)
+
+          const couplings = [
+            {id: 1, stage: 'production', app: prodApp},
+            {id: 2, stage: 'staging', app: stagingApp},
+          ]
+
+          couplings.forEach(function (coupling) {
+            api
+            .post('/app-setups', {
+              source_blob: {url: archiveURL},
+              app: {name: coupling.app.name, organization: team},
+              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+            })
+            .reply(201, {id: coupling.id, app: coupling.app})
+
+            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'failed', app: {name: 'my-pipeline'}, failure_message: 'status failed'})
+          })
+
+          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
+        })
+        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+          kolkrabbi
+          .get('/account/github/token')
+          .reply(200, kolkrabbiAccount)
+          .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
+          .reply(200, {
+            archive_link: archiveURL,
+          })
+          .post(`/pipelines/${pipeline.id}/repository`)
+          .reply(201, {})
+        })
+        .stub(cli, 'confirm', () => confirmStub)
+        .stub(cli, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+        .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
+        .catch(error => {
+          expect(error.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
+        })
+        .it('shows error if getAppSetup returns body with setup.status === failed')
+      })
+
+      context('when pollAppSetup status times out', function () {
+        const team = 'test-org'
+        const confirmStub = sinon.stub()
+
+        test
+        .do(() => {
+          confirmStub.resolves(true)
+        })
+        .nock('https://api.heroku.com', api => {
+          api.post('/pipelines').reply(201, pipeline)
+
+          const couplings = [
+            {id: 1, stage: 'production', app: prodApp},
+            {id: 2, stage: 'staging', app: stagingApp},
+          ]
+
+          couplings.forEach(function (coupling) {
+            api
+            .post('/app-setups', {
+              source_blob: {url: archiveURL},
+              app: {name: coupling.app.name, organization: team},
+              pipeline_coupling: {stage: coupling.stage, pipeline: pipeline.id},
+            })
+            .reply(201, {id: coupling.id, app: coupling.app})
+
+            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'timedout'})
+            api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'failed', app: {name: 'my-pipeline'}, failure_message: 'timedout'})
+          })
+
+          api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
+        })
+        .nock('https://api.github.com', github => github.get(`/repos/${repo.name}`).reply(200, repo))
+        .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
+          kolkrabbi
+          .get('/account/github/token')
+          .reply(200, kolkrabbiAccount)
+          .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
+          .reply(200, {
+            archive_link: archiveURL,
+          })
+          .post(`/pipelines/${pipeline.id}/repository`)
+          .reply(201, {})
+        })
+        .stub(cli, 'confirm', () => confirmStub)
+        .stub(cli, 'open', () => () => Promise.resolve())
+        .stub(pollAppSetups, 'wait', () => {
+          pollAppSetups('foo', 'bar')
+        })
+        .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
+        .catch(error => {
+          expect(error.message).to.contain('timedout')
+        })
+        .it('shows error if getAppSetup times out')
       })
     })
   })

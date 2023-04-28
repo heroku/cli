@@ -19,13 +19,13 @@ module.exports = {
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
-    }
+      completion: PipelineCompletion,
+    },
   ],
   help: `opens a browser to view the Dashboard version of Heroku CI
 
     Example:
 
     $ heroku ci:open --app murmuring-headland-14719`,
-  run: cli.command(run)
+  run: cli.command(run),
 }

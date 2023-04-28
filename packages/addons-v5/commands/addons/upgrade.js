@@ -50,7 +50,7 @@ It is not clear which add-on's plan you are trying to change.
 Specify the add-on name instead of the name of the add-on service.
 For example, instead of: ${cli.color.blue('heroku addons:upgrade ' + context.args.addon + ' ' + (context.args.plan || ''))}
 Run this: ${cli.color.blue('heroku addons:upgrade ' + example + ' ' + name + ':' + plan)}
-${// eslint-disable-next-line no-negated-condition
+${
   !app ? 'Alternatively, specify an app to filter by with ' + cli.color.blue('--app') : ''
 }
 ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
@@ -86,7 +86,6 @@ async function run(c, h) {
   service = addon.addon_service.name
   app = addon.app.name
   plan = `${service}:${plan}`
-  // eslint-disable-next-line wrap-iife
   await cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false}, async function () {
     addon = await heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,

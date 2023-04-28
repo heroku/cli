@@ -3,13 +3,13 @@ const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function validateArgs (args) {
+function validateArgs(args) {
   if (args.length === 0) {
     cli.exit(1, 'Usage: heroku ci:config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
   }
 }
 
-function validateInput (str) {
+function validateInput(str) {
   if (!str.includes('=')) {
     cli.exit(1, `${cli.color.cyan(str)} is invalid. Must be in the format ${cli.color.cyan('FOO=bar')}.`)
   }
@@ -31,7 +31,7 @@ async function run(context, heroku) {
 
   await cli.action(
     `Setting ${Object.keys(vars).join(', ')}`,
-    api.setConfigVars(heroku, pipeline.id, vars)
+    api.setConfigVars(heroku, pipeline.id, vars),
   )
 
   cli.styledObject(Object.keys(vars).reduce((memo, key) => {
@@ -53,8 +53,8 @@ module.exports = {
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
-    }
+      completion: PipelineCompletion,
+    },
   ],
   help: `Examples:
 
@@ -63,5 +63,5 @@ module.exports = {
 
     RAILS_ENV: test
 `,
-  run: cli.command(run)
+  run: cli.command(run),
 }

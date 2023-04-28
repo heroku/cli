@@ -51,7 +51,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     cli.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
     const mapped = githubDiff.commits.map((commit: any) => {
       return {
-        sha: commit.sha.substring(0, 7), // eslint-disable-line unicorn/prefer-string-slice
+        sha: commit.sha.substring(0, 7),
         date: commit.commit.author.date,
         author: commit.commit.author.name,
         message: commit.commit.message.split('\n')[0],
@@ -120,7 +120,7 @@ export default class PipelinesDiff extends Command {
 
     const coupling = await getCoupling(this.heroku, targetAppName)
     .then(res => res.body)
-    .catch(() => undefined) // eslint-disable-line unicorn/no-useless-undefined
+    .catch(() => undefined)
 
     if (!coupling) {
       cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
@@ -179,7 +179,6 @@ export default class PipelinesDiff extends Command {
     // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
     const downstreamAppsInfo = appInfo.slice(1)
     for (const downstreamAppInfo of downstreamAppsInfo) {
-      // eslint-disable-next-line no-await-in-loop
       await diff(
         targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent,
       )

@@ -1,6 +1,7 @@
 'use strict'
 
 const path = require('path')
+let cli = require('heroku-cli-util')
 
 module.exports = {
   notify: function (subtitle, message, success = true) {
@@ -15,7 +16,6 @@ module.exports = {
         sound: true,
       })
     } catch (error) {
-      // eslint-disable-next-line no-undef
       cli.warn(error)
     }
   },

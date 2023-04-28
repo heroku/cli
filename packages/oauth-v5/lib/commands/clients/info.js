@@ -23,7 +23,7 @@ module.exports = {
   args: [{name: 'id'}],
   flags: [
     {name: 'json', char: 'j', description: 'output in json format'},
-    {name: 'shell', char: 's', description: 'output in shell format'}
+    {name: 'shell', char: 's', description: 'output in shell format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

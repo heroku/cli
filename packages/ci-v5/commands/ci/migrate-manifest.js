@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const appCiJSONPath = `${process.cwd()}/app-ci.json`
   let action
 
-  function showWarning () {
+  function showWarning() {
     cli.log(cli.color.green('Please check the contents of your app.json before committing to your repo.'))
   }
 
@@ -17,24 +17,26 @@ async function run(context, heroku) {
     await cli.action(
       // Updating / Creating
       `${action.charAt(0).toUpperCase() + action.slice(1)} app.json file`,
-      writeFile(appJSONPath, `${JSON.stringify(appJSON, null, '  ')}\n`)
+      writeFile(appJSONPath, `${JSON.stringify(appJSON, null, '  ')}\n`),
     )
   }
 
-  let appJSON, appCiJSON
+  let appJSON
+  let appCiJSON
 
   try {
     appJSON = require(appJSONPath)
     action = 'updating'
-  } catch (e) {
+  } catch {
     action = 'creating'
     appJSON = {}
   }
 
   try {
     appCiJSON = require(appCiJSONPath)
-  } catch (e) {
-    let msg = `We couldn't find an app-ci.json file in the current directory`
+  } catch {
+    let msg = 'We couldn\'t find an app-ci.json file in the current directory'
+    // eslint-disable-next-line no-eq-null, eqeqeq
     if (appJSON.environments == null) {
       msg += `, but we're ${action} ${action === 'updating' ? 'your' : 'a new'} app.json manifest for you.`
       appJSON.environments = {}
@@ -42,16 +44,17 @@ async function run(context, heroku) {
       await updateAppJson()
       showWarning()
     } else {
-      msg += `, and your app.json already has the environments key.`
+      msg += ', and your app.json already has the environments key.'
       cli.log(msg)
     }
   }
 
   if (appCiJSON) {
     if (appJSON.environments && appJSON.environments.test) {
-      cli.warn(`Your app.json already had a test key. We're overwriting it with the content of your app-ci.json`)
+      cli.warn('Your app.json already had a test key. We\'re overwriting it with the content of your app-ci.json')
     }
 
+    // eslint-disable-next-line no-eq-null, eqeqeq
     if (appJSON.environments == null) {
       appJSON.environments = {}
     }
@@ -60,12 +63,12 @@ async function run(context, heroku) {
     await updateAppJson()
     await cli.action(
       'Deleting app-ci.json file',
-      unlinkFile(appCiJSONPath)
+      unlinkFile(appCiJSONPath),
     )
     showWarning()
   }
 
-  cli.log(`You're all set! 🎉`)
+  cli.log('You\'re all set! 🎉')
 }
 
 module.exports = {
@@ -81,5 +84,5 @@ module.exports = {
     Deleting app-ci.json file... done
     Please check the contents of your app.json before committing to your repo
     You're all set! 🎉.`,
-  run: cli.command(run)
+  run: cli.command(run),
 }

@@ -4,15 +4,15 @@ let cli = require('heroku-cli-util')
 let lib = require('../../clients')
 
 async function run(context, heroku) {
-  let url = context.args['redirect_uri']
+  let url = context.args.redirect_uri
   lib.validateURL(url)
   let request = heroku.request({
     method: 'POST',
     path: '/oauth/clients',
     body: {
       name: context.args.name,
-      redirect_uri: url
-    }
+      redirect_uri: url,
+    },
   })
   let client
   if (context.flags.shell || context.flags.json) {
@@ -37,7 +37,7 @@ module.exports = {
   args: [{name: 'name'}, {name: 'redirect_uri'}],
   flags: [
     {name: 'shell', char: 's', description: 'output in shell format'},
-    {char: 'j', name: 'json', description: 'output in json format'}
+    {char: 'j', name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

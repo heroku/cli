@@ -26,5 +26,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   variableArgs: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

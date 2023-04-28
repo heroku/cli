@@ -1962,41 +1962,6 @@
     wordwrap "^1.0.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@^2.6.4":
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.0.tgz#4948de3168804169fa68895af8ec4853f332b307"
-  integrity sha512-A2wHItFrD/WOw5bJ6Mtv9MD7If0bsKNR0pwEY0me+fo4HSXlJOtgYGqmzb8t8akX3DUUT7XsjPajsoHLkIJyvg==
-  dependencies:
-    "@types/cli-progress" "^3.11.0"
-    ansi-escapes "^4.3.2"
-    ansi-styles "^4.3.0"
-    cardinal "^2.1.1"
-    chalk "^4.1.2"
-    clean-stack "^3.0.1"
-    cli-progress "^3.12.0"
-    debug "^4.3.4"
-    ejs "^3.1.8"
-    fs-extra "^9.1.0"
-    get-package-type "^0.1.0"
-    globby "^11.1.0"
-    hyperlinker "^1.0.0"
-    indent-string "^4.0.0"
-    is-wsl "^2.2.0"
-    js-yaml "^3.14.1"
-    natural-orderby "^2.0.3"
-    object-treeify "^1.1.33"
-    password-prompt "^1.1.2"
-    semver "^7.3.7"
-    string-width "^4.2.3"
-    strip-ansi "^6.0.1"
-    supports-color "^8.1.1"
-    supports-hyperlinks "^2.2.0"
-    ts-node "^10.9.1"
-    tslib "^2.5.0"
-    widest-line "^3.1.0"
-    wordwrap "^1.0.0"
-    wrap-ansi "^7.0.0"
-
 "@oclif/core@^2.7.1":
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.1.tgz#3e00562bec5232886557355aad73e248097664b9"
@@ -2163,20 +2128,20 @@
     fast-levenshtein "^3.0.0"
     lodash "^4.17.21"
 
-"@oclif/plugin-plugins@2.4.4":
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-2.4.4.tgz#4a77408c06f8f020b7883059d18d8010ae35be94"
-  integrity sha512-ieqwznpReiP8ER4Qrkzn084Xp47FLT4gpsUSL/b71o+1QhMqj4sOpLT/XW+Hf1O9zDJg4KyF99Z892FBhNfvVQ==
+"@oclif/plugin-plugins@2.4.7":
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-2.4.7.tgz#ff094f88e8b0d51d2ae08d1a8d7172aad389a2bb"
+  integrity sha512-6fzUDLWrSK7n6+EBrEekEEYrYTCneRoOF9TzojkjuFn1+ailvUlr98G90bblxKOyy8fqMe7QjvqwTgIDQ9ZIzg==
   dependencies:
     "@oclif/color" "^1.0.4"
-    "@oclif/core" "^2.6.4"
+    "@oclif/core" "^2.8.2"
     chalk "^4.1.2"
     debug "^4.3.4"
     fs-extra "^9.0"
     http-call "^5.2.2"
     load-json-file "^5.3.0"
     npm-run-path "^4.0.1"
-    semver "^7.3.8"
+    semver "^7.5.0"
     tslib "^2.4.1"
     yarn "^1.22.18"
 
@@ -7145,6 +7110,11 @@ heroku-client@^3.0.7, heroku-client@^3.1.0:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
 
+heroku-container-registry@^4.99.0:
+  version "4.99.0"
+  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.99.0.tgz#4e7e6bad3af394124d8b65173141d6b79366d6eb"
+  integrity sha512-bfnA2ZfydOonhdJDdk4AyH90+ln/O2gva+t2tx7YIM7tny6ExPwEyfqPeklwVM6zTraimSGNQfyE2DNRpLa/KA==
+
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-2.8.9.tgz"
@@ -11439,7 +11409,7 @@ semver@^7.0.0, semver@^7.1.1, semver@^7.2.1, semver@^7.3.7, semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.1.3, semver@^7.4.0:
+semver@^7.1.3, semver@^7.4.0, semver@^7.5.0:
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.0.tgz#ed8c5dc8efb6c629c88b23d41dc9bf40c1d96cd0"
   integrity sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==

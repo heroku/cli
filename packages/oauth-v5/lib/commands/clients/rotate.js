@@ -9,7 +9,7 @@ async function run(context, heroku) {
 
   let client = await heroku.request({
     method: 'POST',
-    path: `/oauth/clients/${encodeURIComponent(id)}/actions/rotate-credentials`
+    path: `/oauth/clients/${encodeURIComponent(id)}/actions/rotate-credentials`,
   })
 
   if (context.flags.json) {
@@ -30,8 +30,8 @@ module.exports = {
   args: [{name: 'id'}],
   flags: [
     {name: 'json', char: 'j', description: 'output in json format'},
-    {name: 'shell', char: 's', description: 'output in shell format'}
+    {name: 'shell', char: 's', description: 'output in shell format'},
   ],
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

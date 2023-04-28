@@ -10,11 +10,11 @@ const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory cont
 const NOT_ON_A_BRANCH = 'not a symbolic ref'
 const CHECKOUT_A_BRANCH = 'Please checkout a branch before running this command'
 
-function runGit (...args) {
+function runGit(...args) {
   const git = spawn('git', args)
 
   return new Promise((resolve, reject) => {
-    git.on('exit', (exitCode) => {
+    git.on('exit', exitCode => {
       if (exitCode === 0) {
         return
       }
@@ -24,14 +24,17 @@ function runGit (...args) {
         reject(RUN_IN_A_GIT_REPOSITORY)
         return
       }
+
       if (error.includes(NOT_ON_A_BRANCH)) {
         reject(CHECKOUT_A_BRANCH)
         return
       }
+
+      // eslint-disable-next-line prefer-promise-reject-errors
       reject(`Error while running 'git ${args.join(' ')}' (${error})`)
     })
 
-    git.stdout.on('data', (data) => resolve(data.toString().trim()))
+    git.stdout.on('data', data => resolve(data.toString().trim()))
   })
 }
 
@@ -49,7 +52,7 @@ async function getCommitTitle(ref) {
 
 async function createArchive(ref) {
   const tar = spawn('git', ['archive', '--format', 'tar.gz', ref])
-  const file = await tmp.openAsync({ suffix: '.tar.gz' })
+  const file = await tmp.openAsync({suffix: '.tar.gz'})
   const write = tar.stdout.pipe(fs.createWriteStream(file.path))
 
   return new Promise((resolve, reject) => {
@@ -77,12 +80,12 @@ async function readCommit(commit) {
   return Promise.resolve({
     branch: branch,
     ref: ref,
-    message: message
+    message: message,
   })
 }
 
 module.exports = {
   createArchive,
   githubRepository,
-  readCommit
+  readCommit,
 }

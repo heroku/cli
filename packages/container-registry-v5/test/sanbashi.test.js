@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 let Sinon = require('sinon')
 let Sanbashi = require('../lib/sanbashi')
 let expect = require('chai').expect
@@ -27,7 +28,7 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const jobs = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -40,7 +41,7 @@ describe('Sanbashi', () => {
     it('returns objects representing jobs per Dockerfile', () => {
       const dockerfiles = [
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile.web')
+        Path.join('.', 'Nested', 'Dockerfile.web'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -52,7 +53,7 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -65,14 +66,14 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
       expect(results).to.have.keys('worker', 'web', 'standard')
-      expect(results['worker'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile.worker')])
-      expect(results['web'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Dockerfile.web')])
-      expect(results['standard'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile')])
+      expect(results.worker.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile.worker')])
+      expect(results.web.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Dockerfile.web')])
+      expect(results.standard.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile')])
     })
   })
   describe('.chooseJobs', () => {
@@ -126,8 +127,8 @@ describe('Sanbashi', () => {
   describe('.version', () => {
     it('returns a the major and minor version', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
-        .resolves('18.02.0-ce-rc2')
+      .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+      .resolves('18.02.0-ce-rc2')
 
       let version = await Sanbashi.version()
       expect(version).to.deep.equal([18, 2])
@@ -135,8 +136,8 @@ describe('Sanbashi', () => {
 
     it('has an error', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
-        .resolves('an error occured')
+      .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+      .resolves('an error occured')
 
       let version = await Sanbashi.version()
       expect(version).to.deep.equal([0, 0])

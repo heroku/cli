@@ -1,6 +1,6 @@
 'use strict'
 
-function promisfy (mod, fn) {
+function promisfy(mod, fn) {
   return function () {
     var args = Array.prototype.slice.call(arguments)
     return new Promise(function (resolve, reject) {

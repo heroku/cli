@@ -56,7 +56,6 @@ export class BuildpackCommand {
     }
 
     Result.match({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         CliUx.ux.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})

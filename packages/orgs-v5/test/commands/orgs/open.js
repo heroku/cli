@@ -1,3 +1,4 @@
+/* globals beforeEach afterEach nock */
 let cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const expect = require('chai').expect
@@ -5,13 +6,14 @@ let stubGet = require('../../stub/get')
 const proxyquire = require('proxyquire')
 let cmd
 let apiGetOrgInfo
+let openStub
 
 describe('heroku org:open', () => {
   beforeEach(() => {
     apiGetOrgInfo = stubGet.teamInfo()
     openStub = sinon.stub(cli, 'open').callsFake(() => {})
     cmd = proxyquire('../../../commands/orgs/open', {
-      'cli': openStub
+      cli: openStub,
     })
     cli.mockConsole()
   })
@@ -26,13 +28,13 @@ describe('heroku org:open', () => {
   })
 
   it('shows an error if team flag is not passed', function () {
-    cmd.run({}).catch((err) => {
-      expect(err).to.be.instanceOf(Error)
+    cmd.run({}).catch(error => {
+      expect(error).to.be.instanceOf(Error)
     })
   })
 
   it('opens org in dashboard via browser if team flag is passed', function () {
-    return cmd.run({ flags: { team: 'myteam' } })
+    return cmd.run({flags: {team: 'myteam'}})
     .then(() => apiGetOrgInfo.done())
     .then(() => expect(openStub.called).to.equal(true))
   })

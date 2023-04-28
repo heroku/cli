@@ -1,5 +1,5 @@
 // copied from plugin-pipelines-v5
-module.exports = function keyBy (list, propertyOrCb) {
+module.exports = function keyBy(list, propertyOrCb) {
   const isCallback = typeof propertyOrCb === 'function'
 
   return list.reduce((memo, item) => {

@@ -5,7 +5,7 @@ let cli = require('heroku-cli-util')
 // let error = require('../../lib/error.js')
 // let readFile = require('../../lib/read_file.js')
 
-async function run (context) {
+async function run(context) {
   // TODO: Fix chain command
 
   //   if (context.args.length === 0) {
@@ -24,5 +24,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   variableArgs: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

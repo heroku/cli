@@ -1,4 +1,8 @@
 import {expect, test} from '@oclif/test'
+import {CliUx} from '@oclif/core'
+import sinon from 'sinon'
+
+const cli = CliUx.ux
 
 describe('pipelines:transfer', function () {
   const pipeline = {
@@ -65,6 +69,27 @@ describe('pipelines:transfer', function () {
   })
   .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
   .it('transfers to an account', ctx => {
+    expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+    expect(update.isDone()).to.be.true
+  })
+
+  const promptStub = sinon.stub()
+
+  addMocks(test)
+  .stderr()
+  .do(() => {
+    promptStub.onFirstCall().resolves(pipeline.name)
+  })
+  .nock('https://api.heroku.com', api => {
+    api.get(`/users/${account.email}`).reply(200, account)
+    update = api.post('/pipeline-transfers', {
+      new_owner: {id: account.id, type: 'user'},
+      pipeline: {id: pipeline.id},
+    }).reply(200, {})
+  })
+  .stub(cli, 'prompt', () => promptStub)
+  .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
+  .it('does not pass confirm flag', ctx => {
     expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
     expect(update.isDone()).to.be.true
   })

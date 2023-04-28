@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 
 let run = cli.command({preauth: true}, function (ctx, api) {
-  return async function () { // eslint-disable-line wrap-iife
+  return async function () {
     let addon = await api.get(`/addons/${ctx.args.addon}`)
     let addonUrl = `/apps/${addon.app.id}/addons/${addon.id}`
 

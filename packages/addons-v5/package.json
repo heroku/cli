@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-addons-v5",
   "description": "`heroku addons:*` commands",
-  "version": "8.0.6",
+  "version": "8.1.0",
   "author": "Bo Jeanes @bjeanes",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -49,6 +49,7 @@
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
+    "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "release": "np",
     "test": "nyc mocha",

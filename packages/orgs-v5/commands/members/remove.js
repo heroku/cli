@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let Utils = require('../../lib/utils')
-const { flags } = require('@heroku-cli/command')
+const {flags} = require('@heroku-cli/command')
 
 async function run(context, heroku) {
   let teamInfo = await Utils.teamInfo(context, heroku)
@@ -14,20 +14,20 @@ async function run(context, heroku) {
   let teamInvites = async function () {
     return heroku.request({
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.team-invitations'
+        Accept: 'application/vnd.heroku+json; version=3.team-invitations',
       },
       method: 'GET',
-      path: `/teams/${groupName}/invitations`
+      path: `/teams/${groupName}/invitations`,
     })
   }
 
   let revokeInvite = async function () {
     let request = heroku.request({
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.team-invitations'
+        Accept: 'application/vnd.heroku+json; version=3.team-invitations',
       },
       method: 'DELETE',
-      path: `/teams/${groupName}/invitations/${email}`
+      path: `/teams/${groupName}/invitations/${email}`,
     })
     await cli.action(`Revoking invite for ${cli.color.cyan(email)} in ${cli.color.magenta(groupName)}`, request)
   }
@@ -39,11 +39,11 @@ async function run(context, heroku) {
 
   if (teamInfo.type === 'team') {
     let teamFeatures = await heroku.get(`/teams/${groupName}/features`)
-    teamInviteFeatureEnabled = !!teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
+    teamInviteFeatureEnabled = Boolean(teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled))
 
     if (teamInviteFeatureEnabled) {
       let invites = await teamInvites()
-      isInvitedUser = !!invites.find(m => m.user.email === email)
+      isInvitedUser = Boolean(invites.find(m => m.user.email === email))
     }
   }
 
@@ -60,9 +60,9 @@ module.exports = {
   description: 'removes a user from a team',
   needsAuth: true,
   wantsOrg: true,
-  args: [{ name: 'email' }],
+  args: [{name: 'email'}],
   flags: [
-    flags.team({ name: 'team', hasValue: true, hidden: true })
+    flags.team({name: 'team', hasValue: true, hidden: true}),
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

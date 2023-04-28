@@ -1,11 +1,11 @@
-module.exports = function index (pkg) {
+module.exports = function index(pkg) {
   return {
     topic: pkg.topic,
     description: pkg.description,
-    run: showVersion
+    run: showVersion,
   }
 
-  function showVersion (context) {
+  function showVersion() {
     console.log(pkg.version)
   }
 }

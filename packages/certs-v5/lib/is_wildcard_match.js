@@ -3,7 +3,7 @@
 let isWildcard = require('./is_wildcard')
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-function escapeRegExp (string) {
+function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 

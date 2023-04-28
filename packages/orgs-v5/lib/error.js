@@ -3,7 +3,7 @@
 var util = require('util')
 var cli = require('heroku-cli-util')
 
-function ErrorExit (code) {
+function ErrorExit(code) {
   Error.call(this)
   Error.captureStackTrace(this, this.constructor)
   this.name = this.constructor.name
@@ -15,10 +15,11 @@ util.inherits(ErrorExit, Error)
 
 var mocking
 
-function exit (code, message) {
+function exit(code, message) {
   if (message) {
     cli.error(message)
   }
+
   if (mocking) {
     throw new ErrorExit(code)
   } else {
@@ -32,5 +33,5 @@ exit.mock = function () {
 
 module.exports = {
   exit,
-  ErrorExit
+  ErrorExit,
 }
