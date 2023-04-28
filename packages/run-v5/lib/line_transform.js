@@ -9,6 +9,7 @@ transform._transform = function (chunk, encoding, next) {
   if (this._lastLineData) data = this._lastLineData + data
 
   let lines = data.split('\n')
+  // eslint-disable-next-line unicorn/prefer-negative-index
   this._lastLineData = lines.splice(lines.length - 1, 1)[0]
 
   lines.forEach(this.push.bind(this))
