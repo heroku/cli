@@ -1,6 +1,8 @@
 import * as api from '../api'
+import {CliUx} from '@oclif/core'
+import color from '@heroku-cli/color'
 
-const cli = require('heroku-cli-util')
+const cli = CliUx.ux
 
 function wait(ms: any) {
   return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
@@ -13,12 +15,12 @@ function pollAppSetup(heroku: any, appSetup: any): any {
     }
 
     if (setup.status === 'failed') {
-      throw new Error(`Couldn't create application ${cli.color.app(setup.app.name)}: ${setup.failure_message}`)
+      throw new Error(`Couldn't create application ${color.app(setup.app.name)}: ${setup.failure_message}`)
     }
 
     return wait(1000).then(() => pollAppSetup(heroku, appSetup))
   }).catch((error: any) => {
-    return cli.exit(1, error)
+    return cli.error(error, {exit: 1})
   })
 }
 
