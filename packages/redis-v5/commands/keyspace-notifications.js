@@ -7,8 +7,8 @@ module.exports = {
   command: 'keyspace-notifications',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  flags: [{ name: 'config', char: 'c', description: 'set keyspace notifications configuration', hasValue: true, optional: false }],
+  args: [{name: 'database', optional: true}],
+  flags: [{name: 'config', char: 'c', description: 'set keyspace notifications configuration', hasValue: true, optional: false}],
   description: 'set the keyspace notifications configuration',
   help: `Set the configuration to enable keyspace notification events:
     K     Keyspace events, published with __keyspace@<db>__ prefix.
@@ -35,7 +35,7 @@ module.exports = {
 
     let addon = await api.getRedisAddon()
 
-    let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', { notify_keyspace_events: context.flags.config })
+    let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {notify_keyspace_events: context.flags.config})
     cli.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${config.notify_keyspace_events.value}'.`)
-  })
+  }),
 }

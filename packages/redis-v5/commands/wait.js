@@ -3,12 +3,12 @@
 const cli = require('heroku-cli-util')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const api = require('../lib/shared')(context, heroku)
   const addon = await api.getRedisAddon()
 
   let waitFor = async function waitFor() {
-    let interval = parseInt(context.flags['wait-interval'])
+    let interval = Number.parseInt(context.flags['wait-interval'])
     if (!interval || interval < 0) interval = 5
     let status
     let waiting = false
@@ -16,15 +16,16 @@ async function run (context, heroku) {
     while (true) {
       try {
         status = await api.request(`/redis/v0/databases/${addon.name}/wait`, 'GET')
-      } catch (err) {
-        if (err.statusCode !== 404) throw err
-        status = { 'waiting?': true }
+      } catch (error) {
+        if (error.statusCode !== 404) throw error
+        status = {'waiting?': true}
       }
 
       if (!status['waiting?']) {
         if (waiting) {
           cli.action.done(status.message)
         }
+
         return
       }
 
@@ -47,10 +48,10 @@ module.exports = {
   command: 'wait',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
+  args: [{name: 'database', optional: true}],
   description: 'wait for Redis instance to be available',
   flags: [
-    { name: 'wait-interval', description: 'how frequently to poll in seconds', hasValue: true },
+    {name: 'wait-interval', description: 'how frequently to poll in seconds', hasValue: true},
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({preauth: true}, run),
 }
