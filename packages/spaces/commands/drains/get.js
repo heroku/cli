@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let lib = require('../../lib/log-drains')(heroku)
   let drain = await lib.getLogDrain(context.flags.space)
   if (context.flags.json) {
@@ -21,8 +21,8 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true },
-    { name: 'json', description: 'output in json format' }
+    {name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true},
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }
