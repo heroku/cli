@@ -1,11 +1,10 @@
 'use strict'
-
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const { expect } = require('chai')
+const {expect} = require('chai')
 
 const skipOnWindows = process.platform === 'win32' ? it.skip : it
 
@@ -13,7 +12,7 @@ const env = process.env
 let db
 
 const fetcher = () => ({
-  database: () => db
+  database: () => db,
 })
 
 let tunnelStub
@@ -39,27 +38,27 @@ describe('pg', () => {
       host: 'herokai.com',
       attachment: {
         addon: {
-          name: 'postgres-1'
+          name: 'postgres-1',
         },
         config_vars: ['DATABASE_URL'],
-        app: { name: 'myapp' }
-      }
+        app: {name: 'myapp'},
+      },
     }
 
     tunnelStub = sinon.stub().callsArg(1)
 
     bastion = proxyquire('../../lib/bastion', {
-      'tunnel-ssh': tunnelStub
+      'tunnel-ssh': tunnelStub,
     })
 
     push = proxyquire('../../commands/pull', {
       '../lib/fetcher': fetcher,
-      '../lib/bastion': bastion
+      '../lib/bastion': bastion,
     })[0]
 
     pull = proxyquire('../../commands/pull', {
       '../lib/fetcher': fetcher,
-      '../lib/bastion': bastion
+      '../lib/bastion': bastion,
     })[1]
 
     sinon.stub(Math, 'random').callsFake(() => 0)
@@ -75,20 +74,20 @@ describe('pg', () => {
     const dumpOpts = {
       env: {
         PGSSLMODE: 'prefer',
-        ...env
+        ...env,
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
-      shell: true
+      shell: true,
     }
     const restoreOpts = {
       env: {
         PGPASSWORD: 'pass',
-        ...env
+        ...env,
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
-      shell: true
+      shell: true,
     }
 
     const psql = require('../../lib/psql')
@@ -115,21 +114,21 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
+          end: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
     })
 
     skipOnWindows('pushes out a db using url port', () => {
@@ -138,24 +137,25 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
+          end: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
 
-      return push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      return push.run({args: {source: 'postgres://localhost:5433/localdb', target: 'postgres-1'}, flags: {}})
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
     })
 
     skipOnWindows('pushes out a db using PGPORT', () => {
+      // eslint-disable-next-line no-multi-assign
       env.PGPORT = dumpOpts.env.PGPORT = '5433'
       restoreOpts.env.PGPORT = '5433'
 
@@ -164,21 +164,21 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
+          end: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
     })
 
     skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -192,7 +192,7 @@ describe('pg', () => {
         dstHost: 'herokai.com',
         dstPort: 5432,
         localHost: '127.0.0.1',
-        localPort: 49152
+        localPort: 49152,
       }
 
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
@@ -200,22 +200,22 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
+          end: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
+      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
 
     skipOnWindows('exits non-zero when there is an error', () => {
@@ -224,25 +224,25 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
         on: (key, func) => {
           func(1)
-        }
+        },
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
-        }
+          end: () => {},
+        },
       })
 
-      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .catch((error) => {
-          expect(error.message).to.equal('pg_dump errored with 1')
-          expect(spawnStub.callCount).to.equal(2)
-          expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\n')
-          expect(cli.stderr).to.equal('')
-        })
+      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      .catch(error => {
+        expect(error.message).to.equal('pg_dump errored with 1')
+        expect(spawnStub.callCount).to.equal(2)
+        expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\n')
+        expect(cli.stderr).to.equal('')
+      })
     })
   })
 
@@ -252,18 +252,18 @@ describe('pg', () => {
       env: {
         PGPASSWORD: 'pass',
         PGSSLMODE: 'prefer',
-        ...env
+        ...env,
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
-      shell: true
+      shell: true,
     }
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
     const restoreOpts = {
-      env: { ...env },
+      env: {...env},
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
-      shell: true
+      shell: true,
     }
 
     const childProcess = require('child_process')
@@ -279,15 +279,15 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          pipe: () => {}
+          pipe: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
-          end: () => {}
+          end: () => {},
         },
-        on: exitHandler
+        on: exitHandler,
       })
     })
 
@@ -298,12 +298,12 @@ describe('pg', () => {
     })
 
     skipOnWindows('pulls a db in', () => {
-      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce).to.equal(true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
+      return pull.run({args: {source: 'postgres-1', target: 'localdb'}, flags: {}})
+      .then(() => expect(createDbStub.calledOnce).to.equal(true))
+      .then(() => expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.equal(true))
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
     })
 
     skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -317,16 +317,16 @@ describe('pg', () => {
         dstHost: 'herokai.com',
         dstPort: 5432,
         localHost: '127.0.0.1',
-        localPort: 49152
+        localPort: 49152,
       }
 
-      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce).to.equal(true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
-        .then(() => expect(spawnStub.callCount).to.equal(2))
-        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr).to.equal(''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
+      return pull.run({args: {source: 'postgres-1', target: 'localdb'}, flags: {}})
+      .then(() => expect(createDbStub.calledOnce).to.equal(true))
+      .then(() => expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.equal(true))
+      .then(() => expect(spawnStub.callCount).to.equal(2))
+      .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
   })
 })

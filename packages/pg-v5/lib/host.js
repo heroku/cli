@@ -10,6 +10,7 @@ module.exports = function (addon) {
     if (essentialHost) return `https://${essentialHost}`
     return 'https://postgres-starter-api.heroku.com'
   }
+
   if (host) return `https://${host}`
   return 'https://postgres-api.heroku.com'
 }

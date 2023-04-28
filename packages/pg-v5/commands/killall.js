@@ -8,7 +8,7 @@ async function run(context, heroku) {
 
   await cli.action('Terminating connections for all credentials', async function () {
     const db = await fetcher.addon(context.app, context.args.database)
-    await heroku.post(`/client/v11/databases/${db.id}/connection_reset`, { host: host(db) })
+    await heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host(db)})
   }())
 }
 
@@ -18,6 +18,6 @@ module.exports = {
   description: 'terminates all connections for all credentials',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }

@@ -5,8 +5,8 @@ const host = require('../lib/host')
 
 async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const { app, args, flags } = context
-  const { force } = flags
+  const {app, args, flags} = context
+  const {force} = flags
   const attachment = await fetcher.attachment(app, args.database)
 
   let current
@@ -30,6 +30,7 @@ async function run(context, heroku) {
         throw new Error(`${cli.color.addon(attachment.addon.name)} is already promoted on ${cli.color.app(app)}`)
       }
     }
+
     let existing = attachments.filter(a => a.addon.id === current.addon.id && a.namespace === current.namespace).find(a => a.name !== 'DATABASE')
     if (existing) return cli.action.done(cli.color.configVar(existing.name + '_URL'))
 
@@ -39,11 +40,11 @@ async function run(context, heroku) {
 
     let backup = await heroku.post('/addon-attachments', {
       body: {
-        app: { name: app },
-        addon: { name: current.addon.name },
+        app: {name: app},
+        addon: {name: current.addon.name},
         namespace: current.namespace,
-        confirm: app
-      }
+        confirm: app,
+      },
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }())
@@ -51,11 +52,11 @@ async function run(context, heroku) {
   if (!force) {
     let status = await heroku.request({
       host: host(attachment.addon),
-      path: `/client/v11/databases/${attachment.addon.id}/wait_status`
+      path: `/client/v11/databases/${attachment.addon.id}/wait_status`,
     })
 
     if (status['waiting?']) {
-      throw new Error(`Database cannot be promoted while in state: ${status['message']}
+      throw new Error(`Database cannot be promoted while in state: ${status.message}
 \nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
 \nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
     }
@@ -72,25 +73,26 @@ async function run(context, heroku) {
     await heroku.post('/addon-attachments', {
       body: {
         name: 'DATABASE',
-        app: { name: app },
-        addon: { name: attachment.addon.name },
+        app: {name: app},
+        addon: {name: attachment.addon.name},
         namespace: attachment.namespace,
-        confirm: app
-      }
+        confirm: app,
+      },
     })
   }())
 
-  let currentPooler = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id && a.name == "DATABASE_CONNECTION_POOL")
+  // eslint-disable-next-line eqeqeq
+  let currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon.id == current.addon.id && a.name == 'DATABASE_CONNECTION_POOL')
   if (currentPooler) {
-    await cli.action(`Reattaching pooler to new leader`, async function () {
+    await cli.action('Reattaching pooler to new leader', async function () {
       await heroku.post('/addon-attachments', {
         body: {
           name: currentPooler.name,
-          app: { name: app },
-          addon: { name: attachment.addon.name },
-          namespace: "connection-pooling:default",
-          confirm: app
-        }
+          app: {name: app},
+          addon: {name: attachment.addon.name},
+          namespace: 'connection-pooling:default',
+          confirm: app,
+        },
       })
     }())
     return cli.action.done()
@@ -98,19 +100,19 @@ async function run(context, heroku) {
 
   let promotedDatabaseDetails = await heroku.request({
     host: host(attachment.addon),
-    path: `/client/v11/databases/${attachment.addon.id}`
+    path: `/client/v11/databases/${attachment.addon.id}`,
   })
 
-  if (!!promotedDatabaseDetails['following']){
+  // eslint-disable-next-line no-implicit-coercion, no-extra-boolean-cast
+  if (!!promotedDatabaseDetails.following) {
     let unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
     cli.warn(`WARNING: Your database has been promoted but it is currently a follower database in read-only mode.
       \n Promoting a database with ${cli.color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
-      \n Use ${cli.color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${cli.color.addon(promotedDatabaseDetails['leader']['name'])}) and convert it into a writable database.`)
+      \n Use ${cli.color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${cli.color.addon(promotedDatabaseDetails.leader.name)}) and convert it into a writable database.`)
   }
-  
 
   let releasePhase = ((await heroku.get(`/apps/${app}/formation`)))
-    .find((formation) => formation.type === 'release')
+  .find(formation => formation.type === 'release')
 
   if (releasePhase) {
     await cli.action('Checking release phase', async function () {
@@ -118,11 +120,11 @@ async function run(context, heroku) {
         path: `/apps/${app}/releases`,
         partial: true,
         headers: {
-          'Range': `version ..; max=5, order=desc`
-        }
+          Range: 'version ..; max=5, order=desc',
+        },
       })
-      let attach = releases.find((release) => release.description.includes('Attach DATABASE'))
-      let detach = releases.find((release) => release.description.includes('Detach DATABASE'))
+      let attach = releases.find(release => release.description.includes('Attach DATABASE'))
+      let detach = releases.find(release => release.description.includes('Detach DATABASE'))
 
       if (!attach || !detach) {
         throw new Error('Unable to check release phase. Check your Attach DATABASE release for failures.')
@@ -138,6 +140,7 @@ async function run(context, heroku) {
           if (detach && detach.status === 'failed') {
             msg += ` It is safe to ignore the failed ${detach.description} release.`
           }
+
           return cli.action.done(msg)
         } else if (attach && attach.status === 'failed') {
           let msg = `pg:promote failed because ${attach.description} release was unsuccessful. Your application is currently running `
@@ -147,13 +150,14 @@ async function run(context, heroku) {
           } else {
             msg += `with ${current.addon.name} attached as DATABASE_URL.`
           }
+
           msg += ' Check your release phase logs for failure causes.'
           return cli.action.done(msg)
         } else if (Date.now() > endTime) {
           return cli.action.done('timeout. Check your Attach DATABASE release for failures.')
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 5000))
+        await new Promise(resolve => setTimeout(resolve, 5000))
       }
     }())
   }
@@ -165,7 +169,7 @@ module.exports = {
   description: 'sets DATABASE as your DATABASE_URL',
   needsApp: true,
   needsAuth: true,
-  flags: [{ name: 'force', char: 'f' }],
-  args: [{ name: 'database' }],
-  run: cli.command({ preauth: true }, run)
+  flags: [{name: 'force', char: 'f'}],
+  args: [{name: 'database'}],
+  run: cli.command({preauth: true}, run),
 }

@@ -19,6 +19,6 @@ module.exports = context => opts => {
     // actions: void 0, // String | Array<String>. Action label or list of labels in case of dropdown
     // dropdownLabel: void 0, // String. Label to be used if multiple actions
     // reply: false // Boolean. If notification should take input. Value passed as third argument in callback and event emitter.
-    ...opts
+    ...opts,
   })
 }

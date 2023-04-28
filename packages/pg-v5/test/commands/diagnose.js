@@ -1,15 +1,22 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const uuid = require('uuid')
 
 describe('pg:diagnose', () => {
-  let api, pg, diagnose, db, dbName
-  let app, addon, plan, attachment
+  let api
+  let pg
+  let diagnose
+  let db
+  let dbName
+  let app
+  let addon
+  let plan
+  let attachment
   let reportID
   const dbURL = 'postgres://user:password@herokupostgres.com/db'
 
@@ -41,7 +48,7 @@ describe('pg:diagnose', () => {
         return plan
       },
       config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
-      app: { name: 'myapp' },
+      app: {name: 'myapp'},
     }
     attachment = {
       id: 1,
@@ -98,25 +105,25 @@ describe('pg:diagnose', () => {
           {
             name: 'Connection count',
             status: 'red',
-            results: [{ count: 1 }],
+            results: [{count: 1}],
           },
           {
             name: 'Load',
             status: 'red',
-            results: { load: 100 },
+            results: {load: 100},
           },
         ],
       }
       diagnose
-        .post('/reports', {
-          url: dbURL,
-          plan: 'standard-0',
-          app: app.name,
-          database: 'DATABASE_URL',
-          metrics: [],
-        })
-        .reply(200, report)
-      return cmd.run({ app: app.name, args: {}, flags: {} }).then(() =>
+      .post('/reports', {
+        url: dbURL,
+        plan: 'standard-0',
+        app: app.name,
+        database: 'DATABASE_URL',
+        metrics: [],
+      })
+      .reply(200, report)
+      return cmd.run({app: app.name, args: {}, flags: {}}).then(() =>
         expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
@@ -145,17 +152,17 @@ Load 100
             {
               name: 'Connection count',
               status: 'red',
-              results: [{ count: 1 }],
+              results: [{count: 1}],
             },
             {
               name: 'Load',
               status: 'red',
-              results: { load: 100 },
+              results: {load: 100},
             },
           ],
         }
         diagnose.get(`/reports/${reportID}`).reply(200, report)
-        return cmd.run({ app: app.name, args: { 'DATABASE|REPORT_ID': reportID }, flags: {} }).then(() =>
+        return cmd.run({app: app.name, args: {'DATABASE|REPORT_ID': reportID}, flags: {}}).then(() =>
           expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
@@ -169,6 +176,7 @@ Load 100
         )
         // This is to ensure that each test sets up its own db name when that's their interest.
         // Otherwise, it'll default to `DATABASE`
+        // eslint-disable-next-line no-unreachable
         dbName = undefined
       })
     })
@@ -192,28 +200,28 @@ Load 100
             {
               name: 'Connection count',
               status: 'red',
-              results: [{ count: 1 }],
+              results: [{count: 1}],
             },
             {
               name: 'Load',
               status: 'red',
-              results: { load: 100 },
+              results: {load: 100},
             },
           ],
         }
         diagnose
-          .post('/reports', {
-            url: dbURL,
-            plan: 'standard-0',
-            app: app.name,
-            database: 'HEROKU_POSTGRESQL_SILVER_URL',
-            metrics: [],
-          })
-          .reply(200, report)
+        .post('/reports', {
+          url: dbURL,
+          plan: 'standard-0',
+          app: app.name,
+          database: 'HEROKU_POSTGRESQL_SILVER_URL',
+          metrics: [],
+        })
+        .reply(200, report)
         return cmd
-          .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': 'HEROKU_POSTGRESQL_SILVER_URL' }, flags: {} })
-          .then(() =>
-            expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
+        .run({app: 'myapp', args: {'DATABASE|REPORT_ID': 'HEROKU_POSTGRESQL_SILVER_URL'}, flags: {}})
+        .then(() =>
+          expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -223,7 +231,7 @@ Count
 RED: Load
 Load 100
 `),
-          )
+        )
       })
 
       context('with the --json flag set', () => {
@@ -243,33 +251,33 @@ Load 100
               {
                 name: 'Connection count',
                 status: 'red',
-                results: [{ count: 1 }],
+                results: [{count: 1}],
               },
               {
                 name: 'Load',
                 status: 'red',
-                results: { load: 100 },
+                results: {load: 100},
               },
             ],
           }
 
           diagnose
-            .post('/reports', {
-              url: dbURL,
-              plan: 'standard-0',
-              app: app.name,
-              database: 'DATABASE_URL',
-              metrics: [],
-            })
-            .reply(200, report)
+          .post('/reports', {
+            url: dbURL,
+            plan: 'standard-0',
+            app: app.name,
+            database: 'DATABASE_URL',
+            metrics: [],
+          })
+          .reply(200, report)
 
           return cmd
-            .run({
-              app: 'myapp',
-              args: { 'DATABASE|REPORT_ID': 'DATABASE_URL' },
-              flags: { json: true },
-            })
-            .then(() => expect(cli.stdout).to.equal(JSON.stringify(report, null, 2)+'\n'))
+          .run({
+            app: 'myapp',
+            args: {'DATABASE|REPORT_ID': 'DATABASE_URL'},
+            flags: {json: true},
+          })
+          .then(() => expect(cli.stdout).to.equal(JSON.stringify(report, null, 2) + '\n'))
         })
       })
     })
@@ -294,15 +302,15 @@ Load 100
         ],
       })
       return cmd
-        .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+      .run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}, flags: {}})
+      .then(() =>
+        expect(cli.stdout).to.equal(`Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
 RED: Load
 `),
-        )
+      )
     })
 
     it('roughly conforms with Ruby output', () => {
@@ -312,12 +320,12 @@ RED: Load
         created_at: '2014-06-24 01:26:11.941197+00',
         database: 'dbcolor',
         checks: [
-          { name: 'Hit Rate', status: 'green', results: null },
-          { name: 'Connection Count', status: 'red', results: [{ count: 150 }] },
+          {name: 'Hit Rate', status: 'green', results: null},
+          {name: 'Connection Count', status: 'red', results: [{count: 150}]},
           {
             name: 'list',
             status: 'yellow',
-            results: [{ thing: 'one' }, { thing: 'two' }],
+            results: [{thing: 'one'}, {thing: 'two'}],
           },
           {
             name: 'Load',
@@ -329,9 +337,9 @@ RED: Load
         ],
       })
       return cmd
-        .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
+      .run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}, flags: {}})
+      .then(() =>
+        expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 RED: Connection Count
@@ -347,7 +355,7 @@ GREEN: Hit Rate
 SKIPPED: Load
 Error Load check not supported on this plan
 `),
-        )
+      )
     })
 
     it('converts underscores to spaces', () => {
@@ -367,15 +375,15 @@ Error Load check not supported on this plan
         ],
       })
       return cmd
-        .run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' }, flags: {} })
-        .then(() =>
-          expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
+      .run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}, flags: {}})
+      .then(() =>
+        expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 SKIPPED: Load
 Error Thing Load check not supported on this plan
 `),
-        )
+      )
     })
   })
 })
