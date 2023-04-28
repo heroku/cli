@@ -7,8 +7,8 @@ module.exports = {
   command: 'credentials',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  flags: [{ name: 'reset', description: 'reset credentials' }],
+  args: [{name: 'database', optional: true}],
+  flags: [{name: 'reset', description: 'reset credentials'}],
   description: 'display credentials information',
   run: cli.command(async (context, heroku) => {
     const api = require('../lib/shared')(context, heroku)
@@ -21,5 +21,5 @@ module.exports = {
       let redis = await api.request(`/redis/v0/databases/${addon.name}`)
       cli.log(redis.resource_url)
     }
-  })
+  }),
 }
