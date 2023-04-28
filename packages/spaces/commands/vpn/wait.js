@@ -2,13 +2,13 @@
 
 const cli = require('heroku-cli-util')
 const configCmd = require('./config')
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-function check (val, message) {
+function check(val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait --space my-space vpn-connection-name`)
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const space = context.flags.space
   check(space, 'Space name required')
   const name = context.flags.name || context.args.name
@@ -16,7 +16,7 @@ async function run (context, heroku) {
 
   const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 10) * 1000
   const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 20 * 60) * 1000
-  const deadline = new Date(new Date().getTime() + timeout)
+  const deadline = new Date(Date.now() + timeout)
 
   let lib = require('../../lib/vpn-connections')(heroku)
   let info = await lib.getVPNConnection(space, name)
@@ -25,12 +25,12 @@ async function run (context, heroku) {
     return
   }
 
-  const spinner = new cli.Spinner({ text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...` })
+  const spinner = new cli.Spinner({text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...`})
 
   spinner.start()
 
   do {
-    if ((new Date()).getTime() >= deadline) {
+    if (Date.now() >= deadline) {
       throw new Error('Timeout waiting for VPN to become allocated.')
     }
 
@@ -54,13 +54,13 @@ module.exports = {
   description: 'wait for VPN Connection to be created',
   needsApp: false,
   needsAuth: true,
-  args: [{ name: 'name', optional: true, hidden: true }],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to' },
-    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for' },
-    { name: 'json', description: 'output in json format' },
-    { name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals' },
-    { name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait' }
+    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for'},
+    {name: 'json', description: 'output in json format'},
+    {name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals'},
+    {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }
