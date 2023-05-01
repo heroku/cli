@@ -11,7 +11,7 @@ async function run(context, heroku) {
     command: helpers.buildCommand(['console']),
     size: context.flags.size,
     env: context.flags.env,
-    attach: true
+    attach: true,
   }
 
   let dyno = new Dyno(opts)
@@ -24,8 +24,8 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    { name: 'size', char: 's', description: 'dyno size', hasValue: true },
-    { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true }
+    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
+    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

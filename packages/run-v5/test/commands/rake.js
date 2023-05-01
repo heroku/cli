@@ -1,12 +1,14 @@
 'use strict'
+/* globals afterEach beforeEach */
 
-const { expect } = require('chai')
+const {expect} = require('chai')
 const sinon = require('sinon')
 const Dyno = require('../../lib/dyno')
 const cmd = require('../../commands/rake')
 
 describe('rake', () => {
-  let dynoStub, dynoOpts
+  let dynoStub
+  let dynoOpts
 
   beforeEach(() => {
     dynoStub = sinon.stub(Dyno.prototype, 'start').callsFake(function () {
@@ -16,8 +18,8 @@ describe('rake', () => {
   })
 
   it('runs rake', () => {
-    return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, args: ['test'] })
-      .then(() => expect(dynoOpts.command).to.equal('rake test'))
+    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, args: ['test']})
+    .then(() => expect(dynoOpts.command).to.equal('rake test'))
   })
 
   afterEach(() => {
