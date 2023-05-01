@@ -166,7 +166,6 @@ jobs:
           fi
           yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=$shortSHA --channel=${{ inputs.channel }}
       - name: promote Linux install scripts
-        working-directory: /home/runner/work/cli/cli/
         continue-on-error: true
         run: node ./scripts/postrelease/install_scripts.js
 
