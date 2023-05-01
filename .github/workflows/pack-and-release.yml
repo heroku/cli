@@ -165,7 +165,9 @@ jobs:
             shortSHA=`git rev-parse --short=7 HEAD`
           fi
           yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=$shortSHA --channel=${{ inputs.channel }}
-      - name: update Linux install scripts
+      - name: promote Linux install scripts
+        working-directory: /home/runner/work/cli/cli/
+        continue-on-error: true
         run: node ./scripts/postrelease/install_scripts.js
 
   ## POST release jobs
