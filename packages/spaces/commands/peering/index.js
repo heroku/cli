@@ -2,11 +2,11 @@
 
 let cli = require('heroku-cli-util')
 
-function displayJSON (peerings) {
+function displayJSON(peerings) {
   cli.log(JSON.stringify(peerings, null, 2))
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:peerings --space my-space')
@@ -21,10 +21,10 @@ module.exports = {
   description: 'list peering connections for a space',
   needsApp: false,
   needsAuth: true,
-  args: [{ name: 'space', optional: true, hidden: true }],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space to get peer list from' },
-    { name: 'json', description: 'output in json format' }
+    {name: 'space', char: 's', hasValue: true, description: 'space to get peer list from'},
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

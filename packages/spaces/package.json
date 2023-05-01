@@ -47,10 +47,11 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "nyc mocha",
-    "posttest": "standard",
+    "posttest": "yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }

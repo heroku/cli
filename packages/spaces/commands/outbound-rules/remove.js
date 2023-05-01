@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
   let space = context.flags.space
   if (!space) throw new Error('Space name required.')
@@ -36,11 +36,11 @@ module.exports = {
   needsAuth: true,
   hidden: true,
   args: [
-    { name: 'ruleNumber' }
+    {name: 'ruleNumber'},
   ],
   flags: [
-    { name: 'space', hasValue: true, optional: false, description: 'space to remove rule from' },
-    { name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt' }
+    {name: 'space', hasValue: true, optional: false, description: 'space to remove rule from'},
+    {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }
