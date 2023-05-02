@@ -4,6 +4,8 @@ const cli = require('heroku-cli-util')
 const debug = require('./debug')
 const { sortBy } = require('lodash')
 const printf = require('printf')
+const {map, each} = require("lodash/collection");
+const {endsWith} = require("lodash/string");
 const URL = require('url').URL
 const env = require('process').env
 
@@ -147,7 +149,18 @@ exports.configVarNamesFromValue = (config, value) => {
       }
     }
   }
+
   return sortBy(keys, k => k !== 'DATABASE_URL', 'name')
+}
+
+exports.maskConfigVars = config => {
+  return each(config, (v, k) => {
+    if (endsWith(k, "_URL")) {
+      debug(`=========== key to mask ${k}`)
+      config[k] = '********'
+    }
+
+  })
 }
 
 exports.databaseNameFromUrl = (uri, config) => {

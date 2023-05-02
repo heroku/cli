@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const util = require('../lib/util')
+const debug = require("../lib/debug");
 
 function displayDB (db, app) {
   if (db.addon.attachment_names) {
@@ -67,9 +68,11 @@ async function run(context, heroku) {
   }))
 
   dbs = dbs.filter(db => db.db)
+  dbs.forEach(db => { db.configVars = util.maskConfigVars(db.config)})
   dbs.forEach(db => { db.configVars = util.configVarNamesFromValue(db.config, db.db.resource_url) })
   dbs = sortBy(dbs, db => db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
 
+  debug(`============== calling displayDB for app ${app} dbs.length is ${dbs.length}`)
   dbs.forEach(db => displayDB(db, app))
 }
 

@@ -5,6 +5,7 @@ const pgUtil = require('./util')
 const getConfig = require('./config')
 const cli = require('heroku-cli-util')
 const bastion = require('./bastion')
+const util = require("./util");
 
 module.exports = heroku => {
   async function attachment(app, passedDb, namespace = null) {
@@ -55,6 +56,8 @@ module.exports = heroku => {
         getConfig(heroku, app),
         allAttachments(app)
       ])
+
+      config = util.maskConfigVars(config)
 
       if (attachments.length === 0) {
         throw new Error(`${cli.color.app(app)} has no databases`)
