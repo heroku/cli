@@ -43,6 +43,35 @@ jobs:
       - run: ./bin/run whoami
       - run: yarn lerna run test:acceptance
 
+  publish-npm:
+    runs-on: ubuntu-latest
+    needs: [test, acceptance]
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: publish to NPM
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
+        run: scripts/publish-release
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [publish-npm]
+    steps:
+      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
+        id: distTag
+      - uses: ./.github/workflows/pack-and-release.yml
+        secrets: inherit
+        with:
+          channel: ${steps.distTag.outputs.tag || 'stable'}
+          version: ${github.ref_name#v}
+
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
@@ -51,5 +80,5 @@ jobs:
       - run: echo done
         working-directory: /
 
-  
+
 

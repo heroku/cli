@@ -1,5 +1,16 @@
 name: Pack and Release
 on:
+  workflow_call:
+    inputs:
+      version:
+        description: version to promote to latest
+        type: string
+        required: true
+      channel:
+        description: dev, beta or stable release
+        type: string
+        required: true
+
   workflow_dispatch:
     inputs:
       version:
