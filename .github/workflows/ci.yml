@@ -70,7 +70,7 @@ jobs:
         secrets: inherit
         with:
           channel: ${steps.distTag.outputs.tag || 'stable'}
-          version: ${github.ref_name#v}
+          version: ${steps.distTag.outputs.version}
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
