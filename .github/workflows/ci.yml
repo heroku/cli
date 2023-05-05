@@ -63,6 +63,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: [publish-npm]
+    if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     steps:
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
