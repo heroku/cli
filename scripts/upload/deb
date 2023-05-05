@@ -5,7 +5,6 @@ const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
 
 qq.config.silent = false
 qq.run(async () => {
-  await require('../utils/_update_channel')()
   await qq.x('./node_modules/.bin/oclif upload:deb')
   const HEROKU_S3_BUCKET = getHerokuS3Bucket()
 

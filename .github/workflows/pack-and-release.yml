@@ -47,7 +47,7 @@ jobs:
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
       - name: Building deb
-        run: ./scripts/pack/deb
+        run: yarn oclif pack:deb
       - uses: actions/upload-artifact@v3
         with:
           name: packed-deb
@@ -69,7 +69,7 @@ jobs:
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
       - name: Building tarballs
-        run: ./scripts/pack/tarballs
+        run: yarn oclif pack tarballs
       - uses: actions/upload-artifact@v3
         with:
           name: packed-tarballs
@@ -138,8 +138,8 @@ jobs:
         run: |
           cd packages/cli
           pwd
-          ./scripts/upload/tarballs
-          ./scripts/upload/deb
+          yarn oclif upload tarballs
+          yarn oclif upload deb
 #      uploading artifacts appears unnecessary here, but the prior scripts changes files in a way needed for downstream steps
       - uses: actions/upload-artifact@v3
         with:
