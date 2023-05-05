@@ -6,10 +6,8 @@ CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 MAIN_BRANCH="master"
 
 if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
-  echo "scripts/publish-release must be run on the ${MAIN_BRANCH}."
-  echo "Please checkout the ${MAIN_BRANCH} branch with:"
-  echo "git checkout ${MAIN_BRANCH}"
-  exit 1
+  bash ./publish-prerelease
+  exit 0
 fi
 
 if !(command -v gh > /dev/null); then
