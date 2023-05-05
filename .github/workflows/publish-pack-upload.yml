@@ -5,7 +5,7 @@ on:
   workflow_run:
 
 jobs:
-  publish-npm-and-gitHub:
+  publish-npm-and-github:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
         run: scripts/publish-release
 
   pack_deb:
-    needs: [publish-npm-and-gitHub]
+    needs: [publish-npm-and-github]
     # ubuntu started using a compression method after this version that debian currently does not support
     # https://github.com/heroku/cli/pull/2245#issue-1590017122
     runs-on: ubuntu-20.04
@@ -53,7 +53,7 @@ jobs:
 
   pack_tarballs:
     runs-on: ubuntu-latest
-    needs: [publish-npm-and-gitHub]
+    needs: [publish-npm-and-github]
     steps:
       - uses: actions/checkout@v3
       - name: Install system deps
