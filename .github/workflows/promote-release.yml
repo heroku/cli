@@ -11,10 +11,6 @@ on:
         description: dev, beta or stable release
         type: string
         required: true
-      commitSHA:
-        description: 1st 7 chars of release commit SHA (heroku-cli-assets/versions/v:VERSION/:THIS in S3)
-        type: string
-        required: false
 
   workflow_dispatch:
     inputs:
