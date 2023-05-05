@@ -67,9 +67,7 @@ jobs:
     steps:
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
-      - name: trigger pack-and-release.yml
-        uses: ./.github/workflows/pack-and-release.yml
-        secrets: inherit
+      - uses: ./.github/workflows/pack-and-release.yml
         with:
           channel: ${steps.distTag.outputs.tag || 'stable'}
           version: ${steps.distTag.outputs.version}
