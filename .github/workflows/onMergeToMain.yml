@@ -1,0 +1,23 @@
+name: On Merge to Main
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [ closed ]
+
+jobs:
+  publish-pack-upload:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/publish-pack-upload.yml
+
+  promote:
+    needs: [publish-pack-upload]
+    steps:
+      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
+        id: distTag
+      - uses: ./.github/workflows/promote-release.yml
+        with:
+          version: steps.distTag.outputs.version
+          # using a "ternary-ish": https://github.com/actions/runner/issues/409#issuecomment-752775072
+          channel: ${{ startsWith(github.head_ref, 'release-' ) && 'stable' || 'beta' }}

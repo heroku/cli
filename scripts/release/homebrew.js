@@ -52,7 +52,7 @@ async function getDownloadInfoForNodeVersion (version) {
   }
 }
 
-if (!(process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME.startsWith('v'))) {
+if (!process.env.GITHUB_REF_NAME.startsWith('release-')) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }
