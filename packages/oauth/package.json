@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-oauth",
   "description": "Command line plugin for managing OAuth clients, authorizations and tokens.",
-  "version": "8.0.6",
+  "version": "8.1.4-beta.0",
   "author": "Taylor Mock @tmock12",
   "bin": {
     "heroku": "./bin/run"

@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
 $ heroku (--version|-v)
-@heroku-cli/plugin-run/8.1.0 darwin-arm64 node-v16.19.0
+@heroku-cli/plugin-run/8.1.4-beta.0 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -67,7 +67,7 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.1.4-beta.0/src/commands/logs.ts)_
 
 ## `heroku run`
 
@@ -98,7 +98,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v8.1.4-beta.0/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -123,5 +123,5 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v8.1.4-beta.0/src/commands/run/detached.ts)_
 <!-- commandsstop -->
