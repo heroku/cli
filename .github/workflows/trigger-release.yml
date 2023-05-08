@@ -1,14 +1,17 @@
-name: On Merge to Main
+name: Trigger Release
 
 on:
   pull_request:
     branches:
       - master
     types: [ closed ]
+  push:
+    branches:
+      - prerelease/*
 
 jobs:
   publish-pack-upload:
-    if: github.event.pull_request.merged == true
+    if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || startsWith(github.head_ref, 'prerelease/'))
     uses: ./.github/workflows/publish-pack-upload.yml
 
   promote:
@@ -19,5 +22,4 @@ jobs:
       - uses: ./.github/workflows/promote-release.yml
         with:
           version: steps.distTag.outputs.version
-          # using a "ternary-ish": https://github.com/actions/runner/issues/409#issuecomment-752775072
-          channel: ${{ startsWith(github.head_ref, 'release-' ) && 'stable' || 'beta' }}
+          channel: ${{ steps.distTag.outputs.tag || 'stable' }}

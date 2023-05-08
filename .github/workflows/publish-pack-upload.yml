@@ -15,8 +15,6 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: Update package.json version suffix
-        run: node ./scripts/utils/update_channel.js
       - name: Publish to NPM
         env:
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
@@ -42,8 +40,6 @@ jobs:
           cp yarn.lock packages/cli
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
-      - name: Update package.json version suffix
-        run: node ./scripts/utils/update_channel.js
       - name: Building deb
         run: yarn oclif pack:deb
       - uses: actions/upload-artifact@v3
@@ -66,8 +62,6 @@ jobs:
           cp yarn.lock packages/cli
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
-      - name: Update package.json version suffix
-        run: node ./scripts/utils/update_channel.js
       - name: Building tarballs
         run: yarn oclif pack tarballs
       - uses: actions/upload-artifact@v3
