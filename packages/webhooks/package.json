@@ -31,7 +31,7 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/webhooks",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/webhooks",
   "keywords": [
     "heroku-plugin"
   ],

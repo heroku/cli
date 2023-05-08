@@ -46,7 +46,7 @@
     "/index.js",
     "/commands"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/run-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/run-v5",
   "keywords": [
     "heroku-plugin"
   ],

@@ -36,7 +36,7 @@
     "oclif.manifest.json",
     "/lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/ps",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/ps",
   "keywords": [
     "oclif-plugin"
   ],
