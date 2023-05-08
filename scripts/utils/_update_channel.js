@@ -7,7 +7,7 @@ module.exports = () => {
   const pjson = require(pjsonPath)
   if (process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME.startsWith('v')) {
     pjson.version = pjson.version.split('-')[0]
-  } else if (process.env.GITHUB_REF_NAME === 'master') {
+  } else if (process.env.GITHUB_REF_NAME === 'main') {
     pjson.version = pjson.version.split('-')[0] + '-beta'
   } else {
     pjson.version = pjson.version.split('-')[0] + '-dev'
