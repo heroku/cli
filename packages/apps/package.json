@@ -8,7 +8,7 @@
     "@heroku-cli/command": "^9.0.2",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/core": "^1.26.2",
-    "inquirer": "^7.0.1",
+    "inquirer": "^9.2.2",
     "shell-escape": "^0.2.0",
     "tslib": "^1",
     "urijs": "^1.19.11"

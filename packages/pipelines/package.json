@@ -10,7 +10,7 @@
     "@oclif/core": "^1.26.2",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
-    "inquirer": "^7.0.0",
+    "inquirer": "^9.2.2",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "node-fetch": "^2.6.7",
