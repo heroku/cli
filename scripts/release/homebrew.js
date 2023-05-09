@@ -28,26 +28,28 @@ async function calculateSHA256 (fileName) {
 const ROOT = path.join(__dirname, 'homebrew')
 const TEMPLATES = path.join(ROOT, 'templates')
 const fileSuffix = '.tar.xz'
-const M1_ARCH = 'arm64'
 const INTEL_ARCH = 'x64'
+const M1_ARCH = 'arm64'
 
 async function updateHerokuFormula (brewDir) {
   const templatePath = path.join(TEMPLATES, 'heroku.rb')
   const template = fs.readFileSync(templatePath).toString('utf-8')
   const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
+  // todo: support both Linux architectures that oclif does
   const fineNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
-
-  const urlParts = [`https://cli-assets.heroku.com/versions/${VERSION}/${GITHUB_SHA_SHORT}/${fineNamePrefix}`, fileSuffix]
+  const urlPrefix = `https://cli-assets.heroku.com/versions/${VERSION}/${GITHUB_SHA_SHORT}/`
   const fileParts = [fineNamePrefix, fileSuffix]
 
-  const sha256Intel = await calculateSHA256(path.join(DIST_DIR, fileParts.join(INTEL_ARCH)))
-  const sha256M1 = await calculateSHA256(path.join(DIST_DIR, fileParts.join(M1_ARCH)))
+  const fileNameIntel = fileParts.join(INTEL_ARCH)
+  const sha256Intel = await calculateSHA256(path.join(DIST_DIR, fileNameIntel))
+  const fileNameM1 = fileParts.join(M1_ARCH)
+  const sha256M1 = await calculateSHA256(path.join(DIST_DIR, fileNameM1))
 
   const templateReplaced =
     template
-      .replace('__CLI_DOWNLOAD_URL__', urlParts.join(INTEL_ARCH))
-      .replace('__CLI_DOWNLOAD_URL_M1__', urlParts.join(M1_ARCH))
+      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}${fileNameIntel}`)
+      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}${fileNameM1}`)
       .replace('__CLI_SHA256__', sha256Intel)
       .replace('__CLI_SHA256_M1__', sha256M1)
 
