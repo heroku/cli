@@ -13,7 +13,7 @@ async function run(context, heroku) {
     await heroku.request({
       path: `/apps/${app}/features/${feature}`,
       method: 'PATCH',
-      body: { enabled: true }
+      body: {enabled: true},
     })
   }())
 }
@@ -22,8 +22,8 @@ module.exports = {
   topic: 'features',
   command: 'enable',
   description: 'enables an app feature',
-  args: [{ name: 'feature' }],
+  args: [{name: 'feature'}],
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

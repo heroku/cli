@@ -9,6 +9,7 @@ module.exports = async function (context, heroku, domain) {
       await wait(5000)
       domain = await heroku.get(`/apps/${context.app}/domains/${domain.id}`)
     }
+
     if (domain.status === 'succeeded' || domain.status === 'none') return
     throw new Error(`The domain creation finished with status ${domain.status}`)
   })())

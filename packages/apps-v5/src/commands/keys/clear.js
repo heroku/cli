@@ -8,7 +8,7 @@ async function run(context, heroku) {
     for (let key of keys) {
       await heroku.request({
         method: 'DELETE',
-        path: `/account/keys/${key.id}`
+        path: `/account/keys/${key.id}`,
       })
     }
   }())
@@ -19,5 +19,5 @@ module.exports = {
   command: 'clear',
   description: 'remove all SSH keys for current user',
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

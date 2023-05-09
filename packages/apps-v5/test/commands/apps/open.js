@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it commands */
+/* globals beforeEach */
 
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
@@ -11,7 +11,7 @@ let cmd
 let openStub
 
 let app = {
-  web_url: 'https://myapp.herokuapp.com'
+  web_url: 'https://myapp.herokuapp.com',
 }
 
 describe('heroku apps:open', function () {
@@ -19,7 +19,7 @@ describe('heroku apps:open', function () {
     openStub = sinon.stub(cli, 'open')
 
     cmd = proxyquire('../../../src/commands/apps/open', {
-      'heroku-cli-util': openStub
+      'heroku-cli-util': openStub,
     })
     cli.mockConsole()
   })
@@ -31,7 +31,7 @@ describe('heroku apps:open', function () {
   it('opens specified app', function () {
     nock('https://api.heroku.com').get('/apps/myapp').reply(200, app)
 
-    return cmd[0].run({ app: 'myapp', args: {} })
-      .then(() => expect(openStub.called).to.be.true)
+    return cmd[0].run({app: 'myapp', args: {}})
+    .then(() => expect(openStub.called).to.be.true)
   })
 })

@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const push = require('../../../push')
 
-function map (stack) {
+function map(stack) {
   return stack === 'cedar-10' ? 'cedar' : stack
 }
 
@@ -12,7 +12,7 @@ async function run(context, heroku) {
   const request = heroku.request({
     method: 'PATCH',
     path: `/apps/${context.app}`,
-    body: { build_stack: stack }
+    body: {build_stack: stack},
   })
   const app = await cli.action(`Setting stack to ${cli.color.green(stack)}`, request)
   // A redeploy is not required for apps that have never been deployed, since
@@ -31,11 +31,11 @@ let cmd = {
 Setting stack to heroku-22... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`,
-  args: [{ name: 'stack' }],
-  run: cli.command(run)
+  args: [{name: 'stack'}],
+  run: cli.command(run),
 }
 
 module.exports = [
-  Object.assign({ topic: 'apps', command: 'stacks:set' }, cmd),
-  Object.assign({ topic: 'stack', command: 'set', hidden: true }, cmd)
+  Object.assign({topic: 'apps', command: 'stacks:set'}, cmd),
+  Object.assign({topic: 'stack', command: 'set', hidden: true}, cmd),
 ]
