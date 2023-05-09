@@ -18,11 +18,11 @@ describe('container logout', () => {
 
   it('logs out of the docker registry', () => {
     let logout = sandbox.stub(Sanbashi, 'cmd')
-    .withArgs('docker', ['logout', 'registry.heroku.com'])
+      .withArgs('docker', ['logout', 'registry.heroku.com'])
 
     return cmd.run({flags: {}})
-    .then(() => expect(cli.stdout, 'to be empty'))
-    .then(() => expect(cli.stderr, 'to be empty'))
-    .then(() => sandbox.assert.calledOnce(logout))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => sandbox.assert.calledOnce(logout))
   })
 })

@@ -19,18 +19,18 @@ module.exports = function (context) {
 
   function hasGitRemote(remote) {
     return git(['remote'])
-    .then(remotes => remotes.split('\n'))
-    .then(remotes => remotes.find(r => r === remote))
+      .then(remotes => remotes.split('\n'))
+      .then(remotes => remotes.find(r => r === remote))
   }
 
   function createRemote(remote, url) {
     return hasGitRemote(remote)
-    .then(exists => !exists ? git(['remote', 'add', remote, url]) : null)
+      .then(exists => !exists ? git(['remote', 'add', remote, url]) : null)
   }
 
   function listRemotes() {
     return git(['remote', '-v'])
-    .then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)))
+      .then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)))
   }
 
   function inGitRepo() {

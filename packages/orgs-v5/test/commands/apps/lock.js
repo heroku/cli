@@ -9,14 +9,14 @@ describe('heroku apps:lock', () => {
 
   it('locks the app', () => {
     let apiGetApp = nock('https://api.heroku.com:443')
-    .get('/teams/apps/myapp')
-    .reply(200, {name: 'myapp', locked: false})
-    .patch('/teams/apps/myapp', {locked: true})
-    .reply(200)
+      .get('/teams/apps/myapp')
+      .reply(200, {name: 'myapp', locked: false})
+      .patch('/teams/apps/myapp', {locked: true})
+      .reply(200)
     return cmd.run({app: 'myapp'})
-    .then(() => expect('').to.eq(cli.stdout))
-    .then(() => expect(`Locking myapp... done
+      .then(() => expect('').to.eq(cli.stdout))
+      .then(() => expect(`Locking myapp... done
 `).to.eq(cli.stderr))
-    .then(() => apiGetApp.done())
+      .then(() => apiGetApp.done())
   })
 })

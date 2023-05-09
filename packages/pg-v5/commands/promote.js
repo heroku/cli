@@ -12,7 +12,7 @@ async function run(context, heroku) {
   let current
   let attachments
 
-  await cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, async function () {
+  await cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, (async function () {
     // Finds or creates a non-DATABASE attachment for the DB currently
     // attached as DATABASE.
     //
@@ -47,7 +47,7 @@ async function run(context, heroku) {
       },
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
-  }())
+  })())
 
   if (!force) {
     let status = await heroku.request({
@@ -69,7 +69,7 @@ async function run(context, heroku) {
     promotionMessage = `Promoting ${cli.color.addon(attachment.addon.name)} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
   }
 
-  await cli.action(promotionMessage, async function () {
+  await cli.action(promotionMessage, (async function () {
     await heroku.post('/addon-attachments', {
       body: {
         name: 'DATABASE',
@@ -79,12 +79,12 @@ async function run(context, heroku) {
         confirm: app,
       },
     })
-  }())
+  })())
 
   // eslint-disable-next-line eqeqeq
   let currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon.id == current.addon.id && a.name == 'DATABASE_CONNECTION_POOL')
   if (currentPooler) {
-    await cli.action('Reattaching pooler to new leader', async function () {
+    await cli.action('Reattaching pooler to new leader', (async function () {
       await heroku.post('/addon-attachments', {
         body: {
           name: currentPooler.name,
@@ -94,7 +94,7 @@ async function run(context, heroku) {
           confirm: app,
         },
       })
-    }())
+    })())
     return cli.action.done()
   }
 
@@ -112,10 +112,10 @@ async function run(context, heroku) {
   }
 
   let releasePhase = ((await heroku.get(`/apps/${app}/formation`)))
-  .find(formation => formation.type === 'release')
+    .find(formation => formation.type === 'release')
 
   if (releasePhase) {
-    await cli.action('Checking release phase', async function () {
+    await cli.action('Checking release phase', (async function () {
       let releases = await heroku.request({
         path: `/apps/${app}/releases`,
         partial: true,
@@ -142,7 +142,9 @@ async function run(context, heroku) {
           }
 
           return cli.action.done(msg)
-        } else if (attach && attach.status === 'failed') {
+        }
+
+        if (attach && attach.status === 'failed') {
           let msg = `pg:promote failed because ${attach.description} release was unsuccessful. Your application is currently running `
           let detach = await fetcher.release(app, detachId)
           if (detach && detach.status === 'succeeded') {
@@ -153,13 +155,15 @@ async function run(context, heroku) {
 
           msg += ' Check your release phase logs for failure causes.'
           return cli.action.done(msg)
-        } else if (Date.now() > endTime) {
+        }
+
+        if (Date.now() > endTime) {
           return cli.action.done('timeout. Check your Attach DATABASE release for failures.')
         }
 
         await new Promise(resolve => setTimeout(resolve, 5000))
       }
-    }())
+    })())
   }
 }
 

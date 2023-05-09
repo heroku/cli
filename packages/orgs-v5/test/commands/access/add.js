@@ -23,22 +23,22 @@ describe('heroku access:add', () => {
 
     it('adds user to the app with permissions, and view is implicit', () => {
       return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {permissions: 'deploy'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
-      .then(() => apiGet.done())
-      .then(() => apiGetOrgFeatures.done())
-      .then(() => apiPost.done())
+        .then(() => apiGet.done())
+        .then(() => apiGetOrgFeatures.done())
+        .then(() => apiPost.done())
     })
 
     it('adds user to the app with permissions, even specifying the view permission', () => {
       return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {permissions: 'deploy,view'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
-      .then(() => apiGet.done())
-      .then(() => apiGetOrgFeatures.done())
-      .then(() => apiPost.done())
+        .then(() => apiGet.done())
+        .then(() => apiGetOrgFeatures.done())
+        .then(() => apiPost.done())
     })
 
     it('raises an error when permissions are not specified', () => {
@@ -57,8 +57,8 @@ describe('heroku access:add', () => {
 
     it('supports --privileges, but shows deprecation warning', () => {
       return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {privileges: 'deploy,view'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
 Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
 `))
     })
@@ -75,12 +75,12 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
 
     it('adds user to the app', () => {
       return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Adding raulb@heroku.com access to the app myapp... done
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp... done
 `).to.eq(cli.stderr))
-      .then(() => apiGet.done())
-      .then(() => apiGetOrgFeatures.done())
-      .then(() => apiPost.done())
+        .then(() => apiGet.done())
+        .then(() => apiGetOrgFeatures.done())
+        .then(() => apiPost.done())
     })
   })
 
@@ -94,11 +94,11 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
 
     it('adds user to the app as a collaborator', () => {
       return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: {}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Adding raulb@heroku.com access to the app myapp... done
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp... done
 `).to.eq(cli.stderr))
-      .then(() => apiGet.done())
-      .then(() => apiPost.done())
+        .then(() => apiGet.done())
+        .then(() => apiPost.done())
     })
   })
 })

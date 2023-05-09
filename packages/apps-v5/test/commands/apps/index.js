@@ -78,20 +78,20 @@ let teamSpaceInternalApp = {
 
 function stubApps(apps) {
   return nock('https://api.heroku.com')
-  .get('/apps')
-  .reply(200, apps)
+    .get('/apps')
+    .reply(200, apps)
 }
 
 function stubUserApps(apps) {
   return nock('https://api.heroku.com')
-  .get('/users/~/apps')
-  .reply(200, apps)
+    .get('/users/~/apps')
+    .reply(200, apps)
 }
 
 function stubteamApps(team, apps) {
   return nock('https://api.heroku.com')
-  .get(`/teams/${team}/apps`)
-  .reply(200, apps)
+    .get(`/teams/${team}/apps`)
+    .reply(200, apps)
 }
 
 describe('heroku apps:list', function () {
@@ -100,8 +100,8 @@ describe('heroku apps:list', function () {
     nock.cleanAll()
 
     nock('https://api.heroku.com')
-    .get('/account')
-    .reply(200, {email: 'foo@bar.com'})
+      .get('/account')
+      .reply(200, {email: 'foo@bar.com'})
   })
   afterEach(() => nock.cleanAll())
 
@@ -315,8 +315,8 @@ team-app-2
   describe('with space', function () {
     beforeEach(function () {
       return nock('https://api.heroku.com')
-      .get('/spaces/test-space')
-      .reply(200, {team: {name: 'test-team'}})
+        .get('/spaces/test-space')
+        .reply(200, {team: {name: 'test-team'}})
     })
 
     it('displays a message when the space has no apps', function () {

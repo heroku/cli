@@ -51,7 +51,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     cli.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
     const mapped = githubDiff.commits.map((commit: any) => {
       return {
-        sha: commit.sha.substring(0, 7),
+        sha: commit.sha.slice(0, 7),
         date: commit.commit.author.date,
         author: commit.commit.author.name,
         message: commit.commit.message.split('\n')[0],
@@ -90,9 +90,9 @@ export default class PipelinesDiff extends Command {
   getAppInfo = async (appName: string, appId: string): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
-    .catch(() => {
-      return {name: appName, repo: null, hash: null}
-    })
+      .catch(() => {
+        return {name: appName, repo: null, hash: null}
+      })
 
     // Find the commit hash of the latest release for this app
     let slug: Heroku.Slug
@@ -119,8 +119,8 @@ export default class PipelinesDiff extends Command {
     const targetAppName = flags.app
 
     const coupling = await getCoupling(this.heroku, targetAppName)
-    .then(res => res.body)
-    .catch(() => undefined)
+      .then(res => res.body)
+      .catch(() => {})
 
     if (!coupling) {
       cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)

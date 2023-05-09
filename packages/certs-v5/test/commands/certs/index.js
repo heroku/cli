@@ -17,8 +17,8 @@ describe('heroku certs', function () {
 
   it('warns about no SSL certificates if the app has no certs', function () {
     let mockSni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
@@ -29,8 +29,8 @@ describe('heroku certs', function () {
 
   it('# shows ACM for the type when acm true', function () {
     let mockSni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointAcm])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointAcm])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
@@ -46,8 +46,8 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
 
   it('# shows certs with common names stacked and stable matches', function () {
     let mockSni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointStables])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointStables])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
@@ -65,8 +65,8 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
     let mockSni = nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointWildcardBug])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointWildcardBug])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
@@ -84,8 +84,8 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI   0
     let mockSni = nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointWildcard])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointWildcard])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()
@@ -101,8 +101,8 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI   0
 
   it('# shows certs with common names stacked and just stable cname matches', function () {
     let mockSni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointStables])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointStables])
 
     return certs.run({app: 'example'}).then(function () {
       mockSni.done()

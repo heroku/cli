@@ -12,9 +12,9 @@ const cmd = require('../../../commands/backups/capture')
 let captureText = () => {
   if (process.stderr.isTTY) {
     return 'Backing up DATABASE to b005... pending\nBacking up DATABASE to b005... done\n'
-  } else {
-    return 'Backing up DATABASE to b005... done\n'
   }
+
+  return 'Backing up DATABASE to b005... done\n'
 }
 
 const shouldCapture = function (cmdRun) {
@@ -54,15 +54,15 @@ const shouldCapture = function (cmdRun) {
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stdout).to.equal(`
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
 
 `))
-    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done\n${captureText()}`)))
+      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done\n${captureText()}`)))
     // eslint-disable-next-line prefer-regex-literals
-    .then(() => expect(cli.stderr, 'to match', new RegExp('backups of large databases are likely to fail')))
+      .then(() => expect(cli.stderr, 'to match', new RegExp('backups of large databases are likely to fail')))
   })
 
   it('captures a db (verbose)', () => {
@@ -94,7 +94,7 @@ Stop a running backup with heroku pg:backups:cancel.
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
-    .then(() => expect(cli.stdout).to.equal(`
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -103,7 +103,7 @@ Backing up DATABASE to b005...
 100 log message 1
 `))
     // eslint-disable-next-line prefer-regex-literals
-    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
 `))).then(() => expect(cli.stderr, 'not to match', new RegExp('backups of large databases are likely to fail'))) // eslint-disable-line prefer-regex-literals
   })
 
@@ -136,7 +136,7 @@ Backing up DATABASE to b005...
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
-    .then(() => expect(cli.stdout).to.equal(`
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -148,7 +148,7 @@ Backing up DATABASE to b005...
 100 log message 1
 `))
     // eslint-disable-next-line prefer-regex-literals
-    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+      .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
 `))).then(() => expect(cli.stderr, 'to match', new RegExp('backups of large databases are likely to fail'))) // eslint-disable-line prefer-regex-literals
   })
 
@@ -167,7 +167,7 @@ Backing up DATABASE to b005...
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {snapshot: true}})
-    .then(() => expect(cli.stderr).to.equal(`Taking snapshot of postgres-1... done
+      .then(() => expect(cli.stderr).to.equal(`Taking snapshot of postgres-1... done
 `))
   })
 }

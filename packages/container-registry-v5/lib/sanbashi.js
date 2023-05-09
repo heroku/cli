@@ -29,28 +29,28 @@ Sanbashi.getDockerfiles = function (rootdir, recursive) {
 Sanbashi.getJobs = function (resourceRoot, dockerfiles) {
   return dockerfiles
   // convert all Dockerfiles into job Objects
-  .map(dockerfile => {
-    let match = dockerfile.match(DOCKERFILE_REGEX)
-    if (!match) return
-    let proc = (match[1] || '.standard').slice(1)
-    return {
-      name: proc,
-      resource: `${resourceRoot}/${proc}`,
-      dockerfile: dockerfile,
-      postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
-      depth: Path.normalize(dockerfile).split(Path.sep).length,
-    }
-  })
+    .map(dockerfile => {
+      let match = dockerfile.match(DOCKERFILE_REGEX)
+      if (!match) return
+      let proc = (match[1] || '.standard').slice(1)
+      return {
+        name: proc,
+        resource: `${resourceRoot}/${proc}`,
+        dockerfile: dockerfile,
+        postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
+        depth: Path.normalize(dockerfile).split(Path.sep).length,
+      }
+    })
   // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
-  .sort((a, b) => {
-    return a.depth - b.depth || a.postfix - b.postfix
-  })
+    .sort((a, b) => {
+      return a.depth - b.depth || a.postfix - b.postfix
+    })
   // group all Dockerfiles for the same process type together
-  .reduce((jobs, job) => {
-    jobs[job.name] = jobs[job.name] || []
-    jobs[job.name].push(job)
-    return jobs
-  }, {})
+    .reduce((jobs, job) => {
+      jobs[job.name] = jobs[job.name] || []
+      jobs[job.name].push(job)
+      return jobs
+    }, {})
 }
 
 Sanbashi.chooseJobs = async function (jobs) {
@@ -122,16 +122,16 @@ Sanbashi.runImage = function (resource, command, port) {
 
 Sanbashi.version = function () {
   return Sanbashi
-  .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-  .then(version => version.split(/\./))
-  .then(([major, minor]) => [Number.parseInt(major) || 0, Number.parseInt(minor) || 0]) // ensure exactly 2 components
+    .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+    .then(version => version.split(/\./))
+    .then(([major, minor]) => [Number.parseInt(major) || 0, Number.parseInt(minor) || 0]) // ensure exactly 2 components
 }
 
 Sanbashi.imageID = function (tag) {
   return Sanbashi
-  .cmd('docker', ['inspect', tag, '--format={{.Id}}'], {output: true})
+    .cmd('docker', ['inspect', tag, '--format={{.Id}}'], {output: true})
   // eslint-disable-next-line unicorn/prefer-string-trim-start-end
-  .then(id => id.trimRight()) // Trim the new line at the end of the string
+    .then(id => id.trimRight()) // Trim the new line at the end of the string
 }
 
 Sanbashi.cmd = function (cmd, args, options = {}) {

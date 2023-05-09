@@ -26,14 +26,14 @@ async function run(context, heroku) {
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
     await _(await git.listRemotes())
-    .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
-    .map(r => r[0])
-    .uniq()
-    .map(r => {
-      return git.rmRemote(r)
-      .then(() => git.createRemote(r, gitUrl))
-      .then(() => cli.log(`Git remote ${r} updated`))
-    }).value()
+      .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
+      .map(r => r[0])
+      .uniq()
+      .map(r => {
+        return git.rmRemote(r)
+          .then(() => git.createRemote(r, gitUrl))
+          .then(() => cli.log(`Git remote ${r} updated`))
+      }).value()
   }
 
   cli.warn("Don't forget to update git remotes for all other local checkouts of the app.")

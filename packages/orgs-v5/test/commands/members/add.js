@@ -32,10 +32,10 @@ describe('heroku members:add', () => {
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
         return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
+          .then(() => expect('').to.eq(cli.stdout))
+          .then(() => expect(`Adding foo@foo.com to myteam as admin... done
 `).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+          .then(() => apiUpdateMemberRole.done())
       })
 
       it('does not warn the user when over the free org limit', () => {
@@ -44,10 +44,10 @@ describe('heroku members:add', () => {
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
         return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
+          .then(() => expect('').to.eq(cli.stdout))
+          .then(() => expect(`Adding foo@foo.com to myteam as admin... done
 `).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+          .then(() => apiUpdateMemberRole.done())
       })
 
       it('does warn the user when at the free org limit', () => {
@@ -56,11 +56,11 @@ describe('heroku members:add', () => {
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
         return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done \
+          .then(() => expect('').to.eq(cli.stdout))
+          .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done \
 You'll be billed monthly for teams over 5 members.
 `))
-        .then(() => apiUpdateMemberRole.done())
+          .then(() => apiUpdateMemberRole.done())
       })
     })
 
@@ -74,10 +74,10 @@ You'll be billed monthly for teams over 5 members.
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
         return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myteam', role: 'admin'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myteam as admin... done
+          .then(() => expect('').to.eq(cli.stdout))
+          .then(() => expect(`Adding foo@foo.com to myteam as admin... done
 `).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+          .then(() => apiUpdateMemberRole.done())
       })
     })
   })
@@ -95,11 +95,11 @@ You'll be billed monthly for teams over 5 members.
       let apiGetTeamInvites = stubGet.variableSizeTeamInvites(5)
 
       return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-      .then(() => apiSendInvite.done())
-      .then(() => apiGetOrgMembers.done())
-      .then(() => apiGetTeamInvites.done())
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(unwrap(cli.stderr)).to.equal(`Inviting foo@foo.com to myteam as admin... email sent \
+        .then(() => apiSendInvite.done())
+        .then(() => apiGetOrgMembers.done())
+        .then(() => apiGetTeamInvites.done())
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`Inviting foo@foo.com to myteam as admin... email sent \
 You'll be billed monthly for teams over 5 members.
 `))
     })
@@ -111,9 +111,9 @@ You'll be billed monthly for teams over 5 members.
       stubGet.variableSizeTeamInvites(0)
 
       return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect('Inviting foo@foo.com to myteam as admin... email sent\n').to.eq(cli.stderr))
-      .then(() => apiSendInvite.done())
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect('Inviting foo@foo.com to myteam as admin... email sent\n').to.eq(cli.stderr))
+        .then(() => apiSendInvite.done())
     })
   })
 })

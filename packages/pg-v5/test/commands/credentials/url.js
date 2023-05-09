@@ -71,7 +71,7 @@ describe('pg:credentials:url', () => {
     pg.get('/postgres/v0/databases/postgres-1/credentials/jeff').reply(200, roleInfo)
 
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
-    .then(() => expect(cli.stdout).to.equal(`Connection information for jeff credential.\nConnection info string:
+      .then(() => expect(cli.stdout).to.equal(`Connection information for jeff credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=jeff password=hunter2 sslmode=require"
 Connection URL:
    postgres://jeff:hunter2@localhost:5442/d123
@@ -134,7 +134,7 @@ Connection URL:
     starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:
+      .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
 Connection URL:
    postgres://abcdef:hunter2@localhost:5442/d123

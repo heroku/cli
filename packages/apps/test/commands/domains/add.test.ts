@@ -29,18 +29,18 @@ describe('domains:add', () => {
 
     describe('using the --cert flag', () => {
       test
-      .stderr()
-      .nock('https://api.heroku.com', api => api
-      .post('/apps/myapp/domains', {
-        hostname: 'example.com',
-        sni_endpoint: 'my-cert',
-      })
-      .reply(200, domainsResponseWithEndpoint),
-      )
-      .command(['domains:add', 'example.com', '--app', 'myapp', '--cert', 'my-cert'])
-      .it('adds the domain to the app', ctx => {
-        expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
-      })
+        .stderr()
+        .nock('https://api.heroku.com', api => api
+          .post('/apps/myapp/domains', {
+            hostname: 'example.com',
+            sni_endpoint: 'my-cert',
+          })
+          .reply(200, domainsResponseWithEndpoint),
+        )
+        .command(['domains:add', 'example.com', '--app', 'myapp', '--cert', 'my-cert'])
+        .it('adds the domain to the app', ctx => {
+          expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
+        })
     })
 
     describe('without passing a cert', () => {
@@ -67,23 +67,23 @@ describe('domains:add', () => {
       ]
 
       test
-      .stderr()
-      .stub(inquirer, 'prompt', () => {
-        return Promise.resolve({cert: 'my-cert'})
-      })
-      .nock('https://api.heroku.com', api => api
-      .post('/apps/myapp/domains', {
-        hostname: 'example.com',
-        sni_endpoint: 'my-cert',
-      })
-      .reply(200, domainsResponseWithEndpoint)
-      .get('/apps/myapp/sni-endpoints')
-      .reply(200, certsResponse),
-      )
-      .command(['domains:add', 'example.com', '--app', 'myapp'])
-      .it('adds the domain to the app', ctx => {
-        expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
-      })
+        .stderr()
+        .stub(inquirer, 'prompt', () => {
+          return Promise.resolve({cert: 'my-cert'})
+        })
+        .nock('https://api.heroku.com', api => api
+          .post('/apps/myapp/domains', {
+            hostname: 'example.com',
+            sni_endpoint: 'my-cert',
+          })
+          .reply(200, domainsResponseWithEndpoint)
+          .get('/apps/myapp/sni-endpoints')
+          .reply(200, certsResponse),
+        )
+        .command(['domains:add', 'example.com', '--app', 'myapp'])
+        .it('adds the domain to the app', ctx => {
+          expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
+        })
     })
   })
 })

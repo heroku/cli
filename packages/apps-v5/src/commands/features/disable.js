@@ -6,7 +6,7 @@ async function run(context, heroku) {
   let app = context.app
   let feature = context.args.feature
 
-  await cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.app(app)}`, async function () {
+  await cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.app(app)}`, (async function () {
     let f = await heroku.get(`/apps/${app}/features/${feature}`)
     if (!f.enabled) throw new Error(`${cli.color.red(feature)} is already disabled.`)
 
@@ -15,7 +15,7 @@ async function run(context, heroku) {
       method: 'PATCH',
       body: {enabled: false},
     })
-  }())
+  })())
 }
 
 module.exports = {

@@ -56,7 +56,7 @@ async function run(context, heroku) {
     }
   }
 
-  await cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, async function () {
+  await cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, (async function () {
     // We've been using config var name as schedule_name historically
     schedule.schedule_name = attachment.name + '_URL'
 
@@ -64,7 +64,7 @@ async function run(context, heroku) {
       body: schedule,
       host: host(db),
     })
-  }())
+  })())
 }
 
 module.exports = {

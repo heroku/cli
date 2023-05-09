@@ -52,15 +52,15 @@ ${warnings.join('\n')}`)
 
   let body = flags.force ? {host: host(db), forced: true} : {host: host(db)}
   if (all) {
-    await cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, async function () {
+    await cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, (async function () {
       await heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,
         body)
-    }())
+    })())
   } else {
-    await cli.action(`Rotating ${cred} on ${cli.color.addon(db.name)}`, async function () {
+    await cli.action(`Rotating ${cred} on ${cli.color.addon(db.name)}`, (async function () {
       await heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`,
         body)
-    }())
+    })())
   }
 }
 

@@ -18,11 +18,11 @@ describe('heroku certs:remove', function () {
 
   it('# deletes the endpoint', function () {
     let mockGet = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpoint])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpoint])
     let mockDelete = nock('https://api.heroku.com')
-    .delete('/apps/example/sni-endpoints/' + endpoint.name)
-    .reply(200, [endpoint])
+      .delete('/apps/example/sni-endpoints/' + endpoint.name)
+      .reply(200, [endpoint])
 
     return certs.run({app: 'example', flags: {confirm: 'example'}}).then(function () {
       mockGet.done()
@@ -33,8 +33,8 @@ describe('heroku certs:remove', function () {
 
   it('# requires confirmation if wrong endpoint on app', function () {
     let mockSni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpoint])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpoint])
 
     var thrown = false
     return certs.run({app: 'example', flags: {confirm: 'notexample'}}).catch(function (error_) {
@@ -52,8 +52,8 @@ describe('heroku certs:remove', function () {
     return nock('https://api.heroku.com', {
       reqheaders: {Accept: `application/vnd.heroku+json; version=3.${variant}`},
     })
-    .delete(path)
-    .reply(200, endpoint)
+      .delete(path)
+      .reply(200, endpoint)
   }
 
   let stderr = function () {

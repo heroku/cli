@@ -59,12 +59,12 @@ async function run(context, heroku) {
 
   await cli.confirmApp(app, flags.confirm)
   let restore
-  await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, (async function () {
     restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
       body: {backup_url: backupURL, extensions: extensions},
       host: host(db),
     })
-  }())
+  })())
   cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use ${cli.color.cmd('heroku pg:backups')} to check progress.

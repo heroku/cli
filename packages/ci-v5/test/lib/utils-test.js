@@ -14,8 +14,8 @@ describe('Utils', function () {
       const pipeline = Factory.pipeline
       const context = {flags: {pipeline: pipeline.id}}
       const api = nock('https://api.heroku.com')
-      .get(`/pipelines/${pipeline.id}`)
-      .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}`)
+        .reply(200, pipeline)
 
       const response = await Utils.getPipeline(context, new Heroku())
       expect(response).to.deep.eq(Factory.pipeline)
@@ -29,8 +29,8 @@ describe('Utils', function () {
       const context = {app, flags: {}}
 
       const api = nock('https://api.heroku.com')
-      .get(`/apps/${app}/pipeline-couplings`)
-      .reply(200, coupling)
+        .get(`/apps/${app}/pipeline-couplings`)
+        .reply(200, coupling)
 
       const response = await Utils.getPipeline(context, new Heroku())
       expect(response).to.deep.eq(Factory.pipeline)
@@ -40,7 +40,7 @@ describe('Utils', function () {
 
   describe('#dig', function () {
     it('is undefined given an undefined object', function () {
-      expect(Utils.dig(undefined)).to.be.undefined
+      expect(Utils.dig()).to.be.undefined
     })
 
     it('deep gets into an object', function () {

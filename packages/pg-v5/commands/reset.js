@@ -16,12 +16,12 @@ async function run(context, heroku) {
 ${cli.color.addon(db.name)} will lose all of its data
 `)
 
-  await cli.action(`Resetting ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Resetting ${cli.color.addon(db.name)}`, (async function () {
     await heroku.put(`/client/v11/databases/${db.id}/reset`, {
       body: {extensions: extensions},
       host: host(db),
     })
-  }())
+  })())
 }
 
 module.exports = {

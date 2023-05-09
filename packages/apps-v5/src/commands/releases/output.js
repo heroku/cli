@@ -17,14 +17,14 @@ async function run(context, heroku) {
 
   // eslint-disable-next-line new-cap
   await output.Stream(streamUrl)
-  .catch(error => {
-    if (error.statusCode === 404) {
-      cli.warn('Release command not started yet. Please try again in a few seconds.')
-      return
-    }
+    .catch(error => {
+      if (error.statusCode === 404) {
+        cli.warn('Release command not started yet. Please try again in a few seconds.')
+        return
+      }
 
-    throw error
-  })
+      throw error
+    })
 }
 
 module.exports = {

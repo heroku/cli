@@ -24,7 +24,7 @@ async function run(context, heroku) {
   let num
   let info
 
-  await cli.action(`Getting backup from ${cli.color.app(app)}`, async function () {
+  await cli.action(`Getting backup from ${cli.color.app(app)}`, (async function () {
     if (args.backup_id) {
       num = await pgbackups.transfer.num(args.backup_id)
       if (!num) throw new Error(`Invalid Backup: ${args.backup_id}`)
@@ -39,7 +39,7 @@ async function run(context, heroku) {
 
     info = await heroku.post(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {host})
     cli.action.done(`done, #${num}`)
-  }())
+  })())
 
   await download(info.url, output, {progress: true})
 }

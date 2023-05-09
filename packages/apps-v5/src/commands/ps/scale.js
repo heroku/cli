@@ -16,7 +16,7 @@ async function run(context, heroku) {
     return compact(args.map(arg => {
       let change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
-      let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
+      let quantity = change[2][0] === '=' ? change[2].slice(1) : change[2]
       if (change[3]) change[3] = change[3].replace('Shield-', 'Private-')
       return {type: change[1], quantity, size: change[3]}
     }))
@@ -37,7 +37,7 @@ async function run(context, heroku) {
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map(d => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
-    await cli.action('Scaling dynos', {success: false}, async function () {
+    await cli.action('Scaling dynos', {success: false}, (async function () {
       let formation = await heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
       const appProps = await heroku.get(`/apps/${app}`)
       const shielded = appProps.space && appProps.space.shield
@@ -48,9 +48,9 @@ async function run(context, heroku) {
       }
 
       let output = formation.filter(f => changes.find(c => c.type === f.type))
-      .map(d => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
+        .map(d => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
       cli.action.done(`done, now running ${output.join(', ')}`)
-    }())
+    })())
   }
 }
 

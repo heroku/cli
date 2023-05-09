@@ -16,12 +16,12 @@ describe('addons --app', function () {
     nock('https://api.heroku.com', {reqheaders: {
       'Accept-Expansion': 'addon_service,plan',
     }})
-    .get(`/apps/${appName}/addons`)
-    .reply(200, addons)
+      .get(`/apps/${appName}/addons`)
+      .reply(200, addons)
 
     nock('https://api.heroku.com')
-    .get('/addon-attachments')
-    .reply(200, attachments)
+      .get('/addon-attachments')
+      .reply(200, attachments)
   }
 
   beforeEach(() => cli.mockConsole())

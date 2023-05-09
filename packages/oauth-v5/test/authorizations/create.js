@@ -19,8 +19,8 @@ describe('authorizations:create', () => {
 
   beforeEach(() => {
     api
-    .post('/oauth/authorizations', {description: 'awesome'})
-    .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+      .post('/oauth/authorizations', {description: 'awesome'})
+      .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
   })
 
   it('creates the authorization', () => {
@@ -29,6 +29,6 @@ describe('authorizations:create', () => {
 
   it('creates the authorization and just shows the token', () => {
     return cmd.run({flags: {description: 'awesome', short: true}})
-    .then(() => expect(cli.stdout).to.equal('secrettoken\n'))
+      .then(() => expect(cli.stdout).to.equal('secrettoken\n'))
   })
 })

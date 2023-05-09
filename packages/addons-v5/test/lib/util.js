@@ -21,6 +21,6 @@ describe('util.formatPrice', function () {
   })
 
   it('returns undefined when no pricing information given', function () {
-    expect(util.formatPrice(null)).to.eq(undefined)
+    expect(util.formatPrice(null)).to.eq()
   })
 })

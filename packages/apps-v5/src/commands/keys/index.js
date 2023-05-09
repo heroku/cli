@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 
 function formatKey(key) {
   key = key.trim().split(/\s/)
-  return `${key[0]} ${key[1].substr(0, 10)}...${key[1].substr(-10, 10)} ${cli.color.green(key[2])}`
+  return `${key[0]} ${key[1].slice(0, 10)}...${key[1].substr(-10, 10)} ${cli.color.green(key[2])}`
 }
 
 async function run(context, heroku) {

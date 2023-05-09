@@ -5,7 +5,7 @@ import HTTP from 'http-call'
 
 import {maxBy} from '../util'
 
-const capitalize = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1)
+const capitalize = (str: string) => str.slice(0, 1).toUpperCase() + str.slice(1)
 
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]

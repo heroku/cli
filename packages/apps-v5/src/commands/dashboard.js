@@ -172,7 +172,7 @@ async function run(context, heroku) {
     }
 
     metrics = await fetchMetrics(data.apps)
-  }()))
+  })())
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)

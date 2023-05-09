@@ -12,10 +12,10 @@ describe('spaces:vpn:update', function () {
 
   it('updates VPN', async function () {
     const api = nock('https://api.heroku.com:443')
-    .patch('/spaces/my-space/vpn-connections/office', {
-      routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
-    })
-    .reply(201)
+      .patch('/spaces/my-space/vpn-connections/office', {
+        routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
+      })
+      .reply(201)
     await cmd.run({
       flags: {
         name: 'office',

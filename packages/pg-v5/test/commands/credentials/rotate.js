@@ -82,22 +82,22 @@ describe('pg:credentials:rotate', () => {
   it('rotates credentials for a specific role with --name', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'my_role', confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
   })
 
   it('rotates credentials for all roles with --all', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
   })
 
   it('rotates credentials for a specific role with --name and --force', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'my_role', confirm: 'myapp', force: true}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating my_role on postgres-1... done\n'))
   })
 
   it('fails with an error if both --all and --name are included', () => {
@@ -145,8 +145,8 @@ describe('pg:credentials:rotate', () => {
 
     starter.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Rotating default on postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating default on postgres-1... done\n'))
   })
 
   it('rotates credentials with --all with starter plan', () => {
@@ -168,8 +168,8 @@ describe('pg:credentials:rotate', () => {
 
     starter.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))
   })
 
   it('requires app confirmation for rotating all roles with --all', () => {
@@ -182,11 +182,11 @@ This command will affect the apps appname_1, appname_2, appname_3.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: {all: true, confirm: 'myapp'}})
-    .then(() => {
-      expect(lastApp).to.equal('myapp')
-      expect(lastConfirm).to.equal('myapp')
-      expect(lastMsg).to.equal(message)
-    })
+      .then(() => {
+        expect(lastApp).to.equal('myapp')
+        expect(lastConfirm).to.equal('myapp')
+        expect(lastMsg).to.equal(message)
+      })
   })
 
   it('requires app confirmation for rotating all roles with --all and --force', () => {
@@ -201,11 +201,11 @@ This command will affect the apps appname_1, appname_2, appname_3.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: {all: true, force: true, confirm: 'myapp'}})
-    .then(() => {
-      expect(lastApp).to.equal('myapp')
-      expect(lastConfirm).to.equal('myapp')
-      expect(lastMsg).to.equal(message)
-    })
+      .then(() => {
+        expect(lastApp).to.equal('myapp')
+        expect(lastConfirm).to.equal('myapp')
+        expect(lastMsg).to.equal(message)
+      })
   })
 
   it('requires app confirmation for rotating a specific role with --name', () => {
@@ -219,11 +219,11 @@ This command will affect the apps appname_1, appname_2.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: {name: 'my_role', confirm: 'myapp'}})
-    .then(() => {
-      expect(lastApp).to.equal('myapp')
-      expect(lastConfirm).to.equal('myapp')
-      expect(lastMsg).to.equal(message)
-    })
+      .then(() => {
+        expect(lastApp).to.equal('myapp')
+        expect(lastConfirm).to.equal('myapp')
+        expect(lastMsg).to.equal(message)
+      })
   })
 
   it('requires app confirmation for force rotating a specific role with --name and --force', () => {
@@ -238,10 +238,10 @@ This command will affect the apps appname_1, appname_2.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: {name: 'my_role', force: true, confirm: 'myapp'}})
-    .then(() => {
-      expect(lastApp).to.equal('myapp')
-      expect(lastConfirm).to.equal('myapp')
-      expect(lastMsg).to.equal(message)
-    })
+      .then(() => {
+        expect(lastApp).to.equal('myapp')
+        expect(lastConfirm).to.equal('myapp')
+        expect(lastMsg).to.equal(message)
+      })
   })
 })

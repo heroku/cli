@@ -28,10 +28,10 @@ ${cli.color.addon(db.name)} will be repointed to follow ${newLeader.name}, and s
 This cannot be undone.`)
 
   let data = {follow: newLeader.id}
-  await cli.action(`Starting repoint of ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Starting repoint of ${cli.color.addon(db.name)}`, (async function () {
     await heroku.post(`/client/v11/databases/${db.id}/repoint`, {host: host(db), body: data})
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
-  }())
+  })())
 }
 
 module.exports = {

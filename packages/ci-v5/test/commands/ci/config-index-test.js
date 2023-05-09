@@ -20,10 +20,10 @@ describe('heroku ci:config', function () {
 
   it('displays config', async function () {
     const api = nock('https://api.heroku.com')
-    .get(`/pipelines/${pipeline.id}`)
-    .reply(200, pipeline)
-    .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-    .reply(200, {[key]: value})
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
 
     await cmd.run({flags: {pipeline: pipeline.id}})
 
@@ -33,10 +33,10 @@ describe('heroku ci:config', function () {
 
   it('displays config formatted for shell', async function () {
     const api = nock('https://api.heroku.com')
-    .get(`/pipelines/${pipeline.id}`)
-    .reply(200, pipeline)
-    .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-    .reply(200, {[key]: value})
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
 
     await cmd.run({flags: {shell: true, pipeline: pipeline.id}})
 
@@ -46,10 +46,10 @@ describe('heroku ci:config', function () {
 
   it('displays config formatted as JSON', async function () {
     const api = nock('https://api.heroku.com')
-    .get(`/pipelines/${pipeline.id}`)
-    .reply(200, pipeline)
-    .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-    .reply(200, {[key]: value})
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
 
     await cmd.run({flags: {json: true, pipeline: pipeline.id}})
 

@@ -56,7 +56,7 @@ describe('Percent', function () {
   })
 
   it('does not format undefined', function () {
-    return expect(format.Percent(undefined)).to.eq(undefined)
+    return expect(format.Percent()).to.eq()
   })
 })
 

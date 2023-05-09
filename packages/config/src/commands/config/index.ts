@@ -22,7 +22,7 @@ export class ConfigIndex extends Command {
     const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
     if (flags.shell) {
       Object.entries(config)
-      .forEach(([k, v]) => ux.log(`${k}=${quote(v)}`))
+        .forEach(([k, v]) => ux.log(`${k}=${quote(v)}`))
     } else if (flags.json) {
       ux.styledJSON(config)
     } else {

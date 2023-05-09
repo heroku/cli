@@ -18,12 +18,12 @@ async function run(context, heroku) {
                        pipelineRepository.organization.name
 
   const commit = await git.readCommit('HEAD')
-  const sourceBlobUrl = await cli.action('Preparing source', async function () {
+  const sourceBlobUrl = await cli.action('Preparing source', (async function () {
     return await source.createSourceBlob(commit.ref, context, heroku)
-  }())
+  })())
 
   // Create test run and wait for it to transition to `debugging`
-  const testRun = await cli.action('Creating test run', async function () {
+  const testRun = await cli.action('Creating test run', (async function () {
     const run = await api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
@@ -36,7 +36,7 @@ async function run(context, heroku) {
     })
 
     return await TestRun.waitForStates(['debugging', 'errored'], run, {heroku})
-  }())
+  })())
 
   if (testRun.status === 'errored') {
     cli.exit(1, `Test run creation failed while ${testRun.error_state} with message "${testRun.message}"`)

@@ -30,9 +30,9 @@ async function run(context, heroku) {
     let name = annotateAppName(app)
     if (app.region && app.region.name !== 'us') {
       return `${name} (${cli.color.green(app.region.name)})`
-    } else {
-      return name
     }
+
+    return name
   }
 
   function listApps(apps) {
