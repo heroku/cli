@@ -8,9 +8,9 @@ let endpoints = require('../../lib/endpoints.js').all
 function valueEmpty(value) {
   if (value) {
     return value.length === 0
-  } else {
-    return true
   }
+
+  return true
 }
 
 function getSubject(context) {
@@ -67,9 +67,9 @@ function getCommand(certs, domain) {
     })
   })) {
     return 'update'
-  } else {
-    return 'add'
   }
+
+  return 'add'
 }
 
 async function run(context, heroku) {
