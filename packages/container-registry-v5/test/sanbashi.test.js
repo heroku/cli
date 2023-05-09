@@ -100,14 +100,14 @@ describe('Sanbashi', () => {
       }
     })
   })
-  describe('.chooseJobs', () => {
+  describe('.chooseJobs multiple entries', () => {
     let promptStub
     beforeEach(() => {
       promptStub = Sinon.stub(Inquirer, 'prompt').returns({web: 'Nested/Dockerfile.web'})
     })
 
     it('prompts user when multiple entries exists', async () => {
-      const dockerfiles = [Path.join('.', 'Nested', 'Dockerfile.web'), Path.join('.', 'Nested', 'Dockerfile.web')]
+      const dockerfiles = [Path.join('.', 'Nested', 'Dockerfile.web'), Path.join('.', 'Dockerfile.web')]
       const jobs = Sanbashi.getJobs('rootfulroot', dockerfiles)
       let chosenJob = await Sanbashi.chooseJobs(jobs)
       expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
