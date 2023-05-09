@@ -18,9 +18,9 @@ async function run(context, heroku) {
 ${cli.color.addon(db.name)} will become writeable and no longer follow ${origin}. This cannot be undone.
 `)
 
-  await cli.action(`${cli.color.addon(db.name)} unfollowing`, async function () {
+  await cli.action(`${cli.color.addon(db.name)} unfollowing`, (async function () {
     await heroku.put(`/client/v11/databases/${db.id}/unfollow`, {host: host(db)})
-  }())
+  })())
 }
 
 module.exports = {

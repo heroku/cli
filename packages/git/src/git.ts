@@ -46,9 +46,9 @@ export default class Git {
   async remoteUrl(name: string) {
     const remotes = await this.exec(['remote', '-v'])
     return remotes.split('\n')
-    .map(r => r.split('\t'))
-    .find(r => r[0] === name)![1]
-    .split(' ')[0]
+      .map(r => r.split('\t'))
+      .find(r => r[0] === name)![1]
+      .split(' ')[0]
   }
 
   url(app: string) {

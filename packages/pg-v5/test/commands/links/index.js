@@ -43,7 +43,7 @@ describe('pg:links', () => {
       {name: 'redis-link-1', created_at: '100', remote: {attachment_name: 'REDIS', name: 'redis-001'}},
     ])
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(`=== postgres-1
+      .then(() => expect(cli.stdout).to.equal(`=== postgres-1
 
  * redis-link-1
 created_at: 100

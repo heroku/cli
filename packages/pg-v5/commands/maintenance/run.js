@@ -10,7 +10,7 @@ async function run(context, heroku) {
   const db = await fetcher.addon(app, args.database)
 
   if (util.essentialPlan(db)) throw new Error('pg:maintenance isn’t available for Essential-tier databases.')
-  await cli.action(`Starting maintenance for ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Starting maintenance for ${cli.color.addon(db.name)}`, (async function () {
     if (!flags.force) {
       let appInfo = await heroku.get(`/apps/${app}`)
       if (!appInfo.maintenance) throw new Error('Application must be in maintenance mode or run with --force')
@@ -18,7 +18,7 @@ async function run(context, heroku) {
 
     let response = await heroku.post(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
     cli.action.done(response.message || 'done')
-  }())
+  })())
 }
 
 module.exports = {

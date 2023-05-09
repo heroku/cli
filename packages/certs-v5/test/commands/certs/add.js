@@ -32,8 +32,8 @@ let lolex = require('lolex')
 
 function mockDomains(inquirer) {
   nock('https://api.heroku.com')
-  .get('/apps/example/domains')
-  .reply(200, [])
+    .get('/apps/example/domains')
+    .reply(200, [])
 
   inquirer.prompt = prompts => {
     return Promise.resolve({domains: []})
@@ -42,8 +42,8 @@ function mockDomains(inquirer) {
 
 function mockFile(fs, file, content) {
   fs.readFile
-  .withArgs(file, 'utf-8', sinon.match.func)
-  .callsArgWithAsync(2, null, content)
+    .withArgs(file, 'utf-8', sinon.match.func)
+    .callsArgWithAsync(2, null, content)
 }
 
 describe('heroku certs:add', function () {
@@ -63,8 +63,8 @@ describe('heroku certs:add', function () {
 
   it('# errors out when args < 2', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     return assertExit(1, certs.run({app: 'example', args: ['pem_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
@@ -74,8 +74,8 @@ describe('heroku certs:add', function () {
 
   it('# works with a cert and key', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     mockDomains(inquirer)
 
@@ -83,10 +83,10 @@ describe('heroku certs:add', function () {
     mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com')
-    .post('/apps/example/sni-endpoints', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpoint)
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpoint)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mockSni.done()
@@ -101,8 +101,8 @@ ${certificateDetails}
 
   it('# errors out with intermediaries', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     return assertExit(1, certs.run({app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
@@ -112,8 +112,8 @@ ${certificateDetails}
 
   it('# displays warnings', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     mockDomains(inquirer)
 
@@ -121,10 +121,10 @@ ${certificateDetails}
     mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com')
-    .post('/apps/example/sni-endpoints', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpointWarning)
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpointWarning)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mockSni.done()
@@ -134,8 +134,8 @@ ${certificateDetails}
 
   it('# creates an SNI endpoint', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     mockDomains(inquirer)
 
@@ -143,10 +143,10 @@ ${certificateDetails}
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-    .post('/apps/example/sni-endpoints', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpoint)
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpoint)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mock.done()
@@ -162,22 +162,22 @@ ${certificateDetails}
 
   it('# shows the configure prompt', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     nock('https://api.heroku.com')
-    .get('/apps/example/domains')
-    .reply(200, [{id: 123, hostname: 'example.org'}])
+      .get('/apps/example/domains')
+      .reply(200, [{id: 123, hostname: 'example.org'}])
 
     mockDomains(inquirer)
     mockFile(fs, 'pem_file', 'pem content')
     mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com')
-    .post('/apps/example/sni-endpoints', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpoint)
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpoint)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
       mockSni.done()
@@ -194,8 +194,8 @@ ${certificateDetails}
   describe('stable cnames', function () {
     beforeEach(function () {
       nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, {space: null})
+        .get('/apps/example')
+        .reply(200, {space: null})
 
       mockFile(fs, 'pem_file', 'pem content')
       mockFile(fs, 'key_file', 'key content')
@@ -203,20 +203,20 @@ ${certificateDetails}
 
     it('# prompts creates an SNI endpoint with stable cnames', function () {
       let mock = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointStables)
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpointStables)
 
       let domainsMock = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com'},
-        {kind: 'custom', hostname: 'baz.example.org', cname: 'baz.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'example.org', cname: 'example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'example.co.uk', cname: 'example.co.uk.herokudns.com'},
-        {kind: 'heroku', hostname: 'haiku.herokuapp.com', cname: 'haiku.herokuapp.com'},
-      ])
+        .get('/apps/example/domains')
+        .reply(200, [
+          {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com'},
+          {kind: 'custom', hostname: 'baz.example.org', cname: 'baz.example.org.herokudns.com'},
+          {kind: 'custom', hostname: 'example.org', cname: 'example.org.herokudns.com'},
+          {kind: 'custom', hostname: 'example.co.uk', cname: 'example.co.uk.herokudns.com'},
+          {kind: 'heroku', hostname: 'haiku.herokuapp.com', cname: 'haiku.herokuapp.com'},
+        ])
 
       inquirer.prompt = prompts => {
         let choices = prompts[0].choices
@@ -227,8 +227,8 @@ ${certificateDetails}
       }
 
       let domainsCreate = nock('https://api.heroku.com')
-      .patch('/apps/example/domains/biz.example.com')
-      .reply(200)
+        .patch('/apps/example/domains/biz.example.com')
+        .reply(200)
 
       return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}).then(function () {
         mock.done()
@@ -253,22 +253,22 @@ SSL certificate is self signed.
 
     it('# does not error out if the cert CN is for the heroku domain', function () {
       let mock = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointHeroku)
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpointHeroku)
 
       let domainsMock = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-      ])
+        .get('/apps/example/domains')
+        .reply(200, [
+          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
+        ])
 
       let domainsMockPatch = nock('https://api.heroku.com')
-      .patch('/apps/example/domains/tokyo-1050.herokuapp.com')
-      .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-      ])
+        .patch('/apps/example/domains/tokyo-1050.herokuapp.com')
+        .reply(200, [
+          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
+        ])
 
       inquirer.prompt = prompts => {
         let choices = prompts[0].choices
@@ -300,18 +300,18 @@ SSL certificate is not trusted.
 
     it('# does not prompt if domains covered with wildcard', function () {
       let mock = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointStables)
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpointStables)
 
       let domainsMock = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        {kind: 'custom', hostname: '*.example.org', cname: 'wildcard.example.org.herokudns.com'},
-        {kind: 'custom', hostname: '*.example.com', cname: 'wildcard.example.com.herokudns.com'},
+        .get('/apps/example/domains')
+        .reply(200, [
+          {kind: 'custom', hostname: '*.example.org', cname: 'wildcard.example.org.herokudns.com'},
+          {kind: 'custom', hostname: '*.example.com', cname: 'wildcard.example.com.herokudns.com'},
         // { 'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com' }
-      ])
+        ])
 
       inquirer.prompt = prompts => {
         expect.fail('inquirer.prompt() should not be called')
@@ -338,14 +338,14 @@ SSL certificate is self signed.
 
     it('# does not prompt if no domains and wildcard cert', function () {
       let mock = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointWildcard)
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpointWildcard)
 
       let domainsMock = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+        .get('/apps/example/domains')
+        .reply(200, [])
 
       inquirer.prompt = prompts => {
         expect.fail('inquirer.prompt() should not be called')
@@ -371,21 +371,21 @@ SSL certificate is self signed.
 
     it('# prints mismatched domains for wildcard cert', function () {
       let mock = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointWildcard)
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpointWildcard)
 
       let domainsMock = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'bar.example.com', cname: 'bar.example.com.herokudns.com'},
-      ])
+        .get('/apps/example/domains')
+        .reply(200, [
+          {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
+          {kind: 'custom', hostname: 'bar.example.com', cname: 'bar.example.com.herokudns.com'},
+        ])
 
       let domainsMockPatch = nock('https://api.heroku.com')
-      .patch('/apps/example/domains/foo.example.org')
-      .reply(200)
+        .patch('/apps/example/domains/foo.example.org')
+        .reply(200)
 
       inquirer.prompt = prompts => {
         let choices = prompts[0].choices
@@ -432,49 +432,49 @@ SSL certificate is self signed.
 
       it('# waits for custom domains to have a cname', function () {
         let mock = nock('https://api.heroku.com')
-        .post('/apps/example/sni-endpoints', {
-          certificate_chain: 'pem content', private_key: 'key content',
-        })
-        .reply(200, endpointStables)
+          .post('/apps/example/sni-endpoints', {
+            certificate_chain: 'pem content', private_key: 'key content',
+          })
+          .reply(200, endpointStables)
 
         let domainsMock = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'bar.example.org', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'biz.example.com', cname: null, status: 'none'},
-        ])
+          .get('/apps/example/domains')
+          .reply(200, [
+            {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'bar.example.org', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'biz.example.com', cname: null, status: 'none'},
+          ])
 
         let domainsRetry = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com', status: 'succeeded'},
-          {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com', status: 'succeeded'},
-        ])
+          .get('/apps/example/domains')
+          .reply(200, [
+            {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com', status: 'succeeded'},
+            {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com', status: 'succeeded'},
+          ])
 
         let domainsSuccess = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com', status: 'succeeded'},
-          {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com', status: 'succeeded'},
-          {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com', status: 'succeeded'},
-        ])
+          .get('/apps/example/domains')
+          .reply(200, [
+            {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com', status: 'succeeded'},
+            {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com', status: 'succeeded'},
+            {kind: 'custom', hostname: 'biz.example.com', cname: 'biz.example.com.herokudns.com', status: 'succeeded'},
+          ])
 
         let domainsCreateFoo = nock('https://api.heroku.com')
-        .patch('/apps/example/domains/foo.example.org')
-        .reply(200)
+          .patch('/apps/example/domains/foo.example.org')
+          .reply(200)
 
         let domainsCreateBar = nock('https://api.heroku.com')
-        .patch('/apps/example/domains/bar.example.org')
-        .reply(200)
+          .patch('/apps/example/domains/bar.example.org')
+          .reply(200)
 
         let domainsCreateBiz = nock('https://api.heroku.com')
-        .patch('/apps/example/domains/biz.example.com')
-        .reply(200)
+          .patch('/apps/example/domains/biz.example.com')
+          .reply(200)
 
         inquirer.prompt = prompts => {
           let choices = prompts[0].choices
@@ -513,20 +513,20 @@ SSL certificate is self signed.
 
       it('# tries 30 times and then gives up', function () {
         let mock = nock('https://api.heroku.com')
-        .post('/apps/example/sni-endpoints', {
-          certificate_chain: 'pem content', private_key: 'key content',
-        })
-        .reply(200, endpointStables)
+          .post('/apps/example/sni-endpoints', {
+            certificate_chain: 'pem content', private_key: 'key content',
+          })
+          .reply(200, endpointStables)
 
         let domainsMock = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .times(31)
-        .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'bar.example.org', cname: null, status: 'none'},
-          {kind: 'custom', hostname: 'biz.example.com', cname: null, status: 'none'},
-        ])
+          .get('/apps/example/domains')
+          .times(31)
+          .reply(200, [
+            {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'foo.example.org', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'bar.example.org', cname: null, status: 'none'},
+            {kind: 'custom', hostname: 'biz.example.com', cname: null, status: 'none'},
+          ])
 
         return assert.isRejected(certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {}}), /Timed out while waiting for stable domains to be created/).then(function () {
           mock.done()
@@ -551,8 +551,8 @@ SSL certificate is self signed.
 
   it('warns on deprecated --bypass flag', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     mockDomains(inquirer)
 
@@ -560,10 +560,10 @@ SSL certificate is self signed.
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-    .post('/apps/example/sni-endpoints', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpoint)
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpoint)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {bypass: true}}).then(function () {
       mock.done()

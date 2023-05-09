@@ -31,10 +31,10 @@ This cannot be undone.`)
 
   let data = {version: flags.version}
 
-  await cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, (async function () {
     await heroku.post(`/client/v11/databases/${db.id}/upgrade`, {host: host(db), body: data})
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
-  }())
+  })())
 }
 
 module.exports = {

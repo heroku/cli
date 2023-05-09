@@ -10,9 +10,9 @@ function timeAgo(since) {
   let elapsed = Math.floor((Date.now() - since) / 1000)
   let message = strftime('%Y/%m/%d %H:%M:%S %z', since)
   if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`
-  else if (elapsed < 60 * 60) return `${message} (~ ${Math.floor(elapsed / 60)}m ago)`
-  else if (elapsed < 60 * 60 * 25) return `${message} (~ ${Math.floor(elapsed / 60 / 60)}h ago)`
-  else return message
+  if (elapsed < 60 * 60) return `${message} (~ ${Math.floor(elapsed / 60)}m ago)`
+  if (elapsed < 60 * 60 * 25) return `${message} (~ ${Math.floor(elapsed / 60 / 60)}h ago)`
+  return message
 }
 
 async function run(context, heroku) {

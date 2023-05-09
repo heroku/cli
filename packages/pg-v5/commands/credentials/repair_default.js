@@ -17,9 +17,9 @@ Ownership of all database objects owned by additional credentials will be transf
 This command will also grant the default credential admin option for all additional credentials.
 `)
 
-  await cli.action('Resetting permissions and object ownership for default role to factory settings', async function () {
+  await cli.action('Resetting permissions and object ownership for default role to factory settings', (async function () {
     await heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {host: host(db)})
-  }())
+  })())
 }
 
 module.exports = {

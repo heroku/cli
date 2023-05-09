@@ -11,6 +11,7 @@
     "@typescript-eslint/no-unused-vars": "warn", // TODO: fix issues and turn this back on
     "camelcase":"off",
     "import/no-unresolved": "error",
+    "indent": ["error", 2, {"MemberExpression": 1}],
     "func-names":"warn", // TODO: fix issues and turn this back on
     "no-await-in-loop": "warn", // TODO: fix issues and turn this back on
     "no-constant-condition": ["error", {"checkLoops": false }],

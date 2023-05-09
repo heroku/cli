@@ -18,21 +18,21 @@ describe('domains:info', () => {
   }
 
   test
-  .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/domains/www.example.com')
-  .reply(200, domainInfoResponse),
-  )
-  .stdout()
-  .command(['domains:info', 'www.example.com', '--app', 'myapp'])
-  .it('shows detailed information about a domain', ctx => {
-    expect(ctx.stdout).to.contain('acm_status:        pending')
-    expect(ctx.stdout).to.contain('acm_status_reason: Failing CCA check')
-    expect(ctx.stdout).to.contain('app:               myapp')
-    expect(ctx.stdout).to.contain('cname:             example.herokudns.com')
-    expect(ctx.stdout).to.contain('created_at:        2012-01-01T12:00:00Z')
-    expect(ctx.stdout).to.contain('hostname:          www.example.com')
-    expect(ctx.stdout).to.contain('kind:              custom')
-    expect(ctx.stdout).to.contain('status:            pending')
-    expect(ctx.stdout).to.contain('updated_at:        2012-01-01T12:00:00Z')
-  })
+    .nock('https://api.heroku.com', api => api
+      .get('/apps/myapp/domains/www.example.com')
+      .reply(200, domainInfoResponse),
+    )
+    .stdout()
+    .command(['domains:info', 'www.example.com', '--app', 'myapp'])
+    .it('shows detailed information about a domain', ctx => {
+      expect(ctx.stdout).to.contain('acm_status:        pending')
+      expect(ctx.stdout).to.contain('acm_status_reason: Failing CCA check')
+      expect(ctx.stdout).to.contain('app:               myapp')
+      expect(ctx.stdout).to.contain('cname:             example.herokudns.com')
+      expect(ctx.stdout).to.contain('created_at:        2012-01-01T12:00:00Z')
+      expect(ctx.stdout).to.contain('hostname:          www.example.com')
+      expect(ctx.stdout).to.contain('kind:              custom')
+      expect(ctx.stdout).to.contain('status:            pending')
+      expect(ctx.stdout).to.contain('updated_at:        2012-01-01T12:00:00Z')
+    })
 })

@@ -12,9 +12,9 @@ async function run(context, heroku) {
     let column = `${prefix}query`
     if (context.flags.truncate) {
       return `CASE WHEN length(${column}) <= 40 THEN ${column} ELSE substr(${column}, 0, 39) || '…' END`
-    } else {
-      return column
     }
+
+    return column
   }
 
   let query = `

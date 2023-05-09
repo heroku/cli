@@ -29,7 +29,7 @@ const shouldCancel = function (cmdRun) {
 
     it('cancels backup', () => {
       return cmdRun({app: 'myapp', args: {}})
-      .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
+        .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
     })
   })
 
@@ -42,7 +42,7 @@ const shouldCancel = function (cmdRun) {
 
     it('cancels backup', () => {
       return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
-      .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
+        .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
     })
   })
 }

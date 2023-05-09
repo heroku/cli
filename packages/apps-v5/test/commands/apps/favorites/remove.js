@@ -11,14 +11,14 @@ describe('apps:favorites:remove', () => {
 
   it('removes the app as a favorite', () => {
     let api = nock('https://particleboard.heroku.com:443')
-    .get('/favorites?type=app')
-    .reply(200, [{id: 'favoriteid', resource_name: 'myapp'}])
-    .delete('/favorites/favoriteid')
-    .reply(201)
+      .get('/favorites?type=app')
+      .reply(200, [{id: 'favoriteid', resource_name: 'myapp'}])
+      .delete('/favorites/favoriteid')
+      .reply(201)
 
     return cmd.run({app: 'myapp'})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Removing myapp from favorites... done\n'))
-    .then(() => api.done())
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Removing myapp from favorites... done\n'))
+      .then(() => api.done())
   })
 })

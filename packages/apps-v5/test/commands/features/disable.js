@@ -10,11 +10,11 @@ describe('features:disable', function () {
 
   it('disables an app feature', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/apps/myapp/features/feature-a')
-    .reply(200, {enabled: true})
-    .patch('/apps/myapp/features/feature-a', {enabled: false})
-    .reply(200)
+      .get('/apps/myapp/features/feature-a')
+      .reply(200, {enabled: true})
+      .patch('/apps/myapp/features/feature-a', {enabled: false})
+      .reply(200)
     return cmd.run({app: 'myapp', args: {feature: 'feature-a'}})
-    .then(() => api.done())
+      .then(() => api.done())
   })
 })

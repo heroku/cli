@@ -12,35 +12,35 @@ describe('keys:remove', () => {
 
   it('removes an SSH key', () => {
     let api = nock('https://api.heroku.com:443')
-    .get('/account/keys')
-    .reply(200, [{id: 1, comment: 'user@machine'}])
-    .delete('/account/keys/1')
-    .reply(200)
+      .get('/account/keys')
+      .reply(200, [{id: 1, comment: 'user@machine'}])
+      .delete('/account/keys/1')
+      .reply(200)
     return cmd.run({args: {key: 'user@machine'}})
-    .then(() => expect('').to.equal(cli.stdout))
-    .then(() => expect('Removing user@machine SSH key... done\n').to.equal(cli.stderr))
-    .then(() => api.done())
+      .then(() => expect('').to.equal(cli.stdout))
+      .then(() => expect('Removing user@machine SSH key... done\n').to.equal(cli.stderr))
+      .then(() => api.done())
   })
 
   it('errors if no SSH keys on account', () => {
     nock('https://api.heroku.com:443')
-    .get('/account/keys')
-    .reply(200, [])
+      .get('/account/keys')
+      .reply(200, [])
     return cmd.run({args: {key: 'user@machine'}})
-    .catch(function (error) {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.equal('No SSH keys on account')
-    })
+      .catch(function (error) {
+        expect(error).to.be.an.instanceof(Error)
+        expect(error.message).to.equal('No SSH keys on account')
+      })
   })
 
   it('errors with incorrect SSH key on account', () => {
     nock('https://api.heroku.com:443')
-    .get('/account/keys')
-    .reply(200, [{id: 1, comment: 'user@machine'}])
+      .get('/account/keys')
+      .reply(200, [{id: 1, comment: 'user@machine'}])
     return cmd.run({args: {key: 'different@machine'}})
-    .catch(function (error) {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
-    })
+      .catch(function (error) {
+        expect(error).to.be.an.instanceof(Error)
+        expect(error.message).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
+      })
   })
 })

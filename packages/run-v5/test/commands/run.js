@@ -18,8 +18,8 @@ describeAcceptance('run', () => {
       stdout += s
     })
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['echo', '1', '2', '3']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout).to.contain('1 2 3\n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout).to.contain('1 2 3\n'))
   })
 
   it('runs a command with spaces', () => {
@@ -29,8 +29,8 @@ describeAcceptance('run', () => {
       stdout += s
     })
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout).to.equal('{"foo": "bar"} \n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout).to.equal('{"foo": "bar"} \n'))
   })
 
   it('runs a command with quotes', () => {
@@ -40,8 +40,8 @@ describeAcceptance('run', () => {
       stdout += s
     })
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout).to.equal('{"foo":"bar"}\n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout).to.equal('{"foo":"bar"}\n'))
   })
 
   it('runs a command with env vars', () => {
@@ -51,8 +51,8 @@ describeAcceptance('run', () => {
       stdout += s
     })
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {env: 'FOO=bar'}, auth: {password: global.apikey}, args: ['env']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout).to.contain('FOO=bar'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout).to.contain('FOO=bar'))
   })
 
   it('gets 127 status for invalid command', () => {

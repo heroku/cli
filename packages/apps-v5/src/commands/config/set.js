@@ -34,7 +34,7 @@ async function run(context, heroku) {
   await cli.action(
     `Setting ${context.args.map(v => cli.color.configVar(v.split('=')[0])).join(', ')} and restarting ${cli.color.app(context.app)}`,
     {success: false},
-    async function () {
+    (async function () {
       config = await heroku.request({
         method: 'patch',
         path: `/apps/${context.app}/config-vars`,
@@ -42,7 +42,7 @@ async function run(context, heroku) {
       })
       let release = await lastRelease()
       cli.action.done(`done, ${cli.color.release('v' + release.version)}`)
-    }(),
+    })(),
   )
 
   config = pickBy(config, (_, k) => vars[k])

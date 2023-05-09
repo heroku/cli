@@ -29,9 +29,9 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
 
         return {type, size}
       }))
-    } else {
-      return formation.map(p => ({type: p.type, size: args[0]}))
     }
+
+    return formation.map(p => ({type: p.type, size: args[0]}))
   }
 
   let displayFormation = async function () {

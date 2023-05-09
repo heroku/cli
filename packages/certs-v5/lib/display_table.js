@@ -7,9 +7,9 @@ let _ = require('lodash')
 function type(f) {
   if (f.ssl_cert && f.ssl_cert.acm) {
     return 'ACM'
-  } else {
-    return 'SNI'
   }
+
+  return 'SNI'
 }
 
 module.exports = function (certs) {

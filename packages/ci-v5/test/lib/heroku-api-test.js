@@ -14,8 +14,8 @@ describe('heroku-api', function () {
       const app = 'sausages'
       const coupling = {pipeline: {id: '123-abc'}}
       const api = nock('https://api.heroku.com')
-      .get(`/apps/${app}/pipeline-couplings`)
-      .reply(200, coupling)
+        .get(`/apps/${app}/pipeline-couplings`)
+        .reply(200, coupling)
 
       const response = await herokuAPI.pipelineCoupling(new Heroku(), app)
       expect(response).to.deep.eq(coupling)
@@ -28,8 +28,8 @@ describe('heroku-api', function () {
       const pipeline = '123-abc'
       const repo = {repository: {name: 'heroku/heroku'}}
       const api = nock('https://kolkrabbi.heroku.com')
-      .get(`/pipelines/${pipeline}/repository`)
-      .reply(200, repo)
+        .get(`/pipelines/${pipeline}/repository`)
+        .reply(200, repo)
 
       const response = await herokuAPI.pipelineRepository(new Heroku(), pipeline)
       expect(response).to.deep.eq(repo)
@@ -48,8 +48,8 @@ describe('heroku-api', function () {
       }
 
       const api = nock('https://api.heroku.com')
-      .get(`/apps/${appID}/dynos/${dynoID}`)
-      .reply(200, dyno)
+        .get(`/apps/${appID}/dynos/${dynoID}`)
+        .reply(200, dyno)
 
       const response = await herokuAPI.getDyno(new Heroku(), appID, dynoID)
       expect(response).to.deep.eq(dyno)
@@ -63,8 +63,8 @@ describe('heroku-api', function () {
       const ref = '123-abc'
       const archiveLink = {archive_link: 'https://example.com'}
       const api = nock('https://kolkrabbi.heroku.com')
-      .get(`/github/repos/${user}/${repository}/tarball/${ref}`)
-      .reply(200, archiveLink)
+        .get(`/github/repos/${user}/${repository}/tarball/${ref}`)
+        .reply(200, archiveLink)
 
       const response = await herokuAPI.githubArchiveLink(new Heroku(), user, repository, ref)
       expect(response).to.deep.eq(archiveLink)
@@ -78,8 +78,8 @@ describe('heroku-api', function () {
       const number = 1
       const testRun = {number}
       const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
-      .get(`/pipelines/${pipeline}/test-runs/${number}`)
-      .reply(200, testRun)
+        .get(`/pipelines/${pipeline}/test-runs/${number}`)
+        .reply(200, testRun)
 
       const response = await herokuAPI.testRun(new Heroku(), pipeline, number)
       expect(response).to.deep.eq(testRun)
@@ -93,8 +93,8 @@ describe('heroku-api', function () {
       const testNode = {test_run: {id: testRun.id}}
 
       const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
-      .get(`/test-runs/${testRun.id}/test-nodes`)
-      .reply(200, [testNode])
+        .get(`/test-runs/${testRun.id}/test-nodes`)
+        .reply(200, [testNode])
 
       const response = await herokuAPI.testNodes(new Heroku(), testRun.id)
       expect(response).to.deep.eq([testNode])
@@ -107,8 +107,8 @@ describe('heroku-api', function () {
       const pipeline = '123-abc'
       const testRuns = [{id: '123'}]
       const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
-      .get(`/pipelines/${pipeline}/test-runs`)
-      .reply(200, testRuns)
+        .get(`/pipelines/${pipeline}/test-runs`)
+        .reply(200, testRuns)
 
       const response = await herokuAPI.testRuns(new Heroku(), pipeline)
       expect(response).to.deep.eq(testRuns)
@@ -121,8 +121,8 @@ describe('heroku-api', function () {
       const pipeline = '123-abc'
       const testRuns = [{number: 123}, {number: 122}]
       const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
-      .get(`/pipelines/${pipeline}/test-runs`)
-      .reply(200, testRuns)
+        .get(`/pipelines/${pipeline}/test-runs`)
+        .reply(200, testRuns)
 
       const response = await herokuAPI.latestTestRun(new Heroku(), pipeline)
       expect(response).to.deep.eq(testRuns[0])
@@ -134,8 +134,8 @@ describe('heroku-api', function () {
     it('creates a source', async function () {
       const source = {source_blob: {get_url: 'https://example.com/get', put_url: 'https://example.com/put'}}
       const api = nock('https://api.heroku.com')
-      .post('/sources')
-      .reply(201, source)
+        .post('/sources')
+        .reply(201, source)
 
       const response = await herokuAPI.createSource(new Heroku())
       expect(response).to.deep.eq(source)
@@ -148,8 +148,8 @@ describe('heroku-api', function () {
       const id = '123'
       const config = {FOO: 'bar'}
       const api = nock('https://api.heroku.com')
-      .get(`/pipelines/${id}/stage/test/config-vars`)
-      .reply(200, config)
+        .get(`/pipelines/${id}/stage/test/config-vars`)
+        .reply(200, config)
 
       const response = await herokuAPI.configVars(new Heroku(), id)
       expect(response).to.deep.eq(config)
@@ -162,8 +162,8 @@ describe('heroku-api', function () {
       const id = '123'
       const config = {FOO: 'bar'}
       const api = nock('https://api.heroku.com')
-      .patch(`/pipelines/${id}/stage/test/config-vars`)
-      .reply(200, config)
+        .patch(`/pipelines/${id}/stage/test/config-vars`)
+        .reply(200, config)
 
       const response = await herokuAPI.setConfigVars(new Heroku(), id, config)
       expect(response).to.deep.eq(config)

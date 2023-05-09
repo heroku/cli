@@ -7,8 +7,8 @@ export function quote(s: string): string {
   if (/["\s#!$&'()*,:;<=>?@\[\\\]^`{|}]/.test(s)) {
     if (/['\n]/.test(s)) return '"' +
       s
-      .replace(/(["\\$`!])/g, '\\$1')
-      .replace(/\n/g, '\\n') +
+        .replace(/(["\\$`!])/g, '\\$1')
+        .replace(/\n/g, '\\n') +
       '"'
     return "'" + s.replace(/(['\\])/g, '\\$1') + "'"
   }

@@ -7,17 +7,17 @@ describe('pipelines:remove', () => {
   const coupling = {id, stage: 'production'}
 
   test
-  .stderr()
-  .nock('https://api.heroku.com', api => {
-    api
-    .get(`/apps/${app}/pipeline-couplings`)
-    .reply(200, coupling)
-    .delete(`/pipeline-couplings/${id}`)
-    .reply(200, coupling)
-  })
-  .command(['pipelines:remove', '--app=example'])
-  .retries(3)
-  .it('displays the right messages', ctx => {
-    expect(ctx.stderr).to.contain(`Removing ⬢ ${app}... done\n`)
-  })
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api
+        .get(`/apps/${app}/pipeline-couplings`)
+        .reply(200, coupling)
+        .delete(`/pipeline-couplings/${id}`)
+        .reply(200, coupling)
+    })
+    .command(['pipelines:remove', '--app=example'])
+    .retries(3)
+    .it('displays the right messages', ctx => {
+      expect(ctx.stderr).to.contain(`Removing ⬢ ${app}... done\n`)
+    })
 })

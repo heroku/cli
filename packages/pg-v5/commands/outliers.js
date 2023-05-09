@@ -35,8 +35,9 @@ WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 
 ORDER BY total_exec_time DESC
 LIMIT ${limit}
 `
-  } else {
-    return `
+  }
+
+  return `
 SELECT
   interval '1 millisecond' * total_time AS total_exec_time,
   to_char((total_time/sum(total_time) OVER()) * 100, 'FM90D0') || '%'  AS prop_exec_time,
@@ -48,7 +49,6 @@ WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 
 ORDER BY total_time DESC
 LIMIT ${limit}
 `
-  }
 }
 
 async function run(context, heroku) {

@@ -48,8 +48,8 @@ describe('pg:credentials:repair-default', () => {
   it('resets the credential permissions', () => {
     pg.post('/postgres/v0/databases/postgres-1/repair-default').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Resetting permissions and object ownership for default role to factory settings... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Resetting permissions and object ownership for default role to factory settings... done\n'))
   })
 
   it('throws an error when the db is essential plan', () => {

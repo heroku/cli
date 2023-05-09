@@ -10,12 +10,12 @@ async function run(context, heroku) {
 
   await cli.confirmApp(app, flags.confirm)
 
-  await cli.action(`Deleting backup ${cli.color.cyan(args.backup_id)} on ${cli.color.app(app)}`, async function () {
+  await cli.action(`Deleting backup ${cli.color.cyan(args.backup_id)} on ${cli.color.app(app)}`, (async function () {
     let num = await pgbackups.transfer.num(args.backup_id)
     if (!num) throw new Error(`Invalid Backup: ${args.backup_id}`)
 
     await heroku.delete(`/client/v11/apps/${app}/transfers/${num}`, {host})
-  }())
+  })())
 }
 
 module.exports = {

@@ -20,26 +20,26 @@ describe('maintenance', () => {
   it('shows that maintenance is on', () => {
     // mock out API
     let api = nock('https://api.heroku.com:443')
-    .get('/apps/myapp')
-    .reply(200, {maintenance: true})
+      .get('/apps/myapp')
+      .reply(200, {maintenance: true})
 
     // run the command
     return cmd.run({app: 'myapp'})
     // check stdout
-    .then(() => expect(cli.stdout).to.equal('on\n'))
+      .then(() => expect(cli.stdout).to.equal('on\n'))
     // check stderr
-    .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => expect(cli.stderr, 'to be empty'))
     // ensure all nock HTTP expectations are met
-    .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('shows that maintenance is off', () => {
     let api = nock('https://api.heroku.com:443')
-    .get('/apps/myapp')
-    .reply(200, {maintenance: false})
+      .get('/apps/myapp')
+      .reply(200, {maintenance: false})
     return cmd.run({app: 'myapp'})
-    .then(() => expect(cli.stdout).to.equal('off\n'))
-    .then(() => expect(cli.stderr, 'to be empty'))
-    .then(() => api.done())
+      .then(() => expect(cli.stdout).to.equal('off\n'))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
   })
 })

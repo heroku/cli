@@ -41,57 +41,57 @@ describe('spaces:vpn:connections', function () {
   }
   it('displays no connection message if none exist', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/vpn-connections')
-    .reply(200, [])
+      .get('/spaces/my-space/vpn-connections')
+      .reply(200, [])
     return cmd.run({flags: {
       space: 'my-space',
     }})
-    .then(() => expect(cli.stdout).to.equal('No VPN Connections have been created yet\n'))
-    .then(() => api.done())
+      .then(() => expect(cli.stdout).to.equal('No VPN Connections have been created yet\n'))
+      .then(() => api.done())
   })
   it('displays VPN Connections', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/vpn-connections')
-    .reply(200, [space])
+      .get('/spaces/my-space/vpn-connections')
+      .reply(200, [space])
     return cmd.run({flags: {
       space: 'my-space',
     }})
-    .then(() => expect(cli.stdout).to.equal(
-      `=== my-space VPN Connections
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space VPN Connections
 Name    Status  Tunnels
 ──────  ──────  ───────
 office  active  UP/UP
 `,
-    ))
-    .then(() => api.done())
+      ))
+      .then(() => api.done())
   })
   it('displays VPN Connection ID when name is unavailable', function () {
     let conn = {...space, name: ''}
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/vpn-connections')
-    .reply(200, [conn])
+      .get('/spaces/my-space/vpn-connections')
+      .reply(200, [conn])
     return cmd.run({flags: {
       space: 'my-space',
     }})
-    .then(() => expect(cli.stdout).to.equal(
-      `=== my-space VPN Connections
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space VPN Connections
 Name          Status  Tunnels
 ────────────  ──────  ───────
 123456789012  active  UP/UP
 `,
-    ))
-    .then(() => api.done())
+      ))
+      .then(() => api.done())
   })
   it('displays VPN Connections in json', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/vpn-connections')
-    .reply(200, [space])
+      .get('/spaces/my-space/vpn-connections')
+      .reply(200, [space])
     return cmd.run({flags: {
       space: 'my-space',
       json: true,
     }})
-    .then(() => expect(cli.stdout).to.equal(
-      `[
+      .then(() => expect(cli.stdout).to.equal(
+        `[
   {
     "id": "123456789012",
     "name": "office",
@@ -124,7 +124,7 @@ Name          Status  Tunnels
   }
 ]
 `,
-    ))
-    .then(() => api.done())
+      ))
+      .then(() => api.done())
   })
 })

@@ -25,8 +25,8 @@ export namespace BuildpackInstallationsStub {
     }
 
     nock
-    .get('/apps/example/buildpack-installations')
-    .reply(200, response)
+      .get('/apps/example/buildpack-installations')
+      .reply(200, response)
   }
 
   export function put(nock: Scope, buildpacks?: Array<string>, registry?: Map<string, {url: string; name: string}>) {
@@ -55,7 +55,7 @@ export namespace BuildpackInstallationsStub {
     }
 
     nock
-    .put('/apps/example/buildpack-installations', {updates})
-    .reply(200, response)
+      .put('/apps/example/buildpack-installations', {updates})
+      .reply(200, response)
   }
 }

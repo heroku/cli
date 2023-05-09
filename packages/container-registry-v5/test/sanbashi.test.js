@@ -127,8 +127,8 @@ describe('Sanbashi', () => {
   describe('.version', () => {
     it('returns a the major and minor version', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-      .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-      .resolves('18.02.0-ce-rc2')
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+        .resolves('18.02.0-ce-rc2')
 
       let version = await Sanbashi.version()
       expect(version).to.deep.equal([18, 2])
@@ -136,8 +136,8 @@ describe('Sanbashi', () => {
 
     it('has an error', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-      .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-      .resolves('an error occured')
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+        .resolves('an error occured')
 
       let version = await Sanbashi.version()
       expect(version).to.deep.equal([0, 0])

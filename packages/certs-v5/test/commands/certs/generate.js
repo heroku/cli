@@ -28,8 +28,8 @@ describe('heroku certs:generate', function () {
     cli.mockConsole()
 
     nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpoint])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpoint])
 
     // stub cli here using sinon
     // if this works, remove proxyquire
@@ -151,8 +151,8 @@ $ heroku certs:update CERTFILE example.org.key
     nock.cleanAll()
 
     nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [])
 
     return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function () {
       expect(cli.prompt).to.have.not.been.called

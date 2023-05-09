@@ -26,11 +26,11 @@ function getCommands(dir) {
 
   let all = fs.readdirSync(dir).map(f => path.join(dir, f))
   let commands = all
-  .filter(f => path.extname(f) === '.js' && !f.endsWith('.test.js'))
-  .map(element => requireCommand(element))
+    .filter(f => path.extname(f) === '.js' && !f.endsWith('.test.js'))
+    .map(element => requireCommand(element))
   let subs = all
-  .filter(f => fs.lstatSync(f).isDirectory())
-  .map(element => getCommands(element))
+    .filter(f => fs.lstatSync(f).isDirectory())
+    .map(element => getCommands(element))
   return flatten(commands.concat(flatten(subs)))
 }
 

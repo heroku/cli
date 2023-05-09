@@ -8,9 +8,9 @@ function formatConfigVarsMessage(addon) {
   if (configVars.length > 0) {
     configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
     return `Created ${cli.color.addon(addon.name)} as ${configVars}`
-  } else {
-    return `Created ${cli.color.addon(addon.name)}`
   }
+
+  return `Created ${cli.color.addon(addon.name)}`
 }
 
 module.exports = async function (heroku, app, plan, confirm, wait, options) {

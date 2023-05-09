@@ -30,14 +30,14 @@ const shouldUrl = function (cmdRun) {
     })
     it('shows URL', () => {
       return cmdRun({app: 'myapp', args: {}})
-      .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
+        .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
     })
   })
 
   context('with id', () => {
     it('shows URL', () => {
       return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
-      .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
+        .then(() => expect(cli.stdout).to.equal('https://dburl\n'))
     })
   })
 }

@@ -12,13 +12,13 @@ describe('heroku teams', () => {
     let apiGetOrgs = stubGet.teams()
 
     return cmd.run({flags: {}})
-    .then(() => expect(
-      `enterprise a  collaborator
+      .then(() => expect(
+        `enterprise a  collaborator
 enterprise b  admin
 team a        collaborator
 team b        admin
 `).to.eq(cli.stdout))
-    .then(() => expect('').to.eq(cli.stderr))
-    .then(() => apiGetOrgs.done())
+      .then(() => expect('').to.eq(cli.stderr))
+      .then(() => apiGetOrgs.done())
   })
 })

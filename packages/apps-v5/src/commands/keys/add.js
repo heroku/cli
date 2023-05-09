@@ -8,7 +8,7 @@ function sshKeygen(file, quiet) {
   let spawn = require('child_process').spawn
   return new Promise(function (resolve, reject) {
     spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
-    .on('close', code => code === 0 ? resolve() : reject(code))
+      .on('close', code => code === 0 ? resolve() : reject(code))
   })
 }
 
@@ -21,11 +21,11 @@ async function run(context, heroku) {
         name: 'yes',
         message: message,
       }])
-    } else {
-      return cli.prompt(message + ' [Y/n]').then(function (data) {
-        return {yes: /^y(es)?/i.test(data)}
-      })
     }
+
+    return cli.prompt(message + ' [Y/n]').then(function (data) {
+      return {yes: /^y(es)?/i.test(data)}
+    })
   }
 
   let path = require('path')
@@ -64,15 +64,15 @@ async function run(context, heroku) {
       }
 
       return key
-    } else {
-      let resp = await inquirer.prompt([{
-        type: 'list',
-        name: 'key',
-        choices: keys,
-        message: 'Which SSH key would you like to upload?',
-      }])
-      return resp.key
     }
+
+    let resp = await inquirer.prompt([{
+      type: 'list',
+      name: 'key',
+      choices: keys,
+      message: 'Which SSH key would you like to upload?',
+    }])
+    return resp.key
   }
 
   let upload = async function (key) {

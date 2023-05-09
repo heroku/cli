@@ -32,6 +32,6 @@ describe('heroku apps:open', function () {
     nock('https://api.heroku.com').get('/apps/myapp').reply(200, app)
 
     return cmd[0].run({app: 'myapp', args: {}})
-    .then(() => expect(openStub.called).to.be.true)
+      .then(() => expect(openStub.called).to.be.true)
   })
 })

@@ -4,32 +4,32 @@ const nock = require('nock')
 
 function apps() {
   return nock('https://api.heroku.com:443')
-  .get('/apps')
-  .reply(200, [
-    {name: 'my-team-app', owner: {email: 'team@herokumanager.com'}},
-    {name: 'myapp', owner: {email: 'foo@foo.com'}},
-  ])
+    .get('/apps')
+    .reply(200, [
+      {name: 'my-team-app', owner: {email: 'team@herokumanager.com'}},
+      {name: 'myapp', owner: {email: 'foo@foo.com'}},
+    ])
 }
 
 function appCollaborators(collaborators =
 [{user: {email: 'raulb@heroku.com'}, role: 'owner'},
   {user: {email: 'jeff@heroku.com'}, role: 'collaborator'}]) {
   return nock('https://api.heroku.com:443')
-  .get('/apps/myapp/collaborators')
-  .reply(200, collaborators)
+    .get('/apps/myapp/collaborators')
+    .reply(200, collaborators)
 }
 
 function appPermissions() {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
   })
-  .get('/teams/permissions')
-  .reply(200, [
-    {name: 'deploy'},
-    {name: 'manage'},
-    {name: 'operate'},
-    {name: 'view'},
-  ])
+    .get('/teams/permissions')
+    .reply(200, [
+      {name: 'deploy'},
+      {name: 'manage'},
+      {name: 'operate'},
+      {name: 'view'},
+    ])
 }
 
 function teams(teams = [
@@ -39,56 +39,56 @@ function teams(teams = [
   {name: 'team b', role: 'admin', type: 'team'},
 ]) {
   return nock('https://api.heroku.com:443')
-  .get('/teams')
-  .reply(200, teams)
+    .get('/teams')
+    .reply(200, teams)
 }
 
 function teamApp(locked = false) {
   return nock('https://api.heroku.com:443')
-  .get('/apps/myapp')
-  .reply(200, {
-    name: 'myapp',
-    owner: {email: 'myteam@herokumanager.com'},
-    locked: locked,
-  })
+    .get('/apps/myapp')
+    .reply(200, {
+      name: 'myapp',
+      owner: {email: 'myteam@herokumanager.com'},
+      locked: locked,
+    })
 }
 
 function teamAppCollaboratorsWithPermissions() {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
   })
-  .get('/apps/myapp/collaborators')
-  .reply(200, [
-    {permissions: [],
-      role: 'owner',
-      user: {email: 'myteam@herokumanager.com'},
-    },
-    {
-      permissions: [{name: 'deploy'}, {name: 'view'}],
-      role: 'member',
-      user: {email: 'bob@heroku.com'},
-    },
-  ])
+    .get('/apps/myapp/collaborators')
+    .reply(200, [
+      {permissions: [],
+        role: 'owner',
+        user: {email: 'myteam@herokumanager.com'},
+      },
+      {
+        permissions: [{name: 'deploy'}, {name: 'view'}],
+        role: 'member',
+        user: {email: 'bob@heroku.com'},
+      },
+    ])
 }
 
 function teamFeatures(features) {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
   })
-  .get('/teams/myteam/features')
-  .reply(200, features)
+    .get('/teams/myteam/features')
+    .reply(200, features)
 }
 
 function teamInfo(type = 'enterprise') {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
   })
-  .get('/teams/myteam')
-  .reply(200, {
-    name: 'myteam',
-    role: 'admin',
-    type: type,
-  })
+    .get('/teams/myteam')
+    .reply(200, {
+      name: 'myteam',
+      role: 'admin',
+      type: type,
+    })
 }
 
 function teamInvites(invites = [
@@ -101,8 +101,8 @@ function teamInvites(invites = [
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3.team-invitations'},
   })
-  .get('/teams/myteam/invitations')
-  .reply(200, invites)
+    .get('/teams/myteam/invitations')
+    .reply(200, invites)
 }
 
 function teamMembers(members = [
@@ -123,29 +123,29 @@ function teamMembers(members = [
   },
 ]) {
   return nock('https://api.heroku.com:443')
-  .get('/teams/myteam/members')
-  .reply(200, members)
+    .get('/teams/myteam/members')
+    .reply(200, members)
 }
 
 function personalApp() {
   return nock('https://api.heroku.com:443')
-  .get('/apps/myapp')
-  .reply(200, {
-    name: 'myapp',
-    owner: {email: 'raulb@heroku.com'},
-  })
+    .get('/apps/myapp')
+    .reply(200, {
+      name: 'myapp',
+      owner: {email: 'raulb@heroku.com'},
+    })
 }
 
 function userAccount(email = 'raulb@heroku.com') {
   return nock('https://api.heroku.com:443')
-  .get('/account')
-  .reply(200, {email})
+    .get('/account')
+    .reply(200, {email})
 }
 
 function userFeatureFlags(features) {
   return nock('https://api.heroku.com:443')
-  .get('/account/features')
-  .reply(200, features)
+    .get('/account/features')
+    .reply(200, features)
 }
 
 function variableSizeTeamInvites(teamSize) {
@@ -160,8 +160,8 @@ function variableSizeTeamInvites(teamSize) {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3.team-invitations'},
   })
-  .get('/teams/myteam/invitations')
-  .reply(200, invites)
+    .get('/teams/myteam/invitations')
+    .reply(200, invites)
 }
 
 function variableSizeTeamMembers(teamSize) {
@@ -174,8 +174,8 @@ function variableSizeTeamMembers(teamSize) {
   }
 
   return nock('https://api.heroku.com:443')
-  .get('/teams/myteam/members')
-  .reply(200, teamMembers)
+    .get('/teams/myteam/members')
+    .reply(200, teamMembers)
 }
 
 module.exports = {

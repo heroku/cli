@@ -102,12 +102,12 @@ function postCoupling(heroku, pipeline, app, stage) {
 
 function removeCoupling(heroku, app) {
   return getCoupling(heroku, app)
-  .then(coupling => deleteCoupling(heroku, coupling.id))
+    .then(coupling => deleteCoupling(heroku, coupling.id))
 }
 
 function updateCoupling(heroku, app, stage) {
   return getCoupling(heroku, app)
-  .then(coupling => patchCoupling(heroku, coupling.id, stage))
+    .then(coupling => patchCoupling(heroku, coupling.id, stage))
 }
 
 module.exports = {
