@@ -11,6 +11,6 @@ describeAcceptance('run:detached', () => {
 
   it('runs a command', () => {
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['echo', '1', '2', '3']})
-    .then(() => expect(cli.stdout.startsWith('Run heroku logs --app heroku-cli-ci-smoke-test-app --dyno')).to.equal(true))
+      .then(() => expect(cli.stdout.startsWith('Run heroku logs --app heroku-cli-ci-smoke-test-app --dyno')).to.equal(true))
   })
 })

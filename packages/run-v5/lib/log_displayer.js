@@ -11,9 +11,9 @@ function readLogs(logplexURL) {
   let u = url.parse(logplexURL)
   if (u.query && u.query.includes('srv')) {
     return readLogsV1(logplexURL)
-  } else {
-    return readLogsV2(logplexURL)
   }
+
+  return readLogsV2(logplexURL)
 }
 
 async function readLogsV1(logplexURL) {
