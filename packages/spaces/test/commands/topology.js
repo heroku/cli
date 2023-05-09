@@ -103,72 +103,72 @@ describe('spaces:toplogy', function () {
 
   it('shows space topology', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/topology').reply(200, topo)
-    .get(`/apps/${app.id}`).reply(200, app)
+      .get('/spaces/my-space/topology').reply(200, topo)
+      .get(`/apps/${app.id}`).reply(200, app)
 
     return cmd.run({flags: {space: 'my-space'}})
-    .then(() => expect(cli.stdout).to.equal(
-      `=== app-name (web)
+      .then(() => expect(cli.stdout).to.equal(
+        `=== app-name (web)
 Domains: example.com
          example.net
 Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
          web.2 - 10.0.134.42 - 1.example-app-90210.app.localspace
 
 `))
-    .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('shows space topology with first dyno having higher process number', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/topology').reply(200, topo2)
-    .get(`/apps/${app.id}`).reply(200, app)
+      .get('/spaces/my-space/topology').reply(200, topo2)
+      .get(`/apps/${app.id}`).reply(200, app)
 
     return cmd.run({flags: {space: 'my-space'}})
-    .then(() => expect(cli.stdout).to.equal(
-      `=== app-name (web)
+      .then(() => expect(cli.stdout).to.equal(
+        `=== app-name (web)
 Domains: example.com
          example.net
 Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
          web.2 - 10.0.134.42 - 1.example-app-90210.app.localspace
 
 `))
-    .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('shows space topology with dynos having same process number', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/topology').reply(200, topo3)
-    .get(`/apps/${app.id}`).reply(200, app)
+      .get('/spaces/my-space/topology').reply(200, topo3)
+      .get(`/apps/${app.id}`).reply(200, app)
 
     return cmd.run({flags: {space: 'my-space'}})
-    .then(() => expect(cli.stdout).to.equal(
-      `=== app-name (web)
+      .then(() => expect(cli.stdout).to.equal(
+        `=== app-name (web)
 Domains: example.com
          example.net
 Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
          web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
 
 `))
-    .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('shows space toplogy  --json', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/topology').reply(200, topo)
-    .get(`/apps/${app.id}`).reply(200, app)
+      .get('/spaces/my-space/topology').reply(200, topo)
+      .get(`/apps/${app.id}`).reply(200, app)
 
     return cmd.run({flags: {space: 'my-space', json: true}})
-    .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
-    .then(() => api.done())
+      .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
+      .then(() => api.done())
   })
 
   it('shows space toplology --json', function () {
     let api = nock('https://api.heroku.com:443')
-    .get('/spaces/my-space/topology').reply(200, topo)
-    .get(`/apps/${app.id}`).reply(200, app)
+      .get('/spaces/my-space/topology').reply(200, topo)
+      .get(`/apps/${app.id}`).reply(200, app)
 
     return cmd.run({flags: {space: 'my-space', json: true}})
-    .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
-    .then(() => api.done())
+      .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
+      .then(() => api.done())
   })
 })

@@ -11,11 +11,11 @@ describe('spaces:vpn:destroy', function () {
 
   it('destroys VPN Connection when name is specified', function () {
     let api = nock('https://api.heroku.com:443')
-    .delete('/spaces/my-space/vpn-connections/my-vpn-connection')
-    .reply(202)
+      .delete('/spaces/my-space/vpn-connections/my-vpn-connection')
+      .reply(202)
     return cmd.run({args: {name: 'my-vpn-connection'}, flags: {space: 'my-space', confirm: 'my-vpn-connection'}})
-    .then(() => expect(cli.stderr).to.equal(
-      'Tearing down VPN Connection my-vpn-connection in space my-space... done\n'))
-    .then(() => api.done())
+      .then(() => expect(cli.stderr).to.equal(
+        'Tearing down VPN Connection my-vpn-connection in space my-space... done\n'))
+      .then(() => api.done())
   })
 })
