@@ -2,16 +2,22 @@
 # Do not update this file directly;
 # Please update the template instead:
 # https://github.com/heroku/cli/blob/master/scripts/release/homebrew/templates/heroku.rb
+
 class Heroku < Formula
   desc "Everything you need to get started with Heroku"
   homepage "https://cli.heroku.com"
   url "__CLI_DOWNLOAD_URL__"
   sha256 "__CLI_SHA256__"
-  depends_on "heroku/brew/heroku-node" => "__NODE_VERSION__"
+
+  on_macos do
+    if Hardware::CPU.arm?
+      url "__CLI_DOWNLOAD_URL_M1__"
+      sha256 "__CLI_SHA256_M1__"
+    end
+  end
 
   def install
     inreplace "bin/heroku", /^CLIENT_HOME=/, "export HEROKU_OCLIF_CLIENT_HOME=#{lib/"client"}\nCLIENT_HOME="
-    inreplace "bin/heroku", "\"$DIR/node\"", Formula["heroku-node"].opt_bin/"node"
     libexec.install Dir["*"]
     bin.install_symlink libexec/"bin/heroku"
 
