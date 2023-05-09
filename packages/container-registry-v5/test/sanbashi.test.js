@@ -7,6 +7,14 @@ let Inquirer = require('inquirer')
 let childProcess = require('child_process')
 let EventEmitter = require('events').EventEmitter
 
+const eventMock = () => {
+  let eventEmitter = new EventEmitter()
+  process.nextTick(function () {
+    eventEmitter.emit('exit', 0)
+  })
+  return eventEmitter
+}
+
 describe('Sanbashi', () => {
   describe('.getDockerfiles', () => {
     it('can recurse the directory', () => {
@@ -116,13 +124,7 @@ describe('Sanbashi', () => {
     let eventStub
 
     beforeEach(() => {
-      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
-        let eventEmitter = new EventEmitter()
-        process.nextTick(function () {
-          eventEmitter.emit('exit', 0)
-        })
-        return eventEmitter
-      })
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
     })
 
     it('successfully pushes image to Sanbashi cmd', async () => {
@@ -141,13 +143,7 @@ describe('Sanbashi', () => {
     let eventStub
 
     beforeEach(() => {
-      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
-        let eventEmitter = new EventEmitter()
-        process.nextTick(function () {
-          eventEmitter.emit('exit', 0)
-        })
-        return eventEmitter
-      })
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
     })
 
     it('successfully pulls image to execute with Sanbashi cmd', async () => {
@@ -166,13 +162,7 @@ describe('Sanbashi', () => {
     let eventStub
 
     beforeEach(() => {
-      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
-        let eventEmitter = new EventEmitter()
-        process.nextTick(function () {
-          eventEmitter.emit('exit', 0)
-        })
-        return eventEmitter
-      })
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
     })
 
     it('successfully runs image to execute with Sanbashi cmd', async () => {
