@@ -19,11 +19,11 @@ describe('heroku apps:join', () => {
     apiPostCollaborators = stubPost.teamAppCollaborators('raulb@heroku.com')
 
     return cmd.run({app: 'myapp'})
-    .then(() => expect('').to.eq(cli.stdout))
-    .then(() => expect(`Joining myapp... done
+      .then(() => expect('').to.eq(cli.stdout))
+      .then(() => expect(`Joining myapp... done
 `).to.eq(cli.stderr))
-    .then(() => apiGetUserAccount.done())
-    .then(() => apiPostCollaborators.done())
+      .then(() => apiGetUserAccount.done())
+      .then(() => apiPostCollaborators.done())
   })
 
   it('is forbidden from joining the app', () => {
@@ -36,14 +36,14 @@ describe('heroku apps:join', () => {
     let thrown = false
 
     return cmd.run({app: 'myapp'})
-    .then(() => apiGetUserAccount.done())
-    .catch(function (error) {
-      thrown = true
-      expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
-    })
-    .then(function () {
-      expect(thrown).to.eq(true)
-    })
-    .then(() => apiPostCollaborators.done())
+      .then(() => apiGetUserAccount.done())
+      .catch(function (error) {
+        thrown = true
+        expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
+      })
+      .then(function () {
+        expect(thrown).to.eq(true)
+      })
+      .then(() => apiPostCollaborators.done())
   })
 })

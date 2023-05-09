@@ -11,19 +11,19 @@ function printJSON(collaborators) {
 function printAccess(app, collaborators) {
   let showPermissions = Utils.isteamApp(app.owner.email)
   collaborators = _.chain(collaborators)
-  .sortBy(c => c.email || c.user.email)
-  .reject(c => /herokumanager\.com$/.test(c.user.email))
-  .map(collab => {
-    let email = collab.user.email
-    let role = collab.role
-    let data = {email: email, role: role || 'collaborator'}
+    .sortBy(c => c.email || c.user.email)
+    .reject(c => /herokumanager\.com$/.test(c.user.email))
+    .map(collab => {
+      let email = collab.user.email
+      let role = collab.role
+      let data = {email: email, role: role || 'collaborator'}
 
-    if (showPermissions) {
-      data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name')
-    }
+      if (showPermissions) {
+        data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name')
+      }
 
-    return data
-  }).value()
+      return data
+    }).value()
 
   let columns = [
     {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
