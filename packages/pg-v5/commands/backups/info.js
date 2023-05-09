@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 function status(backup) {
   if (backup.succeeded) {
     if (backup.warnings > 0) return `Finished with ${backup.warnings} warnings`
-    else return 'Completed'
+    return 'Completed'
   }
 
   if (backup.canceled_at) return 'Canceled'

@@ -18,18 +18,18 @@ module.exports = heroku => {
       let addonService = process.env.HEROKU_POSTGRESQL_ADDON_NAME || 'heroku-postgresql'
       debug(`addon service: ${addonService}`)
       return resolve.appAttachment(heroku, app, db, {addon_service: addonService, namespace: namespace})
-      .then(attached => ({matches: [attached]}))
-      .catch(function (error) {
-        if (error.statusCode === 422 && error.body && error.body.id === 'multiple_matches' && error.matches) {
-          return {matches: error.matches, err: error}
-        }
+        .then(attached => ({matches: [attached]}))
+        .catch(function (error) {
+          if (error.statusCode === 422 && error.body && error.body.id === 'multiple_matches' && error.matches) {
+            return {matches: error.matches, err: error}
+          }
 
-        if (error.statusCode === 404 && error.body && error.body.id === 'not_found') {
-          return {matches: null, err: error}
-        }
+          if (error.statusCode === 404 && error.body && error.body.id === 'not_found') {
+            return {matches: null, err: error}
+          }
 
-        throw error
-      })
+          throw error
+        })
     }
 
     let {matches, err} = await matchesHelper(app, db)

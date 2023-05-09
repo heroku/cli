@@ -14,9 +14,9 @@ This command will affect the database ${cli.color.addon(db.name)}
 This will delete ${cli.color.cyan(args.link)} along with the tables and views created within it.
 This may have adverse effects for software written against the ${cli.color.cyan(args.link)} schema.
 `)
-  await cli.action(`Destroying link ${cli.color.cyan(args.link)} from ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Destroying link ${cli.color.cyan(args.link)} from ${cli.color.addon(db.name)}`, (async function () {
     await heroku.delete(`/client/v11/databases/${db.id}/links/${encodeURIComponent(args.link)}`, {host: host(db)})
-  }())
+  })())
 }
 
 module.exports = {

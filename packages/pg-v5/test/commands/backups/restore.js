@@ -53,35 +53,35 @@ const shouldRestore = function (cmdRun) {
 
     it('restores a db', () => {
       return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
 
     it('restores a specific db', () => {
       return cmdRun({app: 'myapp', args: {backup: 'b005'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
 
     it('restores a specific app db', () => {
       return cmdRun({app: 'myapp', args: {backup: 'myapp::b005'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
   })
 
@@ -104,7 +104,7 @@ Stop a running restore with heroku pg:backups:cancel.
 
     it('shows verbose output', () => {
       return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
@@ -112,7 +112,7 @@ Stop a running restore with heroku pg:backups:cancel.
 Restoring...
 100 log message 1
 `))
-      .then(() => expect(cli.stderr).to.equal('Starting restore of b005 to postgres-1... done\n'))
+        .then(() => expect(cli.stderr).to.equal('Starting restore of b005 to postgres-1... done\n'))
     })
   })
 
@@ -131,13 +131,13 @@ Restoring...
 
     it('restores a db from a URL', () => {
       return cmdRun({app: 'myapp', args: {backup: 'https://www.dropbox.com'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr).to.equal(`Starting restore of https://www.dropbox.com to postgres-1... done\n${restoringText()}`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of https://www.dropbox.com to postgres-1... done\n${restoringText()}`))
     })
   })
 
@@ -159,13 +159,13 @@ Stop a running restore with heroku pg:backups:cancel.
 
     it('restores a db with pre-installed extensions', () => {
       return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', extensions: 'uuid-ossp, Postgis'}})
-      .then(() => expect(cli.stdout).to.equal(`
+        .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
+        .then(() => expect(cli.stderr).to.equal(`Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
   })
 }

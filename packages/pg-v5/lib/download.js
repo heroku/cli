@@ -27,8 +27,8 @@ function download(url, path, opts) {
     https.get(url, function (rsp) {
       if (tty && opts.progress) showProgress(rsp)
       rsp.pipe(file)
-      .on('error', reject)
-      .on('close', resolve)
+        .on('error', reject)
+        .on('close', resolve)
     })
   })
 }

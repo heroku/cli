@@ -20,7 +20,7 @@ async function run(context, heroku) {
     db = schedules[0].name
   }
 
-  await cli.action(`Unscheduling ${cli.color.configVar(db)} daily backups`, async function () {
+  await cli.action(`Unscheduling ${cli.color.configVar(db)} daily backups`, (async function () {
     let addon = await fetcher.addon(app, db)
     let schedules = await heroku.get(`/client/v11/databases/${addon.id}/transfer-schedules`, {host: host(addon)})
     let schedule = schedules.find(s => s.name.match(new RegExp(db, 'i')))
@@ -28,7 +28,7 @@ async function run(context, heroku) {
     await heroku.delete(`/client/v11/databases/${addon.id}/transfer-schedules/${schedule.uuid}`, {
       host: host(addon),
     })
-  }())
+  })())
 }
 
 module.exports = {

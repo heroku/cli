@@ -19,7 +19,7 @@ async function run(context, heroku) {
     service(args.remote),
   ])
 
-  await cli.action(`Adding link from ${cli.color.addon(target.name)} to ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Adding link from ${cli.color.addon(target.name)} to ${cli.color.addon(db.name)}`, (async function () {
     let link = await heroku.post(`/client/v11/databases/${db.id}/links`, {
       body: {
         target: target.name,
@@ -29,7 +29,7 @@ async function run(context, heroku) {
     })
     if (link.message) throw new Error(link.message)
     cli.action.done(`done, ${cli.color.cyan(link.name)}`)
-  }())
+  })())
 }
 
 module.exports = {
