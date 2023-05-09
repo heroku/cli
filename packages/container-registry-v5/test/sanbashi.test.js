@@ -4,6 +4,8 @@ let Sanbashi = require('../lib/sanbashi')
 let expect = require('chai').expect
 let Path = require('path')
 let Inquirer = require('inquirer')
+let childProcess = require('child_process')
+let EventEmitter = require('events').EventEmitter
 
 describe('Sanbashi', () => {
   describe('.getDockerfiles', () => {
@@ -85,6 +87,102 @@ describe('Sanbashi', () => {
       expect(chosenJob).to.have.property('length', 1)
     })
     afterEach(() => {
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.chooseJobs', () => {
+    let promptStub
+    beforeEach(() => {
+      promptStub = Sinon.stub(Inquirer, 'prompt').returns({web: 'Nested/Dockerfile.web'})
+    })
+
+    it('prompts user when multiple entries exists', async () => {
+      const dockerfiles = [Path.join('.', 'Nested', 'Dockerfile.web'), Path.join('.', 'Nested', 'Dockerfile.web')]
+      const jobs = Sanbashi.getJobs('rootfulroot', dockerfiles)
+      let chosenJob = await Sanbashi.chooseJobs(jobs)
+      expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
+      expect(chosenJob).to.have.property('length', 1)
+    })
+    afterEach(() => {
+      promptStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.pushImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
+        let eventEmitter = new EventEmitter()
+        process.nextTick(function () {
+          eventEmitter.emit('exit', 0)
+        })
+        return eventEmitter
+      })
+    })
+
+    it('successfully pushes image to Sanbashi cmd', async () => {
+      await Sanbashi.pushImage('registry.heroku.com/testapp/web')
+      expect(eventStub.calledOnce).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.pullImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
+        let eventEmitter = new EventEmitter()
+        process.nextTick(function () {
+          eventEmitter.emit('exit', 0)
+        })
+        return eventEmitter
+      })
+    })
+
+    it('successfully pulls image to execute with Sanbashi cmd', async () => {
+      await Sanbashi.pullImage('registry.heroku.com/testapp/web')
+      expect(eventStub.calledOnce).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.runImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(() => {
+        let eventEmitter = new EventEmitter()
+        process.nextTick(function () {
+          eventEmitter.emit('exit', 0)
+        })
+        return eventEmitter
+      })
+    })
+
+    it('successfully runs image to execute with Sanbashi cmd', async () => {
+      await Sanbashi.runImage('registry.heroku.com/testapp/web', '', '1234')
+      await Sanbashi.runImage('registry.heroku.com/testapp/web', 'not empty', '1234')
+      expect(eventStub.calledTwice).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
       if (Inquirer.prompt.restore) {
         Inquirer.prompt.restore()
       }
