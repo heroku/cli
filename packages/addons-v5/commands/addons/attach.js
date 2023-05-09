@@ -41,13 +41,13 @@ async function run(context, heroku) {
   await cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
     {success: false},
-    async function () {
+    (async function () {
       let releases = await heroku.get(`/apps/${app}/releases`, {
         partial: true,
         headers: {Range: 'version ..; max=1, order=desc'},
       })
       cli.action.done(`done, v${releases[0].version}`)
-    }(),
+    })(),
   )
 }
 

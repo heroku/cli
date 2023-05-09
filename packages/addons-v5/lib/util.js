@@ -43,11 +43,11 @@ module.exports = {
 
   trapConfirmationRequired: async function (app, confirm, fn) {
     return await fn(confirm)
-    .catch(error => {
-      if (!error.body || error.body.id !== 'confirmation_required') throw error
-      return cli.confirmApp(app, confirm, error.body.message)
-      .then(() => fn(app))
-    })
+      .catch(error => {
+        if (!error.body || error.body.id !== 'confirmation_required') throw error
+        return cli.confirmApp(app, confirm, error.body.message)
+          .then(() => fn(app))
+      })
   },
 
   formatState: function (state) {

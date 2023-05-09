@@ -69,9 +69,9 @@ async function run(ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
   let attachment = await resolve.attachment(api, ctx.app, ctx.args.addon)
-  .catch(function (error) {
-    if (error.statusCode !== 404) throw error
-  })
+    .catch(function (error) {
+      if (error.statusCode !== 404) throw error
+    })
 
   let webUrl
   if (attachment) {
