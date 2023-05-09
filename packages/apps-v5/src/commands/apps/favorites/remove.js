@@ -5,7 +5,7 @@ let cli = require('heroku-cli-util')
 async function run(context, heroku) {
   let app = context.app
 
-  await cli.action(`Removing ${cli.color.app(app)} from favorites`, async function () {
+  await cli.action(`Removing ${cli.color.app(app)} from favorites`, (async function () {
     let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
     let favorite = favorites.find(f => f.resource_name === app)
     if (!favorite) throw new Error(`${cli.color.app(app)} is not already a favorite app.`)
@@ -14,7 +14,7 @@ async function run(context, heroku) {
       path: `/favorites/${favorite.id}`,
       method: 'DELETE',
     })
-  }())
+  })())
 }
 
 module.exports = {

@@ -13,9 +13,9 @@ describe('ps:restart', function () {
 
   it('restarts all dynos', function () {
     let api = nock('https://api.heroku.com')
-    .delete('/apps/myapp/dynos').reply(200)
+      .delete('/apps/myapp/dynos').reply(200)
 
     return cmd.run({app: 'myapp', args: {}})
-    .then(() => api.done())
+      .then(() => api.done())
   })
 })

@@ -5,7 +5,7 @@ let cli = require('heroku-cli-util')
 async function run(context, heroku) {
   let app = context.app
 
-  await cli.action(`Adding ${cli.color.app(app)} to favorites`, async function () {
+  await cli.action(`Adding ${cli.color.app(app)} to favorites`, (async function () {
     let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
     if (favorites.find(f => f.resource_name === app)) throw new Error(`${cli.color.app(app)} is already a favorite app.`)
     await heroku.request({
@@ -14,7 +14,7 @@ async function run(context, heroku) {
       method: 'POST',
       body: {type: 'app', resource_id: app},
     })
-  }())
+  })())
 }
 
 module.exports = {

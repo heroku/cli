@@ -22,12 +22,12 @@ async function run(context, heroku) {
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
     _(await git.listRemotes())
-    .filter(r => git.gitUrl(app) === r[1] || git.sshGitUrl(app) === r[1])
-    .map(r => r[0])
-    .uniq()
-    .forEach(element => {
-      git.rmRemote(element)
-    })
+      .filter(r => git.gitUrl(app) === r[1] || git.sshGitUrl(app) === r[1])
+      .map(r => r[0])
+      .uniq()
+      .forEach(element => {
+        git.rmRemote(element)
+      })
   }
 }
 
