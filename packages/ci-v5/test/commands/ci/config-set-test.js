@@ -20,10 +20,10 @@ describe('heroku ci:config:set', function () {
 
   it('sets new config', async function () {
     const api = nock('https://api.heroku.com')
-    .get(`/pipelines/${pipeline.id}`)
-    .reply(200, pipeline)
-    .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-    .reply(200, {[key]: value})
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
 
     await cmd.run({args: [`${key}=${value}`], flags: {pipeline: pipeline.id}})
 
