@@ -37,9 +37,9 @@ async function updateHerokuFormula (brewDir) {
   const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
   // todo: support both Linux architectures that oclif does
-  const fineNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
+  const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
   const urlPrefix = `https://cli-assets.heroku.com/versions/${VERSION}/${GITHUB_SHA_SHORT}/`
-  const fileParts = [fineNamePrefix, fileSuffix]
+  const fileParts = [fileNamePrefix, fileSuffix]
 
   const fileNameIntel = fileParts.join(INTEL_ARCH)
   const sha256Intel = await calculateSHA256(path.join(DIST_DIR, fileNameIntel))
