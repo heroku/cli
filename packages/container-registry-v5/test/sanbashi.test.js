@@ -110,6 +110,7 @@ describe('Sanbashi', () => {
       const dockerfiles = [Path.join('.', 'Nested', 'Dockerfile.web'), Path.join('.', 'Dockerfile.web')]
       const jobs = Sanbashi.getJobs('rootfulroot', dockerfiles)
       let chosenJob = await Sanbashi.chooseJobs(jobs)
+      console.log('test chosenJob[0]:', chosenJob)
       expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
       expect(chosenJob).to.have.property('length', 1)
     })

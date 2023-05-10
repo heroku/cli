@@ -58,6 +58,7 @@ Sanbashi.chooseJobs = async function (jobs) {
   // eslint-disable-next-line guard-for-in
   for (let processType in jobs) {
     let group = jobs[processType]
+    console.log('group:', group)
     if (group.length > 1) {
       let prompt = {
         type: 'list',
@@ -66,7 +67,9 @@ Sanbashi.chooseJobs = async function (jobs) {
         message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
       }
       let answer = await Inquirer.prompt(prompt)
+      console.log('answer:', answer)
       chosenJobs.push(group.find(o => o.dockerfile === answer[processType]))
+      console.log('chosenJobs:', chosenJobs)
     } else {
       chosenJobs.push(group[0])
     }
