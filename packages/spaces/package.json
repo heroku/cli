@@ -39,7 +39,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/spaces",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/spaces",
   "keywords": [
     "heroku-plugin"
   ],

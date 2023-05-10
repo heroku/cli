@@ -41,7 +41,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/oauth-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/oauth-v5",
   "keywords": [
     "heroku-plugin"
   ],

@@ -60,7 +60,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/orgs-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/orgs-v5",
   "keywords": [
     "heroku-plugin"
   ],

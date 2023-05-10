@@ -46,7 +46,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/ci-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/ci-v5",
   "keywords": [
     "heroku-plugin"
   ],
