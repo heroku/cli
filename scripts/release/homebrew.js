@@ -53,7 +53,6 @@ async function updateHerokuFormula (brewDir) {
       .replace('__CLI_SHA256__', sha256Intel)
       .replace('__CLI_SHA256_M1__', sha256M1)
 
-  // console.log(templateReplaced)
   fs.writeFileSync(formulaPath, templateReplaced)
 
   console.log(`done updating heroku Formula in ${formulaPath}`)
