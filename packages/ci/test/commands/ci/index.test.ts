@@ -62,6 +62,37 @@ describe('ci', () => {
     test
       .stdout()
       .nock('https://api.heroku.com', api => {
+        api.get(`/pipelines/${pipeline.id}`)
+          .reply(200,
+            {
+              id: pipeline.id,
+              name: pipeline.id,
+            },
+          )
+
+        api.get(`/pipelines/${pipeline.id}/test-runs`)
+          .reply(200, testRuns)
+      })
+      .command(['ci', `--pipeline=${pipeline.id}`])
+      .it('returns pipeline id', ({stdout}) => {
+        expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.id} pipeline`)
+      })
+
+    test
+      .stdout()
+      .nock('https://api.heroku.com', api => {
+        api.get(`/pipelines?eq[name]=${pipeline.name}`)
+          .reply(200, [])
+      })
+      .command(['ci', `--pipeline=${pipeline.name}`])
+      .catch(error => {
+        expect(error.message).to.equal('Pipeline not found')
+      })
+      .it('errors if no pipeline is found')
+
+    test
+      .stdout()
+      .nock('https://api.heroku.com', api => {
         api.get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {
