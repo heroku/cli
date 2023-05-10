@@ -26,7 +26,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/certs",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/certs",
   "keywords": [
     "oclif-plugin"
   ],

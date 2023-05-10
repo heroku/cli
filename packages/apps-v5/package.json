@@ -54,7 +54,7 @@
     "assets",
     "src"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/apps-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/apps-v5",
   "keywords": [
     "heroku-plugin"
   ],

@@ -41,7 +41,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/container-registry-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/container-registry-v5",
   "keywords": [
     "cli",
     "container",

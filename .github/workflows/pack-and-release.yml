@@ -17,7 +17,7 @@ on:
 
 jobs:
   pack_deb:
-    if:  ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
+    if:  ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
     # ubuntu started using a compression method after this version that debian currently does not support
     # https://github.com/heroku/cli/pull/2245#issue-1590017122
     runs-on: ubuntu-20.04
@@ -43,7 +43,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
+    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -66,7 +66,7 @@ jobs:
 
   sign_deb:
     needs: [pack_deb]
-    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
+    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
     runs-on: ubuntu-latest
     environment: SignDebian
     env:
@@ -92,7 +92,7 @@ jobs:
 
   upload-deb-and-tarballs:
     needs: [sign_deb, pack_tarballs]
-    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
+    if: ${{ inputs.commitSHA }} == '' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' ))
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -138,7 +138,7 @@ jobs:
   promote:
     name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
     needs: [upload-deb-and-tarballs]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -172,7 +172,7 @@ jobs:
   ## POST release jobs
   invalidate-cdn-cache:
     needs: [ promote ]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: CLIS3BucketAndCloudfront
     env:
@@ -217,7 +217,7 @@ jobs:
 
   change-management:
     needs: [ promote ]
-    if: github.ref == 'refs/heads/master' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
+    if: github.ref == 'refs/heads/main' || github.ref_type == 'tag' && startsWith(github.ref_name, 'v' )
     runs-on: ubuntu-latest
     environment: ChangeManagement
     env:
