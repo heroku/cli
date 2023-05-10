@@ -2,7 +2,6 @@
 
 const fs = require('fs')
 const execa = require('execa')
-const https = require('https')
 const path = require('path')
 const rm = require('rimraf')
 const mkdirp = require('mkdirp')
@@ -10,47 +9,9 @@ const { promisify } = require('util')
 const { pipeline } = require('stream')
 const crypto = require('crypto')
 
-const NODE_JS_BASE = 'https://nodejs.org/download/release'
 const CLI_DIR = path.join(__dirname, '..', '..', 'packages', 'cli')
 const DIST_DIR = path.join(CLI_DIR, 'dist')
-const PJSON = require(path.join(CLI_DIR, 'package.json'))
-const NODE_VERSION = PJSON.oclif.update.node.version
-const SHORT_VERSION = PJSON.version
-
-async function getText (url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let buffer = []
-
-      res.on('data', (buf) => {
-        buffer.push(buf)
-      })
-
-      res.on('close', () => {
-        resolve(Buffer.concat(buffer).toString('utf-8'))
-      })
-    }).on('error', reject)
-  })
-}
-
-async function getDownloadInfoForNodeVersion (version) {
-  // https://nodejs.org/download/release/v12.21.0/SHASUMS256.txt
-  const url = `${NODE_JS_BASE}/v${version}/SHASUMS256.txt`
-  const shasums = await getText(url)
-  const shasumLine = shasums.split('\n').find((line) => {
-    return line.includes(`node-v${version}-darwin-x64.tar.xz`)
-  })
-
-  if (!shasumLine) {
-    throw new Error(`could not find matching shasum for ${version}`)
-  }
-
-  const [shasum, filename] = shasumLine.trim().split(/\s+/)
-  return {
-    url: `${NODE_JS_BASE}/v${version}/${filename}`,
-    sha256: shasum
-  }
-}
+const {GITHUB_SHA_SHORT, VERSION} = process.env
 
 if (!(process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME.startsWith('v'))) {
   console.log('Not on stable release; skipping releasing homebrew')
@@ -66,48 +27,35 @@ async function calculateSHA256 (fileName) {
 
 const ROOT = path.join(__dirname, 'homebrew')
 const TEMPLATES = path.join(ROOT, 'templates')
-
-const CLI_ASSETS_URL = process.env.CLI_ASSETS_URL || 'https://cli-assets.heroku.com'
+const fileSuffix = '.tar.xz'
+const INTEL_ARCH = 'x64'
+const M1_ARCH = 'arm64'
 
 async function updateHerokuFormula (brewDir) {
   const templatePath = path.join(TEMPLATES, 'heroku.rb')
   const template = fs.readFileSync(templatePath).toString('utf-8')
+  const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
-  const pathToDist = path.join(DIST_DIR, `heroku-v${SHORT_VERSION}`, `heroku-v${SHORT_VERSION}.tar.xz`)
-  const sha256 = await calculateSHA256(pathToDist)
-  const url = `${CLI_ASSETS_URL}/heroku-v${SHORT_VERSION}/heroku-v${SHORT_VERSION}.tar.xz`
+  // todo: support both Linux architectures that oclif does
+  const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
+  const urlPrefix = `https://cli-assets.heroku.com/versions/${VERSION}/${GITHUB_SHA_SHORT}/`
+  const fileParts = [fileNamePrefix, fileSuffix]
 
-  const templateReplaced =
-    template
-      .replace('__CLI_DOWNLOAD_URL__', url)
-      .replace('__CLI_SHA256__', sha256)
-      .replace('__NODE_VERSION__', NODE_VERSION)
-
-  fs.writeFileSync(path.join(brewDir, 'Formula', 'heroku.rb'), templateReplaced)
-}
-
-async function updateHerokuNodeFormula (brewDir) {
-  const formulaPath = path.join(brewDir, 'Formula', 'heroku-node.rb')
-
-  console.log(`updating heroku-node Formula in ${formulaPath}`)
-  console.log(`getting SHA and URL for Node.js version ${NODE_VERSION}`)
-
-  const { url, sha256 } = await getDownloadInfoForNodeVersion(NODE_VERSION)
-
-  console.log(`done getting SHA for Node.js version ${NODE_VERSION}: ${sha256}`)
-  console.log(`done getting URL for Node.js version ${NODE_VERSION}: ${url}`)
-
-  const templatePath = path.join(TEMPLATES, 'heroku-node.rb')
-  const template = fs.readFileSync(templatePath).toString('utf-8')
+  const fileNameIntel = fileParts.join(INTEL_ARCH)
+  const sha256Intel = await calculateSHA256(path.join(DIST_DIR, fileNameIntel))
+  const fileNameM1 = fileParts.join(M1_ARCH)
+  const sha256M1 = await calculateSHA256(path.join(DIST_DIR, fileNameM1))
 
   const templateReplaced =
     template
-      .replace('__NODE_BIN_URL__', url)
-      .replace('__NODE_SHA256__', sha256)
-      .replace('__NODE_VERSION__', NODE_VERSION)
+      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}${fileNameIntel}`)
+      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}${fileNameM1}`)
+      .replace('__CLI_SHA256__', sha256Intel)
+      .replace('__CLI_SHA256_M1__', sha256M1)
 
   fs.writeFileSync(formulaPath, templateReplaced)
-  console.log(`done updating heroku-node Formula in ${formulaPath}`)
+
+  console.log(`done updating heroku Formula in ${formulaPath}`)
 }
 
 async function setupGit () {
@@ -134,7 +82,6 @@ async function updateHomebrew () {
   console.log(`done cloning heroku/homebrew-brew to ${homebrewDir}`)
 
   console.log('updating local git...')
-  await updateHerokuNodeFormula(homebrewDir)
   await updateHerokuFormula(homebrewDir)
 
   // run in git in cloned heroku/homebrew-brew git directory
@@ -145,7 +92,7 @@ async function updateHomebrew () {
   await git(['add', 'Formula'])
   await git(['config', '--local', 'core.pager', 'cat'])
   await git(['diff', '--cached'], { stdio: 'inherit' })
-  await git(['commit', '-m', `heroku v${SHORT_VERSION}`])
+  await git(['commit', '-m', `heroku v${VERSION}`])
   if (process.env.SKIP_GIT_PUSH === undefined) {
     await git(['push', 'origin', 'main'])
   }
