@@ -4,7 +4,7 @@ Heroku CLI
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
 [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
+[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
