@@ -1,4 +1,9 @@
 import {expect, test} from '@oclif/test'
+import {CliUx} from '@oclif/core'
+import sinon from 'sinon'
+
+const cli = CliUx.ux
+const promptStub = sinon.stub()
 
 describe('labs:disable', () => {
   test
@@ -21,6 +26,41 @@ describe('labs:disable', () => {
     // to-do: make this work on CI
     // expect(stderr).to.contain('Disabling feature-a for jeff@heroku.com...')
     })
+
+  test
+    .stderr()
+    .do(() => {
+      promptStub.onFirstCall().resolves('myapp')
+    })
+    .nock('https://api.heroku.com', api => api
+      .get('/account/features/spaces-strict-tls').reply(404)
+      .get('/apps/myapp/features/spaces-strict-tls')
+      .reply(200, {
+        enabled: true,
+        name: 'spaces-strict-tls',
+        description: 'a user lab feature',
+        doc_url: 'https://devcenter.heroku.com',
+      })
+      .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false}).reply(200),
+    )
+    .stub(cli, 'prompt', () => promptStub)
+    .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
+    .it('warns user of insecure action', ({stderr}) => {
+      expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
+    })
+
+  test
+    .stderr()
+    .do(() => {
+      promptStub.onFirstCall().resolves('myapp')
+      promptStub.onSecondCall().resolves('notMyApp')
+    })
+    .stub(cli, 'prompt', () => promptStub)
+    .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
+    .catch(error => {
+      expect(error.message).to.equal('Confirmation name did not match app name. Try again.')
+    })
+    .it('errors when confirmation name does not match')
 
   test
     .nock('https://api.heroku.com', api => api
