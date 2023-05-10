@@ -23,6 +23,8 @@ jobs:
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
     if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || (needs.get-version-channel.outputs.tag && startsWith(github.head_ref, 'prerelease/')))
     uses: ./.github/workflows/publish-pack-upload.yml
+    with:
+      isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
 
   promote:
     needs: [publish-pack-upload]

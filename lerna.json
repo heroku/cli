@@ -4,7 +4,7 @@
   "npmClient": "yarn",
   "command": {
     "publish": {
-      "allowBranch": "main",
+      "allowBranch": ["main", "release-*"],
       "conventionalCommits": true
     }
   }
