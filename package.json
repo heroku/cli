@@ -25,7 +25,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run prepack",
-    "test": "yarn lerna run --scope @heroku-cli/plugin-container-registry-v5 test",
+    "test": "lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
   },
