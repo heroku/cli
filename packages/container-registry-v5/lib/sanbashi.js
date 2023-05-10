@@ -58,6 +58,7 @@ Sanbashi.chooseJobs = async function (jobs) {
   // eslint-disable-next-line guard-for-in
   for (let processType in jobs) {
     let group = jobs[processType]
+    console.log('group:', group)
     if (group.length > 1) {
       let prompt = {
         type: 'list',
