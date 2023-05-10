@@ -20,14 +20,14 @@ function createBackboardMock(expectedGetter: (data: AnalyticsInterface) => any, 
       'user-agent': '@oclif/command/1.5.6 darwin-x64 node-v10.2.1',
     },
   })
-  .get('/hamurai')
-  .query(({data: analyticsData}: { data: string }) => {
-    const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData, 'base64').toString())
-    const expected = expectedGetter(data)
-    expect(expected).to.eq(actual)
-    return true
-  })
-  .reply(200)
+    .get('/hamurai')
+    .query(({data: analyticsData}: { data: string }) => {
+      const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData, 'base64').toString())
+      const expected = expectedGetter(data)
+      expect(expected).to.eq(actual)
+      return true
+    })
+    .reply(200)
 
   return backboard
 }
@@ -58,9 +58,9 @@ describe('analytics (backboard has an error)', () => {
 
   it('does not show an error on console', async () => {
     const backboard = nock('https://backboard.heroku.com/')
-    .get('/hamurai')
-    .query(() => true)
-    .reply(500)
+      .get('/hamurai')
+      .query(() => true)
+      .reply(500)
 
     const config = await Config.load()
     config.platform = 'win32'

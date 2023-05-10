@@ -35,62 +35,62 @@ describe('pipelines:transfer', function () {
 
   const addMocks = (testInstance: typeof test) => {
     return testInstance
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
-      api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
-      api.post('/filters/apps').reply(200, [app])
-    })
+      .nock('https://api.heroku.com', api => {
+        api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
+        api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
+        api.post('/filters/apps').reply(200, [app])
+      })
   }
 
   addMocks(test)
-  .stderr()
-  .nock('https://api.heroku.com', api => {
-    api.get(`/teams/${team.name}`).reply(200, team)
-    update = api.post('/pipeline-transfers', {
-      new_owner: {id: team.id, type: 'team'},
-      pipeline: {id: pipeline.id},
-    }).reply(200, {})
-  })
-  .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
-  .retries(2)
-  .it('transfers to a team', ctx => {
-    expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
-    expect(update.isDone()).to.be.true
-  })
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api.get(`/teams/${team.name}`).reply(200, team)
+      update = api.post('/pipeline-transfers', {
+        new_owner: {id: team.id, type: 'team'},
+        pipeline: {id: pipeline.id},
+      }).reply(200, {})
+    })
+    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
+    .retries(2)
+    .it('transfers to a team', ctx => {
+      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
+      expect(update.isDone()).to.be.true
+    })
 
   addMocks(test)
-  .stderr()
-  .nock('https://api.heroku.com', api => {
-    api.get(`/users/${account.email}`).reply(200, account)
-    update = api.post('/pipeline-transfers', {
-      new_owner: {id: account.id, type: 'user'},
-      pipeline: {id: pipeline.id},
-    }).reply(200, {})
-  })
-  .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
-  .it('transfers to an account', ctx => {
-    expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-    expect(update.isDone()).to.be.true
-  })
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api.get(`/users/${account.email}`).reply(200, account)
+      update = api.post('/pipeline-transfers', {
+        new_owner: {id: account.id, type: 'user'},
+        pipeline: {id: pipeline.id},
+      }).reply(200, {})
+    })
+    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
+    .it('transfers to an account', ctx => {
+      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+      expect(update.isDone()).to.be.true
+    })
 
   const promptStub = sinon.stub()
 
   addMocks(test)
-  .stderr()
-  .do(() => {
-    promptStub.onFirstCall().resolves(pipeline.name)
-  })
-  .nock('https://api.heroku.com', api => {
-    api.get(`/users/${account.email}`).reply(200, account)
-    update = api.post('/pipeline-transfers', {
-      new_owner: {id: account.id, type: 'user'},
-      pipeline: {id: pipeline.id},
-    }).reply(200, {})
-  })
-  .stub(cli, 'prompt', () => promptStub)
-  .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
-  .it('does not pass confirm flag', ctx => {
-    expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-    expect(update.isDone()).to.be.true
-  })
+    .stderr()
+    .do(() => {
+      promptStub.onFirstCall().resolves(pipeline.name)
+    })
+    .nock('https://api.heroku.com', api => {
+      api.get(`/users/${account.email}`).reply(200, account)
+      update = api.post('/pipeline-transfers', {
+        new_owner: {id: account.id, type: 'user'},
+        pipeline: {id: pipeline.id},
+      }).reply(200, {})
+    })
+    .stub(cli, 'prompt', () => promptStub)
+    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
+    .it('does not pass confirm flag', ctx => {
+      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+      expect(update.isDone()).to.be.true
+    })
 })

@@ -6,7 +6,7 @@ module.exports = async function (api, addon, interval) {
   const app = addon.app.name
   const addonName = addon.name
 
-  await cli.action(`Creating ${cli.color.addon(addon.name)}`, async function () {
+  await cli.action(`Creating ${cli.color.addon(addon.name)}`, (async function () {
     while (addon.state === 'provisioning') {
       await new Promise(resolve => setTimeout(resolve, interval * 1000))
 
@@ -20,7 +20,7 @@ module.exports = async function (api, addon, interval) {
     if (addon.state === 'deprovisioned') {
       throw new Error(`The add-on was unable to be created, with status ${addon.state}`)
     }
-  }())
+  })())
 
   return addon
 }

@@ -27,16 +27,16 @@ describe('config', () => {
     api.get('/apps/myapp/config-vars').reply(200, expectedMyapp)
 
     return getConfig(new Heroku(), 'myapp')
-    .then(config => expect(config).to.deep.equal(expectedMyapp))
-    .then(() => {
-      api.get('/apps/fooapp/config-vars').reply(200, expectedFooapp)
+      .then(config => expect(config).to.deep.equal(expectedMyapp))
+      .then(() => {
+        api.get('/apps/fooapp/config-vars').reply(200, expectedFooapp)
 
-      return getConfig(new Heroku(), 'fooapp')
-    })
-    .then(config => expect(config).to.deep.equal(expectedFooapp))
-    .then(() => {
-      return getConfig(new Heroku(), 'myapp')
-    })
-    .then(config => expect(config).to.deep.equal(expectedMyapp))
+        return getConfig(new Heroku(), 'fooapp')
+      })
+      .then(config => expect(config).to.deep.equal(expectedFooapp))
+      .then(() => {
+        return getConfig(new Heroku(), 'myapp')
+      })
+      .then(config => expect(config).to.deep.equal(expectedMyapp))
   })
 })

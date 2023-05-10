@@ -31,6 +31,6 @@ describe('heroku certs:auto:disable', function () {
 
   it('confirms that they want to disable', function () {
     return expect(certs.run({app: 'example', flags: {confirm: 'notexample'}}))
-    .to.be.rejectedWith('Confirmation notexample did not match example. Aborted.')
+      .to.be.rejectedWith('Confirmation notexample did not match example. Aborted.')
   })
 })

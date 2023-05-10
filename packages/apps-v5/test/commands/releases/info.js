@@ -1,10 +1,10 @@
 'use strict'
-/* globals describe beforeEach it commands afterEach */
+/* globals beforeEach commands afterEach */
 
 const nock = require('nock')
 const cli = require('heroku-cli-util')
-const cmd = commands.find((c) => c.topic === 'releases' && c.command === 'info')
-const { expect } = require('chai')
+const cmd = commands.find(c => c.topic === 'releases' && c.command === 'info')
+const {expect} = require('chai')
 
 let d = new Date(2000, 1, 1)
 
@@ -15,13 +15,13 @@ describe('releases:info', function () {
   let release = {
     description: 'something changed',
     user: {
-      email: 'foo@foo.com'
+      email: 'foo@foo.com',
     },
     created_at: d,
     version: 10,
-    addon_plan_names: ['addon1', 'addon2']
+    addon_plan_names: ['addon1', 'addon2'],
   }
-  let configVars = { FOO: 'foo', BAR: 'bar' }
+  let configVars = {FOO: 'foo', BAR: 'bar'}
 
   it('shows most recent release info', function () {
     let api = nock('https://api.heroku.com:443')
@@ -29,7 +29,7 @@ describe('releases:info', function () {
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
+    return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
@@ -51,7 +51,7 @@ FOO: foo
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: { shell: true }, args: {} })
+    return cmd.run({app: 'myapp', flags: {shell: true}, args: {}})
       .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
@@ -73,7 +73,7 @@ BAR=bar
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: { release: 'v10' } })
+    return cmd.run({app: 'myapp', flags: {}, args: {release: 'v10'}})
       .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2
@@ -95,8 +95,8 @@ FOO: foo
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: { json: true }, args: { release: 'v10' } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { version: 10 }))
+    return cmd.run({app: 'myapp', flags: {json: true}, args: {release: 'v10'}})
+      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {version: 10}))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -107,13 +107,13 @@ FOO: foo
       .reply(200, [{
         description: 'something changed',
         status: 'failed',
-        user: { email: 'foo@foo.com' },
+        user: {email: 'foo@foo.com'},
         created_at: d,
-        version: 10
+        version: 10,
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
+    return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout).to.equal(`=== Release v10
 By:      foo@foo.com
 Change:  something changed (release command failed)
@@ -134,13 +134,13 @@ FOO: foo
         addon_plan_names: ['addon1', 'addon2'],
         description: 'something changed',
         status: 'pending',
-        user: { email: 'foo@foo.com' },
+        user: {email: 'foo@foo.com'},
         version: 10,
-        created_at: d
+        created_at: d,
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    return cmd.run({ app: 'myapp', flags: {}, args: {} })
+    return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout).to.equal(`=== Release v10
 Add-ons: addon1
          addon2

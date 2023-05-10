@@ -6,7 +6,7 @@ const stripAnsi = require('strip-ansi')
 async function run(context, heroku) {
   const statusHelper = require('../../status_helper')
   const time = require('../../time')
-  const { truncate } = require('lodash')
+  const {truncate} = require('lodash')
 
   let optimizationWidth = 0
 
@@ -14,34 +14,39 @@ async function run(context, heroku) {
     const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
     const trunc = (s, l) => {
       if (process.stdout.isTTY) {
-        return truncate(s, { length: width() - (optimizationWidth + l), omission: '…' })
+        return truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
       }
+
       return s
     }
+
     const status = statusHelper.description(r, runningRelease, runningSlug)
     if (status) {
       const sc = cli.color[statusHelper.color(r.status)](status)
       return trunc(d, status.length + 1) + ' ' + sc
     }
+
     return trunc(d, 0)
   }
 
   let url = `/apps/${context.app}/releases`
-  if (context.flags.extended) url = url + '?extended=true'
+  if (context.flags.extended) url += '?extended=true'
   let releases = await heroku.request({
     path: url,
     partial: true,
     headers: {
-      'Range': `version ..; max=${context.flags.num || 15}, order=desc`
-    }
+      Range: `version ..; max=${context.flags.num || 15}, order=desc`,
+    },
   })
 
   let header = `${context.app} Releases`
-  let currentRelease = releases.filter((r) => r.current === true)[0]
+  // eslint-disable-next-line unicorn/prefer-array-find
+  let currentRelease = releases.filter(r => r.current === true)[0]
   if (currentRelease) {
-    header += ' - ' + cli.color['blue'](`Current: v${currentRelease.version}`)
+    header += ' - ' + cli.color.blue(`Current: v${currentRelease.version}`)
   }
-  let runningRelease = releases.filter((r) => r.status === 'pending').slice(-1)[0]
+
+  let runningRelease = releases.filter(r => r.status === 'pending').slice(-1)[0]
   let runningSlug
   if (runningRelease && runningRelease.slug) {
     runningSlug = await heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
@@ -79,7 +84,7 @@ async function run(context, heroku) {
 
           col.optimizationWidth = Math.max(
             col.optimizationWidth,
-            stripAnsi(formattedValue).length
+            stripAnsi(formattedValue).length,
           )
         }
       }
@@ -101,7 +106,7 @@ async function run(context, heroku) {
 
     let concatArguments = function (args) {
       return Array.prototype.map.call(args, function (arg) {
-        return arg + ''
+        return String(arg)
       }).join(' ')
     }
 
@@ -117,13 +122,13 @@ async function run(context, heroku) {
     let options = {
       printHeader: false,
       columns: [
-        { key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v) },
-        { key: 'description', format: descriptionWithStatus },
-        { key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, '')) },
-        { key: 'created_at', format: (t) => time.ago(new Date(t)) },
-        { key: 'extended.slug_id' },
-        { key: 'extended.slug_uuid' }
-      ]
+        {key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
+        {key: 'description', format: descriptionWithStatus},
+        {key: 'user', format: u => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, ''))},
+        {key: 'created_at', format: t => time.ago(new Date(t))},
+        {key: 'extended.slug_id'},
+        {key: 'extended.slug_uuid'},
+      ],
     }
     handleColorStatus(options)
     optimizeWidth(releases, options.columns, 'description')
@@ -135,11 +140,11 @@ async function run(context, heroku) {
     let options = {
       printHeader: false,
       columns: [
-        { key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v) },
-        { key: 'description', format: descriptionWithStatus },
-        { key: 'user', format: (u) => cli.color.magenta(u.email) },
-        { key: 'created_at', format: (t) => time.ago(new Date(t)) }
-      ]
+        {key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
+        {key: 'description', format: descriptionWithStatus},
+        {key: 'user', format: u => cli.color.magenta(u.email)},
+        {key: 'created_at', format: t => time.ago(new Date(t))},
+      ],
     }
     handleColorStatus(options)
     optimizeWidth(releases, options.columns, 'description')
@@ -158,9 +163,9 @@ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`,
   needsApp: true,
   needsAuth: true,
   flags: [
-    { name: 'num', char: 'n', description: 'number of releases to show', hasValue: true },
-    { name: 'json', description: 'output releases in json format' },
-    { name: 'extended', char: 'x', hidden: true }
+    {name: 'num', char: 'n', description: 'number of releases to show', hasValue: true},
+    {name: 'json', description: 'output releases in json format'},
+    {name: 'extended', char: 'x', hidden: true},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

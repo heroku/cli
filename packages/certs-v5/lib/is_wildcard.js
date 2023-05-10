@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = function (hostname) {
-  return hostname.substring(0, 2) === '*.'
+  return hostname.slice(0, 2) === '*.'
 }

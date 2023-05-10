@@ -7,10 +7,10 @@ const cli = CliUx.ux
 function filter(obj: any) {
   const ret: any = {}
   Object.keys(obj)
-  .filter((key: any) => obj[key] !== undefined)
-  .forEach((key: string) => {
-    ret[key] = obj[key]
-  })
+    .filter((key: any) => obj[key] !== undefined)
+    .forEach((key: string) => {
+      ret[key] = obj[key]
+    })
   return ret
 }
 

@@ -20,11 +20,11 @@ describe('terms-of-service hook', () => {
 
   describe('has never run before', () => {
     test
-    .stderr()
-    .do(() => checkTos(options))
-    .it('warns of new terms of service', context => {
-      expect(context.stderr).to.contain('Our terms of service have changed')
-    })
+      .stderr()
+      .do(() => checkTos(options))
+      .it('warns of new terms of service', context => {
+        expect(context.stderr).to.contain('Our terms of service have changed')
+      })
   })
 
   describe('has run once before', () => {
@@ -33,10 +33,10 @@ describe('terms-of-service hook', () => {
     })
 
     test
-    .stderr()
-    .do(() => checkTos(options))
-    .it('does not give a warning', context => {
-      expect(context.stderr).to.not.contain('Our terms of service have changed')
-    })
+      .stderr()
+      .do(() => checkTos(options))
+      .it('does not give a warning', context => {
+        expect(context.stderr).to.not.contain('Our terms of service have changed')
+      })
   })
 })

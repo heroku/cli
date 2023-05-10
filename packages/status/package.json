@@ -29,7 +29,7 @@
     "@types/nock": "^9.3.1",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
-    "globby": "^9.0.0",
+    "globby": "^10.0.2",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
@@ -44,7 +44,7 @@
     "oclif.manifest.json",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/status",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/status",
   "keywords": [
     "heroku-plugin"
   ],

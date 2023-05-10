@@ -21,7 +21,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "chai": "^4",
-    "globby": "^10",
+    "globby": "^10.0.2",
     "mocha": "^5",
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
@@ -37,7 +37,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/oauth",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/oauth",
   "keywords": [
     "oclif"
   ],

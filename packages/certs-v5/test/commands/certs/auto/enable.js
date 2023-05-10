@@ -35,14 +35,14 @@ describe('heroku certs:auto:enable', function () {
       app: 'example',
       flags: {wait: false},
     })
-    .then(function () {
-      expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
-      expect(cli.stdout).to.equal(
-        `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
+      .then(function () {
+        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
+        expect(cli.stdout).to.equal(
+          `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
 `)
-      domainsApi.done()
-      acmApi.done()
-    })
+        domainsApi.done()
+        acmApi.done()
+      })
   })
 
   it('enables acm with changed domains', function () {
@@ -69,17 +69,17 @@ describe('heroku certs:auto:enable', function () {
       app: 'example',
       flags: {wait: false},
     })
-    .then(function () {
-      expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
-      expect(cli.stdout).to.equal(
-        `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
+      .then(function () {
+        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
+        expect(cli.stdout).to.equal(
+          `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
 Domain           Record Type  DNS Target
 ───────────────  ───────────  ─────────────────────────────
 foo.example.org  CNAME        foo.example.org.herokudns.com
 `)
-      domainsApi.done()
-      acmApi.done()
-    })
+        domainsApi.done()
+        acmApi.done()
+      })
   })
 
   it('enables acm with no domains', function () {
@@ -96,12 +96,12 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
       app: 'example',
       flags: {wait: false},
     })
-    .then(function () {
-      expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
-      expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n')
-      domainsApi.done()
-      acmApi.done()
-    })
+      .then(function () {
+        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait\n')
+        expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n')
+        domainsApi.done()
+        acmApi.done()
+      })
   })
 
   context('--wait', function () {
@@ -167,13 +167,13 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         args: ['--wait'],
         flags: {wait: true},
       })
-      .then(function () {
-        expect(notifySpy.called).to.equal(true)
-        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... done\n')
-        expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.\n')
-        domainsApi.done()
-        acmApi.done()
-      })
+        .then(function () {
+          expect(notifySpy.called).to.equal(true)
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... done\n')
+          expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.\n')
+          domainsApi.done()
+          acmApi.done()
+        })
     })
 
     it('waits until all certs are issued or failed and notifies', () => {
@@ -215,14 +215,14 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         args: ['--wait'],
         flags: {wait: true},
       })
-      .catch(function (error) {
-        expect(error.message).to.equal('ACM not enabled for some domains')
-        expect(notifySpy.called).to.equal(true)
-        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... !\n')
-        expect(cli.stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n')
-        domainsApi.done()
-        acmApi.done()
-      })
+        .catch(function (error) {
+          expect(error.message).to.equal('ACM not enabled for some domains')
+          expect(notifySpy.called).to.equal(true)
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... !\n')
+          expect(cli.stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n')
+          domainsApi.done()
+          acmApi.done()
+        })
     })
 
     it('waits until all certs are failed and notifies', () => {
@@ -264,14 +264,14 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         args: ['--wait'],
         flags: {wait: true},
       })
-      .catch(function (error) {
-        expect(error.message).to.equal('ACM not enabled for some domains')
-        expect(notifySpy.called).to.equal(true)
-        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... !\n')
-        expect(cli.stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n')
-        domainsApi.done()
-        acmApi.done()
-      })
+        .catch(function (error) {
+          expect(error.message).to.equal('ACM not enabled for some domains')
+          expect(notifySpy.called).to.equal(true)
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\nWaiting until the certificate is issued to all domains... !\n')
+          expect(cli.stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n')
+          domainsApi.done()
+          acmApi.done()
+        })
     })
 
     it('does not wait if all certs are issued when first checked', () => {
@@ -306,13 +306,13 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         args: ['--wait'],
         flags: {wait: true},
       })
-      .then(function () {
-        expect(notifySpy.called).to.equal(true)
-        expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\n')
-        expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.\n')
-        domainsApi.done()
-        acmApi.done()
-      })
+        .then(function () {
+          expect(notifySpy.called).to.equal(true)
+          expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting.\n')
+          expect(cli.stdout).to.equal('=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.\n')
+          domainsApi.done()
+          acmApi.done()
+        })
     })
   })
 })

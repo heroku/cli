@@ -14,13 +14,13 @@ describe('heroku access', () => {
       let apiGetAppCollaborators = stubGet.appCollaborators()
 
       return cmd.run({app: 'myapp', flags: {}})
-      .then(() => expect(
-        `jeff@heroku.com   collaborator
+        .then(() => expect(
+          `jeff@heroku.com   collaborator
 raulb@heroku.com  owner
 `).to.eq(cli.stdout))
-      .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetPersonalApp.done())
-      .then(() => apiGetAppCollaborators.done())
+        .then(() => expect('').to.eq(cli.stderr))
+        .then(() => apiGetPersonalApp.done())
+        .then(() => apiGetAppCollaborators.done())
     })
   })
 
@@ -35,15 +35,15 @@ raulb@heroku.com  owner
       let apiGetteamAppCollaboratorsWithPermissions = stubGet.teamAppCollaboratorsWithPermissions()
 
       return cmd.run({app: 'myapp', flags: {}})
-      .then(() => expect(
-        `bob@heroku.com    member  deploy,view
+        .then(() => expect(
+          `bob@heroku.com    member  deploy,view
 raulb@heroku.com  admin   deploy,manage,operate,view
 `).to.eq(cli.stdout))
-      .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetteamApp.done())
-      .then(() => apiGetOrgMembers.done())
-      .then(() => apiGetAppPermissions.done())
-      .then(() => apiGetteamAppCollaboratorsWithPermissions.done())
+        .then(() => expect('').to.eq(cli.stderr))
+        .then(() => apiGetteamApp.done())
+        .then(() => apiGetOrgMembers.done())
+        .then(() => apiGetAppPermissions.done())
+        .then(() => apiGetteamAppCollaboratorsWithPermissions.done())
     })
   })
 })

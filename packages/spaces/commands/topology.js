@@ -48,7 +48,9 @@ function render(spaceName, topology, appInfo, flags) {
           let bpt = getProcessType(b)
           if (apt > bpt) {
             return 1
-          } else if (apt < bpt) {
+          }
+
+          if (apt < bpt) {
             return -1
           }
 

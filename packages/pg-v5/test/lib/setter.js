@@ -57,14 +57,14 @@ describe('setter', () => {
         pg.get('/postgres/v0/databases/1/config').reply(200,
           {[name]: {value: value}})
         return cli.command(fn)({app: 'myapp', args: {}, flags: {}})
-        .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
+          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
       })
 
       it(`change the value for ${name}`, () => {
         pg.patch('/postgres/v0/databases/1/config').reply(200,
           {[name]: {value: value}})
         return cli.command(fn)({app: 'myapp', args: {value: value}, flags: {}})
-        .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
+          .then(() => expect(cli.stdout).to.equal(`${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
       })
     })
   })

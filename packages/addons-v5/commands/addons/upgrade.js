@@ -23,9 +23,9 @@ function handlePlanChangeAPIError(err) {
 
   if (err.statusCode === 422 && err.body.message && err.body.message.startsWith("Couldn't find either the add-on")) {
     return heroku.get(`/addon-services/${service}/plans`)
-    .then(plans => {
-      plans = sortBy(plans, 'price.cents').map(plans => plans.name)
-      throw new Error(`${err.body.message}
+      .then(plans => {
+        plans = sortBy(plans, 'price.cents').map(plans => plans.name)
+        throw new Error(`${err.body.message}
 
 Here are the available plans for ${cli.color.yellow(service)}:
 ${plans.join('\n')}
@@ -33,7 +33,7 @@ ${plans.join('\n')}
 See more plan information with ${cli.color.blue('heroku addons:plans ' + service)}
 
 ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
-    })
+      })
   }
 
   throw err
@@ -86,7 +86,7 @@ async function run(c, h) {
   service = addon.addon_service.name
   app = addon.app.name
   plan = `${service}:${plan}`
-  await cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false}, async function () {
+  await cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false}, (async function () {
     addon = await heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,
       method: 'PATCH',
@@ -98,7 +98,7 @@ async function run(c, h) {
     }).catch(error => handlePlanChangeAPIError(error))
     cli.action.done(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
     if (addon.provision_message) cli.log(addon.provision_message)
-  }())
+  })())
 }
 
 let cmd = {

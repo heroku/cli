@@ -704,11 +704,11 @@ function createSpawnMocker(sandbox) {
     }
 
     return spawnMock
-    .expects('spawn')
-    .withArgs(
-      commandName,
-      sinon.match.array.deepEquals(expectedArgs),
-      sinon.match(optionsMatchers),
-    )
+      .expects('spawn')
+      .withArgs(
+        commandName,
+        sinon.match.array.deepEquals(expectedArgs),
+        sinon.match(optionsMatchers),
+      )
   }
 }

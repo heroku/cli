@@ -2,7 +2,7 @@
 
 function splitDomains(domains) {
   return domains.map(domain => {
-    return [domain.substring(0, 1), domain.substring(1)]
+    return [domain.slice(0, 1), domain.slice(1)]
   })
 }
 
@@ -44,7 +44,7 @@ module.exports = function (certDomains, appDomains) {
     }, [])
 
     return matchedDomains
-  } else {
-    return certDomains.filter(domain => appDomains.includes(domain))
   }
+
+  return certDomains.filter(domain => appDomains.includes(domain))
 }

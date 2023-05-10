@@ -30,22 +30,22 @@ async function run(context, heroku) {
         url: db,
         confirm: conn.database || conn.host,
       }
-    } else {
-      // Other case (need to resolve attachment)
-      let attachment = await fetcher.attachment(app, db)
-      if (!attachment) throw new Error(`${db} not found on ${cli.color.app(app)}`)
-      let [addon, config] = await Promise.all([
-        heroku.get(`/addons/${attachment.addon.name}`),
-        heroku.get(`/apps/${attachment.app.name}/config-vars`),
-      ])
-      attachment.addon = addon
-      config = upperCaseConfig(config) // Upper case config var keys
-      return {
-        name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, ''),
-        url: config[attachment.name.toUpperCase() + '_URL'], // Upper case attachment name
-        attachment,
-        confirm: app,
-      }
+    }
+
+    // Other case (need to resolve attachment)
+    let attachment = await fetcher.attachment(app, db)
+    if (!attachment) throw new Error(`${db} not found on ${cli.color.app(app)}`)
+    let [addon, config] = await Promise.all([
+      heroku.get(`/addons/${attachment.addon.name}`),
+      heroku.get(`/apps/${attachment.app.name}/config-vars`),
+    ])
+    attachment.addon = addon
+    config = upperCaseConfig(config) // Upper case config var keys
+    return {
+      name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, ''),
+      url: config[attachment.name.toUpperCase() + '_URL'], // Upper case attachment name
+      attachment,
+      confirm: app,
     }
   }
 
@@ -65,7 +65,7 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
 
   let copy
   let attachment
-  await cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, async function () {
+  await cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, (async function () {
     attachment = target.attachment || source.attachment
     if (!attachment) throw new Error('Heroku PostgreSQL database must be source or target')
     copy = await heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
@@ -77,7 +77,7 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
       },
       host: host(attachment.addon),
     })
-  }())
+  })())
 
   if (source.attachment) {
     let credentials = await heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`,

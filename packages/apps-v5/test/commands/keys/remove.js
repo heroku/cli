@@ -1,9 +1,9 @@
 'use strict'
-/* globals commands describe beforeEach afterEach it */
+/* globals commands beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = commands.find((c) => c.topic === 'keys' && c.command === 'remove')
+const cmd = commands.find(c => c.topic === 'keys' && c.command === 'remove')
 const expect = require('chai').expect
 
 describe('keys:remove', () => {
@@ -13,10 +13,10 @@ describe('keys:remove', () => {
   it('removes an SSH key', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/account/keys')
-      .reply(200, [{ id: 1, comment: 'user@machine' }])
+      .reply(200, [{id: 1, comment: 'user@machine'}])
       .delete('/account/keys/1')
       .reply(200)
-    return cmd.run({ args: { key: 'user@machine' } })
+    return cmd.run({args: {key: 'user@machine'}})
       .then(() => expect('').to.equal(cli.stdout))
       .then(() => expect('Removing user@machine SSH key... done\n').to.equal(cli.stderr))
       .then(() => api.done())
@@ -26,21 +26,21 @@ describe('keys:remove', () => {
     nock('https://api.heroku.com:443')
       .get('/account/keys')
       .reply(200, [])
-    return cmd.run({ args: { key: 'user@machine' } })
-      .catch(function (err) {
-        expect(err).to.be.an.instanceof(Error)
-        expect(err.message).to.equal('No SSH keys on account')
+    return cmd.run({args: {key: 'user@machine'}})
+      .catch(function (error) {
+        expect(error).to.be.an.instanceof(Error)
+        expect(error.message).to.equal('No SSH keys on account')
       })
   })
 
   it('errors with incorrect SSH key on account', () => {
     nock('https://api.heroku.com:443')
       .get('/account/keys')
-      .reply(200, [{ id: 1, comment: 'user@machine' }])
-    return cmd.run({ args: { key: 'different@machine' } })
-      .catch(function (err) {
-        expect(err).to.be.an.instanceof(Error)
-        expect(err.message).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
+      .reply(200, [{id: 1, comment: 'user@machine'}])
+    return cmd.run({args: {key: 'different@machine'}})
+      .catch(function (error) {
+        expect(error).to.be.an.instanceof(Error)
+        expect(error.message).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
       })
   })
 })

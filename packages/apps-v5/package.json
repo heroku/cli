@@ -26,6 +26,7 @@
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
+    "strip-ansi": "6.0.1",
     "term-img": "^4.1.0",
     "urijs": "1.19.11"
   },
@@ -41,7 +42,9 @@
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
     "proxyquire": "^2.1.0",
+    "rimraf": "3.0.2",
     "set-tz": "^0.1.0",
+    "sinon": "7.2.4",
     "std-mocks": "1.0.1",
     "testdouble": "^3.10.0",
     "time-require": "0.1.2"
@@ -51,7 +54,7 @@
     "assets",
     "src"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/apps-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/apps-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -62,7 +65,9 @@
   },
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
+    "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "test": "nyc --extension .js mocha --forbid-only \"test/**/*.js\"",
     "version": "oclif readme && git add README.md"

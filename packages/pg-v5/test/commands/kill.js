@@ -40,11 +40,11 @@ describe('pg:kill', () => {
 
   it('kills pid 100', () => {
     return cmd.run({app: 'myapp', args: {pid: 100}, flags: {}})
-    .then(() => expect(psql._query.trim()).to.equal('SELECT pg_cancel_backend(100);'))
+      .then(() => expect(psql._query.trim()).to.equal('SELECT pg_cancel_backend(100);'))
   })
 
   it('force kills pid 100', () => {
     return cmd.run({app: 'myapp', args: {pid: 100}, flags: {force: true}})
-    .then(() => expect(psql._query.trim()).to.equal('SELECT pg_terminate_backend(100);'))
+      .then(() => expect(psql._query.trim()).to.equal('SELECT pg_terminate_backend(100);'))
   })
 })

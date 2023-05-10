@@ -133,9 +133,9 @@ export default class Create extends AutocompleteBase {
   private genCmdPublicFlags(Command: Interfaces.Command): string {
     const Flags = Command.flags || {}
     return Object.keys(Flags)
-    .filter(flag => !Flags[flag].hidden)
-    .map(flag => `--${flag}`)
-    .join(' ')
+      .filter(flag => !Flags[flag].hidden)
+      .map(flag => `--${flag}`)
+      .join(' ')
   }
 
   private genCmdWithDescription(Command: Interfaces.Command): string {
@@ -151,26 +151,26 @@ export default class Create extends AutocompleteBase {
   private genZshCmdFlagsSetter(Command: Interfaces.Command): string {
     const id = Command.id
     const flagscompletions = Object.keys(Command.flags || {})
-    .filter(flag => Command.flags && !Command.flags[flag].hidden)
-    .map(flag => {
-      const f = (Command.flags && Command.flags[flag]) || {description: ''}
-      const isBoolean = f.type === 'boolean'
-      const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
-      const name = isBoolean ? flag : `${flag}=-`
-      let cachecompl = ''
-      if (hasCompletion) {
-        cachecompl = ': :_compadd_flag_options'
-      }
+      .filter(flag => Command.flags && !Command.flags[flag].hidden)
+      .map(flag => {
+        const f = (Command.flags && Command.flags[flag]) || {description: ''}
+        const isBoolean = f.type === 'boolean'
+        const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
+        const name = isBoolean ? flag : `${flag}=-`
+        let cachecompl = ''
+        if (hasCompletion) {
+          cachecompl = ': :_compadd_flag_options'
+        }
 
-      if (this.wantsLocalFiles(flag)) {
-        cachecompl = ': :_files'
-      }
+        if (this.wantsLocalFiles(flag)) {
+          cachecompl = ': :_files'
+        }
 
-      const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
-      const completion = `--${name}[${help}${f.description}]${cachecompl}`
-      return `"${completion}"`
-    })
-    .join('\n')
+        const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
+        const completion = `--${name}[${help}${f.description}]${cachecompl}`
+        return `"${completion}"`
+      })
+      .join('\n')
 
     if (flagscompletions) {
       return `_set_${id.replace(/:/g, '_')}_flags () {

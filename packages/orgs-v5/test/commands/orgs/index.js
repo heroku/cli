@@ -12,11 +12,11 @@ describe('heroku teams', () => {
     let apiGetTeams = stubGet.teams()
 
     return cmd.run({flags: {enterprise: true}})
-    .then(() => expect(
-      `enterprise a  collaborator
+      .then(() => expect(
+        `enterprise a  collaborator
 enterprise b  admin\n`).to.eq(cli.stdout))
-    .then(() => expect('').to.eq(cli.stderr))
-    .then(() => apiGetTeams.done())
+      .then(() => expect('').to.eq(cli.stderr))
+      .then(() => apiGetTeams.done())
   })
 
   it('shows teams', () => {
@@ -26,10 +26,10 @@ enterprise b  admin\n`).to.eq(cli.stdout))
     ])
 
     return cmd.run({flags: {}})
-    .then(() => expect(
-      `enterprise a  collaborator
+      .then(() => expect(
+        `enterprise a  collaborator
 enterprise b  admin\n`).to.eq(cli.stdout))
-    .then(() => expect('').to.eq(cli.stderr))
-    .then(() => apiGetTeamsOnly.done())
+      .then(() => expect('').to.eq(cli.stderr))
+      .then(() => apiGetTeamsOnly.done())
   })
 })

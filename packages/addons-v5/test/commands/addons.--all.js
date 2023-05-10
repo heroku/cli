@@ -20,8 +20,8 @@ describe('addons --all', function () {
   context('with add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .get('/addons')
-      .reply(200, addons)
+        .get('/addons')
+        .reply(200, addons)
     })
 
     it('prints add-ons in a table', function () {
@@ -45,9 +45,9 @@ acme-inc-www  www-redis  heroku-redis:premium-2  $60/month  creating`)
     context('--json', function () {
       it('prints the output in json format', function () {
         return cmd.run({flags: {json: true}})
-        .then(function () {
-          expect(JSON.parse(cli.stdout)[0].name).to.eq('www-db')
-        })
+          .then(function () {
+            expect(JSON.parse(cli.stdout)[0].name).to.eq('www-db')
+          })
       })
     })
   })
@@ -60,8 +60,8 @@ acme-inc-www  www-redis  heroku-redis:premium-2  $60/month  creating`)
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get('/addons')
-      .reply(200, [addon])
+        .get('/addons')
+        .reply(200, [addon])
     })
 
     it('prints add-ons in a table with the grandfathered price', function () {
@@ -82,8 +82,8 @@ acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  $100/month  created`)
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get('/addons')
-      .reply(200, [addon])
+        .get('/addons')
+        .reply(200, [addon])
     })
 
     it('prints add-ons in a table with contract', function () {

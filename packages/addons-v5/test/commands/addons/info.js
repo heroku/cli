@@ -18,18 +18,18 @@ describe('addons:info', function () {
   context('with add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
-      .reply(200, [fixtures.addons['www-db']])
+        .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
+        .reply(200, [fixtures.addons['www-db']])
 
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get(`/addons/${fixtures.addons['www-db'].id}`)
-      .reply(200, fixtures.addons['www-db'])
+        .get(`/addons/${fixtures.addons['www-db'].id}`)
+        .reply(200, fixtures.addons['www-db'])
 
       nock('https://api.heroku.com')
-      .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
-      .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
+        .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
+        .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
     it('prints add-ons in a table', function () {
@@ -50,18 +50,18 @@ State:        created
   context('with app add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
-      .reply(200, [fixtures.addons['www-db']])
+        .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
+        .reply(200, [fixtures.addons['www-db']])
 
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get(`/addons/${fixtures.addons['www-db'].id}`)
-      .reply(200, fixtures.addons['www-db'])
+        .get(`/addons/${fixtures.addons['www-db'].id}`)
+        .reply(200, fixtures.addons['www-db'])
 
       nock('https://api.heroku.com')
-      .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
-      .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
+        .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
+        .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
     it('prints add-ons in a table', function () {
@@ -82,24 +82,24 @@ State:        created
   context('with app but not an app add-on', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
-      .reply(200, [fixtures.addons['www-db']])
+        .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
+        .reply(200, [fixtures.addons['www-db']])
 
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .get('/apps/example/addons/www-db')
-      .reply(404)
+        .get('/apps/example/addons/www-db')
+        .reply(404)
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .get('/addons/www-db')
-      .reply(200, fixtures.addons['www-db'])
+        .get('/addons/www-db')
+        .reply(200, fixtures.addons['www-db'])
 
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get(`/addons/${fixtures.addons['www-db'].id}`)
-      .reply(200, fixtures.addons['www-db'])
+        .get(`/addons/${fixtures.addons['www-db'].id}`)
+        .reply(200, fixtures.addons['www-db'])
       nock('https://api.heroku.com')
-      .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
-      .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
+        .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
+        .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
 
     it('prints add-ons in a table', function () {
@@ -123,18 +123,18 @@ State:        created
       addon.billed_price = {cents: 10000}
 
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
-      .reply(200, [addon])
+        .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
+        .reply(200, [addon])
 
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get(`/addons/${addon.id}`)
-      .reply(200, addon)
+        .get(`/addons/${addon.id}`)
+        .reply(200, addon)
 
       nock('https://api.heroku.com')
-      .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
-      .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
+        .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
+        .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
 
     it('prints add-ons in a table with grandfathered price', function () {
@@ -158,18 +158,18 @@ State:        created
       addon.billed_price = {cents: 0, contract: true}
 
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-      .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
-      .reply(200, [addon])
+        .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
+        .reply(200, [addon])
 
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
       }})
-      .get(`/addons/${addon.id}`)
-      .reply(200, addon)
+        .get(`/addons/${addon.id}`)
+        .reply(200, addon)
 
       nock('https://api.heroku.com')
-      .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
-      .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
+        .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
+        .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
 
     it('prints add-ons in a table with contract', function () {

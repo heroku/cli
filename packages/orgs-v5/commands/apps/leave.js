@@ -4,12 +4,12 @@ let cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
   let request = heroku.get('/account')
-  .then(function (user) {
-    return heroku.delete(`/apps/${context.app}/collaborators/${encodeURIComponent(user.email)}`).catch(function (error) {
-      console.log(error)
-      throw new Error(error.body)
+    .then(function (user) {
+      return heroku.delete(`/apps/${context.app}/collaborators/${encodeURIComponent(user.email)}`).catch(function (error) {
+        console.log(error)
+        throw new Error(error.body)
+      })
     })
-  })
   await cli.action(`Leaving ${cli.color.cyan(context.app)}`, request)
 }
 

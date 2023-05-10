@@ -38,35 +38,35 @@ describe('pg:wait', () => {
 
   it('waits for a database to be available', () => {
     pg
-    .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'pending'})
-    .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'pending'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
 
     return cmd.run({app: 'myapp', args: {database: 'DATABASE_URL'}, flags: {'wait-interval': '1'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal(`Waiting for database postgres-1... pending
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(`Waiting for database postgres-1... pending
 Waiting for database postgres-1... available
 `))
   })
 
   it('waits for all databases to be available', () => {
     pg
-    .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false})
-    .get('/client/v11/databases/2/wait_status').reply(200, {'waiting?': false})
+      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false})
+      .get('/client/v11/databases/2/wait_status').reply(200, {'waiting?': false})
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('displays errors', () => {
     pg
-    .get('/client/v11/databases/1/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .catch(error => {
-      if (error.code !== 1) throw error
-      expect(cli.stdout).to.equal('')
-      expect(unwrap(cli.stderr)).to.equal('this is an error message\n')
-    })
+      .catch(error => {
+        if (error.code !== 1) throw error
+        expect(cli.stdout).to.equal('')
+        expect(unwrap(cli.stderr)).to.equal('this is an error message\n')
+      })
   })
 })

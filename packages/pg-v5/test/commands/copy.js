@@ -119,14 +119,14 @@ describe('pg:copy', () => {
 
     it('copies', () => {
       return cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'HEROKU_POSTGRESQL_RED_URL'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`))
     })
 
     it('copies (with port number)', () => {
       return cmd.run({app: 'myapp', args: {source: 'postgres://boop.com:5678/bar', target: 'HEROKU_POSTGRESQL_RED_URL'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on boop.com:5678 to RED... done\n${copyingText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on boop.com:5678 to RED... done\n${copyingText()}`))
     })
   })
 
@@ -157,8 +157,8 @@ describe('pg:copy', () => {
     })
     it('copies', () => {
       return cmd.run({app: 'myapp', args: {source: 'HEROKU_POSTGRESQL_RED_URL', target: 'myotherapp::DATABASE_URL'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(unwrap(cli.stderr)).to.equal(`Starting copy of RED to BLUE... done ${credentialWarningText()}${copyingText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`Starting copy of RED to BLUE... done ${credentialWarningText()}${copyingText()}`))
     })
   })
 
@@ -188,8 +188,8 @@ describe('pg:copy', () => {
     })
     it('copies', () => {
       return cmd.run({app: 'myapp', args: {source: 'HEROKU_POSTGRESQL_RED_URL', target: 'ATTACHED_BLUE'}, flags: {confirm: 'myapp'}})
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(`Starting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(`Starting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`))
     })
   })
 
@@ -220,8 +220,8 @@ describe('pg:copy', () => {
     })
     it('copies', () => {
       return cmd.run({app: 'mylowercaseapp', args: {source: 'lowercase_database_URL', target: 'myotherapp::DATABASE_URL'}, flags: {confirm: 'mylowercaseapp'}})
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(unwrap(cli.stderr)).to.equal(`Starting copy of lowercase_database to BLUE... done\n${copyingText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`Starting copy of lowercase_database to BLUE... done\n${copyingText()}`))
     })
   })
 
@@ -247,8 +247,8 @@ describe('pg:copy', () => {
     it('fails to copy', () => {
       let err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
       return expect(cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'HEROKU_POSTGRESQL_RED_URL'}, flags: {confirm: 'myapp'}})).to.be.rejectedWith(Error, err)
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`))
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(`Starting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`))
     })
   })
 })

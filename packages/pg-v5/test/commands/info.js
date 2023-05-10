@@ -42,8 +42,8 @@ describe('pg', () => {
       api.get('/apps/myapp/config-vars').reply(200, {})
 
       return cmd.run({app: 'myapp', args: {}})
-      .then(() => expect(cli.stdout).to.equal('myapp has no heroku-postgresql databases.\n'))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(cli.stdout).to.equal('myapp has no heroku-postgresql databases.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
   })
 
@@ -77,11 +77,11 @@ describe('pg', () => {
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/1').reply(200, dbA)
-      .get('/client/v11/databases/2').reply(200, dbB)
+        .get('/client/v11/databases/1').reply(200, dbA)
+        .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
-      .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
+        .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
 Plan:        Hobby-dev
 Following:   HEROKU_POSTGRESQL_COBALT
 Billing App: myapp2
@@ -93,7 +93,7 @@ Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
 `))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('shows postgres info using attachment names', () => {
@@ -104,11 +104,11 @@ Add-on:    postgres-2
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/1').reply(200, dbA)
-      .get('/client/v11/databases/2').reply(200, dbB)
+        .get('/client/v11/databases/1').reply(200, dbA)
+        .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
-      .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, ATTACHMENT_NAME_URL
+        .then(() => expect(cli.stdout).to.equal(`=== DATABASE_URL, ATTACHMENT_NAME_URL
 Plan:        Hobby-dev
 Following:   HEROKU_POSTGRESQL_COBALT
 Billing App: myapp2
@@ -127,16 +127,16 @@ Add-on:    postgres-2
       api.get('/apps/myapp/config-vars').reply(200, config)
 
       pg
-      .get('/client/v11/databases/2')
-      .reply(200, dbB)
+        .get('/client/v11/databases/2')
+        .reply(200, dbB)
       return cmd.run({app: 'myapp', args: {database: 'postgres-2'}})
-      .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
+        .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
 Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
 `))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('shows warning for 404', () => {
@@ -144,17 +144,17 @@ Add-on:    postgres-2
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/1').reply(404)
-      .get('/client/v11/databases/2').reply(200, dbB)
+        .get('/client/v11/databases/1').reply(404)
+        .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
-      .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
+        .then(() => expect(cli.stdout).to.equal(`=== HEROKU_POSTGRESQL_PURPLE_URL
 Plan:      Hobby-dev
 Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
 `))
-      .then(() => expect(unwrap(cli.stderr)).to.equal(`postgres-1 is not yet provisioned. \
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`postgres-1 is not yet provisioned. \
 Run heroku addons:wait to wait until the db is provisioned.
 `))
     })

@@ -45,7 +45,9 @@ class Dyno extends Duplex {
     const dynoStart = this._doStart()
     if (this.opts.showStatus) {
       return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, dynoStart)
-    } else return dynoStart
+    }
+
+    return dynoStart
   }
 
   _doStart(retries = 2) {
@@ -63,28 +65,30 @@ class Dyno extends Duplex {
         force_no_tty: this.opts['no-tty'],
       },
     })
-    .then(dyno => {
-      this.dyno = dyno
-      if (this.opts.attach || this.opts.dyno) {
-        if (this.dyno.name && this.opts.dyno === undefined) this.opts.dyno = this.dyno.name
-        return this.attach()
-      } else if (this.opts.showStatus) {
-        cli.action.done(this._status('done'))
-      }
-    })
-    .catch(error => {
+      .then(dyno => {
+        this.dyno = dyno
+        if (this.opts.attach || this.opts.dyno) {
+          if (this.dyno.name && this.opts.dyno === undefined) this.opts.dyno = this.dyno.name
+          return this.attach()
+        }
+
+        if (this.opts.showStatus) {
+          cli.action.done(this._status('done'))
+        }
+      })
+      .catch(error => {
       // Currently the runtime API sends back a 409 in the event the
       // release isn't found yet. API just forwards this response back to
       // the client, so we'll need to retry these. This usually
       // happens when you create an app and immediately try to run a
       // one-off dyno. No pause between attempts since this is
       // typically a very short-lived condition.
-      if (error.statusCode === 409 && retries > 0) {
-        return this._doStart(retries - 1)
-      } else {
+        if (error.statusCode === 409 && retries > 0) {
+          return this._doStart(retries - 1)
+        }
+
         throw error
-      }
-    })
+      })
   }
 
   /**
@@ -119,7 +123,7 @@ class Dyno extends Duplex {
       c.setEncoding('utf8')
       c.on('connect', () => {
         debug('connect')
-        c.write(this.uri.path.substr(1) + '\r\n', () => {
+        c.write(this.uri.path.slice(1) + '\r\n', () => {
           if (this.opts.showStatus) cli.action.status(this._status('connecting'))
         })
       })
@@ -149,17 +153,17 @@ class Dyno extends Duplex {
 
       if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
         return this._connect()
-      } else {
-        await wait(interval)
-        return this._ssh()
       }
+
+      await wait(interval)
+      return this._ssh()
     } catch (error) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
       if (error.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
-      } else {
-        throw error
       }
+
+      throw error
     }
   }
 
@@ -261,8 +265,8 @@ class Dyno extends Duplex {
         localServer.close()
       })
       this.p
-      .then(() => sshProc.kill())
-      .catch(() => sshProc.kill())
+        .then(() => sshProc.kill())
+        .catch(() => sshProc.kill())
     }
 
     this._notify()

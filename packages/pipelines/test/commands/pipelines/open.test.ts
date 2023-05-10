@@ -10,21 +10,21 @@ describe('pipelines:open', () => {
   let openedUrl = ''
 
   test
-  .stdout()
-  .nock('https://api.heroku.com', api =>
-    api
-    .get('/pipelines')
-    .query({eq: {name: pipeline.name}})
-    .reply(200, [pipeline]),
-  )
-  .stub(cli, 'open', () => (urlToOpen: string) => {
-    openWasCalled = true
-    openedUrl = urlToOpen
-    return Promise.resolve()
-  })
-  .command(['pipelines:open', pipeline.name])
-  .it('opens the url', () => {
-    expect(openWasCalled).to.be.true
-    expect(openedUrl).to.equal('https://dashboard.heroku.com/pipelines/0123')
-  })
+    .stdout()
+    .nock('https://api.heroku.com', api =>
+      api
+        .get('/pipelines')
+        .query({eq: {name: pipeline.name}})
+        .reply(200, [pipeline]),
+    )
+    .stub(cli, 'open', () => (urlToOpen: string) => {
+      openWasCalled = true
+      openedUrl = urlToOpen
+      return Promise.resolve()
+    })
+    .command(['pipelines:open', pipeline.name])
+    .it('opens the url', () => {
+      expect(openWasCalled).to.be.true
+      expect(openedUrl).to.equal('https://dashboard.heroku.com/pipelines/0123')
+    })
 })

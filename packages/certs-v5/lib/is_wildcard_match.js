@@ -12,7 +12,7 @@ module.exports = function (wildcard, hostname) {
     return false
   }
 
-  let baseDomain = wildcard.substring(2)
+  let baseDomain = wildcard.slice(2)
   let regex = new RegExp(`^[a-zA-Z0-9_-]+\\.${escapeRegExp(baseDomain)}$`)
   return hostname.match(regex)
 }

@@ -56,9 +56,9 @@ export default class Wait extends Command {
     while (1 as any) {
       const {body: dynos} = await this.heroku.get<Dyno[]>(`/apps/${flags.app}/dynos`)
       const relevantDynos = dynos
-      .filter(dyno => dyno.type !== 'release')
-      .filter(dyno => flags['with-run'] || dyno.type !== 'run')
-      .filter(dyno => !flags.type || dyno.type === flags.type)
+        .filter(dyno => dyno.type !== 'release')
+        .filter(dyno => flags['with-run'] || dyno.type !== 'run')
+        .filter(dyno => !flags.type || dyno.type === flags.type)
 
       const onLatest = relevantDynos.filter((dyno: Dyno) => {
         return dyno.state === 'up' &&

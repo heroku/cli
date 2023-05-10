@@ -6,17 +6,18 @@ function prefix(transfer) {
   if (transfer.from_type === 'pg_dump') {
     if (transfer.to_type === 'pg_restore') {
       return 'c'
-    } else {
-      return transfer.schedule ? 'a' : 'b'
     }
+
+    return transfer.schedule ? 'a' : 'b'
+
   // eslint-disable-next-line no-else-return
   } else {
     // eslint-disable-next-line no-lonely-if
     if (transfer.to_type === 'pg_restore') {
       return 'r'
-    } else {
-      return 'b'
     }
+
+    return 'b'
   }
 }
 
@@ -51,16 +52,20 @@ module.exports = (context, heroku) => ({
         let warnings = transfer.warnings
         if (warnings > 0) {
           return `Finished with ${warnings} warnings`
-        } else {
-          return `Completed ${transfer.finished_at}`
         }
-      } else if (transfer.finished_at) {
-        return `Failed ${transfer.finished_at}`
-      } else if (transfer.started_at) {
-        return `Running (processed ${module.exports(context, heroku).filesize(transfer.processed_bytes)})`
-      } else {
-        return 'Pending'
+
+        return `Completed ${transfer.finished_at}`
       }
+
+      if (transfer.finished_at) {
+        return `Failed ${transfer.finished_at}`
+      }
+
+      if (transfer.started_at) {
+        return `Running (processed ${module.exports(context, heroku).filesize(transfer.processed_bytes)})`
+      }
+
+      return 'Pending'
     },
   },
   wait: (action, transferID, interval, verbose, app) => {
@@ -111,16 +116,15 @@ module.exports = (context, heroku) => ({
 
         if (backup && backup.finished_at) {
           if (backup.succeeded) return
-          else {
-            // logs is undefined unless verbose=true is passed
-            backup = await heroku.get(verboseUrl, {host})
 
-            throw new Error(`An error occurred and the backup did not finish.
+          // logs is undefined unless verbose=true is passed
+          backup = await heroku.get(verboseUrl, {host})
+
+          throw new Error(`An error occurred and the backup did not finish.
 
 ${backup.logs.slice(-5).map(l => l.message).join('\n')}
 
 Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))} for more details.`)
-          }
         }
 
         await new Promise(resolve => setTimeout(resolve, interval * 1000))
@@ -130,8 +134,8 @@ Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))
     if (verbose) {
       cli.log(`${action}...`)
       return poll()
-    } else {
-      return cli.action(action, poll())
     }
+
+    return cli.action(action, poll())
   },
 })

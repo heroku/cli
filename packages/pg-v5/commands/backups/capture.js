@@ -12,9 +12,9 @@ async function run(context, heroku) {
   const db = await fetcher.addon(app, args.database)
 
   if (flags.snapshot) {
-    await cli.action(`Taking snapshot of ${cli.color.addon(db.name)}`, async function () {
+    await cli.action(`Taking snapshot of ${cli.color.addon(db.name)}`, (async function () {
       await heroku.post(`/postgres/v0/databases/${db.id}/snapshots`, {host: host(db)})
-    }())
+    })())
   } else {
     let dbInfo = await heroku.request({
       host: host(db),
@@ -33,9 +33,9 @@ async function run(context, heroku) {
     }
 
     let backup
-    await cli.action(`Starting backup of ${cli.color.addon(db.name)}`, async function () {
+    await cli.action(`Starting backup of ${cli.color.addon(db.name)}`, (async function () {
       backup = await heroku.post(`/client/v11/databases/${db.id}/backups`, {host: host(db)})
-    }())
+    })())
     cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use ${cli.color.cmd('heroku pg:backups:info')} to check progress.

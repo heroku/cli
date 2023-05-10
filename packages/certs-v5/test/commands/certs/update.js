@@ -18,8 +18,8 @@ let unwrap = require('../../unwrap.js')
 
 function mockFile(fs, file, content) {
   fs.readFile
-  .withArgs(file, 'utf-8', sinon.match.func)
-  .callsArgWithAsync(2, null, content)
+    .withArgs(file, 'utf-8', sinon.match.func)
+    .callsArgWithAsync(2, null, content)
 }
 
 describe('heroku certs:update', function () {
@@ -30,8 +30,8 @@ describe('heroku certs:update', function () {
     error.exit.mock()
 
     nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, [endpointStable])
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointStable])
   })
 
   afterEach(function () {
@@ -53,8 +53,8 @@ describe('heroku certs:update', function () {
 
   it('# errors out when args < 2', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     return assertExit(1, certs.run({app: 'example', args: ['pem_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
@@ -67,10 +67,10 @@ describe('heroku certs:update', function () {
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-    .patch('/apps/example/sni-endpoints/tokyo-1050', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpointStable)
+      .patch('/apps/example/sni-endpoints/tokyo-1050', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpointStable)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'example'}}).then(function () {
       mock.done()
@@ -84,8 +84,8 @@ ${certificateDetails}
 
   it('# errors out with intermediaries', function () {
     nock('https://api.heroku.com')
-    .get('/apps/example')
-    .reply(200, {space: null})
+      .get('/apps/example')
+      .reply(200, {space: null})
 
     return assertExit(1, certs.run({app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: {}})).then(function () {
       expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
@@ -98,10 +98,10 @@ ${certificateDetails}
     mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
-    .patch('/apps/example/sni-endpoints/tokyo-1050', {
-      certificate_chain: 'pem content', private_key: 'key content',
-    })
-    .reply(200, endpointWarning)
+      .patch('/apps/example/sni-endpoints/tokyo-1050', {
+        certificate_chain: 'pem content', private_key: 'key content',
+      })
+      .reply(200, endpointWarning)
 
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'example'}}).then(function () {
       mock.done()
@@ -120,10 +120,10 @@ ${certificateDetails}
       return nock('https://api.heroku.com', {
         reqheaders: {Accept: `application/vnd.heroku+json; version=3.${variant}`},
       })
-      .patch(path, {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpoint)
+        .patch(path, {
+          certificate_chain: 'pem content', private_key: 'key content',
+        })
+        .reply(200, endpoint)
     }
 
     let stderr = function (endpoint) {

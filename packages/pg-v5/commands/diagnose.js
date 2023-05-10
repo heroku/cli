@@ -78,9 +78,9 @@ available for one month after creation on ${report.created_at}
           let key = Object.keys(check.results)[0]
           cli.log(
             `${key
-            .split('_')
-            .map(s => capitalize(s))
-            .join(' ')} ${check.results[key]}`,
+              .split('_')
+              .map(s => capitalize(s))
+              .join(' ')} ${check.results[key]}`,
           )
         }
       })

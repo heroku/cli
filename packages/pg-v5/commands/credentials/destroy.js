@@ -26,9 +26,9 @@ async function run(context, heroku) {
 
   await cli.confirmApp(app, flags.confirm, 'WARNING: Destructive action')
 
-  await cli.action(`Destroying credential ${cli.color.cmd(cred)}`, async function () {
+  await cli.action(`Destroying credential ${cli.color.cmd(cred)}`, (async function () {
     await heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}`, {host: host(db)})
-  }())
+  })())
 
   cli.log(`The credential has been destroyed within ${db.name}.`)
   cli.log(`Database objects owned by ${cred} will be assigned to the default credential.`)

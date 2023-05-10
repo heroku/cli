@@ -16,7 +16,7 @@
     "@types/mocha": "^5",
     "bats": "^1.1.0",
     "chai": "^4",
-    "globby": "^8",
+    "globby": "^10.0.2",
     "mocha": "^5",
     "nyc": "^15.1.0",
     "oclif": "3.8.1",

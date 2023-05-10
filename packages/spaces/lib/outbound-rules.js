@@ -64,9 +64,9 @@ module.exports = function (heroku) {
     if (p === '-1' || p === 'any') {
       if (proto === 'icmp') {
         return [0, 255]
-      } else {
-        return [0, 65535]
       }
+
+      return [0, 65535]
     }
 
     var actual = []

@@ -224,9 +224,9 @@ async function run(ctx, api) {
         format: function (addon) {
           if (addon.app.name === app) {
             return formatPrice(addon.plan.price)
-          } else {
-            return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
           }
+
+          return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
         },
       }, {
         label: 'State',

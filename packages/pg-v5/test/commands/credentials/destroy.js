@@ -56,8 +56,8 @@ describe('pg:credentials:destroy', () => {
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'credname', confirm: 'myapp'}})
-    .then(() => expect(cli.stderr).to.equal('Destroying credential credname... done\n'))
-    .then(() => expect(cli.stdout).to.equal(`The credential has been destroyed within postgres-1.
+      .then(() => expect(cli.stderr).to.equal('Destroying credential credname... done\n'))
+      .then(() => expect(cli.stdout).to.equal(`The credential has been destroyed within postgres-1.
 Database objects owned by credname will be assigned to the default credential.
 `))
   })

@@ -5,6 +5,7 @@ let releases = require('../../releases')
 let output = require('../../output')
 
 async function run(context, heroku) {
+  // eslint-disable-next-line new-cap
   let release = await releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
   let streamUrl = release.output_stream_url
@@ -14,13 +15,15 @@ async function run(context, heroku) {
     return
   }
 
+  // eslint-disable-next-line new-cap
   await output.Stream(streamUrl)
-    .catch(err => {
-      if (err.statusCode === 404) {
+    .catch(error => {
+      if (error.statusCode === 404) {
         cli.warn('Release command not started yet. Please try again in a few seconds.')
         return
       }
-      throw err
+
+      throw error
     })
 }
 
@@ -30,6 +33,6 @@ module.exports = {
   description: 'View the release command output',
   needsAuth: true,
   needsApp: true,
-  args: [{ name: 'release', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'release', optional: true}],
+  run: cli.command({preauth: true}, run),
 }

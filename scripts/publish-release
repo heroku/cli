@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-MAIN_BRANCH="master"
+MAIN_BRANCH="main"
 
 if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
   bash ./publish-prerelease

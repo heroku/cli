@@ -18,8 +18,8 @@ describe('authorizations:create', () => {
 
   beforeEach(() => {
     api
-    .delete('/oauth/authorizations/10')
-    .reply(201, {description: 'fooo'})
+      .delete('/oauth/authorizations/10')
+      .reply(201, {description: 'fooo'})
   })
 
   it('revokes the authorization', () => {

@@ -7,9 +7,9 @@ module.exports = function () {
    */
   function splitCsv(string) {
     return (string || '')
-    .split(',')
-    .map(s => s.trim())
-    .filter(s => s.length > 0)
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
   }
 
   return {

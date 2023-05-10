@@ -19,11 +19,11 @@ interface UploadConfig {
 
 function configToString(config: Config): string {
   return Object.keys(config)
-  .sort()
-  .map(key => {
-    return `${key}=${quote(config[key])}`
-  })
-  .join('\n')
+    .sort()
+    .map(key => {
+      return `${key}=${quote(config[key])}`
+    })
+    .join('\n')
 }
 
 function removeDeleted(newConfig: UploadConfig, original: Config) {

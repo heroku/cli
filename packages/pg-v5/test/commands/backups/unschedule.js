@@ -41,8 +41,8 @@ const shouldUnschedule = function (cmdRun) {
 
   it('unschedules a backup', () => {
     return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Unscheduling DATABASE_URL daily backups... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Unscheduling DATABASE_URL daily backups... done\n'))
   })
 }
 

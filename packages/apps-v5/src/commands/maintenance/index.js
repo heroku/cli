@@ -12,5 +12,5 @@ module.exports = {
   description: 'display the current maintenance status of app',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
