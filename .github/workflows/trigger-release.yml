@@ -18,7 +18,7 @@ jobs:
       version: steps.distTag.outputs.version
     steps:
       - id: distTag
-        uses: ./.github/actions/getPreReleaseTag
+        uses: ./.github/actions/getPreReleaseTag/action.yml
         with:
           path: './packages/cli/package.json'
 
@@ -42,7 +42,7 @@ jobs:
         id: distTag
         with:
           path: './packages/cli/package.json'
-      - uses: ./.github/workflows/promote-release.yml
+      - uses: ./.github/actions/getPreReleaseTag/action.yml
         with:
           version: steps.distTag.outputs.version
           channel: ${{ steps.distTag.outputs.tag || 'stable' }}
