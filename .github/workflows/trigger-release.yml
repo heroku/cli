@@ -11,24 +11,20 @@ on:
 
 jobs:
   get-version-channel:
-    if: startsWith(github.head_ref, 'release-') || startsWith(github.head_ref, 'prerelease/')
+    if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
       tag: steps.distTag.outputs.tag
       version: steps.distTag.outputs.version
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
 
   publish-pack-upload:
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
-    if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || (needs.get-version-channel.outputs.tag && startsWith(github.head_ref, 'prerelease/')))
+    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-') || (needs.get-version-channel.outputs.tag && contains(github.ref, 'prerelease/')))
     needs: [get-version-channel]
     runs-on: ubuntu-latest
     steps:
@@ -41,10 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
       - uses: ./.github/workflows/promote-release.yml

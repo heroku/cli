@@ -79,7 +79,7 @@ jobs:
 
   release-homebrew:
     needs: [ promote ]
-    if: startsWith(github.head_ref, 'release-' )
+    if: contains(github.ref, 'release-' )
     runs-on: ubuntu-latest
     environment: ReleaseHomebrew
     steps:
@@ -108,7 +108,7 @@ jobs:
 
   change-management:
     needs: [ promote ]
-    if: startsWith(github.head_ref, 'release-' )
+    if: contains(github.ref, 'release-' )
     runs-on: ubuntu-latest
     environment: ChangeManagement
     env:
