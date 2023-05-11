@@ -17,6 +17,7 @@ jobs:
       tag: steps.distTag.outputs.tag
       version: steps.distTag.outputs.version
     steps:
+      - uses: actions/checkout@v3
       - id: distTag
         uses: ./.github/actions/getPreReleaseTag/action.yml
         with:
@@ -29,6 +30,7 @@ jobs:
     needs: [get-version-channel]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/workflows/publish-pack-upload.yml
         with:
           isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
