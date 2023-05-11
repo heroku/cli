@@ -16,6 +16,7 @@ jobs:
       tag: steps.distTag.outputs.tag
       version: steps.distTag.outputs.version
     steps:
+      - uses: actions/checkout@v3
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
 
