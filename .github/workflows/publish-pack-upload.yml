@@ -33,7 +33,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
 #          GITHUB_TOKEN: '!!!NEED THIS!!! ${{ secrets.SVC_CLI_BOT_GITHUB_TOKEN }}'
         run: |
-          if [[ ${{inputs.isPreRelease} ]]; then
+          if [[ ${{ inputs.isPreRelease }} ]]; then
             bash scripts/publish-prerelease
           else
             bash scripts/publish-release
