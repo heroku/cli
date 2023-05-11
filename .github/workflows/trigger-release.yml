@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: distTag
-        uses: ./.github/actions/getVersionAndVersion/
+        uses: ./.github/actions/getVersionAndSuffix/
         with:
           path: './packages/cli/package.json'
 
