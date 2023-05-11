@@ -26,7 +26,7 @@ jobs:
   publish-pack-upload:
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
-    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-') || (needs.get-version-channel.outputs.tag && contains(github.ref, 'prerelease/')))
+    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.tag && contains(github.ref, 'prerelease/'))
     needs: [get-version-channel]
     uses: ./.github/workflows/publish-pack-upload.yml
     with:
