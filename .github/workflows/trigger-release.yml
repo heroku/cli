@@ -11,6 +11,7 @@ on:
 
 jobs:
   get-version-channel:
+    if: startsWith(github.head_ref, 'release-') || startsWith(github.head_ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
       tag: steps.distTag.outputs.tag
@@ -28,6 +29,7 @@ jobs:
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
     if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || (needs.get-version-channel.outputs.tag && startsWith(github.head_ref, 'prerelease/')))
+    needs: [get-version-channel]
     runs-on: ubuntu-latest
     steps:
       - uses: ./.github/workflows/publish-pack-upload.yml
