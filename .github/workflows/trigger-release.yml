@@ -35,7 +35,7 @@ jobs:
 
   promote:
     needs: [get-version-channel, publish-pack-upload]
-    if: needs.publish-pack-upload.outputs.success
+    if: needs.publish-pack-upload.result == 'success'
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
