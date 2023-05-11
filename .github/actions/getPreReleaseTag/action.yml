@@ -21,7 +21,7 @@ runs:
     - uses: notiz-dev/github-action-json-property@2192e246737701f108a4571462b76c75e7376216
       id: packageVersion
       with:
-        path: inputs.path
+        path: ${{ inputs.path }}
         prop_path: "version"
 
     - run: echo "found version ${{ steps.packageVersion.outputs.prop  }}"
