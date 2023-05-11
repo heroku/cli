@@ -91,14 +91,20 @@ jobs:
         with:
           name: all-dist
           path: /home/runner/work/cli/cli/packages/cli/dist
+      - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: List all the downloaded files (for debugging)
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - run: |
+      - name: yarn install
+        run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
-          ./scripts/release/homebrew.js
+      - name: release homebrew
+        run: ./scripts/release/homebrew.js
+        env:
+          GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
+          VERSION: ${{ inputs.version }}
 
   change-management:
     needs: [ promote ]
