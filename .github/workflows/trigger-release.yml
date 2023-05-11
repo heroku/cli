@@ -39,5 +39,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      channel: ${{ needs.get-version-channel.outputs.tag || 'stable' }}
+      channel: ${{ needs.get-version-channel.outputs.tag && 'beta' || 'stable' }}
     secrets: inherit
