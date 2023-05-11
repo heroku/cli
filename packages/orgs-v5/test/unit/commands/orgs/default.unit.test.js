@@ -1,8 +1,8 @@
 'use strict'
 /* globals beforeEach afterEach cli nock expect */
 
-let cmd = require('../../../commands/orgs/default')
-let unwrap = require('../../unwrap')
+let cmd = require('../../../../commands/orgs/default')
+let unwrap = require('../../../unwrap')
 
 describe('heroku orgs:default', () => {
   beforeEach(() => cli.mockConsole())

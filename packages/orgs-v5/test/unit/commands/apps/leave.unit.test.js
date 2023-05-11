@@ -1,7 +1,7 @@
 'use strict'
 /* globals after before beforeEach afterEach cli nock context expect */
 
-let cmd = require('../../../commands/apps/leave')[0]
+let cmd = require('../../../../commands/apps/leave')[0]
 let stubGet = require('../../stub/get')
 let stubDelete = require('../../stub/delete')
 let stubDeleteError = require('../../stub/delete')

@@ -2,7 +2,7 @@
 /* globals after before beforeEach afterEach context nock expect */
 
 let cli = require('heroku-cli-util')
-let cmd = require('../../../commands/access/remove')[0]
+let cmd = require('../../../../commands/access/remove')[0]
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 let stubDelete = require('../../stub/delete')
@@ -32,7 +32,7 @@ describe('heroku access:remove', () => {
 
     before(() => {
       cliErrorStub = sinon.stub(cli, 'error').returns(() => {})
-      cmd2 = proxyquire(('../../../commands/access/remove'), {
+      cmd2 = proxyquire(('../../../../commands/access/remove'), {
         cli: cliErrorStub,
       })
       processStub = sinon.stub(process, 'exit').returns(() => {})
