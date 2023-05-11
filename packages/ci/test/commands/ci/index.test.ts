@@ -1,4 +1,6 @@
 import {expect, test} from '@oclif/test'
+const Inquirer = require('inquirer')
+import sinon = require('sinon')
 
 describe('ci', () => {
   test
@@ -16,6 +18,15 @@ describe('ci', () => {
     const statuses = ['succeeded', 'errored', 'failed', 'creating']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
+    let promptStub: any = sinon.stub()
+
+    const chosenOption = {
+      pipeline: {
+        id: '14402644-c207-43aa-9bc1-974a34914010',
+        name: '14402644-c207-43aa-9bc1-974a34914010',
+        created_at: '05/10/2023',
+      },
+    }
 
     beforeEach(() => {
       testRuns = []
@@ -89,6 +100,47 @@ describe('ci', () => {
         expect(error.message).to.equal('Pipeline not found')
       })
       .it('errors if no pipeline is found')
+
+    describe('specifying a pipeline with prompt', () => {
+      before(() => {
+        promptStub = sinon.stub(Inquirer, 'prompt')
+        promptStub.onFirstCall().resolves(chosenOption)
+      })
+
+      test
+        .stdout({print: true})
+        .nock('https://api.heroku.com', api => {
+          api.get(`/pipelines?eq[name]=${pipeline.name}`)
+            .reply(200, [
+              {
+                id: pipeline.id,
+                name: pipeline.id,
+                created_at: '05/10/2023',
+              },
+              {
+                id: pipeline.id,
+                name: pipeline.id,
+                created_at: '05/11/2023',
+              },
+              {
+                id: pipeline.id,
+                name: pipeline.id,
+                created_at: '05/12/2023',
+              },
+            ])
+
+          api.get(`/pipelines/${pipeline.id}/test-runs`)
+            .reply(200, testRuns)
+        })
+        .command(['ci', `--pipeline=${pipeline.name}`])
+        .it('selects a pipeline from the prompt', () => {
+          expect(promptStub.calledOnce).to.equal(true)
+        })
+
+      after(() => {
+        promptStub.restore()
+      })
+    })
 
     test
       .stdout()
