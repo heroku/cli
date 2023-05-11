@@ -12,12 +12,12 @@ on:
 jobs:
   get-version-channel:
     runs-on: ubuntu-latest
+    outputs:
+      tag: steps.distTag.outputs.tag
+      version: steps.distTag.outputs.version
     steps:
       - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
         id: distTag
-        outputs:
-          tag: steps.distTag.outputs.tag
-          version: steps.distTag.outputs.version
 
   publish-pack-upload:
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
@@ -25,9 +25,9 @@ jobs:
     if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || (needs.get-version-channel.outputs.tag && startsWith(github.head_ref, 'prerelease/')))
     runs-on: ubuntu-latest
     steps:
-      uses: ./.github/workflows/publish-pack-upload.yml
-      with:
-        isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
+      - uses: ./.github/workflows/publish-pack-upload.yml
+        with:
+          isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
 
   promote:
     needs: [publish-pack-upload]
