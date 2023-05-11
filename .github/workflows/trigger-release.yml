@@ -28,23 +28,14 @@ jobs:
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
     if: (github.event.pull_request.merged == true && contains(github.ref, 'release-') || (needs.get-version-channel.outputs.tag && contains(github.ref, 'prerelease/')))
     needs: [get-version-channel]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/workflows/publish-pack-upload.yml
-        with:
-          isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
+    uses: ./.github/workflows/publish-pack-upload.yml
+    with:
+      isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
 
   promote:
-    needs: [publish-pack-upload]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/getPreReleaseTag
-        id: distTag
-        with:
-          path: './packages/cli/package.json'
-      - uses: ./.github/actions/getPreReleaseTag/action.yml
-        with:
-          version: steps.distTag.outputs.version
-          channel: ${{ steps.distTag.outputs.tag || 'stable' }}
+    needs: [get-version-channel, publish-pack-upload]
+#    if: needs.publish-pack-upload.outputs.success
+    uses: ./.github/workflows/promote-release.yml
+    with:
+      version: needs.get-version-channel.outputs.version
+      channel: ${{ needs.get-version-channel.outputs.tag || 'stable' }}
