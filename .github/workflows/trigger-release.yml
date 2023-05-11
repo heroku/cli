@@ -18,8 +18,10 @@ jobs:
       version: steps.distTag.outputs.version
     steps:
       - uses: actions/checkout@v3
-      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
+      - uses: .github/actions/getPreReleaseTag
         id: distTag
+        with:
+          path: './packages/cli/package.json'
 
   publish-pack-upload:
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
@@ -37,8 +39,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
+      - uses: .github/actions/getPreReleaseTag
         id: distTag
+        with:
+          path: './packages/cli/package.json'
       - uses: ./.github/workflows/promote-release.yml
         with:
           version: steps.distTag.outputs.version

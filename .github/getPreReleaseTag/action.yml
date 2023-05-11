@@ -1,0 +1,46 @@
+name: get prerelease tag
+description: read package.json and return the version suffix (ex 'beta' if x.y.z-beta.0)
+
+inputs:
+  path:
+    description: path to the file to read
+    required: false
+    default: "package.json"
+
+outputs:
+  tag:
+    value: ${{ steps.tag.outputs.match }}
+    description: version suffix (ex 'beta' if x.y.z-beta.0 ), if exists in package.json
+  version:
+    value: ${{ steps.packageVersion.outputs.prop }}
+    description: version from pjson
+
+runs:
+  using: composite
+  steps:
+    - uses: notiz-dev/github-action-json-property@2192e246737701f108a4571462b76c75e7376216
+      id: packageVersion
+      with:
+        path: "package.json"
+        prop_path: "version"
+
+    - run: echo "found version ${{ steps.packageVersion.outputs.prop  }}"
+      shell: bash
+
+    - uses: booxmedialtd/ws-action-parse-semver@e4a833cf5d612066a210bd9b62d1c3b20be3b325
+      id: versionSuffix
+      with:
+        input_string: ${{ steps.packageVersion.outputs.prop }}
+
+    - run: echo "found prerelease ${{ steps.versionSuffix.outputs.prerelease }}"
+      shell: bash
+
+    - uses: actions-ecosystem/action-regex-match@9e6c4fb3d5e898f505be7a1fb6e7b0a278f6665b
+      id: tag
+      with:
+        text: ${{ steps.versionSuffix.outputs.prerelease }}
+        # at this point, we have just the prerelease section, but it includes the final .0 or whatever
+        regex: '.*(?=\.\d+)'
+
+    - run: echo "found tag ${{ steps.tag.outputs.match }}"
+      shell: bash
