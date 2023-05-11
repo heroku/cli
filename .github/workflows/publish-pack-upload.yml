@@ -19,7 +19,7 @@ on:
 
 jobs:
   publish-npm-and-github:
-    runs-on: sfdc-hk-ubuntu-latest
+    runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
