@@ -31,6 +31,7 @@ jobs:
     uses: ./.github/workflows/publish-pack-upload.yml
     with:
       isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
+    secrets: inherit
 
   promote:
     needs: [get-version-channel, publish-pack-upload]
@@ -39,3 +40,4 @@ jobs:
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
       channel: ${{ needs.get-version-channel.outputs.tag || 'stable' }}
+    secrets: inherit
