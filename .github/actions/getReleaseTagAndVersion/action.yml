@@ -1,4 +1,4 @@
-name: get prerelease tag
+name: get version and suffix
 description: read package.json and return the version suffix (ex 'beta' if x.y.z-beta.0)
 
 inputs:
@@ -8,7 +8,7 @@ inputs:
     default: "package.json"
 
 outputs:
-  tag:
+  suffix:
     value: ${{ steps.tag.outputs.match }}
     description: version suffix (ex 'beta' if x.y.z-beta.0 ), if exists in package.json
   version:
