@@ -29,7 +29,10 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
       - run: npm whoami
       - name: Publish to NPM
         env:
