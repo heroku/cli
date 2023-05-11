@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: distTag
-        uses: ./.github/actions/getPreReleaseTag/action.yml
+        uses: ./.github/actions/getPreReleaseTag/
         with:
           path: './packages/cli/package.json'
 
