@@ -14,8 +14,8 @@ describe('ci', () => {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}
 
     let testRuns: any = []
-    const statusIcon = ['✓', '!', '✗', '-']
-    const statuses = ['succeeded', 'errored', 'failed', 'creating']
+    const statusIcon = ['✓', '!', '✗', '-', '!', '?', '-']
+    const statuses = ['succeeded', 'errored', 'failed', 'creating', 'cancelled', 'foo', '']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
     let promptStub: any = sinon.stub()
@@ -36,7 +36,7 @@ describe('ci', () => {
           commit_sha: commit_sha[i % 4],
           number: i,
           pipeline: {id: pipeline.id},
-          status: statuses[i % 4],
+          status: statuses[i % 7],
         })
       }
     })
@@ -59,12 +59,12 @@ describe('ci', () => {
       .it('shows the latest 15 test runs', ({stdout}) => {
         expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
-        for (let i = 5; i < 10; i++) {
-          expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+        for (let i = 7; i < 10; i++) {
+          expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
         }
 
         for (let i = 10; i < 20; i++) {
-          expect(stdout).to.contain(`${statusIcon[i % 4]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+          expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
         }
 
         expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
@@ -108,7 +108,7 @@ describe('ci', () => {
       })
 
       test
-        .stdout({print: true})
+        .stdout()
         .nock('https://api.heroku.com', api => {
           api.get(`/pipelines?eq[name]=${pipeline.name}`)
             .reply(200, [
@@ -162,7 +162,7 @@ describe('ci', () => {
         for (let i = 0; i < 4; i++) {
           expect(jsonOut[i].commit_branch).to.equal('main')
           expect(jsonOut[i].commit_sha).to.equal(commit_sha[3 - i])
-          expect(jsonOut[i].status).to.equal(statuses[3 - i])
+          expect(jsonOut[i].status).to.equal(statuses[5 - i])
           expect(jsonOut[i].pipeline.id).to.equal(pipeline.id)
         }
       })
