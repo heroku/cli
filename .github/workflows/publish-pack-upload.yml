@@ -28,9 +28,9 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: set NPM auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - run: npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
       - name: Publish to NPM
         env:
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
