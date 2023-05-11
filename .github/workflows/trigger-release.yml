@@ -18,8 +18,8 @@ jobs:
       version: steps.distTag.outputs.version
     steps:
       - uses: actions/checkout@v3
-      - uses: .github/actions/getPreReleaseTag
-        id: distTag
+      - id: distTag
+        uses: ./.github/actions/getPreReleaseTag
         with:
           path: './packages/cli/package.json'
 
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: .github/actions/getPreReleaseTag
+      - uses: ./.github/actions/getPreReleaseTag
         id: distTag
         with:
           path: './packages/cli/package.json'
