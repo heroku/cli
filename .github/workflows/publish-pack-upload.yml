@@ -19,7 +19,7 @@ on:
 
 jobs:
   publish-npm-and-github:
-    runs-on: ubuntu-latest
+    runs-on: sfdc-hk-ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
@@ -32,11 +32,10 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
           git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
+          git config user.email "heroku-front-end+npm-releases@salesforce.com"
       - run: npm whoami
       - name: Publish to NPM
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
+#        env:
 #          GITHUB_TOKEN: '!!!NEED THIS!!! ${{ secrets.SVC_CLI_BOT_GITHUB_TOKEN }}'
         run: |
           if [[ ${{ inputs.isPreRelease }} ]]; then
