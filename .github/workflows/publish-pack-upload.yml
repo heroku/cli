@@ -9,7 +9,7 @@ on:
         required: false
         default: false
 
-  workflow_run:
+  workflow_call:
     inputs:
       isPreRelease:
         description: is release not for prod?
