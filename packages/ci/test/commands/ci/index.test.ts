@@ -1,6 +1,8 @@
 import {expect, test} from '@oclif/test'
 const Inquirer = require('inquirer')
 import sinon = require('sinon')
+import {Socket} from 'phoenix'
+import WebSocket = require('ws')
 
 describe('ci', () => {
   test
@@ -69,6 +71,46 @@ describe('ci', () => {
 
         expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
       })
+
+    describe('will update later', () => {
+      const socket = new Socket('www.foo.com', {
+        transport: WebSocket,
+        params: {
+          token: 'foo',
+          tab_id: 'bar',
+        },
+        logger: () => {},
+      })
+      let connectStub: any
+      let channelStub: any
+      beforeEach(() => {
+        connectStub = sinon.stub(socket, 'connect').returns()
+        channelStub = sinon.stub(socket, 'channel')
+      })
+
+      test
+        .stdout({print: true})
+        .nock('https://api.heroku.com', api => {
+          api.get(`/pipelines?eq[name]=${pipeline.name}`)
+            .reply(200, [
+              {
+                id: pipeline.id,
+                name: pipeline.name,
+              },
+            ])
+
+          api.get(`/pipelines/${pipeline.id}/test-runs`)
+            .reply(200, testRuns)
+        })
+        .command(['ci', `--pipeline=${pipeline.name}`, '--watch'])
+        .it('returns test runs', () => {
+          expect(true).to.equal(true)
+        })
+
+      afterEach(() => {
+        connectStub.restore()
+      })
+    })
 
     test
       .stdout()
