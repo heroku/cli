@@ -48,6 +48,13 @@ describeOrSkip('@acceptance smoke tests', () => {
     expect(stdout).to.contain('it works!')
   })
 
+  it('heroku access', async () => {
+    const app = 'heroku-cli-ci-smoke-test-app'
+    const appFlag = `-a=${app}`
+    const {stdout} = await run(['access', appFlag].join(' '))
+    expect(stdout).to.contain('heroku-cli@salesforce.com')
+  })
+
   it('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
     expect(cmd.stdout).to.contain('@oclif/plugin-commands')
