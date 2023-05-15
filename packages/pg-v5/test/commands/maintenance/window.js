@@ -24,6 +24,14 @@ const cmd = proxyquire('../../../commands/maintenance/window', {
 describe('pg:maintenance', () => {
   let api, pg
 
+  let displayed = ` ▸    The new Data Maintenance CLI plugin improves and extends the
+ ▸    pg:maintenance functionality.
+ ▸    Follow
+ ▸    https://devcenter.heroku.com/articles/data-maintenance-cli-commands#installation
+ ▸    to install the plugin and run data:maintenances:window:update to change
+ ▸    the database maintenance window.
+`
+
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
@@ -40,6 +48,6 @@ describe('pg:maintenance', () => {
     pg.put('/client/v11/databases/1/maintenance_window', { description: 'Sunday 06:30' }).reply(200)
     return cmd.run({ app: 'myapp', args: { window: 'Sunday 06:30' } })
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
+      .then(() => expect(cli.stderr).to.equal(displayed + 'Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
   })
 })

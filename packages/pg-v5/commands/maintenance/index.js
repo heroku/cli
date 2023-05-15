@@ -10,6 +10,10 @@ async function run(context, heroku) {
   const db = await fetcher.addon(app, args.database)
 
   if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
+
+  cli.warn(`The new ${cli.color.bold.cyan('Data Maintenance CLI plugin')} improves and extends the ${cli.color.cmd('pg:maintenance')} functionality.`)
+  cli.warn(`Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands#installation to install the plugin and run ${cli.color.cmd('data:maintenances')} to list the maintenance events for your add-ons.`)
+
   let info = await heroku.get(`/client/v11/databases/${db.id}/maintenance`, { host: host(db) })
   cli.log(info.message)
 }

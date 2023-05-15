@@ -24,6 +24,14 @@ const cmd = proxyquire('../../../commands/maintenance/run', {
 describe('pg:maintenance', () => {
   let api, pg
 
+  let displayed = ` ▸    The new Data Maintenance CLI plugin improves and extends the
+ ▸    pg:maintenance functionality.
+ ▸    Follow
+ ▸    https://devcenter.heroku.com/articles/data-maintenance-cli-commands#installation
+ ▸    to install the plugin and run data:maintenances:run to start a
+ ▸    maintenance.
+`
+
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
@@ -40,7 +48,7 @@ describe('pg:maintenance', () => {
     api.get('/apps/myapp').reply(200, { maintenance: true })
     pg.post('/client/v11/databases/1/maintenance').reply(200, { message: 'foo' })
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
+      .then(() => expect(cli.stderr).to.equal(displayed + 'Starting maintenance for postgres-1... foo\n'))
       .then(() => expect(cli.stdout).to.equal(''))
   })
 })
