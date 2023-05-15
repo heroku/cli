@@ -11,7 +11,6 @@ export interface RecordOpts {
   Command: Interfaces.Command.Class;
   argv: string[];
 }
-
 export interface AnalyticsInterface {
   source: string;
   event: string;
