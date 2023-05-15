@@ -14,8 +14,8 @@ jobs:
     if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
-      suffix: steps.distTag.outputs.suffix
-      version: steps.distTag.outputs.version
+      suffix: ${{ steps.distTag.outputs.suffix }}
+      version: ${{ steps.distTag.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - id: distTag
