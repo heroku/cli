@@ -14,12 +14,12 @@ jobs:
     if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
-      tag: steps.distTag.outputs.tag
+      suffix: steps.distTag.outputs.suffix
       version: steps.distTag.outputs.version
     steps:
       - uses: actions/checkout@v3
       - id: distTag
-        uses: ./.github/actions/getPreReleaseTag/
+        uses: ./.github/actions/getVersionAndSuffix/
         with:
           path: './packages/cli/package.json'
 
@@ -27,10 +27,10 @@ jobs:
     needs: [get-version-channel]
     # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
     # suffix is checked to avoid deploying prod from a malformed prerelease branch
-    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.tag && contains(github.ref, 'prerelease/'))
+    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.suffix && contains(github.ref, 'prerelease/'))
     uses: ./.github/workflows/publish-pack-upload.yml
     with:
-      isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
+      isPreRelease: ${{ !!needs.get-version-channel.outputs.suffix }}
     secrets: inherit
 
   promote:
@@ -39,5 +39,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      channel: ${{ needs.get-version-channel.outputs.tag || 'stable' }}
+      channel: ${{ needs.get-version-channel.outputs.suffix && 'beta' || 'stable' }}
     secrets: inherit
