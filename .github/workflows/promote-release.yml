@@ -22,10 +22,6 @@ on:
         description: dev, beta or stable release
         type: string
         required: true
-      commitSHA:
-        description: 1st 7 chars of release commit SHA (heroku-cli-assets/versions/v:VERSION/:THIS in S3)
-        type: string
-        required: false
 
 jobs:
   promote:
@@ -50,12 +46,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
       - name: promote
-        run: |
-          shortSHA=${{ inputs.commitSHA }}
-          if [ -z $shortSHA ]; then
-            shortSHA=`git rev-parse --short=7 HEAD`
-          fi
-          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=$shortSHA --channel=${{ inputs.channel }}
+        run: yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=`git rev-parse --short=7 HEAD` --channel=${{ inputs.channel }}
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
 
