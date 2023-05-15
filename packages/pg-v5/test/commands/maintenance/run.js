@@ -26,10 +26,10 @@ describe('pg:maintenance', () => {
 
   let displayed = ` ▸    The new Data Maintenance CLI plugin improves and extends the
  ▸    pg:maintenance functionality.
- ▸    Follow
- ▸    https://devcenter.heroku.com/articles/data-maintenance-cli-commands#installation
- ▸    to install the plugin and run data:maintenances:run to start a
- ▸    maintenance.
+ ▸    
+ ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands
+ ▸    to install the plugin and run data:maintenances:run
+ ▸    to start a maintenance.
 `
 
   beforeEach(() => {

@@ -19,8 +19,16 @@ module.exports = {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
 
-    if (addon.plan.name.match(/hobby/) != null) {
-      cli.exit(1, 'redis:maintenance is not available for hobby-dev instances')
+    let newPluginMessage = `The new ${cli.color.bold.cyan('Data Maintenance CLI plugin')} improves and extends`
+    newPluginMessage += `\nthe ${cli.color.cmd('redis:maintenance')} functionality.`
+    newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
+    newPluginMessage += `\nto install the plugin and run ${cli.color.cmd('data:maintenances')} to list the maintenance`
+    newPluginMessage += `\nevents for your add-ons.`
+
+    cli.warn(newPluginMessage)
+
+    if (addon.plan.name.match(/mini/) != null) {
+      cli.exit(1, 'redis:maintenance is not available for Mini plans')
     }
 
     if (context.flags.window) {
