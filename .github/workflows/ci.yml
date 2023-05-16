@@ -1,10 +1,10 @@
-name: Node CI Suite
+name: Unit, Integration, and Smoke tests
 
 on:
   push
 
 jobs:
-  test:
+  unit:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,7 +20,7 @@ jobs:
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn test
 
-  acceptance:
+  integration:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -39,15 +39,32 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
+      - run: yarn lerna run test:integration
+
+  smoke:
+    runs-on: ubuntu-latest
+    environment: AcceptanceTests
+    env:
+      RUN_ACCEPTANCE_TESTS: true
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: Build packages
         run: yarn lerna run prepack
       - run: ./bin/run whoami
-      - run: yarn lerna run test:acceptance
+      - run: yarn lerna run test:smoke
+
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [test, acceptance]
+    needs: [unit, integration, smoke]
     steps:
       - run: echo done
         working-directory: /
