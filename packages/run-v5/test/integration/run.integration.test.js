@@ -6,9 +6,8 @@ const cmd = require('../../commands/run')
 const {expect} = require('chai')
 const StdOutFixture = require('fixture-stdout')
 const assertExit = require('../assert_exit')
-const {describeAcceptance} = require('../test-helper')
 
-describeAcceptance('run', () => {
+describe('run', () => {
   beforeEach(() => cli.mockConsole())
 
   it('runs a command', () => {

@@ -3,8 +3,8 @@
 
 const {expect} = require('chai')
 const sinon = require('sinon')
-const Dyno = require('../../lib/dyno')
-const cmd = require('../../commands/rake')
+const Dyno = require('../../../lib/dyno')
+const cmd = require('../../../commands/rake')
 
 class ProcessedError extends Error {
   constructor(message, exitCode) {

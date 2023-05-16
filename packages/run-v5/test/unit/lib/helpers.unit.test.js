@@ -1,7 +1,7 @@
 'use strict'
 /* globals before after */
 
-const helpers = require('../../lib/helpers')
+const helpers = require('../../../lib/helpers')
 const {expect} = require('chai')
 const sinon = require('sinon')
 const Dyno = require('../../lib/dyno')

@@ -4,9 +4,8 @@
 const cmd = require('../../commands/run/detached')
 const {expect} = require('chai')
 const cli = require('heroku-cli-util')
-const {describeAcceptance} = require('../test-helper')
 
-describeAcceptance('run:detached', () => {
+describe('run:detached', () => {
   beforeEach(() => cli.mockConsole())
 
   it('runs a command', () => {
