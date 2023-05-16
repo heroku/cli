@@ -86,6 +86,7 @@ async function logDisplayer(heroku, options) {
       lines: options.lines,
     },
   })
+  // console.log('response: ', response)
   return readLogs(response.logplex_url)
 }
 
