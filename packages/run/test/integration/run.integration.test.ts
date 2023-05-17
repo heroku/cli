@@ -1,11 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe
-
-if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
-  describeOrSkip = describe.skip.bind(describe)
-}
-
 const testFactory = () => {
   return test
     .stdout()
@@ -16,7 +10,7 @@ const testFactory = () => {
     })
 }
 
-describeOrSkip('@acceptance run', () => {
+describe('run', () => {
   testFactory()
     .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
     .it('runs a command', async ctx => {
