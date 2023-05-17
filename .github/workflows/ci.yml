@@ -1,70 +1,16 @@
-name: Unit, Integration, and Smoke tests
+name: Tests
 
 on:
   push
 
 jobs:
-  unit:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn test
-
-  integration:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest, macos-latest]
-    environment: AcceptanceTests
-    env:
-      RUN_ACCEPTANCE_TESTS: true
-      ENABLE_NET_CONNECT: true
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn lerna run test:integration
-
-  smoke:
-    runs-on: ubuntu-latest
-    environment: AcceptanceTests
-    env:
-      RUN_ACCEPTANCE_TESTS: true
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: Build packages
-        run: yarn lerna run prepack
-      - run: ./bin/run whoami
-      - run: yarn lerna run test:smoke
-
+  tests:
+    uses: ./.github/workflows/tests.yml
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [unit, integration, smoke]
+    needs: [tests]
     steps:
       - run: echo done
         working-directory: /
