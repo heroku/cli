@@ -21,6 +21,8 @@ jobs:
   
   integration:
     runs-on: ${{ matrix.os }}
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     strategy:
       matrix:
         node-version: [14.x, 16.x]
@@ -41,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: AcceptanceTests
     env:
+      RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v3
@@ -61,6 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: AcceptanceTests
     env:
+      RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v3
