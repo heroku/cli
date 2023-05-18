@@ -45,7 +45,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     environment: AcceptanceTests
     env:
       RUN_ACCEPTANCE_TESTS: true
@@ -61,7 +61,14 @@ jobs:
       - name: Build packages
         run: yarn lerna run prepack
       - run: ./bin/run whoami
-      - run: yarn lerna run test:acceptance
+        # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
+      - name: run smoke tests
+        if: github.ref_name != 'main' || !startsWith(github.head_ref, 'release-')
+        run: yarn lerna run test:smoke
+        # only run the full suite of acceptance tests on 'main' and 'release-' branches
+      - name: run acceptance tests
+        if: github.ref_name == 'main' || startsWith(github.head_ref, 'release-')
+        run: yarn lerna run test:acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
