@@ -80,6 +80,13 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Setup Instructions for HEROKU CLI Autocomplete')
   })
 
+  it('heroku buildpacks:search', async () => {
+    const {stdout} = await run('buildpacks:search ruby')
+    expect(stdout).to.contain('Buildpack')
+    expect(stdout).to.contain('Category')
+    expect(stdout).to.contain('Description')
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
