@@ -20,7 +20,7 @@ jobs:
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: yarn test
 
-  acceptance:
+  integration:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -41,12 +41,12 @@ jobs:
       - name: Build packages
         run: yarn lerna run prepack
       - run: ./bin/run whoami
-      - run: yarn lerna run test:acceptance
+      - run: yarn lerna run test:integration
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [test, acceptance]
+    needs: [test, integration]
     steps:
       - run: echo done
         working-directory: /
