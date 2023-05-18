@@ -70,6 +70,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('has no webhooks')
   })
 
+  it('heroku auth:whoami', async () => {
+    const {stdout} = await run('auth:whoami')
+    expect(stdout).to.contain('heroku-cli@salesforce.com')
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
