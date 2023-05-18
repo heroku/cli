@@ -49,6 +49,14 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('heroku-cli@salesforce.com')
   })
 
+  it('heroku pg:backups', async () => {
+    const app = 'heroku-cli-ci-smoke-test-app'
+    const {stdout} = await run(`pg:backups -a=${app}`)
+    expect(stdout).to.match(/===.*Backups/)
+    expect(stdout).to.match(/===.*Restores/)
+    expect(stdout).to.match(/===.*Copies/)
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
