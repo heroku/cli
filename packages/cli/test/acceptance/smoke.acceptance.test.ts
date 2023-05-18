@@ -9,6 +9,7 @@ const globby = require('globby')
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
 const bin = path.join(__dirname, '../../bin/run')
+const appFlag = '-a=heroku-cli-ci-smoke-test-app'
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
@@ -98,6 +99,11 @@ describe('@acceptance smoke tests', () => {
     expect(cmd.stdout).to.contain('@oclif/plugin-update')
     expect(cmd.stdout).to.contain('@oclif/plugin-warn-if-update-available')
     expect(cmd.stdout).to.contain('@oclif/plugin-which')
+  })
+
+  it('heroku certs', async () => {
+    const {stdout} = await run(`certs ${appFlag}`)
+    expect(stdout).to.contain('has no SSL certificates')
   })
 
   it('asserts monorepo plugins are in core', async () => {
