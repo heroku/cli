@@ -57,6 +57,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.match(/===.*Copies/)
   })
 
+  it('heroku pipelines', async () => {
+    const {stdout} = await run('pipelines')
+    expect(stdout).to.match(/===.*My Pipelines/)
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
