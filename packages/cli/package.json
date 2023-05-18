@@ -280,7 +280,8 @@
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.unit.test.ts\"",
-    "test:acceptance":  "mocha --forbid-only \"test/**/*.acceptance.test.ts\"",
+    "test:acceptance": "mocha --forbid-only \"test/**/*.acceptance.test.ts\"",
+    "test:smoke": "mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
     "posttest": "yarn lint",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
