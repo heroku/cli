@@ -75,6 +75,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('heroku-cli@salesforce.com')
   })
 
+  it('heroku autocomplete', async () => {
+    const {stdout} = await run('autocomplete')
+    expect(stdout).to.contain('Setup Instructions for HEROKU CLI Autocomplete')
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
