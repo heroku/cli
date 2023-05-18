@@ -4,7 +4,7 @@
 const helpers = require('../../../lib/helpers')
 const {expect} = require('chai')
 const sinon = require('sinon')
-const Dyno = require('../../lib/dyno')
+const Dyno = require('../../../lib/dyno')
 let dynoStartStub
 
 describe('helpers.buildCommand()', () => {
