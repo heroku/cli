@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const {app, args} = context
   const db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
+  if (util.essentialPlan(db)) throw new Error('pg:maintenance isn’t available for Essential-tier databases.')
 
   let newPluginMessage = `You can also list the maintenance events for your Postgres database with ${cli.color.cmd('data:maintenances')}.`
   newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
