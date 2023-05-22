@@ -15,9 +15,9 @@ describe('heroku redis:maintenance', function () {
 describe('heroku redis:maintenance', function () {
 
   let newPluginMessage = ` ▸    You can also manage maintenances on your Redis instance with`
-  newPluginMessage += `\n ▸    ${cli.color.cmd('data:maintenances')}.`
+  newPluginMessage += `\n ▸    data:maintenances.`
   newPluginMessage += `\n ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
-  newPluginMessage += `\n ▸    to install the ${cli.color.cyan('Data Maintenance CLI plugin')}.\n`
+  newPluginMessage += `\n ▸    to install the Data Maintenance CLI plugin.\n`
 
 
   beforeEach(function () {
