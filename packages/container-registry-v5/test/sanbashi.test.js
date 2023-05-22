@@ -1,8 +1,19 @@
+/* eslint-env mocha */
 let Sinon = require('sinon')
 let Sanbashi = require('../lib/sanbashi')
 let expect = require('chai').expect
 let Path = require('path')
 let Inquirer = require('inquirer')
+let childProcess = require('child_process')
+let EventEmitter = require('events').EventEmitter
+
+const eventMock = () => {
+  let eventEmitter = new EventEmitter()
+  process.nextTick(function () {
+    eventEmitter.emit('exit', 0)
+  })
+  return eventEmitter
+}
 
 describe('Sanbashi', () => {
   describe('.getDockerfiles', () => {
@@ -27,7 +38,7 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const jobs = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -40,7 +51,7 @@ describe('Sanbashi', () => {
     it('returns objects representing jobs per Dockerfile', () => {
       const dockerfiles = [
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile.web')
+        Path.join('.', 'Nested', 'Dockerfile.web'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -52,7 +63,7 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
@@ -65,14 +76,14 @@ describe('Sanbashi', () => {
       const dockerfiles = [
         Path.join('.', 'Nested', 'Dockerfile.worker'),
         Path.join('.', 'Dockerfile.web'),
-        Path.join('.', 'Nested', 'Dockerfile')
+        Path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
       const results = Sanbashi.getJobs(resourceRoot, dockerfiles)
       expect(results).to.have.keys('worker', 'web', 'standard')
-      expect(results['worker'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile.worker')])
-      expect(results['web'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Dockerfile.web')])
-      expect(results['standard'].map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile')])
+      expect(results.worker.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile.worker')])
+      expect(results.web.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Dockerfile.web')])
+      expect(results.standard.map(j => j.dockerfile)).to.have.members([Path.join('.', 'Nested', 'Dockerfile')])
     })
   })
   describe('.chooseJobs', () => {
@@ -84,6 +95,85 @@ describe('Sanbashi', () => {
       expect(chosenJob).to.have.property('length', 1)
     })
     afterEach(() => {
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.chooseJobs multiple entries', () => {
+    let promptStub
+    const dockerfilePath = Path.join('.', 'Nested', 'Dockerfile.web')
+    beforeEach(() => {
+      promptStub = Sinon.stub(Inquirer, 'prompt').returns({web: dockerfilePath})
+    })
+
+    it('prompts user when multiple entries exists', async () => {
+      const dockerfiles = [Path.join('.', 'Nested', 'Dockerfile.web'), Path.join('.', 'Dockerfile.web')]
+      const jobs = Sanbashi.getJobs('rootfulroot', dockerfiles)
+      let chosenJob = await Sanbashi.chooseJobs(jobs)
+      expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
+      expect(chosenJob).to.have.property('length', 1)
+    })
+    afterEach(() => {
+      promptStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.pushImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
+    })
+
+    it('successfully pushes image to Sanbashi cmd', async () => {
+      await Sanbashi.pushImage('registry.heroku.com/testapp/web')
+      expect(eventStub.calledOnce).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.pullImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
+    })
+
+    it('successfully pulls image to execute with Sanbashi cmd', async () => {
+      await Sanbashi.pullImage('registry.heroku.com/testapp/web')
+      expect(eventStub.calledOnce).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
+      if (Inquirer.prompt.restore) {
+        Inquirer.prompt.restore()
+      }
+    })
+  })
+  describe('.runImage', () => {
+    let eventStub
+
+    beforeEach(() => {
+      eventStub = Sinon.stub(childProcess, 'spawn').callsFake(eventMock)
+    })
+
+    it('successfully runs image to execute with Sanbashi cmd', async () => {
+      await Sanbashi.runImage('registry.heroku.com/testapp/web', '', '1234')
+      await Sanbashi.runImage('registry.heroku.com/testapp/web', 'not empty', '1234')
+      expect(eventStub.calledTwice).to.equal(true)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
       if (Inquirer.prompt.restore) {
         Inquirer.prompt.restore()
       }
@@ -126,7 +216,7 @@ describe('Sanbashi', () => {
   describe('.version', () => {
     it('returns a the major and minor version', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('18.02.0-ce-rc2')
 
       let version = await Sanbashi.version()
@@ -135,7 +225,7 @@ describe('Sanbashi', () => {
 
     it('has an error', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('an error occured')
 
       let version = await Sanbashi.version()

@@ -1,6 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
-import {truncate} from 'lodash'
+import {CliUx} from '@oclif/core'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -21,19 +20,19 @@ export default class Search extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Search)
+    const {args, flags} = await this.parse(Search)
     let searchResults: BuildpackBody[]
     const registry = new BuildpackRegistry()
 
     if (args.term) {
       const uniqueBuildpacks = new Map<string, BuildpackBody>()
-      const array = ((await registry.search(args.term, undefined, undefined)).unwrapOr([]))
-      .concat((await registry.search(undefined, args.term, undefined)).unwrapOr([]))
-      .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
+      const array = ((await registry.search(args.term)).unwrapOr([]))
+        .concat((await registry.search(undefined, args.term)).unwrapOr([]))
+        .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
       array
-      .forEach((element: BuildpackBody) => {
-        uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
-      })
+        .forEach((element: BuildpackBody) => {
+          uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
+        })
 
       searchResults = [...uniqueBuildpacks.values()]
     } else {
@@ -52,25 +51,28 @@ export default class Search extends Command {
         description: buildpack.description,
       }
     })
-    const trunc = (value: string, _: string) => truncate(value, {length: 35, omission: '…'})
     const displayTable = (buildpacks: TableRow[]) => {
-      cli.table(buildpacks, {
-        columns: [
-          {key: 'buildpack', label: 'Buildpack'},
-          {key: 'category', label: 'Category'},
-          {key: 'description', label: 'Description', format: trunc},
-        ],
+      CliUx.ux.table(buildpacks, {
+        buildpack: {
+          header: 'Buildpack',
+        },
+        category: {
+          header: 'Category',
+        },
+        description: {
+          header: 'Description',
+        },
       })
     }
 
     if (buildpacks.length === 0) {
-      cli.log('No buildpacks found')
+      CliUx.ux.log('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      cli.log('\n1 buildpack found')
+      CliUx.ux.log('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      cli.log(`\n${buildpacks.length} buildpacks found`)
+      CliUx.ux.log(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }

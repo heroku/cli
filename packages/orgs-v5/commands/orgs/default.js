@@ -12,5 +12,5 @@ module.exports = {
   topic: 'orgs',
   command: 'default',
   hidden: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

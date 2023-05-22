@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {Config} from '@oclif/config'
+import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
 
@@ -34,7 +34,7 @@ runtest('AutocompleteBase', () => {
   it('#errorIfWindows', async () => {
     try {
       new AutocompleteTest([], config).errorIfWindows()
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.eq('Autocomplete is not currently supported in Windows')
     }
   })

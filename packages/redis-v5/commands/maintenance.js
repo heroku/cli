@@ -7,11 +7,11 @@ module.exports = {
   command: 'maintenance',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
+  args: [{name: 'database', optional: true}],
   flags: [
-    { name: 'window', char: 'w', description: 'set weekly UTC maintenance window', hasValue: true, optional: true },
-    { name: 'run', description: 'start maintenance', optional: true },
-    { name: 'force', char: 'f', description: 'start maintenance without entering application maintenance mode', optional: true }
+    {name: 'window', char: 'w', description: 'set weekly UTC maintenance window', hasValue: true, optional: true},
+    {name: 'run', description: 'start maintenance', optional: true},
+    {name: 'force', char: 'f', description: 'start maintenance without entering application maintenance mode', optional: true},
   ],
   description: 'manage maintenance windows',
   help: 'Set or change the maintenance window for your Redis instance',
@@ -25,16 +25,18 @@ module.exports = {
 
     cli.warn(newPluginMessage)
 
+    // eslint-disable-next-line no-eq-null, eqeqeq
     if (addon.plan.name.match(/mini/) != null) {
       cli.exit(1, 'The redis:maintenance command is not available for Mini plans')
     }
 
     if (context.flags.window) {
+      // eslint-disable-next-line no-eq-null, eqeqeq
       if (context.flags.window.match(/[A-Za-z]{3,10} \d\d?:[03]0/) == null) {
         cli.exit(1, 'Maintenance windows must be "Day HH:MM", where MM is 00 or 30.')
       }
 
-      let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance_window`, 'PUT', { description: context.flags.window })
+      let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance_window`, 'PUT', {description: context.flags.window})
       cli.log(`Maintenance window for ${addon.name} (${addon.config_vars.join(', ')}) set to ${maintenance.window}.`)
       cli.exit(0)
     }
@@ -52,5 +54,5 @@ module.exports = {
 
     let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance`, 'GET', null)
     cli.log(maintenance.message)
-  })
+  }),
 }

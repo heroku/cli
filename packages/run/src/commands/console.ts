@@ -1,7 +1,6 @@
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions'
-
 import Dyno from '../lib/dyno'
 import {buildCommand} from '../lib/helpers'
 
@@ -16,7 +15,7 @@ export default class RunConsole extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(RunConsole)
+    const {flags} = await this.parse(RunConsole)
 
     const opts = {
       heroku: this.heroku,

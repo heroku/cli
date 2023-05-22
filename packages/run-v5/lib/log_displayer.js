@@ -7,16 +7,16 @@ let liner = require('../lib/line_transform')
 const colorize = require('./colorize')
 const HTTP = require('http-call')
 
-function readLogs (logplexURL) {
+function readLogs(logplexURL) {
   let u = url.parse(logplexURL)
   if (u.query && u.query.includes('srv')) {
     return readLogsV1(logplexURL)
-  } else {
-    return readLogsV2(logplexURL)
   }
+
+  return readLogsV2(logplexURL)
 }
 
-async function readLogsV1 (logplexURL) {
+async function readLogsV1(logplexURL) {
   let {response} = await HTTP.stream(logplexURL)
   return new Promise(function (resolve, reject) {
     response.setEncoding('utf8')
@@ -28,7 +28,7 @@ async function readLogsV1 (logplexURL) {
   })
 }
 
-function readLogsV2 (logplexURL) {
+function readLogsV2(logplexURL) {
   return new Promise(function (resolve, reject) {
     const u = url.parse(logplexURL, true)
     const isTail = u.query.tail && u.query.tail === 'true'
@@ -37,11 +37,11 @@ function readLogsV2 (logplexURL) {
     const es = new EventSource(logplexURL, {
       proxy,
       headers: {
-        'User-Agent': userAgent
-      }
+        'User-Agent': userAgent,
+      },
     })
 
-    es.onerror = function (err) {
+    es.addEventListener('error', function (err) {
       if (err && (err.status || err.message)) {
         const msg = (isTail && (err.status === 404 || err.status === 403)) ?
           'Log stream timed out. Please try again.' :
@@ -56,17 +56,18 @@ function readLogsV2 (logplexURL) {
       }
 
       // should only land here if --tail and no error status or message
-    }
+    })
 
+    // eslint-disable-next-line unicorn/prefer-add-event-listener
     es.onmessage = function (e) {
-      e.data.trim().split(/\n+/).forEach((line) => {
+      e.data.trim().split(/\n+/).forEach(line => {
         cli.log(colorize(line))
       })
     }
   })
 }
 
-async function logDisplayer (heroku, options) {
+async function logDisplayer(heroku, options) {
   process.stdout.on('error', err => {
     if (err.code === 'EPIPE') {
       process.exit(0)
@@ -82,8 +83,8 @@ async function logDisplayer (heroku, options) {
       tail: options.tail,
       dyno: options.dyno,
       source: options.source,
-      lines: options.lines
-    }
+      lines: options.lines,
+    },
   })
   return readLogs(response.logplex_url)
 }

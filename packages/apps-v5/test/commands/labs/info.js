@@ -1,10 +1,10 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/labs/info')
-const { expect } = require('chai')
+const {expect} = require('chai')
 
 describe('labs:info', function () {
   beforeEach(() => cli.mockConsole())
@@ -16,9 +16,9 @@ describe('labs:info', function () {
         enabled: true,
         name: 'feature-a',
         description: 'a user lab feature',
-        doc_url: 'https://devcenter.heroku.com'
+        doc_url: 'https://devcenter.heroku.com',
       })
-    return cmd.run({ args: { feature: 'feature-a' }, flags: {} })
+    return cmd.run({args: {feature: 'feature-a'}, flags: {}})
       .then(() => expect(cli.stdout).to.equal(`=== feature-a
 Description: a user lab feature
 Docs:        https://devcenter.heroku.com
@@ -35,10 +35,10 @@ Enabled:     true
         enabled: true,
         name: 'feature-a',
         description: 'a user lab feature',
-        doc_url: 'https://devcenter.heroku.com'
+        doc_url: 'https://devcenter.heroku.com',
       })
-    return cmd.run({ args: { feature: 'feature-a' }, flags: { json: true } })
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'feature-a' }))
+    return cmd.run({args: {feature: 'feature-a'}, flags: {json: true}})
+      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {name: 'feature-a'}))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -51,9 +51,9 @@ Enabled:     true
         enabled: true,
         name: 'feature-a',
         description: 'an app labs feature',
-        doc_url: 'https://devcenter.heroku.com'
+        doc_url: 'https://devcenter.heroku.com',
       })
-    return cmd.run({ app: 'myapp', args: { feature: 'feature-a' }, flags: {} })
+    return cmd.run({app: 'myapp', args: {feature: 'feature-a'}, flags: {}})
       .then(() => expect(cli.stdout).to.equal(`=== feature-a
 Description: an app labs feature
 Docs:        https://devcenter.heroku.com

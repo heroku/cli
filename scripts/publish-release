@@ -3,31 +3,29 @@
 set -e -o pipefail
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-MAIN_BRANCH="master"
+RELEASE_PREFIX="release-"
 
-if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
-  echo "scripts/publish-release must be run on the ${MAIN_BRANCH}."
-  echo "Please checkout the ${MAIN_BRANCH} branch with:"
-  echo "git checkout ${MAIN_BRANCH}"
+if [[ "${CURRENT_BRANCH}" != *"${RELEASE_PREFIX}"*  ]]; then
+  echo "scripts/publish-release must be run on a branch with this pattern: ${RELEASE_PREFIX}*."
   exit 1
 fi
 
-if !(command -v gh > /dev/null); then
-  echo "GitHub CLI is required for this release script."
-  echo "Please install GitHub CLI and try again:"
-  echo "https://github.com/cli/cli#installation"
-  exit 1
-fi
+#if !(command -v gh > /dev/null); then
+#  echo "GitHub CLI is required for this release script."
+#  echo "Please install GitHub CLI and try again:"
+#  echo "https://github.com/cli/cli#installation"
+#  exit 1
+#fi
 
-# hostname is necessary just in case you are logged into the CLI
-# GitHub enterprise instance
-if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
-  echo "Not logged into github".
-  echo "Please run: gh auth login"
-  exit 1
-fi
+## hostname is necessary just in case you are logged into the CLI
+## GitHub enterprise instance
+#if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+#  echo "Not logged into github".
+#  echo "Please run: gh auth login"
+#  exit 1
+#fi
 
-git pull --rebase origin "${MAIN_BRANCH}"
+git pull --rebase origin "${CURRENT_BRANCH}"
 # The --force overrides local tags.
 # This is needed if you've published the CLI previously,
 # otherwise git will exit with an error unnecessarily.
@@ -53,11 +51,11 @@ echo "publishing packages to npm..."
 yarn lerna publish --yes from-package
 
 
-LAST_PUBLISHED_TAG=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)" | head -n1)
+#LAST_PUBLISHED_TAG=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)" | head -n1)
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
 
-RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}...${TAG_NAME}~1")
-
-gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
+# temporary disable while waiting on service account approval
+#RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}...${TAG_NAME}~1")
+#gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"

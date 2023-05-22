@@ -6,7 +6,7 @@ let Utils = require('../../lib/utils')
 async function run(context, heroku) {
   let teams = await heroku.get('/teams')
   if (context.flags.json) Utils.printGroupsJSON(teams)
-  else Utils.printGroups(teams, { label: 'Teams' })
+  else Utils.printGroups(teams, {label: 'Teams'})
 }
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
 Use ${cli.color.cmd('heroku members:*')} to manage team members.`,
   needsAuth: true,
   flags: [
-    { name: 'json', description: 'output in json format' }
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

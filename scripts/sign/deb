@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e -o pipefail
 
-# This will sign files after `oclif-dev pack:deb`, this script should be ran from
+# This will sign files after `oclif pack:deb`, this script should be ran from
 # the `dist/deb` folder
 echo "$HEROKU_DEB_SECRET_KEY" | base64 -d 2> /dev/null | gpg --import --batch --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" 2> /dev/null
-gpg --digest-algo SHA512 --clearsign --batch --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o InRelease Release 2> /dev/null
-gpg --digest-algo SHA512 -abs --batch --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o Release.gpg Release 2> /dev/null
+gpg --digest-algo SHA512 --clearsign --pinentry-mode loopback --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o InRelease Release 2> /dev/null
+gpg --digest-algo SHA512 -abs --pinentry-mode loopback --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o Release.gpg Release 2> /dev/null
 echo "Signed debian packages successfully"
 echo "sha256 sums:"
 sha256sum *Release*
 
-mkdir -p /build/dist/apt
-echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /build/dist/apt/release.key
+# Former CircleCI setup
+# mkdir -p /build/dist/apt
+# echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /build/dist/apt/release.key
+#
+mkdir -p /home/runner/work/cli/cli/packages/cli/dist/apt
+echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /home/runner/work/cli/cli/packages/cli/dist/apt/release.key

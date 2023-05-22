@@ -1,8 +1,10 @@
 import {Command} from '@heroku-cli/command'
 import * as fs from 'async-file'
-import {ux} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import * as git from './git'
+
+const ux = CliUx.ux
 
 const got = require('got')
 

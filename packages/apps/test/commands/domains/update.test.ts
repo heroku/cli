@@ -1,4 +1,4 @@
-import {expect, test} from '../../test'
+import {expect, test} from '@oclif/test'
 
 describe('domains:update', () => {
   const responseBody = {
@@ -17,13 +17,13 @@ describe('domains:update', () => {
   }
 
   test
-  .stderr()
-  .nock('https://api.heroku.com', api => api
-  .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
-  .reply(200, responseBody),
-  )
-  .command(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
-  .it('updates the domain to use a different certificate', ctx => {
-    expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
-  })
+    .stderr()
+    .nock('https://api.heroku.com', api => api
+      .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
+      .reply(200, responseBody),
+    )
+    .command(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
+    .it('updates the domain to use a different certificate', ctx => {
+      expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
+    })
 })

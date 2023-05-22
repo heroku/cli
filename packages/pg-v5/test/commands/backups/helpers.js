@@ -11,9 +11,9 @@ let cmdRun = function (name, cmd) {
       })
     }
 
-    args = Object.assign(args, { args: varArgs })
+    args = Object.assign(args, {args: varArgs})
 
-    const backupsCmd = require('../../..').commands.find((c) => c.topic === 'pg' && c.command === 'backups')
+    const backupsCmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups')
     return backupsCmd.run(args)
   }
 }

@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/trusted-ips')
@@ -20,10 +20,10 @@ describe('trusted-ips', function () {
         created_at: now,
         created_by: 'dickeyxxx',
         rules: [
-          { source: '127.0.0.1/20', action: 'allow' }
-        ]
+          {source: '127.0.0.1/20', action: 'allow'},
+        ],
       })
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== Trusted IP Ranges
 127.0.0.1/20
@@ -39,9 +39,9 @@ describe('trusted-ips', function () {
         default_action: 'allow',
         created_at: now,
         created_by: 'dickeyxxx',
-        rules: []
+        rules: [],
       })
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.
 `))
@@ -55,15 +55,15 @@ describe('trusted-ips', function () {
       created_at: now.toISOString(),
       created_by: 'dickeyxxx',
       rules: [
-        { source: '127.0.0.1/20', action: 'allow' }
-      ]
+        {source: '127.0.0.1/20', action: 'allow'},
+      ],
     }
 
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, ruleSet)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
+    return cmd.run({flags: {space: 'my-space', json: true}})
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(ruleSet))
       .then(() => api.done())
   })

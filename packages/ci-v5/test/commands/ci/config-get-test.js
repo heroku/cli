@@ -7,7 +7,9 @@ const cmd = require('../../../commands/ci/config-get')
 const Factory = require('../../lib/factory')
 
 describe('heroku ci:config:get', function () {
-  let key, pipeline, value
+  let key
+  let pipeline
+  let value
 
   beforeEach(function () {
     cli.mockConsole()
@@ -21,9 +23,9 @@ describe('heroku ci:config:get', function () {
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-      .reply(200, { [key]: value })
+      .reply(200, {[key]: value})
 
-    await cmd.run({ args: { key }, flags: { pipeline: pipeline.id } })
+    await cmd.run({args: {key}, flags: {pipeline: pipeline.id}})
 
     expect(cli.stdout).to.equal(`${value}\n`)
     api.done()
@@ -34,9 +36,9 @@ describe('heroku ci:config:get', function () {
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-      .reply(200, { [key]: value })
+      .reply(200, {[key]: value})
 
-    await cmd.run({ args: { key }, flags: { shell: true, pipeline: pipeline.id } })
+    await cmd.run({args: {key}, flags: {shell: true, pipeline: pipeline.id}})
 
     expect(cli.stdout).to.equal(`${key}=${value}\n`)
     api.done()

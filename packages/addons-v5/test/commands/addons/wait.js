@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe context it beforeEach afterEach */
+/* globals context beforeEach afterEach */
 
 let fixtures = require('../../fixtures')
 let cli = require('heroku-cli-util')
@@ -8,10 +8,10 @@ let cmd = require('../../../commands/addons/wait')
 let _ = require('lodash')
 const lolex = require('lolex')
 const sinon = require('sinon')
-const { expect } = require('chai')
+const {expect} = require('chai')
 
 let clock
-const expansionHeaders = { 'Accept-Expansion': 'addon_service,plan' }
+const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
 describe('addons:wait', () => {
   let sandbox
@@ -21,7 +21,9 @@ describe('addons:wait', () => {
     cli.exit.mock()
     nock.cleanAll()
     clock = lolex.install()
-    clock.setTimeout = function (fn, timeout) { process.nextTick(fn) }
+    clock.setTimeout = function (fn) {
+      process.nextTick(fn)
+    }
   })
 
   afterEach(() => {
@@ -32,13 +34,13 @@ describe('addons:wait', () => {
   context('waiting for an individual add-on', () => {
     context('when the add-on is provisioned', () => {
       beforeEach(() => {
-        this.nockExpectation = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
-          .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-db' })
+        this.nockExpectation = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+          .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
           .reply(200, [fixtures.addons['www-db']]) // provisioned
       })
 
       it('prints output indicating that it is done', () => {
-        return cmd.run({ flags: {}, args: { addon: 'www-db' } })
+        return cmd.run({flags: {}, args: {addon: 'www-db'}})
           .then(() => expect(cli.stdout).to.equal(''))
           .then(() => expect(cli.stderr).to.equal(''))
       })
@@ -48,10 +50,10 @@ describe('addons:wait', () => {
       it('waits until the add-on is provisioned, then shows config vars', () => {
         // Call to resolve the add-on:
         let resolverResponse = nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-redis' })
+          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']]) // provisioning
 
-        let provisioningResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisioningResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, fixtures.addons['www-redis']) // provisioning
 
@@ -59,11 +61,11 @@ describe('addons:wait', () => {
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
 
-        let provisionedResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisionedResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedAddon)
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+        return cmd.run({args: {addon: 'www-redis'}, flags: {'wait-interval': '1'}})
           .then(() => resolverResponse.done())
           .then(() => provisioningResponse.done())
           .then(() => provisionedResponse.done())
@@ -76,20 +78,20 @@ describe('addons:wait', () => {
 
         // Call to resolve the add-on:
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-redis' })
+          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']]) // provisioning
 
         let provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
 
-        nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, () => {
             return provisionedAddon
           })
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+        return cmd.run({args: {addon: 'www-redis'}, flags: {'wait-interval': '1'}})
           .then(() => expect(notifySpy.called).to.be.false)
           .then(() => expect(notifySpy.calledOnce).to.be.false)
       })
@@ -99,21 +101,21 @@ describe('addons:wait', () => {
 
         // Call to resolve the add-on:
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-redis' })
+          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']]) // provisioning
 
         let provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
 
-        nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, () => {
             clock.tick(5000)
             return provisionedAddon
           })
 
-        return cmd.run({ args: { addon: 'www-redis' }, flags: { 'wait-interval': '1' } })
+        return cmd.run({args: {addon: 'www-redis'}, flags: {'wait-interval': '1'}})
           .then(() => expect(notifySpy.called).to.be.true)
           .then(() => expect(notifySpy.calledOnce).to.be.true)
       })
@@ -124,7 +126,7 @@ describe('addons:wait', () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-redis' })
+          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']]) // provisioning
 
         nock('https://api.heroku.com')
@@ -134,14 +136,13 @@ describe('addons:wait', () => {
         let deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
         deprovisionedAddon.state = 'deprovisioned'
 
-        nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
 
-        /* eslint-disable no-unused-expressions */
-        return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
-          .catch((err) => {
-            expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        return cmd.run({flags: {}, args: {addon: 'www-redis'}})
+          .catch(error => {
+            expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned')
             expect(notifySpy.called).to.be.true
             expect(notifySpy.calledOnce).to.be.true
           })
@@ -155,12 +156,14 @@ describe('addons:wait', () => {
         let deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
         deprovisionedAddon.state = 'deprovisioned'
 
-        nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
-        return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
-          .then(() => { throw new Error('unreachable') })
-          .catch((err) => expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned'))
+        return cmd.run({flags: {}, args: {addon: 'www-redis'}})
+          .then(() => {
+            throw new Error('unreachable')
+          })
+          .catch(error => expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned'))
       })
     })
   })
@@ -181,11 +184,11 @@ describe('addons:wait', () => {
           .get('/apps/acme-inc-www/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon])
 
-        let wwwResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let wwwResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, wwwAddon)
 
-        let redisResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let redisResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, redisAddon)
 
@@ -197,15 +200,15 @@ describe('addons:wait', () => {
         provisionedRedisAddon.state = 'provisioned'
         provisionedRedisAddon.config_vars = ['REDIS_URL']
 
-        let provisionedRedisResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisionedRedisResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedRedisAddon)
 
-        let provisionedWwwResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisionedWwwResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, provisionedWwwAddon)
 
-        return cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: 'acme-inc-www' })
+        return cmd.run({args: {addon: null}, flags: {'wait-interval': '1'}, app: 'acme-inc-www'})
           .then(() => resolverResponse.done())
           .then(() => redisResponse.done())
           .then(() => wwwResponse.done())
@@ -231,11 +234,11 @@ describe('addons:wait', () => {
           .get('/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon])
 
-        let wwwResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let wwwResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, wwwAddon)
 
-        let redisResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let redisResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, redisAddon)
 
@@ -247,15 +250,15 @@ describe('addons:wait', () => {
         provisionedRedisAddon.state = 'provisioned'
         provisionedRedisAddon.config_vars = ['REDIS_URL']
 
-        let provisionedRedisResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisionedRedisResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedRedisAddon)
 
-        let provisionedWwwResponse = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        let provisionedWwwResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-db')
           .reply(200, provisionedWwwAddon)
 
-        return cmd.run({ args: { addon: null }, flags: { 'wait-interval': '1' }, app: null })
+        return cmd.run({args: {addon: null}, flags: {'wait-interval': '1'}, app: null})
           .then(() => resolverResponse.done())
           .then(() => redisResponse.done())
           .then(() => wwwResponse.done())

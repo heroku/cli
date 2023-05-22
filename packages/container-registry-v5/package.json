@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-container-registry-v5",
   "description": "Use containers to build and deploy Heroku apps",
-  "version": "7.54.0",
+  "version": "8.1.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -13,22 +13,25 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/container-registry-v5/<%- commandPath %>"
   },
   "dependencies": {
+    "debug": "^4.3.4",
     "glob": "^7.1.3",
     "heroku-cli-util": "^8.0.11",
+    "heroku-container-registry": "^4.99.0",
     "http-call": "^5.2.3",
     "inquirer": "^6.2.2"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.2.0",
+    "@oclif/plugin-legacy": "^1.3.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
-    "depcheck": "^0.7.2",
+    "depcheck": "^1.4.3",
+    "lolex": "^3.1.0",
     "mocha": "^5.0.4",
     "mockdate": "^2.0.2",
-    "nock": "^9.2.3",
-    "nyc": "^13.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^15.1.0",
+    "oclif": "3.8.1",
     "sinon": "^5.0.7",
     "std-mocks": "^1.0.1"
   },
@@ -38,7 +41,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/container-registry-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/container-registry-v5",
   "keywords": [
     "cli",
     "container",
@@ -50,10 +53,12 @@
   "repository": "heroku/cli",
   "scripts": {
     "depcheck": "depcheck || true",
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "prepack": "oclif-dev manifest",
+    "posttest": "yarn lint",
+    "prepack": "oclif manifest",
     "test": "cross-env TZ=utc nyc mocha",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   },
   "topic": "container"
 }

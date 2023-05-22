@@ -1,8 +1,9 @@
-import Command, {flags} from '@heroku-cli/command'
+import Command from '@heroku-cli/command'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {CompletionLookup} from './completions'
+import {Interfaces} from '@oclif/core'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
@@ -15,6 +16,7 @@ export abstract class AutocompleteBase extends Command {
     if (!shell) {
       this.error('Missing required argument shell')
     }
+
     this.errorIfWindows()
     if (!['bash', 'zsh'].includes(shell)) {
       throw new Error(`${shell} is not a supported shell for autocomplete`)
@@ -42,7 +44,7 @@ export abstract class AutocompleteBase extends Command {
     fs.write(fd, entry)
   }
 
-  protected findCompletion(cmdId: string, name: string, description = ''): flags.ICompletion | undefined {
+  protected findCompletion(cmdId: string, name: string, description = ''): Interfaces.Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
 }

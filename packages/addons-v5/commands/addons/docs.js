@@ -23,8 +23,8 @@ module.exports = {
   command: 'docs',
   wantsApp: true,
   needsAuth: true,
-  args: [{ name: 'addon' }],
-  flags: [{ name: 'show-url', description: 'show URL, do not open browser' }],
-  run: cli.command({ preauth: true }, run),
-  description: "open an add-on's Dev Center documentation in your browser"
+  args: [{name: 'addon'}],
+  flags: [{name: 'show-url', description: 'show URL, do not open browser'}],
+  run: cli.command({preauth: true}, run),
+  description: "open an add-on's Dev Center documentation in your browser",
 }

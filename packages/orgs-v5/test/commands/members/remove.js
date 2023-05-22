@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect context */
+/* globals beforeEach afterEach cli nock expect context */
 
 let cmd = require('../../../commands/members/remove')
 let stubDelete = require('../../stub/delete')
@@ -20,9 +20,9 @@ describe('heroku members:remove', () => {
 
     it('removes a member from an org', () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-      return cmd.run({ flags: { team: 'myteam' }, args: { email: 'foo@foo.com' } })
+      return cmd.run({flags: {team: 'myteam'}, args: {email: 'foo@foo.com'}})
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
+        .then(() => expect('Removing foo@foo.com from myteam... done\n').to.eq(cli.stderr))
         .then(() => apiRemoveMemberFromOrg.done())
     })
   })
@@ -39,9 +39,9 @@ describe('heroku members:remove', () => {
 
       it('removes a member from an org', () => {
         let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-        return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+        return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myteam'}})
           .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
+          .then(() => expect('Removing foo@foo.com from myteam... done\n').to.eq(cli.stderr))
           .then(() => apiRemoveMemberFromOrg.done())
       })
     })
@@ -50,7 +50,7 @@ describe('heroku members:remove', () => {
       let apiGetTeamInvites
 
       beforeEach(() => {
-        stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+        stubGet.teamFeatures([{name: 'team-invite-acceptance', enabled: true}])
       })
 
       context('with no pending invites', () => {
@@ -60,9 +60,9 @@ describe('heroku members:remove', () => {
 
         it('removes a member', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+          return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myteam'}})
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
+            .then(() => expect('Removing foo@foo.com from myteam... done\n').to.eq(cli.stderr))
             .then(() => apiGetTeamInvites.done())
             .then(() => apiRemoveMemberFromOrg.done())
         })
@@ -71,16 +71,16 @@ describe('heroku members:remove', () => {
       context('with pending invites', () => {
         beforeEach(() => {
           apiGetTeamInvites = stubGet.teamInvites([
-            { user: { email: 'foo@foo.com' } }
+            {user: {email: 'foo@foo.com'}},
           ])
         })
 
         it('revokes the invite', () => {
           let apiRevokeTeamInvite = stubDelete.teamInvite('foo@foo.com')
 
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
+          return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myteam'}})
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Revoking invite for foo@foo.com in myteam... done\n`).to.eq(cli.stderr))
+            .then(() => expect('Revoking invite for foo@foo.com in myteam... done\n').to.eq(cli.stderr))
             .then(() => apiGetTeamInvites.done())
             .then(() => apiRevokeTeamInvite.done())
         })

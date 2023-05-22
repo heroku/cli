@@ -2,11 +2,11 @@
 
 const cli = require('heroku-cli-util')
 
-function check (val, message) {
+function check(val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:destroy --space example-space vpn-connection-name`)
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let space = context.flags.space
   check(space, 'Space name required')
 
@@ -32,12 +32,12 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    { name: 'name', optional: true, hidden: true }
+    {name: 'name', optional: true, hidden: true},
   ],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
-    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from' },
-    { name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt' }
+    {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
+    {name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

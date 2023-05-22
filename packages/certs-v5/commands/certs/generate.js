@@ -5,15 +5,15 @@ let cli = require('heroku-cli-util')
 let openssl = require('../../lib/openssl.js')
 let endpoints = require('../../lib/endpoints.js').all
 
-function valEmpty (val) {
-  if (val) {
-    return val.length === 0
-  } else {
-    return true
+function valueEmpty(value) {
+  if (value) {
+    return value.length === 0
   }
+
+  return true
 }
 
-function getSubject (context) {
+function getSubject(context) {
   let domain = context.args.domain
 
   let owner = context.flags.owner
@@ -23,21 +23,21 @@ function getSubject (context) {
 
   let subject = context.flags.subject
 
-  if (valEmpty(subject)) {
+  if (valueEmpty(subject)) {
     subject = ''
-    if (!valEmpty(country)) {
+    if (!valueEmpty(country)) {
       subject += `/C=${country}`
     }
 
-    if (!valEmpty(area)) {
+    if (!valueEmpty(area)) {
       subject += `/ST=${area}`
     }
 
-    if (!valEmpty(city)) {
+    if (!valueEmpty(city)) {
       subject += `/L=${city}`
     }
 
-    if (!valEmpty(owner)) {
+    if (!valueEmpty(owner)) {
       subject += `/O=${owner}`
     }
 
@@ -47,26 +47,29 @@ function getSubject (context) {
   return subject
 }
 
-function requiresPrompt (context) {
-  if (valEmpty(context.flags.subject)) {
+function requiresPrompt(context) {
+  if (valueEmpty(context.flags.subject)) {
     let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city]
-    if (!context.flags.now && args.every(function (v) { return valEmpty(v) })) {
+    if (!context.flags.now && args.every(function (v) {
+      return valueEmpty(v)
+    })) {
       return true
     }
   }
+
   return false
 }
 
-function getCommand (certs, domain) {
+function getCommand(certs, domain) {
   if (certs.find(function (f) {
     return f.ssl_cert.cert_domains.find(function (d) {
       return d === domain
     })
   })) {
     return 'update'
-  } else {
-    return 'add'
   }
+
+  return 'add'
 }
 
 async function run(context, heroku) {
@@ -111,55 +114,55 @@ module.exports = {
   topic: 'certs',
   command: 'generate',
   args: [
-    { name: 'domain', optional: false }
+    {name: 'domain', optional: false},
   ],
   flags: [
     {
       name: 'selfsigned',
       optional: true,
       hasValue: false,
-      description: 'generate a self-signed certificate instead of a CSR'
+      description: 'generate a self-signed certificate instead of a CSR',
     }, {
       name: 'keysize',
       optional: true,
       hasValue: true,
-      description: 'RSA key size in bits (default: 2048)'
+      description: 'RSA key size in bits (default: 2048)',
     }, {
       name: 'owner',
       optional: true,
       hasValue: true,
-      description: 'name of organization certificate belongs to'
+      description: 'name of organization certificate belongs to',
     }, {
       name: 'country',
       optional: true,
       hasValue: true,
-      description: 'country of owner, as a two-letter ISO country code'
+      description: 'country of owner, as a two-letter ISO country code',
     }, {
       name: 'area',
       optional: true,
       hasValue: true,
-      description: 'sub-country area (state, province, etc.) of owner'
+      description: 'sub-country area (state, province, etc.) of owner',
     }, {
       name: 'city',
       optional: true,
       hasValue: true,
-      description: 'city of owner'
+      description: 'city of owner',
     }, {
       name: 'subject',
       optional: true,
       hasValue: true,
-      description: 'specify entire certificate subject'
+      description: 'specify entire certificate subject',
     }, {
       name: 'now',
       optional: true,
       hasValue: false,
-      description: 'do not prompt for any owner information'
-    }
+      description: 'do not prompt for any owner information',
+    },
   ],
   description: 'generate a key and a CSR or self-signed certificate',
   help: 'Generate a key and certificate signing request (or self-signed certificate)\nfor an app. Prompts for information to put in the certificate unless --now\nis used, or at least one of the --subject, --owner, --country, --area, or\n--city options is specified.',
   examples: '$ heroku certs:generate example.com',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

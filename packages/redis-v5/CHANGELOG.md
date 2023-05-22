@@ -3,6 +3,114 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.2](https://github.com/heroku/cli/compare/v8.1.1...v8.1.2) (2023-05-01)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [8.0.5](https://github.com/heroku/cli/compare/v8.0.4...v8.0.5) (2023-04-18)
+
+
+### Bug Fixes
+
+* oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
+
+
+
+
+
+## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.69.2](https://github.com/heroku/cli/compare/v7.69.1...v7.69.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.68.3](https://github.com/heroku/cli/compare/v7.68.2...v7.68.3) (2023-03-06)
+
+
+### Bug Fixes
+
+* **redis-v5:** CLI to log Shogun upgrade response ([#2255](https://github.com/heroku/cli/issues/2255)) ([27b7553](https://github.com/heroku/cli/commit/27b75537645333bea104896b2788120031093dc2))
+
+
+
+
+
+# [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* revert to v7.67.2 ([#2235](https://github.com/heroku/cli/issues/2235)) ([0955a24](https://github.com/heroku/cli/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/cli/issues/2231) [#2230](https://github.com/heroku/cli/issues/2230) [#2229](https://github.com/heroku/cli/issues/2229) [#2228](https://github.com/heroku/cli/issues/2228) [#2227](https://github.com/heroku/cli/issues/2227) [#2225](https://github.com/heroku/cli/issues/2225) [#2144](https://github.com/heroku/cli/issues/2144) [#2216](https://github.com/heroku/cli/issues/2216) [#2207](https://github.com/heroku/cli/issues/2207) [#2212](https://github.com/heroku/cli/issues/2212) [#2212](https://github.com/heroku/cli/issues/2212)
+
+
+
+
+
+# [7.67.2](https://github.com/heroku/cli/compare/v7.66.3...v7.67.2) (2023-01-23)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+# [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+## [7.59.1](https://github.com/heroku/cli/compare/v7.59.0...v7.59.1) (2021-10-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
 # [7.59.0](https://github.com/heroku/cli/compare/v7.58.0...v7.59.0) (2021-08-24)
 
 

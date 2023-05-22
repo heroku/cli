@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let sinon = require('sinon')
 let nock = require('nock')
@@ -16,23 +16,23 @@ describe('spaces:wait', function () {
     const sandbox = sinon.createSandbox()
     const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
-    let api = nock('https://api.heroku.com:443', { reqheaders: { 'Accept-Expansion': 'region' } })
+    let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region', description: 'region' }, state: 'allocating', created_at: now })
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
       .get('/spaces/my-space')
       .reply(200,
-        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region', description: 'region' }, state: 'allocated', created_at: now }
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now},
       )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
       .reply(200,
-        { state: 'enabled', sources: ['123.456.789.123'] }
+        {state: 'enabled', sources: ['123.456.789.123']},
       )
 
-    return cmd.run({ flags: { space: 'my-space', interval: 0 } })
+    return cmd.run({flags: {space: 'my-space', interval: 0}})
       .then(() => expect(cli.stderr).to.equal(
-        `Waiting for space my-space to allocate... done\n\n`))
+        'Waiting for space my-space to allocate... done\n\n'))
       .then(() => expect(cli.stdout).to.equal(`=== my-space
 Team:         my-team
 Region:       region
@@ -52,20 +52,20 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space')
       .reply(200,
-        { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region', description: 'region' }, state: 'allocating', created_at: now })
+        {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
       .get('/spaces/my-space')
       .reply(200,
-        { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region', description: 'region' }, state: 'allocated', created_at: now }
+        {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now},
       )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
       .reply(200,
-        { state: 'enabled', sources: ['123.456.789.123'] }
+        {state: 'enabled', sources: ['123.456.789.123']},
       )
 
-    return cmd.run({ flags: { space: 'my-space', json: true, interval: 0 } })
+    return cmd.run({flags: {space: 'my-space', json: true, interval: 0}})
       .then(() => expect(cli.stderr).to.equal(
-        `Waiting for space my-space to allocate... done\n\n`))
+        'Waiting for space my-space to allocate... done\n\n'))
       .then(() => expect(cli.stdout).to.equal(`{
   "name": "my-space",
   "team": {

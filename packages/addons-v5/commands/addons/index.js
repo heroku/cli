@@ -11,15 +11,16 @@ async function run(ctx, api) {
   const grandfatheredPrice = util.grandfatheredPrice
   const printf = require('printf')
 
-  const { groupBy, some, sortBy, values } = require('lodash')
+  const {groupBy, some, sortBy, values} = require('lodash')
 
   async function addonGetter(api, app) {
-    let attachments, addons
+    let attachments
+    let addons
 
     if (app) { // don't display attachments globally
-      addons = api.get(`/apps/${app}/addons`, { headers: {
-        'Accept-Expansion': 'addon_service,plan'
-      } })
+      addons = api.get(`/apps/${app}/addons`, {headers: {
+        'Accept-Expansion': 'addon_service,plan',
+      }})
 
       let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
       if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
@@ -28,7 +29,7 @@ async function run(ctx, api) {
         // specific API call and sacrifice listing foreign attachments.
         attachments = api.request({
           method: 'GET',
-          path: `/apps/${app}/addon-attachments`
+          path: `/apps/${app}/addon-attachments`,
         })
       } else {
         // In order to display all foreign attachments, we'll get out entire
@@ -40,18 +41,18 @@ async function run(ctx, api) {
         method: 'GET',
         path: '/addons',
         headers: {
-          'Accept-Expansion': 'addon_service,plan'
-        }
+          'Accept-Expansion': 'addon_service,plan',
+        },
       })
     }
 
     // Get addons and attachments in parallel
     let items = await Promise.all([addons, attachments])
 
-    function isRelevantToApp (addon) {
+    function isRelevantToApp(addon) {
       return !app ||
       addon.app.name === app ||
-      some(addon.attachments, (att) => att.app.name === app)
+      some(addon.attachments, att => att.app.name === app)
     }
 
     attachments = groupBy(items[1], 'addon.id')
@@ -80,7 +81,7 @@ async function run(ctx, api) {
         name: atts[0].addon.name,
         addon_service: {},
         plan: {},
-        attachments: atts
+        attachments: atts,
       }
 
       if (isRelevantToApp(inaccessibleAddon)) {
@@ -91,7 +92,7 @@ async function run(ctx, api) {
     return addons
   }
 
-  function displayAll (addons) {
+  function displayAll(addons) {
     addons = sortBy(addons, 'app.name', 'plan.name', 'addon.name')
 
     if (addons.length === 0) {
@@ -104,47 +105,51 @@ async function run(ctx, api) {
       columns: [{
         key: 'app.name',
         label: 'Owning App',
-        format: style('app')
-      }, {
+        format: style('app'),
+      },
+      {
         key: 'name',
         label: 'Add-on',
-        format: style('addon')
-      }, {
+        format: style('addon'),
+      },
+      {
         key: 'plan.name',
         label: 'Plan',
         format: function (plan) {
           if (typeof plan === 'undefined') return style('dim', '?')
           return plan
-        }
-      }, {
+        },
+      },
+      {
         key: 'plan.price',
         label: 'Price',
         format: function (price) {
           if (typeof price === 'undefined') return style('dim', '?')
           return formatPrice(price)
-        }
+        },
       },
       {
         key: 'state',
         label: 'State',
         format: function (state) {
           switch (state) {
-            case 'provisioned':
-              state = 'created'
-              break
-            case 'provisioning':
-              state = 'creating'
-              break
-            case 'deprovisioned':
-              state = 'errored'
+          case 'provisioned':
+            state = 'created'
+            break
+          case 'provisioning':
+            state = 'creating'
+            break
+          case 'deprovisioned':
+            state = 'errored'
           }
+
           return state
-        }
-      }]
+        },
+      }],
     })
   }
 
-  function formatAttachment (attachment, showApp) {
+  function formatAttachment(attachment, showApp) {
     if (showApp === undefined) showApp = true
 
     let attName = style('attachment', attachment.name)
@@ -158,21 +163,21 @@ async function run(ctx, api) {
     return output.join(' ')
   }
 
-  function renderAttachment (attachment, app, isFirst) {
+  function renderAttachment(attachment, app, isFirst) {
     let line = isFirst ? '└─' : '├─'
     let attName = formatAttachment(attachment, attachment.app.name !== app)
     return printf(' %s %s', style('dim', line), attName)
   }
 
-  function displayForApp (app, addons) {
+  function displayForApp(app, addons) {
     if (addons.length === 0) {
       cli.log(`No add-ons for app ${app}.`)
       return
     }
 
-    let isForeignApp = (attOrAddon) => attOrAddon.app.name !== app
+    let isForeignApp = attOrAddon => attOrAddon.app.name !== app
 
-    function presentAddon (addon) {
+    function presentAddon(addon) {
       let name = style('addon', addon.name)
       let service = addon.addon_service.name
 
@@ -206,31 +211,31 @@ async function run(ctx, api) {
       headerAnsi: cli.color.bold,
       columns: [{
         label: 'Add-on',
-        format: presentAddon
+        format: presentAddon,
       }, {
         label: 'Plan',
         key: 'plan.name',
         format: function (name) {
           if (name === undefined) return style('dim', '?')
           return name.replace(/^[^:]+:/, '')
-        }
+        },
       }, {
         label: 'Price',
         format: function (addon) {
           if (addon.app.name === app) {
             return formatPrice(addon.plan.price)
-          } else {
-            return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
           }
-        }
+
+          return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
+        },
       }, {
         label: 'State',
         key: 'state',
-        format: formatState
+        format: formatState,
       }],
 
       // Separate each add-on row by a blank line
-      after: () => cli.log('')
+      after: () => cli.log(''),
     })
 
     cli.log(`The table above shows ${style('addon', 'add-ons')} and the ` +
@@ -239,7 +244,7 @@ async function run(ctx, api) {
   `)
   }
 
-  function displayJSON (addons) {
+  function displayJSON(addons) {
     cli.log(JSON.stringify(addons, null, 2))
   }
 
@@ -264,16 +269,16 @@ module.exports = {
       name: 'all',
       char: 'A',
       hasValue: false,
-      description: 'show add-ons and attachments for all accessible apps'
+      description: 'show add-ons and attachments for all accessible apps',
     },
     {
       name: 'json',
       hasValue: false,
-      description: 'return add-ons in json format'
-    }
+      description: 'return add-ons in json format',
+    },
   ],
 
-  run: cli.command({ preauth: true }, run),
+  run: cli.command({preauth: true}, run),
   usage: `${topic} [--all|--app APP]`,
   description: 'lists your add-ons and attachments',
   help: `The default filter applied depends on whether you are in a Heroku app
@@ -282,6 +287,6 @@ is implied. Explicitly providing either flag overrides the default
 behavior.`,
   examples: [
     `$ heroku ${topic} --all`,
-    `$ heroku ${topic} --app acme-inc-www`
-  ]
+    `$ heroku ${topic} --app acme-inc-www`,
+  ],
 }

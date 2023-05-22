@@ -1,9 +1,9 @@
 'use strict'
-/* globals describe it beforeEach afterEach */
+/* globals beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'logout')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')
@@ -20,7 +20,7 @@ describe('container logout', () => {
     let logout = sandbox.stub(Sanbashi, 'cmd')
       .withArgs('docker', ['logout', 'registry.heroku.com'])
 
-    return cmd.run({ flags: {} })
+    return cmd.run({flags: {}})
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(logout))

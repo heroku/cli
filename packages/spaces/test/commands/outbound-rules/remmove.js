@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/outbound-rules/remove')
@@ -14,19 +14,19 @@ describe('outbound-rules:remove', function () {
       .reply(200, {
         created_by: 'dickeyxxx',
         rules: [
-          { target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp' },
-          { target: '128.0.0.1/20', from_port: 443, to_port: 443, protocol: 'udp' }
-        ]
-      }
+          {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'},
+          {target: '128.0.0.1/20', from_port: 443, to_port: 443, protocol: 'udp'},
+        ],
+      },
       )
       .put('/spaces/my-space/outbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [
-          { target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp' }
-        ]
+          {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'},
+        ],
       })
-      .reply(200, { rules: [] })
-    return cmd.run({ args: { ruleNumber: 2 }, flags: { space: 'my-space', confirm: 'my-space' } })
+      .reply(200, {rules: []})
+    return cmd.run({args: {ruleNumber: 2}, flags: {space: 'my-space', confirm: 'my-space'}})
       .then(() => api.done())
   })
 })

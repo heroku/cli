@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/drains/get')
@@ -18,12 +18,12 @@ describe('drains:get', function () {
         id: '047f80cc-0470-4564-b0cb-e9ad7605314a',
         token: 'd.a55ecbe1-5513-4d19-91e4-58a08b419d19',
         updated_at: '2016-03-23T18:31:50Z',
-        url: 'https://example.com'
+        url: 'https://example.com',
       })
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)
-`
+`,
       )).then(() => api.done())
   })
 
@@ -34,13 +34,13 @@ describe('drains:get', function () {
       id: '047f80cc-0470-4564-b0cb-e9ad7605314a',
       token: 'd.a55ecbe1-5513-4d19-91e4-58a08b419d19',
       updated_at: '2016-03-23T18:31:50Z',
-      url: 'https://example.com'
+      url: 'https://example.com',
     }
 
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/log-drain')
       .reply(200, drain)
-    return cmd.run({ flags: { space: 'my-space', json: true } })
+    return cmd.run({flags: {space: 'my-space', json: true}})
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(drain))
       .then(() => api.done())
   })

@@ -2,9 +2,9 @@
 
 set -ex
 
-if [[ ! -z "${CIRCLE_TAG}" ]]; then
+if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" = v* ]]; then
   aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
-elif [[ "$CIRCLE_BRANCH" == "master" ]]; then
+elif [[ "$GITHUB_REF_NAME" == "main" ]]; then
   aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*"
 else
   echo "Not on stable or beta release, skipping invalidate cdn cache"

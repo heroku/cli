@@ -5,14 +5,14 @@ let fs = require('fs')
 let os = require('os')
 let path = require('path')
 
-function open (url) {
+function open(url) {
   cli.log(`Opening ${cli.color.cyan(url)}...`)
   return cli.open(url)
 }
 
 const ssoPath = path.join(os.tmpdir(), 'heroku-sso.html')
 
-function writeSudoTemplate (ctx, sso, path) {
+function writeSudoTemplate(ctx, sso, path) {
   return new Promise(function (resolve, reject) {
     let html = `<!DOCTYPE HTML>
 <html>
@@ -52,8 +52,8 @@ let sudo = async function (ctx, api) {
     method: 'GET',
     path: `/apps/${ctx.app}/addons/${ctx.args.addon}/sso`,
     headers: {
-      Accept: 'application/vnd.heroku+json; version=3.add-ons-sso'
-    }
+      Accept: 'application/vnd.heroku+json; version=3.add-ons-sso',
+    },
   })
   if (sso.method === 'get') {
     await open(sso.action)
@@ -69,8 +69,8 @@ async function run(ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
   let attachment = await resolve.attachment(api, ctx.app, ctx.args.addon)
-    .catch(function (err) {
-      if (err.statusCode !== 404) throw err
+    .catch(function (error) {
+      if (error.statusCode !== 404) throw error
     })
 
   let webUrl
@@ -93,8 +93,8 @@ module.exports = {
   command: 'open',
   wantsApp: true,
   needsAuth: true,
-  args: [{ name: 'addon' }],
-  flags: [{ name: 'show-url', description: 'show URL, do not open browser' }],
-  run: cli.command({ preauth: true }, run),
-  description: "open an add-on's dashboard in your browser"
+  args: [{name: 'addon'}],
+  flags: [{name: 'show-url', description: 'show URL, do not open browser'}],
+  run: cli.command({preauth: true}, run),
+  description: "open an add-on's dashboard in your browser",
 }

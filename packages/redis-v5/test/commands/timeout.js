@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach cli */
+/* globals beforeEach cli */
 
 let expect = require('chai').expect
 let nock = require('nock')
@@ -9,7 +9,7 @@ let command = require('../../commands/timeout')
 const unwrap = require('../unwrap')
 
 describe('heroku redis:timeout', function () {
-  require('../lib/shared').shouldHandleArgs(command, { seconds: '5' })
+  require('../lib/shared').shouldHandleArgs(command, {seconds: '5'})
 })
 
 describe('heroku redis:timeout', function () {
@@ -22,15 +22,15 @@ describe('heroku redis:timeout', function () {
   it('# sets the timout', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
+        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
     let redis = nock('https://redis-api.heroku.com:443')
-      .patch('/redis/v0/databases/redis-haiku/config', { timeout: 5 }).reply(200, {
-        timeout: { value: 5 }
+      .patch('/redis/v0/databases/redis-haiku/config', {timeout: 5}).reply(200, {
+        timeout: {value: 5},
       })
 
-    return command.run({ app: 'example', flags: { seconds: '5' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+    return command.run({app: 'example', flags: {seconds: '5'}, args: {}, auth: {username: 'foobar', password: 'password'}})
       .then(() => app.done())
       .then(() => redis.done())
       .then(() => expect(cli.stdout).to.equal(
@@ -43,15 +43,15 @@ Connections to the Redis instance will be stopped after idling for 5 seconds.
   it('# sets the timout to zero', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
+        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
     let redis = nock('https://redis-api.heroku.com:443')
-      .patch('/redis/v0/databases/redis-haiku/config', { timeout: 0 }).reply(200, {
-        timeout: { value: 0 }
+      .patch('/redis/v0/databases/redis-haiku/config', {timeout: 0}).reply(200, {
+        timeout: {value: 0},
       })
 
-    return command.run({ app: 'example', flags: { seconds: '0' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+    return command.run({app: 'example', flags: {seconds: '0'}, args: {}, auth: {username: 'foobar', password: 'password'}})
       .then(() => app.done())
       .then(() => redis.done())
       .then(() => expect(cli.stdout).to.equal(
@@ -62,7 +62,7 @@ Connections to the Redis instance can idle indefinitely.
   })
 
   it('# errors on missing timeout', function () {
-    return expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
+    return expect(command.run({app: 'example', flags: {}, args: {}})).to.be.rejectedWith(exit.ErrorExit)
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a valid timeout value.\n'))
   })

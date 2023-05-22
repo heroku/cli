@@ -3,23 +3,23 @@
 let cli = require('heroku-cli-util')
 
 module.exports = function (heroku) {
-  function getOutboundRules (space) {
+  function getOutboundRules(space) {
     return heroku.request({
       path: `/spaces/${space}/outbound-ruleset`,
-      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
+      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
     })
   }
 
-  function putOutboundRules (space, ruleset) {
+  function putOutboundRules(space, ruleset) {
     return heroku.request({
       method: 'PUT',
       path: `/spaces/${space}/outbound-ruleset`,
       body: ruleset,
-      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
+      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
     })
   }
 
-  function displayRules (space, ruleset) {
+  function displayRules(space, ruleset) {
     if (ruleset.rules.length > 0) {
       cli.styledHeader('Outbound Rules')
       display(ruleset.rules)
@@ -28,7 +28,7 @@ module.exports = function (heroku) {
     }
   }
 
-  function lined (rules) {
+  function lined(rules) {
     var lined = []
     for (var i = 0, len = rules.length; i < len; i++) {
       lined.push({
@@ -36,14 +36,14 @@ module.exports = function (heroku) {
         target: rules[i].target,
         from_port: rules[i].from_port,
         to_port: rules[i].to_port,
-        protocol: rules[i].protocol
+        protocol: rules[i].protocol,
       })
     }
 
     return lined
   }
 
-  function display (rules) {
+  function display(rules) {
     var f = function (p) {
       var n = p
       return n.toString()
@@ -51,30 +51,33 @@ module.exports = function (heroku) {
 
     cli.table(lined(rules), {
       columns: [
-        { key: 'line', label: 'Rule Number' },
-        { key: 'target', label: 'Destination' },
-        { key: 'from_port', label: 'From Port', format: fromPort => f(fromPort) },
-        { key: 'to_port', label: 'To Port', format: toPort => f(toPort) },
-        { key: 'protocol', label: 'Protocol' }
-      ]
+        {key: 'line', label: 'Rule Number'},
+        {key: 'target', label: 'Destination'},
+        {key: 'from_port', label: 'From Port', format: fromPort => f(fromPort)},
+        {key: 'to_port', label: 'To Port', format: toPort => f(toPort)},
+        {key: 'protocol', label: 'Protocol'},
+      ],
     })
   }
 
-  function parsePorts (proto, p) {
+  function parsePorts(proto, p) {
     if (p === '-1' || p === 'any') {
       if (proto === 'icmp') {
         return [0, 255]
-      } else {
-        return [0, 65535]
       }
+
+      return [0, 65535]
     }
 
     var actual = []
+    // eslint-disable-next-line no-eq-null, eqeqeq
     if (p != null) {
       var ports = p.split('-')
       if (ports.length === 2) {
+        // eslint-disable-next-line unicorn/prefer-math-trunc
         actual = [ports[0] | 0, ports[1] | 0]
       } else if (ports.length === 1) {
+        // eslint-disable-next-line unicorn/prefer-math-trunc
         actual = [ports[0] | 0, ports[0] | 0]
       } else {
         throw new Error('Specified --port range seems incorrect.')
@@ -92,6 +95,6 @@ module.exports = function (heroku) {
     getOutboundRules,
     putOutboundRules,
     displayRules,
-    parsePorts
+    parsePorts,
   }
 }

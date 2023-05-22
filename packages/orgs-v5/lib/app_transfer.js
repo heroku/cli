@@ -10,7 +10,7 @@ class AppTransfer {
    * @param {string} options.recipient - recipient of the transfer
    * @param {boolean} options.personalToPersonal - determines if it is a transfer between individual accounts
   */
-  constructor (opts) {
+  constructor(opts) {
     this.opts = opts
     this.heroku = this.opts.heroku
     this.appName = this.opts.appName
@@ -20,13 +20,13 @@ class AppTransfer {
     if (this.personalToPersonal === undefined) this.personalToPersonal = true
 
     if (this.personalToPersonal) {
-      this.body = { app: this.appName, recipient: this.recipient }
+      this.body = {app: this.appName, recipient: this.recipient}
       this.transferMsg = `Initiating transfer of ${cli.color.app(this.appName)}`
       if (!this.opts.bulk) this.transferMsg += ` to ${cli.color.magenta(this.recipient)}`
       this.path = '/account/app-transfers'
       this.method = 'POST'
     } else {
-      this.body = { owner: this.recipient }
+      this.body = {owner: this.recipient}
       this.transferMsg = `Transferring ${cli.color.app(this.appName)}`
       if (!this.opts.bulk) this.transferMsg += ` to ${cli.color.magenta(this.recipient)}`
       this.path = `/teams/apps/${this.appName}`
@@ -34,18 +34,18 @@ class AppTransfer {
     }
   }
 
-  start () {
+  start() {
     let request = this.init().then(request => {
       if (request.state === 'pending') cli.action.done('email sent')
     })
     return cli.action(this.transferMsg, request)
   }
 
-  init () {
+  init() {
     return this.heroku.request({
       path: this.path,
       method: this.method,
-      body: this.body
+      body: this.body,
     })
   }
 }

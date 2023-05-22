@@ -1,5 +1,5 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
-import {Command, flags} from '@oclif/command'
+import {Command, Flags} from '@oclif/core'
 
 import {fork as foreman} from '../../fork-foreman'
 
@@ -13,18 +13,19 @@ export default class Run extends Command {
   static strict = false
 
   static flags = {
-    env: flags.string({
+    env: Flags.string({
       char: 'e',
       completion: FileCompletion,
     }),
-    port: flags.string({
+    port: Flags.string({
       char: 'p',
+      default: '5001',
     }),
   }
 
   async run() {
     const execArgv: string[] = ['run']
-    const {argv, flags} = this.parse(Run)
+    const {argv, flags} = await this.parse(Run)
 
     if (argv.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'
@@ -35,7 +36,7 @@ export default class Run extends Command {
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
-    execArgv.push(...argv)
+    execArgv.push(...argv) // eslint-disable-line unicorn/no-array-push-push
 
     await foreman(execArgv)
   }

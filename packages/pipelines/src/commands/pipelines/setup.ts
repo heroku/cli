@@ -1,7 +1,8 @@
 
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+
 import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../api'
@@ -19,6 +20,8 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
 // eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
+
+const cli = CliUx.ux
 
 export default class Setup extends Command {
   static description =
@@ -51,11 +54,11 @@ export default class Setup extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Setup)
+    const {args, flags} = await this.parse(Setup)
 
     const errors = nameAndRepo(args)
 
-    if (errors.length !== 0) {
+    if (errors.length > 0) {
       this.error(errors.join(', '))
       return
     }
@@ -106,7 +109,7 @@ export default class Setup extends Command {
     try {
       await setup
       await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
-    } catch (error) {
+    } catch (error: any) {
       debug(error)
       cli.error(error)
     } finally {

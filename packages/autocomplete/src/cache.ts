@@ -20,6 +20,7 @@ export async function fetchCache(cachePath: string, cacheDuration: number, optio
   if (cachePresent && !_isStale(cachePath, cacheDuration)) {
     return fs.readJSON(cachePath)
   }
+
   const cache = await options.cacheFn()
   // to-do: move this to a fork
   await updateCache(cachePath, cache)

@@ -6,18 +6,20 @@ async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  const { app, args, flags } = context
+  const {app, args, flags} = context
 
   const namespace = flags.credential ? `credential:${flags.credential}` : null
   let db
   try {
     db = await fetcher.database(app, args.database, namespace)
-  } catch (err) {
-    if (namespace && err.message === 'Couldn\'t find that addon.') {
+  } catch (error) {
+    if (namespace && error.message === 'Couldn\'t find that addon.') {
       throw new Error('Credential doesn\'t match, make sure credential is attached')
     }
-    throw err
+
+    throw error
   }
+
   cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
     const output = await psql.exec(db, flags.command)
@@ -35,15 +37,15 @@ const cmd = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    { name: 'command', char: 'c', description: 'SQL command to run', hasValue: true },
-    { name: 'file', char: 'f', description: 'SQL file to run', hasValue: true },
-    { name: 'credential', description: 'credential to use', hasValue: true }
+    {name: 'command', char: 'c', description: 'SQL command to run', hasValue: true},
+    {name: 'file', char: 'f', description: 'SQL file to run', hasValue: true},
+    {name: 'credential', description: 'credential to use', hasValue: true},
   ],
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }
 
 module.exports = [
-  Object.assign({ topic: 'pg', command: 'psql' }, cmd),
-  Object.assign({ topic: 'psql' }, cmd)
+  Object.assign({topic: 'pg', command: 'psql'}, cmd),
+  Object.assign({topic: 'psql'}, cmd),
 ]

@@ -20,7 +20,7 @@ export default class CiIndex extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(CiIndex)
+    const {flags} = await this.parse(CiIndex)
     const pipeline = await getPipeline(flags, this)
     const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`)
 

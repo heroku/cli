@@ -15,5 +15,5 @@ exports.commands = [
 
 exports.topic = {
   name: 'redis',
-  description: 'manage heroku redis instances'
+  description: 'manage heroku redis instances',
 }

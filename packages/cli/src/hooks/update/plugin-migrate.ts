@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -30,26 +30,26 @@ export const migrate: Hook<'init'> = async function () {
         const {manifest} = await fs.readJSON(p)
         for (const plugin of Object.keys(manifest.plugins)) {
           process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
-          // eslint-disable-next-line no-await-in-loop
           await exec('heroku', ['plugins:install', plugin])
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       this.warn(error)
     }
+
     try {
       const p = path.join(pluginsDir, 'link.json')
       if (await fs.pathExists(p)) {
         const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
         for (const {root} of Object.values(manifest.plugins) as any) {
           process.stderr.write(`heroku-cli: migrating ${root}\n`)
-          // eslint-disable-next-line no-await-in-loop
           await exec('heroku', ['plugins:link', root])
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       this.warn(error)
     }
+
     await fs.remove(pluginsDir)
     process.stderr.write('heroku: done migrating plugins\n')
   }

@@ -1,14 +1,13 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {Hook} from '@oclif/config'
-import cli from 'cli-ux'
+import {Interfaces, CliUx} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
 
-export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout'; app?: string}) {
+export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logout'> = async function ({type, app}) {
   // autocomplete is now in core, skip windows
   if (this.config.windows) return
   const logInOut = type === 'login' || type === 'logout'
@@ -32,12 +31,12 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     const heroku = new APIClient(this.config)
     if (!heroku.auth) return
     await heroku.get('/account', {retryAuth: false})
-  } catch (error) {
+  } catch (error: any) {
     this.debug(error.message)
     return
   }
 
-  cli.action.start('Updating completions')
+  CliUx.ux.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
 
@@ -46,8 +45,9 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     await update(PipelineCompletion, 'pipeline')
     await update(SpaceCompletion, 'space')
     await update(TeamCompletion, 'team')
-  } catch (error) {
+  } catch (error: any) {
     this.debug(error.message)
   }
-  cli.action.stop()
+
+  CliUx.ux.action.stop()
 }

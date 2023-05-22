@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions */
+/* eslint-env mocha */
 
 const nock = require('nock')
 const expect = require('chai').expect
@@ -12,8 +12,8 @@ describe('Utils', function () {
   describe('#getPipeline', function () {
     it('disambiguates when passing a pipeline', async function () {
       const pipeline = Factory.pipeline
-      const context = { flags: { pipeline: pipeline.id } }
-      const api = nock(`https://api.heroku.com`)
+      const context = {flags: {pipeline: pipeline.id}}
+      const api = nock('https://api.heroku.com')
         .get(`/pipelines/${pipeline.id}`)
         .reply(200, pipeline)
 
@@ -25,8 +25,8 @@ describe('Utils', function () {
     it('uses pipeline-couplings when passing an application', async function () {
       const app = '123-app'
 
-      const coupling = { pipeline: Factory.pipeline }
-      const context = { app, flags: {} }
+      const coupling = {pipeline: Factory.pipeline}
+      const context = {app, flags: {}}
 
       const api = nock('https://api.heroku.com')
         .get(`/apps/${app}/pipeline-couplings`)
@@ -40,21 +40,21 @@ describe('Utils', function () {
 
   describe('#dig', function () {
     it('is undefined given an undefined object', function () {
-      expect(Utils.dig(undefined)).to.be.undefined
+      expect(Utils.dig()).to.be.undefined
     })
 
     it('deep gets into an object', function () {
-      const obj = { foo: { bar: 'baz' } }
+      const obj = {foo: {bar: 'baz'}}
       expect(Utils.dig(obj, 'foo', 'bar')).to.eq('baz')
     })
 
     it('deep gets into an array', function () {
-      const array = [{ foo: { bar: 'baz' } }]
+      const array = [{foo: {bar: 'baz'}}]
       expect(Utils.dig(array, 0, 'foo', 'bar')).to.eq('baz')
     })
 
     it('returns undefined if the path is not present', function () {
-      const obj = { foo: { bar: 'baz' } }
+      const obj = {foo: {bar: 'baz'}}
       expect(Utils.dig(obj, 'foo', 'quz')).to.be.undefined
     })
   })

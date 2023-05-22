@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect */
+/* globals beforeEach afterEach cli nock expect */
 
 let cmd = require('../../../commands/apps/unlock')[0]
 
@@ -10,10 +10,10 @@ describe('heroku apps:unlock', () => {
   it('unlocks the app', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/teams/apps/myapp')
-      .reply(200, { name: 'myapp', locked: true })
-      .patch('/teams/apps/myapp', { locked: false })
+      .reply(200, {name: 'myapp', locked: true})
+      .patch('/teams/apps/myapp', {locked: false})
       .reply(200)
-    return cmd.run({ app: 'myapp' })
+    return cmd.run({app: 'myapp'})
       .then(() => expect('').to.eq(cli.stdout))
       .then(() => expect(`Unlocking myapp... done
 `).to.eq(cli.stderr))

@@ -17,8 +17,8 @@ heroku-cli-plugin-apps
 $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
-$ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/7.54.0 darwin-x64 node-v12.18.4
+$ heroku (--version|-v)
+@heroku-cli/plugin-apps/8.1.0 darwin-arm64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -41,25 +41,30 @@ list domains for an app
 
 ```
 USAGE
-  $ heroku domains
+  $ heroku domains -a <value> [-h] [-r <value>] [-j] [--columns <value> | -x] [--sort <value>] [--filter
+    <value>] [--output csv|json|yaml |  | [--csv | ]] [--no-header | ]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -j, --json           output in json format
-  -r, --remote=remote  git remote of app to use
-  -x, --extended       show extra columns
-  --columns=columns    only show provided columns (comma-separated)
-  --csv                output is csv format
-  --filter=filter      filter property by partial string matching, ex: name=foo
-  --no-header          hide table header from output
-  --sort=sort          property to sort by (prepend '-' for descending)
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -j, --json            output in json format
+  -r, --remote=<value>  git remote of app to use
+  -x, --extended        show extra columns
+  --columns=<value>     only show provided columns (comma-separated)
+  --csv                 output is csv format [alias: --output=csv]
+  --filter=<value>      filter property by partial string matching, ex: name=foo
+  --no-header           hide table header from output
+  --output=<option>     output in a more machine friendly format
+                        <options: csv|json|yaml>
+  --sort=<value>        property to sort by (prepend '-' for descending)
+
+DESCRIPTION
+  list domains for an app
 
 EXAMPLES
   $ heroku domains
   === example Heroku Domain
   example.herokuapp.com
-
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
@@ -67,7 +72,7 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -75,21 +80,24 @@ add a domain to an app
 
 ```
 USAGE
-  $ heroku domains:add HOSTNAME
+  $ heroku domains:add HOSTNAME -a <value> [-h] [-c <value>] [-j] [--wait] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -c, --cert=cert      the name of the SSL cert you want to use for this domain
-  -h, --help           show CLI help
-  -j, --json           output in json format
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -c, --cert=<value>    the name of the SSL cert you want to use for this domain
+  -h, --help            Show CLI help.
+  -j, --json            output in json format
+  -r, --remote=<value>  git remote of app to use
   --wait
 
-EXAMPLE
-  heroku domains:add www.example.com
+DESCRIPTION
+  add a domain to an app
+
+EXAMPLES
+  $ heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -97,18 +105,21 @@ remove all domains from an app
 
 ```
 USAGE
+  $ heroku domains:clear -a <value> [-h] [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  remove all domains from an app
+
+EXAMPLES
   $ heroku domains:clear
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -r, --remote=remote  git remote of app to use
-
-EXAMPLE
-  heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -116,18 +127,21 @@ show detailed information for a domain on an app
 
 ```
 USAGE
-  $ heroku domains:info HOSTNAME
+  $ heroku domains:info HOSTNAME -a <value> [-h] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  show detailed information for a domain on an app
+
+EXAMPLES
   $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -135,18 +149,21 @@ remove a domain from an app
 
 ```
 USAGE
-  $ heroku domains:remove HOSTNAME
+  $ heroku domains:remove HOSTNAME -a <value> [-h] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
-  heroku domains:remove www.example.com
+DESCRIPTION
+  remove a domain from an app
+
+EXAMPLES
+  $ heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update [HOSTNAME]`
 
@@ -154,19 +171,22 @@ update a domain to use a different SSL certificate on an app
 
 ```
 USAGE
-  $ heroku domains:update [HOSTNAME]
+  $ heroku domains:update [HOSTNAME] -a <value> --cert <value> [-h] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -r, --remote=remote  git remote of app to use
-  --cert=cert          (required) the name or id of the certificate you want to use for this domain
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -r, --remote=<value>  git remote of app to use
+  --cert=<value>        (required) the name or id of the certificate you want to use for this domain
 
-EXAMPLE
-  heroku domains:update www.example.com --cert mycert
+DESCRIPTION
+  update a domain to use a different SSL certificate on an app
+
+EXAMPLES
+  $ heroku domains:update www.example.com --cert mycert
 ```
 
-_See code: [src/commands/domains/update.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/update.ts)_
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -174,13 +194,16 @@ wait for domain to be active for an app
 
 ```
 USAGE
-  $ heroku domains:wait [HOSTNAME]
+  $ heroku domains:wait [HOSTNAME] -a <value> [-h] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -h, --help           show CLI help
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -h, --help            Show CLI help.
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  wait for domain to be active for an app
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.54.0/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v8.1.0/src/commands/domains/wait.ts)_
 <!-- commandsstop -->

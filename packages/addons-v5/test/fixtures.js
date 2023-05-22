@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 'use strict'
 
 let fixtures = {}
@@ -6,16 +7,16 @@ module.exports = fixtures
 fixtures.apps = {
   api: {
     name: 'acme-inc-api',
-    id: 'e69612aa-4c88-11e5-887e-2cf0ee2c94de'
+    id: 'e69612aa-4c88-11e5-887e-2cf0ee2c94de',
   },
   dwh: {
     name: 'acme-inc-dwh',
-    id: '68878cbc-60ed-11e5-aa97-2cf0ee2c94de'
+    id: '68878cbc-60ed-11e5-aa97-2cf0ee2c94de',
   },
   www: {
     name: 'acme-inc-www',
-    id: 'a84b035c-4c83-11e5-9bda-2cf0ee2c94de'
-  }
+    id: 'a84b035c-4c83-11e5-9bda-2cf0ee2c94de',
+  },
 }
 
 fixtures.services = {
@@ -28,10 +29,10 @@ fixtures.services = {
     'name': 'heroku-postgresql',
     'price': {
       'cents': 0,
-      'unit': 'month'
+      'unit': 'month',
     },
     'state': 'ga',
-    'updated_at': '2014-06-18T17:06:29Z'
+    'updated_at': '2014-06-18T17:06:29Z',
   },
 
   'heroku-redis': {
@@ -43,24 +44,24 @@ fixtures.services = {
     'state': 'ga',
     'supports_multiple_installations': true,
     'supports_sharing': true,
-    'updated_at': '2015-08-27T06:42:14Z'
-  }
+    'updated_at': '2015-08-27T06:42:14Z',
+  },
 }
 
 fixtures.plans = {
-  'heroku-postgresql:hobby-dev': {
+  'heroku-postgresql:mini': {
     'created_at': '2013-10-24T17:21:05Z',
     'default': true,
-    'description': 'Heroku Postgres Hobby Dev',
-    'human_name': 'Hobby Dev',
+    'description': 'Heroku Postgres Mini',
+    'human_name': 'Mini',
     'id': '062a1cc7-f79f-404c-9f91-135f70175577',
-    'name': 'heroku-postgresql:hobby-dev',
+    'name': 'heroku-postgresql:mini',
     'price': {
-      'cents': 0,
-      'unit': 'month'
+      'cents': 500,
+      'unit': 'month',
     },
     'state': 'ga',
-    'updated_at': '2014-06-18T17:06:29Z'
+    'updated_at': '2014-06-18T17:06:29Z',
   },
   'heroku-postgresql:standard-2': {
     'created_at': '2014-08-07T21:37:41Z',
@@ -71,10 +72,10 @@ fixtures.plans = {
     'name': 'heroku-postgresql:standard-2',
     'price': {
       'cents': 20000,
-      'unit': 'month'
+      'unit': 'month',
     },
     'state': 'ga',
-    'updated_at': '2014-09-04T14:03:26Z'
+    'updated_at': '2014-09-04T14:03:26Z',
   },
   'heroku-redis:premium-2': {
     'created_at': '2015-06-23T19:03:06Z',
@@ -85,11 +86,11 @@ fixtures.plans = {
     'name': 'heroku-redis:premium-2',
     'price': {
       'cents': 6000,
-      'unit': 'month'
+      'unit': 'month',
     },
     'state': 'ga',
-    'updated_at': '2015-06-25T16:10:02Z'
-  }
+    'updated_at': '2015-06-25T16:10:02Z',
+  },
 }
 
 fixtures.addons = {
@@ -98,11 +99,11 @@ fixtures.addons = {
     id: '8895ea98-4c7b-11e5-9a16-2cf0ee2c94de',
     name: 'www-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    plan: fixtures.plans['heroku-postgresql:mini'],
     state: 'provisioned',
     billed_price: {
-      cents: 0
-    }
+      cents: 500,
+    },
   },
   'www-redis': {
     app: fixtures.apps.www,
@@ -112,8 +113,8 @@ fixtures.addons = {
     plan: fixtures.plans['heroku-redis:premium-2'],
     state: 'provisioning',
     billed_price: {
-      cents: 6000
-    }
+      cents: 6000,
+    },
   },
   'api-redis': {
     app: fixtures.apps.api,
@@ -123,19 +124,19 @@ fixtures.addons = {
     plan: fixtures.plans['heroku-redis:premium-2'],
     state: 'provisioned',
     billed_price: {
-      cents: 6000
-    }
+      cents: 6000,
+    },
   },
   'dwh-test-db': {
     app: fixtures.apps.dwh,
     id: '87f63372-60f8-11e5-bd19-2cf0ee2c94de',
     name: 'dwh-test-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    plan: fixtures.plans['heroku-postgresql:mini'],
     state: 'provisioned',
     billed_price: {
-      cents: 0
-    }
+      cents: 500,
+    },
   },
   'dwh-db': {
     app: fixtures.apps.dwh,
@@ -145,8 +146,8 @@ fixtures.addons = {
     plan: fixtures.plans['heroku-postgresql:standard-2'],
     state: 'provisioned',
     billed_price: {
-      cents: 20000
-    }
+      cents: 20000,
+    },
   },
   'dwh-db-2': {
     app: fixtures.apps.dwh,
@@ -156,9 +157,9 @@ fixtures.addons = {
     plan: fixtures.plans['heroku-postgresql:standard-2'],
     state: 'provisioned',
     billed_price: {
-      cents: 20000
-    }
-  }
+      cents: 20000,
+    },
+  },
 }
 
 fixtures.attachments = {
@@ -169,8 +170,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['api-redis'].id,
       name: fixtures.addons['api-redis'].name,
-      app: fixtures.addons['api-redis'].app
-    }
+      app: fixtures.addons['api-redis'].app,
+    },
   },
   'acme-inc-api::WWW_DB': {
     id: '3e8bd32e-60fb-11e5-8f58-2cf0ee2c94de',
@@ -179,8 +180,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-db'].id,
       name: fixtures.addons['www-db'].name,
-      app: fixtures.addons['www-db'].app
-    }
+      app: fixtures.addons['www-db'].app,
+    },
   },
   'acme-inc-dwh::WWW_DB': {
     id: 'e97f68d6-60f6-11e5-82ba-2cf0ee2c94de',
@@ -189,8 +190,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-db'].id,
       name: fixtures.addons['www-db'].name,
-      app: fixtures.addons['www-db'].app
-    }
+      app: fixtures.addons['www-db'].app,
+    },
   },
   'acme-inc-dwh::API_QUEUE': {
     id: '5cf8e4be-60f1-11e5-b208-2cf0ee2c94de',
@@ -199,8 +200,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['api-redis'].id,
       name: fixtures.addons['api-redis'].name,
-      app: fixtures.addons['api-redis'].app
-    }
+      app: fixtures.addons['api-redis'].app,
+    },
   },
   'acme-inc-dwh::DATABASE': {
     id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
@@ -209,8 +210,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['dwh-db'].id,
       name: fixtures.addons['dwh-db'].name,
-      app: fixtures.addons['dwh-db'].app
-    }
+      app: fixtures.addons['dwh-db'].app,
+    },
   },
   'acme-inc-dwh::DATABASE_FOLLOWER': {
     id: '3da438d0-60fa-11e5-9194-2cf0ee2c94de',
@@ -219,8 +220,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['dwh-db-2'].id,
       name: fixtures.addons['dwh-db-2'].name,
-      app: fixtures.addons['dwh-db-2'].app
-    }
+      app: fixtures.addons['dwh-db-2'].app,
+    },
   },
   'acme-inc-dwh::TEST': {
     id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
@@ -229,8 +230,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['dwh-test-db'].id,
       name: fixtures.addons['dwh-test-db'].name,
-      app: fixtures.addons['dwh-test-db'].app
-    }
+      app: fixtures.addons['dwh-test-db'].app,
+    },
   },
   'acme-inc-dwh::WWW_CACHE': {
     id: '233bc200-60f1-11e5-9da0-2cf0ee2c94de',
@@ -239,8 +240,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-redis'].id,
       name: fixtures.addons['www-redis'].name,
-      app: fixtures.addons['www-redis'].app
-    }
+      app: fixtures.addons['www-redis'].app,
+    },
   },
   'acme-inc-www::DATABASE': {
     id: '9e2f1620-60eb-11e5-b93e-2cf0ee2c94de',
@@ -249,8 +250,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-db'].id,
       name: fixtures.addons['www-db'].name,
-      app: fixtures.addons['www-db'].app
-    }
+      app: fixtures.addons['www-db'].app,
+    },
   },
   'acme-inc-www::HEROKU_POSTGRESQL_RED': {
     id: '4b04417c-60f1-11e5-9312-2cf0ee2c94de',
@@ -259,8 +260,8 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-db'].id,
       name: fixtures.addons['www-db'].name,
-      app: fixtures.addons['www-db'].app
-    }
+      app: fixtures.addons['www-db'].app,
+    },
   },
   'acme-inc-www::REDIS': {
     id: '221ce0c0-60ec-11e5-bd02-2cf0ee2c94de',
@@ -269,7 +270,7 @@ fixtures.attachments = {
     addon: {
       id: fixtures.addons['www-redis'].id,
       name: fixtures.addons['www-redis'].name,
-      app: fixtures.addons['www-redis'].app
-    }
-  }
+      app: fixtures.addons['www-redis'].app,
+    },
+  },
 }

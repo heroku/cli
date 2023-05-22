@@ -1,15 +1,16 @@
 'use strict'
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
-const { stdout } = require('stdout-stderr')
+const {stdout} = require('stdout-stderr')
 
 const db = {}
 const fetcher = () => {
   return {
-    database: () => db
+    database: () => db,
   }
 }
 
@@ -25,12 +26,12 @@ const psql = {
   exec: function (db, query) {
     this._query = query
     return Promise.resolve(FAKE_OUTPUT_TEXT)
-  }
+  },
 }
 
 const cmd = proxyquire('../../commands/ps', {
   '../lib/fetcher': fetcher,
-  '../lib/psql': psql
+  '../lib/psql': psql,
 })
 
 describe('pg:ps', () => {
@@ -49,7 +50,7 @@ describe('pg:ps', () => {
   })
 
   it('runs query', async () => {
-    await cmd.run({ app: 'myapp', args: {}, flags: {} })
+    await cmd.run({app: 'myapp', args: {}, flags: {}})
     expect(removeEmptyLines(psql._query)).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
@@ -70,7 +71,7 @@ WHERE
   })
 
   it('runs verbose query', async () => {
-    await cmd.run({ app: 'myapp', args: {}, flags: { verbose: true } })
+    await cmd.run({app: 'myapp', args: {}, flags: {verbose: true}})
     expect(removeEmptyLines(psql._query)).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
@@ -90,6 +91,6 @@ WHERE
   })
 })
 
-function removeEmptyLines (string) {
+function removeEmptyLines(string) {
   return string.toString().split('\n').map(str => str.trim()).filter(str => str.length > 0).join('\n')
 }

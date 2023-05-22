@@ -1,11 +1,11 @@
 'use strict'
-/* globals describe it beforeEach context */
+/* globals beforeEach context */
 
 let fixtures = require('../../fixtures')
 let util = require('../../util')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
-const { expect } = require('chai')
+const {expect} = require('chai')
 let cmd = require('../../../commands/addons/rename')
 
 describe('addons:rename', () => {
@@ -22,10 +22,10 @@ describe('addons:rename', () => {
         .reply(200, redis)
 
       let renameRequest = nock('https://api.heroku.com')
-        .patch(`/apps/${redis.app.id}/addons/${redis.id}`, { name: 'cache-redis' })
+        .patch(`/apps/${redis.app.id}/addons/${redis.id}`, {name: 'cache-redis'})
         .reply(201, '')
 
-      return cmd.run({ flags: {}, args: { addon: redis.name, name: 'cache-redis' } }).then(() => {
+      return cmd.run({flags: {}, args: {addon: redis.name, name: 'cache-redis'}}).then(() => {
         expect(renameRequest.isDone()).to.equal(true)
         util.expectOutput(cli.stdout, `${redis.name} successfully renamed to cache-redis.`)
       })
@@ -36,11 +36,13 @@ describe('addons:rename', () => {
     it('displays an appropriate error', () => {
       nock('https://api.heroku.com')
         .get('/addons/not-an-addon')
-        .reply(404, { message: "Couldn't find that add-on.", id: 'not_found', resource: 'addon' })
+        .reply(404, {message: "Couldn't find that add-on.", id: 'not_found', resource: 'addon'})
 
-      return cmd.run({ flags: {}, args: { addon: 'not-an-addon', name: 'cache-redis' } })
-        .then(() => { throw new Error('unreachable') })
-        .catch((err) => expect(err, 'to satisfy', { body: { message: "Couldn't find that add-on." } }))
+      return cmd.run({flags: {}, args: {addon: 'not-an-addon', name: 'cache-redis'}})
+        .then(() => {
+          throw new Error('unreachable')
+        })
+        .catch(error => expect(error, 'to satisfy', {body: {message: "Couldn't find that add-on."}}))
     })
   })
 })

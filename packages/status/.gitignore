@@ -4,5 +4,6 @@
 /lib
 /node_modules
 /tmp
+/.nyc_output
 lib
 node_modules

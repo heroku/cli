@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {ux} from 'cli-ux'
+import {CliUx, Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -14,13 +14,14 @@ export default class Doctor extends AutocompleteBase {
     {name: 'shell', description: 'shell type', required: false},
   ]
 
-  static flags = {
+  static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 
   async run() {
-    const {args, flags} = this.parse(Doctor)
+    const {args, flags} = await this.parse(Doctor)
     const shell = args.shell || this.config.shell
+    const printLine: typeof this.log = (...args) => this.log(...args)
     this.errorIfNotSupportedShell(shell)
 
     const data = []
@@ -62,13 +63,10 @@ export default class Doctor extends AutocompleteBase {
 
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
-    ux.table(data, {
-      printHeader: undefined,
-      columns: [
-        {key: 'name'},
-        {key: 'value'},
-      ],
-    })
+    CliUx.ux.table(data, {
+      name: {},
+      value: {},
+    }, {'no-header': true, printLine})
 
     if (flags.verbose) this.printList()
   }
@@ -92,6 +90,7 @@ export default class Doctor extends AutocompleteBase {
               if (hasCompletion) {
                 out += '(c)'
               }
+
               if (flag.hidden) out += '(h)'
               return out
             })

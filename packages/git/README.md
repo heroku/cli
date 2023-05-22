@@ -19,8 +19,8 @@ Heroku CLI plugin to manage local git repos.
 $ npm install -g @heroku-cli/plugin-git
 $ oclif-example COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@heroku-cli/plugin-git/7.54.0 darwin-x64 node-v12.18.4
+$ oclif-example (--version|-v)
+@heroku-cli/plugin-git/8.1.0 darwin-arm64 node-v16.19.0
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -38,15 +38,17 @@ clones a heroku app to your local machine at DIRECTORY (defaults to app name)
 
 ```
 USAGE
-  $ oclif-example git:clone [DIRECTORY]
+  $ oclif-example git:clone [DIRECTORY] -a <value> [-r <value>]
 
 ARGUMENTS
   DIRECTORY  where to clone the app
 
-OPTIONS
-  -a, --app=app        (required) the Heroku app to use
-  -r, --remote=remote  the git remote to create, default "heroku"
-  --ssh-git            use SSH git protocol
+FLAGS
+  -a, --app=<value>     (required) the Heroku app to use
+  -r, --remote=<value>  the git remote to create, default "heroku"
+
+DESCRIPTION
+  clones a heroku app to your local machine at DIRECTORY (defaults to app name)
 
 EXAMPLES
   $ heroku git:clone -a example
@@ -55,7 +57,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.54.0/packages/git/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v8.1.0/packages/git/src/commands/git/clone.ts)_
 
 ## `oclif-example git:remote`
 
@@ -63,23 +65,23 @@ adds a git remote to an app repo
 
 ```
 USAGE
-  $ oclif-example git:remote
+  $ oclif-example git:remote [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        the Heroku app to use
-  -r, --remote=remote  the git remote to create
-  --ssh-git            use SSH git protocol
+FLAGS
+  -a, --app=<value>     the Heroku app to use
+  -r, --remote=<value>  the git remote to create
 
 DESCRIPTION
+  adds a git remote to an app repo
   extra arguments will be passed to git remote add
+
 
 EXAMPLES
   # set git remote heroku to https://git.heroku.com/example.git
-       $ heroku git:remote -a example
-
-       # set git remote heroku-staging to https://git.heroku.com/example.git
-       $ heroku git:remote --remote heroku-staging -a example
+      $ heroku git:remote -a example
+      # set git remote heroku-staging to https://git.heroku.com/example.git
+      $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.54.0/packages/git/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v8.1.0/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->

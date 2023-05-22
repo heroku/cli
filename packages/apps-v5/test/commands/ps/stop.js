@@ -1,9 +1,9 @@
 'use strict'
-/* globals commands describe beforeEach it */
+/* globals commands beforeEach */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = commands.find((c) => c.topic === 'ps' && c.command === 'stop')
+const cmd = commands.find(c => c.topic === 'ps' && c.command === 'stop')
 
 describe('ps:stop', function () {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('ps:stop', function () {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/web/actions/stop').reply(200)
 
-    return cmd.run({ app: 'myapp', args: { dyno: 'web' } })
+    return cmd.run({app: 'myapp', args: {dyno: 'web'}})
       .then(() => api.done())
   })
 
@@ -23,7 +23,7 @@ describe('ps:stop', function () {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/run.10/actions/stop').reply(200)
 
-    return cmd.run({ app: 'myapp', args: { dyno: 'run.10' } })
+    return cmd.run({app: 'myapp', args: {dyno: 'run.10'}})
       .then(() => api.done())
   })
 })

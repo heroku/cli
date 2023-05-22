@@ -1,15 +1,17 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-import checkMultiSni from '../../lib/multiple-sni-feature'
 import waitForDomain from '../../lib/wait-for-domain'
+
+const cli = CliUx.ux
 
 interface DomainCreatePayload {
   hostname: string;
-  sni_endpoint?: string;
+  sni_endpoint: string | null;
 }
 
 export default class DomainsAdd extends Command {
@@ -72,38 +74,35 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(DomainsAdd)
+    const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
-
-    const multipleSniEndpointsEnabled = await checkMultiSni(this.heroku, flags.app)
+    const action = new Spinner()
 
     const domainCreatePayload: DomainCreatePayload = {
       hostname,
+      sni_endpoint: null,
     }
 
     let certs: Array<Heroku.SniEndpoint> = []
 
-    cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
-    if (multipleSniEndpointsEnabled) {
-      // multiple SNI endpoints is enabled
-      if (flags.cert) {
-        domainCreatePayload.sni_endpoint = flags.cert
-      } else {
-        const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
+    action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+    if (flags.cert) {
+      domainCreatePayload.sni_endpoint = flags.cert
+    } else {
+      const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
 
-        certs = [...body]
-      }
+      certs = [...body]
     }
 
     if (certs.length > 1) {
-      cli.action.stop('resolving SNI endpoint')
+      action.stop('resolving SNI endpoint')
       const certSelection = await this.certSelect(certs)
 
       if (certSelection) {
         domainCreatePayload.sni_endpoint = certSelection
       }
 
-      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+      action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     }
 
     try {
@@ -127,10 +126,10 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       cli.error(error)
     } finally {
-      cli.action.stop()
+      action.stop()
     }
   }
 }

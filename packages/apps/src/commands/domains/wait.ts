@@ -15,7 +15,7 @@ export default class DomainsWait extends Command {
   static args = [{name: 'hostname'}]
 
   async run() {
-    const {args, flags} = this.parse(DomainsWait)
+    const {args, flags} = await this.parse(DomainsWait)
 
     let domains
     if (args.hostname) {
@@ -27,7 +27,6 @@ export default class DomainsWait extends Command {
     }
 
     for (const domain of domains) {
-      // eslint-disable-next-line no-await-in-loop
       await waitForDomain(flags.app, this.heroku, domain)
     }
   }

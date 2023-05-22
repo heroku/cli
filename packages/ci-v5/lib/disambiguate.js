@@ -15,21 +15,25 @@ async function disambiguate(heroku, pipelineIDOrName) {
       pipeline = pipelines[0]
     } else {
       // Disambiguate
-      let choices = pipelines.map(function (x) { return {name: new Date(x.created_at), value: x} })
+      let choices = pipelines.map(function (x) {
+        return {name: new Date(x.created_at), value: x}
+      })
       let questions = [{
         type: 'list',
         name: 'pipeline',
         message: `Which ${pipelineIDOrName} pipeline?`,
-        choices: choices
+        choices: choices,
       }]
       pipeline = await new Promise(function (resolve, reject) {
         inquirer.prompt(questions, function (answers) {
           if (answers.pipeline) resolve(answers.pipeline)
+          // eslint-disable-next-line prefer-promise-reject-errors
           else reject('Must pick a pipeline')
         })
       })
     }
   }
+
   return pipeline
 }
 

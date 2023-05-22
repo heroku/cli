@@ -1,7 +1,7 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-const { flags } = require('@heroku-cli/command')
+const {flags} = require('@heroku-cli/command')
 
 async function run(context, heroku) {
   let team = context.flags.team
@@ -17,7 +17,7 @@ module.exports = {
   needsAuth: true,
   wantsOrg: true,
   flags: [
-    flags.team({ name: 'team', hasValue: true, hidden: true })
+    flags.team({name: 'team', hasValue: true, hidden: true}),
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

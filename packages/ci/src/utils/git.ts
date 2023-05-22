@@ -24,10 +24,12 @@ function runGit(...args: string[]): Promise <string> {
         reject(RUN_IN_A_GIT_REPOSITORY)
         return
       }
+
       if (error.includes(NOT_ON_A_BRANCH)) {
         reject(CHECKOUT_A_BRANCH)
         return
       }
+
       reject(new Error(`Error while running 'git ${args.join(' ')}' (${error})`))
     })
 

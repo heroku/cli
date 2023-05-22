@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 
-function dropboxURL (url) {
+function dropboxURL(url) {
   // Force a dump file to download instead of rendering as HTML
   // file by specifying the dl=1 param for Dropbox URL
   if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
@@ -10,6 +10,7 @@ function dropboxURL (url) {
     else if (url.includes('?')) url += '&dl=1'
     else url += '?dl=1'
   }
+
   return url
 }
 
@@ -17,14 +18,18 @@ async function run(context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
-  const { sortBy } = require('lodash')
+  const {sortBy} = require('lodash')
 
-  const { app, args, flags } = context
-  const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
+  const {app, args, flags} = context
+  const interval = Math.max(3, Number.parseInt(flags['wait-interval'])) || 3
   const db = await fetcher.addon(app, args.database)
 
   let backupURL
   let backupName = args.backup
+  let extensions = flags.extensions
+  if (extensions) {
+    extensions = extensions.split(',').map(ext => ext.trim().toLowerCase()).sort()
+  }
 
   if (backupName && backupName.match(/^https?:\/\//)) {
     backupURL = dropboxURL(backupName)
@@ -35,7 +40,8 @@ async function run(context, heroku) {
     } else {
       backupApp = app
     }
-    let transfers = await heroku.get(`/client/v11/apps/${backupApp}/transfers`, { host: host() })
+
+    let transfers = await heroku.get(`/client/v11/apps/${backupApp}/transfers`, {host: host()})
     let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
     let backup
     if (backupName) {
@@ -47,17 +53,18 @@ async function run(context, heroku) {
       if (!backup) throw new Error(`No backups for ${cli.color.app(backupApp)}. Capture one with ${cli.color.cmd('heroku pg:backups:capture')}`)
       backupName = pgbackups.transfer.name(backup)
     }
+
     backupURL = backup.to_url
   }
 
   await cli.confirmApp(app, flags.confirm)
   let restore
-  await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, async function () {
+  await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, (async function () {
     restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
-      body: { backup_url: backupURL },
-      host: host(db)
+      body: {backup_url: backupURL, extensions: extensions},
+      host: host(db),
     })
-  }())
+  })())
   cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use ${cli.color.cmd('heroku pg:backups')} to check progress.
@@ -75,13 +82,14 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [
-    { name: 'backup', optional: true },
-    { name: 'database', optional: true }
+    {name: 'backup', optional: true},
+    {name: 'database', optional: true},
   ],
   flags: [
-    { name: 'wait-interval', hasValue: true },
-    { name: 'verbose', char: 'v' },
-    { name: 'confirm', char: 'c', hasValue: true }
+    {name: 'wait-interval', hasValue: true},
+    {name: 'extensions', char: 'e', hasValue: true, description: 'comma-separated list of extensions to pre-install in the public schema'},
+    {name: 'verbose', char: 'v'},
+    {name: 'confirm', char: 'c', hasValue: true},
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({preauth: true}, run),
 }

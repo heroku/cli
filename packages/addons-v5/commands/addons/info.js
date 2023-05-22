@@ -7,13 +7,13 @@ let formatPrice = require('../../lib/util').formatPrice
 let formatState = require('../../lib/util').formatState
 let style = require('../../lib/util').style
 
-let run = cli.command({ preauth: true }, function (ctx, api) {
+let run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
-  return async function () {
+  return (async function () {
     let addon = await resolve.addon(api, ctx.app, ctx.args.addon)
     let attachments = await api.request({
       method: 'GET',
-      path: `/addons/${addon.id}/addon-attachments`
+      path: `/addons/${addon.id}/addon-attachments`,
     })
 
     addon.plan.price = grandfatheredPrice(addon)
@@ -26,14 +26,14 @@ let run = cli.command({ preauth: true }, function (ctx, api) {
       Attachments: addon.attachments.map(function (att) {
         return [
           style('app', att.app.name),
-          style('attachment', att.name)
+          style('attachment', att.name),
         ].join('::')
       }).sort(),
       'Owning app': style('app', addon.app.name),
       'Installed at': (new Date(addon.created_at)).toString(),
-      'State': formatState(addon.state)
+      State: formatState(addon.state),
     })
-  }();
+  })()
 })
 
 let topic = 'addons'
@@ -42,8 +42,8 @@ module.exports = {
   command: 'info',
   wantsApp: true,
   needsAuth: true,
-  args: [{ name: 'addon' }],
+  args: [{name: 'addon'}],
   run: run,
   usage: `${topic}:info ADDON`,
-  description: 'show detailed add-on resource and attachment information'
+  description: 'show detailed add-on resource and attachment information',
 }

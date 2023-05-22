@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {display} from '../../lib/authorizations'
 
@@ -14,14 +14,14 @@ export default class AuthorizationsInfo extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args, flags} = this.parse(AuthorizationsInfo)
+    const {args, flags} = await this.parse(AuthorizationsInfo)
 
     const {body: authentication} = await this.heroku.get<Heroku.OAuthClient>(
       `/oauth/authorizations/${args.id}`,
     )
 
     if (flags.json) {
-      cli.styledJSON(authentication)
+      CliUx.ux.styledJSON(authentication)
     } else {
       display(authentication)
     }

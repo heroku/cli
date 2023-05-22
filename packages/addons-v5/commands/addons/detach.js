@@ -10,21 +10,21 @@ async function run(context, heroku) {
     `Detaching ${cli.color.attachment(attachment.name)} to ${cli.color.addon(attachment.addon.name)} from ${cli.color.app(app)}`,
     heroku.request({
       path: `/addon-attachments/${attachment.id}`,
-      method: 'DELETE'
-    })
+      method: 'DELETE',
+    }),
   )
 
   await cli.action(
     `Unsetting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
-    { success: false },
-    async function () {
+    {success: false},
+    (async function () {
       let releases = await heroku.request({
         path: `/apps/${app}/releases`,
         partial: true,
-        headers: { 'Range': 'version ..; max=1, order=desc' }
+        headers: {Range: 'version ..; max=1, order=desc'},
       })
       cli.action.done(`done, v${releases[0].version}`)
-    }()
+    })(),
   )
 }
 
@@ -34,6 +34,6 @@ module.exports = {
   description: 'detach an existing add-on resource from an app',
   needsAuth: true,
   needsApp: true,
-  args: [{ name: 'attachment_name' }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'attachment_name'}],
+  run: cli.command({preauth: true}, run),
 }

@@ -1,12 +1,13 @@
 {
   "devDependencies": {
-    "eslint": "5.13.0",
-    "eslint-config-standard": "12.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "lerna": "^3.22.1",
+    "@typescript-eslint/eslint-plugin": "4.18.0",
+    "@typescript-eslint/parser": "4.18.0",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4.0.0",
+    "eslint-config-oclif-typescript": "^1.0.2",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "lerna": "^6.4.1",
     "promise-request-retry": "^1.0.2",
     "standard": "12.0.1",
     "tmp": "^0.2.1"
@@ -19,12 +20,14 @@
     ]
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14"
   },
   "private": true,
   "scripts": {
+    "build": "lerna run prepack",
     "test": "lerna run test --concurrency 4",
-    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md"
+    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
   },
   "workspaces": [
     "packages/*"

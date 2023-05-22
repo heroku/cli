@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
@@ -16,15 +16,15 @@ export default class Versions extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(Versions)
+    const {args} = await this.parse(Versions)
     const herokuAuth = this.heroku.auth || ''
     if (herokuAuth === '') {
       this.error('You need to be logged in to run this command.')
     }
+
     const registry = new BuildpackRegistry()
 
     Result.match({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         this.error(`Could not find the buildpack.\n${err}`)
@@ -34,14 +34,18 @@ export default class Versions extends Command {
     const result = await registry.listVersions(args.buildpack)
     Result.match({
       Ok: versions => {
-        cli.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
+        CliUx.ux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
           return a.release > b.release ? -1 : 1
         }), {
-          columns: [
-            {key: 'release', label: 'Version'},
-            {key: 'created_at', label: 'Released At'},
-            {key: 'status', label: 'Status'},
-          ],
+          release: {
+            header: 'Version',
+          },
+          created_at: {
+            header: 'Released At',
+          },
+          status: {
+            header: 'Status',
+          },
         })
       },
       Err: err => {

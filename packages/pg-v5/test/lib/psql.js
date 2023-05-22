@@ -1,18 +1,19 @@
 'use strict'
 
-/* global describe it beforeEach afterEach context */
+/* global before beforeEach afterEach context */
 
 const fs = require('fs')
 const path = require('path')
-const { PassThrough } = require('stream')
-const { EventEmitter, once } = require('events')
-const { constants: { signals } } = require('os')
+const {PassThrough} = require('stream')
+// eslint-disable-next-line node/no-unsupported-features/node-builtins
+const {EventEmitter, once} = require('events')
+const {constants: {signals}} = require('os')
 const ChildProcess = require('child_process')
 
 const proxyquire = require('proxyquire')
 const tmp = require('tmp')
 const sinon = require('sinon')
-const { expect } = require('chai')
+const {expect} = require('chai')
 
 const unwrap = require('../unwrap')
 
@@ -22,7 +23,7 @@ const db = {
   database: 'mydb',
   port: 5432,
   host: 'localhost',
-  hostname: 'localhost'
+  hostname: 'localhost',
 }
 
 const bastionDb = {
@@ -33,7 +34,7 @@ const bastionDb = {
   bastionHost: 'bastion-host',
   bastionKey: 'super-private-key',
   host: 'localhost',
-  hostname: 'localhost'
+  hostname: 'localhost',
 }
 
 const NOW_OUTPUT = `
@@ -43,11 +44,21 @@ now
 (1 row)
 `
 
+const VERSION_OUTPUT = `
+server_version
+-------------------------------
+11.16 (Ubuntu 11.16-1.pgdg20.04+1)
+(1 row)
+`
+
 describe('psql', () => {
-  let fakePsqlProcess, fakeTunnel, tunnelStub
+  let fakePsqlProcess
+  let fakeTunnel
+  let tunnelStub
   let sandbox
   let mockSpawn
-  let psql, bastion
+  let psql
+  let bastion
 
   beforeEach(() => {
     sandbox = sinon.createSandbox()
@@ -57,10 +68,10 @@ describe('psql', () => {
     })
     mockSpawn = createSpawnMocker(sandbox)
     bastion = proxyquire('../../lib/bastion', {
-      'tunnel-ssh': tunnelStub
+      'tunnel-ssh': tunnelStub,
     })
     psql = proxyquire('../../lib/psql', {
-      './bastion': bastion
+      './bastion': bastion,
     })
     fakePsqlProcess = new FakeChildProcess()
     sandbox.stub(Math, 'random').callsFake(() => 0)
@@ -68,20 +79,24 @@ describe('psql', () => {
 
   afterEach(async () => {
     await fakePsqlProcess.teardown()
+    // eslint-disable-next-line no-multi-assign
     fakeTunnel = fakePsqlProcess = undefined
     sandbox.restore()
   })
 
-  async function ensureFinished (promise) {
+  async function ensureFinished(promise) {
     try {
       return await promise
     } finally {
       if (fakeTunnel) {
         if (!fakeTunnel.exited) {
+          // eslint-disable-next-line no-unsafe-finally
           throw new Error('tunnel was not closed')
         }
       }
+
       if (!fakePsqlProcess.exited) {
+        // eslint-disable-next-line no-unsafe-finally
         throw new Error('psql process did not close')
       }
     }
@@ -96,7 +111,7 @@ describe('psql', () => {
         PGPASSWORD: 'pass',
         PGDATABASE: 'mydb',
         PGPORT: 5432,
-        PGHOST: 'localhost'
+        PGHOST: 'localhost',
       })
 
       const mock = mockSpawn(
@@ -105,8 +120,8 @@ describe('psql', () => {
         {
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'inherit'],
-          env: expectedEnv
-        }
+          env: expectedEnv,
+        },
       )
 
       mock.callsFake(() => {
@@ -131,7 +146,7 @@ describe('psql', () => {
         PGPASSWORD: 'pass',
         PGDATABASE: 'mydb',
         PGPORT: 5432,
-        PGHOST: 'localhost'
+        PGHOST: 'localhost',
       })
 
       const mock = mockSpawn(
@@ -140,8 +155,8 @@ describe('psql', () => {
         {
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'inherit'],
-          env: expectedEnv
-        }
+          env: expectedEnv,
+        },
       )
 
       mock.callsFake(() => {
@@ -166,7 +181,7 @@ describe('psql', () => {
         PGPASSWORD: 'pass',
         PGDATABASE: 'mydb',
         PGPORT: 5432,
-        PGHOST: 'localhost'
+        PGHOST: 'localhost',
       })
 
       const mock = mockSpawn(
@@ -175,8 +190,8 @@ describe('psql', () => {
         {
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'inherit'],
-          env: expectedEnv
-        }
+          env: expectedEnv,
+        },
       )
 
       mock.callsFake(() => {
@@ -193,8 +208,8 @@ describe('psql', () => {
         await fakePsqlProcess.simulateExit(1)
         await ensureFinished(promise)
         throw new Error('psql.exec should have thrown')
-      } catch (err) {
-        expect(err.message).to.equal('psql exited with code 1')
+      } catch (error) {
+        expect(error.message).to.equal('psql exited with code 1')
       }
     })
 
@@ -207,12 +222,12 @@ describe('psql', () => {
           dstHost: 'localhost',
           dstPort: 5432,
           localHost: '127.0.0.1',
-          localPort: 49152
+          localPort: 49152,
         }
         const mock = mockSpawn(
           'psql',
           ['-c', 'SELECT NOW();', '--set', 'sslmode=require'],
-          sinon.match.any
+          sinon.match.any,
         )
 
         mock.callsFake(() => {
@@ -235,12 +250,12 @@ describe('psql', () => {
           dstHost: 'localhost',
           dstPort: 5432,
           localHost: '127.0.0.1',
-          localPort: 49152
+          localPort: 49152,
         }
         const mock = mockSpawn(
           'psql',
           ['-c', 'SELECT NOW();', '--set', 'sslmode=require'],
-          sinon.match.any
+          sinon.match.any,
         )
 
         mock.callsFake(() => {
@@ -266,12 +281,12 @@ describe('psql', () => {
           dstHost: 'localhost',
           dstPort: 5432,
           localHost: '127.0.0.1',
-          localPort: 49152
+          localPort: 49152,
         }
         const mock = mockSpawn(
           'psql',
           ['-c', 'SELECT NOW();', '--set', 'sslmode=require'],
-          sinon.match.any
+          sinon.match.any,
         )
 
         mock.callsFake(() => {
@@ -291,6 +306,43 @@ describe('psql', () => {
     })
   })
 
+  describe('fetchVersion', () => {
+    it('gets the server version', async () => {
+      const expectedEnv = Object.freeze({
+        PGAPPNAME: 'psql non-interactive',
+        PGSSLMODE: 'prefer',
+        PGUSER: 'jeff',
+        PGPASSWORD: 'pass',
+        PGDATABASE: 'mydb',
+        PGPORT: 5432,
+        PGHOST: 'localhost',
+      })
+
+      const mock = mockSpawn(
+        'psql',
+        ['-c', 'SHOW server_version', '--set', 'sslmode=require', '-X', '-q'],
+        {
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'inherit'],
+          env: expectedEnv,
+        },
+      )
+
+      mock.callsFake(() => {
+        fakePsqlProcess.start()
+        return fakePsqlProcess
+      })
+
+      const promise = psql.fetchVersion(db)
+      await fakePsqlProcess.waitForStart()
+      mock.verify()
+      fakePsqlProcess.stdout.write(VERSION_OUTPUT)
+      await fakePsqlProcess.simulateExit(0)
+      const output = await ensureFinished(promise)
+      expect(output).to.equal('11.16')
+    })
+  })
+
   describe('execFile', () => {
     it('runs psql with file as input', async () => {
       const expectedEnv = Object.freeze({
@@ -300,7 +352,7 @@ describe('psql', () => {
         PGPASSWORD: 'pass',
         PGDATABASE: 'mydb',
         PGPORT: 5432,
-        PGHOST: 'localhost'
+        PGHOST: 'localhost',
       })
 
       const mock = mockSpawn(
@@ -309,8 +361,8 @@ describe('psql', () => {
         {
           stdio: ['ignore', 'pipe', 'inherit'],
           encoding: 'utf8',
-          env: expectedEnv
-        }
+          env: expectedEnv,
+        },
       )
       mock.callsFake(() => {
         fakePsqlProcess.start()
@@ -331,7 +383,7 @@ describe('psql', () => {
         dstHost: 'localhost',
         dstPort: 5432,
         localHost: '127.0.0.1',
-        localPort: 49152
+        localPort: 49152,
       }
 
       const mock = mockSpawn(
@@ -340,8 +392,8 @@ describe('psql', () => {
         {
           stdio: ['ignore', 'pipe', 'inherit'],
           encoding: 'utf8',
-          env: sinon.match.object
-        }
+          env: sinon.match.object,
+        },
       )
       mock.callsFake(() => {
         fakePsqlProcess.start()
@@ -361,16 +413,16 @@ describe('psql', () => {
     const db = {
       attachment: {
         app: {
-          name: 'sleepy-hollow-9876'
+          name: 'sleepy-hollow-9876',
         },
-        name: 'DATABASE'
-      }
+        name: 'DATABASE',
+      },
     }
 
     context('when HEROKU_PSQL_HISTORY is set', () => {
       let historyPath
 
-      function mockHerokuPSQLHistory (path) {
+      function mockHerokuPSQLHistory(path) {
         process.env.HEROKU_PSQL_HISTORY = path
       }
 
@@ -401,12 +453,12 @@ describe('psql', () => {
             '--set',
             `HISTFILE=${historyPath}/sleepy-hollow-9876`,
             '--set',
-            'sslmode=require'
+            'sslmode=require',
           ]
 
           const expectedEnv = Object.freeze({
             PGAPPNAME: 'psql interactive',
-            PGSSLMODE: 'prefer'
+            PGSSLMODE: 'prefer',
           })
 
           const mock = mockSpawn(
@@ -414,8 +466,8 @@ describe('psql', () => {
             expectedArgs,
             {
               stdio: 'inherit',
-              env: expectedEnv
-            }
+              env: expectedEnv,
+            },
           )
 
           mock.callsFake(() => {
@@ -447,7 +499,7 @@ describe('psql', () => {
         it('is the path to the history file', async () => {
           const expectedEnv = Object.freeze({
             PGAPPNAME: 'psql interactive',
-            PGSSLMODE: 'prefer'
+            PGSSLMODE: 'prefer',
           })
 
           const expectedArgs = [
@@ -458,7 +510,7 @@ describe('psql', () => {
             '--set',
             `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}`,
             '--set',
-            'sslmode=require'
+            'sslmode=require',
           ]
 
           const mock = mockSpawn(
@@ -466,8 +518,8 @@ describe('psql', () => {
             expectedArgs,
             {
               stdio: 'inherit',
-              env: expectedEnv
-            }
+              env: expectedEnv,
+            },
           )
 
           mock.callsFake(() => {
@@ -496,7 +548,7 @@ describe('psql', () => {
 
           const expectedEnv = Object.freeze({
             PGAPPNAME: 'psql interactive',
-            PGSSLMODE: 'prefer'
+            PGSSLMODE: 'prefer',
           })
 
           const expectedArgs = [
@@ -505,7 +557,7 @@ describe('psql', () => {
             '--set',
             'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
             '--set',
-            'sslmode=require'
+            'sslmode=require',
           ]
 
           const mock = mockSpawn(
@@ -513,8 +565,8 @@ describe('psql', () => {
             expectedArgs,
             {
               stdio: 'inherit',
-              env: expectedEnv
-            }
+              env: expectedEnv,
+            },
           )
 
           mock.callsFake(() => {
@@ -536,7 +588,7 @@ describe('psql', () => {
   })
 })
 
-function isSinonMatcher (value) {
+function isSinonMatcher(value) {
   return typeof value === 'object' &&
     value !== null &&
     typeof value.test === 'function'
@@ -545,12 +597,13 @@ function isSinonMatcher (value) {
 // create a sinon matcher that only asserts on ENV values we expect.
 // we don't want to leak other ENV variables to the console in CI.
 // it also makes the test output easier by not listing all the environment variables available in process.env
-function matchEnv (expectedEnv) {
-  const matcher = (actualEnv) => {
+function matchEnv(expectedEnv) {
+  const matcher = actualEnv => {
     const reducedActualEnv = Object.entries(expectedEnv).reduce((memo, [key, value]) => {
       if (key in actualEnv) {
         memo[key] = value
       }
+
       return memo
     }, {})
     sinon.match(expectedEnv).test(reducedActualEnv)
@@ -562,7 +615,7 @@ function matchEnv (expectedEnv) {
 }
 
 class FakeChildProcess extends EventEmitter {
-  constructor (...args) {
+  constructor(...args) {
     super(...args)
     this.ready = false
     this.exited = false
@@ -570,20 +623,20 @@ class FakeChildProcess extends EventEmitter {
     this.stdout = new PassThrough()
   }
 
-  async waitForStart () {
+  async waitForStart() {
     if (!this.ready) {
       await once(this, 'ready')
     }
   }
 
-  start () {
+  start() {
     this.ready = true
     this.emit('ready')
   }
 
-  simulateExit (code) {
+  simulateExit(code) {
     if (!this.exited) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.exited = true
         this.stdout.end()
         process.nextTick(() => {
@@ -597,30 +650,30 @@ class FakeChildProcess extends EventEmitter {
     }
   }
 
-  kill (signal) {
+  kill(signal) {
     this.killed = true
     this._killedWithSignal = signal
     const killedWithCode = signals[signal]
     this.simulateExit(killedWithCode)
   }
 
-  get killedWithSignal () {
+  get killedWithSignal() {
     return this._killedWithSignal
   }
 
-  async teardown () {
+  async teardown() {
     await this.simulateExit(0)
     this.removeAllListeners()
   }
 }
 
 class TunnelStub extends EventEmitter {
-  constructor (...args) {
+  constructor(...args) {
     super(...args)
     this.exited = false
   }
 
-  close () {
+  close() {
     this.exited = true
     process.nextTick(() => {
       this.emit('close')
@@ -628,10 +681,10 @@ class TunnelStub extends EventEmitter {
   }
 }
 
-function createSpawnMocker (sandbox) {
-  return function mockSpawn (commandName, expectedArgs, expectedOptions) {
+function createSpawnMocker(sandbox) {
+  return function mockSpawn(commandName, expectedArgs, expectedOptions) {
     const spawnMock = sandbox.mock(ChildProcess)
-    const { env: expectedEnv } = expectedOptions
+    const {env: expectedEnv} = expectedOptions
 
     let optionsMatchers
     if (isSinonMatcher(expectedOptions)) {
@@ -655,7 +708,7 @@ function createSpawnMocker (sandbox) {
       .withArgs(
         commandName,
         sinon.match.array.deepEquals(expectedArgs),
-        sinon.match(optionsMatchers)
+        sinon.match(optionsMatchers),
       )
   }
 }

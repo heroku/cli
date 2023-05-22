@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {Command} from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
@@ -8,7 +8,7 @@ import {fetchCache} from '../../cache'
 export default class Options extends AutocompleteBase {
   static hidden = true
 
-  static description = 'display arg or flag completion options (used internally by completion fuctions)'
+  static description = 'display arg or flag completion options (used internally by completion functions)'
 
   static flags = {
     app: flags.app({required: false, hidden: true}),
@@ -40,7 +40,7 @@ export default class Options extends AutocompleteBase {
       const completion = this.determineCompletion(commandStateVars)
       const options = await this.fetchOptions(completion)
       if (options) this.log(options)
-    } catch (error) {
+    } catch (error: any) {
       // write to ac log
       this.writeLogFile(error.message)
     }
@@ -54,12 +54,13 @@ export default class Options extends AutocompleteBase {
     const C = this.config.findCommand(id)
     let Klass
     if (C) {
-      Klass = C.load()
+      Klass = await C.load()
       // process Command state from command line data
       const slicedArgv = commandLineToComplete.slice(2)
-      const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
+      const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, Klass)
       return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
     }
+
     this.throwError(`Command ${id} not found`)
   }
 
@@ -98,17 +99,20 @@ export default class Options extends AutocompleteBase {
     if (!cacheCompletion) {
       cacheCompletion = this.findCompletion(cacheKey, id)
     }
+
     return {cacheKey, cacheCompletion}
   }
 
   private async fetchOptions(cache: any) {
     const {cacheCompletion, cacheKey} = cache
+    const flags = await this.parsedFlagsWithEnvVars()
+
     // build/retrieve & return options cache
     if (cacheCompletion && cacheCompletion.options) {
       const ctx = {
         args: this.parsedArgs,
         // special case for app & team env vars
-        flags: this.parsedFlagsWithEnvVars,
+        flags,
         argv: this.argv,
         config: this.config,
       }
@@ -127,8 +131,8 @@ export default class Options extends AutocompleteBase {
     }
   }
 
-  private get parsedFlagsWithEnvVars() {
-    const {flags} = this.parse(Options)
+  private async parsedFlagsWithEnvVars() {
+    const {flags} = await this.parse(Options)
     return {
       app: process.env.HEROKU_APP || flags.app,
       team: process.env.HEROKU_TEAM || process.env.HEROKU_ORG,
@@ -140,7 +144,7 @@ export default class Options extends AutocompleteBase {
     throw new Error(msg)
   }
 
-  private findFlagFromWildArg(wild: string, Klass: Command): { flag: any; name: any } {
+  private findFlagFromWildArg(wild: string, Klass: Interfaces.Command.Class): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
     name = name.replace(/[=](.+)?$/, '')
 
@@ -157,7 +161,7 @@ export default class Options extends AutocompleteBase {
     return unknown
   }
 
-  private determineCmdState(argv: string[], Klass: Command): [number, boolean, boolean] {
+  private determineCmdState(argv: string[], Klass: Interfaces.Command.Class): [number, boolean, boolean] {
     const Args = Klass.args || []
     let needFlagValueSatisfied = false
     let argIsFlag = false

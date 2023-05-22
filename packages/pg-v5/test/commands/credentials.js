@@ -1,8 +1,8 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -11,28 +11,29 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
+  url: {href: 'postgres://jeff:pass@foo.com/mydb'},
 }
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 
 const fetcher = () => {
   return {
     database: () => db,
-    addon: () => addon
+    addon: () => addon,
   }
 }
 
 const cmd = proxyquire('../../commands/credentials', {
-  '../lib/fetcher': fetcher
+  '../lib/fetcher': fetcher,
 })
 
 describe('pg:credentials', () => {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -47,21 +48,21 @@ describe('pg:credentials', () => {
 
   it('shows the correct credentials', () => {
     let credentials = [
-      { uuid: 'aaaa',
+      {uuid: 'aaaa',
         name: 'ransom',
         state: 'active',
         database: 'd123',
         host: 'localhost',
         port: 5442,
-        credentials: [] },
-      { uuid: 'aaab',
+        credentials: []},
+      {uuid: 'aaab',
         name: 'default',
         state: 'active',
         database: 'd123',
         host: 'localhost',
         port: 5442,
-        credentials: [] },
-      { uuid: 'aabb',
+        credentials: []},
+      {uuid: 'aabb',
         name: 'jeff',
         state: 'rotating',
         database: 'd123',
@@ -71,38 +72,38 @@ describe('pg:credentials', () => {
           {
             user: 'jeff',
             connections: 0,
-            state: 'revoking'
+            state: 'revoking',
           },
           {
             user: 'jeff-rotating',
             connections: 2,
-            state: 'active'
-          }
-        ] }
+            state: 'active',
+          },
+        ]},
     ]
     let attachments = [
       {
-        app: { name: 'main-app' },
+        app: {name: 'main-app'},
         name: 'DATABASE',
-        namespace: null
+        namespace: null,
       },
       {
-        app: { name: 'main-app' },
+        app: {name: 'main-app'},
         name: 'HEROKU_POSTGRESQL_GREEN',
-        namespace: 'credential:jeff'
+        namespace: 'credential:jeff',
       },
       {
-        app: { name: 'another-app' },
+        app: {name: 'another-app'},
         name: 'HEROKU_POSTGRESQL_PINK',
-        namespace: 'credential:jeff'
+        namespace: 'credential:jeff',
       },
       {
-        app: { name: 'yet-another-app' },
+        app: {name: 'yet-another-app'},
         name: 'HEROKU_POSTGRESQL_BLUE',
-        namespace: 'credential:ransom'
-      }
+        namespace: 'credential:ransom',
+      },
     ]
-    api.get(`/addons/postgres-1/addon-attachments`).reply(200, attachments)
+    api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
     pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, credentials)
 
     let displayed = `Credential                                                                     State
@@ -119,27 +120,27 @@ ransom                                                                         a
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
       .then(() => expect(cli.stdout).to.equal(displayed))
   })
 
   it('shows the correct rotation information if no connection information is available yet', () => {
     let credentials = [
-      { uuid: 'aaaa',
+      {uuid: 'aaaa',
         name: 'ransom',
         state: 'active',
         database: 'd123',
         host: 'localhost',
         port: 5442,
-        credentials: [] },
-      { uuid: 'aaab',
+        credentials: []},
+      {uuid: 'aaab',
         name: 'default',
         state: 'active',
         database: 'd123',
         host: 'localhost',
         port: 5442,
-        credentials: [] },
-      { uuid: 'aabb',
+        credentials: []},
+      {uuid: 'aabb',
         name: 'jeff',
         state: 'rotating',
         database: 'd123',
@@ -148,37 +149,37 @@ ransom                                                                         a
         credentials: [
           {
             user: 'jeff',
-            state: 'active'
+            state: 'active',
           },
           {
             user: 'jeff-rotating',
-            state: 'enabling'
-          }
-        ] }
+            state: 'enabling',
+          },
+        ]},
     ]
     let attachments = [
       {
-        app: { name: 'main-app' },
+        app: {name: 'main-app'},
         name: 'DATABASE',
-        namespace: null
+        namespace: null,
       },
       {
-        app: { name: 'main-app' },
+        app: {name: 'main-app'},
         name: 'HEROKU_POSTGRESQL_GREEN',
-        namespace: 'credential:jeff'
+        namespace: 'credential:jeff',
       },
       {
-        app: { name: 'another-app' },
+        app: {name: 'another-app'},
         name: 'HEROKU_POSTGRESQL_PINK',
-        namespace: 'credential:jeff'
+        namespace: 'credential:jeff',
       },
       {
-        app: { name: 'yet-another-app' },
+        app: {name: 'yet-another-app'},
         name: 'HEROKU_POSTGRESQL_BLUE',
-        namespace: 'credential:ransom'
-      }
+        namespace: 'credential:ransom',
+      },
     ]
-    api.get(`/addons/postgres-1/addon-attachments`).reply(200, attachments)
+    api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
     pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, credentials)
 
     let displayed = `Credential                                            State
@@ -192,7 +193,7 @@ ransom                                                active
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
       .then(() => expect(cli.stdout).to.equal(displayed))
   })
 })

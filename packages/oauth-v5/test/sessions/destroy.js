@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 'use strict'
 
 const cli = require('heroku-cli-util')
@@ -17,6 +18,6 @@ describe('sessions:destroy', function () {
 
   it('destroys the session', function () {
     api.delete('/oauth/sessions/f6e8d969-129f-42d2-854b-c2eca9d5a42e').reply(200)
-    return cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: {} })
+    return cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {}})
   })
 })

@@ -2,12 +2,9 @@ Heroku CLI
 ==========
 
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
-
-[![CircleCI](https://circleci.com/gh/heroku/cli.svg?style=svg&circle-token=40b6a6c06ece93bccf45e2c648b39e1db3763c97)](https://circleci.com/gh/heroku/cli/tree/master)
-[![CircleCI](https://circleci.com/gh/heroku/cli-macos-installer/tree/master.svg?style=svg&circle-token=90b3b4392dc1668e97108edabdfc2c6baddc3a17)](https://circleci.com/gh/heroku/cli-macos-installer/tree/master)
-[![Snap Status](https://build.snapcraft.io/badge/heroku/cli.svg)](https://build.snapcraft.io/user/heroku/cli)
+[![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
+[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
@@ -52,30 +49,28 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
 * [`heroku git`](docs/git.md) - manage local git repository for app
-* [`heroku help`](docs/help.md) - display help for heroku
+* [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
 * [`heroku local`](docs/local.md) - run Heroku app locally
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members
-* [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
-* [`heroku plugins`](docs/plugins.md) - list installed plugins
+* [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
-* [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
-* [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
-* [`heroku status`](docs/status.md) - status of the Heroku platform
+* [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
+* [`heroku version`](docs/version.md)
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
@@ -83,9 +78,29 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 Developing
 ==========
 
-This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
+This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). 
 
-The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
+After cloning the repo
+1. Run `yarn` to install dependencies
+2. Run `yarn lerna bootstrap` set up Lerna and link the packages together
+    - This repo currently uses an older version of Lerna. We recommend using the version specified in the package.json instead of a newer version that you may have installed globally.
+
+To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
+
+Testing
+=======
+
+Run all tests with `yarn lerna run test`.
+
+Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku-cli/plugin-certs-v5 test`.
+
+## Debugging
+
+Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+
+- Create a new run/debug configuration
+- Select the 'Mocha' type
+- Set the working directory to the directory of the package you are using.  (i.e. ~/Heroku/Repos/cli/packages/certs-v5)
 
 Releasing
 =========

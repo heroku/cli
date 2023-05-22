@@ -13,23 +13,23 @@ async function run(context, heroku) {
   let request = heroku.request({
     method: 'PATCH',
     path: `/apps/${oldApp}`,
-    body: { name: newApp }
+    body: {name: newApp},
   })
   let app = await cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
-  let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
+  let gitUrl = git.gitUrl(app.name)
   cli.log(`${app.web_url} | ${gitUrl}`)
-  
+
   if (!app.web_url.includes('https')) {
-    cli.log(`Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.`)
+    cli.log('Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.')
   }
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
     await _(await git.listRemotes())
-      .filter((r) => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
-      .map((r) => r[0])
+      .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
+      .map(r => r[0])
       .uniq()
-      .map((r) => {
+      .map(r => {
         return git.rmRemote(r)
           .then(() => git.createRemote(r, gitUrl))
           .then(() => cli.log(`Git remote ${r} updated`))
@@ -47,14 +47,11 @@ https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
 Git remote heroku updated`,
   needsAuth: true,
   needsApp: true,
-  args: [{ name: 'newname' }],
-  flags: [
-    { name: 'ssh-git', description: 'use ssh git protocol instead of https' }
-  ],
-  run: cli.command(run)
+  args: [{name: 'newname'}],
+  run: cli.command(run),
 }
 
 module.exports = [
-  Object.assign({ topic: 'apps', command: 'rename' }, cmd),
-  Object.assign({ topic: 'rename', hidden: true }, cmd)
+  Object.assign({topic: 'apps', command: 'rename'}, cmd),
+  Object.assign({topic: 'rename', hidden: true}, cmd),
 ]

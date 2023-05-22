@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 
@@ -42,10 +42,10 @@ export class BuildpackCommand {
 
   display(buildpacks: BuildpackResponse[], indent: string) {
     if (buildpacks.length === 1) {
-      cli.log(this.registryUrlToName(buildpacks[0].buildpack.url, true))
+      CliUx.ux.log(this.registryUrlToName(buildpacks[0].buildpack.url, true))
     } else {
       buildpacks.forEach((b, i) => {
-        cli.log(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
+        CliUx.ux.log(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
       })
     }
   }
@@ -56,10 +56,9 @@ export class BuildpackCommand {
     }
 
     Result.match({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
-        cli.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})
+        CliUx.ux.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})
       },
     }, BuildpackRegistry.isValidBuildpackSlug(buildpack))
 
@@ -67,13 +66,13 @@ export class BuildpackCommand {
       const response = await this.registry.buildpackExists(buildpack)
       const body = await response.json()
       return body.blob_url
-    } catch (error) {
+    } catch (error: any) {
       if (error.statusCode === 404) {
-        cli.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
+        CliUx.ux.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
       } else if (error.statusCode) {
-        cli.error(`${error.statusCode}: ${error.message}`, {exit: 1})
+        CliUx.ux.error(`${error.statusCode}: ${error.message}`, {exit: 1})
       } else {
-        cli.error(error.message, {exit: 1})
+        CliUx.ux.error(error.message, {exit: 1})
       }
     }
 
@@ -89,7 +88,7 @@ export class BuildpackCommand {
 
   async validateUrlNotSet(buildpacks: BuildpackResponse[], buildpack: string) {
     if (await this.findUrl(buildpacks, buildpack) !== -1) {
-      cli.error(`The buildpack ${buildpack} is already set on your app.`, {exit: 1})
+      CliUx.ux.error(`The buildpack ${buildpack} is already set on your app.`, {exit: 1})
     }
   }
 
@@ -99,6 +98,7 @@ export class BuildpackCommand {
         return b.ordinal + 1 === index
       })
     }
+
     return -1
   }
 
@@ -128,12 +128,12 @@ export class BuildpackCommand {
 
   displayUpdate(app: string, remote: string, buildpacks: BuildpackResponse[], action: 'added' | 'set' | 'removed') {
     if (buildpacks.length === 1) {
-      cli.log(`Buildpack ${action}. Next release on ${app} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
-      cli.log(`Run ${color.magenta(push(remote))} to create a new release using this buildpack.`)
+      CliUx.ux.log(`Buildpack ${action}. Next release on ${app} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
+      CliUx.ux.log(`Run ${color.magenta(push(remote))} to create a new release using this buildpack.`)
     } else {
-      cli.log(`Buildpack ${action}. Next release on ${app} will use:`)
+      CliUx.ux.log(`Buildpack ${action}. Next release on ${app} will use:`)
       this.display(buildpacks, '  ')
-      cli.log(`Run ${color.magenta(push(remote))} to create a new release using these buildpacks.`)
+      CliUx.ux.log(`Run ${color.magenta(push(remote))} to create a new release using these buildpacks.`)
     }
   }
 
@@ -161,29 +161,29 @@ export class BuildpackCommand {
     const configVars: any = await this.heroku.get(`/apps/${app}/config-vars`)
     const message = `Buildpack${command === 'clear' ? 's' : ''} ${action}.`
     if (configVars.body.BUILDPACK_URL) {
-      cli.log(message)
-      cli.warn('The BUILDPACK_URL config var is still set and will be used for the next release')
+      CliUx.ux.log(message)
+      CliUx.ux.warn('The BUILDPACK_URL config var is still set and will be used for the next release')
     } else if (configVars.body.LANGUAGE_PACK_URL) {
-      cli.log(message)
-      cli.warn('The LANGUAGE_PACK_URL config var is still set and will be used for the next release')
+      CliUx.ux.log(message)
+      CliUx.ux.warn('The LANGUAGE_PACK_URL config var is still set and will be used for the next release')
     } else {
-      cli.log(`${message} Next release on ${app} will detect buildpacks normally.`)
+      CliUx.ux.log(`${message} Next release on ${app} will detect buildpacks normally.`)
     }
   }
 
   validateIndexInRange(buildpacks: BuildpackResponse[], index: number) {
     if (index < 0 || index > buildpacks.length) {
       if (buildpacks.length === 1) {
-        cli.error('Invalid index. Only valid value is 1.', {exit: 1})
+        CliUx.ux.error('Invalid index. Only valid value is 1.', {exit: 1})
       } else {
-        cli.error(`Invalid index. Please choose a value between 1 and ${buildpacks.length}`, {exit: 1})
+        CliUx.ux.error(`Invalid index. Please choose a value between 1 and ${buildpacks.length}`, {exit: 1})
       }
     }
   }
 
   validateIndex(index: number) {
     if (Number.isNaN(index) || index <= 0) {
-      cli.error('Invalid index. Must be greater than 0.', {exit: 1})
+      CliUx.ux.error('Invalid index. Must be greater than 0.', {exit: 1})
     }
   }
 }

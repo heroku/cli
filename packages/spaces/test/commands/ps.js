@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 const nock = require('nock')
 const cmd = require('../../commands/ps')
@@ -7,7 +7,7 @@ const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 const strftime = require('strftime')
 
-const hourAgo = new Date(new Date() - (60 * 60 * 1000))
+const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 
 const spaceDynos = [
@@ -15,18 +15,18 @@ const spaceDynos = [
     app_id: 'app_id1',
     app_name: 'app_name1',
     dynos: [
-      { command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up' },
-      { command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up' }
-    ]
+      {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up'},
+      {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up'},
+    ],
   },
   {
     app_id: 'app_id2',
     app_name: 'app_name2',
     dynos: [
-      { command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up' },
-      { command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up' }
-    ]
-  }
+      {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up'},
+      {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up'},
+    ],
+  },
 ]
 
 const privateDynos = [
@@ -34,9 +34,9 @@ const privateDynos = [
     app_id: 'app_id1',
     app_name: 'app_name1',
     dynos: [
-      { command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up' }
-    ]
-  }
+      {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up'},
+    ],
+  },
 ]
 
 describe('spaces:ps', function () {
@@ -46,9 +46,9 @@ describe('spaces:ps', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, spaceDynos)
     let apiSpace = nock('https://api.heroku.com:443')
-      .get('/spaces/my-space').reply(200, { shield: false })
+      .get('/spaces/my-space').reply(200, {shield: false})
 
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== app_name1 web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
@@ -71,9 +71,9 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, privateDynos)
     let apiSpace = nock('https://api.heroku.com:443')
-      .get('/spaces/my-space').reply(200, { shield: true })
+      .get('/spaces/my-space').reply(200, {shield: true})
 
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== app_name1 web (Shield-M): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
@@ -87,9 +87,9 @@ web.1: up ${hourAgoStr} (~ 1h ago)
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, privateDynos)
     let apiSpace = nock('https://api.heroku.com:443')
-      .get('/spaces/my-space').reply(200, { shield: false })
+      .get('/spaces/my-space').reply(200, {shield: false})
 
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== app_name1 web (Private-M): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
@@ -103,9 +103,9 @@ web.1: up ${hourAgoStr} (~ 1h ago)
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos').reply(200, spaceDynos)
     let apiSpace = nock('https://api.heroku.com:443')
-      .get('/spaces/my-space').reply(200, { shield: false })
+      .get('/spaces/my-space').reply(200, {shield: false})
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
+    return cmd.run({flags: {space: 'my-space', json: true}})
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(spaceDynos))
       .then(() => api.done())
       .then(() => apiSpace.done())

@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {getPipeline} from '../../api'
 import GitHubAPI from '../../github-api'
@@ -8,6 +8,8 @@ import getGitHubToken from '../../setup/get-github-token'
 import getNameAndRepo from '../../setup/get-name-and-repo'
 import getRepo from '../../setup/get-repo'
 import {nameAndRepo} from '../../setup/validate'
+
+const cli = CliUx.ux
 
 export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'
@@ -32,7 +34,7 @@ export default class Connect extends Command {
   }]
 
   async run() {
-    const {args, flags} = this.parse(Connect)
+    const {args, flags} = await this.parse(Connect)
 
     const combinedInputs = {
       name: args.name,
@@ -41,7 +43,7 @@ export default class Connect extends Command {
 
     const errors = nameAndRepo({repo: flags.repo})
 
-    if (errors.length !== 0) {
+    if (errors.length > 0) {
       this.error(errors.join(', '))
       return
     }

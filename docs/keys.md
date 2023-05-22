@@ -13,15 +13,15 @@ add/remove account ssh keys
 display your SSH keys
 
 ```
-display your SSH keys
-
-
 USAGE
-  $ heroku keys
+  $ heroku keys [-l] [--json]
 
-OPTIONS
+FLAGS
   -l, --long  display full SSH keys
   --json      output in json format
+
+DESCRIPTION
+  display your SSH keys
 ```
 
 ## `heroku keys:add [KEY]`
@@ -29,16 +29,14 @@ OPTIONS
 add an SSH key for a user
 
 ```
-add an SSH key for a user
-if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
-
 USAGE
-  $ heroku keys:add [KEY]
+  $ heroku keys:add [KEY] [-y]
 
-OPTIONS
+FLAGS
   -y, --yes  automatically answer yes for all prompts
 
 DESCRIPTION
+  add an SSH key for a user
   if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
 EXAMPLES
@@ -47,7 +45,6 @@ EXAMPLES
   Would you like to generate one? [Yn] y
   Generating new SSH public key.
   Uploading SSH public key /.ssh/id_rsa.pub... done
-
   $ heroku keys:add /my/key.pub
   Uploading SSH public key /my/key.pub... done
 ```
@@ -57,11 +54,11 @@ EXAMPLES
 remove all SSH keys for current user
 
 ```
-remove all SSH keys for current user
-
-
 USAGE
   $ heroku keys:clear
+
+DESCRIPTION
+  remove all SSH keys for current user
 ```
 
 ## `heroku keys:remove KEY`
@@ -69,11 +66,12 @@ USAGE
 remove an SSH key from the user
 
 ```
-remove an SSH key from the user
-
-
 USAGE
   $ heroku keys:remove KEY
+
+DESCRIPTION
+  remove an SSH key from the user
+
 
 EXAMPLES
   $ heroku keys:remove email@example.com

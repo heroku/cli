@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-if (!process.env.CIRCLE_TAG) {
+if (!process.env.GITHUB_REF_NAME.startsWith('release-')) {
   console.log('Not on stable release, skipping change management trigger')
   process.exit(0)
 }
 
 const REQUEST_PROMISE = require('promise-request-retry')
 
-// Set these in CircleCI in the heroku/cli project
+// Set these in Github Actions in the heroku/cli project
 //
 const TPS_API_APP_ID = process.env.TPS_API_APP_ID
 const TPS_API_RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
@@ -15,9 +15,9 @@ const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
 const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
 const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
 
-// This is set by CircleCI automagically
-//
-const RELEASE_COMMIT_SHA = process.env.CIRCLE_SHA1
+// This is set by GitHub Actions automagically
+// https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+const RELEASE_COMMIT_SHA = process.env.GITHUB_SHA
 
 if (TPS_API_APP_ID &&
   TPS_API_RELEASE_ACTOR_EMAIL &&

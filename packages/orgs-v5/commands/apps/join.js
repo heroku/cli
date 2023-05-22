@@ -6,7 +6,7 @@ async function run(context, heroku) {
   let request = heroku.get('/account')
     .then(function (user) {
       return heroku.post(`/teams/apps/${context.app}/collaborators`, {
-        body: { user: user.email }
+        body: {user: user.email},
       })
     })
 
@@ -19,8 +19,8 @@ let cmd = {
   description: 'add yourself to a team app',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
 
-let root = Object.assign({}, cmd, { topic: 'join', command: null })
+let root = Object.assign({}, cmd, {topic: 'join', command: null})
 module.exports = [cmd, root]

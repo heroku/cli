@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 
 const allowlist = [
   'HEROKU_API_KEY',

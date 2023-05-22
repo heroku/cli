@@ -1,28 +1,29 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 const fetcher = () => {
   return {
-    addon: () => addon
+    addon: () => addon,
   }
 }
 
 const cmd = proxyquire('../../commands/unfollow', {
-  '../lib/fetcher': fetcher
+  '../lib/fetcher': fetcher,
 })
 
 describe('pg:unfollow', () => {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -37,10 +38,10 @@ describe('pg:unfollow', () => {
   })
 
   it('unfollows db', () => {
-    api.get('/apps/myapp/config-vars').reply(200, { DATABASE_URL: 'postgres://db1' })
-    pg.get('/client/v11/databases/1').reply(200, { following: 'postgres://db1' })
+    api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://db1'})
+    pg.get('/client/v11/databases/1').reply(200, {following: 'postgres://db1'})
     pg.put('/client/v11/databases/1/unfollow').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stderr).to.equal('postgres-1 unfollowing... done\n'))
   })
 })

@@ -1,20 +1,20 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
-const db = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:hobby-dev' } }
+const db = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}}
 const fetcher = () => {
   return {
-    addon: () => db
+    addon: () => db,
   }
 }
 
 const cmd = proxyquire('../../commands/killall', {
-  '../lib/fetcher': fetcher
+  '../lib/fetcher': fetcher,
 })
 
 describe('pg:killall', () => {
@@ -35,7 +35,7 @@ describe('pg:killall', () => {
     pg
       .post('/client/v11/databases/1/connection_reset').reply(200)
 
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal('Terminating connections for all credentials... done\n'))
   })

@@ -32,7 +32,7 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
   }
 
   async run() {
-    const {flags} = this.parse(Logs)
+    const {flags} = await this.parse(Logs)
 
     color.enabled = flags['force-colors'] || color.enabled
 

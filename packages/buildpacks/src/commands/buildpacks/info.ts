@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
@@ -16,11 +16,10 @@ export default class Info extends Command {
   ]
 
   async run() {
-    const {args} = this.parse(Info)
+    const {args} = await this.parse(Info)
     const registry = new BuildpackRegistry()
 
     Result.match({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         this.error(`Could not publish the buildpack.\n${err}`)
@@ -30,14 +29,14 @@ export default class Info extends Command {
     const result = await registry.info(args.buildpack)
     Result.match({
       Ok: buildpack => {
-        cli.styledHeader(args.buildpack)
-        cli.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+        CliUx.ux.styledHeader(args.buildpack)
+        CliUx.ux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
       },
       Err: err => {
         if (err.status === 404) {
-          cli.error(`Could not find the buildpack '${args.buildpack}'`)
+          CliUx.ux.error(`Could not find the buildpack '${args.buildpack}'`)
         } else {
-          cli.error(`Problems finding buildpack info: ${err.description}`)
+          CliUx.ux.error(`Problems finding buildpack info: ${err.description}`)
         }
       },
     }, result)

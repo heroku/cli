@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import BaseCommand from '../../base'
 
@@ -21,10 +21,10 @@ export default class Webhooks extends BaseCommand {
   }
 
   async run() {
-    const {flags} = this.parse(Webhooks)
+    const {flags} = await this.parse(Webhooks)
     const {path, display} = this.webhookType(flags)
 
-    const {body: webhooks} = await this.webhooksClient.get(`${path}/webhooks`)
+    const {body: webhooks}: {body: any} = await this.webhooksClient.get(`${path}/webhooks`)
 
     if (webhooks.length === 0) {
       this.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)
@@ -33,7 +33,8 @@ export default class Webhooks extends BaseCommand {
 
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
-    cli.table(webhooks, {
+    const printLine: typeof this.log = (...args) => this.log(...args)
+    CliUx.ux.table(webhooks, {
       id: {
         header: 'Webhook ID',
       },
@@ -45,7 +46,7 @@ export default class Webhooks extends BaseCommand {
       },
       level: {},
     }, {
-      printLine: this.log,
+      'no-header': false, printLine,
     })
   }
 }

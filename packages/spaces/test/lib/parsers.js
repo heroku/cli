@@ -1,5 +1,4 @@
 'use strict'
-/* globals describe it */
 
 let expect = require('chai').expect
 let parsers = require('../../lib/parsers')()

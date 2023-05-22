@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {display} from '../../lib/authorizations'
 
@@ -10,15 +10,15 @@ export default class AuthorizationsRotate extends Command {
   static args = [{name: 'id', required: true}]
 
   async run() {
-    const {args} = this.parse(AuthorizationsRotate)
+    const {args} = await this.parse(AuthorizationsRotate)
 
-    cli.action.start('Rotating OAuth Authorization')
+    CliUx.ux.action.start('Rotating OAuth Authorization')
 
     const {body: authorization} = await this.heroku.post<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${encodeURIComponent(args.id)}/actions/regenerate-tokens`,
     )
 
-    cli.action.stop()
+    CliUx.ux.action.stop()
 
     display(authorization)
   }

@@ -6,19 +6,19 @@ const _ = require('lodash')
 let styles = {
   app: 'cyan',
   attachment: 'green',
-  addon: 'magenta'
+  addon: 'magenta',
 }
 
 module.exports = {
   // style given text or return a function that styles text according to provided style
-  style: function style (s, t) {
-    if (!t) return (text) => style(s, text)
+  style: function style(s, t) {
+    if (!t) return text => style(s, text)
     return cli.color[styles[s] || s](t)
   },
 
   table: function (data, options) {
     return cli.table(data, _.merge(options, {
-      printLine: cli.log
+      printLine: cli.log,
     }))
   },
 
@@ -26,7 +26,7 @@ module.exports = {
     const price = addon.plan.price
     return Object.assign({}, price, {
       cents: addon.billed_price.cents,
-      contract: addon.billed_price.contract
+      contract: addon.billed_price.contract,
     })
   },
 
@@ -43,27 +43,28 @@ module.exports = {
 
   trapConfirmationRequired: async function (app, confirm, fn) {
     return await fn(confirm)
-      .catch((err) => {
-        if (!err.body || err.body.id !== 'confirmation_required') throw err
-        return cli.confirmApp(app, confirm, err.body.message)
+      .catch(error => {
+        if (!error.body || error.body.id !== 'confirmation_required') throw error
+        return cli.confirmApp(app, confirm, error.body.message)
           .then(() => fn(app))
-      });
+      })
   },
 
   formatState: function (state) {
     switch (state) {
-      case 'provisioned':
-        state = 'created'
-        break
-      case 'provisioning':
-        state = 'creating'
-        break
-      case 'deprovisioned':
-        state = 'errored'
-        break
-      default:
-        state = ''
+    case 'provisioned':
+      state = 'created'
+      break
+    case 'provisioning':
+      state = 'creating'
+      break
+    case 'deprovisioned':
+      state = 'errored'
+      break
+    default:
+      state = ''
     }
+
     return state
-  }
+  },
 }

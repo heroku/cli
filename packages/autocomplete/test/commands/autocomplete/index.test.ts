@@ -1,40 +1,35 @@
 /* eslint-disable no-useless-escape */
-import Nock from '@fancy-test/nock'
-import * as Test from '@oclif/test'
-
-const test = Test.test
-.register('nock', Nock)
-const expect = Test.expect
+import {expect, test} from '@oclif/test'
 
 // autocomplete will throw error on windows
 const {default: runtest} = require('../../helpers/runtest')
 
 runtest('autocomplete:index', () => {
   test
-  .stdout()
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/apps')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/pipelines')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/spaces')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/teams')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .command(['autocomplete', 'bash'])
-  .it('provides bash instructions', ctx => {
-    expect(ctx.stdout).to.contain(`
+    .stdout()
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/apps')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/pipelines')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/spaces')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/teams')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .command(['autocomplete', 'bash'])
+    .it('provides bash instructions', ctx => {
+      expect(ctx.stdout).to.contain(`
 Setup Instructions for HEROKU CLI Autocomplete ---
 
 1) Add the autocomplete env var to your bash profile and source it
@@ -52,34 +47,34 @@ Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/h
 Enjoy!
 
 `,
-    )
-  })
+      )
+    })
 
   test
-  .stdout()
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/apps')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/pipelines')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/spaces')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .nock('https://api.heroku.com', (nock: any) => {
-    nock
-    .get('/teams')
-    .reply(200, [{name: 'foo'}, {name: 'bar'}])
-  })
-  .command(['autocomplete', 'zsh'])
-  .it('provides zsh instructions', ctx => {
-    expect(ctx.stdout).to.contain(`
+    .stdout()
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/apps')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/pipelines')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/spaces')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .nock('https://api.heroku.com', (nock: any) => {
+      nock
+        .get('/teams')
+        .reply(200, [{name: 'foo'}, {name: 'bar'}])
+    })
+    .command(['autocomplete', 'zsh'])
+    .it('provides zsh instructions', ctx => {
+      expect(ctx.stdout).to.contain(`
 Setup Instructions for HEROKU CLI Autocomplete ---
 
 1) Add the autocomplete env var to your zsh profile and source it
@@ -97,6 +92,6 @@ Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/h
 Enjoy!
 
 `,
-    )
-  })
+      )
+    })
 })

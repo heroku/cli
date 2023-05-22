@@ -27,7 +27,6 @@ export function fork(argv: string[]): Promise<void> {
 
   return new Promise(resolve => {
     nf.on('exit', function (code: number) {
-      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       if (code !== 0) process.exit(code)
       resolve()
     })

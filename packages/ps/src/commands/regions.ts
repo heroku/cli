@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
 export default class Regions extends Command {
@@ -16,24 +16,31 @@ export default class Regions extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Regions)
+    const {flags} = await this.parse(Regions)
     let {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
     if (flags.private) {
       regions = regions.filter((region: any) => region.private_capable)
     } else if (flags.common) {
       regions = regions.filter((region: any) => !region.private_capable)
     }
+
     regions = _.sortBy(regions, ['private_capable', 'name'])
 
     if (flags.json) {
-      cli.styledJSON(regions)
+      CliUx.ux.styledJSON(regions)
     } else {
-      cli.table(regions, {
-        columns: [
-          {key: 'name', label: 'ID', format: (n: any) => color.green(n)},
-          {key: 'description', label: 'Location'},
-          {key: 'private_capable', label: 'Runtime', format: (c: any) => c ? 'Private Spaces' : 'Common Runtime'},
-        ],
+      CliUx.ux.table(regions, {
+        name: {
+          header: 'ID',
+          get: ({name}: any) => color.green(name),
+        },
+        description: {
+          header: 'Location',
+        },
+        private_capable: {
+          header: 'Runtime',
+          get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
+        },
       })
     }
   }

@@ -10,4 +10,8 @@ node_modules
 /tmp
 /packages/cli/docs/*
 
+**/.DS_Store
+./idea
 .vscode
+
+

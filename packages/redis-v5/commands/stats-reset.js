@@ -7,8 +7,8 @@ module.exports = {
   command: 'stats-reset',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  flags: [{ name: 'confirm', char: 'c', hasValue: true }],
+  args: [{name: 'database', optional: true}],
+  flags: [{name: 'confirm', char: 'c', hasValue: true}],
   description: 'reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)',
   run: cli.command(async (context, heroku) => {
     let api = require('../lib/shared')(context, heroku)

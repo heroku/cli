@@ -1,12 +1,14 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
 import {getPipeline} from '../../utils/pipelines'
 import {createSourceBlob} from '../../utils/source'
 import {displayAndExit} from '../../utils/test-run'
+
+const cli = CliUx.ux
 
 export default class CiReRun extends Command {
   static description = 'rerun tests against current directory'
@@ -24,7 +26,7 @@ export default class CiReRun extends Command {
   static args = [{name: 'number', required: false}]
 
   async run() {
-    const {flags, args} = this.parse(CiReRun)
+    const {flags, args} = await this.parse(CiReRun)
     const pipeline = await getPipeline(flags, this)
 
     let sourceTestRun: Heroku.TestRun
@@ -36,6 +38,7 @@ export default class CiReRun extends Command {
       const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers: {Range: 'number ..; order=desc,max=1'}})
       sourceTestRun = testRuns[0]
     }
+
     this.log(`Rerunning test run #${sourceTestRun.number}...`)
 
     cli.action.start('Preparing source')

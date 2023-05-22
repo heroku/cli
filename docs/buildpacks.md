@@ -17,145 +17,134 @@ scripts used to compile apps
 display the buildpacks for an app
 
 ```
-display the buildpacks for an app
-
 USAGE
-  $ heroku buildpacks
+  $ heroku buildpacks -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  display the buildpacks for an app
 ```
-
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
 add new app buildpack, inserting into list of buildpacks if necessary
 
 ```
-add new app buildpack, inserting into list of buildpacks if necessary
-
 USAGE
-  $ heroku buildpacks:add BUILDPACK
+  $ heroku buildpacks:add BUILDPACK -a <value> [-r <value>] [-i <value>]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -i, --index=index    the 1-based index of the URL in the list of URLs
-  -r, --remote=remote  git remote of app to use
-```
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -i, --index=<value>   the 1-based index of the URL in the list of URLs
+  -r, --remote=<value>  git remote of app to use
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/add.ts)_
+DESCRIPTION
+  add new app buildpack, inserting into list of buildpacks if necessary
+```
 
 ## `heroku buildpacks:clear`
 
 clear all buildpacks set on the app
 
 ```
-clear all buildpacks set on the app
-
 USAGE
-  $ heroku buildpacks:clear
+  $ heroku buildpacks:clear -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  clear all buildpacks set on the app
 ```
-
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
 fetch info about a buildpack
 
 ```
-fetch info about a buildpack
-
 USAGE
   $ heroku buildpacks:info BUILDPACK
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
-```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/info.ts)_
+DESCRIPTION
+  fetch info about a buildpack
+```
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
 remove a buildpack set on the app
 
 ```
-remove a buildpack set on the app
-
 USAGE
-  $ heroku buildpacks:remove [BUILDPACK]
+  $ heroku buildpacks:remove [BUILDPACK] -a <value> [-r <value>] [-i <value>]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -i, --index=index    the 1-based index of the URL to remove from the list of URLs
-  -r, --remote=remote  git remote of app to use
-```
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -i, --index=<value>   the 1-based index of the URL to remove from the list of URLs
+  -r, --remote=<value>  git remote of app to use
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/remove.ts)_
+DESCRIPTION
+  remove a buildpack set on the app
+```
 
 ## `heroku buildpacks:search [TERM]`
 
 search for buildpacks
 
 ```
-search for buildpacks
-
 USAGE
-  $ heroku buildpacks:search [TERM]
+  $ heroku buildpacks:search [TERM] [--namespace <value>] [--name <value>] [--description <value>]
 
 ARGUMENTS
   TERM  search term that searches across name, namespace, and description
 
-OPTIONS
-  --description=description  buildpack description to filter on
-  --name=name                buildpack names to filter on using a comma separated list
-  --namespace=namespace      buildpack namespaces to filter on using a comma separated list
-```
+FLAGS
+  --description=<value>  buildpack description to filter on
+  --name=<value>         buildpack names to filter on using a comma separated list
+  --namespace=<value>    buildpack namespaces to filter on using a comma separated list
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/search.ts)_
+DESCRIPTION
+  search for buildpacks
+```
 
 ## `heroku buildpacks:set BUILDPACK`
 
 ```
-undefined
-
 USAGE
-  $ heroku buildpacks:set BUILDPACK
+  $ heroku buildpacks:set BUILDPACK -a <value> [-r <value>] [-i <value>]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -i, --index=index    the 1-based index of the URL in the list of URLs
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -i, --index=<value>   the 1-based index of the URL in the list of URLs
+  -r, --remote=<value>  git remote of app to use
 ```
-
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
 list versions of a buildpack
 
 ```
-list versions of a buildpack
-
 USAGE
   $ heroku buildpacks:versions BUILDPACK
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
-```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.54.0/packages/buildpacks/src/commands/buildpacks/versions.ts)_
+DESCRIPTION
+  list versions of a buildpack
+```

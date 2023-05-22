@@ -18,15 +18,14 @@ remote: Counting objects: 42, done.
   static flags = {
     app: flags.string({char: 'a', env: 'HEROKU_APP', required: true, description: 'the Heroku app to use'}),
     remote: flags.string({char: 'r', description: 'the git remote to create, default "heroku"'}),
-    'ssh-git': flags.boolean({description: 'use SSH git protocol'}),
   }
 
   async run() {
     const git = new Git()
-    const {flags, args} = this.parse(GitClone)
+    const {flags, args} = await this.parse(GitClone)
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const directory = args.DIRECTORY || app.name
     const remote = flags.remote || 'heroku'
-    await git.spawn(['clone', '-o', remote, git.url(app.name!, flags['ssh-git']), directory])
+    await git.spawn(['clone', '-o', remote, git.url(app.name!), directory])
   }
 }

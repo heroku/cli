@@ -1,9 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {getPipeline} from '../../utils/pipelines'
 import {displayTestRunInfo} from '../../utils/test-run'
+
+const cli = CliUx.ux
 
 export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
@@ -20,7 +22,7 @@ export default class CiLast extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(CiLast)
+    const {flags} = await this.parse(CiLast)
     const pipeline = await getPipeline(flags, this)
     const headers = {Range: 'number ..; order=desc,max=1'}
     const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})

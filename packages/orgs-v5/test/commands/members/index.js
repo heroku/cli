@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect context */
+/* globals beforeEach afterEach cli nock expect context */
 
 let cmd = require('../../../commands/members')
 let stubGet = require('../../stub/get')
@@ -21,7 +21,7 @@ describe('heroku members', () => {
 
     it('shows there are not team members if it is an orphan team', () => {
       apiGetOrgMembers = stubGet.teamMembers([])
-      return cmd.run({ flags: { team: 'myteam' } })
+      return cmd.run({flags: {team: 'myteam'}})
         .then(() => expect(
           `No members in myteam
 `).to.eq(cli.stdout))
@@ -31,9 +31,9 @@ describe('heroku members', () => {
 
     it('shows all the team members', () => {
       apiGetOrgMembers = stubGet.teamMembers([
-        { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
+        {email: 'a@heroku.com', role: 'admin'}, {email: 'b@heroku.com', role: 'collaborator'},
       ])
-      return cmd.run({ flags: { team: 'myteam' } })
+      return cmd.run({flags: {team: 'myteam'}})
         .then(() => expect(
           `a@heroku.com  admin
 b@heroku.com  collaborator
@@ -42,11 +42,11 @@ b@heroku.com  collaborator
         .then(() => apiGetOrgMembers.done())
     })
 
-    let expectedOrgMembers = [{ email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'member' }]
+    let expectedOrgMembers = [{email: 'a@heroku.com', role: 'admin'}, {email: 'b@heroku.com', role: 'member'}]
 
     it('filters members by role', () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
+      return cmd.run({flags: {team: 'myteam', role: 'member'}})
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))
@@ -56,7 +56,7 @@ b@heroku.com  collaborator
 
     it("shows the right message when filter doesn't return results", () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'collaborator' } })
+      return cmd.run({flags: {team: 'myteam', role: 'collaborator'}})
         .then(() => expect(
           `No members in myteam with role collaborator
 `).to.eq(cli.stdout))
@@ -66,7 +66,7 @@ b@heroku.com  collaborator
 
     it('filters members by role', () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
+      return cmd.run({flags: {team: 'myteam', role: 'member'}})
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))
@@ -88,17 +88,17 @@ b@heroku.com  collaborator
 
     context('with the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+        stubGet.teamFeatures([{name: 'team-invite-acceptance', enabled: true}])
       })
 
       it('shows all members including those with pending invites', () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
         apiGetOrgMembers = stubGet.teamMembers([
-          { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
+          {email: 'a@heroku.com', role: 'admin'}, {email: 'b@heroku.com', role: 'collaborator'},
         ])
 
-        return cmd.run({ flags: { team: 'myteam' } })
+        return cmd.run({flags: {team: 'myteam'}})
           .then(() => expect(
             `a@heroku.com           admin
 b@heroku.com           collaborator
@@ -113,10 +113,10 @@ invited-user@mail.com  admin         pending
         let apiGetTeamInvites = stubGet.teamInvites()
 
         apiGetOrgMembers = stubGet.teamMembers([
-          { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
+          {email: 'a@heroku.com', role: 'admin'}, {email: 'b@heroku.com', role: 'collaborator'},
         ])
 
-        return cmd.run({ flags: { team: 'myteam', pending: true } })
+        return cmd.run({flags: {team: 'myteam', pending: true}})
           .then(() => expect(
             `invited-user@mail.com  admin  pending
 `).to.eq(cli.stdout))

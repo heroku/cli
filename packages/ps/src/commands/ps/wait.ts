@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 
 import {Dyno, Release} from '@heroku-cli/schema'
 
@@ -16,11 +16,12 @@ export default class Wait extends Command {
     'wait-interval': flags.integer({
       char: 'w',
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
-      parse: input => {
-        const w = parseInt(input, 10)
+      parse: async input => {
+        const w = Number.parseInt(input, 10)
         if (w < 10) {
-          cli.error('wait-interval must be at least 10', {exit: 1})
+          CliUx.ux.error('wait-interval must be at least 10', {exit: 1})
         }
+
         return w
       },
       default: 10,
@@ -33,7 +34,7 @@ export default class Wait extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Wait)
+    const {flags} = await this.parse(Wait)
 
     const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
       partial: true,
@@ -53,12 +54,11 @@ export default class Wait extends Command {
     const interval = flags['wait-interval'] as number
 
     while (1 as any) {
-      // eslint-disable-next-line no-await-in-loop
       const {body: dynos} = await this.heroku.get<Dyno[]>(`/apps/${flags.app}/dynos`)
       const relevantDynos = dynos
-      .filter(dyno => dyno.type !== 'release')
-      .filter(dyno => flags['with-run'] || dyno.type !== 'run')
-      .filter(dyno => !flags.type || dyno.type === flags.type)
+        .filter(dyno => dyno.type !== 'release')
+        .filter(dyno => flags['with-run'] || dyno.type !== 'run')
+        .filter(dyno => !flags.type || dyno.type === flags.type)
 
       const onLatest = relevantDynos.filter((dyno: Dyno) => {
         return dyno.state === 'up' &&
@@ -70,20 +70,20 @@ export default class Wait extends Command {
       const releasedFraction = `${onLatest.length} / ${relevantDynos.length}`
       if (onLatest.length === relevantDynos.length) {
         if (!released) {
-          cli.action.stop(`${releasedFraction}, done`)
+          CliUx.ux.action.stop(`${releasedFraction}, done`)
         }
+
         break
       }
 
       if (released) {
         released = false
-        cli.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
+        CliUx.ux.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
       }
 
-      cli.action.status = releasedFraction
+      CliUx.ux.action.status = releasedFraction
 
-      // eslint-disable-next-line no-await-in-loop
-      await cli.wait(interval * 1000)
+      await CliUx.ux.wait(interval * 1000)
     }
   }
 }

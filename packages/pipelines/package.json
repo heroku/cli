@@ -1,50 +1,42 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "7.54.0",
+  "version": "8.1.2",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.4.1",
+    "@heroku-cli/command": "^9.0.2",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
-    "@oclif/errors": "^1.3.4",
-    "cli-ux": "^5.5.1",
+    "@oclif/core": "^1.26.2",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
-    "node-fetch": "^2.6.1",
-    "validator": "^10.11.0"
+    "node-fetch": "^2.6.7",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
-    "@types/chai": "^4",
+    "@oclif/test": "2.2.20",
+    "@types/chai": "4.1.7",
     "@types/got": "^9.6.7",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.sortby": "^4.7.6",
-    "@types/mocha": "^5",
-    "@types/node": "^10",
-    "chai": "^4",
+    "@types/mocha": "5.2.6",
+    "@types/nock": "^9.3.1",
+    "chai": "4.2.0",
     "debug": "^4.1.1",
-    "eslint": "^6.7.2",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
-    "globby": "^8",
-    "mocha": "^5",
+    "globby": "10.0.2",
+    "mocha": "5.2.0",
     "nock": "^10.0.6",
-    "nyc": "^13",
+    "nyc": "^15.1.0",
+    "oclif": "3.8.1",
     "sinon": "^7.4.1",
-    "ts-node": "^8",
-    "tslib": "^1",
-    "typescript": "3.7.5"
+    "ts-node": "10.9.1",
+    "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=14"
   },
   "files": [
     "/lib",
@@ -57,11 +49,14 @@
   ],
   "license": "MIT",
   "oclif": {
-    "commands": "./lib/commands",
-    "bin": "heroku",
-    "devPlugins": [
-      "@oclif/plugin-help"
+    "additionalHelpFlags": [
+      "-h"
     ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "bin": "heroku",
+    "commands": "./lib/commands",
     "topics": {
       "pipelines": {
         "description": "manage pipelines"
@@ -73,12 +68,12 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "eslint . --ext .ts --config .eslintrc",
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif readme && git add README.md"
   }
 }

@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach context cli nock expect */
+/* globals beforeEach afterEach context cli nock expect */
 
 let cmd = require('../../../commands/access')[0]
 let stubGet = require('../../stub/get')
@@ -13,7 +13,7 @@ describe('heroku access', () => {
       let apiGetPersonalApp = stubGet.personalApp()
       let apiGetAppCollaborators = stubGet.appCollaborators()
 
-      return cmd.run({ app: 'myapp', flags: {} })
+      return cmd.run({app: 'myapp', flags: {}})
         .then(() => expect(
           `jeff@heroku.com   collaborator
 raulb@heroku.com  owner
@@ -34,7 +34,7 @@ raulb@heroku.com  owner
       let apiGetAppPermissions = stubGet.appPermissions()
       let apiGetteamAppCollaboratorsWithPermissions = stubGet.teamAppCollaboratorsWithPermissions()
 
-      return cmd.run({ app: 'myapp', flags: {} })
+      return cmd.run({app: 'myapp', flags: {}})
         .then(() => expect(
           `bob@heroku.com    member  deploy,view
 raulb@heroku.com  admin   deploy,manage,operate,view

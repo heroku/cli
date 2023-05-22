@@ -23,7 +23,7 @@ export default class Set extends Command {
   ]
 
   async run() {
-    const {args, flags} = this.parse(Set)
+    const {args, flags} = await this.parse(Set)
 
     if (flags.index && flags.index < 0) {
       this.error('Invalid index. Must be greater than 0.')
@@ -38,6 +38,7 @@ export default class Set extends Command {
     if (flags.index === undefined) {
       spliceIndex = 0
     } else {
+      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
       const foundIndex = buildpackCommand.findIndex(buildpacks, flags.index)
       spliceIndex = (foundIndex === -1) ? buildpacks.length : foundIndex
     }

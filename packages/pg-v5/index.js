@@ -1,9 +1,9 @@
 'use strict'
 
-const { flatten } = require('lodash')
+const {flatten} = require('lodash')
 
 exports.topics = [
-  { name: 'pg', description: 'manage postgresql databases' }
+  {name: 'pg', description: 'manage postgresql databases'},
 ]
 
 exports.commands = flatten([
@@ -47,6 +47,13 @@ exports.commands = flatten([
   require('./commands/repoint'),
   require('./commands/reset'),
   require('./commands/settings'),
+  require('./commands/settings/auto_explain'),
+  require('./commands/settings/auto_explain_log_analyze'),
+  require('./commands/settings/auto_explain_log_buffers'),
+  require('./commands/settings/auto_explain_log_min_duration'),
+  require('./commands/settings/auto_explain_log_nested_statements'),
+  require('./commands/settings/auto_explain_log_triggers'),
+  require('./commands/settings/auto_explain_log_verbose'),
   require('./commands/settings/log_lock_waits'),
   require('./commands/settings/log_min_duration_statement'),
   require('./commands/settings/log_statement'),
@@ -54,7 +61,7 @@ exports.commands = flatten([
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
-  require('./commands/wait')
+  require('./commands/wait'),
 ])
 
 exports.host = require('./lib/host')

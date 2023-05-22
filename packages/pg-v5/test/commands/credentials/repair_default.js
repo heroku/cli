@@ -1,8 +1,8 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -11,27 +11,28 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
+  url: {href: 'postgres://jeff:pass@foo.com/mydb'},
 }
 
 const addon = {
   name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 
 const fetcher = () => {
   return {
     database: () => db,
-    addon: () => addon
+    addon: () => addon,
   }
 }
 
 const cmd = proxyquire('../../../commands/credentials/repair_default', {
-  '../../lib/fetcher': fetcher
+  '../../lib/fetcher': fetcher,
 })
 
 describe('pg:credentials:repair-default', () => {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -46,29 +47,29 @@ describe('pg:credentials:repair-default', () => {
 
   it('resets the credential permissions', () => {
     pg.post('/postgres/v0/databases/postgres-1/repair-default').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal('Resetting permissions and object ownership for default role to factory settings... done\n'))
   })
 
-  it('throws an error when the db is starter plan', () => {
+  it('throws an error when the db is essential plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: { name: 'heroku-postgresql:hobby-dev' }
+      plan: {name: 'heroku-postgresql:hobby-dev'},
     }
 
     const fetcher = () => {
       return {
         database: () => db,
-        addon: () => hobbyAddon
+        addon: () => hobbyAddon,
       }
     }
 
     const cmd = proxyquire('../../../commands/credentials/repair_default', {
-      '../../lib/fetcher': fetcher
+      '../../lib/fetcher': fetcher,
     })
 
-    const err = 'This operation is not supported by Hobby tier databases.'
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })).to.be.rejectedWith(Error, err)
+    const err = 'You can’t perform this operation on Essential-tier databases.'
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})).to.be.rejectedWith(Error, err)
   })
 })

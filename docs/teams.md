@@ -10,17 +10,14 @@ manage teams
 list the teams that you are a member of
 
 ```
-list the teams that you are a member of
-
-Use [36m[1mheroku members:*[22m[39m to manage team members.
-
-
 USAGE
-  $ heroku teams
+  $ heroku teams [--json]
 
-OPTIONS
+FLAGS
   --json  output in json format
 
 DESCRIPTION
+  list the teams that you are a member of
+
   Use heroku members:* to manage team members.
 ```

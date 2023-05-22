@@ -18,192 +18,182 @@ list webhooks on an app
 list webhooks on an app
 
 ```
-list webhooks on an app
-
 USAGE
-  $ heroku webhooks
+  $ heroku webhooks [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  list webhooks on an app
+
+EXAMPLES
   $ heroku webhooks
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/index.ts)_
 
 ## `heroku webhooks:add`
 
 add a webhook to an app
 
 ```
-add a webhook to an app
-
 USAGE
-  $ heroku webhooks:add
+  $ heroku webhooks:add -i <value> -l <value> -u <value> [-a <value>] [-r <value>] [-s <value>] [-t <value>]
 
-OPTIONS
-  -a, --app=app                      app to run command against
-  -i, --include=include              (required) comma delimited event types your server will receive
-  -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
-  -r, --remote=remote                git remote of app to use
-  -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=authorization  authoriation header to send with webhooks
-  -u, --url=url                      (required) URL for receiver
+FLAGS
+  -a, --app=<value>            app to run command against
+  -i, --include=<value>        (required) comma delimited event types your server will receive
+  -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
+  -r, --remote=<value>         git remote of app to use
+  -s, --secret=<value>         value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
+  -t, --authorization=<value>  authoriation header to send with webhooks
+  -u, --url=<value>            (required) URL for receiver
 
-EXAMPLE
+DESCRIPTION
+  add a webhook to an app
+
+EXAMPLES
   $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/add.ts)_
 
 ## `heroku webhooks:deliveries`
 
 list webhook deliveries on an app
 
 ```
-list webhook deliveries on an app
-
 USAGE
-  $ heroku webhooks:deliveries
+  $ heroku webhooks:deliveries [-a <value>] [-r <value>] [-s <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  -s, --status=status  filter deliveries by status
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+  -s, --status=<value>  filter deliveries by status
 
-EXAMPLE
+DESCRIPTION
+  list webhook deliveries on an app
+
+EXAMPLES
   $ heroku webhooks:deliveries
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/deliveries/index.ts)_
 
 ## `heroku webhooks:deliveries:info ID`
 
 info for a webhook event on an app
 
 ```
-info for a webhook event on an app
-
 USAGE
-  $ heroku webhooks:deliveries:info ID
+  $ heroku webhooks:deliveries:info ID [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  info for a webhook event on an app
+
+EXAMPLES
   $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:events`
 
 list webhook events on an app
 
 ```
-list webhook events on an app
-
 USAGE
-  $ heroku webhooks:events
+  $ heroku webhooks:events [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  list webhook events on an app
+
+EXAMPLES
   $ heroku webhooks:events
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/events/index.ts)_
 
 ## `heroku webhooks:events:info ID`
 
 info for a webhook event on an app
 
 ```
-info for a webhook event on an app
-
 USAGE
-  $ heroku webhooks:events:info ID
+  $ heroku webhooks:events:info ID [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  info for a webhook event on an app
+
+EXAMPLES
   $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/events/info.ts)_
 
 ## `heroku webhooks:info ID`
 
 info for a webhook on an app
 
 ```
-info for a webhook on an app
-
 USAGE
-  $ heroku webhooks:info ID
+  $ heroku webhooks:info ID [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  info for a webhook on an app
+
+EXAMPLES
   $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/info.ts)_
 
 ## `heroku webhooks:remove ID`
 
 removes a webhook from an app
 
 ```
-removes a webhook from an app
-
 USAGE
-  $ heroku webhooks:remove ID
+  $ heroku webhooks:remove ID [-a <value>] [-r <value>]
 
 ARGUMENTS
   ID  id of webhook to remove
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
-EXAMPLE
+DESCRIPTION
+  removes a webhook from an app
+
+EXAMPLES
   $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/remove.ts)_
 
 ## `heroku webhooks:update ID`
 
 updates a webhook in an app
 
 ```
-updates a webhook in an app
-
 USAGE
-  $ heroku webhooks:update ID
+  $ heroku webhooks:update ID -i <value> -l <value> -u <value> [-a <value>] [-r <value>] [-s <value>] [-t <value>]
 
-OPTIONS
-  -a, --app=app                      app to run command against
-  -i, --include=include              (required) comma delimited event types your server will receive
-  -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
-  -r, --remote=remote                git remote of app to use
-  -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=authorization  authoriation header to send with webhooks
-  -u, --url=url                      (required) URL for receiver
+FLAGS
+  -a, --app=<value>            app to run command against
+  -i, --include=<value>        (required) comma delimited event types your server will receive
+  -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
+  -r, --remote=<value>         git remote of app to use
+  -s, --secret=<value>         value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
+  -t, --authorization=<value>  authoriation header to send with webhooks
+  -u, --url=<value>            (required) URL for receiver
 
-EXAMPLE
-  $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 
-  09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
+DESCRIPTION
+  updates a webhook in an app
+
+EXAMPLES
+  $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
-
-_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.54.0/src/commands/webhooks/update.ts)_

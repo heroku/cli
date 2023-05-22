@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect */
+/* globals beforeEach afterEach cli nock expect */
 
 let cmd = require('../../../commands/teams')
 let stubGet = require('../../stub/get')
@@ -11,7 +11,7 @@ describe('heroku teams', () => {
   it('shows the teams you are a member of', () => {
     let apiGetOrgs = stubGet.teams()
 
-    return cmd.run({ flags: {} })
+    return cmd.run({flags: {}})
       .then(() => expect(
         `enterprise a  collaborator
 enterprise b  admin

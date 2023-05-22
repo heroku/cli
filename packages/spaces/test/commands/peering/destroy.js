@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/peering/destroy')
@@ -13,9 +13,9 @@ describe('spaces:peerings:destroy', function () {
     let api = nock('https://api.heroku.com:443')
       .delete('/spaces/my-space/peerings/pcx-12345')
       .reply(202)
-    return cmd.run({ flags: { space: 'my-space', 'pcxid': 'pcx-12345', confirm: 'pcx-12345' } })
+    return cmd.run({flags: {space: 'my-space', pcxid: 'pcx-12345', confirm: 'pcx-12345'}})
       .then(() => expect(cli.stdout).to.equal(
-        `Tearing down peering connection pcx-12345\n`))
+        'Tearing down peering connection pcx-12345\n'))
       .then(() => api.done())
   })
 })

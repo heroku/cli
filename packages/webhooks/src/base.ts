@@ -1,12 +1,12 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 
-import {IConfig} from '@oclif/config'
+import {Config} from '@oclif/core'
 
 export default abstract class extends Command {
   webhooksClient: APIClient
 
-  protected constructor(argv: string[], config: IConfig) {
+  protected constructor(argv: string[], config: Config) {
     super(argv, config)
 
     const client = new APIClient(this.config, {})
@@ -25,12 +25,14 @@ export default abstract class extends Command {
         display: context.pipeline,
       }
     }
+
     if (context.app) {
       return {
         path: `/apps/${context.app}`,
         display: color.app(context.app),
       }
     }
+
     return this.error('No app specified')
   }
 }

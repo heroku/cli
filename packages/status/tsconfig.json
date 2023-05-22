@@ -8,6 +8,7 @@
     "noUnusedParameters": true,
     "outDir": "./lib",
     "pretty": true,
+    "skipLibCheck": true,
     "rootDirs": [
       "./src"
     ],

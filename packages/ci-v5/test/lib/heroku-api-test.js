@@ -12,8 +12,8 @@ describe('heroku-api', function () {
   describe('#pipelineCoupling', function () {
     it('gets the pipeline coupling given an app', async function () {
       const app = 'sausages'
-      const coupling = { pipeline: { id: '123-abc' } }
-      const api = nock(`https://api.heroku.com`)
+      const coupling = {pipeline: {id: '123-abc'}}
+      const api = nock('https://api.heroku.com')
         .get(`/apps/${app}/pipeline-couplings`)
         .reply(200, coupling)
 
@@ -26,8 +26,8 @@ describe('heroku-api', function () {
   describe('#pipelineRepository', function () {
     it('gets the pipeline repository given a pipeline', async function () {
       const pipeline = '123-abc'
-      const repo = { repository: { name: 'heroku/heroku' } }
-      const api = nock(`https://kolkrabbi.heroku.com`)
+      const repo = {repository: {name: 'heroku/heroku'}}
+      const api = nock('https://kolkrabbi.heroku.com')
         .get(`/pipelines/${pipeline}/repository`)
         .reply(200, repo)
 
@@ -44,10 +44,10 @@ describe('heroku-api', function () {
       const dyno = {
         id: dynoID,
         attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000/{rendezvous-id}',
-        app: { id: appID }
+        app: {id: appID},
       }
 
-      const api = nock(`https://api.heroku.com`)
+      const api = nock('https://api.heroku.com')
         .get(`/apps/${appID}/dynos/${dynoID}`)
         .reply(200, dyno)
 
@@ -59,10 +59,10 @@ describe('heroku-api', function () {
 
   describe('#githubArchiveLink', function () {
     it('gets a GitHub archive link', async function () {
-      const { user, repository } = ['heroku', 'heroku-ci']
+      const {user, repository} = ['heroku', 'heroku-ci']
       const ref = '123-abc'
-      const archiveLink = { archive_link: 'https://example.com' }
-      const api = nock(`https://kolkrabbi.heroku.com`)
+      const archiveLink = {archive_link: 'https://example.com'}
+      const api = nock('https://kolkrabbi.heroku.com')
         .get(`/github/repos/${user}/${repository}/tarball/${ref}`)
         .reply(200, archiveLink)
 
@@ -76,8 +76,8 @@ describe('heroku-api', function () {
     it('gets a test run given a pipeline and number', async function () {
       const pipeline = '123-abc'
       const number = 1
-      const testRun = { number }
-      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
+      const testRun = {number}
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
         .get(`/pipelines/${pipeline}/test-runs/${number}`)
         .reply(200, testRun)
 
@@ -89,10 +89,10 @@ describe('heroku-api', function () {
 
   describe('#testNodes', function () {
     it('gets a test run given a pipeline and number', async function () {
-      const testRun = { id: 'uuid-999' }
-      const testNode = { test_run: { id: testRun.id } }
+      const testRun = {id: 'uuid-999'}
+      const testNode = {test_run: {id: testRun.id}}
 
-      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
         .get(`/test-runs/${testRun.id}/test-nodes`)
         .reply(200, [testNode])
 
@@ -105,8 +105,8 @@ describe('heroku-api', function () {
   describe('#testRuns', function () {
     it('gets test runs given a pipeline', async function () {
       const pipeline = '123-abc'
-      const testRuns = [{ id: '123' }]
-      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
+      const testRuns = [{id: '123'}]
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
         .get(`/pipelines/${pipeline}/test-runs`)
         .reply(200, testRuns)
 
@@ -119,8 +119,8 @@ describe('heroku-api', function () {
   describe('#latestTestRun', function () {
     it('gets the latest test run given a pipeline', async function () {
       const pipeline = '123-abc'
-      const testRuns = [{ number: 123 }, { number: 122 }]
-      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
+      const testRuns = [{number: 123}, {number: 122}]
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
         .get(`/pipelines/${pipeline}/test-runs`)
         .reply(200, testRuns)
 
@@ -132,9 +132,9 @@ describe('heroku-api', function () {
 
   describe('#createSource', function () {
     it('creates a source', async function () {
-      const source = { source_blob: { get_url: 'https://example.com/get', put_url: 'https://example.com/put' } }
-      const api = nock(`https://api.heroku.com`)
-        .post(`/sources`)
+      const source = {source_blob: {get_url: 'https://example.com/get', put_url: 'https://example.com/put'}}
+      const api = nock('https://api.heroku.com')
+        .post('/sources')
         .reply(201, source)
 
       const response = await herokuAPI.createSource(new Heroku())
@@ -146,8 +146,8 @@ describe('heroku-api', function () {
   describe('#configVars', function () {
     it('gets config vars', async function () {
       const id = '123'
-      const config = { FOO: 'bar' }
-      const api = nock(`https://api.heroku.com`)
+      const config = {FOO: 'bar'}
+      const api = nock('https://api.heroku.com')
         .get(`/pipelines/${id}/stage/test/config-vars`)
         .reply(200, config)
 
@@ -160,8 +160,8 @@ describe('heroku-api', function () {
   describe('#setConfigVars', function () {
     it('patches config vars', async function () {
       const id = '123'
-      const config = { FOO: 'bar' }
-      const api = nock(`https://api.heroku.com`)
+      const config = {FOO: 'bar'}
+      const api = nock('https://api.heroku.com')
         .patch(`/pipelines/${id}/stage/test/config-vars`)
         .reply(200, config)
 

@@ -5,7 +5,7 @@ module.exports = {
     topic: 'container',
     description: 'Use containers to build and deploy Heroku apps',
     name: 'container',
-    help: pkg.description
+    help: pkg.description,
   },
   commands: [
     require('./commands/rm')(pkg.topic),
@@ -15,6 +15,6 @@ module.exports = {
     require('./commands/pull')(pkg.topic),
     require('./commands/push')(pkg.topic),
     require('./commands/release')(pkg.topic),
-    require('./commands/run')(pkg.topic)
-  ]
+    require('./commands/run')(pkg.topic),
+  ],
 }

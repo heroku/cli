@@ -20,8 +20,8 @@
 $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
-$ heroku (-v|--version|version)
-@heroku-cli/plugin-run/7.56.0 darwin-x64 node-v12.18.4
+$ heroku (--version|-v)
+@heroku-cli/plugin-run/8.1.0 darwin-arm64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -42,28 +42,32 @@ display recent log output
 
 ```
 USAGE
-  $ heroku logs
+  $ heroku logs -a <value> [-r <value>] [-n <value>] [-d <value>] [-s <value>] [-t] [--force-colors]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
-  -n, --num=num        number of lines to display
-  -r, --remote=remote  git remote of app to use
-  -s, --source=source  only show output from this source (such as "app" or "heroku")
-  -t, --tail           continually stream logs
-  --force-colors       force use of colors (even on non-tty output)
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -d, --dyno=<value>    only show output from this dyno type (such as "web" or "worker")
+  -n, --num=<value>     number of lines to display
+  -r, --remote=<value>  git remote of app to use
+  -s, --source=<value>  only show output from this source (such as "app" or "heroku")
+  -t, --tail            continually stream logs
+  --force-colors        force use of colors (even on non-tty output)
 
 DESCRIPTION
+  display recent log output
   disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
 
 EXAMPLES
   $ heroku logs --app=my-app
+
   $ heroku logs --num=50
+
   $ heroku logs --dyno=web --app=my-app
+
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.56.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/logs.ts)_
 
 ## `heroku run`
 
@@ -71,27 +75,30 @@ run a one-off process inside a heroku dyno
 
 ```
 USAGE
-  $ heroku run
+  $ heroku run -a <value> [-r <value>] [-s <value>] [--type <value>] [-x] [-e <value>] [--no-tty]
+    [--no-notify]
 
-OPTIONS
-  -a, --app=app        (required) parent app used by review apps
-  -e, --env=env        environment variables to set (use ';' to split multiple vars)
-  -r, --remote=remote  git remote of app to use
-  -s, --size=size      dyno size
-  -x, --exit-code      passthrough the exit code of the remote command
-  --no-notify          disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
-  --no-tty             force the command to not run in a tty
-  --type=type          process type
+FLAGS
+  -a, --app=<value>     (required) parent app used by review apps
+  -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
+  -r, --remote=<value>  git remote of app to use
+  -s, --size=<value>    dyno size
+  -x, --exit-code       passthrough the exit code of the remote command
+  --no-notify           disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
+  --no-tty              force the command to not run in a tty
+  --type=<value>        process type
 
 DESCRIPTION
+  run a one-off process inside a heroku dyno
   Shows a notification if the dyno takes more than 20 seconds to start.
 
 EXAMPLES
   $ heroku run bash
-  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+
+  $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.56.0/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -99,19 +106,22 @@ run a detached dyno, where output is sent to your logs
 
 ```
 USAGE
-  $ heroku run:detached
+  $ heroku run:detached -a <value> [-r <value>] [-e <value>] [-s <value>] [-t] [--type <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -e, --env=env        environment variables to set (use ';' to split multiple vars)
-  -r, --remote=remote  git remote of app to use
-  -s, --size=size      dyno size
-  -t, --tail           continually stream logs
-  --type=type          process type
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
+  -r, --remote=<value>  git remote of app to use
+  -s, --size=<value>    dyno size
+  -t, --tail            continually stream logs
+  --type=<value>        process type
 
-EXAMPLE
+DESCRIPTION
+  run a detached dyno, where output is sent to your logs
+
+EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.56.0/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v8.1.0/src/commands/run/detached.ts)_
 <!-- commandsstop -->

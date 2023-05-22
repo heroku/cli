@@ -1,4 +1,4 @@
-import {expect, test} from '../../test'
+import {expect, test} from '@oclif/test'
 
 describe('domains', () => {
   const herokuOnlyDomainsResponse = [{
@@ -89,55 +89,44 @@ describe('domains', () => {
   ]
 
   test
-  .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [])
-  .get('/apps/myapp/domains')
-  .reply(200, herokuOnlyDomainsResponse),
-  )
-  .stdout()
-  .command(['domains', '--app', 'myapp'])
-  .it('does not show the custom domain header if there are no custom domains', ctx => {
-    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\nmyapp.herokuapp.com')
-    expect(ctx.stdout).to.contain('myapp.herokuapp.com')
-    expect(ctx.stdout).to.not.contain('=== myapp Custom Domains')
-  })
+    .nock('https://api.heroku.com', api => api
+      .get('/apps/myapp/domains')
+      .reply(200, herokuOnlyDomainsResponse),
+    )
+    .stdout()
+    .command(['domains', '--app', 'myapp'])
+    .it('does not show the custom domain header if there are no custom domains', ctx => {
+      expect(ctx.stdout).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+      expect(ctx.stdout).to.contain('myapp.herokuapp.com')
+      expect(ctx.stdout).to.not.contain('=== myapp Custom Domains')
+    })
 
   test
-  .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [])
-  .get('/apps/myapp/domains')
-  .reply(200, herokuAndCustomDomainsResponse),
-  )
-  .stdout()
-  .command(['domains', '--app', 'myapp'])
-  .it('shows a list of domains and their DNS targets when there are custom domains', ctx => {
-    expect(ctx.stdout).to.contain('=== myapp Heroku Domain\nmyapp.herokuapp.com')
-    expect(ctx.stdout).to.contain('myapp.herokuapp.com')
-    expect(ctx.stdout).to.contain('=== myapp Custom Domains')
-    expect(ctx.stdout).to.contain('Domain Name     DNS Record Type DNS Target')
-    expect(ctx.stdout).to.contain('example.com     ALIAS or ANAME  foo.herokudns.com')
-    expect(ctx.stdout).to.contain('www.example.com CNAME           bar.herokudns.com')
-    expect(ctx.stdout).to.contain('*.example.com   CNAME           buzz.herokudns.com')
-  })
+    .nock('https://api.heroku.com', api => api
+      .get('/apps/myapp/domains')
+      .reply(200, herokuAndCustomDomainsResponse),
+    )
+    .stdout()
+    .command(['domains', '--app', 'myapp'])
+    .it('shows a list of domains and their DNS targets when there are custom domains', ctx => {
+      expect(ctx.stdout).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+      expect(ctx.stdout).to.contain('myapp.herokuapp.com')
+      expect(ctx.stdout).to.contain('=== myapp Custom Domains')
+      expect(ctx.stdout).to.contain('Domain Name     DNS Record Type DNS Target')
+      expect(ctx.stdout).to.contain('example.com     ALIAS or ANAME  foo.herokudns.com')
+      expect(ctx.stdout).to.contain('www.example.com CNAME           bar.herokudns.com')
+      expect(ctx.stdout).to.contain('*.example.com   CNAME           buzz.herokudns.com')
+    })
 
   test
-  .nock('https://api.heroku.com', api => api
-  .get('/apps/myapp/features')
-  .reply(200, [
-    {
-      name: 'allow-multiple-sni-endpoints',
-      enabled: true,
-    },
-  ])
-  .get('/apps/myapp/domains')
-  .reply(200, herokuDomainWithSniEndpoint),
-  )
-  .stdout()
-  .command(['domains', '--app', 'myapp'])
-  .it('shows the SNI endpoint column when multiple sni endpoints are enabled', ctx => {
-    expect(ctx.stdout).to.contain('Domain Name   DNS Record Type DNS Target         SNI Endpoint')
-    expect(ctx.stdout).to.contain('*.example.com CNAME           buzz.herokudns.com some haiku')
-  })
+    .nock('https://api.heroku.com', api => api
+      .get('/apps/myapp/domains')
+      .reply(200, herokuDomainWithSniEndpoint),
+    )
+    .stdout()
+    .command(['domains', '--app', 'myapp'])
+    .it('shows the SNI endpoint column when multiple sni endpoints are enabled', ctx => {
+      expect(ctx.stdout).to.contain('Domain Name   DNS Record Type DNS Target         SNI Endpoint')
+      expect(ctx.stdout).to.contain('*.example.com CNAME           buzz.herokudns.com some haiku')
+    })
 })

@@ -13,16 +13,16 @@ add/remove app features
 list available app features
 
 ```
-list available app features
-
-
 USAGE
-  $ heroku features
+  $ heroku features -a <value> [--json] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --json               output in json format
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --json                output in json format
+
+DESCRIPTION
+  list available app features
 ```
 
 ## `heroku features:disable FEATURE`
@@ -30,15 +30,15 @@ OPTIONS
 disables an app feature
 
 ```
-disables an app feature
-
-
 USAGE
-  $ heroku features:disable FEATURE
+  $ heroku features:disable FEATURE -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  disables an app feature
 ```
 
 ## `heroku features:enable FEATURE`
@@ -46,15 +46,15 @@ OPTIONS
 enables an app feature
 
 ```
-enables an app feature
-
-
 USAGE
-  $ heroku features:enable FEATURE
+  $ heroku features:enable FEATURE -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  enables an app feature
 ```
 
 ## `heroku features:info FEATURE`
@@ -62,14 +62,14 @@ OPTIONS
 display information about a feature
 
 ```
-display information about a feature
-
-
 USAGE
-  $ heroku features:info FEATURE
+  $ heroku features:info FEATURE -a <value> [--json] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --json               output in json format
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --json                output in json format
+
+DESCRIPTION
+  display information about a feature
 ```

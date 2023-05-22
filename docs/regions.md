@@ -10,15 +10,14 @@ list available regions for deployment
 list available regions for deployment
 
 ```
-list available regions for deployment
-
 USAGE
-  $ heroku regions
+  $ heroku regions [--json] [--private] [--common]
 
-OPTIONS
+FLAGS
   --common   show regions for common runtime
   --json     output in json format
   --private  show regions for private spaces
-```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.54.0/packages/ps/src/commands/regions.ts)_
+DESCRIPTION
+  list available regions for deployment
+```

@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as EventSource from '@heroku/eventsource'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 import {URL} from 'url'
 
@@ -21,14 +21,14 @@ async function readLogsV1(logplexURL: string) {
     response.setEncoding('utf8')
     liner.setEncoding('utf8')
     response.pipe(liner)
-    liner.on('data', line => cli.log(colorize(line)))
+    liner.on('data', line => CliUx.ux.log(colorize(line)))
     response.on('end', resolve)
     response.on('error', reject)
   })
 }
 
 function readLogsV2(logplexURL: string) {
-  return new Promise(function (resolve, reject) {
+  return new Promise<void>(function (resolve, reject) {
     const u = new URL(logplexURL)
     const isTail = u.searchParams.get('tail') === 'true'
     const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
@@ -59,7 +59,7 @@ function readLogsV2(logplexURL: string) {
 
     es.addEventListener('message', function (e) {
       e.data.trim().split(/\n+/).forEach(line => {
-        cli.log(colorize(line))
+        CliUx.ux.log(colorize(line))
       })
     })
   })
@@ -78,10 +78,9 @@ function readLogs(logplexURL: string) {
 async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
   process.stdout.on('error', err => {
     if (err.code === 'EPIPE') {
-      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       process.exit(0)
     } else {
-      cli.error(err.stack, {exit: 1})
+      CliUx.ux.error(err.stack, {exit: 1})
     }
   })
 

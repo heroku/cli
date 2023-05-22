@@ -3,14 +3,18 @@
 const cli = require('heroku-cli-util')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
-const { flags } = require('@heroku-cli/command')
-const { RegionCompletion } = require('@heroku-cli/command/lib/completions')
+const {flags} = require('@heroku-cli/command')
+const {RegionCompletion} = require('@heroku-cli/command/lib/completions')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let space = context.flags.space || context.args.space
   let dollarAmount = '$1000'
   let spaceType = 'Standard'
-  if (context.flags['shield']) { dollarAmount = '$3000'; spaceType = 'Shield' }
+  if (context.flags.shield) {
+    dollarAmount = '$3000'
+    spaceType = 'Shield'
+  }
+
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:create --space my-space --team my-team')
   let team = context.flags.team
   if (!team) throw new Error('No team specified')
@@ -24,11 +28,11 @@ async function run (context, heroku) {
       region: context.flags.region,
       features: parsers.splitCsv(context.flags.features),
       log_drain_url: context.flags['log-drain-url'],
-      shield: context.flags['shield'],
-      cidr: context.flags['cidr'],
+      shield: context.flags.shield,
+      cidr: context.flags.cidr,
       kpi_url: context.flags['kpi-url'],
-      data_cidr: context.flags['data-cidr']
-    }
+      data_cidr: context.flags['data-cidr'],
+    },
   })
 
   space = await cli.action(`Creating space ${cli.color.green(space)} in team ${cli.color.cyan(team)}`, request)
@@ -43,7 +47,7 @@ async function run (context, heroku) {
     'Data CIDR': space.data_cidr,
     State: space.state,
     Shield: lib.displayShieldState(space),
-    'Created at': space.created_at
+    'Created at': space.created_at,
   }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Created at'])
 }
 
@@ -68,18 +72,18 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   wantsOrg: true,
-  args: [{ name: 'space', optional: true, hidden: true }],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'name of space to create' },
-    { name: 'channel', hasValue: true, hidden: true },
-    { name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion },
-    { name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas' },
-    { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
-    { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
-    { name: 'cidr', hasValue: true, description: 'RFC-1918 CIDR the space will use' },
-    { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
-    { name: 'data-cidr', hasValue: true, description: 'RFC-1918 CIDR used by Heroku Data resources for the space' },
-    flags.team({ name: 'team', hasValue: true })
+    {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
+    {name: 'channel', hasValue: true, hidden: true},
+    {name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion},
+    {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
+    {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
+    {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
+    {name: 'cidr', hasValue: true, description: 'RFC-1918 CIDR the space will use'},
+    {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'},
+    {name: 'data-cidr', hasValue: true, description: 'RFC-1918 CIDR used by Heroku Data resources for the space'},
+    flags.team({name: 'team', hasValue: true}),
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

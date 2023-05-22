@@ -11,7 +11,7 @@ export default class Clear extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Clear)
+    const {flags} = await this.parse(Clear)
     const buildpackCommand = new BuildpackCommand(this.heroku)
     await buildpackCommand.clear(flags.app, 'clear', 'cleared')
   }

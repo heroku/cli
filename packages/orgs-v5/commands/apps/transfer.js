@@ -7,7 +7,7 @@ let inquirer = require('inquirer')
 let lock = require('./lock.js')[0]
 let Utils = require('../../lib/utils')
 
-function getAppsToTransfer (apps) {
+function getAppsToTransfer(apps) {
   return inquirer.prompt([{
     type: 'checkbox',
     name: 'choices',
@@ -16,9 +16,9 @@ function getAppsToTransfer (apps) {
     choices: apps.map(function (app) {
       return {
         name: `${app.name} (${Utils.getOwner(app.owner.email)})`,
-        value: { name: app.name, owner: app.owner.email }
+        value: {name: app.name, owner: app.owner.email},
       }
-    })
+    }),
   }])
 }
 
@@ -40,11 +40,11 @@ async function run(context, heroku) {
           appName: app.name,
           recipient: recipient,
           personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(app.owner),
-          bulk: true
+          bulk: true,
         })
         await appTransfer.start()
-      } catch (err) {
-        cli.error(err)
+      } catch (error) {
+        cli.error(error)
       }
     }
   } else { // Single app transfer
@@ -59,7 +59,7 @@ async function run(context, heroku) {
       heroku: heroku,
       appName: appInfo.name,
       recipient: recipient,
-      personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(appInfo.owner.email)
+      personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(appInfo.owner.email),
     })
     await appTransfer.start()
 
@@ -77,11 +77,11 @@ let cmd = {
   wantsApp: true,
   run: cli.command(run),
   args: [
-    { name: 'recipient', description: 'user or team to transfer applications to' }
+    {name: 'recipient', description: 'user or team to transfer applications to'},
   ],
   flags: [
-    { name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer' },
-    { name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk' }
+    {name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer'},
+    {name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk'},
   ],
   examples: `$ heroku apps:transfer collaborator@example.com
 Transferring example to collaborator@example.com... done
@@ -90,7 +90,7 @@ $ heroku apps:transfer acme-widgets
 Transferring example to acme-widgets... done
 
 $ heroku apps:transfer --bulk acme-widgets
-...`
+...`,
 }
 
 module.exports = [
@@ -104,6 +104,6 @@ module.exports = [
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
       process.exit(1)
-    }
-  }
+    },
+  },
 ]

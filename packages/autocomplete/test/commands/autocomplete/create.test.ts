@@ -1,5 +1,5 @@
-import {Config, Plugin} from '@oclif/config'
-import {loadJSON} from '@oclif/config/lib/util'
+import {Config, Plugin} from '@oclif/core'
+import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
 import * as path from 'path'
 
@@ -38,7 +38,10 @@ runtest('Create', () => {
       // eslint-disable-next-line require-atomic-updates
       plugin.manifest = await loadJSON(path.resolve(__dirname, '../../test.oclif.manifest.json'))
       // eslint-disable-next-line require-atomic-updates
-      plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({...c as object, load: () => plugin.findCommand(id, {must: true})}))
+      plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({
+        ...c as Record<string, unknown>,
+        load: () => plugin.findCommand(id, {must: true})}
+      ))
       Klass = plugin.commands[1]
     })
 

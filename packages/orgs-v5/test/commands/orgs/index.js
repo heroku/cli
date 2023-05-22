@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect */
+/* globals beforeEach afterEach cli nock expect */
 
 let cmd = require('../../../commands/orgs')
 let stubGet = require('../../stub/get')
@@ -11,7 +11,7 @@ describe('heroku teams', () => {
   it('shows Enterprise teams only when passing the --enterprise flag', () => {
     let apiGetTeams = stubGet.teams()
 
-    return cmd.run({ flags: { enterprise: true } })
+    return cmd.run({flags: {enterprise: true}})
       .then(() => expect(
         `enterprise a  collaborator
 enterprise b  admin\n`).to.eq(cli.stdout))
@@ -21,11 +21,11 @@ enterprise b  admin\n`).to.eq(cli.stdout))
 
   it('shows teams', () => {
     let apiGetTeamsOnly = stubGet.teams([
-      { name: 'enterprise a', role: 'collaborator', type: 'enterprise' },
-      { name: 'enterprise b', role: 'admin', type: 'enterprise' }
+      {name: 'enterprise a', role: 'collaborator', type: 'enterprise'},
+      {name: 'enterprise b', role: 'admin', type: 'enterprise'},
     ])
 
-    return cmd.run({ flags: {} })
+    return cmd.run({flags: {}})
       .then(() => expect(
         `enterprise a  collaborator
 enterprise b  admin\n`).to.eq(cli.stdout))

@@ -3,15 +3,15 @@
 let cli = require('heroku-cli-util')
 
 async function run(context, heroku) {
-  await cli.action('Removing all SSH keys', async function () {
+  await cli.action('Removing all SSH keys', (async function () {
     let keys = await heroku.get('/account/keys')
     for (let key of keys) {
       await heroku.request({
         method: 'DELETE',
-        path: `/account/keys/${key.id}`
+        path: `/account/keys/${key.id}`,
       })
     }
-  }())
+  })())
 }
 
 module.exports = {
@@ -19,5 +19,5 @@ module.exports = {
   command: 'clear',
   description: 'remove all SSH keys for current user',
   needsAuth: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

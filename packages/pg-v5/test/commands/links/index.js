@@ -1,29 +1,30 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 const fetcher = () => {
   return {
     all: () => [addon],
-    addon: () => addon
+    addon: () => addon,
   }
 }
 
 const cmd = proxyquire('../../../commands/links', {
-  '../../lib/fetcher': fetcher
+  '../../lib/fetcher': fetcher,
 })
 
 describe('pg:links', () => {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -39,9 +40,9 @@ describe('pg:links', () => {
 
   it('shows links', () => {
     pg.get('/client/v11/databases/1/links').reply(200, [
-      { name: 'redis-link-1', created_at: '100', remote: { attachment_name: 'REDIS', name: 'redis-001' } }
+      {name: 'redis-link-1', created_at: '100', remote: {attachment_name: 'REDIS', name: 'redis-001'}},
     ])
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout).to.equal(`=== postgres-1
 
  * redis-link-1

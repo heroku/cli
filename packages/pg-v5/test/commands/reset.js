@@ -1,28 +1,29 @@
 'use strict'
-/* global describe it beforeEach afterEach */
+/* global beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: {name: 'heroku-postgresql:standard-0'},
 }
 const fetcher = () => {
   return {
-    addon: () => addon
+    addon: () => addon,
   }
 }
 
 const cmd = proxyquire('../../commands/reset', {
-  '../lib/fetcher': fetcher
+  '../lib/fetcher': fetcher,
 })
 
 describe('pg:reset', () => {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -38,7 +39,20 @@ describe('pg:reset', () => {
 
   it('reset db', () => {
     pg.put('/client/v11/databases/1/reset').reply(200)
-    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
+    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
+  })
+
+  context('with extensions', () => {
+    beforeEach(() => {
+      pg.put('/client/v11/databases/1/reset', {extensions: ['postgis', 'uuid-ossp']}).reply(200, {
+        message: 'Reset successful.',
+      })
+    })
+
+    it('resets a db with pre-installed extensions', () => {
+      return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp', extensions: 'uuid-ossp, Postgis'}})
+        .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
+    })
   })
 })

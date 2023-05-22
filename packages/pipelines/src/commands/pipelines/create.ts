@@ -1,12 +1,14 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import {prompt} from 'inquirer'
 
 import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../api'
 import infer from '../../infer'
 import {inferrableStageNames as stages} from '../../stages'
+
+const cli = CliUx.ux
 
 export default class Create extends Command {
   static description = `create a new pipeline
@@ -41,7 +43,7 @@ export default class Create extends Command {
   }]
 
   async run() {
-    const {args, flags} = this.parse(Create)
+    const {args, flags} = await this.parse(Create)
 
     let name
     let stage
@@ -61,6 +63,7 @@ export default class Create extends Command {
         default: guesses[0],
       })
     }
+
     if (flags.stage) {
       stage = flags.stage
     } else {

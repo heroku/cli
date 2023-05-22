@@ -1,13 +1,14 @@
 'use strict'
-/* global describe it beforeEach afterEach context */
+/* global beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:schedules')
 
 const shouldSchedules = function (cmdRun) {
-  let api, pg
+  let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -23,7 +24,7 @@ const shouldSchedules = function (cmdRun) {
 
   it('shows empty message with no databases', () => {
     api.get('/apps/myapp/addons').reply(200, [])
-    return expect(cmdRun({ app: 'myapp' })).to.be.rejectedWith('No heroku-postgresql databases on myapp')
+    return expect(cmdRun({app: 'myapp'})).to.be.rejectedWith('No heroku-postgresql databases on myapp')
   })
 
   context('with databases', () => {
@@ -32,15 +33,15 @@ const shouldSchedules = function (cmdRun) {
         {
           id: 1,
           name: 'postgres-1',
-          plan: { name: 'heroku-postgresql:standard-0' },
-          app: { name: 'myapp' }
-        }
+          plan: {name: 'heroku-postgresql:standard-0'},
+          app: {name: 'myapp'},
+        },
       ])
     })
 
     it('shows empty message with no schedules', () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
-      return cmd.run({ app: 'myapp' }).then(() => {
+      return cmd.run({app: 'myapp'}).then(() => {
         expect(cli.stderr).to.contain('No backup schedules found on myapp\n')
 
         expect(cli.stderr).to.contain('Use heroku pg:backups:schedule to set one up\n')
@@ -49,14 +50,14 @@ const shouldSchedules = function (cmdRun) {
 
     it('shows schedule', () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [
-        { name: 'DATABASE_URL', hour: 5, timezone: 'UTC' }
+        {name: 'DATABASE_URL', hour: 5, timezone: 'UTC'},
       ])
-      return cmdRun({ app: 'myapp' }).then(() =>
+      return cmdRun({app: 'myapp'}).then(() =>
         expect(cli.stdout).to.equal(
           `=== Backup Schedules
 DATABASE_URL: daily at 5:00 UTC
-`
-        )
+`,
+        ),
       )
     })
   })

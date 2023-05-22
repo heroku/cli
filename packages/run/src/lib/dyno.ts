@@ -4,7 +4,7 @@ import {IOptions} from '@heroku-cli/command/lib/api-client'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
-import cli from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import debugFactory from 'debug'
 import {HTTP} from 'http-call'
 import * as https from 'https'
@@ -12,13 +12,12 @@ import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-// eslint-disable-next-line node/no-deprecated-api
 import {URL, parse} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
 const debug = debugFactory('heroku:run')
-const wait = (ms: number) => new Promise(resolve => setTimeout(() => resolve(), ms))
+const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
 
 interface HerokuApiClientRun extends APIClient {
   options: IOptions & {
@@ -92,7 +91,7 @@ export default class Dyno extends Duplex {
   async start() {
     this._startedAt = Date.now()
     if (this.opts.showStatus) {
-      cli.action.start(`Running ${color.cyan.bold(this.opts.command)} on ${color.app(this.opts.app)}`)
+      CliUx.ux.action.start(`Running ${color.cyan.bold(this.opts.command)} on ${color.app(this.opts.app)}`)
     }
 
     await this._doStart()
@@ -122,7 +121,7 @@ export default class Dyno extends Duplex {
         }
         await this.attach()
       } else if (this.opts.showStatus) {
-        cli.action.stop(this._status('done'))
+        CliUx.ux.action.stop(this._status('done'))
       }
     } catch (error) {
       // Currently the runtime API sends back a 409 in the event the
@@ -136,7 +135,7 @@ export default class Dyno extends Duplex {
       }
       throw error
     } finally {
-      cli.action.stop()
+      CliUx.ux.action.stop()
     }
   }
 
@@ -163,7 +162,7 @@ export default class Dyno extends Duplex {
       this.reject = reject
 
       if (this.opts.showStatus) {
-        cli.action.status = this._status('starting')
+        CliUx.ux.action.status = this._status('starting')
       }
 
       const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
@@ -176,7 +175,7 @@ export default class Dyno extends Duplex {
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
         c.write(pathnameWithSearchParams.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) {
-            cli.action.status = this._status('connecting')
+            CliUx.ux.action.status = this._status('connecting')
           }
         })
       })
@@ -204,7 +203,7 @@ export default class Dyno extends Duplex {
     try {
       const {body: dyno} = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
       this.dyno = dyno
-      cli.action.stop(this._status(this.dyno.state))
+      CliUx.ux.action.stop(this._status(this.dyno.state))
 
       if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
         return this._connect()
@@ -270,7 +269,7 @@ export default class Dyno extends Duplex {
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
     if (this.opts.listen) {
-      cli.log(`listening on port ${host}:${port} for ssh client`)
+      CliUx.ux.log(`listening on port ${host}:${port} for ssh client`)
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
@@ -312,7 +311,7 @@ export default class Dyno extends Duplex {
           }
           msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
           msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
-          cli.error(msgs.join('\n'))
+          CliUx.ux.error(msgs.join('\n'))
         }
         // cleanup local server
         localServer.close()
@@ -350,7 +349,7 @@ export default class Dyno extends Duplex {
       debug('input: %o', data)
       // discard first line
       if (c && firstLine) {
-        if (this.opts.showStatus) cli.action.stop(this._status('up'))
+        if (this.opts.showStatus) CliUx.ux.action.stop(this._status('up'))
         firstLine = false
         this._readStdin(c)
         return
@@ -404,7 +403,7 @@ export default class Dyno extends Duplex {
         sigints = sigints.filter(d => d > Date.now() - 1000)
 
         if (sigints.length >= 4) {
-          cli.error('forcing dyno disconnect', {exit: 1})
+          CliUx.ux.error('forcing dyno disconnect', {exit: 1})
         }
       })
     } else {
@@ -450,7 +449,7 @@ export default class Dyno extends Duplex {
 
       notify(notification)
     } catch (error) {
-      cli.warn(error)
+      CliUx.ux.warn(error)
     }
   }
 }

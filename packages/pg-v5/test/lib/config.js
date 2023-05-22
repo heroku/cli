@@ -1,9 +1,9 @@
 'use strict'
-/* global describe beforeEach afterEach it */
+/* global beforeEach afterEach */
 
 const nock = require('nock')
 const getConfig = require('../../lib/config')
-const { expect } = require('chai')
+const {expect} = require('chai')
 const Heroku = require('heroku-client')
 
 describe('config', () => {
@@ -21,8 +21,8 @@ describe('config', () => {
   })
 
   it('caches the config vars', () => {
-    let expectedMyapp = { 'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb' }
-    let expectedFooapp = { 'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb' }
+    let expectedMyapp = {DATABASE_URL: 'postgres://pguser:pgpass@pghost.com/pgdb'}
+    let expectedFooapp = {FOO_URL: 'postgres://pguser:pgpass@pghost.com/pgdb'}
 
     api.get('/apps/myapp/config-vars').reply(200, expectedMyapp)
 

@@ -2,11 +2,11 @@
 
 const cli = require('heroku-cli-util')
 
-function display (auth) {
+function display(auth) {
   const obj = {
     ID: auth.id,
     Description: auth.description,
-    Scope: auth.scope.join(',')
+    Scope: auth.scope.join(','),
   }
   if (auth.client) {
     obj.Client = auth.client.name
@@ -31,10 +31,10 @@ function display (auth) {
     'Scope',
     'Token',
     'Expires at',
-    'Updated at'
+    'Updated at',
   ])
 }
 
 module.exports = {
-  display
+  display,
 }

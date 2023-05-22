@@ -1,6 +1,6 @@
 'use strict'
 
-function download (url, path, opts) {
+function download(url, path, opts) {
   const progress = require('smooth-progress')
   const bytes = require('bytes')
   const https = require('https')
@@ -8,16 +8,16 @@ function download (url, path, opts) {
   const mkdirp = require('mkdirp')
   const tty = process.stderr.isTTY && process.env.TERM !== 'dumb'
 
-  function showProgress (rsp) {
+  function showProgress(rsp) {
     let bar = progress({
       tmpl: `Downloading ${path}... :bar :percent :eta :data`,
       width: 25,
-      total: parseInt(rsp.headers['content-length'])
+      total: Number.parseInt(rsp.headers['content-length']),
     })
     let total = 0
     rsp.on('data', function (chunk) {
       total += chunk.length
-      bar.tick(chunk.length, { data: bytes(total, { decimalPlaces: 2, fixedDecimals: 2 }) })
+      bar.tick(chunk.length, {data: bytes(total, {decimalPlaces: 2, fixedDecimals: 2})})
     })
   }
 

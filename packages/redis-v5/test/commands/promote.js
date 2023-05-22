@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach cli */
+/* globals beforeEach cli */
 
 let nock = require('nock')
 let expect = require('chai').expect
@@ -19,19 +19,19 @@ describe('heroku redis:promote', function () {
   it('# promotes', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        { name: 'redis-silver-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL'] },
-        { name: 'redis-gold-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['HEROKU_REDIS_GOLD_URL'] }
+        {name: 'redis-silver-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL']},
+        {name: 'redis-gold-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['HEROKU_REDIS_GOLD_URL']},
       ])
 
     let attach = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        'app': { 'name': 'example' },
-        'addon': { 'name': 'redis-gold-haiku' },
-        'confirm': 'example',
-        'name': 'REDIS'
+        app: {name: 'example'},
+        addon: {name: 'redis-gold-haiku'},
+        confirm: 'example',
+        name: 'REDIS',
       }).reply(200, {})
 
-    return command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
+    return command.run({app: 'example', flags: {}, args: {database: 'redis-gold-haiku'}, auth: {username: 'foobar', password: 'password'}})
       .then(() => app.done())
       .then(() => attach.done())
       .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
@@ -43,33 +43,33 @@ describe('heroku redis:promote', function () {
       .get('/apps/example/addons').reply(200, [
         {
           name: 'redis-silver-haiku',
-          addon_service: { name: 'heroku-redis' },
+          addon_service: {name: 'heroku-redis'},
           config_vars: [
             'REDIS_URL',
             'REDIS_BASTIONS',
             'REDIS_BASTION_KEY',
-            'REDIS_BASTION_REKEYS_AFTER'
-          ]
+            'REDIS_BASTION_REKEYS_AFTER',
+          ],
         },
-        { name: 'redis-gold-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['HEROKU_REDIS_GOLD_URL'] }
+        {name: 'redis-gold-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['HEROKU_REDIS_GOLD_URL']},
       ])
 
     let attachRedisUrl = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        'app': { 'name': 'example' },
-        'addon': { 'name': 'redis-silver-haiku' },
-        'confirm': 'example'
+        app: {name: 'example'},
+        addon: {name: 'redis-silver-haiku'},
+        confirm: 'example',
       }).reply(200, {})
 
     let attach = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        'app': { 'name': 'example' },
-        'addon': { 'name': 'redis-gold-haiku' },
-        'confirm': 'example',
-        'name': 'REDIS'
+        app: {name: 'example'},
+        addon: {name: 'redis-gold-haiku'},
+        confirm: 'example',
+        name: 'REDIS',
       }).reply(200, {})
 
-    return command.run({ app: 'example', flags: {}, args: { database: 'redis-gold-haiku' }, auth: { username: 'foobar', password: 'password' } })
+    return command.run({app: 'example', flags: {}, args: {database: 'redis-gold-haiku'}, auth: {username: 'foobar', password: 'password'}})
       .then(() => app.done())
       .then(() => attachRedisUrl.done())
       .then(() => attach.done())

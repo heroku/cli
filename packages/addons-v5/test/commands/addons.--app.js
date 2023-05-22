@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it context beforeEach */
+/* globals context beforeEach */
 
 let cli = require('heroku-cli-util')
 let cmd = require('../../commands/addons')
@@ -9,13 +9,13 @@ let nock = require('nock')
 let util = require('../util')
 
 describe('addons --app', function () {
-  function mockAPI (appName, addons, attachments) {
+  function mockAPI(appName, addons, attachments) {
     addons = addons || []
     attachments = attachments || []
 
-    nock('https://api.heroku.com', { reqheaders: {
-      'Accept-Expansion': 'addon_service,plan'
-    } })
+    nock('https://api.heroku.com', {reqheaders: {
+      'Accept-Expansion': 'addon_service,plan',
+    }})
       .get(`/apps/${appName}/addons`)
       .reply(200, addons)
 
@@ -26,8 +26,8 @@ describe('addons --app', function () {
 
   beforeEach(() => cli.mockConsole())
 
-  function run (app, cb) {
-    return cmd.run({ flags: {}, app: app }).then(cb)
+  function run(app, cb) {
+    return cmd.run({flags: {}, app: app}).then(cb)
   }
 
   it('prints message when there are no add-ons', function () {
@@ -44,17 +44,17 @@ describe('addons --app', function () {
     it('prints add-ons in a table with attachments', function () {
       mockAPI('acme-inc-www', [
         fixtures.addons['www-db'],
-        fixtures.addons['www-redis']
+        fixtures.addons['www-redis'],
       ], [
         fixtures.attachments['acme-inc-www::DATABASE'],
-        fixtures.attachments['acme-inc-www::REDIS']
+        fixtures.attachments['acme-inc-www::REDIS'],
       ])
 
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
 Add-on                      Plan       Price      State
 ──────────────────────────  ─────────  ─────────  ────────
-heroku-postgresql (www-db)  hobby-dev  free       created
+heroku-postgresql (www-db)  mini       $5/month   created
  └─ as DATABASE
 
 heroku-redis (www-redis)    premium-2  $60/month  creating
@@ -68,13 +68,13 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
     it('shows attachments to foreign apps for owned add-ons', function () {
       mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
         fixtures.attachments['acme-inc-www::DATABASE'],
-        fixtures.attachments['acme-inc-dwh::WWW_DB']
+        fixtures.attachments['acme-inc-dwh::WWW_DB'],
       ])
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                             Plan       Price  State
-─────────────────────────────────  ─────────  ─────  ───────
-heroku-postgresql (www-db)         hobby-dev  free   created
+Add-on                             Plan  Price     State
+─────────────────────────────────  ────  ────────  ───────
+heroku-postgresql (www-db)         mini  $5/month  created
  ├─ as DATABASE
  └─ as WWW_DB on acme-inc-dwh app
 
@@ -86,14 +86,14 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
     it('shows add-ons owned by foreign apps if attached to targeted app', function () {
       mockAPI('acme-inc-dwh', [fixtures.addons['www-db']], [
         fixtures.attachments['acme-inc-www::DATABASE'],
-        fixtures.attachments['acme-inc-dwh::WWW_DB']
+        fixtures.attachments['acme-inc-dwh::WWW_DB'],
       ])
 
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout, `
-Add-on                               Plan       Price                         State
-───────────────────────────────────  ─────────  ────────────────────────────  ───────
-heroku-postgresql (www-db)           hobby-dev  (billed to acme-inc-www app)  created
+Add-on                               Plan  Price                         State
+───────────────────────────────────  ────  ────────────────────────────  ───────
+heroku-postgresql (www-db)           mini  (billed to acme-inc-www app)  created
  ├─ as WWW_DB
  └─ as DATABASE on acme-inc-www app
 
@@ -114,7 +114,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
       beforeEach(function () {
         mockAPI('acme-inc-dwh', [fixtures.addons['www-db']], [
           fixtures.attachments['acme-inc-www::DATABASE'],
-          fixtures.attachments['acme-inc-dwh::WWW_DB']
+          fixtures.attachments['acme-inc-dwh::WWW_DB'],
         ])
       })
 
@@ -136,10 +136,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
         it('sorts owned add-ons first, foreign add-ons second', function () {
           mockAPI('acme-inc-dwh', [
             fixtures.addons['dwh-db'],
-            fixtures.addons['www-db']
+            fixtures.addons['www-db'],
           ], [
             fixtures.attachments['acme-inc-dwh::DATABASE'],
-            fixtures.attachments['acme-inc-dwh::WWW_DB']
+            fixtures.attachments['acme-inc-dwh::WWW_DB'],
           ])
 
           return run('acme-inc-dwh', function () {
@@ -150,10 +150,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
         it('sorts add-ons of same ownership by service', function () {
           mockAPI('acme-inc-www', [
             fixtures.addons['www-redis'],
-            fixtures.addons['www-db']
+            fixtures.addons['www-db'],
           ], [
             fixtures.attachments['acme-inc-www::REDIS'],
-            fixtures.attachments['acme-inc-www::DATABASE']
+            fixtures.attachments['acme-inc-www::DATABASE'],
           ])
 
           return run('acme-inc-www', function () {
@@ -164,24 +164,24 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
         it('sorts add-ons of same ownership and service by plan', function () {
           mockAPI('acme-inc-dwh', [
             fixtures.addons['dwh-db'],
-            fixtures.addons['dwh-test-db']
+            fixtures.addons['dwh-test-db'],
           ], [
             fixtures.attachments['acme-inc-dwh::DATABASE'],
-            fixtures.attachments['acme-inc-dwh::TEST']
+            fixtures.attachments['acme-inc-dwh::TEST'],
           ])
 
           return run('acme-inc-dwh', function () {
-            expect(cli.stdout.indexOf('hobby-dev')).to.be.lt(cli.stdout.indexOf('standard-2'))
+            expect(cli.stdout.indexOf('mini')).to.be.lt(cli.stdout.indexOf('standard-2'))
           })
         })
 
         it('sorts add-ons of same ownership and service and plan by name', function () {
           mockAPI('acme-inc-dwh', [
             fixtures.addons['dwh-db-2'],
-            fixtures.addons['dwh-db']
+            fixtures.addons['dwh-db'],
           ], [
             fixtures.attachments['acme-inc-dwh::DATABASE'],
-            fixtures.attachments['acme-inc-dwh::DATABASE_FOLLOWER']
+            fixtures.attachments['acme-inc-dwh::DATABASE_FOLLOWER'],
           ])
 
           return run('acme-inc-dwh', function () {
@@ -193,10 +193,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
       context('attachments', function () {
         it('sorts local attachments first', function () {
           mockAPI('acme-inc-dwh', [
-            fixtures.addons['www-db']
+            fixtures.addons['www-db'],
           ], [
             fixtures.attachments['acme-inc-www::DATABASE'],
-            fixtures.attachments['acme-inc-dwh::WWW_DB']
+            fixtures.attachments['acme-inc-dwh::WWW_DB'],
           ])
 
           return run('acme-inc-dwh', function () {
@@ -207,7 +207,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
         it('sorts local attachments by name', function () {
           mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
             fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'],
-            fixtures.attachments['acme-inc-www::DATABASE']
+            fixtures.attachments['acme-inc-www::DATABASE'],
           ])
 
           return run('acme-inc-www', function () {
@@ -219,7 +219,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
           mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
             fixtures.attachments['acme-inc-api::WWW_DB'],
             fixtures.attachments['acme-inc-dwh::WWW_DB'],
-            fixtures.attachments['acme-inc-www::DATABASE']
+            fixtures.attachments['acme-inc-www::DATABASE'],
           ])
 
           return run('acme-inc-api', function () {
@@ -231,7 +231,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
           mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
             fixtures.attachments['acme-inc-api::WWW_DB'],
             fixtures.attachments['acme-inc-www::DATABASE'],
-            fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED']
+            fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'],
           ])
 
           return run('acme-inc-api', function () {
@@ -245,12 +245,12 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   context('with a grandfathered add-on', function () {
     beforeEach(function () {
       let addon = fixtures.addons['dwh-db']
-      addon.billed_price = { cents: 10000 }
+      addon.billed_price = {cents: 10000}
 
       mockAPI('acme-inc-dwh', [
-        addon
+        addon,
       ], [
-        fixtures.attachments['acme-inc-dwh::DATABASE']
+        fixtures.attachments['acme-inc-dwh::DATABASE'],
       ])
     })
 
@@ -269,12 +269,12 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   context('with a contract add-on', function () {
     beforeEach(function () {
       let addon = fixtures.addons['dwh-db']
-      addon.billed_price = { cents: 0, contract: true }
+      addon.billed_price = {cents: 0, contract: true}
 
       mockAPI('acme-inc-dwh', [
-        addon
+        addon,
       ], [
-        fixtures.attachments['acme-inc-dwh::DATABASE']
+        fixtures.attachments['acme-inc-dwh::DATABASE'],
       ])
     })
 
@@ -291,7 +291,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   })
 
   it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
-    mockAPI('acme-inc-api', [ /* no add-on ! */], [fixtures.attachments['acme-inc-api::WWW_DB']])
+    mockAPI('acme-inc-api', [/* no add-on ! */], [fixtures.attachments['acme-inc-api::WWW_DB']])
 
     return run('acme-inc-api', function () {
       util.expectOutput(cli.stdout, `

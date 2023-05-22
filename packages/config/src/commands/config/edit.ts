@@ -1,13 +1,14 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../quote'
 import {Editor} from '../../util'
 
 const editor = new Editor()
+const cli = CliUx.ux
 
 interface Config {
   [key: string]: string;
@@ -18,11 +19,11 @@ interface UploadConfig {
 
 function configToString(config: Config): string {
   return Object.keys(config)
-  .sort()
-  .map(key => {
-    return `${key}=${quote(config[key])}`
-  })
-  .join('\n')
+    .sort()
+    .map(key => {
+      return `${key}=${quote(config[key])}`
+    })
+    .join('\n')
 }
 
 function removeDeleted(newConfig: UploadConfig, original: Config) {
@@ -39,6 +40,7 @@ export function stringToConfig(s: string): Config {
     const error = () => {
       throw new Error(`Invalid line: ${line}`)
     }
+
     if (!line) return config
     const i = line.indexOf('=')
     if (i === -1) error()
@@ -57,6 +59,7 @@ function showDiff(from: Config, to: Config) {
     if (k in from) {
       cli.log(color.red(`- ${k}=${quote(from[k])}`))
     }
+
     if (k in to) {
       cli.log(color.green(`+ ${k}=${quote(to[k])}`))
     }
@@ -91,7 +94,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
   app!: string
 
   async run() {
-    const {flags: {app}, args: {key}} = this.parse(ConfigEdit)
+    const {flags: {app}, args: {key}} = await this.parse(ConfigEdit)
     this.app = app
     cli.action.start('Fetching config')
     const original = await this.fetchLatestConfig()
@@ -105,6 +108,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
       const s = await editor.edit(configToString(original), {prefix, postfix: '.sh'})
       newConfig = stringToConfig(s)
     }
+
     if (!await this.diffPrompt(original, newConfig)) return
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
@@ -124,6 +128,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
       this.warn('no changes to config')
       return false
     }
+
     cli.log()
     cli.log('Config Diff:')
     showDiff(original, newConfig)

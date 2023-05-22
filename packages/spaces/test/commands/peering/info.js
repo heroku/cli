@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/peering/info')
@@ -11,7 +11,7 @@ let info = {
   vpc_id: 'vpc-1234568a',
   vpc_cidr: '10.0.0.0/16',
   space_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
-  unavailable_cidr_blocks: ['192.168.2.0/30'] }
+  unavailable_cidr_blocks: ['192.168.2.0/30']}
 
 describe('spaces:peering-info', function () {
   beforeEach(() => cli.mockConsole())
@@ -20,9 +20,9 @@ describe('spaces:peering-info', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/peering-info')
       .reply(200,
-        info
+        info,
       )
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peering Info
 AWS Account ID:    012345678900
@@ -40,7 +40,7 @@ Unavailable CIDRs: 192.168.2.0/30
       .get('/spaces/my-space/peering-info')
       .reply(200, info)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
+    return cmd.run({flags: {space: 'my-space', json: true}})
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(info))
       .then(() => api.done())
   })

@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect */
+/* globals beforeEach afterEach cli nock expect */
 
 let cmd = require('../../../commands/apps/join')[0]
 let stubPost = require('../../stub/post')
@@ -18,7 +18,7 @@ describe('heroku apps:join', () => {
   it('joins the app', () => {
     apiPostCollaborators = stubPost.teamAppCollaborators('raulb@heroku.com')
 
-    return cmd.run({ app: 'myapp' })
+    return cmd.run({app: 'myapp'})
       .then(() => expect('').to.eq(cli.stdout))
       .then(() => expect(`Joining myapp... done
 `).to.eq(cli.stderr))
@@ -29,17 +29,17 @@ describe('heroku apps:join', () => {
   it('is forbidden from joining the app', () => {
     let response = {
       code: 403,
-      description: { id: 'forbidden', error: 'You do not have access to the team heroku-tools.' }
+      description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
     }
 
     apiPostCollaborators = stubPost.teamAppCollaborators('raulb@heroku.com', [], response)
     let thrown = false
 
-    return cmd.run({ app: 'myapp' })
+    return cmd.run({app: 'myapp'})
       .then(() => apiGetUserAccount.done())
-      .catch(function (err) {
+      .catch(function (error) {
         thrown = true
-        expect(err.body.error).to.eq('You do not have access to the team heroku-tools.')
+        expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
       })
       .then(function () {
         expect(thrown).to.eq(true)

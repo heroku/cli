@@ -3,6 +3,215 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.2](https://github.com/heroku/cli/compare/v8.1.1...v8.1.2) (2023-05-01)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+# [8.1.0](https://github.com/heroku/cli/compare/v8.0.6...v8.1.0) (2023-04-27)
+
+
+### Features
+
+* **pg-v5:** Adding pg:settings for auto_explain ([#2310](https://github.com/heroku/cli/issues/2310)) ([fe98aec](https://github.com/heroku/cli/commit/fe98aecaef28f3306ae0ccab3cb21f6d87b47333))
+
+
+
+
+
+## [8.0.5](https://github.com/heroku/cli/compare/v8.0.4...v8.0.5) (2023-04-18)
+
+
+### Bug Fixes
+
+* oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
+
+
+
+
+
+## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+## [7.69.2](https://github.com/heroku/cli/compare/v7.69.1...v7.69.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+# [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* revert to v7.67.2 ([#2235](https://github.com/heroku/cli/issues/2235)) ([0955a24](https://github.com/heroku/cli/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/cli/issues/2231) [#2230](https://github.com/heroku/cli/issues/2230) [#2229](https://github.com/heroku/cli/issues/2229) [#2228](https://github.com/heroku/cli/issues/2228) [#2227](https://github.com/heroku/cli/issues/2227) [#2225](https://github.com/heroku/cli/issues/2225) [#2144](https://github.com/heroku/cli/issues/2144) [#2216](https://github.com/heroku/cli/issues/2216) [#2207](https://github.com/heroku/cli/issues/2207) [#2212](https://github.com/heroku/cli/issues/2212) [#2212](https://github.com/heroku/cli/issues/2212)
+
+
+
+
+
+## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
+
+
+### Bug Fixes
+
+* debian builds ([#2128](https://github.com/heroku/cli/issues/2128)) ([8f80622](https://github.com/heroku/cli/commit/8f80622617194c8be8ebce1688e1e5b565a8ffb1))
+
+
+
+
+
+## [7.66.2](https://github.com/heroku/cli/compare/v7.66.0...v7.66.2) (2022-11-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+## [7.66.1](https://github.com/heroku/cli/compare/v7.66.0...v7.66.1) (2022-11-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+## [7.66.0](https://github.com/heroku/cli/compare/v7.65.0...v7.66.0) (2022-11-07)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+# [7.65.0](https://github.com/heroku/cli/compare/v7.64.0...v7.65.0) (2022-10-10)
+
+
+### Features
+
+* **pg-v5:** Support pg mini plans ([#2072](https://github.com/heroku/cli/issues/2072)) ([7153817](https://github.com/heroku/cli/commit/7153817facc979e78150bc48854f3744865fefd1))
+
+
+
+
+
+# [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+### Features
+
+* **pg-v5:** accept a list of extensions to pre-install for pg:backups:restore and pg:reset ([#2043](https://github.com/heroku/cli/issues/2043)) ([0608f5e](https://github.com/heroku/cli/commit/0608f5e17a08d98bf957440924bb73763f4baae5))
+
+
+
+
+
+## [7.63.4](https://github.com/heroku/cli/compare/v7.63.0...v7.63.4) (2022-09-14)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+
+
+
+## [7.63.3](https://github.com/heroku/cli/compare/v7.63.0...v7.63.3) (2022-09-13)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+
+
+
+## [7.63.2](https://github.com/heroku/cli/compare/v7.63.0...v7.63.2) (2022-09-12)
+
+
+### Bug Fixes
+
+* use a different outliers query for new pg versions ([#2051](https://github.com/heroku/cli/issues/2051)) ([7a78c0e](https://github.com/heroku/cli/commit/7a78c0ec61c3006fbd10c402e8d8bce07fc09268))
+
+
+
+
+
+## [7.63.1](https://github.com/heroku/cli/compare/v7.63.0...v7.63.1) (2022-09-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+# [7.63.0](https://github.com/heroku/cli/compare/v7.62.0...v7.63.0) (2022-08-31)
+
+
+### Features
+
+* **pg-v5:** accept a list of extensions to pre-install for pg:backups:restore and pg:reset ([#2043](https://github.com/heroku/cli/issues/2043)) ([0608f5e](https://github.com/heroku/cli/commit/0608f5e17a08d98bf957440924bb73763f4baae5))
+
+
+
+
+
+# [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
+
+
+### Bug Fixes
+
+* **pg-v5:** Fix databasename for URLs with query element and be more consistent ([#1882](https://github.com/heroku/cli/issues/1882)) ([5346faf](https://github.com/heroku/cli/commit/5346fafac979fab81e42b65b3659e988db1f8eea))
+
+
+
+
+
+## [7.59.3](https://github.com/heroku/cli/compare/v7.59.2...v7.59.3) (2022-02-28)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+## [7.59.2](https://github.com/heroku/cli/compare/v7.59.1...v7.59.2) (2021-11-18)
+
+
+### Bug Fixes
+
+* **pg-v5:** Fix databasename for URLs with query element and be more consistent ([#1882](https://github.com/heroku/cli/issues/1882)) ([5346faf](https://github.com/heroku/cli/commit/5346fafac979fab81e42b65b3659e988db1f8eea))
+
+
+
+
+
+## [7.59.1](https://github.com/heroku/cli/compare/v7.59.0...v7.59.1) (2021-10-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
 # [7.58.0](https://github.com/heroku/cli/compare/v7.57.0...v7.58.0) (2021-08-24)
 
 

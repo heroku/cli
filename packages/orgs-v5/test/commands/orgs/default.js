@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach cli nock expect */
+/* globals beforeEach afterEach cli nock expect */
 
 let cmd = require('../../../commands/orgs/default')
 let unwrap = require('../../unwrap')

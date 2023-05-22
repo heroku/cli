@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-require('@oclif/command').run()
-.catch(require('@oclif/errors/handle'))
+require('@oclif/core').Command.run()
+.catch(require('@oclif/core').Errors.handle)

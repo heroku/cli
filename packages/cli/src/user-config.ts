@@ -1,4 +1,4 @@
-import * as Config from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as path from 'path'
 
 import deps from './deps'
@@ -21,7 +21,7 @@ export default class UserConfig {
   private _init!: Promise<void>
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(private readonly config: Config.IConfig) {}
+  constructor(private readonly config: Interfaces.Config) {}
 
   public get install() {
     return this.body.install || this.genInstall()
@@ -38,6 +38,7 @@ export default class UserConfig {
       this.body.skipAnalytics = false
       this.needsSave = true
     }
+
     return this.body.skipAnalytics
   }
 
@@ -80,6 +81,7 @@ export default class UserConfig {
       if (!await this.canWrite()) {
         throw new Error('file modified, cannot save')
       }
+
       await deps.file.outputJSON(this.file, this.body)
     })()
   }
@@ -90,7 +92,7 @@ export default class UserConfig {
       this.mtime = await this.getLastUpdated()
       const body = await deps.file.readJSON(this.file)
       return body
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
       this.debug('not found')
     }
@@ -113,7 +115,7 @@ export default class UserConfig {
     try {
       const stat = await deps.file.stat(this.file)
       return stat.mtime.getTime()
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
     }
   }

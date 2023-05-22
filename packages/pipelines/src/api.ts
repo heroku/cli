@@ -1,6 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 import keyBy from 'lodash.keyby'
 
@@ -122,14 +121,14 @@ export function patchCoupling(heroku: APIClient, id: string, stage: string) {
 
 export function removeCoupling(heroku: APIClient, app: string) {
   return getCoupling(heroku, app)
-  .then(({body}) => {
-    return deleteCoupling(heroku, body.id!)
-  })
+    .then(({body}) => {
+      return deleteCoupling(heroku, body.id!)
+    })
 }
 
 export function updateCoupling(heroku: APIClient, app: string, stage: string) {
   return getCoupling(heroku, app)
-  .then(({body: coupling}) => patchCoupling(heroku, coupling.id!, stage))
+    .then(({body: coupling}) => patchCoupling(heroku, coupling.id!, stage))
 }
 
 export function getReleases(heroku: APIClient, appId: string) {

@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe beforeEach it */
+/* globals beforeEach */
 
 let nock = require('nock')
 let cmd = require('../../../commands/peering/index')
@@ -15,7 +15,7 @@ let peers = [
     aws_vpc_id: '******',
     aws_region: '******',
     aws_account_id: '******',
-    expires: ''
+    expires: '',
   },
   {
     type: 'external',
@@ -26,7 +26,7 @@ let peers = [
     aws_vpc_id: 'vpc-12345678',
     aws_region: 'us-east-1',
     aws_account_id: '012345678901',
-    expires: ''
+    expires: '',
   },
   {
     type: 'unknown',
@@ -37,7 +37,7 @@ let peers = [
     aws_vpc_id: 'vpc-87654321',
     aws_region: 'us-west-1',
     aws_account_id: '012345678901',
-    expires: ''
+    expires: '',
   },
   {
     type: 'unknown',
@@ -48,8 +48,8 @@ let peers = [
     aws_vpc_id: 'vpc-665544332',
     aws_region: 'us-east-2',
     aws_account_id: '012345678901',
-    expires: ''
-  }
+    expires: '',
+  },
 ]
 
 describe('spaces:peerings', function () {
@@ -59,9 +59,9 @@ describe('spaces:peerings', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/peerings')
       .reply(200,
-        peers
+        peers,
       )
-    return cmd.run({ flags: { space: 'my-space' } })
+    return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peerings
 PCX ID             Type      CIDR Blocks               Status              VPC ID         AWS Region  AWS Account ID  Expires
@@ -79,7 +79,7 @@ pcx-abcdefg        unknown   10.5.0.0/16               failed              vpc-6
       .get('/spaces/my-space/peerings')
       .reply(200, peers)
 
-    return cmd.run({ flags: { space: 'my-space', json: true } })
+    return cmd.run({flags: {space: 'my-space', json: true}})
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(peers))
       .then(() => api.done())
   })

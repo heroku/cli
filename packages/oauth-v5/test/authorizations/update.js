@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 'use strict'
 
 const cli = require('heroku-cli-util')
@@ -17,11 +18,11 @@ describe('authorizations:update', () => {
 
   beforeEach(() => {
     api
-      .patch('/oauth/authorizations/10', { description: 'awesome', client: { id: '100', secret: 'secret' } })
-      .reply(200, { scope: ['global'], access_token: { token: 'secrettoken' } })
+      .patch('/oauth/authorizations/10', {description: 'awesome', client: {id: '100', secret: 'secret'}})
+      .reply(200, {scope: ['global'], access_token: {token: 'secrettoken'}})
   })
 
   it('updates the authorization', () => {
-    return cmd.run({ args: { id: '10' }, flags: { 'client-id': '100', 'client-secret': 'secret', description: 'awesome' } })
+    return cmd.run({args: {id: '10'}, flags: {'client-id': '100', 'client-secret': 'secret', description: 'awesome'}})
   })
 })

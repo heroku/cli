@@ -6,6 +6,7 @@
     "module": "commonjs",
     "outDir": "./lib",
     "rootDirs": [ "./src" ],
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2017",
     "typeRoots": [ "./node_modules/@types" ]

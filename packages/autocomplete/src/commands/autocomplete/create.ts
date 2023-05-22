@@ -1,4 +1,4 @@
-import {Command} from '@oclif/config'
+import {Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -11,7 +11,7 @@ export default class Create extends AutocompleteBase {
 
   static description = 'create autocomplete setup scripts and completion functions'
 
-  private _commands?: Command[]
+  private _commands?: Interfaces.Command[]
 
   async run() {
     this.errorIfWindows()
@@ -59,18 +59,18 @@ export default class Create extends AutocompleteBase {
     return process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS === '1'
   }
 
-  private get commands(): Command[] {
+  private get commands(): Interfaces.Command[] {
     if (this._commands) return this._commands
 
     const plugins = this.config.plugins
-    const commands: Command[] = []
+    const commands: Interfaces.Command[] = []
 
     plugins.forEach(p => {
       p.commands.forEach(c => {
         if (c.hidden) return
         try {
           commands.push(c)
-        } catch (error) {
+        } catch (error: any) {
           debug(`Error creating completions for command ${c.id}`)
           debug(error.message)
           this.writeLogFile(error.message)
@@ -87,7 +87,7 @@ export default class Create extends AutocompleteBase {
       try {
         const publicFlags = this.genCmdPublicFlags(c).trim()
         return `${c.id} ${publicFlags}`
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating bash completion for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)
@@ -106,7 +106,7 @@ export default class Create extends AutocompleteBase {
     const cmdsWithDescriptions = this.commands.map(c => {
       try {
         return this.genCmdWithDescription(c)
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)
@@ -121,7 +121,7 @@ export default class Create extends AutocompleteBase {
     return this.commands.map(c => {
       try {
         return this.genZshCmdFlagsSetter(c)
-      } catch (error) {
+      } catch (error: any) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debug(error.message)
         this.writeLogFile(error.message)
@@ -130,44 +130,47 @@ export default class Create extends AutocompleteBase {
     }).join('\n')
   }
 
-  private genCmdPublicFlags(Command: Command): string {
+  private genCmdPublicFlags(Command: Interfaces.Command): string {
     const Flags = Command.flags || {}
     return Object.keys(Flags)
-    .filter(flag => !Flags[flag].hidden)
-    .map(flag => `--${flag}`)
-    .join(' ')
+      .filter(flag => !Flags[flag].hidden)
+      .map(flag => `--${flag}`)
+      .join(' ')
   }
 
-  private genCmdWithDescription(Command: Command): string {
+  private genCmdWithDescription(Command: Interfaces.Command): string {
     let description = ''
     if (Command.description) {
       const text = Command.description.split('\n')[0]
       description = `:"${text}"`
     }
+
     return `"${Command.id.replace(/:/g, '\\:')}"${description}`
   }
 
-  private genZshCmdFlagsSetter(Command: Command): string {
+  private genZshCmdFlagsSetter(Command: Interfaces.Command): string {
     const id = Command.id
     const flagscompletions = Object.keys(Command.flags || {})
-    .filter(flag => Command.flags && !Command.flags[flag].hidden)
-    .map(flag => {
-      const f = (Command.flags && Command.flags[flag]) || {description: ''}
-      const isBoolean = f.type === 'boolean'
-      const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
-      const name = isBoolean ? flag : `${flag}=-`
-      let cachecompl = ''
-      if (hasCompletion) {
-        cachecompl = ': :_compadd_flag_options'
-      }
-      if (this.wantsLocalFiles(flag)) {
-        cachecompl = ': :_files'
-      }
-      const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
-      const completion = `--${name}[${help}${f.description}]${cachecompl}`
-      return `"${completion}"`
-    })
-    .join('\n')
+      .filter(flag => Command.flags && !Command.flags[flag].hidden)
+      .map(flag => {
+        const f = (Command.flags && Command.flags[flag]) || {description: ''}
+        const isBoolean = f.type === 'boolean'
+        const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
+        const name = isBoolean ? flag : `${flag}=-`
+        let cachecompl = ''
+        if (hasCompletion) {
+          cachecompl = ': :_compadd_flag_options'
+        }
+
+        if (this.wantsLocalFiles(flag)) {
+          cachecompl = ': :_files'
+        }
+
+        const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
+        const completion = `--${name}[${help}${f.description}]${cachecompl}`
+        return `"${completion}"`
+      })
+      .join('\n')
 
     if (flagscompletions) {
       return `_set_${id.replace(/:/g, '_')}_flags () {
@@ -177,6 +180,7 @@ ${flagscompletions}
 }
 `
     }
+
     return `# no flags for ${id}`
   }
 

@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
+import {CliUx} from '@oclif/core'
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../base'
 
@@ -22,10 +23,11 @@ export default class WebhooksAdd extends BaseCommand {
   }
 
   async run() {
-    const {flags} = this.parse(WebhooksAdd)
+    const {flags} = await this.parse(WebhooksAdd)
     const {path, display} = this.webhookType(flags)
+    const action = new Spinner()
 
-    cli.action.start(`Adding webhook to ${display}`)
+    action.start(`Adding webhook to ${display}`)
 
     const response = await this.webhooksClient.post(`${path}/webhooks`, {
       body: {
@@ -38,14 +40,13 @@ export default class WebhooksAdd extends BaseCommand {
     })
 
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
-
-    cli.action.stop()
-
     if (secret) {
-      cli.styledHeader('Webhooks Signing Secret')
+      CliUx.ux.styledHeader('Webhooks Signing Secret')
       this.log(secret)
     } else {
-      cli.warn('no secret found')
+      CliUx.ux.warn('no secret found')
     }
+
+    action.stop()
   }
 }
