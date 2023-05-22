@@ -28,7 +28,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     environment: AcceptanceTests
     env:
-      RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v3
@@ -48,7 +47,6 @@ jobs:
         os: [ubuntu-latest]
     environment: AcceptanceTests
     env:
-      RUN_ACCEPTANCE_TESTS: true
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v3
