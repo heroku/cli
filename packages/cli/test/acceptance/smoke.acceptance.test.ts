@@ -76,7 +76,7 @@ describe('@acceptance smoke tests', () => {
   })
 
   it('heroku autocomplete', async () => {
-    const {stdout} = await run('autocomplete')
+    const {stdout} = await run('autocomplete bash')
     expect(stdout).to.contain('Setup Instructions for HEROKU CLI Autocomplete')
   })
 

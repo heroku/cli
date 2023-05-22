@@ -27,8 +27,6 @@ export default class Index extends AutocompleteBase {
 
   async run() {
     const {args, flags} = await this.parse(Index)
-    console.log('args', args)
-    console.log('this.config', this.config)
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
