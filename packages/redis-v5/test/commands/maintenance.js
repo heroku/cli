@@ -13,12 +13,12 @@ describe('heroku redis:maintenance', function () {
 })
 
 describe('heroku redis:maintenance', function () {
-  
-  let newPluginMessage = ` ▸    The new ${cli.color.bold.cyan('Data Maintenance CLI plugin')} improves and extends`
-  newPluginMessage += `\n ▸    the ${cli.color.cmd('redis:maintenance')} functionality.`
+
+  let newPluginMessage = ` ▸    You can also manage maintenances on your Redis instance with`
+  newPluginMessage += `\n ▸    ${cli.color.cmd('data:maintenances')}.`
   newPluginMessage += `\n ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
-  newPluginMessage += `\n ▸    to install the plugin and run ${cli.color.cmd('data:maintenances')} to list the maintenance`
-  newPluginMessage += `\n ▸    events for your add-ons.\n`
+  newPluginMessage += `\n ▸    to install the ${cli.color.cyan('Data Maintenance CLI plugin')}.\n`
+
 
   beforeEach(function () {
     cli.mockConsole()
@@ -93,7 +93,7 @@ describe('heroku redis:maintenance', function () {
       .then(() => app.done())
       .then(() => appInfo.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(unwrap(cli.stderr)).to.include('Application must be in maintenance mode or --force flag must be used\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.include('You must put your application in maintenance mode, or use the redis:maintenance --run --force command.\n'))
   })
 
   it('# errors out on mini instances', function () {
@@ -103,7 +103,7 @@ describe('heroku redis:maintenance', function () {
       ])
 
     return expect(command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })).to.be.rejected
-      .then(() => expect(unwrap(cli.stderr)).to.include('redis:maintenance is not available for Mini plans\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.include('The redis:maintenance command is not available for Mini plans\n'))
       .then(() => app.done())
   })
 

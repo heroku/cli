@@ -19,16 +19,14 @@ module.exports = {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
 
-    let newPluginMessage = `The new ${cli.color.bold.cyan('Data Maintenance CLI plugin')} improves and extends`
-    newPluginMessage += `\nthe ${cli.color.cmd('redis:maintenance')} functionality.`
+    let newPluginMessage = `You can also manage maintenances on your Redis instance with ${cli.color.cmd('data:maintenances')}.`
     newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
-    newPluginMessage += `\nto install the plugin and run ${cli.color.cmd('data:maintenances')} to list the maintenance`
-    newPluginMessage += `\nevents for your add-ons.`
+    newPluginMessage += `\nto install the ${cli.color.cyan('Data Maintenance CLI plugin')}.`
 
     cli.warn(newPluginMessage)
 
     if (addon.plan.name.match(/mini/) != null) {
-      cli.exit(1, 'redis:maintenance is not available for Mini plans')
+      cli.exit(1, 'The redis:maintenance command is not available for Mini plans')
     }
 
     if (context.flags.window) {
@@ -44,7 +42,7 @@ module.exports = {
     if (context.flags.run) {
       let app = await heroku.get(`/apps/${context.app}`)
       if (!app.maintenance && !context.flags.force) {
-        cli.exit(1, 'Application must be in maintenance mode or --force flag must be used')
+        cli.exit(1, 'You must put your application in maintenance mode, or use the redis:maintenance --run --force command.')
       }
 
       let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance`, 'POST')
