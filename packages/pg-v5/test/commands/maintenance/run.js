@@ -24,12 +24,9 @@ const cmd = proxyquire('../../../commands/maintenance/run', {
 describe('pg:maintenance', () => {
   let api, pg
 
-  let displayed = ` ▸    The new Data Maintenance CLI plugin improves and extends the
- ▸    pg:maintenance functionality.
- ▸    
+  let displayed = ` ▸    You can also start a maintenance with data:maintenances:run.
  ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands
- ▸    to install the plugin and run data:maintenances:run
- ▸    to start a maintenance.
+ ▸    to install the Data Maintenance CLI plugin.
 `
 
   beforeEach(() => {

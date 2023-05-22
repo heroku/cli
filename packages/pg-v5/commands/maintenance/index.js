@@ -11,11 +11,9 @@ async function run(context, heroku) {
 
   if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
 
-  let newPluginMessage = `The new ${cli.color.bold.cyan('Data Maintenance CLI plugin')} improves and extends the`
-  newPluginMessage += `\n${cli.color.cmd('pg:maintenance')} functionality.`
-  newPluginMessage += `\n\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
-  newPluginMessage += `\nto install the plugin and run ${cli.color.cmd('data:maintenances')} to list the maintenance`
-  newPluginMessage += `\nevents for your add-ons.`
+  let newPluginMessage = `You can also list the maintenance events for your Postgres database with ${cli.color.cmd('data:maintenances')}.`
+  newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
+  newPluginMessage += `\nto install the ${cli.color.bold.cyan('Data Maintenance CLI plugin')}.`
 
   cli.warn(newPluginMessage)
 
