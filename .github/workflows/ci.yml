@@ -79,10 +79,12 @@ jobs:
       - run: ./bin/run whoami
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
+        shell: bash
         if: github.ref_name != 'main' || !startsWith(github.head_ref, 'release-')
         run: yarn lerna run test:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
+        shell: bash
         if: github.ref_name == 'main' || startsWith(github.head_ref, 'release-')
         run: yarn lerna run test:acceptance
 
