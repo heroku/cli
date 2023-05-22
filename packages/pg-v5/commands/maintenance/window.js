@@ -19,7 +19,7 @@ async function run(context, heroku) {
 
   cli.warn(newPluginMessage)
 
-  await cli.action(`Setting maintenance window for ${cli.color.addon(db.name)} to ${cli.color.cyan(args.window)}`, async function () {
+  await cli.action(`Setting maintenance window for ${cli.color.addon(db.name)} to ${cli.color.cyan(args.window)}`, (async function () {
 
     let response = await heroku.put(`/client/v11/databases/${db.id}/maintenance_window`, {
       body: {description: args.window},

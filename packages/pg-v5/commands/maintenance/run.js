@@ -9,7 +9,7 @@ async function run(context, heroku) {
   const {app, args, flags} = context
   const db = await fetcher.addon(app, args.database)
 
-  if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
+  if (util.starterPlan(db)) throw new Error('pg:maintenance isn’t available for Essential-tier databases.')
 
   let newPluginMessage = `You can also start a maintenance with ${cli.color.cmd('data:maintenances:run')}.`
   newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
@@ -17,11 +17,10 @@ async function run(context, heroku) {
 
   cli.warn(newPluginMessage)
 
-  await cli.action(`Starting maintenance for ${cli.color.addon(db.name)}`, async function () {
-
+  await cli.action(`Starting maintenance for ${cli.color.addon(db.name)}`, (async function () {
     if (!flags.force) {
       let appInfo = await heroku.get(`/apps/${app}`)
-      if (!appInfo.maintenance) throw new Error('Application must be in maintenance mode or run with --force')
+      if (!appInfo.maintenance) throw new Error('You must put your app in maintenance mode with maintenance:on, or use pg:maintenance:run --force to manually initiate maintenance.')
     }
 
     let response = await heroku.post(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
