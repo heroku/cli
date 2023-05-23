@@ -93,6 +93,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
   })
 
+  it('heroku container:login', async () => {
+    const {stdout} = await run('heroku container:login')
+    expect(stdout).to.contain('Cannot connect to the Docker daemon')
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
