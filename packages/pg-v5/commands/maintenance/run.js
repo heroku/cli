@@ -12,7 +12,7 @@ async function run(context, heroku) {
   if (util.essentialPlan(db)) throw new Error('pg:maintenance isn’t available for Essential-tier databases.')
 
   let newPluginMessage = `You can also start a maintenance with ${cli.color.cmd('data:maintenances:run')}.`
-  newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
+  newPluginMessage += '\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands'
   newPluginMessage += `\nto install the ${cli.color.bold.cyan('Data Maintenance CLI plugin')}.`
 
   cli.warn(newPluginMessage)

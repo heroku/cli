@@ -43,9 +43,9 @@ describe('pg:maintenance', () => {
   })
 
   it('runs maintenance', () => {
-    api.get('/apps/myapp').reply(200, { maintenance: true })
-    pg.post('/client/v11/databases/1/maintenance').reply(200, { message: 'foo' })
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+    api.get('/apps/myapp').reply(200, {maintenance: true})
+    pg.post('/client/v11/databases/1/maintenance').reply(200, {message: 'foo'})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal(displayed + 'Starting maintenance for postgres-1... foo\n'))
 
       .then(() => expect(cli.stdout).to.equal(''))
