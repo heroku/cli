@@ -17,7 +17,7 @@ export default class DomainsIndex extends Command {
   static examples = [
     `$ heroku domains
 === example Heroku Domain
-example.herokuapp.com
+example-xxxxxxxxxxxx.herokuapp.com
 
 === example Custom Domains
 Domain Name      DNS Record Type  DNS Target

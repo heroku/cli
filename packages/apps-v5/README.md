@@ -273,9 +273,9 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku open -a myapp
-  # opens https://myapp.herokuapp.com
+  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com
   $ heroku open -a myapp /foo
-  # opens https://myapp.herokuapp.com/foo
+  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com/foo
 ```
 
 ## `heroku apps:rename NEWNAME`
@@ -296,7 +296,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
 ```
 
