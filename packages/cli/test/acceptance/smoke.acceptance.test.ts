@@ -9,6 +9,7 @@ const globby = require('globby')
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
 const bin = path.join(__dirname, '../../bin/run')
+const appFlag = '-a=heroku-cli-ci-smoke-test-app'
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
@@ -85,6 +86,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Buildpack')
     expect(stdout).to.contain('Category')
     expect(stdout).to.contain('Description')
+  })
+
+  it('heroku config', async () => {
+    const {stdout} = await run(`heroku config ${appFlag}`)
+    expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
   })
 
   // TODO: turn this test back on once the issue with listing plugins is fixed
