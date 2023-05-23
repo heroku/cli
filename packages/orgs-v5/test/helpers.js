@@ -9,3 +9,7 @@ global.nock = require('nock')
 nock.disableNetConnect()
 cli.raiseErrors = true
 cli.color.enabled = false
+
+if (process.env.ENABLE_NET_CONNECT === true) {
+  nock.enableNetConnect()
+}
