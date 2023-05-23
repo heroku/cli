@@ -106,6 +106,16 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('has no SSL certificates')
   })
 
+  it('heroku ci', async () => {
+    const {stdout} = await run(`ci ${appFlag}`)
+    expect(stdout).to.contain('Showing latest test runs for the smoke-test-app-ci pipeline')
+  })
+
+  it('heroku ci:config', async () => {
+    const {stdout} = await run(`ci:config ${appFlag}`)
+    expect(stdout).to.contain('smoke-test-app-ci test config vars')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
