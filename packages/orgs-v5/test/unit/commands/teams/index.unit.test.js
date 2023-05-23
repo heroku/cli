@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach cli nock expect */
 
-let cmd = require('../../../commands/teams')
+let cmd = require('../../../../commands/teams')
 let stubGet = require('../../stub/get')
 
 describe('heroku teams', () => {

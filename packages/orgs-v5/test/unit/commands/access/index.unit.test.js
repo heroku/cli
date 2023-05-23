@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach context cli nock expect */
 
-let cmd = require('../../../commands/access')[0]
+let cmd = require('../../../../commands/access')[0]
 let stubGet = require('../../stub/get')
 
 describe('heroku access', () => {

@@ -72,7 +72,8 @@
     "postpublish": "rm oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "nyc mocha",
+    "test": "nyc mocha ./test/**/*.unit.test.js",
+    "test:integration": "mocha './test/**/*.integration.test.js'",
     "version": "oclif readme && git add README.md"
   }
 }

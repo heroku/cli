@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach cli nock expect context */
 
-let cmd = require('../../../commands/members')
+let cmd = require('../../../../commands/members')
 let stubGet = require('../../stub/get')
 
 describe('heroku members', () => {

@@ -12,7 +12,7 @@ describe('heroku apps:transfer', () => {
   beforeEach(() => {
     cli.mockConsole()
     inquirer = {}
-    cmd = proxyquire('../../../commands/apps/transfer', {inquirer})[0]
+    cmd = proxyquire('../../../../commands/apps/transfer', {inquirer})[0]
   })
 
   afterEach(() => nock.cleanAll())
