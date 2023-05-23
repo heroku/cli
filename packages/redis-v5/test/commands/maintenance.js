@@ -13,12 +13,10 @@ describe('heroku redis:maintenance', function () {
 })
 
 describe('heroku redis:maintenance', function () {
-
-  let newPluginMessage = ` ▸    You can also manage maintenances on your Redis instance with`
-  newPluginMessage += `\n ▸    data:maintenances.`
-  newPluginMessage += `\n ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
-  newPluginMessage += `\n ▸    to install the Data Maintenance CLI plugin.\n`
-
+  let newPluginMessage = ' ▸    You can also manage maintenances on your Redis instance with'
+  newPluginMessage += '\n ▸    data:maintenances.'
+  newPluginMessage += '\n ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands'
+  newPluginMessage += '\n ▸    to install the Data Maintenance CLI plugin.\n'
 
   beforeEach(function () {
     cli.mockConsole()
@@ -99,10 +97,10 @@ describe('heroku redis:maintenance', function () {
   it('# errors out on mini instances', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, plan: { name: 'mini' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
+        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'mini'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    return expect(command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })).to.be.rejected
+    return expect(command.run({app: 'example', args: {}, auth: {username: 'foobar', password: 'password'}})).to.be.rejected
       .then(() => expect(unwrap(cli.stderr)).to.include('The redis:maintenance command is not available for Mini plans\n'))
       .then(() => app.done())
   })

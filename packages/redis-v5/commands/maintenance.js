@@ -20,7 +20,7 @@ module.exports = {
     let addon = await api.getRedisAddon()
 
     let newPluginMessage = `You can also manage maintenances on your Redis instance with ${cli.color.cmd('data:maintenances')}.`
-    newPluginMessage += `\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands`
+    newPluginMessage += '\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands'
     newPluginMessage += `\nto install the ${cli.color.cyan('Data Maintenance CLI plugin')}.`
 
     cli.warn(newPluginMessage)
