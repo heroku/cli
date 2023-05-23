@@ -1,0 +1,68 @@
+{
+  "name": "@heroku-cli/plugin-git",
+  "description": "Heroku CLI plugin to manage local git repos.",
+  "version": "8.1.0",
+  "author": "Jeff Dickey (@jdxcode)",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "dependencies": {
+    "@heroku-cli/color": "^1.1.14",
+    "@heroku-cli/command": "9.0.1",
+    "@oclif/core": "^1.26.2",
+    "debug": "4.3.4"
+  },
+  "devDependencies": {
+    "@heroku-cli/schema": "^1.0.25",
+    "@oclif/test": "2.2.13",
+    "@types/chai": "^4.1.7",
+    "@types/fs-extra": "^5.0.5",
+    "@types/mocha": "^5.2.6",
+    "@types/supports-color": "^5.3.0",
+    "chai": "^4.2.0",
+    "globby": "^10.0.2",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^15.1.0",
+    "oclif": "3.8.1",
+    "ts-node": "^10.9.1",
+    "tslib": "^1.9.3",
+    "typescript": "4.8.4"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "/lib",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/git",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "oclif": {
+    "topics": {
+      "git": {
+        "description": "manage local git repository for app"
+      }
+    },
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "commands": "./lib/commands",
+    "bin": "oclif-example",
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/git/<%- commandPath %>"
+  },
+  "repository": "heroku/cli",
+  "scripts": {
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
+    "postpack": "rm -f oclif.manifest.json",
+    "prepack": "rm -rf lib && tsc && oclif manifest",
+    "pretest": "tsc -p test --noEmit",
+    "test": "echo NO TESTS",
+    "posttest": "yarn  lint",
+    "version": "oclif readme && git add README.md"
+  }
+}

@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -eux
+
+if [[ -z "${CIRCLE_TAG}" ]]; then
+  echo "Not on stable release, skipping snap release"
+  exit
+fi
+
+mkdir -p ~/.config/snapcraft
+set +x && echo "$SNAPCRAFT_LOGIN_FILE" | base64 --decode > ~/.config/snapcraft/snapcraft.cfg && set -x
+
+# ref: https://gist.github.com/sj26/88e1c6584397bb7c13bd11108a579746
+function retry {
+  local retries=$1
+  shift
+
+  local count=0
+  until "$@"; do
+    exit=$?
+    wait=$((60 * $count))
+    count=$(($count + 1))
+    if [ $count -lt $retries ]; then
+      echo "Retry $count/$retries exited $exit, retrying in $wait seconds..."
+      sleep $wait
+    else
+      echo "Retry $count/$retries exited $exit, no more retries left."
+      return $exit
+    fi
+  done
+  return 0
+}
+
+
+function release_snap_channels () {
+  LATEST_64_LIST=$(snapcraft list-revisions heroku --arch amd64 | grep -v git | head -n 2 | tail -n 1)
+  LATEST_ARM_LIST=$(snapcraft list-revisions heroku --arch armhf | grep -v git | head -n 2 | tail -n 1)
+
+  LATEST_64_VERSION=$(echo $LATEST_64_LIST | awk '{print $5}')
+  LATEST_ARM_VERSION=$(echo $LATEST_ARM_LIST | awk '{print $5}')
+  
+  if [ "$LATEST_64_VERSION" == "$CIRCLE_TAG" ] && [ "$LATEST_ARM_VERSION" == "$CIRCLE_TAG" ]; then 
+    echo 'HERERE'
+    LATEST_64=$(echo $LATEST_64_LIST | awk '{print $1}')
+    snapcraft release heroku "$LATEST_64" beta
+    snapcraft release heroku "$LATEST_64" candidate
+    snapcraft release heroku "$LATEST_64" stable
+
+    LATEST_ARM=$(echo $LATEST_ARM_LIST | awk '{print $1}')
+    snapcraft release heroku "$LATEST_ARM" beta
+    snapcraft release heroku "$LATEST_ARM" candidate
+    snapcraft release heroku "$LATEST_ARM" stable
+  else
+    echo "Snap revisions did not match release tag $CIRCLE_TAG"
+    echo "Found revisions: AMD64-$LATEST_64_VERSION & ARM-$LATEST_ARM_VERSION"
+    return 1
+  fi
+
+  return 0
+}
+
+# try releasing 10 times 
+# with (count * 60s) sleep
+# between retries
+retry 10 release_snap_channels

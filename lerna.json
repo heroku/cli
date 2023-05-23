@@ -1,0 +1,11 @@
+{
+  "version": "8.1.3",
+  "useWorkspaces": true,
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "allowBranch": ["main", "release-*"],
+      "conventionalCommits": true
+    }
+  }
+}

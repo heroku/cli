@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const glob = require('glob')
+const fs = require('fs')
+const path = require('path')
+const crypto = require('crypto')
+const { EOL } = require('os')
+
+function sha256(filePath) {
+  const hash = crypto.createHash('sha256')
+  const stream = fs.createReadStream(filePath)
+  return new Promise((resolve, reject) => {
+    stream.on('data', (d) => hash.update(d))
+    stream.on('end', () => {
+      resolve(hash.digest('hex'))
+    })
+    stream.on('error', reject)
+  })
+}
+
+
+async function main() {
+  const sha256TxtLines = []
+
+  const root = '/build/dist'
+  const fileManifestPromises =
+    glob.sync(`${root}/**/*`)
+    .filter((path) => fs.lstatSync(path).isFile())
+    .map(async (filePath) => {
+    const sum = await sha256(filePath)
+    const rel = path.relative(root, filePath)
+
+    sha256TxtLines.push([sum, rel])
+
+    return {
+      sha256: sum,
+      path: rel
+    }
+  })
+
+  const fileManifests = await Promise.all(fileManifestPromises)
+
+  const asJSON = JSON.stringify({
+    files: fileManifests
+  }, null, 2)
+
+  fs.writeFileSync(path.join(root, 'SHA256.json'), asJSON)
+
+  let asText = sha256TxtLines.map((line) => line.join(' ')).join(EOL)
+  asText = sha256TxtLines.length === 1 ? asText + EOL : asText
+
+  fs.writeFileSync(
+    path.join(root, 'SHA256.txt'),
+    asText,
+    {encoding: 'utf8'}
+  )
+}
+
+
+main()

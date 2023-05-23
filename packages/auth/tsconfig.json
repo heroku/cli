@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "outDir": "./lib",
+    "pretty": true,
+    "rootDirs": [
+      "./src"
+    ],
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2017"
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}

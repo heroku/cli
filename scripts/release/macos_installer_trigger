@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -ex
+
+if [[ -z "${CIRCLE_TAG}" ]]; then
+  echo "Not on stable release, skipping macos installer trigger"
+  exit
+fi
+
+./scripts/utils/_github_setup
+
+VERSION=$(node -p "require('./packages/cli/package.json').version")
+
+# trigger a macos installer by committing and tagging to the repo
+
+git clone --recurse-submodules "git@github.com:heroku/cli-macos-installer.git" tmp/cli-macos-installer
+
+cd tmp/cli-macos-installer
+(
+  cd cli
+  git checkout "$CIRCLE_SHA1"
+)
+git add cli
+
+git commit -m "heroku $VERSION"
+git tag "v$VERSION"
+git push --tags
+
+git push origin main

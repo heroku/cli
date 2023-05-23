@@ -1,0 +1,62 @@
+{
+  "name": "@heroku-cli/plugin-local",
+  "description": "run heroku apps locally",
+  "version": "8.1.0",
+  "author": "Chad Carbert @chadian",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "dependencies": {
+    "@heroku-cli/command": "9.0.1",
+    "@oclif/core": "^1.26.2",
+    "foreman": "^3.0.1",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2.2.20",
+    "@types/chai": "^4",
+    "@types/mocha": "^5",
+    "bats": "^1.1.0",
+    "chai": "^4",
+    "globby": "^10.0.2",
+    "mocha": "^5",
+    "nyc": "^15.1.0",
+    "oclif": "3.8.1",
+    "ts-node": "^10",
+    "tslib": "^1.9.3",
+    "typescript": "4.8.4"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "files": [
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/yarn.lock"
+  ],
+  "homepage": "https://github.com/heroku/cli",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "commands": "./lib/commands",
+    "bin": "heroku"
+  },
+  "repository": "heroku/cli",
+  "scripts": {
+    "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
+    "postpack": "rm -f oclif.manifest.json",
+    "prepack": "rm -rf lib && tsc -b && oclif manifest",
+    "pretest": "tsc -p test --noEmit",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "yarn lint",
+    "test:acceptance": "node ./bin/bats-test-runner",
+    "version": "oclif readme && git add README.md"
+  }
+}

@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+require('@oclif/core').Command.run()
+.catch(require('@oclif/core').Errors.handle)

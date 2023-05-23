@@ -1,0 +1,5 @@
+--require ./test/init.js
+--reporter list
+--recursive
+--exit
+--timeout 60000

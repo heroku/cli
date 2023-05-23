@@ -1,0 +1,79 @@
+{
+  "name": "@heroku-cli/plugin-orgs-v5",
+  "description": "CLI to manage Heroku Organizations",
+  "version": "8.1.0",
+  "author": "Raul Barroso @raulb",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
+      "members": {
+        "description": "manage organization members"
+      },
+      "teams": {
+        "description": "manage teams"
+      },
+      "sharing": {
+        "hidden": true
+      },
+      "join": {
+        "hidden": true
+      },
+      "leave": {
+        "hidden": true
+      },
+      "lock": {
+        "hidden": true
+      },
+      "unlock": {
+        "hidden": true
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^9.0.2",
+    "heroku-cli-util": "^8.0.11",
+    "inquirer": "^6.2.2",
+    "lodash": "^4.17.11",
+    "lodash.flatten": "^4.4.0"
+  },
+  "devDependencies": {
+    "@oclif/plugin-legacy": "^1.3.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.6",
+    "nyc": "^15.1.0",
+    "oclif": "3.8.1",
+    "proxyquire": "^2.1.0",
+    "sinon": "^6.3.5"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/orgs-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/cli",
+  "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
+    "postpublish": "rm oclif.manifest.json",
+    "posttest": "yarn lint",
+    "prepack": "oclif manifest",
+    "test": "nyc mocha ./test/**/*.unit.test.js",
+    "test:integration": "mocha './test/**/*.integration.test.js'",
+    "version": "oclif readme && git add README.md"
+  }
+}

@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# inputs
+# $1 OUTPUT_DIR
+# $OS
+# $ARCH
+# $NODE_VERSION
+
+set -ex
+
+if [[ $# -ne 1 ]]; then
+  echo "USAGE: $0 OUTPUT_DIR"
+  exit 1
+fi
+
+output=$1
+node_ext=""
+NODE_VERSION=$(node -p "require('./packages/cli/package.json').oclif.update.node.version || process.versions.node")
+
+mkdir -p "$output"
+mkdir -p "$TMP_DIR/node"
+mkdir -p "$TMP_DIR/cache/node"
+
+
+if [ -z "${ARCH:-}" ] && [ ! -z "${SNAPCRAFT_ARCH_TRIPLET:-}" ]; then
+  ARCH=$(node -p "process.env.SNAPCRAFT_ARCH_TRIPLET.split('-')[0]")
+fi
+
+if [ "$ARCH" = amd64 ] || [ "$ARCH" = x86_64 ]; then
+  ARCH=x64
+elif [ "$ARCH" = i386 ] || [ "$ARCH" = x86 ]; then
+  ARCH=x86
+elif [ "$ARCH" = armel ]; then
+  ARCH=arm
+fi
+
+# install node
+if [ "${OS}" == "win32" ]; then
+  node_ext=".exe"
+  node_base=node-v${NODE_VERSION}-win-${ARCH}
+  if [ ! -f "$TMP_DIR/cache/node/${node_base}" ]; then
+    echo "fetching ${node_base}"
+    url=https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-${ARCH}.7z
+    curl -fSsLo "$TMP_DIR/node/${node_base}.7z" "${url}"
+    (
+      cd "$TMP_DIR/node"
+      7z x -bd -y "${TMP_DIR}/node/${node_base}.7z" > /dev/null
+      mv "${node_base}/node.exe" "$TMP_DIR/cache/node/${node_base}"
+    )
+  fi
+else
+  if [ "${ARCH}" == "arm" ]; then node_arch=armv7l; else node_arch="${ARCH}"; fi
+  node_base=node-v${NODE_VERSION}-${OS}-${node_arch}
+  if [ ! -f "$TMP_DIR/cache/node/${node_base}" ]; then
+    echo "fetching ${node_base}"
+    url=https://nodejs.org/dist/v${NODE_VERSION}/${node_base}.tar.xz
+    curl -fSsL "${url}" | tar -C "${TMP_DIR}/node" -xJ
+    mv "$TMP_DIR/node/${node_base}/bin/node" "$TMP_DIR/cache/node/${node_base}"
+  fi
+fi
+
+cp "${TMP_DIR}/cache/node/${node_base}" "${output}/node${node_ext}"

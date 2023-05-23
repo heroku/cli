@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+MAIN_BRANCH="main"
+
+if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
+  echo "scripts/publish-release must be run on the ${MAIN_BRANCH}."
+  echo "Please checkout the ${MAIN_BRANCH} branch with:"
+  echo "git checkout ${MAIN_BRANCH}"
+  exit 1
+fi
+
+if !(command -v gh > /dev/null); then
+  echo "GitHub CLI is required for this release script."
+  echo "Please install GitHub CLI and try again:"
+  echo "https://github.com/cli/cli#installation"
+  exit 1
+fi
+
+# hostname is necessary just in case you are logged into the CLI
+# GitHub enterprise instance
+if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+  echo "Not logged into GitHub".
+  echo "Please run: gh auth login"
+  exit 1
+fi
+
+git pull --rebase origin "${MAIN_BRANCH}"
+
+# Create a branch with the unix timestamp of the current second
+BRANCH_NAME="release-$(date +%s)"
+
+echo "Creating git branch ${BRANCH_NAME}"
+git checkout -b "${BRANCH_NAME}"
+
+echo "Installing dependencies with yarn..."
+yarn
+echo "Done installing dependencies with yarn"
+
+echo "Creating new CLI package(s) versions with yarn lerna version..."
+yarn lerna version \
+  --allow-branch ${BRANCH_NAME} \
+  --no-push \
+  --no-git-tag-version \
+  --yes
+git add . -u
+PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
+echo "Done creating new CLI package(s) versions"
+
+echo "Creating git commit and pushing to GitHub..."
+git commit -m "v${PACKAGE_VERSION}"
+git push origin "${BRANCH_NAME}"
+gh pr create --title="release v${PACKAGE_VERSION}" --body "release v${PACKAGE_VERSION}"

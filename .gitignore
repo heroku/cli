@@ -1,0 +1,17 @@
+*-debug.log
+*-error.log
+.oclif.manifest.json
+/cli
+/coverage
+/dist
+/lib
+node_modules
+/package-lock.json
+/tmp
+/packages/cli/docs/*
+
+**/.DS_Store
+./idea
+.vscode
+
+

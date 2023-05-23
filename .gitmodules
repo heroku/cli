@@ -1,0 +1,6 @@
+[submodule "macos-installer"]
+	path = macos-installer
+	url = git@github.com:heroku/cli-macos-installer.git
+[submodule "homebrew-brew"]
+	path = homebrew-brew
+	url = git@github.com:heroku/homebrew-brew.git

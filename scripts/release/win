@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const qq = require('qqjs')
+
+qq.config.silent = false
+qq.run(async () => {
+  const version = await require('../utils/_version')()
+  await qq.x('./node_modules/.bin/oclif pack:win')
+  await qq.x(`mv dist/win/heroku-v${version}-x86.exe dist/win/heroku-v${version}-x86-unsigned.exe`)
+  await qq.x(`mv dist/win/heroku-v${version}-x64.exe dist/win/heroku-v${version}-x64-unsigned.exe`)
+  // await qq.x('echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key')
+  // await qq.x(`osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -h sha512 -in dist/win/heroku-v${version}-x86-unsigned.exe -out dist/win/heroku-v${version}-x86.exe`)
+  // await qq.x(`osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -h sha512 -in dist/win/heroku-v${version}-x64-unsigned.exe -out dist/win/heroku-v${version}-x64.exe`)
+  // await qq.x('./node_modules/.bin/oclif upload:win')
+})

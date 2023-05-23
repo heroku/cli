@@ -1,0 +1,35 @@
+{
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "4.18.0",
+    "@typescript-eslint/parser": "4.18.0",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4.0.0",
+    "eslint-config-oclif-typescript": "^1.0.2",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "lerna": "^6.4.1",
+    "promise-request-retry": "^1.0.2",
+    "standard": "12.0.1",
+    "tmp": "^0.2.1"
+  },
+  "standard": {
+    "env": "mocha",
+    "ignore": [
+      "**/node_modules/**",
+      "packages/*/lib/**"
+    ]
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "private": true,
+  "scripts": {
+    "build": "lerna run prepack",
+    "test": "lerna run test --concurrency 4",
+    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
