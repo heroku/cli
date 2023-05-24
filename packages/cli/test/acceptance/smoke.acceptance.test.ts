@@ -6,6 +6,8 @@ import * as qq from 'qqjs'
 
 const globby = require('globby')
 
+const app = 'heroku-cli-ci-smoke-test-app'
+const appFlag = `-a=${app}`
 const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
@@ -30,28 +32,22 @@ describe('@acceptance smoke tests', () => {
   })
 
   it('heroku apps:info', async () => {
-    const app = 'heroku-cli-ci-smoke-test-app'
-    const appFlag = `-a=${app}`
-    expect((await run(['info', appFlag].join(' '))).stdout).to.contain(app)
+    const {stdout} = await run(`info ${appFlag}`)
+    expect(stdout).to.contain(app)
   })
 
   it('heroku run', async () => {
-    const app = 'heroku-cli-ci-smoke-test-app'
-    const appFlag = `-a=${app}`
     const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
     expect(stdout).to.contain('it works!')
   })
 
   it('heroku access', async () => {
-    const app = 'heroku-cli-ci-smoke-test-app'
-    const appFlag = `-a=${app}`
-    const {stdout} = await run(['access', appFlag].join(' '))
+    const {stdout} = await run(`access ${appFlag}`)
     expect(stdout).to.contain('heroku-cli@salesforce.com')
   })
 
   it('heroku pg:backups', async () => {
-    const app = 'heroku-cli-ci-smoke-test-app'
-    const {stdout} = await run(`pg:backups -a=${app}`)
+    const {stdout} = await run(`pg:backups ${appFlag}`)
     expect(stdout).to.match(/===.*Backups/)
     expect(stdout).to.match(/===.*Restores/)
     expect(stdout).to.match(/===.*Copies/)
