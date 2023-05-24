@@ -7,17 +7,18 @@ function run() {
   try {
     const buffer = readFileSync(core.getInput('path'))
     const pjson = JSON.parse(buffer.toString())
-    if (pjson?.version) {
-      const {version} = pjson
-      const distTag = version.split('-')[1] || ''
-      // strip build: 'beta.5' => 'beta'
-      const channel = distTag.split('.')[0]
-
-      core.setOutput('channel', channel)
-      core.setOutput('version', version)
-    } else {
+    if (!pjson?.version) {
       core.setFailed('no version found :(')
+      return
     }
+    
+    const {version} = pjson
+    const distTag = version.split('-')[1] || ''
+    // strip build: 'beta.5' => 'beta'
+    const channel = distTag.split('.')[0]
+
+    core.setOutput('channel', channel)
+    core.setOutput('version', version)
   } catch (err) {
     if (err instanceof Error) {
       core.setFailed(err.message)
