@@ -25,8 +25,8 @@ jobs:
 
   publish-pack-upload:
     needs: [get-version-channel]
-    # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
-    # suffix is checked to avoid deploying prod from a malformed prerelease branch
+    # if (merged PR && is release branch) OR (prerelease branch && has a channel on the package.json version)
+    # channel is checked to avoid deploying prod from a malformed prerelease branch
     if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.channel && contains(github.ref, 'prerelease/'))
     uses: ./.github/workflows/publish-pack-upload.yml
     with:
@@ -39,5 +39,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      channel: ${{ needs.get-version-channel.outputs.suffix && 'beta' || 'stable' }}
+      channel: ${{ needs.get-version-channel.outputs.channel || 'stable' }}
     secrets: inherit
