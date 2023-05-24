@@ -10,10 +10,10 @@ inputs:
 outputs:
   channel:
     description: version channel (ex 'beta' if x.y.z-beta.0 ), if exists in package.json
-    value: ${{ steps.outputs.channel}}
+    value: ${{ steps.action.outputs.channel}}
   version:
     description: full version from package.json
-    value: ${{ steps.outputs.version}}
+    value: ${{ steps.action.outputs.version}}
 
 runs:
   using: composite
@@ -26,6 +26,6 @@ runs:
     - run: npm install @actions/core
       shell: bash
     - uses: 'src/action.js'
-      id: outputs
+      id: action
       with:
         path: ${{ inputs.path }}
