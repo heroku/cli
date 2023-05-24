@@ -279,7 +279,8 @@
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha --forbid-only \"test/**/*.unit.test.ts\"",
+    "test:acceptance":  "mocha --forbid-only \"test/**/*.acceptance.test.ts\"",
     "posttest": "yarn lint",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
