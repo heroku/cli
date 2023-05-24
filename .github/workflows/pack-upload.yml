@@ -32,7 +32,6 @@ jobs:
 
   pack_tarballs:
     runs-on: ubuntu-latest
-    needs: [publish-npm-and-github]
     steps:
       - uses: actions/checkout@v3
       - name: Install system deps
