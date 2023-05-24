@@ -1,9 +1,9 @@
-/* !IMPORTANT: You must run `npm run build` in this directory after all changes. Look to ./package.json */
-
 const core = require('@actions/core')
 const {readFileSync} = require('fs')
 
 function run() {
+  /* !IMPORTANT: You must run `npm run build` in this directory after all changes. Look to ./package.json */
+
   try {
     const buffer = readFileSync(core.getInput('path'))
     const pjson = JSON.parse(buffer.toString())
