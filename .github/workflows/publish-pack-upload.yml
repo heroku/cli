@@ -21,6 +21,7 @@ jobs:
   publish-npm-and-github:
     runs-on: pub-hk-ubuntu-22.04-small
     permissions:
+      # give secrets.GITHUB_TOKEN ability to push/tag/release
       contents: write
     steps:
       - uses: actions/checkout@v3
