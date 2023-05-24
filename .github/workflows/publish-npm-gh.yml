@@ -1,0 +1,50 @@
+name: Publish NPM & Github Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      isPreRelease:
+        description: is release for beta/rc/dev?
+        type: boolean
+        required: false
+        default: false
+
+  workflow_call:
+    inputs:
+      isPreRelease:
+        description: is release not for prod?
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  publish-npm-and-github:
+    runs-on: pub-hk-ubuntu-22.04-small
+    permissions:
+      # give secrets.GITHUB_TOKEN ability to push/tag/release
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: set NPM auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+      - name: set git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "heroku-front-end+npm-releases@salesforce.com"
+      - name: Publish to NPM & GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ${{ inputs.isPreRelease }}
+          then
+            bash scripts/publish-prerelease
+          else
+            bash scripts/publish-release
+          fi
+        shell: bash
