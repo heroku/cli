@@ -16,7 +16,7 @@ function run() {
 
       core.setOutput('channel', channel)
       core.setOutput('version', version)
-    // } else {
+    } //else {
     //   core.setFailed('no version found :(')
     // }
   } catch (err) {
