@@ -1,4 +1,5 @@
 --require ts-node/register
+--require test/init.js
 --watch-extensions ts
 --recursive
 --reporter spec

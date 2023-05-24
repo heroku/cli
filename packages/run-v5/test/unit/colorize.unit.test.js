@@ -1,5 +1,5 @@
 // const {expect} = require('chai')
-const colorize = require('../lib/colorize')
+const colorize = require('../../lib/colorize')
 
 describe('colorize', () => {
   const test = (type, input) => {
