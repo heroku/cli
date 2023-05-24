@@ -6,7 +6,6 @@ const {readFileSync} = require('fs')
 function run() {
   try {
     const buffer = readFileSync(core.getInput('path'))
-    core.setFailed(buffer.toString())
     const pjson = JSON.parse(buffer.toString())
     if (pjson?.version) {
       const {version} = pjson
@@ -16,9 +15,9 @@ function run() {
 
       core.setOutput('channel', channel)
       core.setOutput('version', version)
-    } //else {
-    //   core.setFailed('no version found :(')
-    // }
+    } else {
+      core.setFailed('no version found :(')
+    }
   } catch (err) {
     if (err instanceof Error) {
       core.setFailed(err.message)
