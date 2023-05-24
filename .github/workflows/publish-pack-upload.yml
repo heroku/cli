@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       isPreRelease:
-        description: is release not for prod?
+        description: is release for beta/rc/dev?
         type: boolean
         required: false
         default: false
@@ -41,7 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ ${{ inputs.isPreRelease }} ]]; then
+          if ${{ inputs.isPreRelease }}
+          then
             bash scripts/publish-prerelease
           else
             bash scripts/publish-release
