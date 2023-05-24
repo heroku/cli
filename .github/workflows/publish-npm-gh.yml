@@ -12,7 +12,7 @@ on:
   workflow_call:
     inputs:
       isPreRelease:
-        description: is release not for prod?
+        description: is release for beta/rc/dev?
         type: boolean
         required: false
         default: false
