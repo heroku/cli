@@ -29,6 +29,7 @@ jobs:
     environment: AcceptanceTests
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      ENABLE_NET_CONNECT: true
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -48,6 +49,7 @@ jobs:
     environment: AcceptanceTests
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      ENABLE_NET_CONNECT: true
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
