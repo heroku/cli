@@ -18,14 +18,13 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3
     - name: Use Node.js 16.x
       uses: actions/setup-node@v3
       with:
         node-version: 16.x
     - run: npm install @actions/core
       shell: bash
-    - uses: 'src/action.js'
+    - uses: ./.github/actions/get-version-and-channel/src/action.js
       id: action
       with:
         path: ${{ inputs.path }}
