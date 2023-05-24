@@ -6,9 +6,7 @@ const {readFile} = require('fs/promises')
 async function run() {
   try {
     const buffer = await readFile(core.getInput('path'))
-    const fileString = buffer.toString()
-    console.log('fileString: ', fileString)
-    const pjson = JSON.parse(fileString)
+    const pjson = JSON.parse(buffer.toString())
     if (pjson?.version) {
       const {version} = pjson
       const distTag = version.split('-')[1] || ''
@@ -17,8 +15,9 @@ async function run() {
 
       core.setOutput('channel', channel)
       core.setOutput('version', version)
+    } else {
+      core.setFailed('no version found :(')
     }
-    core.setFailed('no version found :(')
   } catch (err) {
     if (err instanceof Error) {
       core.setFailed(err.message)
