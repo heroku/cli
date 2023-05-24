@@ -9,22 +9,10 @@ inputs:
 
 outputs:
   channel:
-    description: version channel (ex 'beta' if x.y.z-beta.0 ), if exists in package.json
-    value: ${{ steps.action.outputs.channel}}
+    description: version channel (ex 'beta' if 1.2.3-beta.0 ), if exists in package.json
   version:
     description: full version from package.json
-    value: ${{ steps.action.outputs.version}}
 
 runs:
-  using: composite
-  steps:
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-    - run: npm install @actions/core
-      shell: bash
-    - uses: ./.github/actions/get-version-and-channel/src/action.js
-      id: action
-      with:
-        path: ${{ inputs.path }}
+  using: 'node16'
+  main: 'dist/index.js'

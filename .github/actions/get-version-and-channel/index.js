@@ -1,3 +1,5 @@
+/* !IMPORTANT: You must run `npm run build` in this directory after all changes. Look to ./package.json */
+
 const core = require('@actions/core')
 const {readFile} = require('fs/promises')
 
