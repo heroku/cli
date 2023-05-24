@@ -19,11 +19,11 @@ fi
 
 ## hostname is necessary just in case you are logged into the CLI
 ## GitHub enterprise instance
-#if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
-#  echo "Not logged into github".
-#  echo "Please run: gh auth login"
-#  exit 1
-#fi
+if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+  echo "Not logged into github".
+  echo "Please run: gh auth login"
+  exit 1
+fi
 
 git pull --rebase origin "${CURRENT_BRANCH}"
 # The --force overrides local tags.
@@ -60,4 +60,4 @@ yarn lerna publish --dist-tag beta --yes from-package
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
 
-#gh release create "${TAG_NAME}" --title="${TAG_NAME}" --prerelease
+gh release create "${TAG_NAME}" --title="${TAG_NAME}" --prerelease
