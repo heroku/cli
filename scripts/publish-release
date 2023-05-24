@@ -25,12 +25,6 @@ if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
   exit 1
 fi
 
-git pull --rebase origin "${CURRENT_BRANCH}"
-# The --force overrides local tags.
-# This is needed if you've published the CLI previously,
-# otherwise git will exit with an error unnecessarily.
-git fetch origin  --force --tags
-
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
@@ -50,11 +44,12 @@ echo "Done installing dependencies with yarn"
 echo "publishing packages to npm..."
 yarn lerna publish --yes from-package
 
-
-LAST_PUBLISHED_TAG=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)" | head -n1)
-
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
+
+SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
+FILTERED_TAGS=$(echo ${SORTED_TAGS} | grep 'v[0-9.]*' | grep -v '-')
+LAST_PUBLISHED_TAG=$(echo ${FILTERED_TAGS} | head -n1)
 
 RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}...${TAG_NAME}~1")
 gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
