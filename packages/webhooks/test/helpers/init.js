@@ -6,5 +6,12 @@
 global.columns = 140
 
 // disable color for tests
-const { color } = require('@heroku-cli/color')
+const {color} = require('@heroku-cli/color')
 color.enabled = false
+
+let nock = require('nock')
+
+nock.disableNetConnect()
+if (process.env.ENABLE_NET_CONNECT === 'true') {
+  nock.enableNetConnect()
+}

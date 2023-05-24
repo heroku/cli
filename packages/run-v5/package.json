@@ -66,8 +66,8 @@
     "postpack": "rm oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "nyc --extension .js mocha \"test/**/*.js\"",
-    "test:acceptance": "yarn test --grep='@acceptance'",
+    "test": "nyc --extension .js mocha \"test/**/*.unit.test.js\"",
+    "test:integration": "mocha --forbid-only \"test/**/*.integration.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }

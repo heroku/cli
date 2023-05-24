@@ -1,9 +1,9 @@
 import {expect, test} from '@oclif/test'
 import * as sinon from 'sinon'
 
-import Dyno from '../../src/lib/dyno'
+import Dyno from '../../../src/lib/dyno'
 
-describe('rake', () => {
+describe('console', () => {
   let dynoOpts
 
   test
@@ -11,8 +11,8 @@ describe('rake', () => {
       dynoOpts = this.opts
       return Promise.resolve()
     }))
-    .command(['rake', '--app=heroku-cli-ci-smoke-test-app', 'test'])
-    .it('runs rake', () => {
-      expect(dynoOpts.command).to.equal('rake test')
+    .command(['console', '--app=heroku-cli-ci-smoke-test-app'])
+    .it('runs console', () => {
+      expect(dynoOpts.command).to.equal('console')
     })
 })

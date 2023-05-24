@@ -3,8 +3,8 @@
 
 const {expect} = require('chai')
 const sinon = require('sinon')
-const Dyno = require('../../lib/dyno')
-const cmd = require('../../commands/console')
+const Dyno = require('../../../lib/dyno')
+const cmd = require('../../../commands/console')
 
 describe('console', () => {
   let dynoStub

@@ -13,13 +13,7 @@ function run(args = '') {
   return qq.x([bin, args].join(' '), {stdio: undefined})
 }
 
-let describeOrSkip: Mocha.SuiteFunction | Mocha.PendingSuiteFunction = describe
-
-if (process.env.CI && process.env.RUN_ACCEPTANCE_TESTS !== 'true') {
-  describeOrSkip = describe.skip.bind(describe)
-}
-
-describeOrSkip('@acceptance smoke tests', () => {
+describe('@acceptance smoke tests', () => {
   it('heroku version', async () => {
     const {stdout} = await run('version')
     expect(stdout).to.match(/^heroku\//)
