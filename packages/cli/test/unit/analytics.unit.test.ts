@@ -3,8 +3,8 @@ import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
-import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
-import UserConfig from '../src/user-config'
+import AnalyticsCommand, {AnalyticsInterface} from '../../src/analytics'
+import UserConfig from '../../src/user-config'
 
 const mockCommand = {
   plugin: {

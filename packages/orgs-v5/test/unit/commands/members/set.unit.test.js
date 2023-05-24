@@ -1,10 +1,10 @@
 'use strict'
 /* globals beforeEach afterEach cli nock expect context */
 
-let cmd = require('../../../commands/members/set')
+let cmd = require('../../../../commands/members/set')
 let stubGet = require('../../stub/get')
 let stubPatch = require('../../stub/patch')
-const unwrap = require('../../unwrap')
+const unwrap = require('../../../unwrap')
 
 describe('heroku members:set', () => {
   let apiUpdateMemberRole

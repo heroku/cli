@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import {expect, test} from '@oclif/test'
-import {checkTos} from '../../src/hooks/init/terms-of-service'
+import {checkTos} from '../../../src/hooks/init/terms-of-service'
 import * as fs from 'fs-extra'
 import {join} from 'path'
 

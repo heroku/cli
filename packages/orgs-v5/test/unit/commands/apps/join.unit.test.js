@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach cli nock expect */
 
-let cmd = require('../../../commands/apps/join')[0]
+let cmd = require('../../../../commands/apps/join')[0]
 let stubPost = require('../../stub/post')
 let stubGet = require('../../stub/get')
 
