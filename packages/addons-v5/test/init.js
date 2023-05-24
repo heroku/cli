@@ -13,6 +13,6 @@ process.stdout.columns = 80
 process.stderr.columns = 80
 nock.disableNetConnect()
 
-if (process.env.ENABLE_NET_CONNECT === true) {
+if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
 }

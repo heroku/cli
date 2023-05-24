@@ -5,6 +5,6 @@ cli.raiseErrors = true
 
 const nock = require('nock')
 nock.disableNetConnect()
-if (process.env.ENABLE_NET_CONNECT === true) {
+if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
 }

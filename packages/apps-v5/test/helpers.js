@@ -12,6 +12,6 @@ process.stderr.columns = 80 // Set screen width for consistent wrapping
 
 let nock = require('nock')
 nock.disableNetConnect()
-if (process.env.ENABLE_NET_CONNECT === true) {
+if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
 }
