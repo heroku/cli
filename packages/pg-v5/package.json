@@ -63,7 +63,7 @@
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "release": "np",
-    "test": "cross-env TZ=utc nyc mocha",
+    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }
