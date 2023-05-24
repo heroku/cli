@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "8.1.2",
+  "version": "8.1.4",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
