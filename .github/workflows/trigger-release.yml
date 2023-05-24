@@ -23,19 +23,24 @@ jobs:
         with:
           path: './packages/cli/package.json'
 
-  publish-pack-upload:
+  publish:
     needs: [get-version-channel]
     # if (merged PR && is release branch) OR (prerelease branch && has a channel on the package.json version)
     # channel is checked to avoid deploying prod from a malformed prerelease branch
     if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.channel && contains(github.ref, 'prerelease/'))
-    uses: ./.github/workflows/publish-pack-upload.yml
+    uses: ./.github/workflows/publish-npm-gh.yml
     with:
       isPreRelease: ${{ !!needs.get-version-channel.outputs.channel }}
     secrets: inherit
 
+  pack-upload:
+    needs: [ publish ]
+    uses: ./.github/workflows/pack-upload.yml
+    secrets: inherit
+
   promote:
-    needs: [get-version-channel, publish-pack-upload]
-    if: needs.publish-pack-upload.result == 'success'
+    needs: [get-version-channel, pack-upload]
+    if: needs.pack-upload.result == 'success'
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
