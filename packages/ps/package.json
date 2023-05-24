@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ps",
   "description": "ps core plugin for Heroku CLI",
-  "version": "8.1.0",
+  "version": "8.1.4",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
