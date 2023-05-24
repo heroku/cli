@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import * as PromoteCmd from '../../../src/commands/pipelines/promote'
+import * as PromoteCmd from '../../../../src/commands/pipelines/promote'
 
 describe('pipelines:promote', () => {
   const apiUrl = 'https://api.heroku.com'
