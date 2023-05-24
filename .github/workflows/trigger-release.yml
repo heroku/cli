@@ -11,27 +11,33 @@ on:
 
 jobs:
   get-version-channel:
+    if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
+    runs-on: ubuntu-latest
     outputs:
-      tag: steps.distTag.outputs.tag
-      version: steps.distTag.outputs.version
+      channel: ${{ steps.getVersion.outputs.channel }}
+      version: ${{ steps.getVersion.outputs.version }}
     steps:
-      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
-        id: distTag
+      - uses: actions/checkout@v3
+      - id: getVersion
+        uses: ./.github/actions/get-version-and-channel/
+        with:
+          path: './packages/cli/package.json'
 
   publish-pack-upload:
-    # if (merged PR && is release branch) OR (prerelease branch && has a suffix on the package.json version)
-    # suffix is checked to avoid deploying prod from a malformed prerelease branch
-    if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-') || (needs.get-version-channel.outputs.tag && startsWith(github.head_ref, 'prerelease/')))
+    needs: [get-version-channel]
+    # if (merged PR && is release branch) OR (prerelease branch && has a channel on the package.json version)
+    # channel is checked to avoid deploying prod from a malformed prerelease branch
+    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.channel && contains(github.ref, 'prerelease/'))
     uses: ./.github/workflows/publish-pack-upload.yml
     with:
-      isPreRelease: ${{ !!needs.get-version-channel.outputs.tag }}
+      isPreRelease: ${{ !!needs.get-version-channel.outputs.channel }}
+    secrets: inherit
 
   promote:
-    needs: [publish-pack-upload]
-    steps:
-      - uses: oclif/github-workflows/.github/actions/getPreReleaseTag@main
-        id: distTag
-      - uses: ./.github/workflows/promote-release.yml
-        with:
-          version: steps.distTag.outputs.version
-          channel: ${{ steps.distTag.outputs.tag || 'stable' }}
+    needs: [get-version-channel, publish-pack-upload]
+    if: needs.publish-pack-upload.result == 'success'
+    uses: ./.github/workflows/promote-release.yml
+    with:
+      version: ${{ needs.get-version-channel.outputs.version }}
+      channel: ${{ needs.get-version-channel.outputs.channel || 'stable' }}
+    secrets: inherit
