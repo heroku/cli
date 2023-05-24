@@ -14,11 +14,11 @@ jobs:
     if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
-      channel: ${{ steps.distTag.outputs.channel }}
-      version: ${{ steps.distTag.outputs.version }}
+      channel: ${{ steps.getVersion.outputs.channel }}
+      version: ${{ steps.getVersion.outputs.version }}
     steps:
       - uses: actions/checkout@v3
-      - id: distTag
+      - id: getVersion
         uses: ./.github/actions/get-version-and-channel/
         with:
           path: './packages/cli/package.json'
