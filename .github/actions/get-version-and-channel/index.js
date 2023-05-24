@@ -1,11 +1,11 @@
 /* !IMPORTANT: You must run `npm run build` in this directory after all changes. Look to ./package.json */
 
 const core = require('@actions/core')
-const {readFile} = require('fs/promises')
+const {readFileSync} = require('fs')
 
-async function run() {
+function run() {
   try {
-    const buffer = await readFile(core.getInput('path'))
+    const buffer = readFileSync(core.getInput('path'))
     const pjson = JSON.parse(buffer.toString())
     if (pjson?.version) {
       const {version} = pjson
