@@ -3,10 +3,10 @@ import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../src/base'
+import {AutocompleteBase} from '../../src/base'
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('./helpers/runtest')
+const {default: runtest} = require('../helpers/runtest')
 
 class AutocompleteTest extends AutocompleteBase {
   static id = 'test:foo'
@@ -21,7 +21,7 @@ class AutocompleteTest extends AutocompleteBase {
   }
 }
 
-const root = path.resolve(__dirname, '../package.json')
+const root = path.resolve(__dirname, '../../package.json')
 const config = new Config({root})
 
 const cmd = new AutocompleteTest([], config)

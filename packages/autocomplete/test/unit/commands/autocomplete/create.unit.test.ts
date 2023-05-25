@@ -3,15 +3,15 @@ import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
 import * as path from 'path'
 
-import Create from '../../../src/commands/autocomplete/create'
+import Create from '../../../../src/commands/autocomplete/create'
 
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../../helpers/runtest')
+const {default: runtest} = require('../../../helpers/runtest')
 
-const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..')
+const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..', '..')
 
 const CacheBuildFlagsTest = {
   id: 'autocomplete:create',
@@ -36,7 +36,7 @@ runtest('Create', () => {
       cmd.config.plugins = [plugin]
       await plugin.load()
       // eslint-disable-next-line require-atomic-updates
-      plugin.manifest = await loadJSON(path.resolve(__dirname, '../../test.oclif.manifest.json'))
+      plugin.manifest = await loadJSON(path.resolve(__dirname, '../../../test.oclif.manifest.json'))
       // eslint-disable-next-line require-atomic-updates
       plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({
         ...c as Record<string, unknown>,

@@ -2,7 +2,7 @@
 import {expect, test} from '@oclif/test'
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../../helpers/runtest')
+const {default: runtest} = require('../../../helpers/runtest')
 
 runtest('autocomplete:index', () => {
   test
