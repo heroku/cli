@@ -3,7 +3,7 @@ import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
 
-import Options from '../../../src/commands/autocomplete/options'
+import Options from '../../../../src/commands/autocomplete/options'
 
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
