@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../../commands/certs/auto/refresh.js')
+let certs = require('../../../../../commands/certs/auto/refresh.js')
 
 describe('heroku certs:auto:enable', function () {
   beforeEach(function () {

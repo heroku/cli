@@ -1,6 +1,6 @@
 'use strict'
 const expect = require('chai').expect
-const matchDomains = require('../../lib/match_domains')
+const matchDomains = require('../../../lib/match_domains')
 
 describe('matchDomains', () => {
   it('matches a single domain', () => {

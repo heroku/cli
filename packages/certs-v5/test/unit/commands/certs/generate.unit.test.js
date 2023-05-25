@@ -12,8 +12,8 @@ chai.use(sinonChai)
 let cli = require('heroku-cli-util')
 let childProcess = require('child_process')
 
-let certs = require('../../../commands/certs/generate.js')
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
+let certs = require('../../../../commands/certs/generate.js')
+let endpoint = require('../../../stubs/sni-endpoints.js').endpoint
 
 let EventEmitter = require('events').EventEmitter
 

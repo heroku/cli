@@ -1,16 +1,16 @@
 'use strict'
 /* globals beforeEach cli */
 
-let certs = require('../../../commands/certs/info.js')
+let certs = require('../../../../commands/certs/info.js')
 let nock = require('nock')
 let expect = require('chai').expect
 
-let sharedSni = require('./shared_sni.js')
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-let endpointWithDomains = require('../../stubs/sni-endpoints.js').endpoint_with_domains
-let endpointUntrusted = require('../../stubs/sni-endpoints.js').endpoint_untrusted
-let endpointTrusted = require('../../stubs/sni-endpoints.js').endpoint_trusted
-let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
+let sharedSni = require('./shared_sni.unit.test.js')
+let endpoint = require('../../../stubs/sni-endpoints.js').endpoint
+let endpointWithDomains = require('../../../stubs/sni-endpoints.js').endpoint_with_domains
+let endpointUntrusted = require('../../../stubs/sni-endpoints.js').endpoint_untrusted
+let endpointTrusted = require('../../../stubs/sni-endpoints.js').endpoint_trusted
+let certificateDetails = require('../../../stubs/sni-endpoints.js').certificate_details
 
 describe('heroku certs:info', function () {
   beforeEach(function () {

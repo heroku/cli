@@ -3,12 +3,12 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/certs/index.js')
+let certs = require('../../../../commands/certs/index.js')
 
-let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
-let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
-let endpointWildcardBug = require('../../stubs/sni-endpoints.js').endpoint_wildcard_bug
-let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
+let endpointStables = require('../../../stubs/sni-endpoints.js').endpoint_stables
+let endpointWildcard = require('../../../stubs/sni-endpoints.js').endpoint_wildcard
+let endpointWildcardBug = require('../../../stubs/sni-endpoints.js').endpoint_wildcard_bug
+let endpointAcm = require('../../../stubs/sni-endpoints.js').endpoint_acm
 
 describe('heroku certs', function () {
   beforeEach(function () {

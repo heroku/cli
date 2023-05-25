@@ -6,15 +6,15 @@ let nock = require('nock')
 var fs = require('fs')
 var sinon = require('sinon')
 
-let certs = require('../../../commands/certs/update.js')
-let error = require('../../../lib/error.js')
-let assertExit = require('../../assert_exit.js')
-let sharedSni = require('./shared_sni.js')
+let certs = require('../../../../commands/certs/update.js')
+let error = require('../../../../lib/error.js')
+let assertExit = require('../../../assert_exit.js')
+let sharedSni = require('./shared_sni.unit.test.js')
 
-let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
-let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
-let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
-let unwrap = require('../../unwrap.js')
+let endpointStable = require('../../../stubs/sni-endpoints.js').endpoint_stable
+let endpointWarning = require('../../../stubs/sni-endpoints.js').endpoint_warning
+let certificateDetails = require('../../../stubs/sni-endpoints.js').certificate_details
+let unwrap = require('../../../unwrap.js')
 
 function mockFile(fs, file, content) {
   fs.readFile

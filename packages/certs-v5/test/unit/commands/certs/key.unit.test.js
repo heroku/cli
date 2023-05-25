@@ -6,14 +6,14 @@ let expect = require('chai').expect
 // var fs = require('fs')
 // var sinon = require('sinon')
 
-let certs = require('../../../commands/certs/chain.js')
+let certs = require('../../../../commands/certs/key.js')
 // let assertExit = require('../../assert_exit.js')
 // let error = require('../../../lib/error.js')
 // const unwrap = require('../../unwrap')
 
 // TODO: Update tests once fix has been implemented
 
-describe('heroku certs:chain', function () {
+describe('heroku certs:key', function () {
   beforeEach(function () {
     cli.mockConsole()
     // error.exit.mock()
@@ -24,9 +24,9 @@ describe('heroku certs:chain', function () {
     // nock.cleanAll()
   })
 
-  //   afterEach(function () {
-  //     fs.readFile.restore()
-  //   })
+  // afterEach(function () {
+  //   fs.readFile.restore()
+  // })
 
   it('# checks command does nothing', function () {
     return certs.run({app: 'example', args: []}).then(function () {

@@ -3,15 +3,15 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let error = require('../../../lib/error.js')
+let error = require('../../../../lib/error.js')
 
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2
-let endpointCname = require('../../stubs/sni-endpoints.js').endpoint_cname
-let endpointHeroku = require('../../stubs/sni-endpoints.js').endpoint_heroku
-let assertExit = require('../../assert_exit.js')
-let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
-const unwrap = require('../../unwrap')
+let endpoint = require('../../../stubs/sni-endpoints.js').endpoint
+let endpoint2 = require('../../../stubs/sni-endpoints.js').endpoint2
+let endpointCname = require('../../../stubs/sni-endpoints.js').endpoint_cname
+let endpointHeroku = require('../../../stubs/sni-endpoints.js').endpoint_heroku
+let assertExit = require('../../../assert_exit.js')
+let certificateDetails = require('../../../stubs/sni-endpoints.js').certificate_details
+const unwrap = require('../../../unwrap.js')
 
 exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
   let args = options.args || {}

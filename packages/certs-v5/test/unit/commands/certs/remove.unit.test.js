@@ -3,11 +3,11 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/certs/remove.js')
-let error = require('../../../lib/error.js')
+let certs = require('../../../../commands/certs/remove.js')
+let error = require('../../../../lib/error.js')
 
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-let sharedSni = require('./shared_sni.js')
+let endpoint = require('../../../stubs/sni-endpoints.js').endpoint
+let sharedSni = require('./shared_sni.unit.test.js')
 
 describe('heroku certs:remove', function () {
   beforeEach(function () {

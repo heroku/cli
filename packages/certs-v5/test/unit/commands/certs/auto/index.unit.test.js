@@ -4,7 +4,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../../commands/certs/auto')
+let certs = require('../../../../../commands/certs/auto')
 const sinon = require('sinon')
 const lolex = require('lolex')
 

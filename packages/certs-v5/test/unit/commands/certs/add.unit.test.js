@@ -17,16 +17,16 @@ let proxyquire = require('proxyquire').noCallThru()
 let inquirer
 let certs
 
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
-let endpointHeroku = require('../../stubs/sni-endpoints.js').endpoint_heroku
-let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
-let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
-let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
-let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
+let endpoint = require('../../../stubs/sni-endpoints.js').endpoint
+let endpointHeroku = require('../../../stubs/sni-endpoints.js').endpoint_heroku
+let endpointStables = require('../../../stubs/sni-endpoints.js').endpoint_stables
+let endpointWarning = require('../../../stubs/sni-endpoints.js').endpoint_warning
+let endpointWildcard = require('../../../stubs/sni-endpoints.js').endpoint_wildcard
+let certificateDetails = require('../../../stubs/sni-endpoints.js').certificate_details
 
-let error = require('../../../lib/error.js')
-let assertExit = require('../../assert_exit.js')
-let unwrap = require('../../unwrap.js')
+let error = require('../../../../lib/error.js')
+let assertExit = require('../../../assert_exit.js')
+let unwrap = require('../../../unwrap.js')
 
 let lolex = require('lolex')
 
@@ -54,7 +54,7 @@ describe('heroku certs:add', function () {
     error.exit.mock()
 
     inquirer = {}
-    certs = proxyquire('../../../commands/certs/add', {inquirer})
+    certs = proxyquire('../../../../commands/certs/add', {inquirer})
   })
 
   afterEach(function () {

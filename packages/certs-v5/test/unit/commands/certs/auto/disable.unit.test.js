@@ -7,7 +7,7 @@ chai.use(chaiAsPromised)
 
 let expect = chai.expect
 let nock = require('nock')
-let certs = require('../../../../commands/certs/auto/disable.js')
+let certs = require('../../../../../commands/certs/auto/disable.js')
 
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
