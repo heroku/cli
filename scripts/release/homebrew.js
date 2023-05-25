@@ -97,8 +97,8 @@ async function updateHomebrew () {
   console.log(`done cloning heroku/homebrew-brew to ${homebrewDir}`)
 
   await updateHerokuFormula(homebrewDir)
-  // run in git in cloned heroku/homebrew-brew git directory
 
+  // run in git in cloned heroku/homebrew-brew git directory
   const git = async (args, opts = {}) => {
     await execa('git', ['-C', homebrewDir, ...args], opts)
   }
