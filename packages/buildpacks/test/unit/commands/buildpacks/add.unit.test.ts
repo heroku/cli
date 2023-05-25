@@ -2,7 +2,7 @@ import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
-import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpack-installations-stub'
 nock.disableNetConnect()
 
 describe('buildpacks:add', () => {
