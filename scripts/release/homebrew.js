@@ -31,8 +31,9 @@ const fileSuffix = '.tar.xz'
 const INTEL_ARCH = 'x64'
 const M1_ARCH = 'arm64'
 
-function downloadFileFromS3(s3Path, fileName) {
-  const commandStr = `aws s3 cp "s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName}" "${fileName}"`
+function downloadFileFromS3(s3Path, fileName, downloadPath) {
+  const downloadTo = path.join(downloadPath, fileName)
+  const commandStr = `aws s3 cp s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName} ${downloadTo}`
   return execa.command(commandStr)
 }
 
@@ -52,8 +53,8 @@ async function updateHerokuFormula (brewDir) {
 
   // download files from S3 for SHA calc
   await Promise.all([
-    downloadFileFromS3(s3KeyPrefix, fileNameIntel),
-    downloadFileFromS3(s3KeyPrefix, fileNameM1),
+    downloadFileFromS3(s3KeyPrefix, fileNameIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameM1, __dirname),
   ])
 
   const sha256Intel = await calculateSHA256(path.join(__dirname, fileNameIntel))
