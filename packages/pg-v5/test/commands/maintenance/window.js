@@ -25,6 +25,12 @@ describe('pg:maintenance', () => {
   let api
   let pg
 
+  let displayed = ` ▸    You can also change the maintenance window with
+ ▸    data:maintenances:window:update.
+ ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands
+ ▸    to install the Data Maintenance CLI plugin.
+`
+
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
@@ -41,6 +47,6 @@ describe('pg:maintenance', () => {
     pg.put('/client/v11/databases/1/maintenance_window', {description: 'Sunday 06:30'}).reply(200)
     return cmd.run({app: 'myapp', args: {window: 'Sunday 06:30'}})
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
+      .then(() => expect(cli.stderr).to.equal(displayed + 'Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))
   })
 })

@@ -13,6 +13,12 @@ async function run(context, heroku) {
 
   if (!args.window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/)) throw new Error('Window must be "Day HH:MM" where MM is 00 or 30')
 
+  let newPluginMessage = `You can also change the maintenance window with ${cli.color.cmd('data:maintenances:window:update')}.`
+  newPluginMessage += '\nFollow https://devcenter.heroku.com/articles/data-maintenance-cli-commands'
+  newPluginMessage += `\nto install the ${cli.color.bold.cyan('Data Maintenance CLI plugin')}.`
+
+  cli.warn(newPluginMessage)
+
   await cli.action(`Setting maintenance window for ${cli.color.addon(db.name)} to ${cli.color.cyan(args.window)}`, (async function () {
     let response = await heroku.put(`/client/v11/databases/${db.id}/maintenance_window`, {
       body: {description: args.window},

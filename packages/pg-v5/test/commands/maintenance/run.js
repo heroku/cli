@@ -25,6 +25,11 @@ describe('pg:maintenance', () => {
   let api
   let pg
 
+  let displayed = ` ▸    You can also start a maintenance with data:maintenances:run.
+ ▸    Follow https://devcenter.heroku.com/articles/data-maintenance-cli-commands
+ ▸    to install the Data Maintenance CLI plugin.
+`
+
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
@@ -41,7 +46,8 @@ describe('pg:maintenance', () => {
     api.get('/apps/myapp').reply(200, {maintenance: true})
     pg.post('/client/v11/databases/1/maintenance').reply(200, {message: 'foo'})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-      .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
+      .then(() => expect(cli.stderr).to.equal(displayed + 'Starting maintenance for postgres-1... foo\n'))
+
       .then(() => expect(cli.stdout).to.equal(''))
   })
 })
