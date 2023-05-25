@@ -2,7 +2,7 @@ import {Config} from '@oclif/core'
 import {expect, test} from '@oclif/test'
 import * as path from 'path'
 
-import webhooksAbstractClass from '../../src/base'
+import webhooksAbstractClass from '../../../src/base'
 
 class Webhooks extends webhooksAbstractClass {
   // eslint-disable-next-line no-useless-constructor
@@ -14,7 +14,7 @@ class Webhooks extends webhooksAbstractClass {
     'empty run function'
   }
 }
-const root = path.resolve(__dirname, '../package.json')
+const root = path.resolve(__dirname, '../../package.json')
 const config = new Config({root})
 const webhookObject = new Webhooks([], config)
 
