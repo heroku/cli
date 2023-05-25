@@ -1,6 +1,6 @@
 import {test, expect} from '@oclif/test'
 
-import * as git from '../../../src/utils/git'
+import * as git from '../../../../src/utils/git'
 
 describe('ci:rerun', () => {
   test
