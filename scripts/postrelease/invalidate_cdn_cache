@@ -2,7 +2,7 @@
 
 set -ex
 
-invalidationResponse=""
+invalidationResponse=''
 if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" = v* ]]; then
   invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*")
 elif [[ "$GITHUB_REF_NAME" == "main" ]]; then

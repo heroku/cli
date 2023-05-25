@@ -23,12 +23,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-      - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: yarn install
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn --frozen-lockfile --network-timeout 1000000
+      - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: release homebrew
         run: ./scripts/release/homebrew.js
         environment: CLIS3BucketAndCloudfront
