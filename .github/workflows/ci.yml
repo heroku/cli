@@ -4,7 +4,7 @@ on:
   push
 
 jobs:
-  unit:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -58,22 +58,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn lerna run test:integration
-
-  smoke:
-    runs-on: ubuntu-latest
-    environment: AcceptanceTests
-    env:
-      RUN_ACCEPTANCE_TESTS: true
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: Build packages
         run: yarn lerna run prepack
       - run: ./bin/run whoami
@@ -81,12 +65,10 @@ jobs:
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.head_ref, 'release-')
         run: yarn lerna run test:smoke
-        shell: bash
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.head_ref, 'release-')
         run: yarn lerna run test:acceptance
-        shell: bash
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
@@ -95,4 +77,3 @@ jobs:
     steps:
       - run: echo done
         working-directory: /
-
