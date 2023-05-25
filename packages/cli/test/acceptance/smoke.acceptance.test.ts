@@ -9,7 +9,6 @@ const globby = require('globby')
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
 const bin = path.join(__dirname, '../../bin/run')
-const appFlag = '-a=heroku-cli-ci-smoke-test-app'
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
