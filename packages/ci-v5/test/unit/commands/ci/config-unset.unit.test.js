@@ -2,7 +2,7 @@
 
 const nock = require('nock')
 const cli = require('heroku-cli-util')
-const cmd = require('../../../commands/ci/config-unset')
+const cmd = require('../../../../commands/ci/config-unset')
 const Factory = require('../../lib/factory')
 
 describe('heroku ci:config:unset', function () {

@@ -4,7 +4,7 @@
 const nock = require('nock')
 const expect = require('chai').expect
 const Heroku = require('heroku-client')
-const herokuAPI = require('../../lib/heroku-api')
+const herokuAPI = require('../../../lib/heroku-api')
 
 describe('heroku-api', function () {
   afterEach(() => nock.cleanAll())

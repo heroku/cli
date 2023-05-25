@@ -3,7 +3,7 @@
 const nock = require('nock')
 const expect = require('chai').expect
 const Heroku = require('heroku-client')
-const Utils = require('../../lib/utils')
+const Utils = require('../../../lib/utils')
 const Factory = require('./factory')
 
 describe('Utils', function () {
