@@ -8,10 +8,10 @@ const mkdirp = require('mkdirp')
 const { promisify } = require('util')
 const { pipeline } = require('stream')
 const crypto = require('crypto')
+const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
 
-const CLI_DIR = path.join(__dirname, '..', '..', 'packages', 'cli')
-const DIST_DIR = path.join(CLI_DIR, 'dist')
 const {GITHUB_SHA_SHORT, VERSION} = process.env
+const HEROKU_S3_BUCKET = getHerokuS3Bucket()
 
 if (!process.env.GITHUB_REF_NAME.startsWith('release-')) {
   console.log('Not on stable release; skipping releasing homebrew')
@@ -31,6 +31,11 @@ const fileSuffix = '.tar.xz'
 const INTEL_ARCH = 'x64'
 const M1_ARCH = 'arm64'
 
+function downloadFileFromS3(s3Path, fileName) {
+  const commandStr = `aws s3 cp "s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName}" "${fileName}"`
+  return execa.command(commandStr)
+}
+
 async function updateHerokuFormula (brewDir) {
   const templatePath = path.join(TEMPLATES, 'heroku.rb')
   const template = fs.readFileSync(templatePath).toString('utf-8')
@@ -38,18 +43,26 @@ async function updateHerokuFormula (brewDir) {
 
   // todo: support both Linux architectures that oclif does
   const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
-  const urlPrefix = `https://cli-assets.heroku.com/versions/${VERSION}/${GITHUB_SHA_SHORT}/`
+  const s3KeyPrefix = `versions/${VERSION}/${GITHUB_SHA_SHORT}`
+  const urlPrefix = `https://cli-assets.heroku.com/${s3KeyPrefix}`
   const fileParts = [fileNamePrefix, fileSuffix]
 
   const fileNameIntel = fileParts.join(INTEL_ARCH)
-  const sha256Intel = await calculateSHA256(path.join(DIST_DIR, fileNameIntel))
   const fileNameM1 = fileParts.join(M1_ARCH)
-  const sha256M1 = await calculateSHA256(path.join(DIST_DIR, fileNameM1))
+
+  // download files from S3 for SHA calc
+  await Promise.all([
+    downloadFileFromS3(s3KeyPrefix, fileNameIntel),
+    downloadFileFromS3(s3KeyPrefix, fileNameM1),
+  ])
+
+  const sha256Intel = await calculateSHA256(path.join(__dirname, fileNameIntel))
+  const sha256M1 = await calculateSHA256(path.join(__dirname, fileNameM1))
 
   const templateReplaced =
     template
-      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}${fileNameIntel}`)
-      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}${fileNameM1}`)
+      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}/${fileNameIntel}`)
+      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}/${fileNameM1}`)
       .replace('__CLI_SHA256__', sha256Intel)
       .replace('__CLI_SHA256_M1__', sha256M1)
 
@@ -81,14 +94,14 @@ async function updateHomebrew () {
   )
   console.log(`done cloning heroku/homebrew-brew to ${homebrewDir}`)
 
-  console.log('updating local git...')
   await updateHerokuFormula(homebrewDir)
-
   // run in git in cloned heroku/homebrew-brew git directory
+
   const git = async (args, opts = {}) => {
     await execa('git', ['-C', homebrewDir, ...args], opts)
   }
 
+  console.log('updating local git...')
   await git(['add', 'Formula'])
   await git(['config', '--local', 'core.pager', 'cat'])
   await git(['diff', '--cached'], { stdio: 'inherit' })

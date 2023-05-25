@@ -72,20 +72,17 @@ jobs:
     needs: [ promote ]
     if: contains(github.ref, 'release-' )
     runs-on: ubuntu-latest
-    environment: ReleaseHomebrew
     steps:
       - uses: actions/checkout@v3
       - uses: webfactory/ssh-agent@v0.5.4
+        environment: ReleaseHomebrew
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - uses: actions/download-artifact@v3
-        with:
-          name: all-dist
-          path: /home/runner/work/cli/cli/packages/cli/dist
+      - name: install AWS cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
       - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
-      - name: List all the downloaded files (for debugging)
-        run: ls -R
-        working-directory: /home/runner/work/cli/cli/packages/cli/dist
       - name: yarn install
         run: |
           cp yarn.lock packages/cli
@@ -93,9 +90,14 @@ jobs:
           yarn --frozen-lockfile --network-timeout 1000000
       - name: release homebrew
         run: ./scripts/release/homebrew.js
+        environment: CLIS3BucketAndCloudfront
         env:
           GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
           VERSION: ${{ inputs.version }}
+          CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: true
 
   change-management:
     needs: [ promote ]
