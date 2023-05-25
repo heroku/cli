@@ -45,7 +45,6 @@ echo "publishing packages to npm..."
 yarn lerna publish --yes from-package
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
-# todo: verify above works. It failing silently seems like the only explanation for failure
 git push origin "${TAG_NAME}"
 
 SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")

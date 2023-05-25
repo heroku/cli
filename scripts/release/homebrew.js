@@ -10,8 +10,9 @@ const { pipeline } = require('stream')
 const crypto = require('crypto')
 const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
 
-const {GITHUB_SHA_SHORT, VERSION} = process.env
+const {GITHUB_SHA_SHORT} = process.env
 const HEROKU_S3_BUCKET = getHerokuS3Bucket()
+const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
 
 if (!process.env.GITHUB_REF_NAME.startsWith('release-')) {
   console.log('Not on stable release; skipping releasing homebrew')
