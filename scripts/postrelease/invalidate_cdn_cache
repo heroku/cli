@@ -2,10 +2,16 @@
 
 set -ex
 
+invalidationResponse=''
 if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" = v* ]]; then
-  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
+  invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*")
 elif [[ "$GITHUB_REF_NAME" == "main" ]]; then
-  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*"
+  invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*")
 else
   echo "Not on stable or beta release, skipping invalidate cdn cache"
+fi
+
+if [[ "$invalidationResponse" != '' ]]; then
+  invalidationId=$(echo "$invalidationResponse" |  grep Id  | awk -F'"' '{ print $4}')
+  aws cloudfront wait invalidation-completed --id "$invalidationId" --distribution-id "$CLOUDFRONT_DISTRIBUTION"
 fi

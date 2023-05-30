@@ -1,4 +1,4 @@
-name: Promote Release
+name: Promote and Release
 
 on:
   workflow_call:
@@ -25,30 +25,11 @@ on:
 
 jobs:
   promote:
-    name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
-    runs-on: ubuntu-latest
-    environment: CLIS3BucketAndCloudfront
-    env:
-      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_EC2_METADATA_DISABLED: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: install AWS cli
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-      - name: promote
-        run: yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=`git rev-parse --short=7 HEAD` --channel=${{ inputs.channel }}
-      - name: promote Linux install scripts
-        run: node ./scripts/postrelease/install_scripts.js
+    uses: ./.github/workflows/promote.yml
+    with:
+        version: ${{ inputs.version }}
+        channel: ${{ inputs.channel }}
+    secrets: inherit
 
   ## POST release jobs
   invalidate-cdn-cache:
@@ -69,33 +50,10 @@ jobs:
       - run: ./scripts/postrelease/invalidate_cdn_cache
 
   release-homebrew:
-    needs: [ promote ]
+    needs: [ invalidate-cdn-cache ]
     if: contains(github.ref, 'release-' )
-    runs-on: ubuntu-latest
-    environment: ReleaseHomebrew
-    steps:
-      - uses: actions/checkout@v3
-      - uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - uses: actions/download-artifact@v3
-        with:
-          name: all-dist
-          path: /home/runner/work/cli/cli/packages/cli/dist
-      - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
-      - name: List all the downloaded files (for debugging)
-        run: ls -R
-        working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - name: yarn install
-        run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
-      - name: release homebrew
-        run: ./scripts/release/homebrew.js
-        env:
-          GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
-          VERSION: ${{ inputs.version }}
+    uses: ./.github/workflows/release-homebrew.yml
+    secrets: inherit
 
   change-management:
     needs: [ promote ]

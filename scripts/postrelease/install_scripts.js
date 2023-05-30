@@ -12,7 +12,6 @@ const opts = {
 
 qq.config.silent = false
 qq.run(async () => {
-  const {GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
   if (process.env.GITHUB_REF_NAME.startsWith('release-')) {
     const HEROKU_S3_BUCKET = getHerokuS3Bucket()
     await execa.command(`aws s3 cp --content-type text/plain --cache-control max-age=604800 ./install-standalone.sh s3://${HEROKU_S3_BUCKET}/install-standalone.sh`, opts)
