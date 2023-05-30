@@ -27,7 +27,6 @@ jobs:
   promote:
     name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
     runs-on: ubuntu-latest
-    environment: CLIS3BucketAndCloudfront
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

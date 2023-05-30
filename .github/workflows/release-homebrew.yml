@@ -13,10 +13,10 @@ jobs:
   release-homebrew:
     if: contains(github.ref, 'release-' )
     runs-on: ubuntu-latest
+    environment: ReleaseHomebrew
     steps:
       - uses: actions/checkout@v3
       - uses: webfactory/ssh-agent@v0.5.4
-        environment: ReleaseHomebrew
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: install AWS cli
@@ -31,7 +31,6 @@ jobs:
       - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: release homebrew
         run: ./scripts/release/homebrew.js
-        environment: CLIS3BucketAndCloudfront
         env:
           GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
           CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
