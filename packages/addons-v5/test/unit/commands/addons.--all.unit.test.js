@@ -1,12 +1,12 @@
 'use strict'
 /* globals context beforeEach */
 
-let fixtures = require('../fixtures')
-let util = require('../util')
+let fixtures = require('../../fixtures')
+let util = require('../../util')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
 let expect = require('chai').expect
-let cmd = require('../../commands/addons')
+let cmd = require('../../../commands/addons')
 
 describe('addons --all', function () {
   beforeEach(() => cli.mockConsole())

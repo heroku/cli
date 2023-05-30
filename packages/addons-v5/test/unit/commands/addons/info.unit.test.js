@@ -1,12 +1,12 @@
 'use strict'
 /* globals context beforeEach */
 
-let fixtures = require('../../fixtures')
-let util = require('../../util')
+let fixtures = require('../../../fixtures')
+let util = require('../../../util')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
-let cmd = require('../../../commands/addons/info')
-let cache = require('../../../lib/resolve').addon.cache
+let cmd = require('../../../../commands/addons/info')
+let cache = require('../../../../lib/resolve').addon.cache
 
 describe('addons:info', function () {
   beforeEach(function () {

@@ -3,7 +3,7 @@
 
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'upgrade')
 const {expect} = require('chai')
-let cache = require('../../../lib/resolve').addon.cache
+let cache = require('../../../../lib/resolve').addon.cache
 
 describe('addons:upgrade', () => {
   beforeEach(() => {

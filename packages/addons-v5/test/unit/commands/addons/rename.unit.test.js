@@ -1,12 +1,12 @@
 'use strict'
 /* globals beforeEach context */
 
-let fixtures = require('../../fixtures')
-let util = require('../../util')
+let fixtures = require('../../../fixtures')
+let util = require('../../../util')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
 const {expect} = require('chai')
-let cmd = require('../../../commands/addons/rename')
+let cmd = require('../../../../commands/addons/rename')
 
 describe('addons:rename', () => {
   beforeEach(() => {

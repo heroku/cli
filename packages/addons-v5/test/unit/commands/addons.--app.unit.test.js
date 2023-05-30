@@ -2,11 +2,11 @@
 /* globals context beforeEach */
 
 let cli = require('heroku-cli-util')
-let cmd = require('../../commands/addons')
+let cmd = require('../../../commands/addons')
 let expect = require('chai').expect
-let fixtures = require('../fixtures')
+let fixtures = require('../../fixtures')
 let nock = require('nock')
-let util = require('../util')
+let util = require('../../util')
 
 describe('addons --app', function () {
   function mockAPI(appName, addons, attachments) {

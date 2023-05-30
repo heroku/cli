@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach cli nock */
 
-let resolve = require('../../lib/resolve')
+let resolve = require('../../../lib/resolve')
 const {expect} = require('chai')
 let Heroku = require('heroku-client')
 

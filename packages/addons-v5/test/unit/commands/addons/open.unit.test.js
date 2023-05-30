@@ -2,7 +2,7 @@
 /* globals commands beforeEach nock expect */
 
 let cli = require('heroku-cli-util')
-cli.open = require('../../opn')
+cli.open = require('../../../opn')
 let cmd = commands.find(c => c.topic === 'addons' && c.command === 'open')
 
 describe('addons:open', function () {

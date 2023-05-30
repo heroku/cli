@@ -1,10 +1,10 @@
 'use strict'
 /* globals context beforeEach afterEach */
 
-let fixtures = require('../../fixtures')
+let fixtures = require('../../../fixtures')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
-let cmd = require('../../../commands/addons/wait')
+let cmd = require('../../../../commands/addons/wait')
 let _ = require('lodash')
 const lolex = require('lolex')
 const sinon = require('sinon')

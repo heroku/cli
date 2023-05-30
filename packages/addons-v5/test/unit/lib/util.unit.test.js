@@ -1,6 +1,6 @@
 'use strict'
 
-let util = require('../../lib/util')
+let util = require('../../../lib/util')
 let expect = require('chai').expect
 
 describe('util.formatPrice', function () {
