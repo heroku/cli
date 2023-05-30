@@ -6,7 +6,6 @@ on:
 jobs:
   test:
     runs-on: pub-hk-ubuntu-22.04-small
-    permissions: write-all
     strategy:
       matrix:
         node-version: [16.x]
