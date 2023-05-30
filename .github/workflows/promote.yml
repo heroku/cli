@@ -7,10 +7,11 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      channel:
-        description: dev, beta or stable release
-        type: string
+      isProdRelease:
+        type: boolean
+        description: Is this a production release?
         required: true
+        default: false
 
   workflow_dispatch:
     inputs:
@@ -18,14 +19,15 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      channel:
-        description: dev, beta or stable release
-        type: string
+      isProdRelease:
+        type: boolean
+        description: Is this a production release?
         required: true
+        default: false
 
 jobs:
   promote:
-    name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
+    name: Promote ${{ inputs.version }} to ${{ inputs.isProdRelease && 'stable' || 'beta' }}
     runs-on: ubuntu-latest
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
@@ -40,11 +42,14 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: install AWS cli
+      - name: install apt-get dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y awscli
+          sudo apt-get install -y awscli jq
       - name: promote
-        run: yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha=`git rev-parse --short=7 HEAD` --channel=${{ inputs.channel }}
+        run: |
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ inputs.isProdRelease && 'stable' || 'beta' }}
+        shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js

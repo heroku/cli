@@ -3,18 +3,17 @@ name: Publish NPM & Github Release
 on:
   workflow_dispatch:
     inputs:
-      isPreRelease:
-        description: is release for beta/rc/dev?
+      isProdRelease:
         type: boolean
-        required: false
+        description: Is this a production release?
+        required: true
         default: false
-
   workflow_call:
     inputs:
-      isPreRelease:
-        description: is release for beta/rc/dev?
+      isProdRelease:
         type: boolean
-        required: false
+        description: Is this a production release?
+        required: true
         default: false
 
 jobs:
@@ -40,11 +39,12 @@ jobs:
       - name: Publish to NPM & GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGED_BRANCH: ${{ github.head_ref }}
         run: |
-          if ${{ inputs.isPreRelease }}
+          if ${{ inputs.isProdRelease }}
           then
-            bash scripts/publish-prerelease
-          else
             bash scripts/publish-release
+          else
+            bash scripts/publish-prerelease
           fi
         shell: bash

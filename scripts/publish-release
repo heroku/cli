@@ -2,7 +2,11 @@
 
 set -e -o pipefail
 
-CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+CURRENT_BRANCH=$MERGED_BRANCH
+if [[ -z $CURRENT_BRANCH ]]; then
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+fi
+
 RELEASE_PREFIX="release-"
 
 if [[ "${CURRENT_BRANCH}" != *"${RELEASE_PREFIX}"*  ]]; then

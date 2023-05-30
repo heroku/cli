@@ -1,0 +1,16 @@
+name: Watch for release
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  start-release:
+    if: github.event.pull_request.merged == true && contains(github.head_ref, 'release-')
+    uses: ./.github/workflows/trigger-release.yml
+    secrets: inherit
+    with:
+      isProdTrigger: true
