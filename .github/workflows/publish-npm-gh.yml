@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          # checkout entire repo, not just this branch. Tags are needed release script
+          # fetch entire repo, not just this branch. Tags & commits are needed for release notes
           fetch-depth: 0
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
