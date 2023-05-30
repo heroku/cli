@@ -51,5 +51,5 @@ SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip
 FILTERED_TAGS=$(echo ${SORTED_TAGS} | grep 'v[0-9.]*' | grep -v '-')
 LAST_PUBLISHED_TAG=$(echo ${FILTERED_TAGS} | head -n1)
 
-RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}...${TAG_NAME}~1")
+RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
 gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
