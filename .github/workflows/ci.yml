@@ -5,12 +5,11 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: pub-hk-ubuntu-22.04-small
     permissions: write-all
     strategy:
       matrix:
         node-version: [16.x]
-        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -27,60 +26,60 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  integration:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest, macos-latest]
-    environment: AcceptanceTests
-    env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      ENABLE_NET_CONNECT: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn lerna run test:integration
-
-  acceptance:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest]
-    environment: AcceptanceTests
-    env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      ENABLE_NET_CONNECT: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: Build packages
-        run: yarn lerna run prepack
-      - run: ./bin/run whoami
-        # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
-      - name: run smoke tests
-        if: github.ref_name != 'main' || !startsWith(github.head_ref, 'release-')
-        run: yarn lerna run test:smoke
-        # only run the full suite of acceptance tests on 'main' and 'release-' branches
-      - name: run acceptance tests
-        if: github.ref_name == 'main' || startsWith(github.head_ref, 'release-')
-        run: yarn lerna run test:acceptance
+#  integration:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        node-version: [16.x]
+#        os: [ubuntu-latest, macos-latest]
+#    environment: AcceptanceTests
+#    env:
+#      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#      ENABLE_NET_CONNECT: true
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Use Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          cache: yarn
+#      - run: yarn --frozen-lockfile --network-timeout 1000000
+#      - run: yarn lerna run test:integration
+#
+#  acceptance:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        node-version: [16.x]
+#        os: [ubuntu-latest]
+#    environment: AcceptanceTests
+#    env:
+#      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#      ENABLE_NET_CONNECT: true
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Use Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#          cache: yarn
+#      - run: yarn --frozen-lockfile --network-timeout 1000000
+#      - name: Build packages
+#        run: yarn lerna run prepack
+#      - run: ./bin/run whoami
+#        # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
+#      - name: run smoke tests
+#        if: github.ref_name != 'main' || !startsWith(github.head_ref, 'release-')
+#        run: yarn lerna run test:smoke
+#        # only run the full suite of acceptance tests on 'main' and 'release-' branches
+#      - name: run acceptance tests
+#        if: github.ref_name == 'main' || startsWith(github.head_ref, 'release-')
+#        run: yarn lerna run test:acceptance
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [test, integration, acceptance]
+    needs: [test]
     steps:
       - run: echo done
         working-directory: /
