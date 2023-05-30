@@ -2,12 +2,8 @@
 
 set -e -o pipefail
 
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 PRERELEASE_PREFIX="prerelease/"
-
-CURRENT_BRANCH=$MERGED_BRANCH
-if [[ -z $CURRENT_BRANCH ]]; then
-  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-fi
 
 if [[ "${CURRENT_BRANCH}" != *"${PRERELEASE_PREFIX}"* ]]; then
   echo "scripts/publish-prerelease must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
