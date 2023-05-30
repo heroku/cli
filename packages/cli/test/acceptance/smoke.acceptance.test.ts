@@ -125,6 +125,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Heroku Domain')
   })
 
+  it('heroku apps', async () => {
+    const {stdout} = await run('apps -p')
+    expect(stdout).to.contain('Collaborated Apps')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
