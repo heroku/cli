@@ -75,7 +75,7 @@
     "prepack": "rm -rf lib && tsc && oclif manifest",
     "prepare": "rm -rf lib && tsc",
     "pretest": "tsc -p test --noEmit",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "posttest": "yarn lint",
     "version": "oclif readme && git add README.md"
   }
