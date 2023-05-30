@@ -1,10 +1,11 @@
 name: Trigger Release
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - release-*
-    types: [ closed ]
+    types:
+      - closed
   push:
     branches:
       - prerelease/*
