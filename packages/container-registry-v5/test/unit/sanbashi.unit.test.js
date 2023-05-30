@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 let Sinon = require('sinon')
-let Sanbashi = require('../lib/sanbashi')
+let Sanbashi = require('../../lib/sanbashi')
 let expect = require('chai').expect
 let Path = require('path')
 let Inquirer = require('inquirer')
