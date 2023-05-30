@@ -10,25 +10,7 @@ fi
 RELEASE_PREFIX="release-"
 
 if [[ "${CURRENT_BRANCH}" != *"${RELEASE_PREFIX}"*  ]]; then
-  echo "scripts/publish-release must be run on a branch with this pattern: ${RELEASE_PREFIX}*."
-  exit 1
-fi
-
-if !(command -v gh > /dev/null); then
-  echo "GitHub CLI is required for this release script."
-  echo "Please install GitHub CLI and try again:"
-  echo "https://github.com/cli/cli#installation"
-  exit 1
-fi
-
-# log in to GH CLI with GHA provided GITHUB_TOKEN
-echo "${GITHUB_TOKEN}" | gh auth login --with-token
-
-# hostname is necessary just in case you are logged into the CLI
-# GitHub enterprise instance
-if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
-  echo "Not logged into github".
-  echo "Please run: gh auth login"
+  echo "scripts/publish-npm-latest must be run on a branch with this pattern: ${RELEASE_PREFIX}*."
   exit 1
 fi
 
@@ -53,10 +35,3 @@ yarn lerna publish --yes from-package
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
-
-SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
-FILTERED_TAGS=$(echo ${SORTED_TAGS} | grep 'v[0-9.]*' | grep -v '-')
-LAST_PUBLISHED_TAG=$(echo ${FILTERED_TAGS} | head -n1)
-
-RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
-gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"

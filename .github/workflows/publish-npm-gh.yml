@@ -17,13 +17,11 @@ on:
         default: false
 
 jobs:
-  publish-npm-and-github:
+  publish-npm:
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v3
-        with:
-          # fetch entire repo, not just this branch. Tags & commits are needed for release notes
-          fetch-depth: 0
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -36,9 +34,8 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
-      - name: Publish to NPM & GitHub release
+      - name: Publish to NPM
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGED_BRANCH: ${{ github.head_ref }}
         run: |
           if ${{ inputs.isProdRelease }}
@@ -47,4 +44,28 @@ jobs:
           else
             bash scripts/publish-prerelease
           fi
+        shell: bash
+
+  github-release:
+    if: inputs.isProdRelease
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # fetch entire repo, not just this branch. Tags & commits are needed for release notes
+          fetch-depth: 0
+      - name: Release to Github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # the script below will fail if run in a separate shell file
+        run: |
+          PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
+          TAG_NAME="v${PACKAGE_VERSION}"
+          SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
+          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-')
+          LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
+          RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
+
+          gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
         shell: bash
