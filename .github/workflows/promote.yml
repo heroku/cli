@@ -54,6 +54,7 @@ jobs:
         run: |
           SHA=${{ inputs.s3VersionSha }}
           if [[ -z "$SHA" ]]; then
+            # get SHA directly from NPM
             SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           fi
           yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ inputs.isProdRelease && 'stable' || 'beta' }}
