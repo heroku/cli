@@ -55,6 +55,10 @@ jobs:
         with:
           # fetch entire repo, not just this branch. Tags & commits are needed for release notes
           fetch-depth: 0
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
       - name: Release to Github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
