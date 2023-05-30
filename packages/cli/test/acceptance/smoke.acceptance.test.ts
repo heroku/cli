@@ -1,5 +1,6 @@
 // tslint:disable no-console
 
+import fs from 'fs-extra'
 import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
@@ -85,6 +86,23 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Buildpack')
     expect(stdout).to.contain('Category')
     expect(stdout).to.contain('Description')
+  })
+
+  it('heroku config', async () => {
+    const {stdout} = await run(`config ${appFlag}`)
+    expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
+  })
+
+  it('heroku container:login', async () => {
+    const {stdout} = await run('container:login')
+    expect(stdout).to.contain('Login Succeeded')
+  })
+
+  it('heroku git:clone', async () => {
+    fs.mkdirSync('temp')
+    const {stderr} = await run(`git:clone temp ${appFlag}`)
+    expect(stderr).to.contain("Cloning into 'temp'")
+    fs.removeSync('temp')
   })
 
   // TODO: turn this test back on once the issue with listing plugins is fixed
