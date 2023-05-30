@@ -1,4 +1,4 @@
-name: Trigger Release
+name: Full Release Pipeline
 
 on:
   workflow_dispatch:

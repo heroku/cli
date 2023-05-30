@@ -10,7 +10,7 @@ on:
 jobs:
   start-release:
     if: github.event.pull_request.merged == true && contains(github.head_ref, 'release-')
-    uses: ./.github/workflows/trigger-release.yml
+    uses: ./.github/workflows/full-release-pipeline.yml
     secrets: inherit
     with:
       isProdTrigger: true
