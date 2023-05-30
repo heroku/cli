@@ -52,7 +52,7 @@
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "release": "np",
-    "test": "nyc mocha",
+    "test": "mocha --forbid-only \"test/**/*.unit.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }
