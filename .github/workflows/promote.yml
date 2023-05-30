@@ -24,6 +24,10 @@ on:
         description: Is this a production release?
         required: true
         default: false
+      s3VersionSha:
+        description: first 7 characters of the commit sha of the version to promote. Must match what is in S3 bucket/versions/VERSION/THIS
+        type: string
+        required: false
 
 jobs:
   promote:
@@ -48,7 +52,10 @@ jobs:
           sudo apt-get install -y awscli jq
       - name: promote
         run: |
-          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          SHA=${{ inputs.s3VersionSha }}
+          if [[ -z "$SHA" ]]; then
+            SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          fi
           yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ inputs.isProdRelease && 'stable' || 'beta' }}
         shell: bash
       - name: promote Linux install scripts
