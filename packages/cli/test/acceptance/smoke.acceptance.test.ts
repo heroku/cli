@@ -95,7 +95,7 @@ describe('@acceptance smoke tests', () => {
 
   it('heroku container:login', async () => {
     const {stdout} = await run('container:login')
-    expect(stdout).to.contain('Cannot connect to the Docker daemon')
+    expect(stdout).to.contain('Login Succeeded')
   })
 
   it('heroku git:clone', async () => {
