@@ -127,7 +127,7 @@ describe('@acceptance smoke tests', () => {
 
   it('heroku apps', async () => {
     const {stdout} = await run('apps -p')
-    expect(stdout).to.contain('Collaborated Apps')
+    expect(stdout).to.contain('You have no apps.')
   })
 
   it('asserts monorepo plugins are in core', async () => {
