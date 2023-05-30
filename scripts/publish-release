@@ -17,6 +17,9 @@ if !(command -v gh > /dev/null); then
   exit 1
 fi
 
+# log in to GH CLI with GHA provided GITHUB_TOKEN
+echo "${GITHUB_TOKEN}" | gh auth login --with-token
+
 # hostname is necessary just in case you are logged into the CLI
 # GitHub enterprise instance
 if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
