@@ -133,6 +133,21 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('smoke-test-app-ci test config vars')
   })
 
+  it('heroku addons', async () => {
+    const {stdout} = await run(`addons ${appFlag}`)
+    expect(stdout).to.contain('No add-ons for app heroku-cli-ci-smoke-test-app.')
+  })
+
+  it('heroku domains', async () => {
+    const {stdout} = await run(`domains ${appFlag}`)
+    expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Heroku Domain')
+  })
+
+  it('heroku apps', async () => {
+    const {stdout} = await run('apps -p')
+    expect(stdout).to.contain('You have no apps.')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')

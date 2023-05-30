@@ -60,7 +60,7 @@
     "pretest": "tsc -p test --noEmit",
     "posttest": "yarn lint",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "version": "oclif readme && git add README.md"
   }
 }
