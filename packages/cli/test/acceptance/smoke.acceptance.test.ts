@@ -9,7 +9,6 @@ const globby = require('globby')
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
 const bin = path.join(__dirname, '../../bin/run')
-const appFlag = '-a=heroku-cli-ci-smoke-test-app'
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
@@ -89,12 +88,12 @@ describe('@acceptance smoke tests', () => {
   })
 
   it('heroku config', async () => {
-    const {stdout} = await run(`heroku config ${appFlag}`)
+    const {stdout} = await run(`config ${appFlag}`)
     expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
   })
 
   it('heroku container:login', async () => {
-    const {stdout} = await run('heroku container:login')
+    const {stdout} = await run('container:login')
     expect(stdout).to.contain('Cannot connect to the Docker daemon')
   })
 
