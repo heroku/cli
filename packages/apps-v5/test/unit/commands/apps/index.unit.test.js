@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
-const apps = require('../../../src/commands/apps/index.js')[0]
+const apps = require('../../../../src/commands/apps/index.js')[0]
 
 let example = {
   name: 'example',

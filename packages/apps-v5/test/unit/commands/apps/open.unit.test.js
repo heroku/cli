@@ -18,7 +18,7 @@ describe('heroku apps:open', function () {
   beforeEach(async () => {
     openStub = sinon.stub(cli, 'open')
 
-    cmd = proxyquire('../../../src/commands/apps/open', {
+    cmd = proxyquire('../../../../src/commands/apps/open', {
       'heroku-cli-util': openStub,
     })
     cli.mockConsole()

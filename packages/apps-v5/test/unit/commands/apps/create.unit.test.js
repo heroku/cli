@@ -148,7 +148,7 @@ describe('apps:create', function () {
       readFileStub = sinon.stub(fse, 'readFile').returns('')
       safeLoadStub = sinon.stub(yaml, 'safeLoad').returns(manifest)
 
-      cmd = proxyquire('../../../src/commands/apps/create', {
+      cmd = proxyquire('../../../../src/commands/apps/create', {
         'js-yaml': safeLoadStub,
         'fs-extra': readFileStub,
       })

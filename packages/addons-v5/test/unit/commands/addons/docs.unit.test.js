@@ -27,7 +27,7 @@ describe('addons:docs', function () {
       .get('/addon-services/slowdb')
       .reply(200, {name: 'slowdb'})
 
-    docs = proxyquire('../../../commands/addons/docs', {
+    docs = proxyquire('../../../../commands/addons/docs', {
       'heroku-cli-util': openStub,
     })
 

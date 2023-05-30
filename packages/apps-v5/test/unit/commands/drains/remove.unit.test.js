@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../src/commands/drains/remove')
+const cmd = require('../../../../src/commands/drains/remove')
 const expect = require('chai').expect
 
 describe('drains:remove', function () {

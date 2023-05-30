@@ -5,7 +5,7 @@ const nock = require('nock')
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const cmd = commands.find(c => c.topic === 'apps' && c.command === 'info')
-const unwrap = require('../../unwrap')
+const unwrap = require('../../../unwrap')
 
 let app = {
   name: 'myapp',

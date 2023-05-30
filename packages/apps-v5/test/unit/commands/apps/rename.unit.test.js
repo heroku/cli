@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const nock = require('nock')
-const unwrap = require('../../unwrap.js')
+const unwrap = require('../../../unwrap.js')
 const cmd = commands.find(c => c.topic === 'apps' && c.command === 'rename')
 
 describe('heroku apps:rename', function () {

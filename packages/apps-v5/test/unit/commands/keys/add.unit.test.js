@@ -21,7 +21,7 @@ describe('keys:add', () => {
     inquirer = {}
     mockCli = Object.assign({}, cli)
 
-    cmd = proxyquire('../../../src/commands/keys/add', {
+    cmd = proxyquire('../../../../src/commands/keys/add', {
       'heroku-cli-util': mockCli,
       os: {homedir: osHomedir},
       inquirer,
