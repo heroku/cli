@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+
+echo "${GITHUB_TOKEN}" | gh auth login --with-token
+gh release create v8.1.6 --title=v8.1.6 --generate-notes --notes-start-tag=v8.1.4 --draft

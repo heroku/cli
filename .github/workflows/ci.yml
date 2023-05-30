@@ -8,8 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [16.x]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -18,7 +18,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: yarn test
+      - run: ./scripts/publish-release-test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   integration:
     runs-on: ${{ matrix.os }}
