@@ -1,7 +1,7 @@
 'use strict'
 
 const {expect} = require('chai')
-const time = require('../../src/time')
+const time = require('../../../src/time')
 const now = new Date()
 
 describe('time', () => {

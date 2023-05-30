@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const nock = require('nock')
-const cmd = require('../../../src/commands/labs/enable')
+const cmd = require('../../../../src/commands/labs/enable')
 
 describe('labs:enable', function () {
   beforeEach(() => cli.mockConsole())

@@ -5,10 +5,10 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'dashboard')
 const {expect} = require('chai')
-const time = require('../../src/time')
-const unwrap = require('../unwrap')
+const time = require('../../../src/time')
+const unwrap = require('../../unwrap')
 
-const {default: runtest} = require('../runtest')
+const {default: runtest} = require('../../runtest')
 
 runtest('Dashboard', () => {
   describe('dashboard', () => {

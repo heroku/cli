@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../src/commands/releases')
+const cmd = require('../../../../src/commands/releases')
 const {expect} = require('chai')
 const isTTY = process.stdout.isTTY
 

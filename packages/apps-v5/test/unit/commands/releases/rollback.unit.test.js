@@ -1,7 +1,7 @@
 'use strict'
 /* globals afterEach beforeEach commands */
 
-const unwrap = require('../../unwrap')
+const unwrap = require('../../../unwrap')
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'releases' && c.command === 'rollback')

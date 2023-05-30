@@ -5,7 +5,7 @@ const nock = require('nock')
 const cli = require('heroku-cli-util')
 const cmd = commands.find(c => c.topic === 'keys' && !c.command)
 const {expect} = require('chai')
-const unwrap = require('../../unwrap')
+const unwrap = require('../../../unwrap')
 
 describe('heroku keys', () => {
   beforeEach(() => cli.mockConsole())

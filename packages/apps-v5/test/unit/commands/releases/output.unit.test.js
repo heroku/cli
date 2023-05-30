@@ -6,7 +6,7 @@ const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'releases' && c.command === 'output')
 const expect = require('chai').expect
 const stdMocks = require('std-mocks')
-const unwrap = require('../../unwrap')
+const unwrap = require('../../../unwrap')
 
 describe('releases:output', function () {
   beforeEach(() => cli.mockConsole())
