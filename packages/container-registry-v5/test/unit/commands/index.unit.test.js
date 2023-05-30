@@ -2,8 +2,8 @@
 /* globals beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-var pkg = require('../../package.json')
-const cmdIndex = require('../../commands/index')(pkg)
+var pkg = require('../../../package.json')
+const cmdIndex = require('../../../commands/index')(pkg)
 const {expect} = require('chai')
 const sinon = require('sinon')
 

@@ -2,12 +2,12 @@
 /* globals beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'push')
+const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'push')
 const {expect} = require('chai')
 const sinon = require('sinon')
 const nock = require('nock')
 
-const Sanbashi = require('../../lib/sanbashi')
+const Sanbashi = require('../../../lib/sanbashi')
 let sandbox
 
 describe('container push', () => {

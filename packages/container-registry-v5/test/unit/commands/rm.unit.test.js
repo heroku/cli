@@ -2,7 +2,7 @@
 /* globals beforeEach */
 
 const cli = require('heroku-cli-util')
-const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'rm')
+const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'rm')
 const {expect} = require('chai')
 const nock = require('nock')
 const sinon = require('sinon')
