@@ -148,6 +148,13 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('You have no apps.')
   })
 
+  it('heroku regions', async () => {
+    const {stdout} = await run('heroku regions')
+    expect(stdout).to.contain('ID')
+    expect(stdout).to.contain('Location')
+    expect(stdout).to.contain('Runtime')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
