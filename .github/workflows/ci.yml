@@ -18,8 +18,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
-      - run: ./scripts/publish-release-test
+#      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - run: |
+          GH_DEBUG=*
+          gh auth status --hostname "github.com"
+          gh release create v8.1.6 --title=v8.1.6 --generate-notes --notes-start-tag=v8.1.4 --draft
+        shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
