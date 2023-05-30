@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - prerelease/*
+  workflow_dispatch:
 
 jobs:
   get-version-channel:
