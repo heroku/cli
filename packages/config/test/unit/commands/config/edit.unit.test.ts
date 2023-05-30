@@ -1,8 +1,8 @@
 import {CliUx} from '@oclif/core'
 import sinon from 'sinon'
 
-import {stringToConfig} from '../../../src/commands/config/edit'
-import {Editor} from '../../../src/util'
+import {stringToConfig} from '../../../../src/commands/config/edit'
+import {Editor} from '../../../../src/util'
 import {expect, test} from '@oclif/test'
 
 const cli = CliUx.ux
