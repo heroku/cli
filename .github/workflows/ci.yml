@@ -6,6 +6,7 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    permissions: write-all
     strategy:
       matrix:
         node-version: [16.x]
@@ -19,7 +20,6 @@ jobs:
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
       - run: ./scripts/publish-release-test
-        permissions: write-all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
