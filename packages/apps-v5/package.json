@@ -69,7 +69,7 @@
     "postpublish": "rm oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "nyc --extension .js mocha --forbid-only \"test/**/*.js\"",
+    "test": "nyc --extension .js mocha --forbid-only \"test/**/*.unit.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }

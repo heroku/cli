@@ -1,5 +1,6 @@
 // tslint:disable no-console
 
+import fs from 'fs-extra'
 import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
@@ -87,6 +88,23 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Description')
   })
 
+  it('heroku config', async () => {
+    const {stdout} = await run(`config ${appFlag}`)
+    expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
+  })
+
+  it('heroku container:login', async () => {
+    const {stdout} = await run('container:login')
+    expect(stdout).to.contain('Login Succeeded')
+  })
+
+  it('heroku git:clone', async () => {
+    fs.mkdirSync('temp')
+    const {stderr} = await run(`git:clone temp ${appFlag}`)
+    expect(stderr).to.contain("Cloning into 'temp'")
+    fs.removeSync('temp')
+  })
+
   // TODO: turn this test back on once the issue with listing plugins is fixed
   it.skip('asserts oclif plugins are in core', async () => {
     const cmd = await run('plugins --core')
@@ -113,6 +131,21 @@ describe('@acceptance smoke tests', () => {
   it('heroku ci:config', async () => {
     const {stdout} = await run(`ci:config ${appFlag}`)
     expect(stdout).to.contain('smoke-test-app-ci test config vars')
+  })
+
+  it('heroku addons', async () => {
+    const {stdout} = await run(`addons ${appFlag}`)
+    expect(stdout).to.contain('No add-ons for app heroku-cli-ci-smoke-test-app.')
+  })
+
+  it('heroku domains', async () => {
+    const {stdout} = await run(`domains ${appFlag}`)
+    expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Heroku Domain')
+  })
+
+  it('heroku apps', async () => {
+    const {stdout} = await run('apps -p')
+    expect(stdout).to.contain('You have no apps.')
   })
 
   it('asserts monorepo plugins are in core', async () => {
