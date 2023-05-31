@@ -5,7 +5,7 @@ on:
     inputs:
       isProdTrigger:
         type: boolean
-        description: Triggered from prod watcher?
+        description: Is this a production release?
         required: true
         default: false
   workflow_call:

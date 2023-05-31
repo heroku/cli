@@ -8,8 +8,21 @@ on:
       - closed
 
 jobs:
+  get-source-branch-name:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      sourceName: ${{ steps.sourceName.outputs.sourceName }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Remove 'refs/heads/' from GITHUB_HEAD_REF
+        shell: bash
+        id: sourceName
+        run: echo "sourceName=$(echo ${GITHUB_HEAD_REF#refs/heads/})" >>$GITHUB_OUTPUT
+
   start-release:
-    if: github.event.pull_request.merged == true && startsWith(github.ref_name, 'release-')
+    needs: [ get-source-branch-name ]
+    if: startsWith(needs.get-source-branch-name.outputs.sourceName, 'release-')
     uses: ./.github/workflows/full-release-pipeline.yml
     secrets: inherit
     with:
