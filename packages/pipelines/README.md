@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-pipelines
 $ heroku COMMAND
 running command...
 $ heroku (--version|-v)
-@heroku-cli/plugin-pipelines/8.1.5 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-pipelines/8.1.6 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -65,7 +65,7 @@ EXAMPLES
   $ heroku pipelines
 ```
 
-_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/index.ts)_
+_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/index.ts)_
 
 ## `heroku pipelines:add PIPELINE`
 
@@ -92,7 +92,7 @@ EXAMPLES
   $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
-_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/add.ts)_
+_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/add.ts)_
 
 ## `heroku pipelines:connect NAME`
 
@@ -115,7 +115,7 @@ EXAMPLES
   $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
 
-_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/connect.ts)_
+_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
@@ -147,7 +147,7 @@ EXAMPLES
   $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/create.ts)_
+_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/create.ts)_
 
 ## `heroku pipelines:destroy PIPELINE`
 
@@ -167,7 +167,7 @@ EXAMPLES
   $ heroku pipelines:destroy my-pipeline
 ```
 
-_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/destroy.ts)_
+_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -188,7 +188,7 @@ EXAMPLES
   $ heroku pipelines:diff -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/diff.ts)_
+_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -211,7 +211,7 @@ EXAMPLES
   $ heroku pipelines:info my-pipeline
 ```
 
-_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/info.ts)_
+_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/info.ts)_
 
 ## `heroku pipelines:open PIPELINE`
 
@@ -231,7 +231,7 @@ EXAMPLES
   $ heroku pipelines:open my-pipeline
 ```
 
-_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/open.ts)_
+_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/open.ts)_
 
 ## `heroku pipelines:promote`
 
@@ -253,7 +253,7 @@ EXAMPLES
   $ heroku pipelines:promote -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/promote.ts)_
+_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/promote.ts)_
 
 ## `heroku pipelines:remove`
 
@@ -274,7 +274,7 @@ EXAMPLES
   $ heroku pipelines:remove -a my-app
 ```
 
-_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/remove.ts)_
+_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/remove.ts)_
 
 ## `heroku pipelines:rename PIPELINE NAME`
 
@@ -295,7 +295,7 @@ EXAMPLES
   $ heroku pipelines:rename my-pipeline new-pipeline-name
 ```
 
-_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/rename.ts)_
+_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/rename.ts)_
 
 ## `heroku pipelines:setup [NAME] [REPO]`
 
@@ -321,7 +321,7 @@ EXAMPLES
   $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
 ```
 
-_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/setup.ts)_
+_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/setup.ts)_
 
 ## `heroku pipelines:transfer OWNER`
 
@@ -347,7 +347,7 @@ EXAMPLES
   $ heroku pipelines:transfer admin-team -p my-pipeline
 ```
 
-_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/transfer.ts)_
+_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/transfer.ts)_
 
 ## `heroku pipelines:update`
 
@@ -369,7 +369,7 @@ EXAMPLES
   $ heroku pipelines:update -s staging -a my-app
 ```
 
-_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/pipelines/update.ts)_
+_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/pipelines/update.ts)_
 
 ## `heroku reviewapps:disable`
 
@@ -395,7 +395,7 @@ EXAMPLES
   $ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy
 ```
 
-_See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/reviewapps/disable.ts)_
+_See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
@@ -420,5 +420,5 @@ EXAMPLES
   $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
 
-_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/cli/blob/v8.1.5/src/commands/reviewapps/enable.ts)_
+_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/cli/blob/v8.1.6/src/commands/reviewapps/enable.ts)_
 <!-- commandsstop -->
