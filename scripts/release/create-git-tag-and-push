@@ -2,12 +2,18 @@
 
 set -e -o pipefail
 
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+
 if [[ "${GITHUB_REF}" != "main" ]]; then
   echo "script must be run on branch 'main'"
   exit 1
 fi
 
-PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
+  echo "package not on stable version. Skipping tagging."
+  exit 1
+fi
+
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
 

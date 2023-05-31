@@ -2,19 +2,7 @@ name: Create Github Release & Tag
 
 on:
   workflow_dispatch:
-    inputs:
-      isProdRelease:
-        type: boolean
-        description: Is this a production release?
-        required: true
-        default: false
   workflow_call:
-    inputs:
-      isProdRelease:
-        type: boolean
-        description: Is this a production release?
-        required: true
-        default: false
 
 jobs:
   tag-and-create-gh-release:
@@ -30,7 +18,6 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
-      - run: yarn --frozen-lockfile --network-timeout 1000000
       - name: set git user
         run: |
           git config user.name "GitHub Actions Bot"
