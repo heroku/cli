@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-auth",
   "description": "auth core plugin for Heroku CLI",
-  "version": "8.1.5",
+  "version": "8.1.6-beta.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
