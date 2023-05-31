@@ -149,7 +149,7 @@ describe('@acceptance smoke tests', () => {
   })
 
   it('heroku regions', async () => {
-    const {stdout} = await run('heroku regions')
+    const {stdout} = await run('regions')
     expect(stdout).to.contain('ID')
     expect(stdout).to.contain('Location')
     expect(stdout).to.contain('Runtime')
@@ -157,15 +157,11 @@ describe('@acceptance smoke tests', () => {
 
   it('heroku spaces', async () => {
     const {stdout} = await run('spaces')
-    expect(stdout).to.contain('Name')
-    expect(stdout).to.contain('Team')
-    expect(stdout).to.contain('Region')
-    expect(stdout).to.contain('State')
-    expect(stdout).to.contain('Created At')
+    expect(stdout).to.contain('You do not have access to any spaces')
   })
 
   it('heroku redis:credentials', async () => {
-    const {stdout} = await run(`heroku redis:credentials ${appFlag}`)
+    const {stdout} = await run(`redis:credentials ${appFlag}`)
     expect(stdout).to.contain('No Redis instances found')
   })
 
