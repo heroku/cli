@@ -39,7 +39,7 @@ jobs:
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
       - name: Publish to NPM
         run: |
-          if ${{ inputs.isProdRelease }}
+          if ${{ fromJSON(inputs.isProdRelease) }}
           then
             bash scripts/publish-release
           else
@@ -47,7 +47,7 @@ jobs:
           fi
         shell: bash
       - name: Release to Github
-        if: inputs.isProdRelease
+        if: fromJSON(inputs.isProdRelease)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # the script below will fail if run in a separate shell file
