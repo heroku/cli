@@ -9,7 +9,7 @@ on:
 
 jobs:
   start-release:
-    if: github.event.pull_request.merged == true && contains(github.head_ref, 'release-')
+    if: github.event.pull_request.merged == true && startsWith(github.ref_name, 'release-')
     uses: ./.github/workflows/full-release-pipeline.yml
     secrets: inherit
     with:
