@@ -50,5 +50,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease == 'true' }}
+      isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
     secrets: inherit
