@@ -164,6 +164,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Created At')
   })
 
+  it('heroku redis:credentials', async () => {
+    const {stdout} = await run(`heroku redis:credentials ${appFlag}`)
+    expect(stdout).to.contain('No Redis instances found')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
