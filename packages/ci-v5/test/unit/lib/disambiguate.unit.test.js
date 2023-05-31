@@ -24,5 +24,28 @@ describe('disambiguate', function () {
       expect(response).to.deep.eq(pipeline)
       api.done()
     })
+
+    it('erros when no pipelines are returned', async function () {
+      const api = nock('https://api.heroku.com')
+        .get('/pipelines?eq[name]=notUUID')
+        .reply(200, [])
+
+      let errorMessage
+      await disambiguate(new Heroku(), 'notUUID').catch(error => {
+        errorMessage = error.message
+      })
+      expect(errorMessage).to.equal('Pipeline not found')
+      api.done()
+    })
+
+    it('returns a single pipeline', async function () {
+      const api = nock('https://api.heroku.com')
+        .get('/pipelines?eq[name]=notUUIDpipeline')
+        .reply(200, [pipeline])
+
+      const response = await disambiguate(new Heroku(), 'notUUIDpipeline')
+      expect(response).to.deep.eq(pipeline)
+      api.done()
+    })
   })
 })
