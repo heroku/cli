@@ -1,0 +1,28 @@
+name: Watch and start pre release
+
+on:
+  push:
+    branches:
+      - prerelease/*
+
+jobs:
+  tag-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: set git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "heroku-front-end+npm-releases@salesforce.com"
+      - name: Tag and Verify
+        run: scripts/create-git-prerelease-tag-and-push
+
+  start-pre-release:
+    needs: [ tag-and-verify ]
+    uses: ./.github/workflows/create-cli-release.yml
+    secrets: inherit
+    with:
+      isProdTrigger: ${{ false }}
