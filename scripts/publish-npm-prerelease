@@ -6,22 +6,7 @@ CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 PRERELEASE_PREFIX="prerelease/"
 
 if [[ "${CURRENT_BRANCH}" != *"${PRERELEASE_PREFIX}"* ]]; then
-  echo "scripts/publish-prerelease must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
-  exit 1
-fi
-
-if !(command -v gh > /dev/null); then
-  echo "GitHub CLI is required for this release script."
-  echo "Please install GitHub CLI and try again:"
-  echo "https://github.com/cli/cli#installation"
-  exit 1
-fi
-
-## hostname is necessary just in case you are logged into the CLI
-## GitHub enterprise instance
-if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
-  echo "Not logged into github".
-  echo "Please run: gh auth login"
+  echo "scripts/publish-npm-prerelease must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
   exit 1
 fi
 
@@ -60,4 +45,3 @@ yarn lerna publish --dist-tag beta --yes from-package
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
 
-gh release create "${TAG_NAME}" --title="${TAG_NAME}" --prerelease

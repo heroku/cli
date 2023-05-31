@@ -1,0 +1,13 @@
+name: Watch for pre release
+
+on:
+  push:
+    branches:
+      - prerelease/*
+
+jobs:
+  start-pre-release:
+    uses: ./.github/workflows/full-release-pipeline.yml
+    secrets: inherit
+    with:
+      isProdTrigger: false
