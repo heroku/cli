@@ -10,4 +10,4 @@ jobs:
     uses: ./.github/workflows/full-release-pipeline.yml
     secrets: inherit
     with:
-      isProdTrigger: false
+      isProdTrigger: ${{ false }}
