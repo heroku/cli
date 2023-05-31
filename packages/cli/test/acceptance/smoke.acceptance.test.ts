@@ -155,6 +155,15 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Runtime')
   })
 
+  it('heroku spaces', async () => {
+    const {stdout} = await run('spaces')
+    expect(stdout).to.contain('Name')
+    expect(stdout).to.contain('Team')
+    expect(stdout).to.contain('Region')
+    expect(stdout).to.contain('State')
+    expect(stdout).to.contain('Created At')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
