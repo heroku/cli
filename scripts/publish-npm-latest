@@ -2,14 +2,14 @@
 
 set -e -o pipefail
 
-CURRENT_BRANCH=$MERGED_BRANCH
+CURRENT_BRANCH=$GITHUB_REF_NAME
 if [[ -z $CURRENT_BRANCH ]]; then
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 RELEASE_PREFIX="release-"
 
-if [[ "${CURRENT_BRANCH}" != *"${RELEASE_PREFIX}"*  ]]; then
+if [[ "${GITHUB_REF_NAME}" != *"${RELEASE_PREFIX}"*  ]]; then
   echo "scripts/publish-npm-latest must be run on a branch with this pattern: ${RELEASE_PREFIX}*."
   exit 1
 fi
