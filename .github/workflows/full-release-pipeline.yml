@@ -33,10 +33,10 @@ jobs:
   publish:
     needs: [get-version-channel]
     # channel is checked to avoid deploying from a malformed branch
-    if: needs.get-version-channel.outputs.isProdRelease || (!inputs.isProdTrigger && !!needs.get-version-channel.outputs.channel)
+    if: needs.get-version-channel.outputs.isProdRelease == 'true' || (!inputs.isProdTrigger && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm-gh.yml
     with:
-      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
+      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease == 'true' }}
     secrets: inherit
 
   pack-upload:
@@ -50,5 +50,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
+      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease == 'true' }}
     secrets: inherit
