@@ -2,17 +2,19 @@ name: Full Release Pipeline
 
 on:
   workflow_dispatch:
-    isProdTrigger:
-      type: boolean
-      description: Triggered from prod watcher?
-      required: true
-      default: false
+    inputs:
+      isProdTrigger:
+        type: boolean
+        description: Triggered from prod watcher?
+        required: true
+        default: false
   workflow_call:
-    isProdTrigger:
-      type: boolean
-      description: Triggered from prod watcher?
-      required: true
-      default: false
+    inputs:
+      isProdTrigger:
+        type: boolean
+        description: Triggered from prod watcher?
+        required: true
+        default: false
 
 jobs:
   get-version-channel:
