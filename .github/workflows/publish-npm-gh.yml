@@ -22,6 +22,9 @@ jobs:
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v3
+        with:
+          # fetch entire repo, not just this branch. Tags & commits are needed for release notes
+          fetch-depth: 0
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
