@@ -1,21 +1,26 @@
-name: Trigger Release
+name: Full Release Pipeline
 
 on:
-  pull_request:
-    branches:
-      - release-*
-    types: [ closed ]
-  push:
-    branches:
-      - prerelease/*
+  workflow_dispatch:
+    isProdTrigger:
+      type: boolean
+      description: Triggered from prod watcher?
+      required: true
+      default: false
+  workflow_call:
+    isProdTrigger:
+      type: boolean
+      description: Triggered from prod watcher?
+      required: true
+      default: false
 
 jobs:
   get-version-channel:
-    if: contains(github.ref, 'release-') || contains(github.ref, 'prerelease/')
     runs-on: ubuntu-latest
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
       version: ${{ steps.getVersion.outputs.version }}
+      isProdRelease: ${{ inputs.isProdTrigger && !steps.getVersion.outputs.channel }}
     steps:
       - uses: actions/checkout@v3
       - id: getVersion
@@ -25,12 +30,11 @@ jobs:
 
   publish:
     needs: [get-version-channel]
-    # if (merged PR && is release branch) OR (prerelease branch && has a channel on the package.json version)
-    # channel is checked to avoid deploying prod from a malformed prerelease branch
-    if: (github.event.pull_request.merged == true && contains(github.ref, 'release-')) || (needs.get-version-channel.outputs.channel && contains(github.ref, 'prerelease/'))
+    # channel is checked to avoid deploying from a malformed branch
+    if: needs.get-version-channel.outputs.isProdRelease || (!inputs.isProdTrigger && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm-gh.yml
     with:
-      isPreRelease: ${{ !!needs.get-version-channel.outputs.channel }}
+      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
     secrets: inherit
 
   pack-upload:
@@ -44,5 +48,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      channel: ${{ needs.get-version-channel.outputs.channel || 'stable' }}
+      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
     secrets: inherit

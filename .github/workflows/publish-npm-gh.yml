@@ -3,26 +3,23 @@ name: Publish NPM & Github Release
 on:
   workflow_dispatch:
     inputs:
-      isPreRelease:
-        description: is release for beta/rc/dev?
+      isProdRelease:
         type: boolean
-        required: false
+        description: Is this a production release?
+        required: true
         default: false
-
   workflow_call:
     inputs:
-      isPreRelease:
-        description: is release for beta/rc/dev?
+      isProdRelease:
         type: boolean
-        required: false
+        description: Is this a production release?
+        required: true
         default: false
 
 jobs:
   publish-npm-and-github:
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
-    permissions:
-      # give secrets.GITHUB_TOKEN ability to push/tag/release
-      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -40,14 +37,28 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
-      - name: Publish to NPM & GitHub release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to NPM
         run: |
-          if ${{ inputs.isPreRelease }}
+          if ${{ inputs.isProdRelease }}
           then
-            bash scripts/publish-prerelease
-          else
             bash scripts/publish-release
+          else
+            bash scripts/publish-prerelease
           fi
         shell: bash
+      - name: Release to Github
+        if: inputs.isProdRelease
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # the script below will fail if run in a separate shell file
+        run: |
+          PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
+          TAG_NAME="v${PACKAGE_VERSION}"
+          SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
+          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-')
+          LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
+          RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
+
+          gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
+        shell: bash
+
