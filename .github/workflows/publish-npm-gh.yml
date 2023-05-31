@@ -41,9 +41,9 @@ jobs:
         run: |
           if ${{ fromJSON(inputs.isProdRelease) }}
           then
-            bash scripts/publish-release
+            bash scripts/publish-npm-latest
           else
-            bash scripts/publish-prerelease
+            bash scripts/publish-npm-prerelease
           fi
         shell: bash
       - name: Release to Github
