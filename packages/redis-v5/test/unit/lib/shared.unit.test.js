@@ -4,7 +4,7 @@
 let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
-const unwrap = require('../unwrap')
+const unwrap = require('../../unwrap')
 
 exports.shouldHandleArgs = function (command, flags) {
   flags = flags || {}

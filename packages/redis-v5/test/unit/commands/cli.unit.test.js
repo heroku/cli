@@ -14,8 +14,8 @@ let tls
 let tunnel
 
 describe('heroku redis:cli', function () {
-  let command = proxyquire('../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
-  require('../lib/shared').shouldHandleArgs(command)
+  let command = proxyquire('../../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
+  require('../lib/shared.unit.test').shouldHandleArgs(command)
 })
 
 describe('heroku redis:cli', function () {
@@ -56,7 +56,7 @@ describe('heroku redis:cli', function () {
 
     let ssh2 = {Client: Tunnel}
 
-    command = proxyquire('../../commands/cli.js', {net, tls, ssh2})
+    command = proxyquire('../../../commands/cli.js', {net, tls, ssh2})
   })
 
   it('# for hobby it uses net.connect', function () {

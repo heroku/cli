@@ -5,11 +5,11 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/keyspace-notifications')
-const unwrap = require('../unwrap')
+let command = require('../../../commands/keyspace-notifications')
+const unwrap = require('../../unwrap')
 
 describe('heroku redis:keyspace-notifications', function () {
-  require('../lib/shared').shouldHandleArgs(command, {config: 'AKE'})
+  require('../lib/shared.unit.test').shouldHandleArgs(command, {config: 'AKE'})
 })
 
 describe('heroku redis:keyspace-notifications', function () {

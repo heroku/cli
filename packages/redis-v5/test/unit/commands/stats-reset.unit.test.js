@@ -5,7 +5,7 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/stats-reset')
+let command = require('../../../commands/stats-reset')
 
 describe('heroku redis:stats-reset', () => {
   beforeEach(() => {

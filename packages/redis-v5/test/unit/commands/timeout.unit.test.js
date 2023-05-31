@@ -5,11 +5,11 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/timeout')
-const unwrap = require('../unwrap')
+let command = require('../../../commands/timeout')
+const unwrap = require('../../unwrap')
 
 describe('heroku redis:timeout', function () {
-  require('../lib/shared').shouldHandleArgs(command, {seconds: '5'})
+  require('../lib/shared.unit.test').shouldHandleArgs(command, {seconds: '5'})
 })
 
 describe('heroku redis:timeout', function () {

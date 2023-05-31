@@ -5,11 +5,11 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../commands/maintenance')
-const unwrap = require('../unwrap')
+let command = require('../../../commands/maintenance')
+const unwrap = require('../../unwrap')
 
 describe('heroku redis:maintenance', function () {
-  require('../lib/shared').shouldHandleArgs(command)
+  require('../lib/shared.unit.test').shouldHandleArgs(command)
 })
 
 describe('heroku redis:maintenance', function () {
