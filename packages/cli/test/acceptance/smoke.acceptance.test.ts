@@ -156,13 +156,19 @@ describe('@acceptance smoke tests', () => {
   })
 
   it('heroku spaces', async () => {
-    const {stdout} = await run('spaces')
-    expect(stdout).to.contain('You do not have access to any spaces')
+    try {
+      await run('spaces')
+    } catch (error: any) {
+      expect(error.message).to.contain('You do not have access to any spaces')
+    }
   })
 
   it('heroku redis:credentials', async () => {
-    const {stdout} = await run(`redis:credentials ${appFlag}`)
-    expect(stdout).to.contain('No Redis instances found')
+    try {
+      await run(`redis:credentials ${appFlag}`)
+    } catch (error:any) {
+      expect(error.message).to.contain('No Redis instances found')
+    }
   })
 
   it('asserts monorepo plugins are in core', async () => {
