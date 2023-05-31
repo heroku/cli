@@ -10,14 +10,11 @@ const { pipeline } = require('stream')
 const crypto = require('crypto')
 const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
 
-const {GITHUB_SHA_SHORT, GITHUB_HEAD_REF, GITHUB_REF_NAME} = process.env
+const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
 const HEROKU_S3_BUCKET = getHerokuS3Bucket()
 const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
 
-// allow from running from merged release branch or workflow_dispatch
-const TARGET_BRANCH = GITHUB_HEAD_REF ? GITHUB_HEAD_REF.replace('refs/heads/', '') : GITHUB_REF_NAME
-
-if (!TARGET_BRANCH.startsWith('release-')) {
+if (GITHUB_REF_TYPE === 'tag' && GITHUB_REF_NAME.startsWith('v')) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }

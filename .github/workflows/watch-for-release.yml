@@ -23,7 +23,7 @@ jobs:
   start-release:
     needs: [ get-source-branch-name ]
     if: startsWith(needs.get-source-branch-name.outputs.sourceName, 'release-')
-    uses: ./.github/workflows/full-release-pipeline.yml
+    uses: ./.github/workflows/tag-create-github-release.yml
     secrets: inherit
     with:
       isProdTrigger: ${{ true }}

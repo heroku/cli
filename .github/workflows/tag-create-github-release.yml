@@ -1,4 +1,4 @@
-name: Publish NPM & Github Release
+name: Create Github Release & Tag
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ on:
         default: false
 
 jobs:
-  publish-npm-and-github:
+  tag-and-create-gh-release:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
@@ -31,29 +31,18 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --frozen-lockfile --network-timeout 1000000
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: set git user
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
-      - name: Publish to NPM
-        run: |
-          if ${{ fromJSON(inputs.isProdRelease) }}
-          then
-            bash scripts/publish-npm-latest
-          else
-            bash scripts/publish-npm-prerelease
-          fi
+      - name: Create & Push Git Tag
+        run: ./scripts/create-git-tag-and-push
         shell: bash
       - name: Release to Github
-        if: fromJSON(inputs.isProdRelease)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # the script below will fail if run in a separate shell file
+        # the script below will fail if run from a separate shell file
         run: |
-#          todo: release notes were empty last time. It might have to do with which branch the tag is on
-          git fetch
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
           echo $PACKAGE_VERSION
           TAG_NAME="v${PACKAGE_VERSION}"

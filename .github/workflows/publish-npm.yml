@@ -1,0 +1,41 @@
+name: Publish NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      isProdRelease:
+        type: boolean
+        description: Is this a production release?
+        required: true
+        default: false
+  workflow_call:
+    inputs:
+      isProdRelease:
+        type: boolean
+        description: Is this a production release?
+        required: true
+        default: false
+
+jobs:
+  publish-npm:
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - run: yarn --frozen-lockfile --network-timeout 1000000
+      - name: set NPM auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+      - name: Publish to NPM
+        run: |
+          if ${{ fromJSON(inputs.isProdRelease) }}
+          then
+            yarn lerna publish --yes from-package
+          else
+            yarn lerna publish --dist-tag beta --yes from-package
+          fi
+        shell: bash

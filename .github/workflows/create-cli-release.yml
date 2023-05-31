@@ -1,4 +1,4 @@
-name: Full Release Pipeline
+name: Create CLI Release
 
 on:
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
     needs: [get-version-channel]
     # channel is checked to avoid deploying from a malformed branch
     if: fromJSON(needs.get-version-channel.outputs.isProdRelease) || (!fromJSON(inputs.isProdTrigger) && !!needs.get-version-channel.outputs.channel)
-    uses: ./.github/workflows/publish-npm-gh.yml
+    uses: ./.github/workflows/publish-npm.yml
     with:
       isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
     secrets: inherit

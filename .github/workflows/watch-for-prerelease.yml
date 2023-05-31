@@ -7,7 +7,7 @@ on:
 
 jobs:
   start-pre-release:
-    uses: ./.github/workflows/full-release-pipeline.yml
+    uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
       isProdTrigger: ${{ false }}
