@@ -17,7 +17,7 @@ on:
         default: false
 
 jobs:
-  publish-npm:
+  publish-npm-and-github:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
@@ -45,21 +45,8 @@ jobs:
             bash scripts/publish-prerelease
           fi
         shell: bash
-
-  github-release:
-    if: inputs.isProdRelease
-    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
-    runs-on: pub-hk-ubuntu-22.04-small
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          # fetch entire repo, not just this branch. Tags & commits are needed for release notes
-          fetch-depth: 0
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
       - name: Release to Github
+        if: inputs.isProdRelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # the script below will fail if run in a separate shell file
@@ -73,3 +60,4 @@ jobs:
 
           gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
         shell: bash
+
