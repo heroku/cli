@@ -2,17 +2,19 @@ name: Full Release Pipeline
 
 on:
   workflow_dispatch:
-    isProdTrigger:
-      type: boolean
-      description: Triggered from prod watcher?
-      required: true
-      default: false
+    inputs:
+      isProdTrigger:
+        type: boolean
+        description: Triggered from prod watcher?
+        required: true
+        default: false
   workflow_call:
-    isProdTrigger:
-      type: boolean
-      description: Triggered from prod watcher?
-      required: true
-      default: false
+    inputs:
+      isProdTrigger:
+        type: boolean
+        description: Triggered from prod watcher?
+        required: true
+        default: false
 
 jobs:
   get-version-channel:
@@ -20,7 +22,7 @@ jobs:
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
       version: ${{ steps.getVersion.outputs.version }}
-      isProdRelease: ${{ inputs.isProdTrigger && !steps.getVersion.outputs.channel }}
+      isProdRelease: ${{ fromJSON(inputs.isProdTrigger) && !steps.getVersion.outputs.channel }}
     steps:
       - uses: actions/checkout@v3
       - id: getVersion
@@ -31,10 +33,10 @@ jobs:
   publish:
     needs: [get-version-channel]
     # channel is checked to avoid deploying from a malformed branch
-    if: needs.get-version-channel.outputs.isProdRelease || (!inputs.isProdTrigger && !!needs.get-version-channel.outputs.channel)
+    if: fromJSON(needs.get-version-channel.outputs.isProdRelease) || (!fromJSON(inputs.isProdTrigger) && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm-gh.yml
     with:
-      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
+      isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
     secrets: inherit
 
   pack-upload:
@@ -48,5 +50,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      isProdRelease: ${{ needs.get-version-channel.outputs.isProdRelease }}
+      isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
     secrets: inherit

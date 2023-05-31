@@ -10,12 +10,6 @@ if [[ "${CURRENT_BRANCH}" != *"${PRERELEASE_PREFIX}"* ]]; then
   exit 1
 fi
 
-git pull --rebase origin "${CURRENT_BRANCH}"
-# The --force overrides local tags.
-# This is needed if you've published the CLI previously,
-# otherwise git will exit with an error unnecessarily.
-git fetch origin  --force --tags
-
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")

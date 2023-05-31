@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/promote.yml
     with:
         version: ${{ inputs.version }}
-        isProdRelease: ${{ inputs.isProdRelease }}
+        isProdRelease: ${{ fromJSON(inputs.isProdRelease) }}
     secrets: inherit
 
   ## POST release jobs
@@ -52,13 +52,13 @@ jobs:
 
   release-homebrew:
     needs: [ invalidate-cdn-cache ]
-    if: inputs.isProdRelease
+    if: fromJSON(inputs.isProdRelease)
     uses: ./.github/workflows/release-homebrew.yml
     secrets: inherit
 
   change-management:
     needs: [ promote ]
-    if: inputs.isProdRelease
+    if: fromJSON(inputs.isProdRelease)
     runs-on: ubuntu-latest
     environment: ChangeManagement
     env:
