@@ -9,12 +9,13 @@ const { promisify } = require('util')
 const { pipeline } = require('stream')
 const crypto = require('crypto')
 const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
+const isStableRelease = require('../utils/isStableRelease')
 
-const {GITHUB_SHA_SHORT} = process.env
+const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
 const HEROKU_S3_BUCKET = getHerokuS3Bucket()
 const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
 
-if (!process.env.GITHUB_REF_NAME.startsWith('release-')) {
+if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }
@@ -109,7 +110,7 @@ async function updateHomebrew () {
   await git(['diff', '--cached'], { stdio: 'inherit' })
   await git(['commit', '-m', `heroku v${VERSION}`])
   if (process.env.SKIP_GIT_PUSH === undefined) {
-    await git(['push', 'origin', 'main'])
+    await git(['push', 'origin', 'master'])
   }
 }
 
