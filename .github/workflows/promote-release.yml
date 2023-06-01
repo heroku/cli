@@ -7,9 +7,9 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      isProdRelease:
+      isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
 
@@ -19,9 +19,9 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      isProdRelease:
+      isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
 
@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/promote.yml
     with:
         version: ${{ inputs.version }}
-        isProdRelease: ${{ fromJSON(inputs.isProdRelease) }}
+        isStableRelease: ${{ fromJSON(inputs.isStableRelease) }}
     secrets: inherit
 
   ## POST release jobs
@@ -52,13 +52,13 @@ jobs:
 
   release-homebrew:
     needs: [ invalidate-cdn-cache ]
-    if: fromJSON(inputs.isProdRelease)
+    if: fromJSON(inputs.isStableRelease)
     uses: ./.github/workflows/release-homebrew.yml
     secrets: inherit
 
   change-management:
     needs: [ promote ]
-    if: fromJSON(inputs.isProdRelease)
+    if: fromJSON(inputs.isStableRelease)
     runs-on: ubuntu-latest
     environment: ChangeManagement
     env:

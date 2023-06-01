@@ -2,19 +2,18 @@
 
 set -e -o pipefail
 
-CURRENT_BRANCH=$GITHUB_REF_NAME
-if [[ -z $CURRENT_BRANCH ]]; then
-  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-fi
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
 
-RELEASE_PREFIX="release-"
-
-if [[ "${GITHUB_REF_NAME}" != *"${RELEASE_PREFIX}"*  ]]; then
-  echo "scripts/publish-npm-latest must be run on a branch with this pattern: ${RELEASE_PREFIX}*."
+if [[ "${GITHUB_REF}" != "main" ]]; then
+  echo "script must be run on branch 'main'"
   exit 1
 fi
 
-PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
+if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
+  echo "package not on stable version. Skipping tagging."
+  exit 1
+fi
+
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
 
@@ -25,13 +24,6 @@ if [ -n "${EXISTING_REMOTE_TAG}" ]; then
   echo "You may need to run scripts/create-release-pr to create a new release before running this script"
   exit 1
 fi
-
-echo "Installing dependencies with yarn..."
-yarn
-echo "Done installing dependencies with yarn"
-
-echo "publishing packages to npm..."
-yarn lerna publish --yes from-package
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"

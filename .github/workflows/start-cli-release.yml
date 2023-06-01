@@ -1,0 +1,13 @@
+name: Start CLI Release
+
+on:
+  release:
+    # This works for both releases and prereleases https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release
+    types: [ published ]
+
+jobs:
+  start-release:
+    uses: ./.github/workflows/create-cli-release.yml
+    secrets: inherit
+    with:
+      isStableCandidate: ${{ !contains(github.event.release.tag_name, '-') }}

@@ -2,18 +2,17 @@
 
 set -e -o pipefail
 
-CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 PRERELEASE_PREFIX="prerelease/"
-
-if [[ "${CURRENT_BRANCH}" != *"${PRERELEASE_PREFIX}"* ]]; then
-  echo "scripts/publish-npm-prerelease must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
-  exit 1
-fi
-
-PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
+PRERELEASE_TAG_MARKER="beta"
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
-PRERELEASE_TAG_MARKER="beta"
+
+if [[ "${CURRENT_BRANCH}" != "${PRERELEASE_PREFIX}"* ]]; then
+  echo "script must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
+  exit 1
+fi
 
 if [ -n "${EXISTING_REMOTE_TAG}" ]; then
   echo "The tag ${TAG_NAME} already exists on github.com"
@@ -24,17 +23,10 @@ if [ -n "${EXISTING_REMOTE_TAG}" ]; then
 fi
 
 if [[ "${TAG_NAME}" != *"${PRERELEASE_TAG_MARKER}"* ]]; then
-  echo "scripts/publish-prerelease must be run on a branch with a beta tag."
+  echo "script must be run on a branch with a beta tag."
   echo "to create a beta tag, see the Heroku CLI release instructions on creating a prerelease"
   exit 1
 fi
-
-echo "Installing dependencies with yarn..."
-yarn
-echo "Done installing dependencies with yarn"
-
-echo "publishing packages to npm..."
-yarn lerna publish --dist-tag beta --yes from-package
 
 git tag "${TAG_NAME}" -m "${TAG_NAME}"
 git push origin "${TAG_NAME}"
