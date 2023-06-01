@@ -3,9 +3,10 @@
 set -e -o pipefail
 
 PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
-if [[ "${GITHUB_REF}" != "main" ]]; then
-  echo "script must be run on branch 'main'"
+if [[ "${CURRENT_BRANCH}" != "main" ]]; then
+  echo "script must be run on branch 'main'. On $CURRENT_BRANCH"
   exit 1
 fi
 
