@@ -25,7 +25,7 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
       - name: Create & Push Git Tag
-        run: ./scripts/create-git-tag-and-push
+        run: ./scripts/release/create-git-tag-and-push
         shell: bash
       - name: Release to Github
         # the script below will fail if run from a separate shell file

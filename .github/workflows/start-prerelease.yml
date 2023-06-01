@@ -20,7 +20,7 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
       - name: Tag and Verify
-        run: ./scripts/create-git-prerelease-tag-and-push
+        run: ./scripts/release/create-git-prerelease-tag-and-push
 
   start-pre-release:
     needs: [ tag-and-verify ]
