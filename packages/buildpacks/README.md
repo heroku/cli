@@ -23,7 +23,7 @@ $ npm install -g @heroku-cli/plugin-buildpacks
 $ heroku COMMAND
 running command...
 $ heroku (--version|-v)
-@heroku-cli/plugin-buildpacks/8.1.6 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-buildpacks/8.1.7-beta.0 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -57,7 +57,7 @@ DESCRIPTION
   display the buildpacks for an app
 ```
 
-_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/index.ts)_
+_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
@@ -79,7 +79,7 @@ DESCRIPTION
   add new app buildpack, inserting into list of buildpacks if necessary
 ```
 
-_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/add.ts)_
+_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/add.ts)_
 
 ## `heroku buildpacks:clear`
 
@@ -97,7 +97,7 @@ DESCRIPTION
   clear all buildpacks set on the app
 ```
 
-_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/clear.ts)_
+_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
@@ -114,7 +114,7 @@ DESCRIPTION
   fetch info about a buildpack
 ```
 
-_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/info.ts)_
+_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/info.ts)_
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
@@ -136,7 +136,7 @@ DESCRIPTION
   remove a buildpack set on the app
 ```
 
-_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/remove.ts)_
+_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/remove.ts)_
 
 ## `heroku buildpacks:search [TERM]`
 
@@ -158,7 +158,7 @@ DESCRIPTION
   search for buildpacks
 ```
 
-_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/search.ts)_
+_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/search.ts)_
 
 ## `heroku buildpacks:set BUILDPACK`
 
@@ -175,7 +175,7 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/set.ts)_
+_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
@@ -192,5 +192,5 @@ DESCRIPTION
   list versions of a buildpack
 ```
 
-_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v8.1.6/packages/buildpacks/src/commands/buildpacks/versions.ts)_
+_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v8.1.7-beta.0/packages/buildpacks/src/commands/buildpacks/versions.ts)_
 <!-- commandsstop -->
