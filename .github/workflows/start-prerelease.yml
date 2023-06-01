@@ -7,7 +7,8 @@ on:
 
 jobs:
   tag-and-verify:
-    runs-on: ubuntu-latest
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
