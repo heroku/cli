@@ -19,7 +19,7 @@ jobs:
       - name: Remove 'refs/heads/' from GITHUB_HEAD_REF
         shell: bash
         id: sourceName
-        run: echo "sourceName=$(echo ${GITHUB_HEAD_REF#refs/heads/})" >>$GITHUB_OUTPUT
+        run: echo "sourceName=${GITHUB_HEAD_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
   start-release:
     needs: [ get-source-branch-name ]
