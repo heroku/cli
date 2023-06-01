@@ -110,7 +110,7 @@ async function updateHomebrew () {
   await git(['diff', '--cached'], { stdio: 'inherit' })
   await git(['commit', '-m', `heroku v${VERSION}`])
   if (process.env.SKIP_GIT_PUSH === undefined) {
-    await git(['push', 'origin', 'main'])
+    await git(['push', 'origin', 'master'])
   }
 }
 
