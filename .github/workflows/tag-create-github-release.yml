@@ -8,6 +8,8 @@ jobs:
   tag-and-create-gh-release:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,8 +28,6 @@ jobs:
         run: ./scripts/create-git-tag-and-push
         shell: bash
       - name: Release to Github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # the script below will fail if run from a separate shell file
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
