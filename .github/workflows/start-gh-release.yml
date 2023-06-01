@@ -1,4 +1,4 @@
-name: Watch for release
+name: Watch for and start Github Release
 
 on:
   pull_request_target:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   get-source-branch-name:
+    description: GHA does not provide short name for branch being merged in. This shortens it so we can validate it with startsWith()
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:

@@ -9,12 +9,13 @@ const { promisify } = require('util')
 const { pipeline } = require('stream')
 const crypto = require('crypto')
 const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
+const isStableRelease = require('../utils/isStableRelease')
 
 const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
 const HEROKU_S3_BUCKET = getHerokuS3Bucket()
 const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
 
-if (GITHUB_REF_TYPE === 'tag' && GITHUB_REF_NAME.startsWith('v')) {
+if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }

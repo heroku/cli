@@ -7,7 +7,7 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      isProdRelease:
+      isStableRelease:
         type: boolean
         description: Is this a production release?
         required: true
@@ -19,7 +19,7 @@ on:
         description: version to promote to latest
         type: string
         required: true
-      isProdRelease:
+      isStableRelease:
         type: boolean
         description: Is this a production release?
         required: true
@@ -31,7 +31,7 @@ on:
 
 jobs:
   promote:
-    name: Promote ${{ inputs.version }} to ${{ fromJSON(inputs.isProdRelease) && 'stable' || 'beta' }}
+    name: Promote ${{ inputs.version }} to ${{ fromJSON(inputs.isStableRelease) && 'stable' || 'beta' }}
     runs-on: ubuntu-latest
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
@@ -57,7 +57,7 @@ jobs:
             # get SHA directly from NPM
             SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           fi
-          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ fromJSON(inputs.isProdRelease) && 'stable' || 'beta' }}
+          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || 'beta' }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js

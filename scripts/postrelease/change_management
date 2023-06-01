@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
+const isStableRelease = require('../utils/')
 const {GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
 
-if (GITHUB_REF_TYPE !== 'tag' || !GITHUB_REF_NAME.startsWith('v')) {
+if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release, skipping change management trigger')
   process.exit(0)
 }

@@ -3,14 +3,14 @@ name: Publish NPM
 on:
   workflow_dispatch:
     inputs:
-      isProdRelease:
+      isStableRelease:
         type: boolean
         description: Is this a production release?
         required: true
         default: false
   workflow_call:
     inputs:
-      isProdRelease:
+      isStableRelease:
         type: boolean
         description: Is this a production release?
         required: true
@@ -32,7 +32,7 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
-          if ${{ fromJSON(inputs.isProdRelease) }}
+          if ${{ fromJSON(inputs.isStableRelease) }}
           then
             yarn lerna publish --yes from-package
           else

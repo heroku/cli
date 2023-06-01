@@ -10,4 +10,4 @@ jobs:
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
-      isProdTrigger: ${{ !contains(github.event.release.tag_name, '-') }}
+      isStableCandidate: ${{ !contains(github.event.release.tag_name, '-') }}

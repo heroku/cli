@@ -25,4 +25,4 @@ jobs:
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
-      isProdTrigger: ${{ false }}
+      isStableCandidate: ${{ false }}

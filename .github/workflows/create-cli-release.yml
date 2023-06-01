@@ -3,16 +3,16 @@ name: Create CLI Release
 on:
   workflow_dispatch:
     inputs:
-      isProdTrigger:
+      isStableCandidate:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod candidate?
         required: true
         default: false
   workflow_call:
     inputs:
-      isProdTrigger:
+      isStableCandidate:
         type: boolean
-        description: Triggered from prod watcher?
+        description: Is this a stable/prod candidate?
         required: true
         default: false
 
@@ -22,7 +22,8 @@ jobs:
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
       version: ${{ steps.getVersion.outputs.version }}
-      isProdRelease: ${{ fromJSON(inputs.isProdTrigger) && !steps.getVersion.outputs.channel }}
+      # final check to ensure package.json doesn't have a dist tag, ex: '-beta'
+      isStableRelease: ${{ fromJSON(inputs.isStableCandidate) && !steps.getVersion.outputs.channel }}
     steps:
       - uses: actions/checkout@v3
       - id: getVersion
@@ -30,17 +31,17 @@ jobs:
         with:
           path: './packages/cli/package.json'
 
-  publish:
+  publish-npm:
     needs: [get-version-channel]
-    # channel is checked to avoid deploying from a malformed branch
-    if: fromJSON(needs.get-version-channel.outputs.isProdRelease) || (!fromJSON(inputs.isProdTrigger) && !!needs.get-version-channel.outputs.channel)
+    # if NOT isStableCandidate confirm dist tag is in package.json version
+    if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm.yml
     with:
-      isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
     secrets: inherit
 
   pack-upload:
-    needs: [ publish ]
+    needs: [ publish-npm ]
     uses: ./.github/workflows/pack-upload.yml
     secrets: inherit
 
@@ -50,5 +51,5 @@ jobs:
     uses: ./.github/workflows/promote-release.yml
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
-      isProdRelease: ${{ fromJSON(needs.get-version-channel.outputs.isProdRelease) }}
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
     secrets: inherit
