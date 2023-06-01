@@ -11,7 +11,8 @@ on:
 
 jobs:
   release-homebrew:
-    runs-on: ubuntu-latest
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
     environment: ReleaseHomebrew
     steps:
       - uses: actions/checkout@v3

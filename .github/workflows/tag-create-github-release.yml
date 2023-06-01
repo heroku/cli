@@ -8,13 +8,15 @@ jobs:
   tag-and-create-gh-release:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
           # fetch entire repo, not just this branch. Tags & commits are needed for release notes
           fetch-depth: 0
+      - name: Install SSH Client 🔑
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_RELEASE_PRIVATE_KEY }}
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -30,6 +32,8 @@ jobs:
       - name: Release to Github
         # the script below will fail if run from a separate shell file
         run: |
+          # fetch all tags & commits to ensure correct release notes
+          git fetch --all
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
           # todo: remove echo for debugging
           echo $PACKAGE_VERSION
