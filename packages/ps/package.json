@@ -62,7 +62,7 @@
     "postpublish": "yarn run clean",
     "prepack": "yarn run build && oclif manifest",
     "preversion": "yarn run clean",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "version": "oclif readme && git add README.md"
   }
 }

@@ -148,6 +148,29 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('You have no apps.')
   })
 
+  it('heroku regions', async () => {
+    const {stdout} = await run('regions')
+    expect(stdout).to.contain('ID')
+    expect(stdout).to.contain('Location')
+    expect(stdout).to.contain('Runtime')
+  })
+
+  it('heroku spaces', async () => {
+    try {
+      await run('spaces')
+    } catch (error: any) {
+      expect(error.message).to.contain('You do not have access to any spaces')
+    }
+  })
+
+  it('heroku redis:credentials', async () => {
+    try {
+      await run(`redis:credentials ${appFlag}`)
+    } catch (error:any) {
+      expect(error.message).to.contain('No Redis instances found')
+    }
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
