@@ -9,7 +9,7 @@ on:
         required: true
       isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
 
@@ -21,7 +21,7 @@ on:
         required: true
       isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
 

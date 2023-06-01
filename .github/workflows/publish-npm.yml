@@ -5,14 +5,14 @@ on:
     inputs:
       isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
   workflow_call:
     inputs:
       isStableRelease:
         type: boolean
-        description: Is this a production release?
+        description: Is this a stable/prod release?
         required: true
         default: false
 
