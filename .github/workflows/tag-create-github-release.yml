@@ -35,14 +35,10 @@ jobs:
           # fetch all tags & commits to ensure correct release notes
           git fetch --all
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
-          # todo: remove echo for debugging
-          echo $PACKAGE_VERSION
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
           FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-')
           LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
-          # todo: remove echo for debugging
-          echo $LAST_PUBLISHED_TAG
           RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
 
           gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
