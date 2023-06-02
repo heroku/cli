@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const isStableRelease = require('../utils/')
+const isStableRelease = require('../utils/isStableRelease')
 const {GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
 
 if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
