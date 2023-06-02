@@ -52,7 +52,7 @@ describe('display', () => {
       .it('prints the styled authorization with access token info', ctx => {
         expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain('Scope:       global,app\n')
-        expect(ctx.stdout).to.contain(`Description: ${authDesc}\n`)
+        expect(ctx.stdout).to.contain('Description: a cool auth\n')
 
         expect(ctx.stdout).to.contain('Client:      <none>\n')
         expect(ctx.stdout).to.not.contain('Redirect URI')
@@ -81,8 +81,8 @@ describe('display', () => {
 
     setupDisplay(auth)
       .it('prints the styled authorization with client info', ctx => {
-        expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
-        expect(ctx.stdout).to.contain(`Description: ${authDesc}\n`)
+        expect(ctx.stdout).to.contain(`ID:           ${authId}\n`)
+        expect(ctx.stdout).to.contain(`Description:  ${authDesc}\n`)
         expect(ctx.stdout).to.not.contain('Scope')
 
         expect(ctx.stdout).to.contain('Client:       a cool client\n')
