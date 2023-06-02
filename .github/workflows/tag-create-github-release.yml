@@ -35,7 +35,7 @@ jobs:
           echo $PACKAGE_VERSION
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
-          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-')
+          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-'| grep -v $TAG_NAME)
           LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
           # todo: remove echo for debugging
           echo $LAST_PUBLISHED_TAG
