@@ -33,11 +33,10 @@ jobs:
         # the script below will fail if run from a separate shell file
         run: |
           # fetch all tags & commits to ensure correct release notes
-          git fetch --all
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
-          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-')
+          FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-' | grep -v $TAG_NAME)
           LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
           RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
 
