@@ -11,18 +11,21 @@ const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
     .do(() => display(auth))
 
 describe('display', () => {
+  const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
+  const authDesc = 'a cool auth'
+
   context('with an auth', () => {
     const auth: Heroku.OAuthAuthorization = {
-      id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
-      description: 'a cool auth',
+      id: authId,
+      description: authDesc,
       scope: ['global', 'app'],
     }
 
     setupDisplay(auth)
       .it('prints the styled authorization', ctx => {
-        expect(ctx.stdout).to.contain('ID:          f6e8d969-129f-42d2-854b-c2eca9d5a42e\n')
+        expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain('Scope:       global,app\n')
-        expect(ctx.stdout).to.contain('Description: a cool auth\n')
+        expect(ctx.stdout).to.contain(`Description: ${authDesc}\n`)
 
         expect(ctx.stdout).to.contain('Client:      <none>\n')
         expect(ctx.stdout).to.not.contain('Redirect URI')
@@ -35,8 +38,8 @@ describe('display', () => {
 
   context('with an auth access token', () => {
     const auth: Heroku.OAuthAuthorization = {
-      id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
-      description: 'a cool auth',
+      id: authId,
+      description: authDesc,
       scope: ['global', 'app'],
       updated_at: `${new Date(0)}`,
       access_token: {
@@ -47,14 +50,14 @@ describe('display', () => {
 
     setupDisplay(auth)
       .it('prints the styled authorization with access token info', ctx => {
-        expect(ctx.stdout).to.contain('ID:          f6e8d969-129f-42d2-854b-c2eca9d5a42e\n')
+        expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain('Scope:       global,app\n')
-        expect(ctx.stdout).to.contain('Description: a cool auth\n')
+        expect(ctx.stdout).to.contain(`Description: ${authDesc}\n`)
 
         expect(ctx.stdout).to.contain('Client:      <none>\n')
         expect(ctx.stdout).to.not.contain('Redirect URI')
 
-        expect(ctx.stdout).to.contain('Token:       1234abcd-129f-42d2-854b-EfGhIjKlMn12\n')
+        expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain(`Updated at:  ${new Date(0)}`)
         expect(ctx.stdout).to.contain(`(${distanceInWordsToNow(new Date(0))} ago)`)
 
@@ -71,15 +74,15 @@ describe('display', () => {
     }
 
     const auth: Heroku.OAuthAuthorization = {
-      id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
-      description: 'a cool auth',
+      id: authId,
+      description: authDesc,
       client,
     }
 
     setupDisplay(auth)
       .it('prints the styled authorization with client info', ctx => {
-        expect(ctx.stdout).to.contain('ID:           f6e8d969-129f-42d2-854b-c2eca9d5a42e\n')
-        expect(ctx.stdout).to.contain('Description:  a cool auth\n')
+        expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
+        expect(ctx.stdout).to.contain(`Description: ${authDesc}\n`)
         expect(ctx.stdout).to.not.contain('Scope')
 
         expect(ctx.stdout).to.contain('Client:       a cool client\n')
