@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../lib/commands/sessions/destroy')
+const cmd = require('../../../lib/commands/sessions/destroy')
 
 describe('sessions:destroy', function () {
   let api

@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../lib/commands/authorizations/update')
+const cmd = require('../../../lib/commands/authorizations/update')
 
 describe('authorizations:update', () => {
   let api

@@ -3,9 +3,9 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../lib/commands/authorizations/rotate')
+const cmd = require('../../../lib/commands/authorizations/revoke')
 
-describe('authorizations:rotate', () => {
+describe('authorizations:create', () => {
   let api
   beforeEach(() => {
     cli.mockConsole()
@@ -18,11 +18,11 @@ describe('authorizations:rotate', () => {
 
   beforeEach(() => {
     api
-      .post('/oauth/authorizations/10/actions/regenerate-tokens')
-      .reply(200, {scope: ['global'], access_token: {token: 'secrettoken'}})
+      .delete('/oauth/authorizations/10')
+      .reply(201, {description: 'fooo'})
   })
 
-  it('updates the authorization', () => {
+  it('revokes the authorization', () => {
     return cmd.run({args: {id: '10'}})
   })
 })
