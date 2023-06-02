@@ -176,6 +176,11 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('3.0.1')
   })
 
+  it('heroku authorizations', async () => {
+    const {stdout} = await run('authorizations')
+    expect(stdout).to.contain('global')
+  })
+
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
     const cmd = await run('plugins --core')
