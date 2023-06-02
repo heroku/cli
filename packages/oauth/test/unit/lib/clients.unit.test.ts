@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {validateURL} from '../../src/lib/clients'
+import {validateURL} from '../../../src/lib/clients'
 
 describe('validateURL', () => {
   describe('secure URLs', () => {
@@ -19,9 +19,9 @@ describe('validateURL', () => {
       {uri: 'http://192.168.0.1:8080/foo'},
     ].forEach(({uri}) => {
       test
-      .it(`passes when secure (${uri})`, () => {
-        expect(validateURL(uri))
-      })
+        .it(`passes when secure (${uri})`, () => {
+          expect(validateURL(uri))
+        })
     })
 
     describe('insecure URLs', () => {
@@ -32,19 +32,19 @@ describe('validateURL', () => {
         {uri: 'http://192.foo.com'},
       ].forEach(({uri}) => {
         test
-        .do(() => validateURL(uri))
-        .catch(error => expect(error.message).to.equal(
-          'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
-        ))
-        .it(`fails when insecure (${uri})`)
+          .do(() => validateURL(uri))
+          .catch(error => expect(error.message).to.equal(
+            'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
+          ))
+          .it(`fails when insecure (${uri})`)
       })
     })
 
     describe('invalid URLs', () => {
       test
-      .do(() => validateURL('foo'))
-      .catch(error => expect(error.message).to.contain('Invalid URL'))
-      .it('fails when invalid')
+        .do(() => validateURL('foo'))
+        .catch(error => expect(error.message).to.contain('Invalid URL'))
+        .it('fails when invalid')
     })
   })
 })
