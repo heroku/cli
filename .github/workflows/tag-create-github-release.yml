@@ -32,7 +32,6 @@ jobs:
       - name: Release to Github
         # the script below will fail if run from a separate shell file
         run: |
-          # fetch all tags & commits to ensure correct release notes
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
