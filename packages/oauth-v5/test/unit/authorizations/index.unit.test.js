@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const {expect} = require('chai')
 const nock = require('nock')
-const cmd = require('../../lib/commands/authorizations')
+const cmd = require('../../../lib/commands/authorizations')
 
 describe('authorizations', function () {
   let api

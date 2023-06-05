@@ -1,9 +1,9 @@
 import {expect, test} from '@oclif/test'
 
-import * as foreman from '../../../src/fork-foreman'
+import * as foreman from '../../../../src/fork-foreman'
 
 // eslint-disable-next-line node/no-missing-require
-const procfile = require('../../../src/load-foreman-procfile')
+const procfile = require('../../../../src/load-foreman-procfile')
 
 const loadProcMock = () => ({
   web: './web-command',

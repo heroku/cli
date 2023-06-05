@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 let nock = require('nock')
-let cmd = require('../../lib/commands/clients/destroy')
+let cmd = require('../../../lib/commands/clients/destroy')
 
 describe('clients:destroy', function () {
   beforeEach(() => cli.mockConsole())

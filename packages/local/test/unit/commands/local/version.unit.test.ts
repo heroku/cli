@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import * as foreman from '../../../src/fork-foreman'
+import * as foreman from '../../../../src/fork-foreman'
 
 describe('local:version', () => {
   test
