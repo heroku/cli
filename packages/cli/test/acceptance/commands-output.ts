@@ -3,11 +3,6 @@ export default `\u001B[1m Command                                        Summary
 \u001B[1m ────────────────────────────────────────────── ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── \u001B[22m
  2fa                                            check 2fa status                                                                                                                                        
  2fa:disable                                    disables 2fa on account                                                                                                                                 
- 2fa:preauth                                    add a pre-authorizations to perform actions on a paranoid app without two-factor authentication                                                         
- 2fa:preauth:clear                              remove a pre-authorizations to perform actions on a paranoid app without two-factor authentication                                                      
- 2fa:yubikeys                                   list yubikeys for this account                                                                                                                          
- 2fa:yubikeys:add                               add a yubikey to this account                                                                                                                           
- 2fa:yubikeys:remove                            remove a yubikey from this account                                                                                                                      
  access                                         list who has access to an app                                                                                                                           
  access:add                                     add new users to your app                                                                                                                               
  access:remove                                  remove users from a team app                                                                                                                            
@@ -34,9 +29,6 @@ export default `\u001B[1m Command                                        Summary
  apps:favorites:add                             favorites an app                                                                                                                                        
  apps:favorites:remove                          unfavorites an app                                                                                                                                      
  apps:info                                      show detailed app information                                                                                                                           
- apps:internal-access-restricted                (sudo) view app\'s internal-access-restricted flag                                                                                                       
- apps:internal-access-restricted:disable        (sudo) disable internal-access-restricted flag on an app                                                                                                
- apps:internal-access-restricted:enable         (sudo) enable internal-access-restricted flag on an app                                                                                                 
  apps:join                                      add yourself to a team app                                                                                                                              
  apps:leave                                     remove yourself from a team app                                                                                                                         
  apps:lock                                      prevent team members from joining an app                                                                                                                
@@ -44,19 +36,8 @@ export default `\u001B[1m Command                                        Summary
  apps:rename                                    rename an app                                                                                                                                           
  apps:stacks                                    show the list of available stacks                                                                                                                       
  apps:stacks:set                                set the stack of an app                                                                                                                                 
- apps:suspend                                   (sudo) suspend an app                                                                                                                                   
- apps:sync                                      (sudo) sync an app                                                                                                                                      
- apps:syncimplicits                             (sudo) syncs an apps implicit attachments                                                                                                               
- apps:table                                     list apps in a custom table                                                                                                                             
  apps:transfer                                  transfer applications to another user or team                                                                                                           
  apps:unlock                                    unlock an app so any team member can join                                                                                                               
- apps:unsuspend                                 (sudo) unsuspend an app                                                                                                                                 
- asc                                            list add-on service capabilities                                                                                                                        
- asc                                            list add-on service capabilities                                                                                                                        
- asc:create                                     create add-on service capabilities                                                                                                                      
- asc:create                                     create add-on service capabilities                                                                                                                      
- asc:destroy                                    destroy an add-on service capability                                                                                                                    
- asc:destroy                                    destroy an add-on service capability                                                                                                                    
  auth:2fa                                       check 2fa status                                                                                                                                        
  auth:2fa:disable                               disables 2fa on account                                                                                                                                 
  auth:login                                     login with your Heroku credentials                                                                                                                      
@@ -71,12 +52,6 @@ export default `\u001B[1m Command                                        Summary
  authorizations:rotate                          updates an OAuth authorization token                                                                                                                    
  authorizations:update                          updates an OAuth authorization                                                                                                                          
  autocomplete                                   display autocomplete installation instructions                                                                                                          
- blockeddomains                                 list blocked domains                                                                                                                                    
- blockeddomains:add                             block a domain                                                                                                                                          
- blockeddomains:remove                          unblock a domain                                                                                                                                        
- blockedips                                     list blocked ips                                                                                                                                        
- blockedips:add                                 start blocking the specified ip group                                                                                                                   
- blockedips:remove                              stop blocking the specified ip group                                                                                                                    
  buildpacks                                     display the buildpacks for an app                                                                                                                       
  buildpacks:add                                 add new app buildpack, inserting into list of buildpacks if necessary                                                                                   
  buildpacks:clear                               clear all buildpacks set on the app                                                                                                                     
@@ -85,12 +60,6 @@ export default `\u001B[1m Command                                        Summary
  buildpacks:search                              search for buildpacks                                                                                                                                   
  buildpacks:set                                                                                                                                                                                         
  buildpacks:versions                            list versions of a buildpack                                                                                                                            
- builds                                         list builds                                                                                                                                             
- builds:cache:purge                             purge the build cache for the specified app                                                                                                             
- builds:cancel                                  cancel a running build                                                                                                                                  
- builds:create                                  create build                                                                                                                                            
- builds:info                                    view detailed information for a build                                                                                                                   
- builds:output                                  show build output. Omit BUILD to get latest build.                                                                                                      
  certs                                          list SSL certificates for an app                                                                                                                        
  certs:add                                      add an SSL certificate to an app                                                                                                                        
  certs:auto                                     show ACM status for an app                                                                                                                              
@@ -98,7 +67,6 @@ export default `\u001B[1m Command                                        Summary
  certs:auto:enable                              enable ACM status for an app                                                                                                                            
  certs:auto:refresh                             refresh ACM for an app                                                                                                                                  
  certs:chain                                    print an ordered & complete chain for a certificate                                                                                                     
- certs:dump                                     (sudo) dump cert PEMs and available keys                                                                                                                
  certs:generate                                 generate a key and a CSR or self-signed certificate                                                                                                     
  certs:info                                     show certificate information for an SSL certificate                                                                                                     
  certs:key                                      print the correct key for the given certificate                                                                                                         
@@ -126,38 +94,9 @@ export default `\u001B[1m Command                                        Summary
  config                                         display the config vars for an app                                                                                                                      
  config:edit                                    interactively edit config vars                                                                                                                          
  config:get                                     display a single config value for an app                                                                                                                
- config:pull                                    pull env variables from heroku                                                                                                                          
- config:push                                    push env variables to heroku                                                                                                                            
  config:remove                                  unset one or more config vars                                                                                                                           
  config:set                                     set one or more config vars                                                                                                                             
  config:unset                                   unset one or more config vars                                                                                                                           
- connect-events:db:set                          Set database parameters                                                                                                                                 
- connect-events:info                            display connection information                                                                                                                          
- connect-events:pause                           Pause a connection                                                                                                                                      
- connect-events:recover                         Recover a connection                                                                                                                                    
- connect-events:resume                          Resume a connection                                                                                                                                     
- connect-events:sf:auth                         Authorize access to Salesforce for your connection                                                                                                      
- connect-events:state                           return the connection(s) state                                                                                                                          
- connect-events:stream:create                   Create a stream                                                                                                                                         
- connect-events:stream:delete                   Delete an existing stream                                                                                                                               
- connect-events:stream:state                    return a stream state                                                                                                                                   
- connect:db:set                                 Set database parameters                                                                                                                                 
- connect:diagnose                               Display diagnostic information about a connection                                                                                                       
- connect:export                                 Export configuration from a connection                                                                                                                  
- connect:import                                 Import configuration from an export file                                                                                                                
- connect:info                                   display connection information                                                                                                                          
- connect:mapping:delete                         Delete an existing mapping                                                                                                                              
- connect:mapping:diagnose                       Display diagnostic information about a mapping                                                                                                          
- connect:mapping:reload                         Reload a mapping\'s data from Salesforce                                                                                                                 
- connect:mapping:state                          return a mapping state                                                                                                                                  
- connect:mapping:write-errors                   Display the last 24 hours of write errors on this mapping                                                                                               
- connect:pause                                  Pause a connection                                                                                                                                      
- connect:recover                                Recover a connection                                                                                                                                    
- connect:restart                                Recover a connection                                                                                                                                    
- connect:resume                                 Resume a connection                                                                                                                                     
- connect:sf:auth                                Authorize access to Salesforce for your connection                                                                                                      
- connect:state                                  return the connection(s) state                                                                                                                          
- connect:write-errors                           Display the last 24 hours of write errors on this connection                                                                                            
  container                                      Use containers to build and deploy Heroku apps                                                                                                          
  container:login                                log in to Heroku Container Registry                                                                                                                     
  container:logout                               log out from Heroku Container Registry                                                                                                                  
@@ -181,9 +120,6 @@ export default `\u001B[1m Command                                        Summary
  dyno:restart                                   restart app dynos                                                                                                                                       
  dyno:scale                                     scale dyno quantity up or down                                                                                                                          
  dyno:stop                                      stop app dyno                                                                                                                                           
- enterprise:create                              (sudo) create an enterprise account                                                                                                                     
- enterprise:delete                              (sudo) delete an enterprise account                                                                                                                     
- evergreen:onboard                              (sudo) create an evergreen enterprise account with teams & sso                                                                                          
  features                                       list available app features                                                                                                                             
  features:disable                               disables an app feature                                                                                                                                 
  features:enable                                enables an app feature                                                                                                                                  
@@ -192,23 +128,15 @@ export default `\u001B[1m Command                                        Summary
  git:remote                                     adds a git remote to an app repo                                                                                                                        
  help                                           Display help for heroku.                                                                                                                                
  join                                           add yourself to a team app                                                                                                                              
- kernels:add                                    add a kernel                                                                                                                                            
  keys                                           display your SSH keys                                                                                                                                   
  keys:add                                       add an SSH key for a user                                                                                                                               
  keys:clear                                     remove all SSH keys for current user                                                                                                                    
  keys:remove                                    remove an SSH key from the user                                                                                                                         
- keys:search                                    (sudo) find keys by fingerprint or contents                                                                                                             
  labs                                           list experimental features                                                                                                                              
- labs:create                                    create a new labs feature                                                                                                                               
- labs:destroy                                   destroy a labs feature                                                                                                                                  
  labs:disable                                   disables an experimental feature                                                                                                                        
  labs:enable                                    enables an experimental feature                                                                                                                         
  labs:info                                      show feature info                                                                                                                                       
- labs:update                                    updates a labs feature metadata                                                                                                                         
  leave                                          remove yourself from a team app                                                                                                                         
- limits                                         list limits for a resource                                                                                                                              
- limits:add                                     add a limit to a resource                                                                                                                               
- limits:remove                                  remove a limit from a resource                                                                                                                          
  local                                          run heroku app locally                                                                                                                                  
  local:run                                      run a one-off command                                                                                                                                   
  local:start                                    run heroku app locally                                                                                                                                  
@@ -226,23 +154,7 @@ export default `\u001B[1m Command                                        Summary
  members:set                                    sets a members role in a team                                                                                                                           
  notifications                                  display notifications                                                                                                                                   
  orgs                                           list the teams that you are a member of                                                                                                                 
- orgs:addflag                                   (sudo) adds a flag to an organization                                                                                                                   
- orgs:create                                    (sudo) create an organization                                                                                                                           
- orgs:destroy                                   (sudo) destroy an organization                                                                                                                          
- orgs:flags                                     (sudo) list flags on an organization                                                                                                                    
- orgs:info                                      (sudo) list org information                                                                                                                             
- orgs:licenses                                  (sudo) list org license information                                                                                                                     
  orgs:open                                      open the team interface in a browser window                                                                                                             
- orgs:removeflag                                (sudo) removes a flag from an organization                                                                                                              
- orgs:rename                                    (sudo) rename an organization                                                                                                                           
- orgs:update                                    (sudo) updates the payment type for an org                                                                                                              
- permissions:create                             (sudo) create a sudo permissions                                                                                                                        
- permissions:grant                              (sudo) grant a sudo permission to a user                                                                                                                
- permissions:info                               (sudo) show permission details                                                                                                                          
- permissions:list                               (sudo) list sudo permissions                                                                                                                            
- permissions:revoke                             (sudo) revoke a sudo permission from a user                                                                                                             
- permissions:update                             (sudo) update an existing sudo permission by name                                                                                                       
- permissions:users                              (sudo) show all users with a specific permission                                                                                                        
  pg                                             show database information                                                                                                                               
  pg:backups                                     list database backups                                                                                                                                   
  pg:backups:cancel                              cancel an in-progress backup or restore (default newest)                                                                                                
@@ -360,7 +272,6 @@ export default `\u001B[1m Command                                        Summary
  run:detached                                   run a detached dyno, where output is sent to your logs                                                                                                  
  sessions                                       list your OAuth sessions                                                                                                                                
  sessions:destroy                               delete (logout) OAuth session by ID                                                                                                                     
- slugs:publish                                  cut a new release on the app pointing to the slug                                                                                                       
  spaces                                         list available spaces                                                                                                                                   
  spaces:create                                  create a new space                                                                                                                                      
  spaces:destroy                                 destroy a space                                                                                                                                         
@@ -382,10 +293,7 @@ export default `\u001B[1m Command                                        Summary
  spaces:vpn:wait                                wait for VPN Connection to be created                                                                                                                   
  spaces:wait                                    wait for a space to be created                                                                                                                          
  status                                         display current status of the Heroku platform                                                                                                           
- sudo                                           Prefix any CLI command with sudo to run it as a superuser.                                                                                              
  teams                                          list the teams that you are a member of                                                                                                                 
- teams:convert-to-enterprise                    (sudo) upgrade a Heroku Team to an Enterprise Team                                                                                                      
- teams:transfer                                 (sudo) transfer a team to an enterprise account                                                                                                         
  trusted-ips                                    list trusted IP ranges for a space                                                                                                                      
  trusted-ips:add                                Add one range to the list of trusted IP ranges                                                                                                          
  trusted-ips:remove                             Remove a range from the list of trusted IP ranges                                                                                                       
@@ -393,37 +301,6 @@ export default `\u001B[1m Command                                        Summary
  twofactor:disable                              disables 2fa on account                                                                                                                                 
  unlock                                         unlock an app so any team member can join                                                                                                               
  update                                         update the heroku CLI                                                                                                                                   
- user                                           get user information                                                                                                                                    
- user:account-takeover                          freezes user account and sends account takeover notification email (invalidates password, revokes API tokens, deletes email change requests)            
- user:assume                                    open the dashboard to assume the user\'s identity                                                                                                        
- user:bounces                                   (sudo) check if user is on email bounces list                                                                                                           
- user:complaints                                (sudo) check if user is on email spam complaints list                                                                                                   
- user:disablenewsletter                         (sudo) disable newsletters for a user                                                                                                                   
- user:enablenewsletter                          (sudo) enable newsletters for a user                                                                                                                    
- user:force-email-change                        (sudo) changes the email address of a user id                                                                                                           
- user:generate-temp-token                       (sudo) generates a VaaS temp token for users enrolled in VaaS MFA                                                                                       
- user:human                                     (sudo) makes a user not a robot                                                                                                                         
- user:info                                      get user information                                                                                                                                    
- user:invalidatepassword                        (sudo) invalidates an account password and all access tokens                                                                                            
- user:list                                      list user accounts                                                                                                                                      
- user:mailer                                    (sudo) get mailer events for user                                                                                                                       
- user:mfa-info                                  (sudo) fetches MFA info for User                                                                                                                        
- user:permissions                               (sudo) show all permissions for a user                                                                                                                  
- user:remove-complaint                          (sudo) remove user from email complaints list                                                                                                           
- user:removeunverifylock                        (sudo) removes a the unverify lock on an account                                                                                                        
- user:resetfreequota                            reset free quota                                                                                                                                        
- user:robot                                     (sudo) turns a user into a robot                                                                                                                        
- user:rotate-platform-credentials               (sudo) rotate credentials for platform user on the Heroku API. For usage instructions, consult internal playbooks.                                      
- user:sendresetpassword                         (sudo) sends a password reset email                                                                                                                     
- user:sendsignupemail                           (sudo) sends email with signup link so user can join Heroku                                                                                             
- user:suspend                                   suspend user account                                                                                                                                    
- user:sync-to-vault                             (sudo) sync user account with vault                                                                                                                     
- user:unbounce                                  (sudo) remove user from email bounces list                                                                                                              
- user:unfederate                                (sudo) unfederates a user account                                                                                                                       
- user:unsuspend                                 unsuspend user account                                                                                                                                  
- user:unverify                                  (sudo) unverifies a user account, removes all billing info                                                                                              
- user:vaas-info                                 (sudo) fetches VaaS info for User                                                                                                                       
- user:verify                                    (sudo) verifies a user account                                                                                                                          
  version                                                                                                                                                                                                
  webhooks                                       list webhooks on an app                                                                                                                                 
  webhooks:add                                   add a webhook to an app                                                                                                                                 

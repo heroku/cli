@@ -183,6 +183,7 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('global')
   })
 
+  // this test will fail when run locally depending on which plugins you have installed
   it('heroku commands', async () => {
     const {stdout} = await run('commands')
     expect(stdout).to.equal(commandsOutput)
