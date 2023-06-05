@@ -5,6 +5,8 @@ import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
+import commandsOutput from './commands-output'
+
 const globby = require('globby')
 
 const app = 'heroku-cli-ci-smoke-test-app'
@@ -179,6 +181,11 @@ describe('@acceptance smoke tests', () => {
   it('heroku authorizations', async () => {
     const {stdout} = await run('authorizations')
     expect(stdout).to.contain('global')
+  })
+
+  it('heroku commands', async () => {
+    const {stdout} = await run('commands')
+    expect(stdout).to.equal(commandsOutput)
   })
 
   it('asserts monorepo plugins are in core', async () => {
