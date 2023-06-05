@@ -171,4 +171,33 @@ describe('heroku-api', function () {
       api.done()
     })
   })
+
+  describe('#updateTestRun', function () {
+    it('updates test run', async function () {
+      const testRun = {id: 'uuid-999'}
+      const updatedTestRun = {test_run: {commit_message: 'updated message'}}
+
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+        .patch(`/test-runs/${testRun.id}`, {commit_message: 'updated message'})
+        .reply(200, [updatedTestRun])
+
+      const response = await herokuAPI.updateTestRun(new Heroku(), testRun.id, {commit_message: 'updated message'})
+      expect(response).to.deep.eq([updatedTestRun])
+      api.done()
+    })
+  })
+
+  describe('#createTestRun', function () {
+    it('creates test run', async function () {
+      const testRun = {id: 'uuid-999'}
+
+      const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+        .post('/test-runs', testRun)
+        .reply(200, [testRun])
+
+      const response = await herokuAPI.createTestRun(new Heroku(), testRun)
+      expect(response).to.deep.eq([testRun])
+      api.done()
+    })
+  })
 })

@@ -33,6 +33,7 @@
     "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
+    "nyc": "^15.1.0",
     "oclif": "3.8.1",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
@@ -58,7 +59,7 @@
     "postpublish": "rm oclif.manifest.json",
     "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "mocha -R tap",
+    "test": "nyc mocha --forbid-only",
     "version": "oclif readme && git add README.md"
   }
 }
