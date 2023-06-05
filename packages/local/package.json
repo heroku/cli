@@ -54,7 +54,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif manifest",
     "pretest": "tsc -p test --noEmit",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "posttest": "yarn lint",
     "test:acceptance": "node ./bin/bats-test-runner",
     "version": "oclif readme && git add README.md"

@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../lib/commands/clients/rotate')
+const cmd = require('../../../lib/commands/clients/rotate')
 
 describe('clients:rotate', () => {
   let api
