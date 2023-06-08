@@ -32,6 +32,7 @@ export default class PipelinesInfo extends Command {
   }]
 
   async run() {
+    // await this.config.runHook('performance_telemetry', {type: 'pipelines:info', config: this.config})
     const {args, flags} = await this.parse(PipelinesInfo)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
     const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)

@@ -227,6 +227,9 @@
         "./lib/hooks/init/version",
         "./lib/hooks/init/terms-of-service"
       ],
+      "performance_telemetry": [
+        "./lib/hooks/performance_telemetry/collection_and_post"
+      ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
       ],
