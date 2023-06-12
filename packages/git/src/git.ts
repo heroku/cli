@@ -22,7 +22,7 @@ export default class Git {
     }
   }
 
-  spawn(args: string[]) {
+  public spawn(args: string[]) {
     return new Promise((resolve, reject) => {
       debug('spawn: git %o', args)
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
