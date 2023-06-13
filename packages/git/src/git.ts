@@ -7,7 +7,7 @@ const execFile = promisify(cp.execFile)
 const debug = require('debug')('git')
 
 export default class Git {
-  async exec(args: string[]): Promise<string> {
+  public async exec(args: string[]): Promise<string> {
     debug('exec: git %o', args)
     try {
       const {stdout, stderr} = await execFile('git', args)
@@ -22,7 +22,7 @@ export default class Git {
     }
   }
 
-  spawn(args: string[]) {
+  public spawn(args: string[]) {
     return new Promise((resolve, reject) => {
       debug('spawn: git %o', args)
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
