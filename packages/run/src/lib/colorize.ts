@@ -43,8 +43,9 @@ const status = code => {
   if (code < 600) return c.red(code)
   return code
 }
+
 const ms = (s: string) => {
-  const ms = parseInt(s, 10)
+  const ms = Number.parseInt(s, 10)
   if (!ms) return s
   if (ms < 100) return c.greenBright(s)
   if (ms < 500) return c.green(s)
@@ -78,6 +79,7 @@ function colorizeRouter(body: string) {
       if (parts.length === 2) {
         return encodeColor(parts as [string, string])
       }
+
       return encodeColor([parts[0], parts.splice(1).join('=')])
     })
 
@@ -85,6 +87,7 @@ function colorizeRouter(body: string) {
       if (v === undefined) {
         return other(k)
       }
+
       return other(k + '=') + v
     }).join(' ')
   } catch (error) {
@@ -115,6 +118,7 @@ function colorizeRun(body: string) {
         c.green(starting[4] || ''),
       ].join('')
     }
+
     const stateChange = body.match(/^(State changed from )(\w+)( to )(\w+)$/)
     if (stateChange) {
       return [
@@ -124,6 +128,7 @@ function colorizeRun(body: string) {
         state(stateChange[4] || ''),
       ].join('')
     }
+
     const exited = body.match(/^(Process exited with status )(\d+)$/)
     if (exited) {
       return [
@@ -134,6 +139,7 @@ function colorizeRun(body: string) {
   } catch (error) {
     CliUx.ux.warn(error)
   }
+
   return body
 }
 
@@ -151,6 +157,7 @@ function colorizeWeb(body: string) {
         c.green(starting[4] || ''),
       ].join('')
     }
+
     const exited = body.match(/^(Process exited with status )(\d+)$/)
     if (exited) {
       return [
@@ -158,6 +165,7 @@ function colorizeWeb(body: string) {
         exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2]),
       ].join('')
     }
+
     const stateChange = body.match(/^(State changed from )(\w+)( to )(\w+)$/)
     if (stateChange) {
       return [
@@ -167,6 +175,7 @@ function colorizeWeb(body: string) {
         state(stateChange[4]),
       ].join('')
     }
+
     const apache = body.match(/^(\d+\.\d+\.\d+\.\d+ -[^-]*- \[[^\]]+] ")(\w+)( )([^ ]+)( HTTP\/\d+\.\d+" )(\d+)( .+$)/)
     if (apache) {
       const [, ...tokens] = apache
@@ -180,6 +189,7 @@ function colorizeWeb(body: string) {
         other(tokens[6]),
       ].join('')
     }
+
     const route = body.match(/^(.* ")(\w+)(.+)(HTTP\/\d+\.\d+" .*)$/)
     if (route) {
       return [
@@ -192,6 +202,7 @@ function colorizeWeb(body: string) {
   } catch (error) {
     CliUx.ux.warn(error)
   }
+
   return body
 }
 
@@ -206,6 +217,7 @@ function colorizeAPI(body: string) {
       c.green(build[2]),
     ].join('')
   }
+
   const deploy = body.match(/^(Deploy )([\w]+)( by user )(.+)$/)
   if (deploy) {
     return [
@@ -215,6 +227,7 @@ function colorizeAPI(body: string) {
       c.green(deploy[4]),
     ].join('')
   }
+
   const release = body.match(/^(Release )(v[\d]+)( created by user )(.+)$/)
   if (release) {
     return [
@@ -224,6 +237,7 @@ function colorizeAPI(body: string) {
       c.green(release[4]),
     ].join('')
   }
+
   const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
   if (starting) {
     return [
@@ -233,6 +247,7 @@ function colorizeAPI(body: string) {
       c.green(starting[4] || ''),
     ].join('')
   }
+
   return body
 }
 
@@ -240,6 +255,7 @@ function colorizeRedis(body: string) {
   if (body.match(/source=\w+ sample#/)) {
     body = dim(body)
   }
+
   return body
 }
 
@@ -252,9 +268,11 @@ function colorizePG(body: string) {
       c.cyan(create[3]),
     ].join('')
   }
+
   if (body.match(/source=\w+ sample#/)) {
     body = dim(body)
   }
+
   return body
 }
 
@@ -286,5 +304,6 @@ export default function colorize(line: string) {
   case 'postgres':
     body = colorizePG(body)
   }
+
   return getColorForIdentifier(identifier)(header) + ' ' + body
 }
