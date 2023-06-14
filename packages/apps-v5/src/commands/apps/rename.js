@@ -43,7 +43,7 @@ let cmd = {
   description: 'rename an app',
   help: 'This will locally update the git remote if it is set to the old app.',
   examples: `$ heroku apps:rename --app oldname newname
-https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
 Git remote heroku updated`,
   needsAuth: true,
   needsApp: true,
