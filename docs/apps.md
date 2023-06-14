@@ -273,9 +273,9 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku open -a myapp
-  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com
+  # opens https://myapp.herokuapp.com
   $ heroku open -a myapp /foo
-  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com/foo
+  # opens https://myapp.herokuapp.com/foo
 ```
 
 ## `heroku apps:rename NEWNAME`

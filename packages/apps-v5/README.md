@@ -13,7 +13,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (--version)
-@heroku-cli/plugin-apps-v5/8.1.7 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-apps-v5/8.1.8 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -273,9 +273,9 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku open -a myapp
-  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com
+  # opens https://myapp.herokuapp.com
   $ heroku open -a myapp /foo
-  # opens https://myapp-xxxxxxxxxxxx.herokuapp.com/foo
+  # opens https://myapp.herokuapp.com/foo
 ```
 
 ## `heroku apps:rename NEWNAME`
