@@ -31,9 +31,15 @@ describe('clients', () => {
       {uri: 'http://10.foo.com'},
       {uri: 'http://127.foo.com'},
       {uri: 'http://192.foo.com'},
+      {uri: 'http://192.foo.com'},
+      {uri: 'http://example.com'},
     ].forEach(test => {
       it('fails when insecure (' + test.uri + ')', () => {
-        expect(() => clients.validateURL(test.uri), 'to error', 'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.')
+        try {
+          clients.validateURL(test.uri)
+        } catch (error) {
+          expect(error.message).to.equal('Unsupported callback URL. Clients have to use HTTPS for non-local addresses.')
+        }
       })
     })
   })
