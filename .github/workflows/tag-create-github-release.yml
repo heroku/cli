@@ -8,13 +8,15 @@ jobs:
   tag-and-create-gh-release:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
           # fetch entire repo, not just this branch. Tags & commits are needed for release notes
           fetch-depth: 0
+      - name: Install SSH Client 🔑
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_RELEASE_PRIVATE_KEY }}
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -31,14 +33,10 @@ jobs:
         # the script below will fail if run from a separate shell file
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
-          # todo: remove echo for debugging
-          echo $PACKAGE_VERSION
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
           FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-' | grep -v $TAG_NAME)
           LAST_PUBLISHED_TAG=$(echo "${FILTERED_TAGS}" | head -n1)
-          # todo: remove echo for debugging
-          echo $LAST_PUBLISHED_TAG
           RELEASE_NOTES=$(git log --graph --format="%h %s" "${LAST_PUBLISHED_TAG}..${TAG_NAME}~1")
 
           gh release create "${TAG_NAME}" --title="${TAG_NAME}" --notes="${RELEASE_NOTES}"
