@@ -2,9 +2,12 @@ import {expect, test} from '@oclif/test'
 
 import * as foreman from '../../../../src/fork-foreman'
 import * as fs from 'fs'
-const sinon = require('sinon')
+import * as path from 'path'
 
+const sinon = require('sinon')
 let existsSyncSpy: any
+const jsExtensionPath = path.join('local', 'src', 'run-foreman.js')
+const tsExtensionPath = path.join('local', 'src', 'run-foreman.ts')
 
 describe('local:version', () => {
   test
@@ -27,8 +30,8 @@ describe('local:version', () => {
       // correct arguments are passed
       const withJsExtension = existsSyncSpy.getCall(31).args[0]
       const withTsExtension = existsSyncSpy.getCall(32).args[0]
-      expect(withJsExtension).to.include('local/src/run-foreman.js')
-      expect(withTsExtension).to.include('local/src/run-foreman.ts')
+      expect(withJsExtension).to.include(jsExtensionPath)
+      expect(withTsExtension).to.include(tsExtensionPath)
     })
 
   test
