@@ -5,7 +5,6 @@ import * as fs from 'fs'
 const sinon = require('sinon')
 
 let existsSyncSpy: any
-let existsSyncStub: any
 
 describe('local:version', () => {
   test
@@ -26,37 +25,11 @@ describe('local:version', () => {
       // existsSync is called multiple times in the stack before
       // the expected arguments are passed. This checks that the
       // correct arguments are passed
-      const withJsExtension = existsSyncSpy.getCall(11).args[0]
-      const withTsExtension = existsSyncSpy.getCall(12).args[0]
+      const withJsExtension = existsSyncSpy.getCall(31).args[0]
+      const withTsExtension = existsSyncSpy.getCall(32).args[0]
       expect(withJsExtension).to.include('local/src/run-foreman.js')
       expect(withTsExtension).to.include('local/src/run-foreman.ts')
     })
-
-  // test
-  //   // .stderr()
-  //   // .do(() => {
-  //   //   existsSyncStub = sinon.stub(fs, 'existsSync').returns(false)
-  //   // })
-  //   .stub(fs, 'existsSync', () => false)
-  //   .command(['local:version'])
-  //   .catch(error => {
-  //     expect(error.message).to.equal('Path to file not found')
-  //   })
-  //   .it('is errors with no file path found')
-
-  // test
-  //   .do(() => {
-  //     existsSyncStub = sinon.stub(fs, 'existsSync')
-  //   })
-  //   .command(['local:version'])
-  //   .it('selects correct extensions', () => {
-  //     // existsSync is called multiple times in the stack before
-  //     // the expected arguments are passed. This checks that the
-  //     // correct arguments are passed
-
-  //     existsSyncStub.onCall(11).return(false)
-  //     existsSyncStub.onCall(12).return(false)
-  //   })
 
   test
     .command(['local:version', 'extra'])

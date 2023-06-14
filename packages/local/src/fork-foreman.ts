@@ -10,22 +10,11 @@ function getForemanScriptPath() {
   const withJsExtension = path.join(__dirname, file + '.js')
   const withTsExtension = path.join(__dirname, file + '.ts')
 
-  console.log('withJsExtension:', withJsExtension)
-  console.log('withTsExtension:', withTsExtension)
-
-  const hasJsExtension = fs.existsSync(withJsExtension)
-  const hasTsExtension = fs.existsSync(withTsExtension)
-
-  console.log('hasJsExtension', hasJsExtension)
-  console.log('hasTsExtension', hasTsExtension)
-
   if (fs.existsSync(withJsExtension)) {
-    // console.log('withJsExtension:', withJsExtension)
     return withJsExtension
   }
 
   if (fs.existsSync(withTsExtension)) {
-    // console.log('withTsExtension:', withTsExtension)
     return withTsExtension
   }
 
