@@ -40,7 +40,7 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains
   === example Heroku Domain
-  example-xxxxxxxxxxxx.herokuapp.com
+  example.herokuapp.com
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
