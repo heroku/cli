@@ -8,6 +8,8 @@ jobs:
   tag-and-create-gh-release:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
         with:
