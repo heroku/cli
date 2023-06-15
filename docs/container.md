@@ -65,7 +65,7 @@ USAGE
   $ heroku container:pull -a <value> [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -88,7 +88,7 @@ USAGE
 
 FLAGS
   -R, --recursive         pushes Dockerfile.<process> found in current and subdirectories
-  -a, --app=<value>       (required) app to run command against
+  -a, --app=<value>       (required) [default: myapp] app to run command against
   -r, --remote=<value>    git remote of app to use
   -v, --verbose
   --arg=<value>           set build-time variables
@@ -121,7 +121,7 @@ USAGE
   $ heroku container:release -a <value> [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -142,7 +142,7 @@ USAGE
   $ heroku container:rm -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -162,7 +162,7 @@ USAGE
   $ heroku container:run -a <value> [-p <value>] [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -p, --port=<value>    port the app will run on
   -r, --remote=<value>  git remote of app to use
   -v, --verbose

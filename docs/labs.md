@@ -17,7 +17,7 @@ USAGE
   $ heroku labs [--json] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                display as json
 
@@ -34,7 +34,7 @@ USAGE
   $ heroku labs:disable [FEATURE] [-a <value>] [-r <value>] [--confirm <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --confirm=<value>
 
@@ -51,7 +51,7 @@ USAGE
   $ heroku labs:enable FEATURE [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -67,7 +67,7 @@ USAGE
   $ heroku labs:info FEATURE [--json] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                display as json
 

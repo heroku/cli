@@ -103,7 +103,7 @@ USAGE
   $ heroku apps:destroy [APP] [-c <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      app to run command against
+  -a, --app=<value>      [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -121,7 +121,7 @@ USAGE
   $ heroku apps:errors -a <value> [--json] [--hours <value>] [--router] [--dyno] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --dyno                show only dyno errors
   --hours=<value>       number of hours to look back (default 24)
@@ -156,7 +156,7 @@ USAGE
   $ heroku apps:favorites:add -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -172,7 +172,7 @@ USAGE
   $ heroku apps:favorites:remove -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -188,7 +188,7 @@ USAGE
   $ heroku apps:info [APP] [-s] [-j] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -j, --json
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output more shell friendly key/value pairs
@@ -216,7 +216,7 @@ USAGE
   $ heroku apps:join -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -232,7 +232,7 @@ USAGE
   $ heroku apps:leave -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -248,7 +248,7 @@ USAGE
   $ heroku apps:lock -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -264,7 +264,7 @@ USAGE
   $ heroku apps:open [PATH] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -287,7 +287,7 @@ USAGE
   $ heroku apps:rename NEWNAME -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -309,7 +309,7 @@ USAGE
   $ heroku apps:stacks -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -325,7 +325,7 @@ USAGE
   $ heroku apps:stacks:set STACK -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -351,7 +351,7 @@ ARGUMENTS
   RECIPIENT  user or team to transfer applications to
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -l, --locked          lock the app upon transfer
   -r, --remote=<value>  git remote of app to use
   --bulk                transfer applications in bulk
@@ -378,7 +378,7 @@ USAGE
   $ heroku apps:unlock -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION

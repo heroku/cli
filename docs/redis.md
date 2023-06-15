@@ -25,7 +25,7 @@ USAGE
   $ heroku redis [DATABASE] -a <value> [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                format output as JSON
 
@@ -42,7 +42,7 @@ USAGE
   $ heroku redis:cli [DATABASE] -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -59,7 +59,7 @@ USAGE
   $ heroku redis:credentials [DATABASE] -a <value> [--reset] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --reset               reset credentials
 
@@ -76,7 +76,7 @@ USAGE
   $ heroku redis:info [DATABASE] -a <value> [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                format output as JSON
 
@@ -93,7 +93,7 @@ USAGE
   $ heroku redis:keyspace-notifications [DATABASE] -c <value> -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -c, --config=<value>  (required) set keyspace notifications configuration
   -r, --remote=<value>  git remote of app to use
 
@@ -126,7 +126,7 @@ USAGE
   $ heroku redis:maintenance [DATABASE] -a <value> [-w <value>] [--run] [-f] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -f, --force           start maintenance without entering application maintenance mode
   -r, --remote=<value>  git remote of app to use
   -w, --window=<value>  set weekly UTC maintenance window
@@ -146,7 +146,7 @@ USAGE
   $ heroku redis:maxmemory [DATABASE] -p <value> -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -p, --policy=<value>  (required) set policy name
   -r, --remote=<value>  git remote of app to use
 
@@ -173,7 +173,7 @@ USAGE
   $ heroku redis:promote DATABASE -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -189,7 +189,7 @@ USAGE
   $ heroku redis:stats-reset [DATABASE] -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -206,7 +206,7 @@ USAGE
   $ heroku redis:timeout [DATABASE] -a <value> [-s <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -r, --remote=<value>   git remote of app to use
   -s, --seconds=<value>  set timeout value
 
@@ -225,7 +225,7 @@ USAGE
   $ heroku redis:upgrade [DATABASE] -a <value> [-c <value>] [-v <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>
@@ -243,7 +243,7 @@ USAGE
   $ heroku redis:wait [DATABASE] -a <value> [--wait-interval <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
+  -a, --app=<value>        (required) [default: myapp] app to run command against
   -r, --remote=<value>     git remote of app to use
   --wait-interval=<value>  how frequently to poll in seconds
 

@@ -16,7 +16,7 @@ USAGE
     [--no-wait-for-ci]
 
 FLAGS
-  -a, --app=<value>       parent app used by review apps
+  -a, --app=<value>       [default: myapp] parent app used by review apps
   -p, --pipeline=<value>  (required) name of pipeline
   -r, --remote=<value>    git remote of app to use
   --no-autodeploy         disable autodeployments
@@ -39,7 +39,7 @@ USAGE
   $ heroku reviewapps:enable -p <value> [-a <value>] [-r <value>] [--autodeploy] [--autodestroy] [--wait-for-ci]
 
 FLAGS
-  -a, --app=<value>       parent app used by review apps
+  -a, --app=<value>       [default: myapp] parent app used by review apps
   -p, --pipeline=<value>  (required) name of pipeline
   -r, --remote=<value>    git remote of app to use
   --autodeploy            autodeploy the review app

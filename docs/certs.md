@@ -25,7 +25,7 @@ USAGE
   $ heroku certs -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -41,7 +41,7 @@ USAGE
   $ heroku certs:add CRT KEY -a <value> [--bypass] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --bypass              bypass the trust chain completion step
 
@@ -64,7 +64,7 @@ USAGE
   $ heroku certs:auto -a <value> [--wait] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --wait                watch ACM status and display the status when complete
 
@@ -81,7 +81,7 @@ USAGE
   $ heroku certs:auto:disable -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -97,7 +97,7 @@ USAGE
   $ heroku certs:auto:enable -a <value> [--wait] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --wait                watch ACM status and exit when complete
 
@@ -114,7 +114,7 @@ USAGE
   $ heroku certs:auto:refresh -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -130,7 +130,7 @@ USAGE
   $ heroku certs:chain -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -147,7 +147,7 @@ USAGE
     [--area <value>] [--city <value>] [--subject <value>] [--now] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --area=<value>        sub-country area (state, province, etc.) of owner
   --city=<value>        city of owner
@@ -178,7 +178,7 @@ USAGE
   $ heroku certs:info -a <value> [--name <value>] [--endpoint <value>] [--show-domains] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --endpoint=<value>    endpoint to check info on
   --name=<value>        name to check info on
@@ -197,7 +197,7 @@ USAGE
   $ heroku certs:key -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -218,7 +218,7 @@ USAGE
   $ heroku certs:remove -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --endpoint=<value>    endpoint to remove
   --name=<value>        name to remove
@@ -236,7 +236,7 @@ USAGE
   $ heroku certs:update CRT KEY -a <value> [--bypass] [--name <value>] [--endpoint <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --bypass              bypass the trust chain completion step
   --endpoint=<value>    endpoint to update

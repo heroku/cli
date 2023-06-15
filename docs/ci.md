@@ -46,7 +46,7 @@ USAGE
   $ heroku ci:config [-s] [--json] [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
   -s, --shell             output config vars in shell format
@@ -68,7 +68,7 @@ USAGE
   $ heroku ci:config:get KEY [-s] [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
   -s, --shell             output config var in shell format
@@ -90,7 +90,7 @@ USAGE
   $ heroku ci:config:set [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -113,7 +113,7 @@ USAGE
   $ heroku ci:config:unset [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -134,7 +134,7 @@ USAGE
   $ heroku ci:debug [--no-setup] [-p <value>] [--no-cache] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
   --no-cache              start test run with an empty cache
@@ -220,7 +220,7 @@ USAGE
   $ heroku ci:open [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
+  -a, --app=<value>       [default: myapp] app to run command against
   -p, --pipeline=<value>  pipeline
   -r, --remote=<value>    git remote of app to use
 

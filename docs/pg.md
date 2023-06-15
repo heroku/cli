@@ -69,7 +69,7 @@ USAGE
   $ heroku pg [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -85,7 +85,7 @@ USAGE
   $ heroku pg:backups -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -101,7 +101,7 @@ USAGE
   $ heroku pg:backups:cancel [BACKUP_ID] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -117,7 +117,7 @@ USAGE
   $ heroku pg:backups:capture [DATABASE] -a <value> [--wait-interval <value>] [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
+  -a, --app=<value>        (required) [default: myapp] app to run command against
   -r, --remote=<value>     git remote of app to use
   -v, --verbose
   --wait-interval=<value>
@@ -135,7 +135,7 @@ USAGE
   $ heroku pg:backups:delete BACKUP_ID -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -152,7 +152,7 @@ USAGE
   $ heroku pg:backups:download [BACKUP_ID] -a <value> [-o <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -o, --output=<value>  location to download to. Defaults to latest.dump
   -r, --remote=<value>  git remote of app to use
 
@@ -169,7 +169,7 @@ USAGE
   $ heroku pg:backups:info [BACKUP_ID] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -186,7 +186,7 @@ USAGE
     [-r <value>]
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>         (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -e, --extensions=<value>  comma-separated list of extensions to pre-install in the public schema
   -r, --remote=<value>      git remote of app to use
@@ -207,7 +207,7 @@ USAGE
   $ heroku pg:backups:schedule [DATABASE] --at <value> -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --at=<value>          (required) at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00
                         [TIMEZONE]'
@@ -225,7 +225,7 @@ USAGE
   $ heroku pg:backups:schedules -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -241,7 +241,7 @@ USAGE
   $ heroku pg:backups:unschedule [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -257,7 +257,7 @@ USAGE
   $ heroku pg:backups:url [BACKUP_ID] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -273,7 +273,7 @@ USAGE
   $ heroku pg:bloat [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -289,7 +289,7 @@ USAGE
   $ heroku pg:blocking [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -305,7 +305,7 @@ USAGE
   $ heroku pg:connection-pooling:attach [DATABASE] -a <value> [--as <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --as=<value>          name for add-on attachment
 
@@ -326,7 +326,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
+  -a, --app=<value>        (required) [default: myapp] app to run command against
   -r, --remote=<value>     git remote of app to use
   --confirm=<value>
   --verbose
@@ -346,7 +346,7 @@ USAGE
   $ heroku pg:credentials [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -362,7 +362,7 @@ USAGE
   $ heroku pg:credentials:create [DATABASE] -n <value> -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -n, --name=<value>    (required) name of the new credential within the database
   -r, --remote=<value>  git remote of app to use
 
@@ -382,7 +382,7 @@ USAGE
   $ heroku pg:credentials:destroy [DATABASE] -n <value> -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -n, --name=<value>     (required) unique identifier for the credential
   -r, --remote=<value>   git remote of app to use
@@ -403,7 +403,7 @@ USAGE
   $ heroku pg:credentials:repair-default [DATABASE] -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -423,7 +423,7 @@ USAGE
   $ heroku pg:credentials:rotate [DATABASE] -a <value> [-n <value>] [--all] [-c <value>] [--force] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -n, --name=<value>     which credential to rotate (default credentials if not specified)
   -r, --remote=<value>   git remote of app to use
@@ -443,7 +443,7 @@ USAGE
   $ heroku pg:credentials:url [DATABASE] -a <value> [-n <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -n, --name=<value>    which credential to show (default credentials if not specified)
   -r, --remote=<value>  git remote of app to use
 
@@ -460,7 +460,7 @@ USAGE
   $ heroku pg:diagnose [DATABASE|REPORT_ID] -a <value> [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                format output as JSON
 
@@ -480,7 +480,7 @@ USAGE
   $ heroku pg:info [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -496,7 +496,7 @@ USAGE
   $ heroku pg:kill PID [DATABASE] -a <value> [-f] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -513,7 +513,7 @@ USAGE
   $ heroku pg:killall [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -529,7 +529,7 @@ USAGE
   $ heroku pg:links [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -545,7 +545,7 @@ USAGE
   $ heroku pg:links:create REMOTE DATABASE -a <value> [--as <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --as=<value>          name of link to create
 
@@ -565,7 +565,7 @@ USAGE
   $ heroku pg:links:destroy DATABASE LINK -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -585,7 +585,7 @@ USAGE
   $ heroku pg:locks [DATABASE] -a <value> [-t] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -t, --truncate        truncates queries to 40 charaters
 
@@ -602,7 +602,7 @@ USAGE
   $ heroku pg:maintenance [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -618,7 +618,7 @@ USAGE
   $ heroku pg:maintenance:run [DATABASE] -a <value> [-f] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -635,7 +635,7 @@ USAGE
   $ heroku pg:maintenance:window DATABASE WINDOW -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -656,7 +656,7 @@ USAGE
   $ heroku pg:outliers [DATABASE] -a <value> [--reset] [-t] [-n <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -n, --num=<value>     the number of queries to display (default: 10)
   -r, --remote=<value>  git remote of app to use
   -t, --truncate        truncate queries to 40 characters
@@ -675,7 +675,7 @@ USAGE
   $ heroku pg:promote DATABASE -a <value> [-f] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -692,7 +692,7 @@ USAGE
   $ heroku pg:ps [DATABASE] -a <value> [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -709,7 +709,7 @@ USAGE
   $ heroku pg:psql [DATABASE] -a <value> [-c <value>] [-f <value>] [--credential <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --command=<value>  SQL command to run
   -f, --file=<value>     SQL file to run
   -r, --remote=<value>   git remote of app to use
@@ -728,7 +728,7 @@ USAGE
   $ heroku pg:pull SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>             (required) app to run command against
+  -a, --app=<value>             (required) [default: myapp] app to run command against
   -r, --remote=<value>          git remote of app to use
   --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -763,7 +763,7 @@ USAGE
   $ heroku pg:push SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>             (required) app to run command against
+  -a, --app=<value>             (required) [default: myapp] app to run command against
   -r, --remote=<value>          git remote of app to use
   --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -794,7 +794,7 @@ USAGE
   $ heroku pg:reset [DATABASE] -a <value> [-e <value>] [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>         (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -e, --extensions=<value>  comma-separated list of extensions to pre-install in the public schema
   -r, --remote=<value>      git remote of app to use
@@ -812,7 +812,7 @@ USAGE
   $ heroku pg:settings [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -828,7 +828,7 @@ USAGE
   $ heroku pg:settings:auto-explain [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -846,7 +846,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -866,7 +866,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -884,7 +884,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -903,7 +903,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -919,7 +919,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -936,7 +936,7 @@ USAGE
   $ heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -953,7 +953,7 @@ USAGE
   $ heroku pg:settings:log-lock-waits [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -974,7 +974,7 @@ USAGE
   $ heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -993,7 +993,7 @@ USAGE
   $ heroku pg:settings:log-statement [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1015,7 +1015,7 @@ USAGE
   $ heroku pg:settings:track-functions [VALUE] [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1036,7 +1036,7 @@ USAGE
   $ heroku pg:unfollow DATABASE -a <value> [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -1053,7 +1053,7 @@ USAGE
   $ heroku pg:upgrade [DATABASE] -a <value> [-c <value>] [-v <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: myapp] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  PostgreSQL version to upgrade to
@@ -1072,7 +1072,7 @@ USAGE
   $ heroku pg:vacuum-stats [DATABASE] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1088,7 +1088,7 @@ USAGE
   $ heroku pg:wait [DATABASE] -a <value> [--wait-interval <value>] [--no-notify] [-r <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
+  -a, --app=<value>        (required) [default: myapp] app to run command against
   -r, --remote=<value>     git remote of app to use
   --no-notify              do not show OS notification
   --wait-interval=<value>  how frequently to poll in seconds (to avoid rate limiting)

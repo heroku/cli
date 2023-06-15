@@ -16,7 +16,7 @@ USAGE
     [--no-notify]
 
 FLAGS
-  -a, --app=<value>     (required) parent app used by review apps
+  -a, --app=<value>     (required) [default: myapp] parent app used by review apps
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
@@ -44,7 +44,7 @@ USAGE
   $ heroku run:detached -a <value> [-r <value>] [-e <value>] [-s <value>] [-t] [--type <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size

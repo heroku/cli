@@ -27,7 +27,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                display as json
 
@@ -55,7 +55,7 @@ USAGE
   $ heroku ps:autoscale:disable -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -71,7 +71,7 @@ USAGE
   $ heroku ps:autoscale:enable -a <value> --min <value> --max <value> [-r <value>] [--p95 <value>] [--notifications]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --max=<value>         (required) maximum number of dynos
   --min=<value>         (required) minimum number of dynos
@@ -159,7 +159,7 @@ USAGE
   $ heroku ps:kill DYNO -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -183,7 +183,7 @@ USAGE
   $ heroku ps:resize -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -206,7 +206,7 @@ USAGE
   $ heroku ps:restart [DYNO] -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -231,7 +231,7 @@ USAGE
   $ heroku ps:scale -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -280,7 +280,7 @@ USAGE
   $ heroku ps:stop DYNO -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -304,7 +304,7 @@ USAGE
   $ heroku ps:type -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -328,7 +328,7 @@ USAGE
 
 FLAGS
   -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: myapp] app to run command against
   -r, --remote=<value>         git remote of app to use
   -t, --type=<value>           wait for one specific dyno type
   -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)

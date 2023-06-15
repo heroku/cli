@@ -21,7 +21,7 @@ USAGE
     <value>] [--output csv|json|yaml |  | [--csv | ]] [--no-header | ]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
@@ -57,7 +57,7 @@ USAGE
   $ heroku domains:add HOSTNAME -a <value> [-h] [-c <value>] [-j] [--wait] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -c, --cert=<value>    the name of the SSL cert you want to use for this domain
   -h, --help            Show CLI help.
   -j, --json            output in json format
@@ -80,7 +80,7 @@ USAGE
   $ heroku domains:clear -a <value> [-h] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
@@ -100,7 +100,7 @@ USAGE
   $ heroku domains:info HOSTNAME -a <value> [-h] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
@@ -120,7 +120,7 @@ USAGE
   $ heroku domains:remove HOSTNAME -a <value> [-h] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
@@ -140,7 +140,7 @@ USAGE
   $ heroku domains:update [HOSTNAME] -a <value> --cert <value> [-h] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
   --cert=<value>        (required) the name or id of the certificate you want to use for this domain
@@ -161,7 +161,7 @@ USAGE
   $ heroku domains:wait [HOSTNAME] -a <value> [-h] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 

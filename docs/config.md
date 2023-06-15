@@ -19,7 +19,7 @@ USAGE
   $ heroku config -a <value> [-r <value>] [-s] [-j]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -j, --json            output config vars in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
@@ -40,7 +40,7 @@ ARGUMENTS
   KEY  edit a single key
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -71,7 +71,7 @@ USAGE
   $ heroku config:get KEY...
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
 
@@ -92,7 +92,7 @@ USAGE
   $ heroku config:remove -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -118,7 +118,7 @@ USAGE
   $ heroku config:set -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -144,7 +144,7 @@ USAGE
   $ heroku config:unset -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION

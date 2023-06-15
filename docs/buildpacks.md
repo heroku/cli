@@ -21,7 +21,7 @@ USAGE
   $ heroku buildpacks -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -40,7 +40,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -r, --remote=<value>  git remote of app to use
 
@@ -57,7 +57,7 @@ USAGE
   $ heroku buildpacks:clear -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -91,7 +91,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -i, --index=<value>   the 1-based index of the URL to remove from the list of URLs
   -r, --remote=<value>  git remote of app to use
 
@@ -129,7 +129,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -r, --remote=<value>  git remote of app to use
 ```

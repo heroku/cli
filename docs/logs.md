@@ -14,7 +14,7 @@ USAGE
   $ heroku logs -a <value> [-r <value>] [-n <value>] [-d <value>] [-s <value>] [-t] [--force-colors]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -d, --dyno=<value>    only show output from this dyno type (such as "web" or "worker")
   -n, --num=<value>     number of lines to display
   -r, --remote=<value>  git remote of app to use

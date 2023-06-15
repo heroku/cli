@@ -28,7 +28,7 @@ USAGE
 
 FLAGS
   -A, --all             show add-ons and attachments for all accessible apps
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                return add-ons in json format
 
@@ -55,7 +55,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --as=<value>          name for add-on attachment
   --confirm=<value>     overwrite existing add-on attachment with same name
@@ -75,7 +75,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --as=<value>          name for the initial add-on attachment
   --confirm=<value>     overwrite existing config vars or existing add-on attachments
@@ -95,7 +95,7 @@ USAGE
   $ heroku addons:destroy [ADDON]... [flags]
 
 FLAGS
-  -a, --app=<value>      app to run command against
+  -a, --app=<value>      [default: myapp] app to run command against
   -c, --confirm=<value>
   -f, --force            allow destruction even if connected to other apps
   -r, --remote=<value>   git remote of app to use
@@ -113,7 +113,7 @@ USAGE
   $ heroku addons:detach ATTACHMENT_NAME -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -129,7 +129,7 @@ USAGE
   $ heroku addons:docs ADDON [--show-url] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --show-url            show URL, do not open browser
 
@@ -146,7 +146,7 @@ USAGE
   $ heroku addons:downgrade ADDON [PLAN] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -174,7 +174,7 @@ USAGE
   $ heroku addons:info ADDON
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -190,7 +190,7 @@ USAGE
   $ heroku addons:open ADDON [--show-url] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --show-url            show URL, do not open browser
 
@@ -222,7 +222,7 @@ USAGE
   $ heroku addons:rename ADDON NEW_NAME
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -253,7 +253,7 @@ USAGE
   $ heroku addons:upgrade ADDON [PLAN] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -281,7 +281,7 @@ USAGE
   $ heroku addons:wait ADDON
 
 FLAGS
-  -a, --app=<value>        app to run command against
+  -a, --app=<value>        [default: myapp] app to run command against
   -r, --remote=<value>     git remote of app to use
   --wait-interval=<value>  how frequently to poll in seconds
 

@@ -22,7 +22,7 @@ USAGE
   $ heroku webhooks [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -41,7 +41,7 @@ USAGE
   $ heroku webhooks:add -i <value> -l <value> -u <value> [-a <value>] [-r <value>] [-s <value>] [-t <value>]
 
 FLAGS
-  -a, --app=<value>            app to run command against
+  -a, --app=<value>            [default: myapp] app to run command against
   -i, --include=<value>        (required) comma delimited event types your server will receive
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use
@@ -65,7 +65,7 @@ USAGE
   $ heroku webhooks:deliveries [-a <value>] [-r <value>] [-s <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --status=<value>  filter deliveries by status
 
@@ -85,7 +85,7 @@ USAGE
   $ heroku webhooks:deliveries:info ID [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -104,7 +104,7 @@ USAGE
   $ heroku webhooks:events [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -123,7 +123,7 @@ USAGE
   $ heroku webhooks:events:info ID [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -142,7 +142,7 @@ USAGE
   $ heroku webhooks:info ID [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -164,7 +164,7 @@ ARGUMENTS
   ID  id of webhook to remove
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -183,7 +183,7 @@ USAGE
   $ heroku webhooks:update ID -i <value> -l <value> -u <value> [-a <value>] [-r <value>] [-s <value>] [-t <value>]
 
 FLAGS
-  -a, --app=<value>            app to run command against
+  -a, --app=<value>            [default: myapp] app to run command against
   -i, --include=<value>        (required) comma delimited event types your server will receive
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use

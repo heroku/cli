@@ -17,7 +17,7 @@ USAGE
   $ heroku access -a <value> [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
   --json                output in json format
 
@@ -34,7 +34,7 @@ USAGE
   $ heroku access:add EMAIL -a <value> [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>          (required) app to run command against
+  -a, --app=<value>          (required) [default: myapp] app to run command against
   -p, --permissions=<value>  list of permissions comma separated
   -r, --remote=<value>       git remote of app to use
 
@@ -57,7 +57,7 @@ USAGE
   $ heroku access:remove EMAIL -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: myapp] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -77,7 +77,7 @@ USAGE
   $ heroku access:update EMAIL -a <value> [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>          (required) app to run command against
+  -a, --app=<value>          (required) [default: myapp] app to run command against
   -p, --permissions=<value>  comma-delimited list of permissions to update (deploy,manage,operate)
   -r, --remote=<value>       git remote of app to use
 
