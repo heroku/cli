@@ -208,9 +208,10 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
   })
 
   describe('analytics additional methods', () => {
+    let user: any
     beforeEach(() => {
       process.env.HEROKU_API_KEY = 'testHerokuAPIKey'
-      netrc.machines[vars.apiHost].login = 'user@test.com'
+      user = netrc.machines[vars.apiHost].login
     })
 
     it('retreives user heroku API key', async () => {
@@ -226,7 +227,7 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
       let userResult = analytics.user
 
       expect(usingHerokuAPIKeyResult).to.equal(true)
-      expect(netrcLoginResult).to.equal('user@test.com')
+      expect(netrcLoginResult).to.equal(user)
 
       // The result will be undefined since
       // the method being accessed returns
@@ -236,7 +237,7 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
       // Remove heroku API env var
       delete process.env.HEROKU_API_KEY
       userResult = analytics.user
-      expect(userResult).to.equal('user@test.com')
+      expect(userResult).to.equal(user)
     })
   })
 })
