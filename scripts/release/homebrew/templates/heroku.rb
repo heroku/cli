@@ -7,6 +7,8 @@ class Heroku < Formula
   homepage "https://cli.heroku.com"
   url "__CLI_DOWNLOAD_URL__"
   sha256 "__CLI_SHA256__"
+  version "__CLI_VERSION__"
+  version_scheme 1
 
   on_macos do
     if Hardware::CPU.arm?
