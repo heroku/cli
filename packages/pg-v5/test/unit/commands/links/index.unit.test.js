@@ -50,4 +50,17 @@ created_at: 100
 remote:     REDIS (redis-001)
 `))
   })
+
+  it('shows links when args are present', () => {
+    pg.get('/client/v11/databases/1/links').reply(200, [
+      {name: 'redis-link-1', created_at: '100', remote: {attachment_name: 'REDIS', name: 'redis-001'}},
+    ])
+    return cmd.run({app: 'myapp', args: {database: 'test-database'}, flags: {confirm: 'myapp'}})
+      .then(() => expect(cli.stdout).to.equal(`=== postgres-1
+
+ * redis-link-1
+created_at: 100
+remote:     REDIS (redis-001)
+`))
+  })
 })
