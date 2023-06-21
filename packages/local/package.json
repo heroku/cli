@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local",
   "description": "run heroku apps locally",
-  "version": "8.1.8",
+  "version": "8.1.9",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -20,10 +20,10 @@
     "mocha": "^5",
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
+    "sinon": "^6.3.5",
     "ts-node": "^10",
     "tslib": "^1.9.3",
-    "typescript": "4.8.4",
-    "sinon": "^6.3.5"
+    "typescript": "4.8.4"
   },
   "engines": {
     "node": ">=14"
