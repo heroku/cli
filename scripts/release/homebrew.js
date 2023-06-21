@@ -68,6 +68,7 @@ async function updateHerokuFormula (brewDir) {
       .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}/${fileNameM1}`)
       .replace('__CLI_SHA256__', sha256Intel)
       .replace('__CLI_SHA256_M1__', sha256M1)
+      .replace('__CLI_VERSION__', VERSION)
 
   fs.writeFileSync(formulaPath, templateReplaced)
 
