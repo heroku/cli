@@ -32,6 +32,26 @@ const fetcher = () => {
   }
 }
 
+let settingsResult
+let settingsResultName
+let settingResult
+
+const setupSettingsMockData = (cmd, settingValue = 'test_value') => {
+  settingsResult = {baseKey: {
+    value: settingValue,
+    values: {
+      test_value: 'foobar',
+    },
+  }}
+
+  let tempValue = settingsResult.baseKey
+  settingsResult[cmd] = tempValue
+  delete settingsResult.baseKey
+
+  settingsResultName = Object.keys(settingsResult)[0].replace(/_/g, '-')
+  settingResult = settingsResult[`${cmd}`]
+}
+
 describe.only('pg:settings', () => {
   let cmd
   let api
@@ -53,20 +73,27 @@ describe.only('pg:settings', () => {
     pg.done()
   })
 
-  it('shows settings', () => {
+  it('shows settings for log_statements', () => {
+    setupSettingsMockData('log_statement')
     cmd = proxyquire('../../../../commands/settings/log_statement', {
       settings: proxyquire.noCallThru().load('../../../../lib/setter', {
         './fetcher': fetcher,
       }),
     })
-    pg.get('/postgres/v0/databases/1/config').reply(200,
-      {log_statement: {
-        value: 'log_statement',
-        values: {
-          log_statement: 'hello',
-        },
-      }})
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
     return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('=== postgres-1\nlog-statement: none\n'))
+      .then(() => expect(cli.stdout).to.equal(`${settingsResultName} is set to ${settingResult.value} for postgres-1.\n${settingResult.values[settingResult.value]}\n`))
+  })
+
+  it('shows settings for track_functions', () => {
+    setupSettingsMockData('track_functions')
+    cmd = proxyquire('../../../../commands/settings/track_functions', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal(`${settingsResultName} is set to ${settingResult.value} for postgres-1.\n${settingResult.values[settingResult.value]}\n`))
   })
 })
