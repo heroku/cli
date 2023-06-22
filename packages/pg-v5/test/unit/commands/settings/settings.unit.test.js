@@ -6,22 +6,6 @@ const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-// const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'copy')
-
-// const db = {
-//   id: 1,
-//   name: 'postgres-1',
-//   plan: {name: 'heroku-postgresql:standard-0'},
-// }
-// const fetcher = () => {
-//   return {
-//     addon: () => db,
-//   }
-// }
-
-// let cmd = proxyquire('../../../../commands/settings/log_statement', {
-//   '../../lib/fetcher': fetcher,
-// })
 
 const addon = {
   id: 1,
@@ -70,14 +54,18 @@ describe.only('pg:settings', () => {
   })
 
   it('shows settings', () => {
-    // cmd = require('../../../../').commands.find(c => c.topic === 'pg' && c.command === 'settings:auto-explain')
     cmd = proxyquire('../../../../commands/settings/log_statement', {
       settings: proxyquire.noCallThru().load('../../../../lib/setter', {
         './fetcher': fetcher,
       }),
     })
-    // pg.get('/postgres/v0/databases/1/config').reply(200,
-    //   {log_statement: {value: 'none'}})
+    pg.get('/postgres/v0/databases/1/config').reply(200,
+      {log_statement: {
+        value: 'log_statement',
+        values: {
+          log_statement: 'hello',
+        },
+      }})
     return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
       .then(() => expect(cli.stdout).to.equal('=== postgres-1\nlog-statement: none\n'))
   })
