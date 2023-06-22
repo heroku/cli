@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {logDisplayer} from '../../../src/lib/log-displayer'
+import logDisplayer from '../../../src/lib/log-displayer'
 
 describe('helpers.logDisplayer()', () => {
   test
