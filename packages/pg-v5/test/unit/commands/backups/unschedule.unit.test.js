@@ -77,7 +77,7 @@ describe('pg:backups:unschedule error state', () => {
     pg.done()
   })
 
-  it('errors with when multiple schedules are returned from API', () => {
+  it('errors when multiple schedules are returned from API', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
       .catch(error => expect(error.message).to.equal('Specify schedule on myapp. Existing schedules: DATABASE_URL, DATABASE_URL2'))
   })
