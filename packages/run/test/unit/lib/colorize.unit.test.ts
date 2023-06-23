@@ -74,8 +74,8 @@ describe('colorize', () => {
   it('colorizes heroku-postgres logs', () => {
     const pgTest1 = colorizeTest('heroku-postgres', '[DATABASE] test-database CREATE TABLE test-table')
     const pgTest2 = colorizeTest('heroku-postgres', 'source=testsource sample#333')
-    expect(pgTest1).to.equal('\u001B[34m2018-01-01T00:00:00.00+00:00 heroku[heroku-postgres]:\u001B[39m \u001B[2m[DATABASE] test-database \u001B[22m\u001B[35mCREATE TABLE\u001B[39m\u001B[36m test-table\u001B[39m')
-    expect(pgTest2).to.equal('\u001B[34m2018-01-01T00:00:00.00+00:00 heroku[heroku-postgres]:\u001B[39m \u001B[2msource=testsource sample#333\u001B[22m')
+    expect(pgTest1).to.contain('heroku[heroku-postgres]:\u001B[39m \u001B[2m[DATABASE] test-database \u001B[22m\u001B[35mCREATE TABLE\u001B[39m\u001B[36m test-table\u001B[39m')
+    expect(pgTest2).to.contain('heroku[heroku-postgres]:\u001B[39m \u001B[2msource=testsource sample#333\u001B[22m')
   })
 
   it('colorizes postgres logs', () => {

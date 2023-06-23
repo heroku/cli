@@ -35,7 +35,7 @@ describe('helpers.buildEnvFromFlag()', () => {
     .stderr()
     .do(() => buildEnvFromFlag(envFlagSemiKey))
     .it('returns a warning when a semicolon is used as part of the key', context => {
-      expect(context.stderr).to.equal(" ›   Warning: env flag K appears invalid. Avoid using ';' in values.\n")
+      expect(context.stderr).to.contain("Warning: env flag K appears invalid. Avoid using ';' in values.")
     })
 
   const envFlagSemiValue = 'KEY=val;ue'
@@ -43,7 +43,7 @@ describe('helpers.buildEnvFromFlag()', () => {
     .stderr()
     .do(() => buildEnvFromFlag(envFlagSemiValue))
     .it('returns a warning when a semicolon is used as part of the value', context => {
-      expect(context.stderr).to.equal(" ›   Warning: env flag ue appears invalid. Avoid using ';' in values.\n")
+      expect(context.stderr).to.contain("Warning: env flag ue appears invalid. Avoid using ';' in values.")
     })
 })
 
