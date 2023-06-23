@@ -53,3 +53,32 @@ describe('pg:backups:unschedule', () => {
 describe('pg:backups unschedule', () => {
   shouldUnschedule(require('./helpers.js').dup('unschedule', cmd))
 })
+
+describe('pg:backups:unschedule error state', () => {
+  let pg
+  let api
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com')
+    api.get('/apps/myapp/addons').reply(200, [addon])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql',
+    }).reply(200, [attachment])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{name: 'DATABASE_URL', uuid: '100-001'}, {name: 'DATABASE_URL2', uuid: '100-002'}])
+    cli.mockConsole()
+  })
+
+  afterEach(() => {
+    nock.cleanAll()
+    api.done()
+    pg.done()
+  })
+
+  it('errors when multiple schedules are returned from API', () => {
+    return cmd.run({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+      .catch(error => expect(error.message).to.equal('Specify schedule on myapp. Existing schedules: DATABASE_URL, DATABASE_URL2'))
+  })
+})
