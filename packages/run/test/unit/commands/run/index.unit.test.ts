@@ -17,7 +17,7 @@ describe('run/index', () => {
       })
   })
 
-  describe('errors without command', () => {
+  describe('errors without command', async () => {
     test
       .stub(Dyno.prototype, 'start', sinon.stub().callsFake(function () {
         return Promise.resolve()
