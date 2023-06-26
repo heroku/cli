@@ -1,7 +1,7 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
 
-import {fork as foreman} from '../../lib/fork-foreman'
+import {fork as foreman} from '../../lib/local/fork-foreman'
 
 export default class Run extends Command {
   static description = 'run a one-off command'
