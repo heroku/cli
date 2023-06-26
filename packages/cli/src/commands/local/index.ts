@@ -1,10 +1,10 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
 
-import {fork as foreman} from '../../fork-foreman'
+import {fork as foreman} from '../../lib/fork-foreman'
 
 // eslint-disable-next-line node/no-missing-require
-const Procfile: any = require('../../load-foreman-procfile')
+const Procfile: any = require('../../lib/load-foreman-procfile')
 
 export default class Index extends Command {
   // \n splits the description between the title shown in the help
