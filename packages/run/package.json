@@ -20,6 +20,7 @@
     "@types/node-notifier": "^5.4.0",
     "chai": "^4",
     "globby": "^10.0.2",
+    "heroku-client": "^3.0.7",
     "http-call": "^5.2.5",
     "mocha": "^5",
     "nyc": "^15.1.0",
