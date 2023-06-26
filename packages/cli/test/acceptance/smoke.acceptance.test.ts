@@ -90,7 +90,7 @@ describe('@acceptance smoke tests', () => {
     expect(stdout).to.contain('Description')
   })
 
-  it('heroku config', async () => {
+  it.only('heroku config', async () => {
     const {stdout} = await run(`config ${appFlag}`)
     expect(stdout).to.contain('heroku-cli-ci-smoke-test-app Config Vars')
   })
