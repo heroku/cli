@@ -5,7 +5,7 @@
     "importHelpers": true,
     "resolveJsonModule": true,
     "module": "commonjs",
-    "outDir": "lib",
+    "outDir": "./lib",
     "rootDirs": [
       "./src"
     ],
