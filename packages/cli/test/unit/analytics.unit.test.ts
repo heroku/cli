@@ -1,7 +1,7 @@
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
-import sinon from 'sinon'
+import * as nock from 'nock'
+import * as sinon from 'sinon'
 import netrc from 'netrc-parser'
 import {vars} from '@heroku-cli/command'
 

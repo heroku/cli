@@ -25,9 +25,10 @@
   },
   "private": true,
   "scripts": {
-    "build": "lerna run prepack",
+    "build": "lerna run prepack --concurrency 4",
     "test": "lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
+    "cleanManifests": "rm -rf ./packages/*/oclif.manifest.json",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
   },
   "workspaces": [
