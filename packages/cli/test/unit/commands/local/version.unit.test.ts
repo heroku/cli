@@ -6,8 +6,8 @@ import * as path from 'path'
 
 const sinon = require('sinon')
 let existsSyncSpy: any
-const jsExtensionPath = path.join('local', 'src', 'run-foreman.js')
-const tsExtensionPath = path.join('local', 'src', 'run-foreman.ts')
+const jsExtensionPath = path.join('src', 'lib', 'local', 'run-foreman.js')
+const tsExtensionPath = path.join('src', 'lib', 'local', 'run-foreman.ts')
 
 describe('local:version', () => {
   test
@@ -28,8 +28,8 @@ describe('local:version', () => {
       // existsSync is called multiple times in the stack before
       // the expected arguments are passed. This checks that the
       // correct arguments are passed
-      const withJsExtension = existsSyncSpy.getCall(31).args[0]
-      const withTsExtension = existsSyncSpy.getCall(32).args[0]
+      const withJsExtension = existsSyncSpy.getCall(105).args[0]
+      const withTsExtension = existsSyncSpy.getCall(106).args[0]
       expect(withJsExtension).to.include(jsExtensionPath)
       expect(withTsExtension).to.include(tsExtensionPath)
     })
