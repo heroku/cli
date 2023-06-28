@@ -47,11 +47,13 @@
     "foreman": "^3.0.1",
     "fs-extra": "7.0.1",
     "http-call": "5.3.0",
+    "lodash": "^4.17.11",
     "netrc-parser": "3.1.6",
     "semver": "5.6.0",
     "uuid": "3.3.2"
   },
   "devDependencies": {
+    "@heroku-cli/schema": "^1.0.25",
     "@oclif/test": "^2.2.20",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
