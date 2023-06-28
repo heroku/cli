@@ -415,16 +415,6 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-auth@^8.1.7":
-  version "8.1.7"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-8.1.7.tgz#7eaebe79523809b1c606e7e23c4b54365c91055c"
-  integrity sha512-5bActWWB4iBBZgng8ZDBL32JeFhaoyKh81Dj6On4aJbU+HlxvslEKHLYocUUCRuVvDlLZg9rDa3u+/IMq3uhsw==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@heroku-cli/command" "^9.0.2"
-    "@oclif/core" "^1.26.2"
-    date-fns "^2.0.0-alpha.8"
-
 "@heroku-cli/plugin-ps-exec@^2.4.0":
   version "2.4.0"
   resolved "https://registry.npmjs.org/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.4.0.tgz"
