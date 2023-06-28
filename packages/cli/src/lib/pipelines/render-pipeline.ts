@@ -1,8 +1,8 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
-import sortBy from 'lodash.sortby'
+import {sortBy} from 'lodash'
 
 import {getOwner, warnMixedOwnership} from './ownership'
 

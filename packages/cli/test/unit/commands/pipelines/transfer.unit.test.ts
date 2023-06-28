@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 import {CliUx} from '@oclif/core'
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 
 const cli = CliUx.ux
 

@@ -5,9 +5,9 @@ import {CliUx} from '@oclif/core'
 
 import Debug from 'debug'
 
-import {createPipeline, getAccountInfo, getTeam} from 'src/lib/pipelines/api'
-import GitHubAPI from 'src/lib/pipelines/github-api'
-import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
+import {createPipeline, getAccountInfo, getTeam} from '../../lib/pipelines/api'
+import GitHubAPI from '../../lib/pipelines/github-api'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import createApps from '../../lib/pipelines/setup/create-apps'
 import getCISettings from '../../lib/pipelines/setup/get-ci-settings'
 import getGitHubToken from '../../lib/pipelines/setup/get-github-token'

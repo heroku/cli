@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {prompt} from 'inquirer'
 import {isUUID} from 'validator'
 

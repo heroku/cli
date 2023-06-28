@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {getPipeline} from 'src/lib/pipelines/api'
-import GitHubAPI from 'src/lib/pipelines/github-api'
-import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
+import {getPipeline} from '../../lib/pipelines/api'
+import GitHubAPI from '../../lib/pipelines/github-api'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
 import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
 import getRepo from '../../lib/pipelines/setup/get-repo'

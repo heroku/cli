@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import http from 'http-call'
-import keyBy from 'lodash.keyby'
+import {keyBy} from 'lodash'
 
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const FILTERS_HEADER = `${V3_HEADER}.filters`

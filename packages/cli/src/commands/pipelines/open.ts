@@ -1,7 +1,7 @@
 import {Command} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import disambiguate from 'src/lib/pipelines/disambiguate'
+import disambiguate from '../../lib/pipelines/disambiguate'
 
 const cli = CliUx.ux
 

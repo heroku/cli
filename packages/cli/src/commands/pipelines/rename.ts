@@ -2,8 +2,8 @@ import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {updatePipeline} from 'src/lib/pipelines/api'
-import disambiguate from 'src/lib/pipelines/disambiguate'
+import {updatePipeline} from '../../lib/pipelines/api'
+import disambiguate from '../../lib/pipelines/disambiguate'
 
 const cli = CliUx.ux
 

@@ -1,10 +1,8 @@
 
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import http from 'http-call'
-
-import {createAppSetup} from 'src/lib/pipelines/api'
+import {createAppSetup} from '../api'
 
 const cli = CliUx.ux
 

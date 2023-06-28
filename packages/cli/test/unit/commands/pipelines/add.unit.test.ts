@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import inquirer from 'inquirer'
+import * as inquirer from 'inquirer'
 
 describe('pipelines:add', () => {
   test

@@ -1,7 +1,7 @@
 import {CliUx} from '@oclif/core'
 import color from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
 
 const cli = CliUx.ux

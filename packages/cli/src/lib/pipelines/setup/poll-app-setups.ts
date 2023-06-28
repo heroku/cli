@@ -1,4 +1,4 @@
-import * as api from 'src/lib/pipelines/api'
+import * as api from '../api'
 import {CliUx} from '@oclif/core'
 import color from '@heroku-cli/color'
 

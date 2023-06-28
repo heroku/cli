@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 
 const cli = CliUx.ux
 

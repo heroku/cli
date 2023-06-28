@@ -1,11 +1,11 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 
-import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from 'src/lib/pipelines/api'
-import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
+import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../lib/pipelines/api'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 
 interface AppInfo {
   name: string;

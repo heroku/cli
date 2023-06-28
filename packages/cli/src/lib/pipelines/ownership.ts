@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
 import {getTeam} from './api'

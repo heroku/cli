@@ -1,14 +1,14 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
-import assert from 'assert'
+import * as assert from 'assert'
 import fetch from 'node-fetch'
-import Stream from 'stream'
-import util from 'util'
+import * as Stream from 'stream'
+import * as util from 'util'
 
-import {listPipelineApps} from 'src/lib/pipelines/api'
-import keyBy from 'src/lib/pipelines/key-by'
+import {listPipelineApps} from '../../lib/pipelines/api'
+import keyBy from '../../lib/pipelines/key-by'
 
 const cli = CliUx.ux
 

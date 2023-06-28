@@ -1,4 +1,4 @@
-import Heroku from '@heroku-cli/schema'
+import * as Heroku from '@heroku-cli/schema'
 import {expect, FancyTypes, test} from '@oclif/test'
 
 const appNames = [

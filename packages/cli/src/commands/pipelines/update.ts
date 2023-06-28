@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import {CliUx} from '@oclif/core'
 
-import {updateCoupling} from 'src/lib/pipelines/api'
+import {updateCoupling} from '../../lib/pipelines/api'
 
 const cli = CliUx.ux
 
