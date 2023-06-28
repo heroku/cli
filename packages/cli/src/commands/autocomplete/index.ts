@@ -4,8 +4,8 @@ import chalk from 'chalk'
 import {Interfaces, CliUx} from '@oclif/core'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
-import {updateCache} from '../../cache'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
+import {updateCache} from '../../lib/autocomplete/cache'
 
 import Create from './create'
 

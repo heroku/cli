@@ -3,7 +3,7 @@ import {CliUx, Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true

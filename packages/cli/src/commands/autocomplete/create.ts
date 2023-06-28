@@ -2,7 +2,7 @@ import {Interfaces} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 const debug = require('debug')('autocomplete:create')
 

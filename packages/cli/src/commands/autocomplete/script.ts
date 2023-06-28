@@ -1,6 +1,6 @@
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 export default class Script extends AutocompleteBase {
   static description = 'display autocomplete setup script for shell'

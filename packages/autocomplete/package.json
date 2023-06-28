@@ -33,7 +33,7 @@
   },
   "files": [
     "/oclif.manifest.json",
-    "autocomplete",
+    "../cli/src/lib/autocomplete/autocomplete",
     "/lib",
     "yarn.lock"
   ],
