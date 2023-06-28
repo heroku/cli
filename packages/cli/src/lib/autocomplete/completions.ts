@@ -3,7 +3,7 @@ import {deps} from '@heroku-cli/command/lib/deps'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git'
 import {Interfaces} from '@oclif/core'
 import * as path from 'path'
-import flatten = require('lodash.flatten')
+import {flatten} from 'lodash'
 
 export const oneDay = 60 * 60 * 24
 

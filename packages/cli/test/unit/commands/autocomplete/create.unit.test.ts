@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../../../helpers/runtest')
+const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
 const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..', '..')
 
