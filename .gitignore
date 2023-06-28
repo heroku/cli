@@ -1,6 +1,7 @@
 *-debug.log
 *-error.log
 .oclif.manifest.json
+/packages/**/oclif.manifest.json
 /cli
 /coverage
 /dist

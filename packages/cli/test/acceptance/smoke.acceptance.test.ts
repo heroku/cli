@@ -1,6 +1,6 @@
 // tslint:disable no-console
 
-import fs from 'fs-extra'
+import * as fs from 'fs-extra'
 import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'

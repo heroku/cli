@@ -1,7 +1,7 @@
 import {expect} from 'chai'
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 import * as file from '../../src/file'
-import fs from 'fs-extra'
+import * as fs from 'fs-extra'
 
 describe('file functions', async () => {
   let renameStub: any
