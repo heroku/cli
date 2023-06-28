@@ -6,13 +6,16 @@ export function buildCommand(args: Array<string>) {
     // `heroku run "rake test"` should work like `heroku run rake test`
     return args[0]
   }
+
   let cmd = ''
   for (let arg of args) {
-    if (arg.indexOf(' ') !== -1 || arg.indexOf('"') !== -1) {
+    if (arg.includes(' ') || arg.includes('"')) {
       arg = '"' + arg.replace(/"/g, '\\"') + '"'
     }
+
     cmd = cmd + ' ' + arg
   }
+
   return cmd.trim()
 }
 
@@ -23,5 +26,6 @@ export function buildEnvFromFlag(flag: string) {
     if (m) env[m[1]] = m[2]
     else CliUx.ux.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`)
   }
+
   return env
 }
