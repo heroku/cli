@@ -7,8 +7,8 @@ import fetch from 'node-fetch'
 import Stream from 'stream'
 import util from 'util'
 
-import {listPipelineApps} from '../../api'
-import keyBy from '../../key-by'
+import {listPipelineApps} from 'src/lib/pipelines/api'
+import keyBy from 'src/lib/pipelines/key-by'
 
 const cli = CliUx.ux
 

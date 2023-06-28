@@ -4,7 +4,7 @@ import {CliUx} from '@oclif/core'
 
 import http from 'http-call'
 
-import {createAppSetup} from '../api'
+import {createAppSetup} from 'src/lib/pipelines/api'
 
 const cli = CliUx.ux
 

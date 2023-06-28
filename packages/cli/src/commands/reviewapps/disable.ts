@@ -2,15 +2,15 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import KolkrabbiAPI from '../../kolkrabbi-api'
+import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
 
 const cli = CliUx.ux
 
-export default class ReviewappsEnable extends Command {
-  static description = 'enable review apps and/or settings on an existing pipeline'
+export default class ReviewappsDisable extends Command {
+  static description = 'disable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy',
+    '$ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy',
   ]
 
   static flags = {
@@ -18,24 +18,34 @@ export default class ReviewappsEnable extends Command {
       description: 'parent app used by review apps',
     }),
     remote: flags.remote(),
-    pipeline: flags.string({
-      char: 'p',
-      description: 'name of pipeline',
+    pipeline: flags.pipeline({
       required: true,
     }),
     autodeploy: flags.boolean({
-      description: 'autodeploy the review app',
+      description: 'disable autodeployments',
+      hidden: true,
     }),
     autodestroy: flags.boolean({
-      description: 'autodestroy the review app',
+      description: 'disable automatically destroying review apps',
+      hidden: true,
     }),
     'wait-for-ci': flags.boolean({
-      description: 'wait for CI to pass before deploying',
+      description: 'disable wait for CI',
+      hidden: true,
+    }),
+    'no-autodeploy': flags.boolean({
+      description: 'disable autodeployments',
+    }),
+    'no-autodestroy': flags.boolean({
+      description: 'disable automatically destroying review apps',
+    }),
+    'no-wait-for-ci': flags.boolean({
+      description: 'disable wait for CI',
     }),
   }
 
   async run() {
-    const {flags} = await this.parse(ReviewappsEnable)
+    const {flags} = await this.parse(ReviewappsDisable)
 
     if (flags.app) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
@@ -56,19 +66,22 @@ export default class ReviewappsEnable extends Command {
       repo: undefined,
     }
 
-    if (flags.autodeploy) {
-      this.log('Enabling auto deployment...')
-      settings.automatic_review_apps = true
+    // flags.autodeploy are back supported
+    if (flags['no-autodeploy'] || flags.autodeploy) {
+      this.log('Disabling auto deployment...')
+      settings.automatic_review_apps = false
     }
 
-    if (flags.autodestroy) {
-      this.log('Enabling auto destroy...')
-      settings.destroy_stale_apps = true
+    // flags.autodestroy are back supported
+    if (flags['no-autodestroy'] || flags.autodestroy) {
+      this.log('Disabling auto destroy...')
+      settings.destroy_stale_apps = false
     }
 
-    if (flags['wait-for-ci']) {
-      this.log('Enabling wait for CI...')
-      settings.wait_for_ci = true
+    // flags['wait-for-ci'] are back supported
+    if (flags['no-wait-for-ci'] || flags['wait-for-ci']) {
+      this.log('Disabling wait for CI...')
+      settings.wait_for_ci = false
     }
 
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
@@ -93,14 +106,14 @@ export default class ReviewappsEnable extends Command {
       settings.repo = repository.name
     }
 
-    if (flags.autodeploy || flags.autodestroy || flags['wait-for-ci']) {
+    if (flags.autodeploy || flags['no-autodeploy'] || flags.autodestroy || flags['no-autodestroy'] || flags['wait-for-ci'] || flags['no-wait-for-ci']) {
       await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,
         headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
       })
     } else {
-      // if no flags are passed then the user is enabling review apps
-      await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+      // if no flags are passed then the user is disabling review apps
+      await this.heroku.delete(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,
         headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
       })

@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {removeCoupling} from '../../api'
+import {removeCoupling} from 'src/lib/pipelines/api'
 
 const cli = CliUx.ux
 

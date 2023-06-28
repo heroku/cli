@@ -2,9 +2,9 @@ import {Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import {listPipelineApps} from '../../api'
-import disambiguate from '../../disambiguate'
-import renderPipeline from '../../render-pipeline'
+import {listPipelineApps} from 'src/lib/pipelines/api'
+import disambiguate from 'src/lib/pipelines/disambiguate'
+import renderPipeline from 'src/lib/pipelines/render-pipeline'
 
 const cli = CliUx.ux
 

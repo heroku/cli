@@ -3,8 +3,8 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import {destroyPipeline} from '../../api'
-import disambiguate from '../../disambiguate'
+import {destroyPipeline} from 'src/lib/pipelines/api'
+import disambiguate from 'src/lib/pipelines/disambiguate'
 
 const cli = CliUx.ux
 

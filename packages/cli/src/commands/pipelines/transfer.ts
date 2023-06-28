@@ -2,9 +2,9 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../api'
-import disambiguate from '../../disambiguate'
-import renderPipeline from '../../render-pipeline'
+import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from 'src/lib/pipelines/api'
+import disambiguate from 'src/lib/pipelines/disambiguate'
+import renderPipeline from 'src/lib/pipelines/render-pipeline'
 
 const cli = CliUx.ux
 

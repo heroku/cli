@@ -4,9 +4,9 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import {CliUx} from '@oclif/core'
 import {prompt} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../api'
-import infer from '../../infer'
-import {inferrableStageNames as stages} from '../../stages'
+import {createCoupling, createPipeline, getAccountInfo, getTeam} from 'src/lib/pipelines/api'
+import infer from 'src/lib/pipelines/infer'
+import {inferrableStageNames as stages} from 'src/lib/pipelines/stages'
 
 const cli = CliUx.ux
 

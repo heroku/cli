@@ -4,8 +4,8 @@ import Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 
-import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../api'
-import KolkrabbiAPI from '../../kolkrabbi-api'
+import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from 'src/lib/pipelines/api'
+import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
 
 interface AppInfo {
   name: string;

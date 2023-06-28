@@ -1,13 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {getPipeline} from '../../api'
-import GitHubAPI from '../../github-api'
-import KolkrabbiAPI from '../../kolkrabbi-api'
-import getGitHubToken from '../../setup/get-github-token'
-import getNameAndRepo from '../../setup/get-name-and-repo'
-import getRepo from '../../setup/get-repo'
-import {nameAndRepo} from '../../setup/validate'
+import {getPipeline} from 'src/lib/pipelines/api'
+import GitHubAPI from 'src/lib/pipelines/github-api'
+import KolkrabbiAPI from 'src/lib/pipelines/kolkrabbi-api'
+import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
+import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
+import getRepo from '../../lib/pipelines/setup/get-repo'
+import {nameAndRepo} from '../../lib/pipelines/setup/validate'
 
 const cli = CliUx.ux
 
