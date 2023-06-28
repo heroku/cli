@@ -11,7 +11,6 @@
     "@heroku-cli/plugin-addons-v5": "^8.1.7",
     "@heroku-cli/plugin-apps": "^8.1.8",
     "@heroku-cli/plugin-apps-v5": "^8.1.8",
-    "@heroku-cli/plugin-auth": "^8.1.7",
     "@heroku-cli/plugin-autocomplete": "^8.1.7",
     "@heroku-cli/plugin-buildpacks": "^8.1.7",
     "@heroku-cli/plugin-certs": "^8.1.7",
@@ -42,6 +41,7 @@
     "@oclif/plugin-version": "^1.2.1",
     "@oclif/plugin-warn-if-update-available": "2.0.29",
     "@oclif/plugin-which": "2.2.8",
+    "date-fns": "^2.0.0-alpha.8",
     "debug": "4.1.1",
     "execa": "5.1.1",
     "foreman": "^3.0.1",
@@ -56,6 +56,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@heroku-cli/schema": "^1.0.25",
     "@oclif/test": "^2.3.25",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
@@ -115,7 +116,6 @@
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",
-      "@heroku-cli/plugin-auth",
       "@heroku-cli/plugin-autocomplete",
       "@heroku-cli/plugin-buildpacks",
       "@heroku-cli/plugin-certs",

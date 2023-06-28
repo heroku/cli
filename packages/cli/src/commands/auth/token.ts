@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Interfaces} from '@oclif/core'
-import formatRelative from 'date-fns/formatRelative'
+import * as formatRelative from 'date-fns/formatRelative'
 
 export default class AuthToken extends Command {
   static description = `outputs current CLI authentication token.
