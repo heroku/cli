@@ -3,7 +3,6 @@
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "esModuleInterop": true,
     "resolveJsonModule": true,
     "module": "commonjs",
     "outDir": "./lib",
