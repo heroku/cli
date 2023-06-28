@@ -1,5 +1,5 @@
 import {CliUx} from '@oclif/core'
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 
 import {stringToConfig} from '../../../../src/commands/config/edit'
 import {Editor} from '../../../../src/lib/config/util'
