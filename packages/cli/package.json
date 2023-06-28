@@ -11,7 +11,6 @@
     "@heroku-cli/plugin-addons-v5": "^8.1.7",
     "@heroku-cli/plugin-apps": "^8.1.8",
     "@heroku-cli/plugin-apps-v5": "^8.1.8",
-    "@heroku-cli/plugin-autocomplete": "^8.1.7",
     "@heroku-cli/plugin-buildpacks": "^8.1.7",
     "@heroku-cli/plugin-certs": "^8.1.7",
     "@heroku-cli/plugin-certs-v5": "^8.1.7",
@@ -41,6 +40,7 @@
     "@oclif/plugin-version": "^1.2.1",
     "@oclif/plugin-warn-if-update-available": "2.0.29",
     "@oclif/plugin-which": "2.2.8",
+    "chalk": "^2.4.2",
     "date-fns": "^2.0.0-alpha.8",
     "debug": "4.1.1",
     "execa": "5.1.1",
@@ -111,7 +111,6 @@
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",
-      "@heroku-cli/plugin-autocomplete",
       "@heroku-cli/plugin-buildpacks",
       "@heroku-cli/plugin-certs",
       "@heroku-cli/plugin-certs-v5",
@@ -235,8 +234,10 @@
         "./lib/hooks/update/plugin-migrate",
         "./lib/hooks/update/b",
         "./lib/hooks/update/completions",
-        "./lib/hooks/update/tidy"
-      ]
+        "./lib/hooks/update/tidy",
+        "./lib/hooks/recache"
+      ],
+      "recache": "./lib/hooks/recache"
     },
     "update": {
       "node": {
