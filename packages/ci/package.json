@@ -25,7 +25,7 @@
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "^2.2.20",
+    "@oclif/test": "^2.3.25",
     "@types/chai": "^4.1.7",
     "@types/inquirer": "7.3.0",
     "@types/mocha": "^5.2.6",
