@@ -250,6 +250,12 @@
       "prerun": [
         "./lib/hooks/prerun/analytics"
       ],
+      "postrun": [
+        "./lib/hooks/postrun/performance_analytics"
+      ],
+      "command_not_found": [
+        "./lib/hooks/command_not_found/performance_analytics"
+      ],
       "update": [
         "./lib/hooks/update/plugin-migrate",
         "./lib/hooks/update/b",
