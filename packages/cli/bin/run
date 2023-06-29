@@ -2,6 +2,20 @@
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
+process.on('exit', code => {
+  console.log(`We just received exit with code ${code}`)
+})
+
+process.once('SIGINT', () => {
+  // works to collect SIGINT signal
+
+  // Let the default behavior execute
+  process.kill(process.pid, 'SIGINT')
+})
+
+// Add process event listeners to telemetry module
+
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(require('@oclif/core/handle'))
+
