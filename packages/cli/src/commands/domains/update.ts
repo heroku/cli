@@ -1,6 +1,7 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
+import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 export default class DomainsUpdate extends Command {
   static description = 'update a domain to use a different SSL certificate on an app'
@@ -22,16 +23,17 @@ export default class DomainsUpdate extends Command {
   async run() {
     const {args, flags} = await this.parse(DomainsUpdate)
     const {hostname} = args
+    const action = new Spinner()
 
     try {
-      CliUx.ux.action.start(`Updating ${color.cyan(hostname)} to use ${color.cyan(flags.cert)} certificate`)
+      action.start(`Updating ${color.cyan(hostname)} to use ${color.cyan(flags.cert)} certificate`)
       await this.heroku.patch<string>(`/apps/${flags.app}/domains/${hostname}`, {
         body: {sni_endpoint: flags.cert},
       })
     } catch (error: any) {
       CliUx.ux.error(error)
     } finally {
-      CliUx.ux.action.stop()
+      action.stop()
     }
   }
 }
