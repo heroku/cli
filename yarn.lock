@@ -1636,7 +1636,7 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@1.26.2", "@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.20.4", "@oclif/core@^1.23.1", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
+"@oclif/core@1.26.2", "@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.20.4", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
   version "1.26.2"
   resolved "https://registry.npmjs.org/@oclif/core/-/core-1.26.2.tgz"
   integrity sha512-6jYuZgXvHfOIc9GIaS4T3CIKGTjPmfAxuMcbCbMRKJJl4aq/4xeRlEz0E8/hz8HxvxZBGvN2GwAUHlrGWQVrVw==
@@ -2093,22 +2093,6 @@
   version "3.0.4"
   resolved "https://registry.npmjs.org/@oclif/screen/-/screen-3.0.4.tgz"
   integrity sha512-IMsTN1dXEXaOSre27j/ywGbBjrzx0FNd1XmuhCWCB9NTPrhWI1Ifbz+YLSEcstfQfocYsrbrIessxXb2oon4lA==
-
-"@oclif/test@2.2.13":
-  version "2.2.13"
-  resolved "https://registry.npmjs.org/@oclif/test/-/test-2.2.13.tgz"
-  integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
-  dependencies:
-    "@oclif/core" "^1.20.4"
-    fancy-test "^2.0.7"
-
-"@oclif/test@2.2.20", "@oclif/test@^2.2.20":
-  version "2.2.20"
-  resolved "https://registry.npmjs.org/@oclif/test/-/test-2.2.20.tgz"
-  integrity sha512-SaSMgeB9DKcfRRIvh461eK1eEkjgV/iYHWU5XhWli8psAnqKFgxar3ESpMfQKwYjVMxKdKSjOhEFHaHMOgPJOQ==
-  dependencies:
-    "@oclif/core" "^1.23.1"
-    fancy-test "^2.0.11"
 
 "@oclif/test@^2.3.25":
   version "2.3.25"
@@ -5551,20 +5535,6 @@ eyes@0.1.x:
   resolved "https://registry.npmjs.org/eyes/-/eyes-0.1.8.tgz"
   integrity sha1-Ys8SAjTGg3hdkCNIqADvPgzCC8A=
 
-fancy-test@^2.0.11, fancy-test@^2.0.7:
-  version "2.0.11"
-  resolved "https://registry.npmjs.org/fancy-test/-/fancy-test-2.0.11.tgz"
-  integrity sha512-R98gMuHy/tsGUmChkehXvq4PmzdhUKl1SDyYkrvh4Vhc+8fjUUQWu2pts4Y4BStjkltPtQtccNYN63sjs/a3Xw==
-  dependencies:
-    "@types/chai" "*"
-    "@types/lodash" "*"
-    "@types/node" "*"
-    "@types/sinon" "*"
-    lodash "^4.17.13"
-    mock-stdin "^1.0.0"
-    nock "^13.0.0"
-    stdout-stderr "^0.1.9"
-
 fancy-test@^2.0.27:
   version "2.0.27"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.27.tgz#81e6952052bdf48f0e53676fad2f6b534abf324f"
@@ -8598,16 +8568,6 @@ nock@9.0.13:
     mkdirp "^0.5.0"
     propagate "0.4.0"
     qs "^6.0.2"
-
-nock@^13.0.0:
-  version "13.2.9"
-  resolved "https://registry.npmjs.org/nock/-/nock-13.2.9.tgz"
-  integrity sha512-1+XfJNYF1cjGB+TKMWi29eZ0b82QOvQs2YoLNzbpWGqFMtRQHTa57osqdGj4FrFPgkO4D4AZinzUJR9VvW3QUA==
-  dependencies:
-    debug "^4.1.0"
-    json-stringify-safe "^5.0.1"
-    lodash "^4.17.21"
-    propagate "^2.0.0"
 
 nock@^13.3.1:
   version "13.3.1"

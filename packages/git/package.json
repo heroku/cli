@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/test": "2.2.13",
+    "@oclif/test": "^2.3.25",
     "@types/chai": "^4.3.5",
     "@types/fs-extra": "^5.0.5",
     "@types/mocha": "^5.2.6",
