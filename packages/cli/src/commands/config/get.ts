@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import {quote} from '../../quote'
+import {quote} from '../../lib/config/quote'
 
 export class ConfigGet extends Command {
   static usage = 'config:get KEY...'

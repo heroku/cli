@@ -4,7 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
-import {quote} from '../../quote'
+import {quote} from '../../lib/config/quote'
 const ux = CliUx.ux
 
 export class ConfigIndex extends Command {

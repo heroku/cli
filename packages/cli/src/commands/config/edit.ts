@@ -4,8 +4,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import * as _ from 'lodash'
 
-import {parse, quote} from '../../quote'
-import {Editor} from '../../util'
+import {parse, quote} from '../../lib/config/quote'
+import {Editor} from '../../lib/config/util'
 
 const editor = new Editor()
 const cli = CliUx.ux
