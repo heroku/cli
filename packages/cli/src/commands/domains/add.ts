@@ -4,7 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-import waitForDomain from '../../lib/apps/wait-for-domain'
+import waitForDomain from '../../lib/domains/wait-for-domain'
 
 const cli = CliUx.ux
 
