@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import waitForDomain from '../../lib/wait-for-domain'
+import waitForDomain from '@heroku-cli/plugin-apps/lib/lib/wait-for-domain'
 
 export default class DomainsWait extends Command {
   static description = 'wait for domain to be active for an app'
