@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {parse, quote} from '../src/quote'
+import {parse, quote} from '../../../../src/lib/config/quote'
 
 describe('quote', () => {
   [

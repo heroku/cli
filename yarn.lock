@@ -424,6 +424,16 @@
     heroku-cli-util "^8.0.8"
     lodash "^4.17.13"
 
+"@heroku-cli/plugin-ps@^8.1.7":
+  version "8.1.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-8.1.7.tgz#75f47ce9e5eef6f0b0944fb09787974f8182974c"
+  integrity sha512-CCGyzDW4JV9Krj1dEK3vkyPpaa94WhQC3WGUIHvfgav12xzPYsil+Xg5iHSENEHxKEhaoOCxydEbPtgO1xS/Bg==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@heroku-cli/command" "^9.0.2"
+    "@oclif/core" "^1.26.2"
+    lodash "^4.17.11"
+
 "@heroku-cli/schema@^1.0.25":
   version "1.0.25"
   resolved "https://registry.npmjs.org/@heroku-cli/schema/-/schema-1.0.25.tgz"
