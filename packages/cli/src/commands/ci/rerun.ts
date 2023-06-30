@@ -3,10 +3,10 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import * as Kolkrabbi from '../../interfaces/kolkrabbi'
-import {getPipeline} from '../../utils/pipelines'
-import {createSourceBlob} from '../../utils/source'
-import {displayAndExit} from '../../utils/test-run'
+import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
+import {getPipeline} from '../../lib/ci/pipelines'
+import {createSourceBlob} from '../../lib/ci/source'
+import {displayAndExit} from '../../lib/ci/test-run'
 
 const cli = CliUx.ux
 

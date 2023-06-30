@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import {getPipeline} from '../../utils/pipelines'
-import {renderList} from '../../utils/test-run'
+import {getPipeline} from '../../lib/ci/pipelines'
+import {renderList} from '../../lib/ci/test-run'
 
 export default class CiIndex extends Command {
   static description = 'display the most recent CI runs for the given pipeline'
