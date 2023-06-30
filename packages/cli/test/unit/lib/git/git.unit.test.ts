@@ -1,10 +1,10 @@
 'use strict'
 /* global beforeEach afterEach */
 
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 import {expect} from 'chai'
-import cp from 'child_process'
-import EventEmitter from 'events'
+import * as cp from 'child_process'
+import * as EventEmitter from 'events'
 import Git from '../../../../src/lib/git/git'
 
 describe('git', function () {
