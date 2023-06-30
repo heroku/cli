@@ -80,7 +80,7 @@ Tools:     No known issues at this time.
 
 === incident title ${time.toISOString()} https://status.heroku.com
 
-update type ${time.toISOString()} (less than a minute ago)
+update type ${time.toISOString()} (1 minute ago)
 update contents
 
 `)
