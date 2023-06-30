@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {addDays, parse} from 'date-fns'
+import {addDays} from 'date-fns'
 
 describe('webhooks:events', () => {
   const deprecationWarning = 'Warning: heroku webhooks:event is deprecated, please use heroku'
@@ -86,9 +86,9 @@ describe('webhooks:events', () => {
   })
 
   describe('by default the table is sorted by "created_at"', () => {
-    const firstDate = parse('2019-06-11T14:20:42Z')
-    const secondDate = addDays(parse(firstDate), 1)
-    const thirdDate = addDays(parse(firstDate), 2)
+    const firstDate = new Date('2019-06-11T14:20:42Z')
+    const secondDate = addDays(new Date(firstDate), 1)
+    const thirdDate = addDays(new Date(firstDate), 2)
 
     test
       .stdout()
