@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import * as Kolkrabbi from '@heroku-cli/plugin-ci/lib/interfaces/kolkrabbi'
+import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
 import * as git from '../../lib/ci/git'
 import {getPipeline} from '../../lib/ci/pipelines'
 import {createSourceBlob} from '../../lib/ci/source'

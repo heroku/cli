@@ -1,6 +1,6 @@
 import {test, expect} from '@oclif/test'
 
-import * as git from '@heroku-cli/plugin-ci/lib/utils/git'
+import * as git from '../../../../src/lib/ci/git'
 
 describe('ci:rerun', () => {
   test
