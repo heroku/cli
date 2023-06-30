@@ -147,7 +147,7 @@ describe('webhooks:deliveries', () => {
       .command(['webhooks:deliveries', '--app', 'example-app'])
       .it('lists empty deliveries', ctx => {
         expect(ctx.stderr).to.equal('')
-        expect(ctx.stdout.trim()).to.equal('example-app has no deliveries')
+        expect(ctx.stdout.trim()).to.equal('⬢ example-app has no deliveries')
       })
   })
 

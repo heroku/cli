@@ -41,7 +41,7 @@ describe('webhooks:events', () => {
       .it('displays an empty events message', ctx => {
         expect(ctx.stderr).to.include(deprecationWarning)
         expect(ctx.stderr).to.include(deprecationWarning2)
-        expect(ctx.stdout).to.equal('example-app has no events\n')
+        expect(ctx.stdout).to.equal('⬢ example-app has no events\n')
       })
   })
 

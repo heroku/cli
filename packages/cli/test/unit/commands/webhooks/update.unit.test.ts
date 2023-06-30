@@ -29,7 +29,7 @@ describe('webhooks:update', () => {
     ])
     .it('updates app webhooks', ctx => {
       expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for example-app... done\n')
+      expect(ctx.stderr).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for ⬢ example-app... done\n')
     })
 
   test

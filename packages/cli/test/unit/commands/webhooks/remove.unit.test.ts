@@ -11,7 +11,7 @@ describe('webhooks:remove', () => {
     .command(['webhooks:remove', '--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
     .it('removes the specified app webhook', ctx => {
       expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Removing webhook 99999999-9999-9999-9999-999999999999 from example-app... done\n')
+      expect(ctx.stderr).to.contain('Removing webhook 99999999-9999-9999-9999-999999999999 from ⬢ example-app... done\n')
     })
 
   test

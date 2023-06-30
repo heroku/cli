@@ -34,7 +34,7 @@ describe('webhooks:index', () => {
       .command(['webhooks', '--app', 'example'])
       .it('displays a "no webhooks" message', ctx => {
         expect(ctx.stderr).to.equal('')
-        expect(ctx.stdout).to.equal('example has no webhooks\nUse heroku webhooks:add to add one.\n')
+        expect(ctx.stdout).to.equal('⬢ example has no webhooks\nUse heroku webhooks:add to add one.\n')
       })
   })
 

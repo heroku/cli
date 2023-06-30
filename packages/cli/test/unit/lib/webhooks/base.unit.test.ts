@@ -31,7 +31,9 @@ describe('webhooks type', () => {
     .stdout()
     .do(function () {
       const webhookInfo = webhookObject.webhookType({pipeline: '', app: 'randomApp'})
-      expect(webhookInfo).to.deep.equal({path: '/apps/randomApp', display: 'randomApp'})
+      // `display` below contains ANSI escape codes for color due to us not reading from stdout. using `contains` instead of `equal`
+      expect(webhookInfo.display).to.contain('randomApp')
+      expect(webhookInfo.path).to.equal('/apps/randomApp')
     })
     .it('returns correct app path and display info')
 
