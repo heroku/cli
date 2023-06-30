@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
-import BaseCommand from '../../base'
+import BaseCommand from 'src/lib/webhooks/base'
 export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
 

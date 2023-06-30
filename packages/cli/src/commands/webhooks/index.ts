@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import BaseCommand from '../../base'
+import BaseCommand from 'src/lib/webhooks/base'
 
 export default class Webhooks extends BaseCommand {
   static description = 'list webhooks on an app'

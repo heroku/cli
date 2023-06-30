@@ -1,13 +1,14 @@
 import {flags} from '@heroku-cli/command'
+import {CliUx} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
-import BaseCommand from '../../base'
+import BaseCommand from 'src/lib/webhooks/base'
 
-export default class WebhooksUpdate extends BaseCommand {
-  static description = 'updates a webhook in an app'
+export default class WebhooksAdd extends BaseCommand {
+  static description = 'add a webhook to an app'
 
   static examples = [
-    '$ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks',
+    '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks',
   ]
 
   static flags = {
@@ -21,25 +22,30 @@ export default class WebhooksUpdate extends BaseCommand {
     url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
   }
 
-  static args = [
-    {name: 'id', required: true},
-  ]
-
   async run() {
-    const {flags, args} = await this.parse(WebhooksUpdate)
+    const {flags} = await this.parse(WebhooksAdd)
     const {path, display} = this.webhookType(flags)
     const action = new Spinner()
 
-    action.start(`Updating webhook ${args.id} for ${display}`)
+    action.start(`Adding webhook to ${display}`)
 
-    await this.webhooksClient.patch(`${path}/webhooks/${args.id}`, {
+    const response = await this.webhooksClient.post(`${path}/webhooks`, {
       body: {
-        include: flags.include && flags.include.split(',').map(s => s.trim()),
+        include: flags.include.split(',').map(s => s.trim()),
         level: flags.level,
         secret: flags.secret,
         url: flags.url,
+        authorization: flags.authorization,
       },
     })
+
+    const secret = response.headers && response.headers['heroku-webhook-secret'] as string
+    if (secret) {
+      CliUx.ux.styledHeader('Webhooks Signing Secret')
+      this.log(secret)
+    } else {
+      CliUx.ux.warn('no secret found')
+    }
 
     action.stop()
   }
