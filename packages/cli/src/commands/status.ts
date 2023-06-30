@@ -3,7 +3,7 @@ import {Command, Flags, CliUx} from '@oclif/core'
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 import HTTP from 'http-call'
 
-import {maxBy} from 'src/lib/status/util'
+import {maxBy} from '../lib/status/util'
 
 const capitalize = (str: string) => str.slice(0, 1).toUpperCase() + str.slice(1)
 
