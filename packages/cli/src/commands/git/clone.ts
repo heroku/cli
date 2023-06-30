@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import Git from '../../git'
+import Git from '../../lib/git/git'
 
 export class GitClone extends Command {
   static description = 'clones a heroku app to your local machine at DIRECTORY (defaults to app name)'
