@@ -9,6 +9,6 @@ describe('domains:remove', () => {
     )
     .command(['domains:remove', 'example.com', '--app', 'myapp'])
     .it('removes a single domain provided by an argument', ctx => {
-      expect(ctx.stderr).to.contain('Removing example.com from myapp... done')
+      expect(ctx.stderr).to.contain('Removing example.com from ⬢ myapp... done')
     })
 })

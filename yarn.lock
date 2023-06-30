@@ -1636,7 +1636,7 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@1.26.2", "@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.20.4", "@oclif/core@^1.23.1", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
+"@oclif/core@1.26.2", "@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.20.4", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
   version "1.26.2"
   resolved "https://registry.npmjs.org/@oclif/core/-/core-1.26.2.tgz"
   integrity sha512-6jYuZgXvHfOIc9GIaS4T3CIKGTjPmfAxuMcbCbMRKJJl4aq/4xeRlEz0E8/hz8HxvxZBGvN2GwAUHlrGWQVrVw==
@@ -2093,22 +2093,6 @@
   version "3.0.4"
   resolved "https://registry.npmjs.org/@oclif/screen/-/screen-3.0.4.tgz"
   integrity sha512-IMsTN1dXEXaOSre27j/ywGbBjrzx0FNd1XmuhCWCB9NTPrhWI1Ifbz+YLSEcstfQfocYsrbrIessxXb2oon4lA==
-
-"@oclif/test@2.2.13":
-  version "2.2.13"
-  resolved "https://registry.npmjs.org/@oclif/test/-/test-2.2.13.tgz"
-  integrity sha512-BnVvLbfd3noDZKKkncapCmGXnqvjHJYn1Nybs3QQA1Tu7u68EHWPWB6r64fge/O0xSM1FtTN+ICGcmGfxQYZqg==
-  dependencies:
-    "@oclif/core" "^1.20.4"
-    fancy-test "^2.0.7"
-
-"@oclif/test@2.2.20", "@oclif/test@^2.2.20":
-  version "2.2.20"
-  resolved "https://registry.npmjs.org/@oclif/test/-/test-2.2.20.tgz"
-  integrity sha512-SaSMgeB9DKcfRRIvh461eK1eEkjgV/iYHWU5XhWli8psAnqKFgxar3ESpMfQKwYjVMxKdKSjOhEFHaHMOgPJOQ==
-  dependencies:
-    "@oclif/core" "^1.23.1"
-    fancy-test "^2.0.11"
 
 "@oclif/test@^2.3.25":
   version "2.3.25"
@@ -5551,20 +5535,6 @@ eyes@0.1.x:
   resolved "https://registry.npmjs.org/eyes/-/eyes-0.1.8.tgz"
   integrity sha1-Ys8SAjTGg3hdkCNIqADvPgzCC8A=
 
-fancy-test@^2.0.11, fancy-test@^2.0.7:
-  version "2.0.11"
-  resolved "https://registry.npmjs.org/fancy-test/-/fancy-test-2.0.11.tgz"
-  integrity sha512-R98gMuHy/tsGUmChkehXvq4PmzdhUKl1SDyYkrvh4Vhc+8fjUUQWu2pts4Y4BStjkltPtQtccNYN63sjs/a3Xw==
-  dependencies:
-    "@types/chai" "*"
-    "@types/lodash" "*"
-    "@types/node" "*"
-    "@types/sinon" "*"
-    lodash "^4.17.13"
-    mock-stdin "^1.0.0"
-    nock "^13.0.0"
-    stdout-stderr "^0.1.9"
-
 fancy-test@^2.0.27:
   version "2.0.27"
   resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-2.0.27.tgz#81e6952052bdf48f0e53676fad2f6b534abf324f"
@@ -6964,22 +6934,22 @@ inquirer@^7.0.0:
     through "^2.3.6"
 
 inquirer@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.npmjs.org/inquirer/-/inquirer-7.0.1.tgz"
-  integrity sha512-V1FFQ3TIO15det8PijPLFR9M9baSlnRs9nL7zWu1MNVA2T9YVl9ZbrHJhYs7e9X8jeMZ3lr2JH/rdHFgNCBdYw==
+  version "7.3.3"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.3.3.tgz#04d176b2af04afc157a83fd7c100e98ee0aad003"
+  integrity sha512-JG3eIAj5V9CwcGvuOmoo6LB9kbAYT8HXffUl6memuszlwDC/qvFAJw49XJ5NROSFNPxp3iQg1GqkFhaY/CR0IA==
   dependencies:
     ansi-escapes "^4.2.1"
-    chalk "^2.4.2"
+    chalk "^4.1.0"
     cli-cursor "^3.1.0"
-    cli-width "^2.0.0"
+    cli-width "^3.0.0"
     external-editor "^3.0.3"
     figures "^3.0.0"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
     mute-stream "0.0.8"
-    run-async "^2.2.0"
-    rxjs "^6.5.3"
+    run-async "^2.4.0"
+    rxjs "^6.6.0"
     string-width "^4.1.0"
-    strip-ansi "^5.1.0"
+    strip-ansi "^6.0.0"
     through "^2.3.6"
 
 inquirer@^8.0.0, inquirer@^8.2.4, inquirer@^8.2.5:
@@ -7930,7 +7900,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.npmjs.org/lodash.truncate/-/lodash.truncate-4.4.2.tgz"
   integrity sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw==
 
-lodash@4.17.21, lodash@^4.11.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@~4.17.2:
+lodash@4.17.21, lodash@^4.11.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@~4.17.2:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -8598,26 +8568,6 @@ nock@9.0.13:
     mkdirp "^0.5.0"
     propagate "0.4.0"
     qs "^6.0.2"
-
-nock@^13.0.0:
-  version "13.2.9"
-  resolved "https://registry.npmjs.org/nock/-/nock-13.2.9.tgz"
-  integrity sha512-1+XfJNYF1cjGB+TKMWi29eZ0b82QOvQs2YoLNzbpWGqFMtRQHTa57osqdGj4FrFPgkO4D4AZinzUJR9VvW3QUA==
-  dependencies:
-    debug "^4.1.0"
-    json-stringify-safe "^5.0.1"
-    lodash "^4.17.21"
-    propagate "^2.0.0"
-
-nock@^13.0.1:
-  version "13.3.0"
-  resolved "https://registry.npmjs.org/nock/-/nock-13.3.0.tgz"
-  integrity sha512-HHqYQ6mBeiMc+N038w8LkMpDCRquCHWeNmN3v6645P3NhN2+qXOBqvPqo7Rt1VyCMzKhJ733wZqw5B7cQVFNPg==
-  dependencies:
-    debug "^4.1.0"
-    json-stringify-safe "^5.0.1"
-    lodash "^4.17.21"
-    propagate "^2.0.0"
 
 nock@^13.3.1:
   version "13.3.1"
@@ -10453,10 +10403,17 @@ rxjs@^5.5.2:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.4.0, rxjs@^6.5.3:
+rxjs@^6.4.0:
   version "6.5.3"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.5.3.tgz"
   integrity sha512-wuYsAYYFdWTAnAaPoKGNhfpWwKZbJW+HgAJ+mImp+Epl7BG8oNWBCTyRM8gba9k4lk8BgWdoYm21Mo/RYhhbgA==
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@^6.6.0:
+  version "6.6.7"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
+  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
   dependencies:
     tslib "^1.9.0"
 
