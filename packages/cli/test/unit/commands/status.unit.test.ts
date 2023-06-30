@@ -9,8 +9,6 @@ const api = nock('https://status.heroku.com:443')
 beforeEach(() => nock.cleanAll())
 afterEach(() => api.done())
 
-const time = new Date()
-
 describe('when heroku is green', () => {
   test
     .stdout()
@@ -52,6 +50,7 @@ Tools:     No known issues at this time.\n`)
 })
 
 describe('when heroku has issues', () => {
+  const time = new Date()
   test
     .stdout()
     .nock('https://status.heroku.com', api => {
@@ -80,7 +79,7 @@ Tools:     No known issues at this time.
 
 === incident title ${time.toISOString()} https://status.heroku.com
 
-update type ${time.toISOString()} (1 minute ago)
+update type ${time.toISOString()} (less than a minute ago)
 update contents
 
 `)
