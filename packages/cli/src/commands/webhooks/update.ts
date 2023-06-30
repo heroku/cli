@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
-import BaseCommand from 'src/lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base'
 
 export default class WebhooksUpdate extends BaseCommand {
   static description = 'updates a webhook in an app'

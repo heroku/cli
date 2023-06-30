@@ -2,7 +2,7 @@ import {flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
-import BaseCommand from 'src/lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base'
 
 export default class WebhooksAdd extends BaseCommand {
   static description = 'add a webhook to an app'

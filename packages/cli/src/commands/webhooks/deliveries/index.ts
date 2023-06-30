@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import BaseCommand from 'src/lib/webhooks/base'
+import BaseCommand from '../../../lib/webhooks/base'
 
 export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
