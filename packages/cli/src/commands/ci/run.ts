@@ -2,11 +2,11 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import * as Kolkrabbi from '../../interfaces/kolkrabbi'
-import * as git from '../../utils/git'
-import {getPipeline} from '../../utils/pipelines'
-import {createSourceBlob} from '../../utils/source'
-import {displayAndExit} from '../../utils/test-run'
+import * as Kolkrabbi from '@heroku-cli/plugin-ci/lib/interfaces/kolkrabbi'
+import * as git from '@heroku-cli/plugin-ci/lib/utils/git'
+import {getPipeline} from '@heroku-cli/plugin-ci/lib/utils/pipelines'
+import {createSourceBlob} from '@heroku-cli/plugin-ci/lib/utils/source'
+import {displayAndExit} from '@heroku-cli/plugin-ci/lib/utils/test-run'
 
 const cli = CliUx.ux
 
