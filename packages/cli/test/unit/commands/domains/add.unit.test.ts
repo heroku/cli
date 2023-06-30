@@ -29,6 +29,7 @@ describe('domains:add', () => {
 
     describe('using the --cert flag', () => {
       test
+        .stderr()
         .nock('https://api.heroku.com', api => api
           .post('/apps/myapp/domains', {
             hostname: 'example.com',
@@ -36,9 +37,8 @@ describe('domains:add', () => {
           })
           .reply(200, domainsResponseWithEndpoint),
         )
-        .stderr()
         .command(['domains:add', 'example.com', '--app', 'myapp', '--cert', 'my-cert'])
-        .it('adds the domain to the app with --cert', ctx => {
+        .it('adds the domain to the app', ctx => {
           expect(ctx.stderr).to.contain('Adding example.com to ⬢ myapp... done')
         })
     })
@@ -81,7 +81,7 @@ describe('domains:add', () => {
           .reply(200, certsResponse),
         )
         .command(['domains:add', 'example.com', '--app', 'myapp'])
-        .it('adds the domain to the app without cert flag', ctx => {
+        .it('adds the domain to the app', ctx => {
           expect(ctx.stderr).to.contain('Adding example.com to ⬢ myapp... done')
         })
     })
