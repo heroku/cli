@@ -2,8 +2,8 @@ import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
-import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpack-installations-stub'
-import {unwrap} from '../../../unwrap'
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
+import {unwrap} from '../../../helpers/buildpacks/unwrap'
 nock.disableNetConnect()
 
 describe('buildpacks:remove', () => {

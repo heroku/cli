@@ -1,7 +1,7 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 
-import {BuildpackCommand} from '../../buildpacks'
+import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
 export default class Index extends Command {
   static description = 'display the buildpacks for an app'

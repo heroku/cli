@@ -1,6 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 
-import {BuildpackCommand} from '../../buildpacks'
+import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
 export default class Add extends Command {
   static description = 'add new app buildpack, inserting into list of buildpacks if necessary'
