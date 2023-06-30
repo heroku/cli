@@ -2,8 +2,8 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
-import {getPipeline} from '../../utils/pipelines'
-import {displayTestRunInfo} from '../../utils/test-run'
+import {getPipeline} from '../../lib/ci/pipelines'
+import {displayTestRunInfo} from '../../lib/ci/test-run'
 
 const cli = CliUx.ux
 
