@@ -13,6 +13,6 @@ describe('domains:clear', () => {
     )
     .command(['domains:clear', '--app', 'myapp'])
     .it('clears domains all domains', ctx => {
-      expect(ctx.stderr).to.contain('Removing all domains from myapp... done')
+      expect(ctx.stderr).to.contain('Removing all domains from ⬢ myapp... done')
     })
 })

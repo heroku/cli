@@ -5,7 +5,7 @@ import {CliUx} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-import waitForDomain from '../../lib/wait-for-domain'
+import waitForDomain from '../../lib/domains/wait-for-domain'
 
 const cli = CliUx.ux
 
