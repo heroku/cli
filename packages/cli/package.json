@@ -37,7 +37,7 @@
     "@oclif/plugin-which": "2.2.8",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
-    "date-fns": "^2.0.0-alpha.8",
+    "date-fns": "^2.30.0",
     "debug": "4.1.1",
     "edit-string": "^1.1.6",
     "execa": "5.1.1",
