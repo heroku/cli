@@ -4,9 +4,9 @@ import * as Heroku from '@heroku-cli/schema'
 import {CliUx} from '@oclif/core'
 
 import * as Kolkrabbi from '@heroku-cli/plugin-ci/lib/interfaces/kolkrabbi'
-import {getPipeline} from '@heroku-cli/plugin-ci/lib/utils/pipelines'
-import {createSourceBlob} from '@heroku-cli/plugin-ci/lib/utils/source'
-import {displayAndExit} from '@heroku-cli/plugin-ci/lib/utils/test-run'
+import {getPipeline} from '../../lib/ci/pipelines'
+import {createSourceBlob} from '../../lib/ci/source'
+import {displayAndExit} from '../../lib/ci/test-run'
 
 const cli = CliUx.ux
 
