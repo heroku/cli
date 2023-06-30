@@ -1,6 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 
-import {BuildpackCommand} from '../../buildpacks'
+import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
 export default class Clear extends Command {
   static description = 'clear all buildpacks set on the app'
