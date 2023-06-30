@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import {expect} from 'chai'
 import cp from 'child_process'
 import EventEmitter from 'events'
-import Git from '../../../src/git'
+import Git from '../../../../src/lib/git/git'
 
 describe('git', function () {
   let mock: sinon.SinonMock
