@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Interfaces} from '@oclif/core'
+import {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import {formatRelative}  from 'date-fns'
 
 export default class AuthToken extends Command {
