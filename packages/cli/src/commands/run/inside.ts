@@ -28,7 +28,9 @@ export default class RunInside extends Command {
   static strict = false
 
   async run() {
-    const {flags, argv} = await this.parse(RunInside)
+    const parsed = await this.parse(RunInside)
+    const {flags} = parsed
+    const argv = parsed.argv as string[]
 
     if (argv.length < 2) {
       throw new Error('Usage: heroku run:inside DYNO COMMAND\n\nExample: heroku run:inside web.1 bash')

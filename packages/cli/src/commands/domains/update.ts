@@ -19,7 +19,7 @@ export default class DomainsUpdate extends Command {
   }
 
   static args = {
-    hostname: Args.string(),
+    hostname: Args.string({required: true}),
   }
 
   async run() {

@@ -26,7 +26,7 @@ export default class RunRake extends Command {
     const opts = {
       heroku: this.heroku,
       app: flags.app,
-      command: buildCommand(['rake', ...argv]),
+      command: buildCommand(['rake', ...argv as string[]]),
       size: flags.size,
       'exit-code': flags['exit-code'],
       env: flags.env,

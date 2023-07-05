@@ -33,7 +33,7 @@ export default class RunDetached extends Command {
     const opts = {
       heroku: this.heroku,
       app: flags.app,
-      command: buildCommand(argv),
+      command: buildCommand(argv as string[]),
       size: flags.size,
       type: flags.type,
       env: flags.env,

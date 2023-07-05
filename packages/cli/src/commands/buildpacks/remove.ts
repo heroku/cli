@@ -54,7 +54,7 @@ export default class Remove extends Command {
     if (buildpacks.length === 1) {
       await buildpackCommand.clear(flags.app, 'remove', 'removed')
     } else {
-      const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack, 'remove')
+      const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack as string, 'remove')
       buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'removed')
     }
   }

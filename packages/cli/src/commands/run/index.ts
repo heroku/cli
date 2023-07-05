@@ -40,7 +40,7 @@ export default class Run extends Command {
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(argv),
+      command: buildCommand(argv as string[]),
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
