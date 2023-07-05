@@ -3,8 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {CliUx} from '@oclif/core'
 import debugFactory from 'debug'
 
-import Dyno from '../../lib/dyno'
-import {buildCommand} from '../../lib/helpers'
+import Dyno from '../../lib/run/dyno'
+import {buildCommand} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run:inside')
 
@@ -48,7 +48,7 @@ export default class RunInside extends Command {
 
     try {
       await dyno.start()
-    } catch (error) {
+    } catch (error: any) {
       debug(error)
       if (error.exitCode) {
         CliUx.ux.exit(error.exitCode)
