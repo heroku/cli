@@ -1,7 +1,7 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote'
@@ -86,9 +86,9 @@ $ VISUAL="atom --wait" heroku config:edit`,
     remote: flags.remote(),
   }
 
-  static args = [
-    {name: 'key', optional: true, description: 'edit a single key'},
-  ]
+  static args = {
+    key: Args.string({optional: true, description: 'edit a single key'}),
+  }
 
   app!: string
 

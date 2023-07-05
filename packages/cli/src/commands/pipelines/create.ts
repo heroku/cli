@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {prompt} from 'inquirer'
 
 import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../lib/pipelines/api'
@@ -34,11 +34,12 @@ export default class Create extends Command {
     }),
   }
 
-  static args = [{
-    name: 'name',
-    description: 'name of pipeline (defaults to basename of the app)',
-    required: false,
-  }]
+  static args = {
+    name: Args.string({
+      description: 'name of pipeline (defaults to basename of the app)',
+      required: false,
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Create)

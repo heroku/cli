@@ -1,6 +1,6 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 export default class DomainsUpdate extends Command {
@@ -18,7 +18,9 @@ export default class DomainsUpdate extends Command {
     }),
   }
 
-  static args = [{name: 'hostname'}]
+  static args = {
+    hostname: Args.string(),
+  }
 
   async run() {
     const {args, flags} = await this.parse(DomainsUpdate)

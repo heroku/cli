@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {updatePipeline} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
@@ -12,18 +12,16 @@ export default class PipelinesRename extends Command {
     '$ heroku pipelines:rename my-pipeline new-pipeline-name',
   ]
 
-  static args = [
-    {
-      name: 'pipeline',
+  static args = {
+    pipeline: Args.string({
       description: 'current name of pipeline',
       required: true,
-    },
-    {
-      name: 'name',
+    }),
+    name: Args.string({
       description: 'new name of pipeline',
       required: true,
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args} = await this.parse(PipelinesRename)

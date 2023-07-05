@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {prompt} from 'inquirer'
 
 import {createCoupling} from '../../lib/pipelines/api'
@@ -28,11 +28,12 @@ The stage of the app will be guessed based on its name if not specified.`
     }),
   }
 
-  static args = [{
-    name: 'pipeline',
-    description: 'name of pipeline',
-    required: true,
-  }]
+  static args = {
+    pipeline: Args.string({
+      description: 'name of pipeline',
+      required: true,
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(PipelinesAdd)

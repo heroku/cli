@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -12,12 +12,11 @@ export default class Search extends Command {
     description: Flags.string({description: 'buildpack description to filter on'}),
   }
 
-  static args = [
-    {
-      name: 'term',
+  static args = {
+    term: Args.string({
       description: 'search term that searches across name, namespace, and description',
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Search)

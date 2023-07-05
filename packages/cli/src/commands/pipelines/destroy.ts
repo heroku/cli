@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {destroyPipeline} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
@@ -13,11 +13,12 @@ export default class PipelinesDestroy extends Command {
     '$ heroku pipelines:destroy my-pipeline',
   ]
 
-  static args = [{
-    name: 'pipeline',
-    description: 'name of pipeline',
-    required: true,
-  }]
+  static args = {
+    pipeline: Args.string({
+      description: 'name of pipeline',
+      required: true,
+    }),
+  }
 
   async run() {
     const {args} = await this.parse(PipelinesDestroy)

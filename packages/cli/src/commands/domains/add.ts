@@ -1,7 +1,7 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
@@ -26,7 +26,9 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname', required: true}]
+  static args = {
+    hostname: Args.string({required: true}),
+  }
 
   certSelect = async (certs: Array<Heroku.SniEndpoint>) => {
     const nullCertChoice = {

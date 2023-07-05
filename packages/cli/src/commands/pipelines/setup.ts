@@ -1,7 +1,8 @@
 
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
+import open from 'open'
 
 import Debug from 'debug'
 
@@ -38,18 +39,16 @@ export default class Setup extends Command {
     }),
   }
 
-  static args = [
-    {
-      name: 'name',
+  static args = {
+    name: Args.string({
       description: 'name of pipeline',
       required: false,
-    },
-    {
-      name: 'repo',
+    }),
+    repo: Args.string({
       description: 'a GitHub repository to connect the pipeline to',
       required: false,
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Setup)
@@ -106,7 +105,7 @@ export default class Setup extends Command {
     ux.action.start('Configuring pipeline')
     try {
       await setup
-      await ux.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+      await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       debug(error)
       ux.error(error)

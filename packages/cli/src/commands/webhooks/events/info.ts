@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -16,9 +16,9 @@ export default class Info extends BaseCommand {
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
-  static args = [
-    {name: 'id', required: true},
-  ]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {flags, args} = await this.parse(Info)

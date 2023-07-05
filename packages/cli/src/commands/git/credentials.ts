@@ -1,13 +1,14 @@
 import {Command} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
 
 export class GitCredentials extends Command {
   static hidden = true
 
   static description = 'internal command for git-credentials'
 
-  static args = [
-    {name: 'command', required: true},
-  ]
+  static args = {
+    command: Args.string({required: true}),
+  }
 
   async run() {
     const {args} = await this.parse(GitCredentials)

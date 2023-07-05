@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {getPipeline} from '../../lib/pipelines/api'
 import GitHubAPI from '../../lib/pipelines/github-api'
@@ -25,11 +25,12 @@ export default class Connect extends Command {
     }),
   }
 
-  static args = [{
-    name: 'name',
-    description: 'name of pipeline',
-    required: true,
-  }]
+  static args = {
+    name: Args.string({
+      description: 'name of pipeline',
+      required: true,
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Connect)

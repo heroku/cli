@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
@@ -34,13 +34,12 @@ export default class PipelinesTransfer extends Command {
     '$ heroku pipelines:transfer admin-team -p my-pipeline',
   ]
 
-  static args = [
-    {
-      name: 'owner',
+  static args = {
+    owner: Args.string({
       description: 'the owner to transfer the pipeline to',
       required: true,
-    },
-  ]
+    }),
+  }
 
   static flags = {
     pipeline: flags.pipeline({required: true}),

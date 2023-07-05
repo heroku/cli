@@ -1,7 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
+import {FlagInput} from '@oclif/core/lib/interfaces/parser'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
@@ -17,7 +18,9 @@ To proceed, type ${app} or re-run this command with --confirm ${app}`)
 export default class LabsDisable extends Command {
   static description = 'disables an experimental feature'
 
-  static args = [{name: 'feature'}]
+  static args = {
+    feature: Args.string({required: true}),
+  }
 
   static flags: FlagInput = {
     app: flags.app(),

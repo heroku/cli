@@ -1,7 +1,7 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
 import {getPipeline} from '../../lib/ci/pipelines'
@@ -21,7 +21,9 @@ export default class CiReRun extends Command {
     pipeline: flags.pipeline({required: false}),
   }
 
-  static args = [{name: 'number', required: false}]
+  static args = {
+    number: Args.string({required: false}),
+  }
 
   async run() {
     const {flags, args} = await this.parse(CiReRun)

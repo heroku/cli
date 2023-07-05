@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
@@ -15,12 +15,11 @@ export default class Remove extends Command {
     }),
   }
 
-  static args = [
-    {
-      name: 'buildpack',
+  static args = {
+    buildpack: Args.string({
       description: 'namespace/name of the buildpack',
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Remove)
@@ -45,7 +44,7 @@ export default class Remove extends Command {
       // eslint-disable-next-line unicorn/no-array-method-this-argument
       spliceIndex = await buildpackCommand.findIndex(buildpacks, flags.index)
     } else {
-      spliceIndex = await buildpackCommand.findUrl(buildpacks, args.buildpack)
+      spliceIndex = await buildpackCommand.findUrl(buildpacks, args.buildpack as string)
     }
 
     if (spliceIndex === -1) {

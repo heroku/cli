@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {listPipelineApps} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
@@ -23,11 +23,12 @@ export default class PipelinesInfo extends Command {
     }),
   }
 
-  static args = [{
-    name: 'pipeline',
-    description: 'pipeline to show list of apps for',
-    required: true,
-  }]
+  static args = {
+    pipeline: Args.string({
+      description: 'pipeline to show list of apps for',
+      required: true,
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(PipelinesInfo)

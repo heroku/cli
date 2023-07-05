@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
@@ -7,13 +7,12 @@ import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
 export default class Versions extends Command {
   static description = 'list versions of a buildpack'
 
-  static args = [
-    {
-      name: 'buildpack',
+  static args = {
+    buildpack: Args.string({
       required: true,
       description: 'namespace/name of the buildpack',
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args} = await this.parse(Versions)

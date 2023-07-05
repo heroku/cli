@@ -1,5 +1,5 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
-import {Command, Flags} from '@oclif/core'
+import {Args, Command, Flags} from '@oclif/core'
 
 import {fork as foreman} from '../../lib/local/fork-foreman'
 
@@ -13,7 +13,9 @@ export default class Index extends Command {
 
   static aliases = ['local:start']
 
-  static args = [{name: 'processname', required: false}]
+  static args = {
+    processname: Args.string({required: false}),
+  }
 
   static examples = [
     `$ heroku local
