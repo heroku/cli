@@ -1,13 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx, Interfaces} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
     async prompt(app: string): Promise<string> {
-      CliUx.ux.warn('Insecure Action')
-      const name = await CliUx.ux.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
+      ux.warn('Insecure Action')
+      const name = await ux.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
 To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
     },
@@ -19,7 +19,7 @@ export default class LabsDisable extends Command {
 
   static args = [{name: 'feature'}]
 
-  static flags: Interfaces.FlagInput = {
+  static flags: FlagInput = {
     app: flags.app(),
     remote: flags.remote(),
     confirm: flags.string({required: false}),
@@ -54,9 +54,9 @@ export default class LabsDisable extends Command {
       target = flags.app
     }
 
-    CliUx.ux.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target!)}`)
+    ux.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target!)}`)
     await request
-    CliUx.ux.action.stop()
+    ux.action.stop()
   }
 
   disableFeature(feature: string, app?: string): Promise<any> {

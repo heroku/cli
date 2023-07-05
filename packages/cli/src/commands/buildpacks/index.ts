@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
@@ -19,7 +19,7 @@ export default class Index extends Command {
     if (buildpacks.length === 0) {
       this.log(`${flags.app} has no Buildpack URL set.`)
     } else {
-      CliUx.ux.styledHeader(`${flags.app} Buildpack URL${buildpacks.length > 1 ? 's' : ''}`)
+      ux.styledHeader(`${flags.app} Buildpack URL${buildpacks.length > 1 ? 's' : ''}`)
       buildpacksCommand.display(buildpacks, '')
     }
   }

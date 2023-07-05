@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {Dyno, Release} from '@heroku-cli/schema'
 
@@ -19,7 +19,7 @@ export default class Wait extends Command {
       parse: async input => {
         const w = Number.parseInt(input, 10)
         if (w < 10) {
-          CliUx.ux.error('wait-interval must be at least 10', {exit: 1})
+          ux.error('wait-interval must be at least 10', {exit: 1})
         }
 
         return w
@@ -70,7 +70,7 @@ export default class Wait extends Command {
       const releasedFraction = `${onLatest.length} / ${relevantDynos.length}`
       if (onLatest.length === relevantDynos.length) {
         if (!released) {
-          CliUx.ux.action.stop(`${releasedFraction}, done`)
+          ux.action.stop(`${releasedFraction}, done`)
         }
 
         break
@@ -78,12 +78,12 @@ export default class Wait extends Command {
 
       if (released) {
         released = false
-        CliUx.ux.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
+        ux.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
       }
 
-      CliUx.ux.action.status = releasedFraction
+      ux.action.status = releasedFraction
 
-      await CliUx.ux.wait(interval * 1000)
+      await ux.wait(interval * 1000)
     }
   }
 }

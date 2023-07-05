@@ -1,14 +1,13 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote'
 import {Editor} from '../../lib/config/util'
 
 const editor = new Editor()
-const cli = CliUx.ux
 
 interface Config {
   [key: string]: string;
@@ -57,11 +56,11 @@ function showDiff(from: Config, to: Config) {
   for (const k of allKeys(from, to)) {
     if (from[k] === to[k]) continue
     if (k in from) {
-      cli.log(color.red(`- ${k}=${quote(from[k])}`))
+      ux.log(color.red(`- ${k}=${quote(from[k])}`))
     }
 
     if (k in to) {
-      cli.log(color.green(`+ ${k}=${quote(to[k])}`))
+      ux.log(color.green(`+ ${k}=${quote(to[k])}`))
     }
   }
 }
@@ -96,9 +95,9 @@ $ VISUAL="atom --wait" heroku config:edit`,
   async run() {
     const {flags: {app}, args: {key}} = await this.parse(ConfigEdit)
     this.app = app
-    cli.action.start('Fetching config')
+    ux.action.start('Fetching config')
     const original = await this.fetchLatestConfig()
-    cli.action.stop()
+    ux.action.stop()
     let newConfig = {...original}
     const prefix = `heroku-${app}-config-`
     if (key) {
@@ -110,12 +109,12 @@ $ VISUAL="atom --wait" heroku config:edit`,
     }
 
     if (!await this.diffPrompt(original, newConfig)) return
-    cli.action.start('Verifying new config')
+    ux.action.start('Verifying new config')
     await this.verifyUnchanged(original)
-    cli.action.start('Updating config')
+    ux.action.start('Updating config')
     removeDeleted(newConfig, original)
     await this.updateConfig(newConfig)
-    cli.action.stop()
+    ux.action.stop()
   }
 
   private async fetchLatestConfig() {
@@ -129,11 +128,11 @@ $ VISUAL="atom --wait" heroku config:edit`,
       return false
     }
 
-    cli.log()
-    cli.log('Config Diff:')
+    ux.log()
+    ux.log('Config Diff:')
     showDiff(original, newConfig)
-    cli.log()
-    return cli.confirm(`Update config on ${color.app(this.app)} with these values?`)
+    ux.log()
+    return ux.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 
   private async verifyUnchanged(original: Config) {

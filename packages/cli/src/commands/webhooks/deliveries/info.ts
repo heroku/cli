@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -41,10 +41,10 @@ export default class DeliveriesInfo extends BaseCommand {
       'Next Attempt': delivery.next_attempt_at,
     }
 
-    CliUx.ux.styledHeader(delivery.id)
-    CliUx.ux.styledObject(obj)
+    ux.styledHeader(delivery.id)
+    ux.styledObject(obj)
 
-    CliUx.ux.styledHeader('Event Payload')
-    CliUx.ux.styledJSON(event.payload)
+    ux.styledHeader('Event Payload')
+    ux.styledJSON(event.payload)
   }
 }

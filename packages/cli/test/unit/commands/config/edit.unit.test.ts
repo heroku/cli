@@ -1,11 +1,9 @@
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
 import {stringToConfig} from '../../../../src/commands/config/edit'
 import {Editor} from '../../../../src/lib/config/util'
 import {expect, test} from '@oclif/test'
-
-const cli = CliUx.ux
 
 let sandbox: any
 let updated: string | Record<string, unknown>
@@ -27,17 +25,17 @@ describe('config:edit', () => {
         .callsFake(() => {
           return Promise.resolve(editedConfig)
         })
-      sandbox.stub(cli, 'confirm')
+      sandbox.stub(ux, 'confirm')
         .value(() => {
           return Promise.resolve(true)
         })
-      sandbox.stub(cli, 'log')
+      sandbox.stub(ux, 'log')
         .value(() => {
           return Promise.resolve()
         })
-      sandbox.stub(cli.action, 'start')
+      sandbox.stub(ux.action, 'start')
         .value(() => {})
-      sandbox.stub(cli.action, 'stop')
+      sandbox.stub(ux.action, 'stop')
         .value(() => {})
     })
 

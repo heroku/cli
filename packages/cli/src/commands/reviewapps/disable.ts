@@ -1,10 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-
-const cli = CliUx.ux
 
 export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
@@ -86,7 +84,7 @@ export default class ReviewappsDisable extends Command {
 
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
-    cli.action.start('Configuring pipeline')
+    ux.action.start('Configuring pipeline')
 
     const {body: pipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${flags.pipeline}`)
 
@@ -119,6 +117,6 @@ export default class ReviewappsDisable extends Command {
       })
     }
 
-    cli.action.stop()
+    ux.action.stop()
   }
 }

@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import HTTP from 'http-call'
 
 import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../lib/pipelines/api'
@@ -13,25 +13,23 @@ interface AppInfo {
   hash?: string;
 }
 
-const cli = CliUx.ux
-
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
 async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
   if (!downstreamApp.repo) {
-    return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
+    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
   }
 
   if (downstreamApp.repo !== targetApp.repo) {
-    return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
+    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
   }
 
   if (!downstreamApp.hash) {
-    return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
+    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
   }
 
   if (downstreamApp.hash === targetApp.hash) {
-    return cli.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
+    return ux.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
   }
 
   // Do the actual Github diff
@@ -47,8 +45,8 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       headers,
     }).then(res => res.body)
 
-    cli.log('')
-    cli.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
+    ux.log('')
+    ux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
     const mapped = githubDiff.commits.map((commit: any) => {
       return {
         sha: commit.sha.slice(0, 7),
@@ -57,7 +55,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
         message: commit.commit.message.split('\n')[0],
       }
     }).reverse()
-    cli.table(mapped, {
+    ux.table(mapped, {
       sha: {
         header: 'SHA',
       },
@@ -65,11 +63,11 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       author: {},
       message: {},
     })
-    cli.log(`\nhttps://github.com/${path}`)
+    ux.log(`\nhttps://github.com/${path}`)
   // tslint:disable-next-line: no-unused
   } catch {
-    cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
-    cli.log('are you sure you have pushed your latest commits to GitHub?')
+    ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
+    ux.log('are you sure you have pushed your latest commits to GitHub?')
   }
 }
 
@@ -123,25 +121,25 @@ export default class PipelinesDiff extends Command {
       .catch(() => {})
 
     if (!coupling) {
-      cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
+      ux.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
       return
     }
 
     const targetAppId = coupling.app!.id!
 
-    cli.action.start('Fetching apps from pipeline')
+    ux.action.start('Fetching apps from pipeline')
     const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
-    cli.action.stop()
+    ux.action.stop()
 
     const sourceStage = coupling.stage
 
     if (!sourceStage) {
-      return cli.error(`Unable to diff ${targetAppName}`)
+      return ux.error(`Unable to diff ${targetAppName}`)
     }
 
     const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1]
     if (!downstreamStage || PROMOTION_ORDER.indexOf(sourceStage) < 0) { // eslint-disable-line unicorn/prefer-includes
-      return cli.error(`Unable to diff ${targetAppName}`)
+      return ux.error(`Unable to diff ${targetAppName}`)
     }
 
     const downstreamApps = allApps.filter(function (app) {
@@ -149,7 +147,7 @@ export default class PipelinesDiff extends Command {
     })
 
     if (downstreamApps.length === 0) {
-      return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`)
+      return ux.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`)
     }
 
     // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
@@ -159,19 +157,19 @@ export default class PipelinesDiff extends Command {
         appInfoPromises.push(this.getAppInfo(app.name, app.id))
       }
     })
-    cli.action.start('Fetching release info for all apps')
+    ux.action.start('Fetching release info for all apps')
     const appInfo = await Promise.all(appInfoPromises)
-    cli.action.stop()
+    ux.action.stop()
 
     // Verify the target app
     const targetAppInfo = appInfo[0]
     if (!targetAppInfo.repo) {
       const command = `heroku pipelines:open ${coupling.pipeline!.name}`
-      return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.cyan(command)} and "Connect to GitHub".`)
+      return ux.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.cyan(command)} and "Connect to GitHub".`)
     }
 
     if (!targetAppInfo.hash) {
-      return cli.error(`No release was found for ${targetAppName}, unable to diff`)
+      return ux.error(`No release was found for ${targetAppName}, unable to diff`)
     }
 
     // Fetch GitHub token for the user

@@ -1,12 +1,10 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
 
 import {getOwner, warnMixedOwnership} from './ownership'
-
-const cli = CliUx.ux
 
 export default async function renderPipeline(
   heroku: APIClient,
@@ -14,18 +12,18 @@ export default async function renderPipeline(
   pipelineApps: Array<Heroku.App>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   {withOwners, showOwnerWarning} = {withOwners: false, showOwnerWarning: false}) {
-  cli.styledHeader(pipeline.name!)
+  ux.styledHeader(pipeline.name!)
 
   let owner
 
   if (pipeline.owner) {
     owner = await getOwner(heroku, pipelineApps, pipeline)
-    cli.log(`owner: ${owner}`)
+    ux.log(`owner: ${owner}`)
   }
 
-  cli.log('')
+  ux.log('')
 
-  const columns: CliUx.Table.table.Columns<Heroku.App> = {
+  const columns: ux.Table.table.Columns<Heroku.App> = {
     name: {
       header: 'app name',
       get(row) {
@@ -59,7 +57,7 @@ export default async function renderPipeline(
   const productionApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'production'), ['name'])
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
-  cli.table(apps, columns)
+  ux.table(apps, columns)
 
   if (showOwnerWarning && pipeline.owner) {
     warnMixedOwnership(pipelineApps, pipeline, owner)

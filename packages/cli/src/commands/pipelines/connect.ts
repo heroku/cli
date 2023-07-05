@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {getPipeline} from '../../lib/pipelines/api'
 import GitHubAPI from '../../lib/pipelines/github-api'
@@ -8,8 +8,6 @@ import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
 import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
 import getRepo from '../../lib/pipelines/setup/get-repo'
 import {nameAndRepo} from '../../lib/pipelines/setup/validate'
-
-const cli = CliUx.ux
 
 export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'
@@ -60,8 +58,8 @@ export default class Connect extends Command {
 
     const pipeline = await getPipeline(this.heroku, pipelineName)
 
-    cli.action.start('Linking to repo')
+    ux.action.start('Linking to repo')
     await kolkrabbi.createPipelineRepository(pipeline.body.id, repo.id)
-    cli.action.stop()
+    ux.action.stop()
   }
 }

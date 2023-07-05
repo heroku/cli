@@ -1,10 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as _ from 'lodash'
-
-const ux = CliUx.ux
 
 export class ConfigUnset extends Command {
   static aliases = [

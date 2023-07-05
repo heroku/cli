@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
@@ -34,7 +34,7 @@ export default class Versions extends Command {
     const result = await registry.listVersions(args.buildpack)
     Result.match({
       Ok: versions => {
-        CliUx.ux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
+        ux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
           return a.release > b.release ? -1 : 1
         }), {
           release: {

@@ -1,9 +1,7 @@
 import {Command} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import disambiguate from '../../lib/pipelines/disambiguate'
-
-const cli = CliUx.ux
 
 export default class Open extends Command {
   static description = 'open a pipeline in dashboard'
@@ -18,6 +16,6 @@ export default class Open extends Command {
     const {args} = await this.parse(Open)
 
     const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+    await ux.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }

@@ -1,8 +1,8 @@
 import {expect, test} from '@oclif/test'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
-const cli = CliUx.ux.action
+const cli = ux.action
 const cliStub = sinon.stub(cli, 'start').callsFake(() => {})
 
 describe('auth:logout', async () => {

@@ -1,6 +1,4 @@
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import {ux} from '@oclif/core'
 
 export default function setupPipeline(kolkrabbi: any, app: any, settings: any, pipelineID: any, ciSettings: any = {}) {
   const promises = [kolkrabbi.updateAppLink(app, settings)]
@@ -14,6 +12,6 @@ export default function setupPipeline(kolkrabbi: any, app: any, settings: any, p
   return Promise.all(promises).then(([appLink]) => {
     return appLink
   }, error => {
-    cli.error(error.body.message || error.message)
+    ux.error(error.body.message || error.message)
   })
 }

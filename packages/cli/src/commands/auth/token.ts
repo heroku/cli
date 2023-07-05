@@ -8,7 +8,7 @@ export default class AuthToken extends Command {
   static description = `outputs current CLI authentication token.
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
 
-  static flags: Interfaces.FlagInput = {
+  static flags: FlagInput = {
     help: flags.help({char: 'h'}),
   }
 

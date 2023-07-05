@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
@@ -27,16 +27,16 @@ export default class Remove extends Command {
     const buildpackCommand = new BuildpackCommand(this.heroku)
 
     if (flags.index && args.buildpack) {
-      CliUx.ux.error('Please choose either index or Buildpack, but not both.', {exit: 1})
+      ux.error('Please choose either index or Buildpack, but not both.', {exit: 1})
     }
 
     if (!flags.index && !args.buildpack) {
-      CliUx.ux.error('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.')
+      ux.error('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.')
     }
 
     const buildpacks = await buildpackCommand.fetch(flags.app)
     if (buildpacks.length === 0) {
-      CliUx.ux.error(`No buildpacks were found. Next release on ${flags.app} will detect buildpack normally.`, {exit: 1})
+      ux.error(`No buildpacks were found. Next release on ${flags.app} will detect buildpack normally.`, {exit: 1})
     }
 
     let spliceIndex: number
@@ -49,7 +49,7 @@ export default class Remove extends Command {
     }
 
     if (spliceIndex === -1) {
-      CliUx.ux.error('Buildpack not found. Nothing was removed.', {exit: 1})
+      ux.error('Buildpack not found. Nothing was removed.', {exit: 1})
     }
 
     if (buildpacks.length === 1) {

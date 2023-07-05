@@ -1,14 +1,12 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
 import {getPipeline} from '../../lib/ci/pipelines'
 import {createSourceBlob} from '../../lib/ci/source'
 import {displayAndExit} from '../../lib/ci/test-run'
-
-const cli = CliUx.ux
 
 export default class CiReRun extends Command {
   static description = 'rerun tests against current directory'
@@ -41,13 +39,13 @@ export default class CiReRun extends Command {
 
     this.log(`Rerunning test run #${sourceTestRun.number}...`)
 
-    cli.action.start('Preparing source')
+    ux.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(sourceTestRun.commit_sha, this)
-    cli.action.stop()
+    ux.action.stop()
 
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
 
-    cli.action.start('Starting test run')
+    ux.action.start('Starting test run')
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
 
     const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
@@ -59,7 +57,7 @@ export default class CiReRun extends Command {
       source_blob_url: sourceBlobUrl,
     },
     })
-    cli.action.stop()
+    ux.action.stop()
 
     await displayAndExit(pipeline, testRun.number!, this)
   }

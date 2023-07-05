@@ -1,7 +1,7 @@
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import Dyno from '../lib/run/dyno'
 import {buildCommand} from '../lib/run/helpers'
@@ -39,7 +39,7 @@ export default class RunRake extends Command {
       await dyno.start()
     } catch (error: any) {
       if (error.exitCode) {
-        CliUx.ux.error(error, {exit: error.exitCode})
+        ux.error(error, {exit: error.exitCode})
       } else {
         throw error
       }

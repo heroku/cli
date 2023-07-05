@@ -5,7 +5,7 @@ import {IOptions} from '@heroku-cli/command/lib/api-client'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import {HTTP} from 'http-call'
 import * as https from 'https'
@@ -92,7 +92,7 @@ export default class Dyno extends Duplex {
   async start() {
     this._startedAt = Date.now()
     if (this.opts.showStatus) {
-      CliUx.ux.action.start(`Running ${color.cyan.bold(this.opts.command)} on ${color.app(this.opts.app)}`)
+      ux.action.start(`Running ${color.cyan.bold(this.opts.command)} on ${color.app(this.opts.app)}`)
     }
 
     await this._doStart()
@@ -126,7 +126,7 @@ export default class Dyno extends Duplex {
 
         await this.attach()
       } else if (this.opts.showStatus) {
-        CliUx.ux.action.stop(this._status('done'))
+        ux.action.stop(this._status('done'))
       }
     } catch (error: any) {
       // Currently the runtime API sends back a 409 in the event the
@@ -141,7 +141,7 @@ export default class Dyno extends Duplex {
 
       throw error
     } finally {
-      CliUx.ux.action.stop()
+      ux.action.stop()
     }
   }
 
@@ -170,7 +170,7 @@ export default class Dyno extends Duplex {
       this.reject = reject
 
       if (this.opts.showStatus) {
-        CliUx.ux.action.status = this._status('starting')
+        ux.action.status = this._status('starting')
       }
 
       // @ts-ignore
@@ -183,9 +183,9 @@ export default class Dyno extends Duplex {
         debug('connect')
         // @ts-ignore eslint-disable-next-line no-unsafe-optional-chaining
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
-        c.write(pathnameWithSearchParams.substr(1) + '\r\n', () => {
+        c.write(pathnameWithSearchParams.slice(1) + '\r\n', () => {
           if (this.opts.showStatus) {
-            CliUx.ux.action.status = this._status('connecting')
+            ux.action.status = this._status('connecting')
           }
         })
       })
@@ -217,7 +217,7 @@ export default class Dyno extends Duplex {
       // @ts-ignore
       this.dyno = dyno
       // @ts-ignore
-      CliUx.ux.action.stop(this._status(this.dyno.state))
+      ux.action.stop(this._status(this.dyno.state))
 
       // @ts-ignore
       if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
@@ -286,7 +286,7 @@ export default class Dyno extends Duplex {
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
     if (this.opts.listen) {
-      CliUx.ux.log(`listening on port ${host}:${port} for ssh client`)
+      ux.log(`listening on port ${host}:${port} for ssh client`)
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
@@ -332,7 +332,7 @@ export default class Dyno extends Duplex {
           msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
           // eslint-disable-next-line unicorn/no-array-push-push
           msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
-          CliUx.ux.error(msgs.join('\n'))
+          ux.error(msgs.join('\n'))
         }
 
         // cleanup local server
@@ -375,7 +375,7 @@ export default class Dyno extends Duplex {
       debug('input: %o', data)
       // discard first line
       if (c && firstLine) {
-        if (this.opts.showStatus) CliUx.ux.action.stop(this._status('up'))
+        if (this.opts.showStatus) ux.action.stop(this._status('up'))
         firstLine = false
         this._readStdin(c)
         return
@@ -435,7 +435,7 @@ export default class Dyno extends Duplex {
         sigints = sigints.filter(d => d > Date.now() - 1000)
 
         if (sigints.length >= 4) {
-          CliUx.ux.error('forcing dyno disconnect', {exit: 1})
+          ux.error('forcing dyno disconnect', {exit: 1})
         }
       })
     } else {
@@ -485,7 +485,7 @@ export default class Dyno extends Duplex {
 
       notify(notification)
     } catch (error: any) {
-      CliUx.ux.warn(error)
+      ux.warn(error)
     }
   }
 }

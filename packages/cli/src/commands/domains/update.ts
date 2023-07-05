@@ -1,6 +1,6 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 export default class DomainsUpdate extends Command {
@@ -31,7 +31,7 @@ export default class DomainsUpdate extends Command {
         body: {sni_endpoint: flags.cert},
       })
     } catch (error: any) {
-      CliUx.ux.error(error)
+      ux.error(error)
     } finally {
       action.stop()
     }
