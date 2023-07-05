@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {CliUx} from '@oclif/core'
 
 export function buildCommand(args: Array<string>) {
@@ -23,6 +24,7 @@ export function buildEnvFromFlag(flag: string) {
   const env = {}
   for (const v of flag.split(';')) {
     const m = v.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
+    // @ts-ignore
     if (m) env[m[1]] = m[2]
     else CliUx.ux.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`)
   }

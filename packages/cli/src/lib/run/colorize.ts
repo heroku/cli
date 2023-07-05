@@ -13,7 +13,7 @@ export const COLORS: Array<(s: string) => string> = [
   s => c.bold.yellow(s),
   s => c.bold.blue(s),
 ]
-const assignedColors = {}
+const assignedColors: any = {}
 function getColorForIdentifier(i: string) {
   i = i.split('.')[0]
   if (assignedColors[i]) return assignedColors[i]
@@ -31,11 +31,11 @@ getColorForIdentifier('heroku-postgres')
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
 const red = c.red
-const dim = i => c.dim(i)
+const dim = (i: string) => c.dim(i)
 const other = dim
-const path = i => c.green(i)
-const method = i => c.bold.magenta(i)
-const status = code => {
+const path = (i: string) => c.green(i)
+const method = (i: string) => c.bold.magenta(i)
+const status = (code: any) => {
   if (code < 200) return code
   if (code < 300) return c.green(code)
   if (code < 400) return c.cyan(code)
@@ -55,7 +55,7 @@ const ms = (s: string) => {
 }
 
 function colorizeRouter(body: string) {
-  const encodeColor = ([k, v]) => {
+  const encodeColor = ([k, v]: [string, string]) => {
     switch (k) {
     case 'at': return [k, v === 'error' ? red(v) : other(v)]
     case 'code': return [k, red.bold(v)]
@@ -90,7 +90,7 @@ function colorizeRouter(body: string) {
 
       return other(k + '=') + v
     }).join(' ')
-  } catch (error) {
+  } catch (error: any) {
     CliUx.ux.warn(error)
     return body
   }
@@ -136,7 +136,7 @@ function colorizeRun(body: string) {
         exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2]),
       ].join('')
     }
-  } catch (error) {
+  } catch (error: any) {
     CliUx.ux.warn(error)
   }
 
@@ -199,7 +199,7 @@ function colorizeWeb(body: string) {
         route[4],
       ].join('')
     }
-  } catch (error) {
+  } catch (error: any) {
     CliUx.ux.warn(error)
   }
 

@@ -7,8 +7,10 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku/buildpack-registry": "^1.0.1",
+    "@heroku/eventsource": "^1.0.7",
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^9.0.2",
+    "@heroku-cli/notifications": "^1.2.2",
     "@heroku-cli/plugin-addons-v5": "^8.1.7",
     "@heroku-cli/plugin-apps-v5": "^8.1.8",
     "@heroku-cli/plugin-autocomplete": "^8.1.7",
@@ -211,6 +213,9 @@
       "local": {
         "description": "run Heroku app locally"
       },
+      "logs": {
+        "description": "display recent log output"
+      },
       "maintenance": {
         "description": "enable/disable access to app"
       },
@@ -220,6 +225,9 @@
       },
       "ps": {
         "description": "manage app dynos"
+      },
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
       },
       "stack": {
         "description": "list available stacks",

@@ -1,11 +1,12 @@
 import {APIClient} from '@heroku-cli/command'
-import * as EventSource from '@heroku/eventsource'
 import {CliUx} from '@oclif/core'
 import HTTP from 'http-call'
 import {URL} from 'url'
 
 import colorize from './colorize'
 import liner from './line-transform'
+
+const EventSource = require('@heroku/eventsource')
 
 interface LogDisplayerOptions {
   app: string;
@@ -40,7 +41,7 @@ function readLogsV2(logplexURL: string) {
       },
     })
 
-    es.addEventListener('error', function (err) {
+    es.addEventListener('error', function (err: { status: number; message: any }) {
       if (err && (err.status || err.message)) {
         const msg = (isTail && (err.status === 404 || err.status === 403)) ?
           'Log stream timed out. Please try again.' :
@@ -57,7 +58,7 @@ function readLogsV2(logplexURL: string) {
       // should only land here if --tail and no error status or message
     })
 
-    es.addEventListener('message', function (e) {
+    es.addEventListener('message', function (e: { data: string }) {
       e.data.trim().split(/\n+/).forEach(line => {
         CliUx.ux.log(colorize(line))
       })

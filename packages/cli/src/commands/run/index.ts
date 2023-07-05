@@ -4,8 +4,8 @@ import {CliUx} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 
-import Dyno from '../../lib/dyno'
-import {buildCommand} from '../../lib/helpers'
+import Dyno from '../../lib/run/dyno'
+import {buildCommand} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run')
 
@@ -58,7 +58,7 @@ export default class Run extends Command {
     try {
       await dyno.start()
       debug('done running')
-    } catch (error) {
+    } catch (error: any) {
       debug(error)
       if (error.exitCode) {
         CliUx.ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
