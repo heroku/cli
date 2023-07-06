@@ -7,7 +7,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
-    "@heroku-cli/command": "^9.0.2",
+    "@heroku-cli/command": "^10.0.0",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku-cli/plugin-addons-v5": "^8.1.7",
     "@heroku-cli/plugin-apps-v5": "^8.1.8",
@@ -94,7 +94,7 @@
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
     "oclif": "3.8.1",
-    "open": "^9.1.0",
+    "open": "^8.4.2",
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
     "read-pkg": "^4.0.1",
