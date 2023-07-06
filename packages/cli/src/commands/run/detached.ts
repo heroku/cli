@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // tslint:disable:file-name-casing
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import {CliUx} from '@oclif/core'
 
-import Dyno from '../../lib/dyno'
-import {buildCommand} from '../../lib/helpers'
-import logDisplayer from '../../lib/log-displayer'
+import Dyno from '../../lib/run/dyno'
+import {buildCommand} from '../../lib/run/helpers'
+import logDisplayer from '../../lib/run/log-displayer'
 
 export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
@@ -50,10 +51,12 @@ export default class RunDetached extends Command {
     if (flags.tail) {
       await logDisplayer(this.heroku, {
         app: flags.app,
+        // @ts-ignore
         dyno: dyno.dyno.name,
         tail: true,
       })
     } else {
+      // @ts-ignore
       CliUx.ux.log(`Run ${color.cmd('heroku logs --app ' + dyno.opts.app + ' --dyno ' + dyno.dyno.name)} to view the output.`)
     }
   }

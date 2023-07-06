@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {IOptions} from '@heroku-cli/command/lib/api-client'
@@ -14,7 +15,7 @@ import * as tls from 'tls'
 import * as tty from 'tty'
 import {URL, parse} from 'url'
 
-import {buildEnvFromFlag} from '../lib/helpers'
+import {buildEnvFromFlag} from './helpers'
 
 const debug = debugFactory('heroku:run')
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
@@ -97,7 +98,7 @@ export default class Dyno extends Duplex {
     await this._doStart()
   }
 
-  async _doStart(retries = 2): Promise<HTTP<unknown>> {
+  async _doStart(retries = 2): Promise<HTTP<unknown> | undefined> {
     const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
     try {
@@ -114,16 +115,20 @@ export default class Dyno extends Duplex {
           force_no_tty: this.opts['no-tty'],
         },
       })
+      // @ts-ignore
       this.dyno = dyno.body
       if (this.opts.attach || this.opts.dyno) {
+        // @ts-ignore
         if (this.dyno.name && this.opts.dyno === undefined) {
+          // @ts-ignore
           this.opts.dyno = this.dyno.name
         }
+
         await this.attach()
       } else if (this.opts.showStatus) {
         CliUx.ux.action.stop(this._status('done'))
       }
-    } catch (error) {
+    } catch (error: any) {
       // Currently the runtime API sends back a 409 in the event the
       // release isn't found yet. API just forwards this response back to
       // the client, so we'll need to retry these. This usually
@@ -133,6 +138,7 @@ export default class Dyno extends Duplex {
       if (error.statusCode === 409 && retries > 0) {
         return this._doStart(retries - 1)
       }
+
       throw error
     } finally {
       CliUx.ux.action.stop()
@@ -146,11 +152,13 @@ export default class Dyno extends Duplex {
       this.uri = new URL(this.dyno.attach_url)
       this.legacyUri = parse(this.dyno.attach_url)
     }
+
     if (this._useSSH) {
       this.p = this._ssh()
     } else {
       this.p = this._rendezvous()
     }
+
     return this.p.then(() => {
       this.end()
     })
@@ -165,13 +173,15 @@ export default class Dyno extends Duplex {
         CliUx.ux.action.status = this._status('starting')
       }
 
-      const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
+      // @ts-ignore
+      const c = tls.connect(Number.parseInt(this.uri.port, 10), this.uri.hostname, {
         rejectUnauthorized: this.heroku.options.rejectUnauthorized,
       })
       c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
       c.on('connect', () => {
         debug('connect')
+        // @ts-ignore eslint-disable-next-line no-unsafe-optional-chaining
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
         c.write(pathnameWithSearchParams.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) {
@@ -182,6 +192,7 @@ export default class Dyno extends Duplex {
       c.on('data', this._readData(c))
       c.on('close', () => {
         debug('close')
+        // @ts-ignore
         this.opts['exit-code'] ? this.reject('No exit code returned') : this.resolve()
         if (this.unpipeStdin) {
           this.unpipeStdin()
@@ -191,6 +202,7 @@ export default class Dyno extends Duplex {
       c.on('timeout', () => {
         debug('timeout')
         c.end()
+        // @ts-ignore
         this.reject(new Error('timed out'))
       })
       process.once('SIGINT', () => c.end())
@@ -202,16 +214,19 @@ export default class Dyno extends Duplex {
 
     try {
       const {body: dyno} = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
+      // @ts-ignore
       this.dyno = dyno
+      // @ts-ignore
       CliUx.ux.action.stop(this._status(this.dyno.state))
 
+      // @ts-ignore
       if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
         return this._connect()
       }
 
       await wait(interval)
       return this._ssh()
-    } catch (error) {
+    } catch (error: any) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
       if (error.http.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
@@ -226,6 +241,7 @@ export default class Dyno extends Duplex {
       this.resolve = resolve
       this.reject = reject
 
+      // @ts-ignore
       const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
@@ -237,6 +253,7 @@ export default class Dyno extends Duplex {
         const s = net.createServer(client => {
           client.on('end', () => {
             s.close()
+            // @ts-ignore
             this.resolve()
           })
           client.on('connect', () => s.close())
@@ -247,7 +264,7 @@ export default class Dyno extends Duplex {
           client.setNoDelay(true)
           remote.setNoDelay(true)
 
-          remote.on('data', data => client.write(data))
+          remote.on('data', (data: any) => client.write(data))
           client.on('data', data => remote.write(data))
         })
 
@@ -286,6 +303,7 @@ export default class Dyno extends Duplex {
           params.push('-t')
         }
       }
+
       const sshProc = spawn('ssh', params, {stdio})
 
       // only receives stdout with --exit-code
@@ -294,6 +312,7 @@ export default class Dyno extends Duplex {
         sshProc.stdout.on('data', this._readData())
       }
 
+      // @ts-ignore
       sshProc.stderr.on('data', data => {
         lastErr = data
 
@@ -309,17 +328,21 @@ export default class Dyno extends Duplex {
           if (process.env.SSH_AUTH_SOCK) {
             msgs.push('Confirm that your ssh key is added to your agent by running `ssh-add`.')
           }
+
           msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
+          // eslint-disable-next-line unicorn/no-array-push-push
           msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
           CliUx.ux.error(msgs.join('\n'))
         }
+
         // cleanup local server
         localServer.close()
       })
       this.p
-      .then(() => sshProc.kill())
-      .catch(() => sshProc.kill())
+        .then(() => sshProc.kill())
+        .catch(() => sshProc.kill())
     }
+
     this._notify()
   }
 
@@ -335,17 +358,20 @@ export default class Dyno extends Duplex {
       c.COLUMNS = process.stdout.columns
       c.LINES = process.stdout.rows
     }
+
     return c
   }
 
-  _status(status) {
-    const size = this.dyno.size ? ` (${this.dyno.size})` : ''
+  _status(status: string | undefined) {
+    // @ts-ignore
+    const size = this.dyno.size > 0 ? ` (${this.dyno.size})` : ''
+    // @ts-ignore
     return `${status}, ${this.dyno.name || this.opts.dyno}${size}`
   }
 
   _readData(c?: tls.TLSSocket) {
     let firstLine = true
-    return data => {
+    return (data: string) => {
       debug('input: %o', data)
       // discard first line
       if (c && firstLine) {
@@ -354,11 +380,12 @@ export default class Dyno extends Duplex {
         this._readStdin(c)
         return
       }
+
       this._notify()
 
       // carriage returns break json parsing of output
       if (!process.stdout.isTTY) {
-        // eslint-disable-next-line no-control-regex
+        // eslint-disable-next-line no-control-regex, prefer-regex-literals
         data = data.replace(new RegExp('\r\n', 'g'), '\n')
       }
 
@@ -366,21 +393,25 @@ export default class Dyno extends Duplex {
       if (exitCode) {
         debug('got exit code: %d', exitCode[1])
         this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
-        const code = parseInt(exitCode[1], 10)
+        const code = Number.parseInt(exitCode[1], 10)
         if (code === 0) {
+          // @ts-ignore
           this.resolve()
         } else {
           const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
           err.exitCode = code
+          // @ts-ignore
           this.reject(err)
         }
+
         return
       }
+
       this.push(data)
     }
   }
 
-  _readStdin(c) {
+  _readStdin(c: tls.TLSSocket) {
     this.input = c
     const stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
     stdin.setEncoding('utf8')
@@ -392,9 +423,10 @@ export default class Dyno extends Duplex {
     }
 
     if (!this.opts['no-tty'] && tty.isatty(0)) {
+      // @ts-ignore
       stdin.setRawMode(true)
       stdin.pipe(c)
-      let sigints = []
+      let sigints: any[] = []
       stdin.on('data', function (c) {
         if (c === '\u0003') {
           sigints.push(Date.now())
@@ -414,6 +446,7 @@ export default class Dyno extends Duplex {
         flush: done => c.write('\x04', done),
       }))
     }
+
     this.uncork()
   }
 
@@ -424,10 +457,11 @@ export default class Dyno extends Duplex {
     // do not need to do anything to handle Readable interface
   }
 
-  _write(chunk, encoding, callback) {
+  _write(chunk: any, encoding: any, callback: any) {
     if (this.useSSH) {
       throw new Error('Cannot write stream to ssh dyno')
     }
+
     if (!this.input) throw new Error('no input')
     this.input.write(chunk, encoding, callback)
   }
@@ -438,9 +472,11 @@ export default class Dyno extends Duplex {
       this._notified = true
       if (!this.opts.notify) return
       // only show notifications if dyno took longer than 20 seconds to start
+      // @ts-ignore
       if (Date.now() - this._startedAt < 1000 * 20) return
 
       const notification: Notification & { subtitle?: string } = {
+        // @ts-ignore
         title: this.opts.app,
         subtitle: `heroku run ${this.opts.command}`,
         message: 'dyno is up',
@@ -448,7 +484,7 @@ export default class Dyno extends Duplex {
       }
 
       notify(notification)
-    } catch (error) {
+    } catch (error: any) {
       CliUx.ux.warn(error)
     }
   }

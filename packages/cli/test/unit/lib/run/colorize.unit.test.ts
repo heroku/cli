@@ -1,8 +1,8 @@
-import colorize from '../../../src/lib/colorize'
+import colorize from '../../../../src/lib/run/colorize'
 import {expect} from 'chai'
 
 describe('colorize', () => {
-  const colorizeTest = (type, input) => {
+  const colorizeTest = (type: string, input: string) => {
     return colorize(`2018-01-01T00:00:00.00+00:00 heroku[${type}]: ${input}`)
   }
 
