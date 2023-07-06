@@ -92,5 +92,30 @@ describe('config:edit', () => {
           expect(updated).to.deep.equal({BLANK: '', NOT_BLANK: ''})
         })
     })
+
+    describe('setting specific var', () => {
+      beforeEach(() => {
+        editedConfig = 'a'
+      })
+
+      test
+        .nock('https://api.heroku.com', api => api
+          .get('/apps/myapp/config-vars')
+          .reply(200, {FIRST: '1', SECOND: '2'})
+          .get('/apps/myapp/config-vars')
+          .reply(200, {FIRST: '1', SECOND: '2'}),
+        )
+        .nock('https://api.heroku.com', api => api
+          .patch('/apps/myapp/config-vars')
+          .reply(function (_uri, requestBody) {
+            updated = requestBody
+            return [200, {DOES_NOT: 'matter'}]
+          }),
+        )
+        .command(['config:edit', '--app=myapp', 'FIRST'])
+        .it('updates the values with blanks', () => {
+          expect(updated).to.deep.equal({FIRST: 'a', SECOND: '2'})
+        })
+    })
   })
 })
