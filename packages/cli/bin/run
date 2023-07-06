@@ -2,20 +2,44 @@
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
-process.on('exit', code => {
-  console.log(`We just received exit with code ${code}`)
+const now = new Date()
+const cliStartTime = now.getTime()
+const globalTelemetry = require('../lib/performance_analytics')
+const handleErrors = require('@oclif/core/handle')
+
+// TODO: clean up code
+
+process.on('beforeExit', async code => {
+  // capture as successful exit
+  global.cliTelemetry.exitCode = code
+  global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+  const telemetryData = global.cliTelemetry
+  await globalTelemetry.reportSuccessful(telemetryData)
 })
 
-process.once('SIGINT', () => {
-  // works to collect SIGINT signal
-
-  // Let the default behavior execute
-  process.kill(process.pid, 'SIGINT')
+process.on('SIGINT', async () => {
+  // capture as unsuccessful exit
+  let error = new Error('Received SIGINT')
+  error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+  await globalTelemetry.reportUnsuccessful(error)
+  process.exit(1)
 })
 
-// Add process event listeners to telemetry module
+process.on('SIGTERM', async () => {
+  // capture as unsuccessful exit
+  let error = new Error('Received SIGTERM')
+  error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+  await globalTelemetry.reportUnsuccessful(error)
+  process.exit(1)
+})
 
 const oclif = require('@oclif/core')
 
-oclif.run().then(require('@oclif/core/flush')).catch(require('@oclif/core/handle'))
+oclif.run().then(require('@oclif/core/flush')).catch(async error => {
+  // capture any errors raised by oclif
+  let cliError = error
+  cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+  await globalTelemetry.reportUnsuccessful(cliError)
+  handleErrors(error)
+})
 
