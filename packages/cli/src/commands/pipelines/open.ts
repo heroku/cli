@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-const open = require('open')
+import * as open from 'open'
 
 import disambiguate from '../../lib/pipelines/disambiguate'
 
@@ -13,10 +13,15 @@ export default class Open extends Command {
     pipeline: Args.string({description: 'name of pipeline', required: true}),
   }
 
+  // this only exists because of difficulty stubbing open in tests
+  private async open(url: string): ReturnType<typeof open> {
+    return open(url)
+  }
+
   async run() {
     const {args} = await this.parse(Open)
 
     const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+    await this.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }

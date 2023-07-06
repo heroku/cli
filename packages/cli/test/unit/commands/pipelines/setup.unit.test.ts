@@ -2,8 +2,8 @@ import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
 import * as sinon from 'sinon'
+import Setup from '../../../../src/commands/pipelines/setup'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
-import * as proxyquire from 'proxyquire'
 
 describe('pipelines:setup', () => {
   test
@@ -73,10 +73,6 @@ describe('pipelines:setup', () => {
       context('in a personal account', function () {
         const promptStub = sinon.stub()
         const confirmStub = sinon.stub()
-        const openStub = sinon.stub().resolves(Promise.resolve())
-        proxyquire('../../../../src/commands/pipelines/setup', {
-          open: openStub,
-        })
 
         test
           .do(() => {
@@ -100,6 +96,7 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', () => promptStub)
           .stub(ux, 'confirm', () => confirmStub)
+          .stub(Setup.prototype, 'open', () => Promise.resolve())
           .command(['pipelines:setup'])
           .it('creates apps in the personal account with CI enabled')
 
@@ -144,7 +141,7 @@ describe('pipelines:setup', () => {
               .reply(200)
           })
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve())
+          .stub(Setup.prototype, 'open', () => Promise.resolve())
           .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
           .it('does not prompt for options with the -y flag', () => {
           // Since we're passing the `yes` flag here, we should always return default settings and
@@ -200,7 +197,7 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', () => promptStub)
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve())
+          .stub(Setup.prototype, 'open', () => Promise.resolve())
           .command(['pipelines:setup', '--team', team])
           .it('creates apps in a team with CI enabled')
       })
@@ -248,7 +245,7 @@ describe('pipelines:setup', () => {
               .reply(201, {})
           })
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
+          .stub(Setup.prototype, 'open', () => Promise.resolve()) // eslint-disable-line unicorn/consistent-function-scoping
           .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
           .catch(error => {
             expect(error.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
@@ -300,7 +297,7 @@ describe('pipelines:setup', () => {
               .reply(201, {})
           })
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve())
+          .stub(Setup.prototype, 'open', () => Promise.resolve())
           .stub(pollAppSetups, 'wait', () => {
             pollAppSetups('foo', 'bar')
           })

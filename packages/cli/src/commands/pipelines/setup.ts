@@ -48,6 +48,11 @@ export default class Setup extends Command {
     }),
   }
 
+  // this only exists because of difficulty stubbing open in tests
+  private async open(url: string): ReturnType<typeof open> {
+    return open(url)
+  }
+
   async run() {
     const {args, flags} = await this.parse(Setup)
 
@@ -103,7 +108,7 @@ export default class Setup extends Command {
     ux.action.start('Configuring pipeline')
     try {
       await setup
-      await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+      await this.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       debug(error)
       ux.error(error)
