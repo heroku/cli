@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // tslint:disable:file-name-casing
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 
-import logDisplayer from '../lib/log-displayer'
+import logDisplayer from '../lib/run/log-displayer'
 
 export default class Logs extends Command {
   static description = `display recent log output
@@ -38,6 +39,7 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
 
     await logDisplayer(this.heroku, {
       app: flags.app,
+      // @ts-ignore
       dyno: flags.dyno || flags.ps,
       lines: flags.num || 100,
       tail: flags.tail,

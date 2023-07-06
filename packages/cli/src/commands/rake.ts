@@ -3,8 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions'
 import {CliUx} from '@oclif/core'
 
-import Dyno from '../lib/dyno'
-import {buildCommand} from '../lib/helpers'
+import Dyno from '../lib/run/dyno'
+import {buildCommand} from '../lib/run/helpers'
 
 export default class RunRake extends Command {
   static hidden = true
@@ -37,7 +37,7 @@ export default class RunRake extends Command {
     const dyno = new Dyno(opts)
     try {
       await dyno.start()
-    } catch (error) {
+    } catch (error: any) {
       if (error.exitCode) {
         CliUx.ux.error(error, {exit: error.exitCode})
       } else {
