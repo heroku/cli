@@ -42,7 +42,7 @@ describe('labs:disable', () => {
       })
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false}).reply(200),
     )
-    .stub(ux, 'prompt', () => promptStub)
+    .stub(ux, 'prompt', () => Promise.resolve('myapp'))
     .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
     .it('warns user of insecure action', ({stderr}) => {
       expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
