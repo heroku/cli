@@ -16,7 +16,10 @@ export default class Add extends Command {
   }
 
   static args = {
-    buildpack: Args.string({description: 'namespace/name of the buildpack', required: true}),
+    buildpack: Args.string({
+      required: true,
+      description: 'namespace/name of the buildpack',
+    }),
   }
 
   async run() {
