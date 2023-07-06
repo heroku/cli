@@ -2666,6 +2666,11 @@
   resolved "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.4.0.tgz"
   integrity sha512-bsuR5rj81NxgJ1w+Z5mgHlcIFBJKa2ChtbFbd1xDXxNJaBqYocAL53vsQ9T/CIZOSEs4A3WK7VMvzOOsG5cbJQ==
 
+"@types/proxyquire@^1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@types/proxyquire/-/proxyquire-1.3.28.tgz#05a647bb0d8fe48fc8edcc193e43cc79310faa7d"
+  integrity sha512-SQaNzWQ2YZSr7FqAyPPiA3FYpux2Lqh3HWMZQk47x3xbMCqgC/w0dY3dw9rGqlweDDkrySQBcaScXWeR+Yb11Q==
+
 "@types/responselike@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@types/responselike/-/responselike-1.0.0.tgz"

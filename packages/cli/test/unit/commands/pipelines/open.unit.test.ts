@@ -1,11 +1,20 @@
-import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
+import * as proxyquire from 'proxyquire'
+import * as sinon from 'sinon'
 
 describe('pipelines:open', () => {
   const pipeline = {id: '0123', name: 'Rigel'}
 
   let openWasCalled = false
   let openedUrl = ''
+  const openStub = sinon.stub().callsFake((urlToOpen: string) => {
+    openWasCalled = true
+    openedUrl = urlToOpen
+    return Promise.resolve()
+  })
+  proxyquire('../../../../src/commands/pipelines/open', {
+    open: Object.assign(openStub, {'@global': true}),
+  })
 
   test
     .stdout()
@@ -15,11 +24,6 @@ describe('pipelines:open', () => {
         .query({eq: {name: pipeline.name}})
         .reply(200, [pipeline]),
     )
-    .stub(ux, 'open', () => (urlToOpen: string) => {
-      openWasCalled = true
-      openedUrl = urlToOpen
-      return Promise.resolve()
-    })
     .command(['pipelines:open', pipeline.name])
     .it('opens the url', () => {
       expect(openWasCalled).to.be.true

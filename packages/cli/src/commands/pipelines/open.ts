@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import * as open from 'open'
+const open = require('open')
 
 import disambiguate from '../../lib/pipelines/disambiguate'
 

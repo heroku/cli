@@ -3,6 +3,7 @@ import color from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
 import * as sinon from 'sinon'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
+import * as proxyquire from 'proxyquire'
 
 describe('pipelines:setup', () => {
   test
@@ -72,6 +73,10 @@ describe('pipelines:setup', () => {
       context('in a personal account', function () {
         const promptStub = sinon.stub()
         const confirmStub = sinon.stub()
+        const openStub = sinon.stub().resolves(Promise.resolve())
+        proxyquire('../../../../src/commands/pipelines/setup', {
+          open: openStub,
+        })
 
         test
           .do(() => {
@@ -95,7 +100,6 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', () => promptStub)
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve())
           .command(['pipelines:setup'])
           .it('creates apps in the personal account with CI enabled')
 
@@ -119,7 +123,6 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', () => promptStub)
           .stub(ux, 'confirm', () => confirmStub)
-          .stub(ux, 'open', () => () => Promise.resolve())
           .command(['pipelines:setup', pipeline.name.toUpperCase()])
           .it('downcases capitalised pipeline names')
 
