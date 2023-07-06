@@ -1,5 +1,5 @@
 import * as nock from 'nock'
-
+import * as sinon from 'sinon'
 import {expect, test as base} from '@oclif/test'
 
 const test = base
@@ -8,8 +8,6 @@ const api = nock('https://status.heroku.com:443')
 
 beforeEach(() => nock.cleanAll())
 afterEach(() => api.done())
-
-const time = new Date()
 
 describe('when heroku is green', () => {
   test
@@ -52,6 +50,17 @@ Tools:     No known issues at this time.\n`)
 })
 
 describe('when heroku has issues', () => {
+  const now = Date.now()
+  const timeISO = new Date(now).toISOString()
+
+  before(() => {
+    sinon.stub(Date, 'now').returns(now)
+  })
+
+  after(() => {
+    sinon.restore()
+  })
+
   test
     .stdout()
     .nock('https://status.heroku.com', api => {
@@ -64,9 +73,9 @@ describe('when heroku has issues', () => {
         incidents: [
           {
             title: 'incident title',
-            created_at: time.toISOString(),
+            created_at: timeISO,
             full_url: 'https://status.heroku.com',
-            updates: [{update_type: 'update type', updated_at: time.toISOString(), contents: 'update contents'}],
+            updates: [{update_type: 'update type', updated_at: timeISO, contents: 'update contents'}],
           },
         ],
         scheduled: [],
@@ -78,9 +87,9 @@ describe('when heroku has issues', () => {
 Data:      No known issues at this time.
 Tools:     No known issues at this time.
 
-=== incident title ${time.toISOString()} https://status.heroku.com
+=== incident title ${timeISO} https://status.heroku.com
 
-update type ${time.toISOString()} (less than a minute ago)
+update type ${timeISO} (less than a minute ago)
 update contents
 
 `)
