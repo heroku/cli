@@ -85,7 +85,7 @@ describe('pipelines:transfer', function () {
         pipeline: {id: pipeline.id},
       }).reply(200, {})
     })
-    .stub(ux, 'prompt', () => promptStub)
+    .stub(ux, 'prompt', promptStub)
     .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
     .it('does not pass confirm flag', ctx => {
       expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
