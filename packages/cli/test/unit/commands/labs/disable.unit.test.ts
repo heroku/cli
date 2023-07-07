@@ -1,8 +1,7 @@
 import {expect, test} from '@oclif/test'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
-const cli = CliUx.ux
 const promptStub = sinon.stub()
 
 describe('labs:disable', () => {
@@ -43,7 +42,7 @@ describe('labs:disable', () => {
       })
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false}).reply(200),
     )
-    .stub(cli, 'prompt', () => promptStub)
+    .stub(ux, 'prompt', () => Promise.resolve('myapp'))
     .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
     .it('warns user of insecure action', ({stderr}) => {
       expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
@@ -55,7 +54,7 @@ describe('labs:disable', () => {
       promptStub.onFirstCall().resolves('myapp')
       promptStub.onSecondCall().resolves('notMyApp')
     })
-    .stub(cli, 'prompt', () => promptStub)
+    .stub(ux, 'prompt', () => promptStub)
     .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
     .catch(error => {
       expect(error.message).to.equal('Confirmation name did not match app name. Try again.')
