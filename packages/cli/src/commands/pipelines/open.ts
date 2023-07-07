@@ -13,15 +13,10 @@ export default class Open extends Command {
     pipeline: Args.string({description: 'name of pipeline', required: true}),
   }
 
-  // this only exists because of difficulty stubbing open in tests
-  private async open(url: string): ReturnType<typeof open> {
-    return open(url)
-  }
-
   async run() {
     const {args} = await this.parse(Open)
 
     const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    await this.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+    await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }
