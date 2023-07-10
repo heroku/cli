@@ -1,3 +1,12 @@
+import Rollbar from 'rollbar'
+const rollbar = new Rollbar({
+  accessToken: '41f8730238814af69c248e2f7ca59ff2',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  verbose: true,
+  sendConfig: true,
+})
+
 interface Telemetry {
     command: string,
     os: string,
@@ -69,35 +78,48 @@ export async function sendTelemetry(currentTelemetry: any) {
   let telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
-      telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-      telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
+    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+    await sendToRollbar(telemetry)
   }
 
-  console.log('available telemetry here: ', telemetry)
+  //   console.log('available telemetry here: ', telemetry)
   await sendToHoneycomb(telemetry)
-  await sendToRollbar(telemetry)
 }
 
 export async function sendToHoneycomb(data: any) {
   // send captured cli telemetry to honeycomb via open telemetry client
   try {
     // send telemetry to honeycomb
-  } catch (error) {
+  } catch {
     console.log('could not send telemetry')
   }
-
 }
 
 export async function sendToRollbar(data: any) {
-  try {
-    // send data to rollbar
-  } catch (error) {
-    console.log('could not send error report')
-  }
+  // let isReportSent = false
+  // rollbar.log('cli test!', () => {
+  //   isReportSent = true
+  // })
+
+  // if (!isReportSent) {
+  //   console.log('could not send error report')
+  // }
+
+  // try {
+  //   // send data to rollbar
+  //   rollbar.log('cli test!', () => {
+  //     console.log('WE SENT TO ROLLBAR')
+  //   })
+  //   console.log('sendToRollbar')
+  // } catch {
+  //   console.log('could not send error report')
+  // }
 }
 
 export async function reportSuccessful(telemetryData: any) {
   // send available telemetry
+  // rollbar.log('THIS WORKED')
   await sendTelemetry(telemetryData)
 }
 
