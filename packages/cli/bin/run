@@ -6,6 +6,14 @@ const now = new Date()
 const cliStartTime = now.getTime()
 const globalTelemetry = require('../lib/performance_analytics')
 const handleErrors = require('@oclif/core/handle')
+const Rollbar = require('rollbar')
+const rollbar = new Rollbar({
+  accessToken: '41f8730238814af69c248e2f7ca59ff2',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  verbose: true,
+  sendConfig: true,
+})
 
 // TODO: clean up code
 
@@ -36,6 +44,9 @@ process.on('SIGTERM', async () => {
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
+  await rollbar.log('WE ARE HERE')
+  // console.log('we are attempting to log here')
+
   // capture any errors raised by oclif
   let cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)

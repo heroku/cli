@@ -1,0 +1,26 @@
+import { APIClient } from '@heroku-cli/command';
+import * as Heroku from '@heroku-cli/schema';
+import http from 'http-call';
+export declare const V3_HEADER = "application/vnd.heroku+json; version=3";
+export declare const FILTERS_HEADER: string;
+export declare const PIPELINES_HEADER: string;
+export declare function createAppSetup(heroku: APIClient, body: {
+    body: any;
+}): Promise<http<unknown>>;
+export declare function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string): Promise<http<unknown>>;
+export declare function createCoupling(heroku: APIClient, pipeline: any, app: string, stage: string): Promise<http<unknown>>;
+export declare function createPipeline(heroku: APIClient, name: any, owner: any): Promise<http<unknown>>;
+export declare function createPipelineTransfer(heroku: APIClient, pipeline: Heroku.Pipeline): Promise<http<unknown>>;
+export declare function destroyPipeline(heroku: APIClient, name: any, pipelineId: any): Promise<http<unknown>>;
+export declare function findPipelineByName(heroku: APIClient, idOrName: string): Promise<http<Heroku.Pipeline[]>>;
+export declare function getCoupling(heroku: APIClient, app: string): Promise<http<Heroku.PipelineCoupling>>;
+export declare function getPipeline(heroku: APIClient, id: string): Promise<http<Heroku.Pipeline>>;
+export declare function updatePipeline(heroku: APIClient, id: string, body: Heroku.Pipeline): Promise<http<Heroku.Pipeline>>;
+export declare function getTeam(heroku: APIClient, teamId: any): Promise<http<Heroku.Team>>;
+export declare function getAccountInfo(heroku: APIClient, id?: string): Promise<http<Heroku.Account>>;
+export declare function getAppSetup(heroku: APIClient, buildId: any): Promise<http<unknown>>;
+export declare function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<Heroku.App>>;
+export declare function patchCoupling(heroku: APIClient, id: string, stage: string): Promise<http<unknown>>;
+export declare function removeCoupling(heroku: APIClient, app: string): Promise<http<unknown>>;
+export declare function updateCoupling(heroku: APIClient, app: string, stage: string): Promise<http<unknown>>;
+export declare function getReleases(heroku: APIClient, appId: string): Promise<http<Heroku.Release[]>>;
