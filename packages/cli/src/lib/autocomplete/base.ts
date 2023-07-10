@@ -4,7 +4,6 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {CompletionLookup} from './completions'
-import {Interfaces} from '@oclif/core'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
