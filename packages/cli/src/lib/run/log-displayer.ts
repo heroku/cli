@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import HTTP from 'http-call'
 import {URL} from 'url'
 
@@ -22,7 +22,7 @@ async function readLogsV1(logplexURL: string) {
     response.setEncoding('utf8')
     liner.setEncoding('utf8')
     response.pipe(liner)
-    liner.on('data', line => CliUx.ux.log(colorize(line)))
+    liner.on('data', line => ux.log(colorize(line)))
     response.on('end', resolve)
     response.on('error', reject)
   })
@@ -60,7 +60,7 @@ function readLogsV2(logplexURL: string) {
 
     es.addEventListener('message', function (e: { data: string }) {
       e.data.trim().split(/\n+/).forEach(line => {
-        CliUx.ux.log(colorize(line))
+        ux.log(colorize(line))
       })
     })
   })
@@ -81,7 +81,7 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
     if (err.code === 'EPIPE') {
       process.exit(0)
     } else {
-      CliUx.ux.error(err.stack, {exit: 1})
+      ux.error(err.stack, {exit: 1})
     }
   })
 

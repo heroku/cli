@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -12,12 +12,11 @@ export default class Search extends Command {
     description: Flags.string({description: 'buildpack description to filter on'}),
   }
 
-  static args = [
-    {
-      name: 'term',
+  static args = {
+    term: Args.string({
       description: 'search term that searches across name, namespace, and description',
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Search)
@@ -52,7 +51,7 @@ export default class Search extends Command {
       }
     })
     const displayTable = (buildpacks: TableRow[]) => {
-      CliUx.ux.table(buildpacks, {
+      ux.table(buildpacks, {
         buildpack: {
           header: 'Buildpack',
         },
@@ -66,13 +65,13 @@ export default class Search extends Command {
     }
 
     if (buildpacks.length === 0) {
-      CliUx.ux.log('No buildpacks found')
+      ux.log('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      CliUx.ux.log('\n1 buildpack found')
+      ux.log('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      CliUx.ux.log(`\n${buildpacks.length} buildpacks found`)
+      ux.log(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }

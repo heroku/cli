@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as assert from 'assert'
 import fetch from 'node-fetch'
 import * as Stream from 'stream'
@@ -9,8 +9,6 @@ import * as util from 'util'
 
 import {listPipelineApps} from '../../lib/pipelines/api'
 import keyBy from '../../lib/pipelines/key-by'
-
-const cli = CliUx.ux
 
 export const sleep  = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time))
@@ -66,7 +64,7 @@ function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand:
 }
 
 async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
-  cli.log('Fetching app info...')
+  ux.log('Fetching app info...')
   const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
   return coupling
 }
@@ -86,7 +84,7 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
   }
 
   try {
-    cli.log(`${label}...`)
+    ux.log(`${label}...`)
     const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
     return promotions
   } catch (error: any) {
@@ -112,7 +110,7 @@ function assertApps(app: string, targetApps: Array<Heroku.App>, targetStage: str
 }
 
 async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
-  cli.log('Fetching release info...')
+  ux.log('Fetching release info...')
   const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
   return release
 }
@@ -129,7 +127,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
     return pollPromotionStatus(heroku, promotion.id, false)
   }
 
-  cli.log('Running release command...')
+  ux.log('Running release command...')
 
   async function streamReleaseOutput(releaseStreamUrl: string) {
     const finished = util.promisify(Stream.finished)
@@ -190,7 +188,7 @@ export default class Promote extends Command {
     const {flags} = await this.parse(Promote)
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
-    cli.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
+    ux.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
     const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
     const sourceStage = coupling.stage
 
@@ -233,13 +231,13 @@ export default class Promote extends Command {
     )
 
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
-    cli.log('Waiting for promotion to complete...')
+    ux.log('Waiting for promotion to complete...')
     let promotionTargets = await pollLoop
 
     try {
       promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
     } catch (error: any) {
-      cli.error(error)
+      ux.error(error)
     }
 
     const appsByID = keyBy(allApps, 'id')
@@ -257,11 +255,11 @@ export default class Promote extends Command {
     }, {})
 
     if (promotionTargets.every(isSucceeded)) { // eslint-disable-line unicorn/no-array-callback-reference
-      cli.log('\nPromotion successful')
+      ux.log('\nPromotion successful')
     } else {
-      cli.warn('\nPromotion to some apps failed')
+      ux.warn('\nPromotion to some apps failed')
     }
 
-    cli.styledObject(styledTargets)
+    ux.styledObject(styledTargets)
   }
 }

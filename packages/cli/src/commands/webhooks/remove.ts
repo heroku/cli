@@ -1,4 +1,5 @@
 import {flags} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../lib/webhooks/base'
@@ -15,9 +16,9 @@ export default class WebhooksRemove extends BaseCommand {
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
-  static args = [
-    {name: 'id', description: 'id of webhook to remove', required: true},
-  ]
+  static args = {
+    id: Args.string({description: 'id of webhook to remove', required: true}),
+  }
 
   async run() {
     const {flags, args} = await this.parse(WebhooksRemove)

@@ -1,12 +1,10 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 import renderPipeline from '../../lib/pipelines/render-pipeline'
-
-const cli = CliUx.ux
 
 async function getTeamOwner(heroku: APIClient, name: string) {
   const {body: team} = await getTeam(heroku, name)
@@ -36,13 +34,12 @@ export default class PipelinesTransfer extends Command {
     '$ heroku pipelines:transfer admin-team -p my-pipeline',
   ]
 
-  static args = [
-    {
-      name: 'owner',
+  static args = {
+    owner: Args.string({
       description: 'the owner to transfer the pipeline to',
       required: true,
-    },
-  ]
+    }),
+  }
 
   static flags = {
     pipeline: flags.pipeline({required: true}),
@@ -59,19 +56,19 @@ export default class PipelinesTransfer extends Command {
 
     if (!confirmName) {
       await renderPipeline(this.heroku, pipeline, apps)
-      cli.log('')
-      cli.warn(`This will transfer ${color.pipeline(pipeline.name!)} and all of the listed apps to the ${args.owner} ${displayType}`)
-      cli.warn(`to proceed, type ${color.red(pipeline.name!)} or re-run this command with ${color.red('--confirm')} ${pipeline.name}`)
-      confirmName = await cli.prompt('', {})
+      ux.log('')
+      ux.warn(`This will transfer ${color.pipeline(pipeline.name!)} and all of the listed apps to the ${args.owner} ${displayType}`)
+      ux.warn(`to proceed, type ${color.red(pipeline.name!)} or re-run this command with ${color.red('--confirm')} ${pipeline.name}`)
+      confirmName = await ux.prompt('', {})
     }
 
     if (confirmName !== pipeline.name) {
-      cli.warn(`Confirmation did not match ${color.red(pipeline.name!)}. Aborted.`)
+      ux.warn(`Confirmation did not match ${color.red(pipeline.name!)}. Aborted.`)
       return
     }
 
-    cli.action.start(`Transferring ${color.pipeline(pipeline.name!)} pipeline to the ${args.owner} ${displayType}`)
+    ux.action.start(`Transferring ${color.pipeline(pipeline.name!)} pipeline to the ${args.owner} ${displayType}`)
     await createPipelineTransfer(this.heroku, {pipeline: {id: pipeline.id}, new_owner: newOwner})
-    cli.action.stop()
+    ux.action.stop()
   }
 }

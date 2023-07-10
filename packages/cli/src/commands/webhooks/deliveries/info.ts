@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -16,9 +16,9 @@ export default class DeliveriesInfo extends BaseCommand {
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
-  static args = [
-    {name: 'id', required: true},
-  ]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {flags, args} = await this.parse(DeliveriesInfo)
@@ -41,10 +41,10 @@ export default class DeliveriesInfo extends BaseCommand {
       'Next Attempt': delivery.next_attempt_at,
     }
 
-    CliUx.ux.styledHeader(delivery.id)
-    CliUx.ux.styledObject(obj)
+    ux.styledHeader(delivery.id)
+    ux.styledObject(obj)
 
-    CliUx.ux.styledHeader('Event Payload')
-    CliUx.ux.styledJSON(event.payload)
+    ux.styledHeader('Event Payload')
+    ux.styledJSON(event.payload)
   }
 }

@@ -1,8 +1,6 @@
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {pipelineName, repoName} from './validate'
-
-const cli = CliUx.ux
 
 function filter(obj: any) {
   const ret: any = {}
@@ -26,7 +24,7 @@ export default async function getNameAndRepo(args: any) {
   }
 
   if (!args.name) {
-    const name = await cli.prompt('Pipeline name', {
+    const name = await ux.prompt('Pipeline name', {
       required: true,
     })
 
@@ -35,12 +33,12 @@ export default async function getNameAndRepo(args: any) {
     if (valid) {
       answer.name = name
     } else {
-      cli.error(msg as string)
+      ux.error(msg as string)
     }
   }
 
   if (!args.repo) {
-    const repo = await cli.prompt('GitHub repository to connect to (e.g. rails/rails)', {
+    const repo = await ux.prompt('GitHub repository to connect to (e.g. rails/rails)', {
       required: true,
     })
 
@@ -48,7 +46,7 @@ export default async function getNameAndRepo(args: any) {
     if (valid) {
       answer.repo = repo
     } else {
-      cli.error(msg as string)
+      ux.error(msg as string)
     }
   }
 

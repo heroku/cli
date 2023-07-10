@@ -1,6 +1,6 @@
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 
 import Dyno from '../../lib/run/dyno'
@@ -28,7 +28,9 @@ export default class RunInside extends Command {
   static strict = false
 
   async run() {
-    const {flags, argv} = await this.parse(RunInside)
+    const parsed = await this.parse(RunInside)
+    const {flags} = parsed
+    const argv = parsed.argv as string[]
 
     if (argv.length < 2) {
       throw new Error('Usage: heroku run:inside DYNO COMMAND\n\nExample: heroku run:inside web.1 bash')
@@ -51,7 +53,7 @@ export default class RunInside extends Command {
     } catch (error: any) {
       debug(error)
       if (error.exitCode) {
-        CliUx.ux.exit(error.exitCode)
+        ux.exit(error.exitCode)
       } else {
         throw error
       }

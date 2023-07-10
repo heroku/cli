@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base'
 
@@ -34,7 +34,7 @@ export default class Webhooks extends BaseCommand {
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
     const printLine: typeof this.log = (...args) => this.log(...args)
-    CliUx.ux.table(webhooks, {
+    ux.table(webhooks, {
       id: {
         header: 'Webhook ID',
       },

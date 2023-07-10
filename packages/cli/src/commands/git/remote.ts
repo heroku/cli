@@ -23,7 +23,9 @@ extra arguments will be passed to git remote add
   static strict = false
 
   async run() {
-    const {argv, flags} = await this.parse(GitRemote)
+    const parsed = await this.parse(GitRemote)
+    const {flags} = parsed
+    const argv = parsed.argv as string[]
     const git = new Git()
     const appName = flags.app || argv.shift() || process.env.HEROKU_APP
     if (!appName) {

@@ -336,6 +336,22 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
+"@heroku-cli/command@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-10.0.0.tgz#75ed4f8ddd16f5554a7eb4d9ad7498e20692585f"
+  integrity sha512-O+kjmaZtCcDL4nRiJTYxIPM4LA7S9wl1DH7DX6Wkdrd7qSFmyxxVhBDlKKTJyKvTTpZdPi4S0Q5CpMVXKVj/XQ==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/core" "^2.8.11"
+    cli-ux "^6.0.9"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.1.0"
+    http-call "^5.2.4"
+    netrc-parser "^3.1.6"
+    open "^6.2.0"
+    uuid "^8.3.0"
+
 "@heroku-cli/command@^8.5.0":
   version "8.5.0"
   resolved "https://registry.npmjs.org/@heroku-cli/command/-/command-8.5.0.tgz"
@@ -1582,7 +1598,7 @@
 
 "@oclif/core@1.22.0":
   version "1.22.0"
-  resolved "https://registry.npmjs.org/@oclif/core/-/core-1.22.0.tgz"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.22.0.tgz#dfdd76db6435cc1be2de7bbe25c23302332b9297"
   integrity sha512-Bvyi6uFbmpkFl9XUATsGMlqEDGfqMKWL0Mu5VQTuPg7/NIyfygYkaburn11uGkOp0a8yG6fPpyVBfGmztjNPGA==
   dependencies:
     "@oclif/linewrap" "^1.0.0"
@@ -1614,7 +1630,7 @@
     widest-line "^3.1.0"
     wrap-ansi "^7.0.0"
 
-"@oclif/core@1.26.2", "@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
+"@oclif/core@^1.1.1", "@oclif/core@^1.2.0", "@oclif/core@^1.25.0", "@oclif/core@^1.26.2":
   version "1.26.2"
   resolved "https://registry.npmjs.org/@oclif/core/-/core-1.26.2.tgz"
   integrity sha512-6jYuZgXvHfOIc9GIaS4T3CIKGTjPmfAxuMcbCbMRKJJl4aq/4xeRlEz0E8/hz8HxvxZBGvN2GwAUHlrGWQVrVw==
@@ -1811,6 +1827,41 @@
     object-treeify "^1.1.33"
     password-prompt "^1.1.2"
     semver "^7.3.7"
+    string-width "^4.2.3"
+    strip-ansi "^6.0.1"
+    supports-color "^8.1.1"
+    supports-hyperlinks "^2.2.0"
+    ts-node "^10.9.1"
+    tslib "^2.5.0"
+    widest-line "^3.1.0"
+    wordwrap "^1.0.0"
+    wrap-ansi "^7.0.0"
+
+"@oclif/core@^2.8.11":
+  version "2.8.11"
+  resolved "https://registry.yarnpkg.com/@oclif/core/-/core-2.8.11.tgz#fbdf8b5b74a8b2012f2fcd5a30a515d327b54482"
+  integrity sha512-9wYW6KRSWfB/D+tqeyl/jxmEz/xPXkFJGVWfKaptqHz6FPWNJREjAM945MuJL2Y8NRhMe+ScRlZ3WpdToX5aVQ==
+  dependencies:
+    "@types/cli-progress" "^3.11.0"
+    ansi-escapes "^4.3.2"
+    ansi-styles "^4.3.0"
+    cardinal "^2.1.1"
+    chalk "^4.1.2"
+    clean-stack "^3.0.1"
+    cli-progress "^3.12.0"
+    debug "^4.3.4"
+    ejs "^3.1.8"
+    fs-extra "^9.1.0"
+    get-package-type "^0.1.0"
+    globby "^11.1.0"
+    hyperlinker "^1.0.0"
+    indent-string "^4.0.0"
+    is-wsl "^2.2.0"
+    js-yaml "^3.14.1"
+    natural-orderby "^2.0.3"
+    object-treeify "^1.1.33"
+    password-prompt "^1.1.2"
+    semver "^7.5.3"
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
     supports-color "^8.1.1"
@@ -2376,7 +2427,7 @@
     array-from "^2.1.1"
     lodash "^4.17.11"
 
-"@sinonjs/samsam@^3.1.1", "@sinonjs/samsam@^3.3.3":
+"@sinonjs/samsam@^3.1.1":
   version "3.3.3"
   resolved "https://registry.npmjs.org/@sinonjs/samsam/-/samsam-3.3.3.tgz"
   integrity sha512-bKCMKZvWIjYD0BLGnNrxVuw4dkWCYsLqFOUWw8VgKF/+5Y+mE7LfHWPIYoDXowH+3a9LsWDMo0uAP8YDosPvHQ==
@@ -2590,13 +2641,6 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node-notifier@^5.4.0":
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/@types/node-notifier/-/node-notifier-5.4.4.tgz#c2f05b1a3a29416f45cd6ea7a284874421105489"
-  integrity sha512-OU7LuXb86NnlyVzC7m5PEUSXt8DGEhB/NZa8uA6QULOrzXTAzoUtlVB440uRb8x5KiJsabFGW08QscQF5FUXnA==
-  dependencies:
-    "@types/node" "*"
-
 "@types/node@*":
   version "12.6.8"
   resolved "https://registry.npmjs.org/@types/node/-/node-12.6.8.tgz"
@@ -2621,6 +2665,11 @@
   version "1.4.0"
   resolved "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.4.0.tgz"
   integrity sha512-bsuR5rj81NxgJ1w+Z5mgHlcIFBJKa2ChtbFbd1xDXxNJaBqYocAL53vsQ9T/CIZOSEs4A3WK7VMvzOOsG5cbJQ==
+
+"@types/proxyquire@^1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@types/proxyquire/-/proxyquire-1.3.28.tgz#05a647bb0d8fe48fc8edcc193e43cc79310faa7d"
+  integrity sha512-SQaNzWQ2YZSr7FqAyPPiA3FYpux2Lqh3HWMZQk47x3xbMCqgC/w0dY3dw9rGqlweDDkrySQBcaScXWeR+Yb11Q==
 
 "@types/responselike@^1.0.0":
   version "1.0.0"
@@ -6580,7 +6629,7 @@ http-cache-semantics@^4.1.0:
   resolved "https://registry.npmjs.org/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz"
   integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
 
-http-call@5.3.0, http-call@^5.2.2, http-call@^5.2.4, http-call@^5.2.5, http-call@^5.3.0:
+http-call@5.3.0, http-call@^5.2.2, http-call@^5.2.4, http-call@^5.3.0:
   version "5.3.0"
   resolved "https://registry.npmjs.org/http-call/-/http-call-5.3.0.tgz"
   integrity sha512-ahwimsC23ICE4kPl9xTBjKB4inbRaeLyZeRunC/1Jy/Z6X8tv22MEAjK+KBOMSVLaqXPTTmd8638waVIKLGx2w==
@@ -8458,7 +8507,7 @@ nice-try@^1.0.4:
   resolved "https://registry.npmjs.org/nice-try/-/nice-try-1.0.5.tgz"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-nise@^1.3.3, nise@^1.4.10, nise@^1.4.5, nise@^1.5.1, nise@^1.5.2:
+nise@^1.3.3, nise@^1.4.10, nise@^1.4.5, nise@^1.5.1:
   version "1.5.3"
   resolved "https://registry.npmjs.org/nise/-/nise-1.5.3.tgz"
   integrity sha512-Ymbac/94xeIrMf59REBPOv0thr+CJVFMhrlAkW/gjCIE58BGQdCj0x7KRCb3yz+Ga2Rz3E9XXSvUyyxqqhjQAQ==
@@ -9022,6 +9071,15 @@ open@^8.4.0:
   version "8.4.0"
   resolved "https://registry.npmjs.org/open/-/open-8.4.0.tgz"
   integrity sha512-XgFPPM+B28FtCCgSb9I+s9szOC1vZRSwgWsRUA5ylIxRTgKozqjOCrVOqGsYABPYK5qnfqClxZTFBa8PKt2v6Q==
+  dependencies:
+    define-lazy-prop "^2.0.0"
+    is-docker "^2.1.1"
+    is-wsl "^2.2.0"
+
+open@^8.4.2:
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/open/-/open-8.4.2.tgz#5b5ffe2a8f793dcd2aad73e550cb87b59cb084f9"
+  integrity sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==
   dependencies:
     define-lazy-prop "^2.0.0"
     is-docker "^2.1.1"
@@ -10484,6 +10542,13 @@ semver@^7.5.1:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@^7.5.3:
+  version "7.5.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.3.tgz#161ce8c2c6b4b3bdca6caadc9fa3317a4c4fe88e"
+  integrity sha512-QBlUtyVk/5EeHbi7X0fw6liDZc7BBmEaSYn01fMU1OUYbf6GPsbTtd8WmnqbI20SeycoHSeiybkE/q1Q+qlThQ==
+  dependencies:
+    lru-cache "^6.0.0"
+
 set-blocking@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz"
@@ -10649,19 +10714,6 @@ sinon@^7.2.3, sinon@^7.2.4:
     diff "^3.5.0"
     lolex "^4.2.0"
     nise "^1.5.1"
-    supports-color "^5.5.0"
-
-sinon@^7.4.1:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-7.5.0.tgz#e9488ea466070ea908fd44a3d6478fd4923c67ec"
-  integrity sha512-AoD0oJWerp0/rY9czP/D6hDTTUYGpObhZjMpd7Cl/A6+j0xBE+ayL/ldfggkBXUs0IkvIiM1ljM8+WkOc5k78Q==
-  dependencies:
-    "@sinonjs/commons" "^1.4.0"
-    "@sinonjs/formatio" "^3.2.1"
-    "@sinonjs/samsam" "^3.3.3"
-    diff "^3.5.0"
-    lolex "^4.2.0"
-    nise "^1.5.2"
     supports-color "^5.5.0"
 
 slash@^3.0.0:

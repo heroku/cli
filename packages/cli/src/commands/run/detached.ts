@@ -3,7 +3,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import Dyno from '../../lib/run/dyno'
 import {buildCommand} from '../../lib/run/helpers'
@@ -33,7 +33,7 @@ export default class RunDetached extends Command {
     const opts = {
       heroku: this.heroku,
       app: flags.app,
-      command: buildCommand(argv),
+      command: buildCommand(argv as string[]),
       size: flags.size,
       type: flags.type,
       env: flags.env,
@@ -57,7 +57,7 @@ export default class RunDetached extends Command {
       })
     } else {
       // @ts-ignore
-      CliUx.ux.log(`Run ${color.cmd('heroku logs --app ' + dyno.opts.app + ' --dyno ' + dyno.dyno.name)} to view the output.`)
+      ux.log(`Run ${color.cmd('heroku logs --app ' + dyno.opts.app + ' --dyno ' + dyno.dyno.name)} to view the output.`)
     }
   }
 }

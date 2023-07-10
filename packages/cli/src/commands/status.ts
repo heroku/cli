@@ -1,5 +1,5 @@
 import color from '@heroku-cli/color'
-import {Command, Flags, CliUx} from '@oclif/core'
+import {Command, Flags, ux} from '@oclif/core'
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 import HTTP from 'http-call'
 
@@ -33,7 +33,7 @@ export default class Status extends Command {
     const {body} = await HTTP.get<any>(host + apiPath)
 
     if (flags.json) {
-      CliUx.ux.styledJSON(body)
+      ux.styledJSON(body)
       return
     }
 
@@ -44,13 +44,13 @@ export default class Status extends Command {
     }
 
     for (const incident of body.incidents) {
-      CliUx.ux.log()
-      CliUx.ux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
+      ux.log()
+      ux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
       const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
       for (const u of incident.updates) {
-        CliUx.ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${distanceInWordsToNow(new Date(u.updated_at))} ago)`)
-        CliUx.ux.log(`${u.contents}\n`)
+        ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${distanceInWordsToNow(new Date(u.updated_at))} ago)`)
+        ux.log(`${u.contents}\n`)
       }
     }
   }

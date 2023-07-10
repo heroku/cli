@@ -1,11 +1,9 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {getTeam} from './api'
-
-const cli = CliUx.ux
 
 export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: Heroku.Pipeline, owner: string) {
   const hasMixedOwnership = pipelineApps.some(app => {
@@ -13,12 +11,12 @@ export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: He
   })
 
   if (hasMixedOwnership) {
-    cli.log()
+    ux.log()
     let message = `Some apps in this pipeline do not belong to ${color.cmd(owner)}.`
     message += '\n\nAll apps in a pipeline must have the same owner as the pipeline owner.'
     message += '\nTransfer these apps or change the pipeline owner in pipeline settings.'
     message += `\nSee ${color.cyan('https://devcenter.heroku.com/articles/pipeline-ownership-transition')} for more info.`
-    cli.warn(message)
+    ux.warn(message)
   }
 }
 

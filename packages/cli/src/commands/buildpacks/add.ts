@@ -1,4 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
@@ -14,13 +15,12 @@ export default class Add extends Command {
     }),
   }
 
-  static args = [
-    {
-      name: 'buildpack',
+  static args = {
+    buildpack: Args.string({
       required: true,
       description: 'namespace/name of the buildpack',
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Add)

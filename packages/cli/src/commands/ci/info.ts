@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args} from '@oclif/core'
 
 import {getPipeline} from '../../lib/ci/pipelines'
 import {displayTestRunInfo} from '../../lib/ci/test-run'
@@ -18,7 +19,9 @@ export default class CiInfo extends Command {
     pipeline: flags.pipeline({required: false}),
   }
 
-  static args = [{name: 'test-run', required: true}]
+  static args = {
+    'test-run': Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(CiInfo)

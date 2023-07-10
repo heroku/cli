@@ -1,5 +1,5 @@
 import {vars} from '@heroku-cli/command'
-import {Interfaces} from '@oclif/core'
+import {Command, Interfaces} from '@oclif/core'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 import deps from './deps'
@@ -7,7 +7,7 @@ import deps from './deps'
 const debug = require('debug')('heroku:analytics')
 
 export interface RecordOpts {
-  Command: Interfaces.Command.Class;
+  Command: Command.Class;
   argv: string[];
 }
 

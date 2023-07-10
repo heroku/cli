@@ -1,8 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import {Args, ux} from '@oclif/core'
 
 export default class DomainsInfo extends Command {
   static description = 'show detailed information for a domain on an app'
@@ -17,7 +15,9 @@ export default class DomainsInfo extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname', required: true}]
+  static args = {
+    hostname: Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(DomainsInfo)
@@ -26,6 +26,6 @@ export default class DomainsInfo extends Command {
       ...res,
       app: res.app && res.app.name,
     }
-    cli.styledObject(domain)
+    ux.styledObject(domain)
   }
 }

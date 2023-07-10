@@ -1,8 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import {ux} from '@oclif/core'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
@@ -21,11 +19,11 @@ export default class Pipelines extends Command {
     const {body: pipelines} = await this.heroku.get<Heroku.Pipeline[]>('/pipelines')
 
     if (flags.json) {
-      cli.styledJSON(pipelines)
+      ux.styledJSON(pipelines)
     } else {
-      cli.styledHeader('My Pipelines')
+      ux.styledHeader('My Pipelines')
       for (const pipeline of pipelines) {
-        cli.log(pipeline.name)
+        ux.log(pipeline.name)
       }
     }
   }

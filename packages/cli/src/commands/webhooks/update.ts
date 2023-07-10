@@ -1,4 +1,5 @@
 import {flags} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../lib/webhooks/base'
@@ -21,9 +22,9 @@ export default class WebhooksUpdate extends BaseCommand {
     url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
   }
 
-  static args = [
-    {name: 'id', required: true},
-  ]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {flags, args} = await this.parse(WebhooksUpdate)
