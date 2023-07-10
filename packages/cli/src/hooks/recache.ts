@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import {Interfaces, CliUx} from '@oclif/core'
+import {Interfaces, ux} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -36,7 +36,7 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
     return
   }
 
-  CliUx.ux.action.start('Updating completions')
+  ux.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
 
@@ -49,5 +49,5 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
     this.debug(error.message)
   }
 
-  CliUx.ux.action.stop()
+  ux.action.stop()
 }

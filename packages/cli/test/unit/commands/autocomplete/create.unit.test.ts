@@ -108,7 +108,7 @@ bindkey "^I" expand-or-complete-with-dots`)
       const shellSetup = cmd.bashSetupScript
       expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
-HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/eh???????/autocomplete/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
+HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/src/lib/autocomplete/autocomplete/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `)
     })
 

@@ -1,3 +1,4 @@
+import {Args} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base'
@@ -7,7 +8,9 @@ export default class Script extends AutocompleteBase {
 
   static hidden = true
 
-  static args = [{name: 'shell', description: 'shell type', required: true}]
+  static args = {
+    shell: Args.string({description: 'shell type', required: false}),
+  }
 
   async run() {
     const {args} = await this.parse(Script)

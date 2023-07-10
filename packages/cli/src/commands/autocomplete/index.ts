@@ -1,7 +1,9 @@
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import chalk from 'chalk'
-import {Interfaces, CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
+import {FlagInput} from '@oclif/core/lib/interfaces/parser'
+
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base'
@@ -12,9 +14,11 @@ import Create from './create'
 export default class Index extends AutocompleteBase {
   static description = 'display autocomplete installation instructions'
 
-  static args = [{name: 'shell', description: 'shell type', required: false}]
+  static args = {
+    shell: Args.string({description: 'shell type', required: false}),
+  }
 
-  static flags: Interfaces.FlagInput = {
+  static flags: FlagInput = {
     'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
   }
 
@@ -30,13 +34,13 @@ export default class Index extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    CliUx.ux.action.start(`${chalk.bold('Building the autocomplete cache')}`)
+    ux.action.start(`${chalk.bold('Building the autocomplete cache')}`)
     await Create.run([], this.config)
     await this.updateCache(AppCompletion, 'app')
     await this.updateCache(PipelineCompletion, 'pipeline')
     await this.updateCache(SpaceCompletion, 'space')
     await this.updateCache(TeamCompletion, 'team')
-    CliUx.ux.action.stop()
+    ux.action.stop()
 
     if (!flags['refresh-cache']) {
       const bin = this.config.bin

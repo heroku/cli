@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {Interfaces} from '@oclif/core'
+import {Args, Command} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base'
@@ -14,9 +14,9 @@ export default class Options extends AutocompleteBase {
     app: flags.app({required: false, hidden: true}),
   }
 
-  static args = [
-    {name: 'completion', strict: false},
-  ]
+  static args = {
+    completion: Args.string({strict: false}),
+  }
 
   parsedArgs: { [name: string]: string } = {}
 
@@ -144,7 +144,7 @@ export default class Options extends AutocompleteBase {
     throw new Error(msg)
   }
 
-  private findFlagFromWildArg(wild: string, Klass: Interfaces.Command.Class): { flag: any; name: any } {
+  private findFlagFromWildArg(wild: string, Klass: Command.Class): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
     name = name.replace(/[=](.+)?$/, '')
 
@@ -161,8 +161,8 @@ export default class Options extends AutocompleteBase {
     return unknown
   }
 
-  private determineCmdState(argv: string[], Klass: Interfaces.Command.Class): [number, boolean, boolean] {
-    const Args = Klass.args || []
+  private determineCmdState(argv: string[], Klass: Command.Class): [number, boolean, boolean] {
+    const argNames = Object.keys(Klass.args || {})
     let needFlagValueSatisfied = false
     let argIsFlag = false
     let argIsFlagValue = false
@@ -223,8 +223,8 @@ export default class Options extends AutocompleteBase {
       // add parsedArgs
       // TO-DO: how to handle variableArgs?
       argsIndex += 1
-      if (argsIndex < Args.length) {
-        this.parsedArgs[Args[argsIndex].name] = wild
+      if (argsIndex < argNames.length) {
+        this.parsedArgs[argNames[argsIndex]] = wild
       }
 
       argIsFlagValue = false

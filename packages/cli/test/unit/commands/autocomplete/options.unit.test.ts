@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
+import {Args, Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
 
@@ -19,7 +19,9 @@ class TestCommand extends Command {
     app: flags.app(),
   }
 
-  static args = [{name: 'app', required: false}]
+  static args = {
+    app: Args.string({required: false}),
+  }
 
   async run() {
     'do work!'
