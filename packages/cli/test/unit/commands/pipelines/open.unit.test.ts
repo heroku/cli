@@ -16,6 +16,7 @@ describe('pipelines:open', () => {
     )
     .stub(childProcess, 'spawn', spawnStub)
     .command(['pipelines:open', pipeline.name])
+    .do(() => console.log(spawnStub.getCall(0).args[1]))
     .it('opens the url', () => {
       const urlArgArray = spawnStub.getCall(0).args[1]
       expect(urlArgArray.includes('https://dashboard.heroku.com/pipelines/0123')).to.be.true
