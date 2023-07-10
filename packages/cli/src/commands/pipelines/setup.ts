@@ -1,8 +1,7 @@
-
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
-
+import {Args, ux} from '@oclif/core'
+import * as open from 'open'
 import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../lib/pipelines/api'
@@ -21,8 +20,6 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/vali
 // eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
 
-const cli = CliUx.ux
-
 export default class Setup extends Command {
   static description =
     'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
@@ -40,18 +37,16 @@ export default class Setup extends Command {
     }),
   }
 
-  static args = [
-    {
-      name: 'name',
+  static args = {
+    name: Args.string({
       description: 'name of pipeline',
       required: false,
-    },
-    {
-      name: 'repo',
+    }),
+    repo: Args.string({
       description: 'a GitHub repository to connect the pipeline to',
       required: false,
-    },
-  ]
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Setup)
@@ -82,38 +77,38 @@ export default class Setup extends Command {
     }: any = team ? await getTeam(this.heroku, team) : await getAccountInfo(this.heroku)
     const owner = {id: ownerID, type: ownerType}
 
-    cli.action.start('Creating pipeline')
+    ux.action.start('Creating pipeline')
     const {body: pipeline}: any = await createPipeline(this.heroku, pipelineName, owner)
-    cli.action.stop()
+    ux.action.stop()
 
-    cli.action.start('Linking to repo')
+    ux.action.start('Linking to repo')
     await kolkrabbi.createPipelineRepository(pipeline.id, repo.id)
-    cli.action.stop()
+    ux.action.stop()
 
     const archiveURL = await kolkrabbi.getArchiveURL(repoName, repo.default_branch)
 
     const appSetupsResult: any = await createApps(this.heroku, archiveURL, pipeline, pipelineName, stagingAppName, team)
     const appSetups = appSetupsResult.map((result: any) => result.body)
 
-    cli.action.start(
+    ux.action.start(
       `Creating production and staging apps (${color.app(pipelineName)} and ${color.app(stagingAppName)})`,
     )
     await pollAppSetups(this.heroku, appSetups)
-    cli.action.stop()
+    ux.action.stop()
 
     const stagingApp = appSetups.find((appSetup: any) => appSetup.app.name === stagingAppName).app
 
     const setup = setupPipeline(kolkrabbi, stagingApp.id, settings, pipeline.id, ciSettings)
 
-    cli.action.start('Configuring pipeline')
+    ux.action.start('Configuring pipeline')
     try {
       await setup
-      await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+      await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       debug(error)
-      cli.error(error)
+      ux.error(error)
     } finally {
-      cli.action.stop()
+      ux.action.stop()
     }
   }
 }

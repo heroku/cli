@@ -36,7 +36,7 @@ export default class Run extends Command {
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
-    execArgv.push(...argv) // eslint-disable-line unicorn/no-array-push-push
+    execArgv.push(...argv as string[]) // eslint-disable-line unicorn/no-array-push-push
 
     await foreman(execArgv)
   }

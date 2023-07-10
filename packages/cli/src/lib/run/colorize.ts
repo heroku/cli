@@ -1,5 +1,5 @@
 import c from '@heroku-cli/color'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 export const COLORS: Array<(s: string) => string> = [
   s => c.yellow(s),
@@ -91,7 +91,7 @@ function colorizeRouter(body: string) {
       return other(k + '=') + v
     }).join(' ')
   } catch (error: any) {
-    CliUx.ux.warn(error)
+    ux.warn(error)
     return body
   }
 }
@@ -137,7 +137,7 @@ function colorizeRun(body: string) {
       ].join('')
     }
   } catch (error: any) {
-    CliUx.ux.warn(error)
+    ux.warn(error)
   }
 
   return body
@@ -200,7 +200,7 @@ function colorizeWeb(body: string) {
       ].join('')
     }
   } catch (error: any) {
-    CliUx.ux.warn(error)
+    ux.warn(error)
   }
 
   return body

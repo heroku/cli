@@ -1,5 +1,6 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 export default class DomainsRemove extends Command {
@@ -13,7 +14,9 @@ export default class DomainsRemove extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname', required: true}]
+  static args = {
+    hostname: Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(DomainsRemove)

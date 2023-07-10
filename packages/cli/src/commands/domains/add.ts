@@ -1,13 +1,11 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/domains/wait-for-domain'
-
-const cli = CliUx.ux
 
 interface DomainCreatePayload {
   hostname: string;
@@ -28,7 +26,9 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname', required: true}]
+  static args = {
+    hostname: Args.string({required: true}),
+  }
 
   certSelect = async (certs: Array<Heroku.SniEndpoint>) => {
     const nullCertChoice = {
@@ -111,23 +111,23 @@ export default class DomainsAdd extends Command {
       })
 
       if (flags.json) {
-        cli.styledJSON(domain)
+        ux.styledJSON(domain)
       } else {
-        cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
+        ux.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
     For help, see https://devcenter.heroku.com/articles/custom-domains`)
         if (domain.status !== 'none') {
           if (flags.wait) {
             await waitForDomain(flags.app, this.heroku, domain)
           } else {
-            cli.log('')
-            cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
+            ux.log('')
+            ux.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
             const command = `heroku domains:wait ${shellescape([hostname])}`
-            cli.log(`Run ${color.cmd(command)} to wait for completion`)
+            ux.log(`Run ${color.cmd(command)} to wait for completion`)
           }
         }
       }
     } catch (error: any) {
-      cli.error(error)
+      ux.error(error)
     } finally {
       action.stop()
     }

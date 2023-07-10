@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -20,7 +20,7 @@ export default class EventsIndex extends BaseCommand {
     const {flags} = await this.parse(EventsIndex)
     const {path, display} = this.webhookType(flags)
 
-    CliUx.ux.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
+    ux.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
 
     const {body: events}: {body: any} = await this.webhooksClient.get(`${path}/webhook-events`)
 
@@ -31,7 +31,7 @@ export default class EventsIndex extends BaseCommand {
 
       const printLine: typeof this.log = (...args) => this.log(...args)
 
-      CliUx.ux.table(events, {
+      ux.table(events, {
         id: {
           header: 'Event ID',
         },

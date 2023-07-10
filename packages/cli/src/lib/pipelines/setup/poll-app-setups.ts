@@ -1,8 +1,6 @@
 import * as api from '../api'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
-
-const cli = CliUx.ux
 
 function wait(ms: any) {
   return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
@@ -20,7 +18,7 @@ function pollAppSetup(heroku: any, appSetup: any): any {
 
     return wait(1000).then(() => pollAppSetup(heroku, appSetup))
   }).catch((error: any) => {
-    return cli.error(error, {exit: 1})
+    return ux.error(error, {exit: 1})
   })
 }
 

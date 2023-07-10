@@ -1,6 +1,4 @@
-import {CliUx} from '@oclif/core'
-
-const cli = CliUx.ux
+import {ux} from '@oclif/core'
 
 export default async function getCISettings(yes: any, organization: any) {
   const settings = {
@@ -13,7 +11,7 @@ export default async function getCISettings(yes: any, organization: any) {
     return settings
   }
 
-  settings.ci = await cli.confirm('Enable automatic Heroku CI test runs?')
+  settings.ci = await ux.confirm('Enable automatic Heroku CI test runs?')
 
   if (settings.ci && organization) {
     settings.organization = organization

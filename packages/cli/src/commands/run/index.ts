@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -40,7 +40,7 @@ export default class Run extends Command {
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(argv),
+      command: buildCommand(argv as string[]),
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
@@ -61,7 +61,7 @@ export default class Run extends Command {
     } catch (error: any) {
       debug(error)
       if (error.exitCode) {
-        CliUx.ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
+        ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
       } else {
         throw error
       }

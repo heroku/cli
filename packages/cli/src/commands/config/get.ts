@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote'
 
@@ -13,7 +14,9 @@ production`
 
   static strict = false
 
-  static args = [{name: 'KEY', required: true}]
+  static args = {
+    KEY: Args.string({required: true}),
+  }
 
   static flags = {
     app: flags.app({required: true}),
@@ -24,7 +27,7 @@ production`
   async run() {
     const {flags, argv} = await this.parse(ConfigGet)
     const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
-    for (const key of argv) {
+    for (const key of (argv as string[])) {
       const v = config[key]
       if (flags.shell) {
         this.log(`${key}=${quote(v || '')}`)

@@ -1,15 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as http from 'http'
 import {get, RequestOptions} from 'https'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
 import {v4 as uuid} from 'uuid'
 import WebSocket = require('ws')
-
-const cli = CliUx.ux
 
 const debug = require('debug')('ci')
 const ansiEscapes = require('ansi-escapes')
@@ -107,7 +105,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   const latestTestRuns = sort(testRuns).slice(0, count)
 
   if (jsonOption) {
-    cli.styledJSON(latestTestRuns)
+    ux.styledJSON(latestTestRuns)
     return
   }
 
@@ -129,7 +127,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     )
   })
 
-  cli.table(
+  ux.table(
     data,
     {
       iconStatus: {
@@ -154,7 +152,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 
   if (!jsonOption) {
     const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
-    cli.styledHeader(header)
+    ux.styledHeader(header)
   }
 
   draw(testRuns, watchOption, jsonOption)
@@ -214,9 +212,9 @@ async function waitForStates(states: string[], testRun: Heroku.TestRun, command:
 async function display(pipeline: Heroku.Pipeline, number: number, command: Command) {
   let {body: testRun} = await command.heroku.get<Heroku.TestRun | undefined>(`/pipelines/${pipeline.id}/test-runs/${number}`)
   if (testRun) {
-    cli.action.start('Waiting for build to start')
+    ux.action.start('Waiting for build to start')
     testRun = await waitForStates(BUILDING_STATES, testRun, command)
-    cli.action.stop()
+    ux.action.stop()
 
     const {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
     let firstTestNode = testNodes[0]

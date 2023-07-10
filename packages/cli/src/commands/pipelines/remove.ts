@@ -1,10 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {removeCoupling} from '../../lib/pipelines/api'
-
-const cli = CliUx.ux
 
 export default class PipelinesRemove extends Command {
   static description = 'remove this app from its pipeline'
@@ -21,8 +19,8 @@ export default class PipelinesRemove extends Command {
   async run() {
     const {flags: {app}} = await this.parse(PipelinesRemove)
 
-    cli.action.start(`Removing ${color.app(app)}`)
+    ux.action.start(`Removing ${color.app(app)}`)
     await removeCoupling(this.heroku, app)
-    cli.action.stop()
+    ux.action.stop()
   }
 }

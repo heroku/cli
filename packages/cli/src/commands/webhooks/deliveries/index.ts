@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -51,7 +51,7 @@ export default class Deliveries extends BaseCommand {
       }
 
       const printLine: typeof this.log = (...args) => this.log(...args)
-      CliUx.ux.table(deliveries, {
+      ux.table(deliveries, {
         id: {
           header: 'Delivery ID',
         },

@@ -1,12 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 import {listPipelineApps} from '../../lib/pipelines/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 import renderPipeline from '../../lib/pipelines/render-pipeline'
-
-const cli = CliUx.ux
 
 export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
@@ -25,11 +23,12 @@ export default class PipelinesInfo extends Command {
     }),
   }
 
-  static args = [{
-    name: 'pipeline',
-    description: 'pipeline to show list of apps for',
-    required: true,
-  }]
+  static args = {
+    pipeline: Args.string({
+      description: 'pipeline to show list of apps for',
+      required: true,
+    }),
+  }
 
   async run() {
     const {args, flags} = await this.parse(PipelinesInfo)
@@ -37,7 +36,7 @@ export default class PipelinesInfo extends Command {
     const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
 
     if (flags.json) {
-      cli.styledJSON({pipeline, apps: pipelineApps})
+      ux.styledJSON({pipeline, apps: pipelineApps})
     } else {
       await renderPipeline(this.heroku, pipeline, pipelineApps, {
         withOwners: flags['with-owners'],

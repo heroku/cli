@@ -1,4 +1,4 @@
-import {Hook, CliUx} from '@oclif/core'
+import {Hook, ux} from '@oclif/core'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
@@ -8,7 +8,7 @@ export function checkTos(options: any) {
   const message = 'Our terms of service have changed: https://dashboard.heroku.com/terms-of-service'
 
   if (!viewedBanner) {
-    CliUx.ux.warn(message)
+    ux.warn(message)
     fs.createFile(tosPath)
   }
 }

@@ -1,10 +1,8 @@
 
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 
 import {createAppSetup} from '../api'
-
-const cli = CliUx.ux
 
 interface CreateAppOptions {
   archiveURL: string;
@@ -55,6 +53,6 @@ export default function createApps(heroku: any, archiveURL: any, pipeline: any, 
   return Promise.all(promises).then(appSetups => {
     return appSetups
   }, error => {
-    cli.error(error, {exit: 1})
+    ux.error(error, {exit: 1})
   })
 }

@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args} from '@oclif/core'
 
 import waitForDomain from '../../lib/domains/wait-for-domain'
 
@@ -12,7 +13,9 @@ export default class DomainsWait extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname'}]
+  static args = {
+    hostname: Args.string(),
+  }
 
   async run() {
     const {args, flags} = await this.parse(DomainsWait)

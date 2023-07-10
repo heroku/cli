@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args} from '@oclif/core'
 
 import Git from '../../lib/git/git'
 
@@ -11,9 +12,9 @@ Cloning into 'example'...
 remote: Counting objects: 42, done.
 ...`
 
-  static args = [
-    {name: 'DIRECTORY', optional: true, description: 'where to clone the app'},
-  ]
+  static args = {
+    DIRECTORY: Args.string({optional: true, description: 'where to clone the app'}),
+  }
 
   static flags = {
     app: flags.string({char: 'a', env: 'HEROKU_APP', required: true, description: 'the Heroku app to use'}),
@@ -24,7 +25,7 @@ remote: Counting objects: 42, done.
     const git = new Git()
     const {flags, args} = await this.parse(GitClone)
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-    const directory = args.DIRECTORY || app.name
+    const directory = args.DIRECTORY || (app.name as string)
     const remote = flags.remote || 'heroku'
     await git.spawn(['clone', '-o', remote, git.url(app.name!), directory])
   }
