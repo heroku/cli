@@ -5,17 +5,6 @@ process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS 
 const now = new Date()
 const cliStartTime = now.getTime()
 const globalTelemetry = require('../lib/performance_analytics')
-const handleErrors = require('@oclif/core/handle')
-const Rollbar = require('rollbar')
-const rollbar = new Rollbar({
-  accessToken: '41f8730238814af69c248e2f7ca59ff2',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-  verbose: true,
-  sendConfig: true,
-})
-
-// TODO: clean up code
 
 process.on('beforeExit', async code => {
   // capture as successful exit
@@ -30,7 +19,6 @@ process.on('SIGINT', async () => {
   let error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(error)
-  // process.exit(1)
 })
 
 process.on('SIGTERM', async () => {
@@ -38,19 +26,15 @@ process.on('SIGTERM', async () => {
   let error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(error)
-  // process.exit(1)
 })
 
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
-  // await rollbar.log('WE ARE HERE')
-  // console.log('we are attempting to log here')
-
   // capture any errors raised by oclif
   let cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(cliError)
-  handleErrors(error)
+  console.log('Error: ', error.message)
 })
 
