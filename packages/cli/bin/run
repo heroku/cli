@@ -35,7 +35,7 @@ globalTelemetry.initializeInstrumentation()
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
-  await rollbar.log('WE ARE HERE')
+  // await rollbar.log('WE ARE HERE')
   // console.log('we are attempting to log here')
 
   // capture any errors raised by oclif
