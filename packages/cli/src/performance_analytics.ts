@@ -97,29 +97,19 @@ export async function sendToHoneycomb(data: any) {
 }
 
 export async function sendToRollbar(data: any) {
-  // let isReportSent = false
-  // rollbar.log('cli test!', () => {
-  //   isReportSent = true
-  // })
-
-  // if (!isReportSent) {
-  //   console.log('could not send error report')
-  // }
-
-  // try {
-  //   // send data to rollbar
-  //   rollbar.log('cli test!', () => {
-  //     console.log('WE SENT TO ROLLBAR')
-  //   })
-  //   console.log('sendToRollbar')
-  // } catch {
-  //   console.log('could not send error report')
-  // }
+  try {
+    // send data to rollbar
+    rollbar.log('Sending data to rollbar test', data, () => {
+      process.exit(1)
+    })
+  } catch {
+    console.log('could not send error report')
+    process.exit(1)
+  }
 }
 
 export async function reportSuccessful(telemetryData: any) {
   // send available telemetry
-  // rollbar.log('THIS WORKED')
   await sendTelemetry(telemetryData)
 }
 
