@@ -10,6 +10,10 @@ describe('authorizations:info', () => {
     access_token: {token: 'secrettoken'},
     updated_at: new Date(0),
   }
+  const authorizationWithExpiration = {
+    ...authorization,
+    access_token: {token: 'secrettoken', expires_in: 100000},
+  }
 
   const testWithAuthorization = () =>
     test
@@ -31,6 +35,18 @@ describe('authorizations:info', () => {
         'Token:       secrettoken\n' +
         `Updated at:  ${new Date(0)} (${distanceInWordsToNow(new Date(0))} ago)\n`,
       )
+    })
+
+  test
+    .stdout()
+    .nock('https://api.heroku.com:443', api => {
+      api
+        .get(`/oauth/authorizations/${authorizationID}`)
+        .reply(200, authorizationWithExpiration)
+    })
+    .command(['authorizations:info', authorizationID])
+    .it('shows expires in', ctx => {
+      expect(ctx.stdout).to.contain('(in 1 day)')
     })
 
   describe('with json flag', () => {
