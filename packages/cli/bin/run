@@ -30,7 +30,7 @@ process.on('SIGINT', async () => {
   let error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(error)
-  process.exit(1)
+  // process.exit(1)
 })
 
 process.on('SIGTERM', async () => {
@@ -38,13 +38,13 @@ process.on('SIGTERM', async () => {
   let error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(error)
-  process.exit(1)
+  // process.exit(1)
 })
 
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
-  await rollbar.log('WE ARE HERE')
+  // await rollbar.log('WE ARE HERE')
   // console.log('we are attempting to log here')
 
   // capture any errors raised by oclif
