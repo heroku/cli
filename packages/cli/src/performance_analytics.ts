@@ -3,9 +3,9 @@ const rollbar = new Rollbar({
   accessToken: '41f8730238814af69c248e2f7ca59ff2',
   captureUncaught: true,
   captureUnhandledRejections: true,
-  verbose: true,
-  sendConfig: true,
 })
+
+const debug = require('debug')('performance_analytics')
 
 interface Telemetry {
     command: string,
@@ -82,8 +82,6 @@ export async function sendTelemetry(currentTelemetry: any) {
     telemetry.cliRunDuration = currentTelemetry.cliRunDuration
     await sendToRollbar(telemetry)
   }
-
-  //   console.log('available telemetry here: ', telemetry)
   await sendToHoneycomb(telemetry)
 }
 
@@ -92,18 +90,18 @@ export async function sendToHoneycomb(data: any) {
   try {
     // send telemetry to honeycomb
   } catch {
-    console.log('could not send telemetry')
+    debug('could not send telemetry')
   }
 }
 
 export async function sendToRollbar(data: any) {
   try {
     // send data to rollbar
-    rollbar.log('Sending data to rollbar test', data, () => {
+    rollbar.error('Failed to complete execution', data, () => {
       process.exit(1)
     })
   } catch {
-    console.log('could not send error report')
+    debug('could not send error report')
     process.exit(1)
   }
 }
