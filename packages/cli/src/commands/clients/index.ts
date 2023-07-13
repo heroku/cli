@@ -1,8 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-const sortBy = require('lodash.sortby')
+import {ux} from '@oclif/core'
+const {sortBy} = require('lodash')
 
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
@@ -19,12 +19,12 @@ export default class ClientsIndex extends Command {
     clients = sortBy(clients, 'name')
 
     if (flags.json) {
-      CliUx.ux.styledJSON(clients)
+      ux.styledJSON(clients)
     } else if (clients.length === 0) {
-      CliUx.ux.log('No OAuth clients.')
+      ux.log('No OAuth clients.')
     } else {
       const printLine: typeof this.log = (...args) => this.log(...args)
-      CliUx.ux.table(clients, {
+      ux.table(clients, {
         name: {get: (w: any) => color.green(w.name)},
         id: {},
         redirect_uri: {},

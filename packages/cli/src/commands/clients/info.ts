@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 export default class ClientsInfo extends Command {
   static description = 'show details of an oauth client'
@@ -14,7 +14,9 @@ export default class ClientsInfo extends Command {
     shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
 
-  static args = [{name: 'id', required: true}]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(ClientsInfo)
@@ -22,13 +24,13 @@ export default class ClientsInfo extends Command {
     const {body: client} = await this.heroku.get<Heroku.OAuthClient>(`/oauth/clients/${args.id}`)
 
     if (flags.json) {
-      CliUx.ux.styledJSON(client)
+      ux.styledJSON(client)
     } else if (flags.shell) {
-      CliUx.ux.log(`HEROKU_OAUTH_ID=${client.id}`)
-      CliUx.ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      ux.log(`HEROKU_OAUTH_ID=${client.id}`)
+      ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
     } else {
-      CliUx.ux.styledHeader(`${client.name}`)
-      CliUx.ux.styledObject(client)
+      ux.styledHeader(`${client.name}`)
+      ux.styledObject(client)
     }
   }
 }

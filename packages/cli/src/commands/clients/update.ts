@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
-import {validateURL} from '../../lib/clients'
+import {validateURL} from '../../lib/clients/clients'
 
 interface Updates {
   redirect_uri?: string;
@@ -33,7 +33,9 @@ export default class ClientsUpdate extends Command {
     url: flags.string({description: 'change the client redirect URL'}),
   }
 
-  static args = [{name: 'id', required: true}]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(ClientsUpdate)
@@ -41,13 +43,13 @@ export default class ClientsUpdate extends Command {
 
     if (isEmpty(body)) this.error('No changes provided.')
 
-    CliUx.ux.action.start(`Updating ${color.cyan(args.id)}`)
+    ux.action.start(`Updating ${color.cyan(args.id)}`)
 
     await this.heroku.patch<Heroku.OAuthClient>(
       `/oauth/clients/${encodeURIComponent(args.id)}`,
       {body},
     )
 
-    CliUx.ux.action.stop()
+    ux.action.stop()
   }
 }

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {validateURL} from '../../../src/lib/clients'
+import {validateURL} from '../../../../src/lib/clients/clients'
 
 describe('validateURL', () => {
   describe('secure URLs', () => {
