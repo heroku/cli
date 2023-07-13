@@ -1,10 +1,10 @@
 import {Hook} from '@oclif/core'
 
-import * as telemetry from '../../performance_analytics'
+import * as telemetry from '../../global_telemetry'
 
 declare const global: telemetry.TelemetryGlobal
 
-const performance_analytics: Hook<'postrun'> = async function (options) {
+const performance_analytics: Hook<'postrun'> = async function () {
   if (global.cliTelemetry) {
     const cmdStartTime = global.cliTelemetry.commandRunDuration
     global.cliTelemetry.commandRunDuration = telemetry.computeDuration(cmdStartTime)
