@@ -146,6 +146,11 @@ describe('@acceptance smoke tests', () => {
       expect(stdout).to.contain('it works!')
     })
 
+    it('heroku sessions', async () => {
+      const {stdout} = await run('sessions')
+      expect(stdout).to.contain('Session @')
+    })
+
     it('heroku spaces', async () => {
       try {
         await run('spaces')
