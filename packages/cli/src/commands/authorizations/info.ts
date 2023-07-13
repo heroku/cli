@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
-import {display} from '../../lib/authorizations'
+import {display} from '../../lib/authorizations/authorizations'
 
 export default class AuthorizationsInfo extends Command {
   static description = 'show an existing OAuth authorization'
@@ -11,7 +11,9 @@ export default class AuthorizationsInfo extends Command {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
 
-  static args = [{name: 'id', required: true}]
+  static args = {
+    id: Args.string({required: true}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(AuthorizationsInfo)
@@ -21,7 +23,7 @@ export default class AuthorizationsInfo extends Command {
     )
 
     if (flags.json) {
-      CliUx.ux.styledJSON(authentication)
+      ux.styledJSON(authentication)
     } else {
       display(authentication)
     }

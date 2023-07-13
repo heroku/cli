@@ -1,7 +1,7 @@
 'use strict'
 
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as addSeconds from 'date-fns/add_seconds'
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
@@ -34,13 +34,14 @@ export function display(auth: Heroku.OAuthAuthorization) {
     if (auth.updated_at) {
       obj['Updated at'] = `${addSeconds(auth.updated_at, 0)} (${distanceInWordsToNow(auth.updated_at)} ago)`
     }
+
     if (auth.access_token.expires_in) {
       const date = addSeconds(new Date(), auth.access_token.expires_in)
       obj['Expires at'] = `${date} (in ${distanceInWordsToNow(date)})`
     }
   }
 
-  CliUx.ux.styledObject(obj, [
+  ux.styledObject(obj, [
     'Client',
     'Redirect URI',
     'ID',

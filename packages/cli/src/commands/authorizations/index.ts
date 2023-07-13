@@ -1,8 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {CliUx} from '@oclif/core'
-const sortBy = require('lodash.sortby')
+import {ux} from '@oclif/core'
+const {sortBy} = require('lodash')
 
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
@@ -23,12 +23,12 @@ export default class AuthorizationsIndex extends Command {
     authorizations = sortBy(authorizations, 'description')
 
     if (flags.json) {
-      CliUx.ux.styledJSON(authorizations)
+      ux.styledJSON(authorizations)
     } else if (authorizations.length === 0) {
-      CliUx.ux.log('No OAuth authorizations.')
+      ux.log('No OAuth authorizations.')
     } else {
       const printLine: typeof this.log = (...args) => this.log(...args)
-      CliUx.ux.table(authorizations, {
+      ux.table(authorizations, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
         scope: {get: (v: any) => v.scope.join(',')},

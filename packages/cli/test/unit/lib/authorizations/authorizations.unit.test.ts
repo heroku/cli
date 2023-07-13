@@ -3,7 +3,7 @@ import {expect, test} from '@oclif/test'
 import * as addSeconds from 'date-fns/add_seconds'
 import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
-import {display} from '../../../src/lib/authorizations'
+import {display} from '../../../../src/lib/authorizations/authorizations'
 
 const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
   test
