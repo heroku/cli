@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
+require('dotenv').config()
+
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
+process.env.IS_DEV_ENVIRONMENT = process.env.IS_DEV_ENVIRONMENT || 'false'
 
 const now = new Date()
 const cliStartTime = now.getTime()
-const globalTelemetry = require('../lib/performance_analytics')
+const globalTelemetry = require('../lib/global_telemetry')
 
 process.on('beforeExit', async code => {
   // capture as successful exit
@@ -28,6 +31,10 @@ process.on('SIGTERM', async () => {
   await globalTelemetry.reportUnsuccessful(error)
 })
 
+if (process.env.IS_DEV_ENVIRONMENT !== 'false') {
+  globalTelemetry.initializeHoneycombAutoInstrumentations()
+}
+
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
@@ -35,6 +42,6 @@ oclif.run().then(require('@oclif/core/flush')).catch(async error => {
   let cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.reportUnsuccessful(cliError)
-  console.log('Error: ', error.message)
+  console.log(`Error: ${error.message}`)
 })
 
