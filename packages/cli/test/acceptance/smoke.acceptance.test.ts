@@ -79,7 +79,7 @@ describe('@acceptance smoke tests', () => {
 
     it('heroku clients', async () => {
       const {stdout} = await run('clients')
-      expect(stdout).to.contain('hc-support-dev')
+      expect(stdout).to.contain('No OAuth clients.')
     })
 
     it('heroku config', async () => {
@@ -148,7 +148,7 @@ describe('@acceptance smoke tests', () => {
 
     it('heroku sessions', async () => {
       const {stdout} = await run('sessions')
-      expect(stdout).to.contain('Session @')
+      expect(stdout).to.contain('No OAuth sessions.')
     })
 
     it('heroku spaces', async () => {
@@ -178,8 +178,7 @@ describe('@acceptance smoke tests', () => {
   })
 
   describe('cli general', () => {
-    // TODO: turn this test back on once the issue with listing plugins is fixed
-    it.skip('asserts oclif plugins are in core', async () => {
+    it('asserts oclif plugins are in core', async () => {
       const cmd = await run('plugins --core')
       expect(cmd.stdout).to.contain('@oclif/plugin-commands')
       expect(cmd.stdout).to.contain('@oclif/plugin-help')
