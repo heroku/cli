@@ -7,6 +7,7 @@ declare const global: telemetry.TelemetryGlobal
 
 const analytics: Hook<'prerun'> = async function (options) {
   global.cliTelemetry = telemetry.setupTelemetry(this.config, options)
+  console.log('version:', this.config.version)
   const analytics = new Analytics(this.config)
   await analytics.record(options)
 }
