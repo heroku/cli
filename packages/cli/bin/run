@@ -3,7 +3,6 @@
 require('dotenv').config()
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
-process.env.IS_DEV_ENVIRONMENT = process.env.IS_DEV_ENVIRONMENT || 'false'
 
 const now = new Date()
 const cliStartTime = now.getTime()
@@ -31,9 +30,7 @@ process.on('SIGTERM', async () => {
   await globalTelemetry.sendTelemetry(error)
 })
 
-if (process.env.IS_DEV_ENVIRONMENT !== 'false') {
-  globalTelemetry.initializeHoneycombAutoInstrumentations()
-}
+globalTelemetry.honeycombStart()
 
 const oclif = require('@oclif/core')
 
