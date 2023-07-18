@@ -72,6 +72,9 @@ module.exports = {
     case 'provisioning':
       state = 'creating'
       break
+    case 'deprovisioning':
+      state = 'destroying'
+      break
     case 'deprovisioned':
       state = 'errored'
       break

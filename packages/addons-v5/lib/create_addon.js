@@ -15,7 +15,7 @@ function formatConfigVarsMessage(addon) {
 
 module.exports = async function (heroku, app, plan, confirm, wait, options) {
   const util = require('./util')
-  const waitForAddonProvisioning = require('./addons_wait')
+  const {waitForAddonProvisioning} = require('./addons_wait')
 
   function createAddonRequest(confirm) {
     let body = {
