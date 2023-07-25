@@ -1,6 +1,7 @@
 import * as Rollbar from 'rollbar'
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
+import opentelemetry from '@opentelemetry/api'
 
 const debug = require('debug')('global_telemetry')
 const rollbar = new Rollbar({
