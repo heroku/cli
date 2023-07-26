@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 require('dotenv').config()
+const opentelemetry = require('@opentelemetry/api')
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
@@ -8,29 +9,37 @@ const now = new Date()
 const cliStartTime = now.getTime()
 const globalTelemetry = require('../lib/global_telemetry')
 
-process.on('beforeExit', async code => {
+process.once('beforeExit', async code => {
   // capture as successful exit
+  console.log('we have successfull exit')
   global.cliTelemetry.exitCode = code
   global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   const telemetryData = global.cliTelemetry
-  await globalTelemetry.reportSuccessful(telemetryData)
+  await globalTelemetry.sendTelemetry(telemetryData)
 })
 
 process.on('SIGINT', async () => {
   // capture as unsuccessful exit
+  console.log('we have unsuccessfull exit')
   let error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.reportUnsuccessful(error)
+  await globalTelemetry.sendTelemetry(error)
 })
 
 process.on('SIGTERM', async () => {
   // capture as unsuccessful exit
+  console.log('we have unsuccessfull exit')
   let error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.reportUnsuccessful(error)
+  await globalTelemetry.sendTelemetry(error)
 })
 
 globalTelemetry.honeycombStart()
+const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
+tracer.startActiveSpan('command.name.test', span => {
+  span.setAttribute('command', 'test')
+  span.end()
+})
 
 const oclif = require('@oclif/core')
 
@@ -38,7 +47,7 @@ oclif.run().then(require('@oclif/core/flush')).catch(async error => {
   // capture any errors raised by oclif
   let cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.reportUnsuccessful(cliError)
+  await globalTelemetry.sendTelemetry(cliError)
   console.log(`Error: ${error.message}`)
 })
 

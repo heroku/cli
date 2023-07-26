@@ -12,7 +12,7 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
-const honeycomb = new HoneycombSDK({
+const otelSDK = new HoneycombSDK({
   apiKey: process.env.HONEYCOMB_API_KEY,
   serviceName: 'heroku-cli',
   instrumentations: [getNodeAutoInstrumentations({
@@ -24,7 +24,6 @@ const honeycomb = new HoneycombSDK({
   })],
   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
 })
-
 interface Telemetry {
     command: string,
     os: string,
@@ -46,8 +45,11 @@ export interface TelemetryGlobal extends NodeJS.Global {
 }
 
 export function honeycombStart() {
-  honeycomb.start()
-  // console.log('honeycomb object:', honeycomb)
+  otelSDK.start()
+  // tracer.startActiveSpan('command.name.test', span => {
+  //   span.setAttribute('command', 'test')
+  //   span.end()
+  // })
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -97,31 +99,25 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
+  console.log('we are here')
   // send telemetry to honeycomb and rollbar
-  let telemetry = currentTelemetry
+  // let telemetry = currentTelemetry
 
-  if (telemetry instanceof Error) {
-    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
-    await sendToRollbar(telemetry)
-  }
+  // if (telemetry instanceof Error) {
+  //   telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
+  //   telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+  //   await sendToRollbar(telemetry)
+  // }
 
-  await sendToHoneycomb(telemetry)
+  // await sendToHoneycomb(telemetry)
 }
 
 export async function sendToHoneycomb(data: any) {
   try {
-    // const trace = opentelemetry.trace.getTracerProvider()
-    // console.log('tracerProver:', trace)
-    // send telemetry to backboard
-    const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-    tracer.startActiveSpan('command.name.test', span => {
-      span.setAttribute('command', data.command)
-      // console.log('span isRecording:', span.isRecording())
-      // console.log('spanContext:', span.spanContext())
-      // console.log('activeSpan:', span)
-      span.end()
-    })
+    console.log('SHUTTING DOWN SDK')
+    // await otelSDK.shutdown()
+    //   .then(() => console.log('Tracing terminated'))
+    //   .catch(error => console.log('Error terminating tracing', error))
   } catch {
     debug('could not send telemetry')
   }
@@ -137,14 +133,4 @@ export async function sendToRollbar(data: any) {
     debug('could not send error report')
     process.exit(1)
   }
-}
-
-export async function reportSuccessful(telemetryData: any) {
-  // send available telemetry
-  await sendTelemetry(telemetryData)
-}
-
-export async function reportUnsuccessful(error: Error) {
-  // send available telemetry
-  await sendTelemetry(error)
 }
