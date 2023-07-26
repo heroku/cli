@@ -25,7 +25,7 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
-// const honeycomb = new HoneycombSDK({
+// const otelSDK = new HoneycombSDK({
 //   apiKey: process.env.HONEYCOMB_API_KEY,
 //   serviceName: 'heroku-cli',
 //   instrumentations: [getNodeAutoInstrumentations({
@@ -135,6 +135,7 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
+  console.log('we are here')
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
