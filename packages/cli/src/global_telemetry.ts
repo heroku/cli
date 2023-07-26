@@ -10,7 +10,7 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
-// const honeycomb = new HoneycombSDK({
+// const otelSDK = new HoneycombSDK({
 //   apiKey: process.env.HONEYCOMB_API_KEY,
 //   serviceName: 'heroku-cli',
 //   instrumentations: [getNodeAutoInstrumentations({
@@ -22,7 +22,6 @@ const rollbar = new Rollbar({
 //   })],
 //   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
 // })
-
 interface Telemetry {
     command: string,
     os: string,
@@ -94,14 +93,15 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
+  console.log('we are here')
   // send telemetry to honeycomb and rollbar
-  let telemetry = currentTelemetry
+  // let telemetry = currentTelemetry
 
-  if (telemetry instanceof Error) {
-    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
-    await sendToRollbar(telemetry)
-  }
+  // if (telemetry instanceof Error) {
+  //   telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
+  //   telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+  //   await sendToRollbar(telemetry)
+  // }
 
   // add sendToHoneycomb function here
 }
