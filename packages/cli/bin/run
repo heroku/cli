@@ -35,11 +35,11 @@ process.on('SIGTERM', async () => {
 })
 
 globalTelemetry.honeycombStart()
-const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-tracer.startActiveSpan('command.name.test', span => {
-  span.setAttribute('command', 'test')
-  span.end()
-})
+// const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
+// tracer.startActiveSpan('command.name.test', span => {
+//   span.setAttribute('command', 'test')
+//   span.end()
+// })
 
 const oclif = require('@oclif/core')
 

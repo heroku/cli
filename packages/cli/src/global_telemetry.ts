@@ -93,15 +93,14 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
-  console.log('we are here')
   // send telemetry to honeycomb and rollbar
-  // let telemetry = currentTelemetry
+  let telemetry = currentTelemetry
 
-  // if (telemetry instanceof Error) {
-  //   telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-  //   telemetry.cliRunDuration = currentTelemetry.cliRunDuration
-  //   await sendToRollbar(telemetry)
-  // }
+  if (telemetry instanceof Error) {
+    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
+    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+    await sendToRollbar(telemetry)
+  }
 
   // add sendToHoneycomb function here
 }
