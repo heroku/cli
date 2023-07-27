@@ -227,7 +227,7 @@ ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${path.join(__dirname, '..', '..', '..', 'autocomplete', 'zsh')}
+${path.join(__dirname, '..', '..', 'lib', 'autocomplete', 'autocomplete', 'zsh')}
 $fpath
 );
 autoload -Uz compinit;
