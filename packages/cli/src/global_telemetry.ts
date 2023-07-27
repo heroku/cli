@@ -135,7 +135,6 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
-  console.log('we are here')
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
