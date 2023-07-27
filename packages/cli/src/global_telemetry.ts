@@ -99,25 +99,26 @@ export function reportCmdNotFound(config: any) {
 }
 
 export async function sendTelemetry(currentTelemetry: any) {
-  console.log('we are here')
   // send telemetry to honeycomb and rollbar
-  // let telemetry = currentTelemetry
+  let telemetry = currentTelemetry
 
-  // if (telemetry instanceof Error) {
-  //   telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-  //   telemetry.cliRunDuration = currentTelemetry.cliRunDuration
-  //   await sendToRollbar(telemetry)
-  // }
+  if (telemetry instanceof Error) {
+    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
+    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
+    await sendToRollbar(telemetry)
+  }
 
-  // await sendToHoneycomb(telemetry)
+  await sendToHoneycomb(telemetry)
 }
 
 export async function sendToHoneycomb(data: any) {
   try {
-    console.log('SHUTTING DOWN SDK')
-    // await otelSDK.shutdown()
-    //   .then(() => console.log('Tracing terminated'))
-    //   .catch(error => console.log('Error terminating tracing', error))
+    console.log('SENDING TO HONEYCOMB')
+    // const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
+    // tracer.startActiveSpan('command.name.test', span => {
+    //   span.setAttribute('command', 'test')
+    //   span.end()
+    // })
   } catch {
     debug('could not send telemetry')
   }
