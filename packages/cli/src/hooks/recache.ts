@@ -7,7 +7,7 @@ import * as path from 'path'
 import {updateCache} from '../lib/autocomplete/cache'
 import acCreate from '../commands/autocomplete/create'
 
-export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logout'> = async function ({type, app}) {
+const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logout'> = async function ({type, app}) {
   // autocomplete is now in core, skip windows
   if (this.config.windows) return
   const logInOut = type === 'login' || type === 'logout'
@@ -51,3 +51,5 @@ export const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' |
 
   ux.action.stop()
 }
+
+export default completions

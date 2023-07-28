@@ -3,7 +3,7 @@ import * as path from 'path'
 
 import deps from '../../deps'
 
-export const tidy: Hook<'update'> = async function () {
+const tidy: Hook<'update'> = async function () {
   const cleanupPlugins = async () => {
     const pluginsDir = path.join(this.config.dataDir, 'plugins')
     if (await deps.file.exists(path.join(pluginsDir, 'plugins.json'))) return
@@ -29,3 +29,5 @@ export const tidy: Hook<'update'> = async function () {
     await cleanupPlugins()
   }
 }
+
+export default tidy

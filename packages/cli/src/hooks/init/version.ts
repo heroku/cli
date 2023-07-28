@@ -11,7 +11,7 @@ const allowlist = [
   'SSL_KEY_FILE',
 ]
 
-export const version: Hook.Init = async function () {
+const version: Hook.Init = async function () {
   if (['-v', '--version', 'version'].includes(process.argv[2])) {
     for (const env of allowlist) {
       if (process.env[env]) {
@@ -21,3 +21,6 @@ export const version: Hook.Init = async function () {
     }
   }
 }
+
+export default version
+
