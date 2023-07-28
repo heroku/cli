@@ -1,6 +1,9 @@
 import Rollbar from 'rollbar'
 import {HoneycombSDK} from '@honeycombio/opentelemetry-node'
 import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node'
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 import opentelemetry from '@opentelemetry/api'
@@ -12,6 +15,21 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
+
+// const resource =
+//   Resource.default().merge(
+//     new Resource({
+//       [SemanticResourceAttributes.SERVICE_NAME]: "heroku-cli-tracer",
+//       [SemanticResourceAttributes.SERVICE_VERSION]: "0.1.0",
+//     })
+//   );
+
+// const provider = new NodeTracerProvider({
+//     resource: resource,
+// });
+
+// provider.register()
+
 const otelSDK = new HoneycombSDK({
   apiKey: process.env.HONEYCOMB_API_KEY,
   serviceName: 'heroku-cli',
@@ -23,6 +41,7 @@ const otelSDK = new HoneycombSDK({
     },
   })],
   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
+  debug: true,
 })
 interface Telemetry {
     command: string,
@@ -46,10 +65,6 @@ export interface TelemetryGlobal extends NodeJS.Global {
 
 export function honeycombStart() {
   otelSDK.start()
-  // tracer.startActiveSpan('command.name.test', span => {
-  //   span.setAttribute('command', 'test')
-  //   span.end()
-  // })
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -114,11 +129,11 @@ export async function sendTelemetry(currentTelemetry: any) {
 export async function sendToHoneycomb(data: any) {
   try {
     console.log('SENDING TO HONEYCOMB')
-    // const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-    // tracer.startActiveSpan('command.name.test', span => {
-    //   span.setAttribute('command', 'test')
-    //   span.end()
-    // })
+    const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
+    tracer.startActiveSpan('command.name.test', span => {
+      span.setAttribute('command', 'test')
+      span.end()
+    })
   } catch {
     debug('could not send telemetry')
   }
