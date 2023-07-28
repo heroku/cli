@@ -1,9 +1,6 @@
 import Rollbar from 'rollbar'
-import {HoneycombSDK} from '@honeycombio/opentelemetry-node'
-import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node'
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-import opentelemetry from '@opentelemetry/api'
 
 const debug = require('debug')('global_telemetry')
 const rollbar = new Rollbar({
@@ -11,18 +8,6 @@ const rollbar = new Rollbar({
   captureUncaught: true,
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
-})
-const honeycomb = new HoneycombSDK({
-  apiKey: process.env.HONEYCOMB_API_KEY,
-  serviceName: 'heroku-cli',
-  instrumentations: [getNodeAutoInstrumentations({
-    // we recommend disabling fs autoinstrumentation since it can be noisy
-    // and expensive during startup
-    '@opentelemetry/instrumentation-fs': {
-      enabled: false,
-    },
-  })],
-  dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
 })
 
 interface Telemetry {
@@ -43,11 +28,6 @@ interface Telemetry {
 
 export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
-}
-
-export function honeycombStart() {
-  honeycomb.start()
-  // console.log('honeycomb object:', honeycomb)
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -106,45 +86,18 @@ export async function sendTelemetry(currentTelemetry: any) {
     await sendToRollbar(telemetry)
   }
 
-  await sendToHoneycomb(telemetry)
-}
-
-export async function sendToHoneycomb(data: any) {
-  try {
-    // const trace = opentelemetry.trace.getTracerProvider()
-    // console.log('tracerProver:', trace)
-    // send telemetry to backboard
-    const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-    tracer.startActiveSpan('command.name.test', span => {
-      span.setAttribute('command', data.command)
-      // console.log('span isRecording:', span.isRecording())
-      // console.log('spanContext:', span.spanContext())
-      // console.log('activeSpan:', span)
-      span.end()
-    })
-  } catch {
-    debug('could not send telemetry')
-  }
+  // add sendToHoneycomb function here
 }
 
 export async function sendToRollbar(data: any) {
+  console.log('sending to rollbar:', data)
   try {
     // send data to rollbar
     rollbar.error('Failed to complete execution', data, () => {
       process.exit(1)
     })
   } catch {
-    debug('could not send error report')
+    debug('Could not send error report')
     process.exit(1)
   }
-}
-
-export async function reportSuccessful(telemetryData: any) {
-  // send available telemetry
-  await sendTelemetry(telemetryData)
-}
-
-export async function reportUnsuccessful(error: Error) {
-  // send available telemetry
-  await sendTelemetry(error)
 }
