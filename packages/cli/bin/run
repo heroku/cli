@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// remember to unset HONEYCOMB_API_ENDPOINT="http://localhost:3333/"
+
 require('dotenv').config()
 const opentelemetry = require('@opentelemetry/api')
 
