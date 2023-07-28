@@ -1,11 +1,10 @@
 import {expect, test} from '@oclif/test'
-import Open from '../../../../src/commands/pipelines/open'
+import * as childProcess from 'child_process'
+import * as sinon from 'sinon'
 
 describe('pipelines:open', () => {
   const pipeline = {id: '0123', name: 'Rigel'}
-
-  let openWasCalled = false
-  let openedUrl = ''
+  const spawnStub = sinon.stub().returns({unref: () => {}})
 
   test
     .stdout()
@@ -15,16 +14,13 @@ describe('pipelines:open', () => {
         .query({eq: {name: pipeline.name}})
         .reply(200, [pipeline]),
     )
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    .stub(Open.prototype, 'open', (urlToOpen: string) => {
-      openWasCalled = true
-      openedUrl = urlToOpen
-      return Promise.resolve()
-    })
+    .stub(childProcess, 'spawn', spawnStub)
     .command(['pipelines:open', pipeline.name])
     .it('opens the url', () => {
-      expect(openWasCalled).to.be.true
-      expect(openedUrl).to.equal('https://dashboard.heroku.com/pipelines/0123')
+      const urlArgArray = spawnStub.getCall(0).args[1]
+      // For darwin-based platforms this arg is an array that contains the site url.
+      // For windows-based platforms this arg is an array that contains an encoded command that includes the url
+      const hasCorrectUrl = urlArgArray.includes('https://dashboard.heroku.com/pipelines/0123') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AZABhAHMAaABiAG8AYQByAGQALgBoAGUAcgBvAGsAdQAuAGMAbwBtAC8AcABpAHAAZQBsAGkAbgBlAHMALwAwADEAMgAzACIA')
+      expect(hasCorrectUrl).to.be.true
     })
 })
