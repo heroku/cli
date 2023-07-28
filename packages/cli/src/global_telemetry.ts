@@ -43,7 +43,7 @@ export interface TelemetryGlobal extends NodeJS.Global {
 }
 
 export function honeycombStart() {
-  // honeycomb.start()
+  // otelSDK.start()
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -102,7 +102,20 @@ export async function sendTelemetry(currentTelemetry: any) {
     await sendToRollbar(telemetry)
   }
 
-  // add sendToHoneycomb function here
+  await sendToHoneycomb(telemetry)
+}
+
+export async function sendToHoneycomb(data: any) {
+  try {
+    console.log('SENDING TO HONEYCOMB')
+    const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
+    tracer.startActiveSpan('command.name.test', span => {
+      span.setAttribute('command', 'test')
+      span.end()
+    })
+  } catch {
+    debug('could not send telemetry')
+  }
 }
 
 export async function sendToRollbar(data: any) {
