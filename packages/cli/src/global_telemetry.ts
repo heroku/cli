@@ -1,4 +1,4 @@
-import Rollbar from 'rollbar'
+import * as Rollbar from 'rollbar'
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
