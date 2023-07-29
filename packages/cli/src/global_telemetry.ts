@@ -90,7 +90,6 @@ export async function sendTelemetry(currentTelemetry: any) {
 }
 
 export async function sendToRollbar(data: any) {
-  console.log('sending to rollbar:', data)
   try {
     // send data to rollbar
     rollbar.error('Failed to complete execution', data, () => {
