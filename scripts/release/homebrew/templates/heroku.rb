@@ -22,8 +22,8 @@ class Heroku < Formula
     libexec.install Dir["*"]
     bin.install_symlink libexec/"bin/heroku"
 
-    bash_completion.install libexec/"packages/cli/scripts/autocomplete/brew/bash" => "heroku"
-    zsh_completion.install libexec/"packages/cli/scripts/autocomplete/brew/zsh/_heroku"
+    bash_completion.install libexec/"autocomplete-scripts/brew/bash" => "heroku"
+    zsh_completion.install libexec/"autocomplete-scripts/brew/zsh/_heroku"
   end
 
   def caveats; <<~EOS

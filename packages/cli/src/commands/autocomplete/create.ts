@@ -6,7 +6,7 @@ import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 const debug = require('debug')('autocomplete:create')
 
-const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'scripts', 'autocomplete')
+const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'autocomplete-scripts')
 
 export default class Create extends AutocompleteBase {
   static hidden = true

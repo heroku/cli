@@ -108,9 +108,10 @@
     "node": ">=14"
   },
   "files": [
-    "/oclif.manifest.json",
+    "/autocomplete-scripts",
     "/bin",
     "/lib",
+    "/oclif.manifest.json",
     "/npm-shrinkwrap.json",
     "/yarn.lock"
   ],
