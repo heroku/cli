@@ -111,8 +111,8 @@
     "/autocomplete-scripts",
     "/bin",
     "/lib",
-    "/oclif.manifest.json",
     "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
     "/yarn.lock"
   ],
   "homepage": "https://cli.heroku.com",
