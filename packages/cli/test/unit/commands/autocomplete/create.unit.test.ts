@@ -11,7 +11,7 @@ const config = new Config({root})
 // autocomplete will throw error on windows
 const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
-const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'src', 'lib', 'autocomplete', 'autocomplete')
+const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'scripts', 'autocomplete')
 
 const CacheBuildFlagsTest = {
   id: 'autocomplete:create',

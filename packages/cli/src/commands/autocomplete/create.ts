@@ -6,6 +6,8 @@ import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 const debug = require('debug')('autocomplete:create')
 
+const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'scripts', 'autocomplete')
+
 export default class Create extends AutocompleteBase {
   static hidden = true
 
@@ -209,12 +211,7 @@ ${cmdsWithDesc.join('\n')}
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
-    __dirname,
-    '..',
-    '..',
-    'lib',
-    'autocomplete',
-    'autocomplete',
+    AC_LIB_PATH,
     'bash',
     'heroku.bash',
   )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
@@ -227,7 +224,7 @@ ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${path.join(__dirname, '..', '..', 'lib', 'autocomplete', 'autocomplete', 'zsh')}
+${path.join(AC_LIB_PATH, 'zsh')}
 $fpath
 );
 autoload -Uz compinit;
