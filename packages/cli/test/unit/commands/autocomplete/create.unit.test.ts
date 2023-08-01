@@ -9,9 +9,9 @@ const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../../../helpers/runtest')
+const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
-const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..', '..')
+const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'autocomplete-scripts')
 
 const CacheBuildFlagsTest = {
   id: 'autocomplete:create',
@@ -108,7 +108,7 @@ bindkey "^I" expand-or-complete-with-dots`)
       const shellSetup = cmd.bashSetupScript
       expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
-HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
+HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `)
     })
 
@@ -125,7 +125,7 @@ HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${AC_PLUGIN_PATH}/autocomplete/zsh
+${AC_LIB_PATH}/zsh
 $fpath
 );
 autoload -Uz compinit;
@@ -143,7 +143,7 @@ HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${AC_PLUGIN_PATH}/autocomplete/zsh
+${AC_LIB_PATH}/zsh
 $fpath
 );
 autoload -Uz compinit;

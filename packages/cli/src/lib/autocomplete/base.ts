@@ -1,9 +1,9 @@
 import Command from '@heroku-cli/command'
+import {Completion} from '@oclif/core/lib/interfaces/parser'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
 import {CompletionLookup} from './completions'
-import {Interfaces} from '@oclif/core'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
@@ -44,7 +44,7 @@ export abstract class AutocompleteBase extends Command {
     fs.write(fd, entry)
   }
 
-  protected findCompletion(cmdId: string, name: string, description = ''): Interfaces.Completion | undefined {
+  protected findCompletion(cmdId: string, name: string, description = ''): Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
 }

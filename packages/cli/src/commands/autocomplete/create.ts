@@ -1,17 +1,19 @@
-import {Interfaces} from '@oclif/core'
+import {Command} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 const debug = require('debug')('autocomplete:create')
+
+const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'autocomplete-scripts')
 
 export default class Create extends AutocompleteBase {
   static hidden = true
 
   static description = 'create autocomplete setup scripts and completion functions'
 
-  private _commands?: Interfaces.Command[]
+  private _commands?: Command.Loadable[]
 
   async run() {
     this.errorIfWindows()
@@ -59,11 +61,11 @@ export default class Create extends AutocompleteBase {
     return process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS === '1'
   }
 
-  private get commands(): Interfaces.Command[] {
+  private get commands(): Command.Loadable[] {
     if (this._commands) return this._commands
 
     const plugins = this.config.plugins
-    const commands: Interfaces.Command[] = []
+    const commands: Command.Loadable[] = []
 
     plugins.forEach(p => {
       p.commands.forEach(c => {
@@ -130,30 +132,30 @@ export default class Create extends AutocompleteBase {
     }).join('\n')
   }
 
-  private genCmdPublicFlags(Command: Interfaces.Command): string {
-    const Flags = Command.flags || {}
+  private genCmdPublicFlags(command: Command.Loadable): string {
+    const Flags = command.flags || {}
     return Object.keys(Flags)
       .filter(flag => !Flags[flag].hidden)
       .map(flag => `--${flag}`)
       .join(' ')
   }
 
-  private genCmdWithDescription(Command: Interfaces.Command): string {
+  private genCmdWithDescription(command: Command.Loadable): string {
     let description = ''
-    if (Command.description) {
-      const text = Command.description.split('\n')[0]
+    if (command.description) {
+      const text = command.description.split('\n')[0]
       description = `:"${text}"`
     }
 
-    return `"${Command.id.replace(/:/g, '\\:')}"${description}`
+    return `"${command.id.replace(/:/g, '\\:')}"${description}`
   }
 
-  private genZshCmdFlagsSetter(Command: Interfaces.Command): string {
-    const id = Command.id
-    const flagscompletions = Object.keys(Command.flags || {})
-      .filter(flag => Command.flags && !Command.flags[flag].hidden)
+  private genZshCmdFlagsSetter(command: Command.Loadable): string {
+    const id = command.id
+    const flagscompletions = Object.keys(command.flags || {})
+      .filter(flag => command.flags && !command.flags[flag].hidden)
       .map(flag => {
-        const f = (Command.flags && Command.flags[flag]) || {description: ''}
+        const f = (command.flags && command.flags[flag]) || {description: ''}
         const isBoolean = f.type === 'boolean'
         const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
         const name = isBoolean ? flag : `${flag}=-`
@@ -209,11 +211,7 @@ ${cmdsWithDesc.join('\n')}
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    'autocomplete',
+    AC_LIB_PATH,
     'bash',
     'heroku.bash',
   )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
@@ -226,7 +224,7 @@ ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${path.join(__dirname, '..', '..', '..', 'autocomplete', 'zsh')}
+${path.join(AC_LIB_PATH, 'zsh')}
 $fpath
 );
 autoload -Uz compinit;

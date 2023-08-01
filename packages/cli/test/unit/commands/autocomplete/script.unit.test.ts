@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-const {default: runtest} = require('../../../helpers/runtest')
+const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
 runtest('autocomplete:script', () => {
   test
