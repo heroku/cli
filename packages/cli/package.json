@@ -11,7 +11,6 @@
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku-cli/plugin-addons-v5": "^8.1.7",
     "@heroku-cli/plugin-apps-v5": "^8.1.8",
-    "@heroku-cli/plugin-autocomplete": "^8.1.7",
     "@heroku-cli/plugin-certs-v5": "^8.1.7",
     "@heroku-cli/plugin-ci-v5": "^8.1.8",
     "@heroku-cli/plugin-container-registry-v5": "^8.1.7",
@@ -37,6 +36,7 @@
     "@oclif/plugin-which": "2.2.8",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
+    "chalk": "^2.4.2",
     "date-fns": "^2.30.0",
     "debug": "4.1.1",
     "dotenv": "^16.3.1",
@@ -110,10 +110,11 @@
     "node": ">=14"
   },
   "files": [
-    "/oclif.manifest.json",
+    "/autocomplete-scripts",
     "/bin",
     "/lib",
     "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
     "/yarn.lock"
   ],
   "homepage": "https://cli.heroku.com",
@@ -136,7 +137,6 @@
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps-v5",
-      "@heroku-cli/plugin-autocomplete",
       "@heroku-cli/plugin-certs-v5",
       "@heroku-cli/plugin-ci-v5",
       "@heroku-cli/plugin-container-registry-v5",
@@ -262,8 +262,10 @@
         "./lib/hooks/update/plugin-migrate",
         "./lib/hooks/update/b",
         "./lib/hooks/update/completions",
-        "./lib/hooks/update/tidy"
-      ]
+        "./lib/hooks/update/tidy",
+        "./lib/hooks/recache"
+      ],
+      "recache": "./lib/hooks/recache"
     },
     "update": {
       "node": {

@@ -1,9 +1,0 @@
-*-debug.log
-*-error.log
-.oclif.manifest.json
-/.nyc_output
-/dist
-/lib
-/package-lock.json
-/tmp
-node_modules

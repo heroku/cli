@@ -1,20 +1,21 @@
 import {flags} from '@heroku-cli/command'
-import {CliUx, Interfaces} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
+import {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../base'
+import {AutocompleteBase} from '../../lib/autocomplete/base'
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true
 
   static description = 'autocomplete diagnostic'
 
-  static args = [
-    {name: 'shell', description: 'shell type', required: false},
-  ]
+  static args = {
+    shell: Args.string({description: 'shell type', required: false}),
+  }
 
-  static flags: Interfaces.FlagInput = {
+  static flags: FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 
@@ -63,7 +64,7 @@ export default class Doctor extends AutocompleteBase {
 
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
-    CliUx.ux.table(data, {
+    ux.table(data, {
       name: {},
       value: {},
     }, {'no-header': true, printLine})

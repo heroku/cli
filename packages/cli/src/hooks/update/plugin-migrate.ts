@@ -7,7 +7,7 @@ const exec = (cmd: string, args: string[]) => {
   return execa(cmd, args, {stdio: 'inherit'})
 }
 
-export const migrate: Hook<'init'> = async function () {
+const migrate: Hook<'init'> = async function () {
   if (process.argv[2] && process.argv[2].startsWith('plugins')) return
   const pluginsDir = path.join(this.config.dataDir, 'plugins')
   const yarnLockFilePath = path.join(this.config.dataDir, 'yarn.lock')
@@ -57,3 +57,6 @@ export const migrate: Hook<'init'> = async function () {
   await removeYarnLockFile()
   await migrateV6Plugins()
 }
+
+export default migrate
+

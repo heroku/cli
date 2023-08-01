@@ -1,9 +1,9 @@
 import {expect} from 'chai'
 
-import {CompletionLookup, CompletionMapping} from '../../src/completions'
+import {CompletionLookup, CompletionMapping} from '../../../../src/lib/autocomplete/completions'
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../helpers/runtest')
+const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
 runtest('CompletionLookup', () => {
   it('finds completion', async () => {
