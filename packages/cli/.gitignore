@@ -3,3 +3,4 @@
 /oclif.manifest.json
 /tmp
 /dist
+/.env
