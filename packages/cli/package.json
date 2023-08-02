@@ -14,7 +14,6 @@
     "@heroku-cli/plugin-certs-v5": "^8.1.7",
     "@heroku-cli/plugin-ci-v5": "^8.1.8",
     "@heroku-cli/plugin-container-registry-v5": "^8.1.7",
-    "@heroku-cli/plugin-oauth-v5": "^8.1.9",
     "@heroku-cli/plugin-orgs-v5": "^8.1.4",
     "@heroku-cli/plugin-pg-v5": "^8.1.7",
     "@heroku-cli/plugin-ps": "^8.1.7",
@@ -140,7 +139,6 @@
       "@heroku-cli/plugin-certs-v5",
       "@heroku-cli/plugin-ci-v5",
       "@heroku-cli/plugin-container-registry-v5",
-      "@heroku-cli/plugin-oauth-v5",
       "@heroku-cli/plugin-orgs-v5",
       "@heroku-cli/plugin-pg-v5",
       "@heroku-cli/plugin-ps-exec",
@@ -171,6 +169,9 @@
       "apps": {
         "description": "manage apps on Heroku"
       },
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
       "buildpacks": {
         "description": "scripts used to compile apps"
       },
@@ -179,6 +180,9 @@
       },
       "ci": {
         "description": "test runner for Heroku Pipelines"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
       },
       "commands": {
         "hidden": true
@@ -228,6 +232,9 @@
       },
       "run": {
         "description": "run a one-off process inside a Heroku dyno"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
       },
       "stack": {
         "description": "list available stacks",
