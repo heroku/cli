@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-// remember to unset HONEYCOMB_API_ENDPOINT="http://localhost:3333/"
-
 require('dotenv').config()
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
