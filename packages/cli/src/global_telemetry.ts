@@ -1,7 +1,9 @@
 import * as Rollbar from 'rollbar'
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-import opentelemetry from '@opentelemetry/api'
 
 const debug = require('debug')('global_telemetry')
 const rollbar = new Rollbar({
@@ -10,17 +12,13 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
+
 // const otelSDK = new HoneycombSDK({
 //   apiKey: process.env.HONEYCOMB_API_KEY,
 //   serviceName: 'heroku-cli',
-//   instrumentations: [getNodeAutoInstrumentations({
-//     // we recommend disabling fs autoinstrumentation since it can be noisy
-//     // and expensive during startup
-//     '@opentelemetry/instrumentation-fs': {
-//       enabled: false,
-//     },
-//   })],
+//   instrumentations: [],
 //   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
+//   debug: true,
 // })
 interface Telemetry {
     command: string,
@@ -108,11 +106,6 @@ export async function sendTelemetry(currentTelemetry: any) {
 export async function sendToHoneycomb(data: any) {
   try {
     console.log('SENDING TO HONEYCOMB')
-    const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-    tracer.startActiveSpan('command.name.test', span => {
-      span.setAttribute('command', 'test')
-      span.end()
-    })
   } catch {
     debug('could not send telemetry')
   }
