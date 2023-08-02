@@ -1,7 +1,7 @@
 import * as Rollbar from 'rollbar'
-const { Resource } = require("@opentelemetry/resources");
-const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
-const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+// const { Resource } = require("@opentelemetry/resources");
+// const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+// const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 import 'dotenv/config'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
@@ -105,7 +105,7 @@ export async function sendTelemetry(currentTelemetry: any) {
 
 export async function sendToHoneycomb(data: any) {
   try {
-    console.log('SENDING TO HONEYCOMB')
+    // console.log('SENDING TO HONEYCOMB')
   } catch {
     debug('could not send telemetry')
   }
