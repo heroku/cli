@@ -25,17 +25,13 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
 })
+
 // const otelSDK = new HoneycombSDK({
 //   apiKey: process.env.HONEYCOMB_API_KEY,
 //   serviceName: 'heroku-cli',
-//   instrumentations: [getNodeAutoInstrumentations({
-//     // we recommend disabling fs autoinstrumentation since it can be noisy
-//     // and expensive during startup
-//     '@opentelemetry/instrumentation-fs': {
-//       enabled: false,
-//     },
-//   })],
+//   instrumentations: [],
 //   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
+//   debug: true,
 // })
 
 registerInstrumentations({
