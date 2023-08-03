@@ -24,6 +24,9 @@ FLAGS
 
 DESCRIPTION
   list OAuth authorizations
+
+EXAMPLES
+  $ heroku authorizations
 ```
 
 ## `heroku authorizations:create`
@@ -32,18 +35,20 @@ create a new OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:create [-d <value>] [-s <value>] [-e <value>] [-S] [-j]
+  $ heroku authorizations:create [-d <value>] [-S] [-j] [-s <value>] [-e <value>]
 
 FLAGS
   -S, --short                only output token
-  -d, --description=<value>  set a custom authorization description
+  -d, --description=<value>  set a custom authorization
   -e, --expires-in=<value>   set expiration in seconds (default no expiration)
   -j, --json                 output in json format
   -s, --scope=<value>        set custom OAuth scopes
 
 DESCRIPTION
   create a new OAuth authorization
-  This creates an authorization with access to your Heroku account.
+
+EXAMPLES
+  $ heroku authorizations:create --description "For use with Anvil"
 ```
 
 ## `heroku authorizations:destroy ID`
@@ -57,10 +62,12 @@ USAGE
 DESCRIPTION
   revoke OAuth authorization
 
-
 ALIASES
-  $ heroku authorizations:destroy
   $ heroku authorizations:revoke
+  $ heroku authorizations:destroy
+
+EXAMPLES
+  $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
 ## `heroku authorizations:info ID`
@@ -89,10 +96,12 @@ USAGE
 DESCRIPTION
   revoke OAuth authorization
 
-
 ALIASES
-  $ heroku authorizations:destroy
   $ heroku authorizations:revoke
+  $ heroku authorizations:destroy
+
+EXAMPLES
+  $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
 ## `heroku authorizations:rotate ID`
@@ -113,7 +122,7 @@ updates an OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:update ID [-d <value>] [--client-id <value>] [--client-secret <value>]
+  $ heroku authorizations:update ID [-d <value>] [--client-id <value> --client-secret <value>]
 
 FLAGS
   -d, --description=<value>  set a custom authorization description

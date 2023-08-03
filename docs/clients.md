@@ -31,7 +31,7 @@ create a new OAuth client
 
 ```
 USAGE
-  $ heroku clients:create NAME REDIRECT_URI [-s] [-j]
+  $ heroku clients:create NAME REDIRECT_URI [-j] [-s]
 
 FLAGS
   -j, --json   output in json format
@@ -39,6 +39,9 @@ FLAGS
 
 DESCRIPTION
   create a new OAuth client
+
+EXAMPLES
+  $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
 ## `heroku clients:destroy ID`
@@ -67,6 +70,9 @@ FLAGS
 
 DESCRIPTION
   show details of an oauth client
+
+EXAMPLES
+  $ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
 ```
 
 ## `heroku clients:rotate ID`
@@ -99,4 +105,7 @@ FLAGS
 
 DESCRIPTION
   update OAuth client
+
+EXAMPLES
+  $ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback
 ```

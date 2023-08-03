@@ -4,7 +4,7 @@
 add/remove experimental features
 
 * [`heroku labs`](#heroku-labs)
-* [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)
+* [`heroku labs:disable FEATURE`](#heroku-labsdisable-feature)
 * [`heroku labs:enable FEATURE`](#heroku-labsenable-feature)
 * [`heroku labs:info FEATURE`](#heroku-labsinfo-feature)
 
@@ -25,13 +25,13 @@ DESCRIPTION
   list experimental features
 ```
 
-## `heroku labs:disable [FEATURE]`
+## `heroku labs:disable FEATURE`
 
 disables an experimental feature
 
 ```
 USAGE
-  $ heroku labs:disable [FEATURE] [-a <value>] [-r <value>] [--confirm <value>]
+  $ heroku labs:disable FEATURE [-a <value>] [-r <value>] [--confirm <value>]
 
 FLAGS
   -a, --app=<value>     app to run command against

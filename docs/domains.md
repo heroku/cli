@@ -8,7 +8,7 @@ custom domains for apps
 * [`heroku domains:clear`](#heroku-domainsclear)
 * [`heroku domains:info HOSTNAME`](#heroku-domainsinfo-hostname)
 * [`heroku domains:remove HOSTNAME`](#heroku-domainsremove-hostname)
-* [`heroku domains:update [HOSTNAME]`](#heroku-domainsupdate-hostname)
+* [`heroku domains:update HOSTNAME`](#heroku-domainsupdate-hostname)
 * [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 
 ## `heroku domains`
@@ -40,7 +40,7 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains
   === example Heroku Domain
-  example.herokuapp.com
+  example-xxxxxxxxxxxx.herokuapp.com
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
@@ -131,13 +131,13 @@ EXAMPLES
   $ heroku domains:remove www.example.com
 ```
 
-## `heroku domains:update [HOSTNAME]`
+## `heroku domains:update HOSTNAME`
 
 update a domain to use a different SSL certificate on an app
 
 ```
 USAGE
-  $ heroku domains:update [HOSTNAME] -a <value> --cert <value> [-h] [-r <value>]
+  $ heroku domains:update HOSTNAME -a <value> --cert <value> [-h] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against

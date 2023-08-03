@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.0](https://github.com/heroku/cli/compare/v8.1.8...v8.2.0-beta.0) (2023-08-03)
+
+
+### Features
+
+* **cli:** add rollbar ([#2424](https://github.com/heroku/cli/issues/2424)) ([9a52f2f](https://github.com/heroku/cli/commit/9a52f2f8e9c8bf27e0d5c5cf04ca592e61188359))
+
+
+
+
+
 ## [8.1.9](https://github.com/heroku/cli/compare/v8.1.8...v8.1.9) (2023-06-21)
 
 **Note:** Version bump only for package heroku
