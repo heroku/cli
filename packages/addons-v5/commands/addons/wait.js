@@ -25,34 +25,36 @@ async function run(ctx, api) {
     interval = 5
   }
 
-  for (let addon of addons) {
+  for (const addon of addons) {
     const startTime = new Date()
+    const addonName = addon.name
 
     if (addon.state === 'provisioning') {
+      let addonResponse
       try {
-        addon = await waitForAddonProvisioning(api, addon, interval)
+        addonResponse = await waitForAddonProvisioning(api, addon, interval)
       } catch (error) {
-        notify(`heroku addons:wait ${addon.name}`, 'Add-on failed to provision', false)
+        notify(`heroku addons:wait ${addonName}`, 'Add-on failed to provision', false)
         throw error
       }
 
-      let configVars = (addon.config_vars || [])
+      const configVars = (addonResponse.config_vars || [])
 
       if (configVars.length > 0) {
-        configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
-        cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
+        const decoratedConfigVars = configVars.map(c => cli.color.configVar(c)).join(', ')
+        cli.log(`Created ${cli.color.addon(addonName)} as ${decoratedConfigVars}`)
       }
 
       // only show notification if addon took longer than 5 seconds to provision
       if (Date.now() - startTime >= 1000 * 5) {
-        notify(`heroku addons:wait ${addon.name}`, 'Add-on successfully provisioned')
+        notify(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
       }
     } else if (addon.state === 'deprovisioning') {
-      addon = await waitForAddonDeprovisioning(api, addon, interval)
+      await waitForAddonDeprovisioning(api, addon, interval)
 
       // only show notification if addon took longer than 5 seconds to deprovision
       if (Date.now() - startTime >= 1000 * 5) {
-        notify(`heroku addons:wait ${addon.name}`, 'Add-on successfully deprovisioned')
+        notify(`heroku addons:wait ${addonName}`, 'Add-on successfully deprovisioned')
       }
     }
   }

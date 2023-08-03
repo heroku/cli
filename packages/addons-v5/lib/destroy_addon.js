@@ -4,19 +4,20 @@ const cli = require('heroku-cli-util')
 
 module.exports = async function (heroku, addon, force, wait) {
   const {waitForAddonDeprovisioning} = require('./addons_wait')
+  const addonName = addon.name
 
   function destroyAddonRequest(force) {
     return cli.action(
-      `Destroying ${cli.color.addon(addon.name)} on ${cli.color.app(addon.app.name)}`,
+      `Destroying ${cli.color.addon(addonName)} on ${cli.color.app(addon.app.name)}`,
       heroku.delete(`/apps/${addon.app.id}/addons/${addon.id}`, {
         headers: {'Accept-Expansion': 'plan'},
         body: {force},
-      }).then(function (addon) {
-        if (addon.state === 'deprovisioning') {
+      }).then(addonResponse => {
+        if (addonResponse.state === 'deprovisioning') {
           cli.action.done(cli.color.yellow('pending'))
         }
 
-        return addon
+        return addonResponse
       }).catch(error => {
         if (error.body && error.body.message) {
           throw new Error(`The add-on was unable to be destroyed: ${error.body.message}.`)
@@ -27,20 +28,19 @@ module.exports = async function (heroku, addon, force, wait) {
     )
   }
 
-  addon = await destroyAddonRequest(force)
+  let addonResponse = await destroyAddonRequest(force)
 
-  if (addon.state === 'deprovisioning') {
+  if (addonResponse.state === 'deprovisioning') {
     if (wait) {
-      cli.log(`Waiting for ${cli.color.addon(addon.name)}...`)
-      const deprovision_response = await waitForAddonDeprovisioning(heroku, addon, 5)
-      addon = deprovision_response
+      cli.log(`Waiting for ${cli.color.addon(addonName)}...`)
+      addonResponse = await waitForAddonDeprovisioning(heroku, addonResponse, 5)
     } else {
-      cli.log(`${cli.color.addon(addon.name)} is being destroyed in the background. The app will restart when complete...`)
-      cli.log(`Use ${cli.color.cmd('heroku addons:info ' + addon.name)} to check destruction progress`)
+      cli.log(`${cli.color.addon(addonName)} is being destroyed in the background. The app will restart when complete...`)
+      cli.log(`Use ${cli.color.cmd('heroku addons:info ' + addonName)} to check destruction progress`)
     }
-  } else if (addon.state !== 'deprovisioned') {
-    throw new Error(`The add-on was unable to be destroyed, with status ${addon.state}.`)
+  } else if (addonResponse.state !== 'deprovisioned') {
+    throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)
   }
 
-  return addon
+  return addonResponse
 }

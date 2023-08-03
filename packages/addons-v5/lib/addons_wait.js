@@ -8,33 +8,35 @@ module.exports = {
   waitForAddonProvisioning: async function (api, addon, interval) {
     const app = addon.app.name
     const addonName = addon.name
+    let addonResponse = {...addon}
 
-    await cli.action(`Creating ${cli.color.addon(addon.name)}`, (async function () {
-      while (addon.state === 'provisioning') {
+    await cli.action(`Creating ${cli.color.addon(addonName)}`, (async function () {
+      while (addonResponse.state === 'provisioning') {
         // eslint-disable-next-line no-promise-executor-return
         await new Promise(resolve => setTimeout(resolve, interval * 1000))
 
-        addon = await api.request({
+        addonResponse = await api.request({
           method: 'GET',
           path: `/apps/${app}/addons/${addonName}`,
           headers: {'Accept-Expansion': 'addon_service,plan'},
         })
       }
 
-      if (addon.state === 'deprovisioned') {
-        throw new Error(`The add-on was unable to be created, with status ${addon.state}`)
+      if (addonResponse.state === 'deprovisioned') {
+        throw new Error(`The add-on was unable to be created, with status ${addonResponse.state}`)
       }
     })())
 
-    return addon
+    return addonResponse
   },
 
   waitForAddonDeprovisioning: async function (api, addon, interval) {
     const app = addon.app.name
     const addonName = addon.name
+    let addonResponse = {...addon}
 
-    await cli.action(`Destroying ${cli.color.addon(addon.name)}`, (async function () {
-      while (addon.state === 'deprovisioning') {
+    await cli.action(`Destroying ${cli.color.addon(addonName)}`, (async function () {
+      while (addonResponse.state === 'deprovisioning') {
         // eslint-disable-next-line no-promise-executor-return
         await new Promise(resolve => setTimeout(resolve, interval * 1000))
 
@@ -42,12 +44,12 @@ module.exports = {
           method: 'GET',
           path: `/apps/${app}/addons/${addonName}`,
           headers: {'Accept-Expansion': 'addon_service,plan'},
-        }).then(addonInfo => {
-          addon = addonInfo
+        }).then(response => {
+          addonResponse = response
         }).catch(function (error) {
           // Not ideal, but API deletes the record returning a 404 when deprovisioned.
           if (error.statusCode === 404) {
-            addon.state = 'deprovisioned'
+            addonResponse.state = 'deprovisioned'
           } else {
             throw error
           }
@@ -55,6 +57,6 @@ module.exports = {
       }
     })())
 
-    return addon
+    return addonResponse
   },
 }
