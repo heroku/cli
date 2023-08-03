@@ -1,7 +1,7 @@
 `heroku reviewapps`
 ===================
 
-manage reviewapps in pipelines
+disable review apps and/or settings on an existing pipeline
 
 * [`heroku reviewapps:disable`](#heroku-reviewappsdisable)
 * [`heroku reviewapps:enable`](#heroku-reviewappsenable)

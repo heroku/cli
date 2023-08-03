@@ -1,7 +1,7 @@
 `heroku git`
 ============
 
-manage local git repository for app
+set git remote and clone Heroku repository
 
 * [`heroku git:clone [DIRECTORY]`](#heroku-gitclone-directory)
 * [`heroku git:remote`](#heroku-gitremote)

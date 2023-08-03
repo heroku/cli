@@ -1,7 +1,7 @@
 `heroku pipelines`
 ==================
 
-manage pipelines
+list pipelines you have access to
 
 * [`heroku pipelines`](#heroku-pipelines)
 * [`heroku pipelines:add PIPELINE`](#heroku-pipelinesadd-pipeline)

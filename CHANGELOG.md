@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.1](https://github.com/heroku/cli/compare/v8.2.0-beta.0...v8.2.0-beta.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* use correct path for update hooks ([#2426](https://github.com/heroku/cli/issues/2426)) ([e55e00f](https://github.com/heroku/cli/commit/e55e00f920a066af01f1febd697054f812183c92))
+
+
+
+
+
 # [8.2.0-beta.0](https://github.com/heroku/cli/compare/v8.1.8...v8.2.0-beta.0) (2023-08-03)
 
 
