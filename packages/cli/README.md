@@ -37,10 +37,12 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku addons`](docs/addons.md) - tools and services for developing, extending, and operating your app
 * [`heroku apps`](docs/apps.md) - manage apps on Heroku
 * [`heroku auth`](docs/auth.md) - check 2fa status
+* [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
+* [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
 * [`heroku container`](docs/container.md) - Use containers to build and deploy Heroku apps
 * [`heroku domains`](docs/domains.md) - custom domains for apps
@@ -60,11 +62,13 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku pipelines`](docs/pipelines.md) - list pipelines you have access to
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
+* [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - disable review apps and/or settings on an existing pipeline
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
+* [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
 * [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams

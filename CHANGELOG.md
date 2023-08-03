@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.2](https://github.com/heroku/cli/compare/v8.2.0-beta.1...v8.2.0-beta.2) (2023-08-03)
+
+
+### Bug Fixes
+
+* turns out tslib is actually a runtime dependency, not just dev. ([0f0af53](https://github.com/heroku/cli/commit/0f0af53a21faca11d411e9c35c239d2e5f1958dd))
+
+
+
+
+
 # [8.2.0-beta.1](https://github.com/heroku/cli/compare/v8.2.0-beta.0...v8.2.0-beta.1) (2023-08-03)
 
 
