@@ -267,7 +267,7 @@
       ],
       "update": [
         "./lib/hooks/update/plugin-migrate",
-        "./lib/hooks/update/b",
+        "./lib/hooks/update/brew",
         "./lib/hooks/update/completions",
         "./lib/hooks/update/tidy",
         "./lib/hooks/recache"
