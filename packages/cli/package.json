@@ -58,6 +58,7 @@
     "shell-quote": "^1.6.1",
     "tmp": "^0.0.33",
     "true-myth": "2.2.3",
+    "tslib": "1.14.1",
     "urijs": "^1.19.11",
     "uuid": "3.3.2",
     "valid-url": "^1.0.9",
@@ -102,7 +103,6 @@
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
     "ts-node": "^10.9.1",
-    "tslib": "1.14.1",
     "typescript": "4.8.4"
   },
   "engines": {
