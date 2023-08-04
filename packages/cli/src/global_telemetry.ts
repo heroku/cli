@@ -43,7 +43,7 @@ const prodHeaders = { Authorization: `Bearer ${token}`}
 const exporter = new OTLPTraceExporter({
     // optional - default url is http://localhost:4318/v1/traces
     // need to add backboard endpoint
-    url: isDev ? "https://api.honeycomb.io:443/v1/traces" : "http://localhost:4318/v1/traces",
+    url: isDev ? "https://api.honeycomb.io:443/v1/traces" : "https://backboard-staging.herokuapp.com/otel/v1/traces",
     // optional - collection of custom headers to be sent with each request, empty by default
     // need to add authorization header & token for production
     headers: isDev ? devHeaders : prodHeaders,
@@ -133,23 +133,24 @@ export async function sendTelemetry(currentTelemetry: any) {
   if (telemetry instanceof Error) {
     let cliError: cliError
     cliError = {name: telemetry.name, message: telemetry.message, stack: telemetry.stack, cli_run_duration: currentTelemetry.cliRunDuration}
-    await sendToRollbar(cliError)
-    await sendToHoneycomb(cliError)
+    await Promise.all([
+      sendToRollbar(cliError),
+      sendToHoneycomb(cliError)
+    ])
+  } else {
+    await sendToHoneycomb(telemetry)
   }
-
-  await sendToHoneycomb(telemetry)
 }
 
 export async function sendToHoneycomb(data: any) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli');
-    const span = tracer.startSpan('heroku-cli-tracer')
+    const span = tracer.startSpan('node_app_execution')
 
     if (data instanceof Error) {
       let cliError: cliError = data
       span.setAttribute('error_name', cliError.name)
       span.setAttribute('error_message', cliError.message)
-      span.setAttribute('error_stack', cliError.stack)
       span.setAttribute('cli_run_duration', cliError.cli_run_duration)
     } else {
       span.setAttribute('command', data.command)
