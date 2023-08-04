@@ -10,7 +10,6 @@ const globalTelemetry = require('../lib/global_telemetry')
 
 process.once('beforeExit', async code => {
   // capture as successful exit
-  console.log('we have successfull exit')
   global.cliTelemetry.exitCode = code
   global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   const telemetryData = global.cliTelemetry
@@ -19,7 +18,6 @@ process.once('beforeExit', async code => {
 
 process.on('SIGINT', async () => {
   // capture as unsuccessful exit
-  console.log('we have unsuccessfull exit')
   let error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error)
@@ -27,18 +25,12 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   // capture as unsuccessful exit
-  console.log('we have unsuccessfull exit')
   let error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error)
 })
 
-globalTelemetry.honeycombStart()
-// const tracer = opentelemetry.trace.getTracer('heroku-cli-tracer')
-// tracer.startActiveSpan('command.name.test', span => {
-//   span.setAttribute('command', 'test')
-//   span.end()
-// })
+globalTelemetry.initializeInstrumentation()
 
 const oclif = require('@oclif/core')
 

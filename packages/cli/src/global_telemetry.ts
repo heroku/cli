@@ -1,8 +1,12 @@
-import * as Rollbar from 'rollbar'
-// const { Resource } = require("@opentelemetry/resources");
-// const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
-// const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 import 'dotenv/config'
+import * as Rollbar from 'rollbar'
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { registerInstrumentations } = require("@opentelemetry/instrumentation");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+const { BatchSpanProcessor } = require("@opentelemetry/sdk-trace-base");
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+const opentelemetry = require('@opentelemetry/api');
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 const debug = require('debug')('global_telemetry')
@@ -13,19 +17,47 @@ const rollbar = new Rollbar({
   environment: isDev ? 'development' : 'production',
 })
 
-// const otelSDK = new HoneycombSDK({
-//   apiKey: process.env.HONEYCOMB_API_KEY,
-//   serviceName: 'heroku-cli',
-//   instrumentations: [],
-//   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
-//   debug: true,
-// })
+registerInstrumentations({
+  instrumentations: [],
+});
+
+const resource =
+  Resource.default().merge(
+    new Resource({
+      [SemanticResourceAttributes.SERVICE_NAME]: "heroku-cli",
+    })
+  );
+
+const provider = new NodeTracerProvider({
+    resource: resource,
+});
+
+// need to get auth token
+const token = ''
+const devHeaders = {
+        "x-honeycomb-team": process.env.HONEYCOMB_API_KEY,
+        "x-honeycomb-dataset": `front-end-metrics-${isDev ? 'development' : 'production'}`
+      }
+const prodHeaders = { Authorization: `Bearer ${token}`}
+
+const exporter = new OTLPTraceExporter({
+    // optional - default url is http://localhost:4318/v1/traces
+    // need to add backboard endpoint
+    url: isDev ? "https://api.honeycomb.io:443/v1/traces" : "http://localhost:4318/v1/traces",
+    // optional - collection of custom headers to be sent with each request, empty by default
+    // need to add authorization header & token for production
+    headers: isDev ? devHeaders : prodHeaders,
+    compression: "none"
+  })
+export const processor = new BatchSpanProcessor(exporter);
+provider.addSpanProcessor(processor);
+
 interface Telemetry {
     command: string,
     os: string,
     version: string,
     exitCode: number,
-    exitState: string[],
+    exitState: string,
     cliRunDuration: number,
     commandRunDuration: number,
     lifecycleHookCompletion: {
@@ -40,8 +72,12 @@ export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
 }
 
-export function honeycombStart() {
-  // otelSDK.start()
+interface cliError extends Error {
+  cli_run_duration?: number
+}
+
+export function initializeInstrumentation() {
+  provider.register();
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -52,7 +88,7 @@ export function setupTelemetry(config: any, opts: any) {
     os: config.platform,
     version: config.version,
     exitCode: 0,
-    exitState: [''],
+    exitState: 'successful',
     cliRunDuration: 0,
     commandRunDuration: cmdStartTime,
     lifecycleHookCompletion: {
@@ -74,11 +110,11 @@ export function computeDuration(cmdStartTime: any) {
 
 export function reportCmdNotFound(config: any) {
   return {
-    command: '',
+    command: 'invalid_command',
     os: config.platform,
     version: config.version,
     exitCode: 0,
-    exitState: ['command_not_found'],
+    exitState: 'command_not_found',
     cliRunDuration: 0,
     commandRunDuration: 0,
     lifecycleHookCompletion: {
@@ -95,9 +131,10 @@ export async function sendTelemetry(currentTelemetry: any) {
   let telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
-    telemetry = {error_message: telemetry.message, error_stack: telemetry.stack}
-    telemetry.cliRunDuration = currentTelemetry.cliRunDuration
-    await sendToRollbar(telemetry)
+    let cliError: cliError
+    cliError = {name: telemetry.name, message: telemetry.message, stack: telemetry.stack, cli_run_duration: currentTelemetry.cliRunDuration}
+    await sendToRollbar(cliError)
+    await sendToHoneycomb(cliError)
   }
 
   await sendToHoneycomb(telemetry)
@@ -105,7 +142,30 @@ export async function sendTelemetry(currentTelemetry: any) {
 
 export async function sendToHoneycomb(data: any) {
   try {
-    // console.log('SENDING TO HONEYCOMB')
+    const tracer = opentelemetry.trace.getTracer('heroku-cli');
+    const span = tracer.startSpan('heroku-cli-tracer')
+
+    if (data instanceof Error) {
+      let cliError: cliError = data
+      span.setAttribute('error_name', cliError.name)
+      span.setAttribute('error_message', cliError.message)
+      span.setAttribute('error_stack', cliError.stack)
+      span.setAttribute('cli_run_duration', cliError.cli_run_duration)
+    } else {
+      span.setAttribute('command', data.command)
+      span.setAttribute('os', data.os)
+      span.setAttribute('version', data.version)
+      span.setAttribute('exit_code', data.exitCode)
+      span.setAttribute('exit_state', data.exitState)
+      span.setAttribute('cli_run_duration', data.cliRunDuration)
+      span.setAttribute('command_run_duration', data.commandRunDuration)
+      span.setAttribute('lifecycle_hook.init', data.lifecycleHookCompletion.init)
+      span.setAttribute('lifecycle_hook.prerun', data.lifecycleHookCompletion.prerun)
+      span.setAttribute('lifecycle_hook.postrun', data.lifecycleHookCompletion.postrun)
+      span.setAttribute('lifecycle_hook.command_not_found', data.lifecycleHookCompletion.command_not_found)
+    }
+    span.end()
+    processor.forceFlush()
   } catch {
     debug('could not send telemetry')
   }
