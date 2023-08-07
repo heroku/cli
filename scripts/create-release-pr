@@ -49,6 +49,9 @@ git add . -u
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 echo "Done creating new CLI package(s) versions"
 
+echo "Updating lockfile..."
+yarn install
+
 echo "Creating git commit and pushing to GitHub..."
 git commit -m "v${PACKAGE_VERSION}"
 git push origin "${BRANCH_NAME}"
