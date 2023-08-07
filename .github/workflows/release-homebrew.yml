@@ -24,10 +24,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
       - name: yarn install
-        run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn --immutable --network-timeout 1000000
+        run: yarn --immutable --network-timeout 1000000
       - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: release homebrew
         run: ./scripts/release/homebrew.js
