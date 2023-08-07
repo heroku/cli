@@ -7,6 +7,7 @@ import {display} from '../../lib/authorizations/authorizations'
 
 export default class AuthorizationsCreate extends Command {
   static description = 'create a new OAuth authorization'
+
   static examples = [
     '$ heroku authorizations:create --description "For use with Anvil"',
   ]
