@@ -36,6 +36,8 @@ EXAMPLES
   $ heroku pipelines
 ```
 
+_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/index.ts)_
+
 ## `heroku pipelines:add PIPELINE`
 
 add this app to a pipeline
@@ -61,6 +63,8 @@ EXAMPLES
   $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
+_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/add.ts)_
+
 ## `heroku pipelines:connect NAME`
 
 connect a github repo to an existing pipeline
@@ -81,6 +85,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
+
+_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
@@ -112,6 +118,8 @@ EXAMPLES
   $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
 
+_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/create.ts)_
+
 ## `heroku pipelines:destroy PIPELINE`
 
 destroy a pipeline
@@ -129,6 +137,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:destroy my-pipeline
 ```
+
+_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -148,6 +158,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:diff -a my-app-staging
 ```
+
+_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -170,6 +182,8 @@ EXAMPLES
   $ heroku pipelines:info my-pipeline
 ```
 
+_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/info.ts)_
+
 ## `heroku pipelines:open PIPELINE`
 
 open a pipeline in dashboard
@@ -187,6 +201,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:open my-pipeline
 ```
+
+_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/open.ts)_
 
 ## `heroku pipelines:promote`
 
@@ -208,6 +224,8 @@ EXAMPLES
   $ heroku pipelines:promote -a my-app-staging
 ```
 
+_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/promote.ts)_
+
 ## `heroku pipelines:remove`
 
 remove this app from its pipeline
@@ -227,6 +245,8 @@ EXAMPLES
   $ heroku pipelines:remove -a my-app
 ```
 
+_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/remove.ts)_
+
 ## `heroku pipelines:rename PIPELINE NAME`
 
 rename a pipeline
@@ -245,6 +265,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:rename my-pipeline new-pipeline-name
 ```
+
+_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/rename.ts)_
 
 ## `heroku pipelines:setup [NAME] [REPO]`
 
@@ -270,6 +292,8 @@ EXAMPLES
   $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
 ```
 
+_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/setup.ts)_
+
 ## `heroku pipelines:transfer OWNER`
 
 transfer ownership of a pipeline
@@ -294,6 +318,8 @@ EXAMPLES
   $ heroku pipelines:transfer admin-team -p my-pipeline
 ```
 
+_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/transfer.ts)_
+
 ## `heroku pipelines:update`
 
 update the app's stage in a pipeline
@@ -313,3 +339,5 @@ DESCRIPTION
 EXAMPLES
   $ heroku pipelines:update -s staging -a my-app
 ```
+
+_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/pipelines/update.ts)_

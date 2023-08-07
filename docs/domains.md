@@ -48,6 +48,8 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/index.ts)_
+
 ## `heroku domains:add HOSTNAME`
 
 add a domain to an app
@@ -71,6 +73,8 @@ EXAMPLES
   $ heroku domains:add www.example.com
 ```
 
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/add.ts)_
+
 ## `heroku domains:clear`
 
 remove all domains from an app
@@ -90,6 +94,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains:clear
 ```
+
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -111,6 +117,8 @@ EXAMPLES
   $ heroku domains:info www.example.com
 ```
 
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/info.ts)_
+
 ## `heroku domains:remove HOSTNAME`
 
 remove a domain from an app
@@ -130,6 +138,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains:remove www.example.com
 ```
+
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update HOSTNAME`
 
@@ -152,6 +162,8 @@ EXAMPLES
   $ heroku domains:update www.example.com --cert mycert
 ```
 
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/update.ts)_
+
 ## `heroku domains:wait [HOSTNAME]`
 
 wait for domain to be active for an app
@@ -168,3 +180,5 @@ FLAGS
 DESCRIPTION
   wait for domain to be active for an app
 ```
+
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/domains/wait.ts)_

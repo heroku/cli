@@ -19,3 +19,5 @@ FLAGS
 DESCRIPTION
   display current status of the Heroku platform
 ```
+
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/status.ts)_

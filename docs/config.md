@@ -28,6 +28,8 @@ DESCRIPTION
   display the config vars for an app
 ```
 
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/config/index.ts)_
+
 ## `heroku config:edit [KEY]`
 
 interactively edit config vars
@@ -62,6 +64,8 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/config/edit.ts)_
+
 ## `heroku config:get KEY...`
 
 display a single config value for an app
@@ -82,6 +86,8 @@ EXAMPLES
   $ heroku config:get RAILS_ENV
   production
 ```
+
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -160,3 +166,5 @@ EXAMPLES
   $ heroku config:unset RAILS_ENV RACK_ENV
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
+
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/config/unset.ts)_

@@ -62,6 +62,8 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/ps/autoscale/disable.ts)_
+
 ## `heroku ps:autoscale:enable`
 
 enable web dyno autoscaling
@@ -81,6 +83,8 @@ FLAGS
 DESCRIPTION
   enable web dyno autoscaling
 ```
+
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -336,3 +340,5 @@ FLAGS
 DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
+
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/ps/wait.ts)_

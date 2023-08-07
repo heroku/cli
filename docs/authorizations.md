@@ -29,6 +29,8 @@ EXAMPLES
   $ heroku authorizations
 ```
 
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/index.ts)_
+
 ## `heroku authorizations:create`
 
 create a new OAuth authorization
@@ -50,6 +52,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku authorizations:create --description "For use with Anvil"
 ```
+
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/create.ts)_
 
 ## `heroku authorizations:destroy ID`
 
@@ -85,6 +89,8 @@ DESCRIPTION
   show an existing OAuth authorization
 ```
 
+_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/info.ts)_
+
 ## `heroku authorizations:revoke ID`
 
 revoke OAuth authorization
@@ -104,6 +110,8 @@ EXAMPLES
   $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/revoke.ts)_
+
 ## `heroku authorizations:rotate ID`
 
 updates an OAuth authorization token
@@ -115,6 +123,8 @@ USAGE
 DESCRIPTION
   updates an OAuth authorization token
 ```
+
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/rotate.ts)_
 
 ## `heroku authorizations:update ID`
 
@@ -132,3 +142,5 @@ FLAGS
 DESCRIPTION
   updates an OAuth authorization
 ```
+
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/authorizations/update.ts)_

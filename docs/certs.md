@@ -32,6 +32,8 @@ DESCRIPTION
   list SSL certificates for an app
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/index.js)_
+
 ## `heroku certs:add CRT KEY`
 
 add an SSL certificate to an app
@@ -55,6 +57,8 @@ EXAMPLES
       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/add.js)_
+
 ## `heroku certs:auto`
 
 show ACM status for an app
@@ -72,6 +76,8 @@ DESCRIPTION
   show ACM status for an app
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/auto/index.js)_
+
 ## `heroku certs:auto:disable`
 
 disable ACM for an app
@@ -87,6 +93,8 @@ FLAGS
 DESCRIPTION
   disable ACM for an app
 ```
+
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/auto/disable.js)_
 
 ## `heroku certs:auto:enable`
 
@@ -105,6 +113,8 @@ DESCRIPTION
   enable ACM status for an app
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/auto/enable.js)_
+
 ## `heroku certs:auto:refresh`
 
 refresh ACM for an app
@@ -121,6 +131,8 @@ DESCRIPTION
   refresh ACM for an app
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/auto/refresh.js)_
+
 ## `heroku certs:chain`
 
 print an ordered & complete chain for a certificate
@@ -136,6 +148,8 @@ FLAGS
 DESCRIPTION
   print an ordered & complete chain for a certificate
 ```
+
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/chain.js)_
 
 ## `heroku certs:generate DOMAIN`
 
@@ -169,6 +183,8 @@ EXAMPLES
   $ heroku certs:generate example.com
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/generate.js)_
+
 ## `heroku certs:info`
 
 show certificate information for an SSL certificate
@@ -187,6 +203,8 @@ FLAGS
 DESCRIPTION
   show certificate information for an SSL certificate
 ```
+
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/info.js)_
 
 ## `heroku certs:key`
 
@@ -209,6 +227,8 @@ EXAMPLES
   $ heroku certs:key example.com.crt example.com.key
 ```
 
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/key.js)_
+
 ## `heroku certs:remove`
 
 remove an SSL certificate from an app
@@ -226,6 +246,8 @@ FLAGS
 DESCRIPTION
   remove an SSL certificate from an app
 ```
+
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/remove.js)_
 
 ## `heroku certs:update CRT KEY`
 
@@ -251,3 +273,5 @@ EXAMPLES
       If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
+
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v8.2.0-beta.3/packages/certs-v5/commands/certs/update.js)_

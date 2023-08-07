@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.3](https://github.com/heroku/cli/compare/v8.2.0-beta.2...v8.2.0-beta.3) (2023-08-07)
+
+
+### Bug Fixes
+
+* upgrade to latest oclif release to it can handle yarn 3 ([c69cf9d](https://github.com/heroku/cli/commit/c69cf9d54d38a0aabeeab52eded9adc56dd9890f))
+
+
+
+
+
 ## [8.1.8](https://github.com/heroku/cli/compare/v8.1.7...v8.1.8) (2023-06-14)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci-v5

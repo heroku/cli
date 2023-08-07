@@ -25,6 +25,8 @@ DESCRIPTION
   list your OAuth clients
 ```
 
+_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/index.ts)_
+
 ## `heroku clients:create NAME REDIRECT_URI`
 
 create a new OAuth client
@@ -44,6 +46,8 @@ EXAMPLES
   $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
+_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/create.ts)_
+
 ## `heroku clients:destroy ID`
 
 delete client by ID
@@ -55,6 +59,8 @@ USAGE
 DESCRIPTION
   delete client by ID
 ```
+
+_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/destroy.ts)_
 
 ## `heroku clients:info ID`
 
@@ -75,6 +81,8 @@ EXAMPLES
   $ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
 ```
 
+_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/info.ts)_
+
 ## `heroku clients:rotate ID`
 
 rotate OAuth client secret
@@ -90,6 +98,8 @@ FLAGS
 DESCRIPTION
   rotate OAuth client secret
 ```
+
+_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/rotate.ts)_
 
 ## `heroku clients:update ID`
 
@@ -109,3 +119,5 @@ DESCRIPTION
 EXAMPLES
   $ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
+
+_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v8.2.0-beta.3/src/commands/clients/update.ts)_
