@@ -1,8 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expect, test} from '@oclif/test'
-import * as addSeconds from 'date-fns/add_seconds'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
-
+import {formatDistanceToNow, addSeconds} from 'date-fns'
 import {display} from '../../../../src/lib/authorizations/authorizations'
 
 const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
@@ -59,11 +57,11 @@ describe('display', () => {
 
         expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain(`Updated at:  ${new Date(0)}`)
-        expect(ctx.stdout).to.contain(`(${distanceInWordsToNow(new Date(0))} ago)`)
+        expect(ctx.stdout).to.contain(`(${formatDistanceToNow(new Date(0))} ago)`)
 
         const expirationDate = addSeconds(new Date(), 10000)
         expect(ctx.stdout).to.contain(`Expires at:  ${expirationDate}`)
-        expect(ctx.stdout).to.contain(`(in ${distanceInWordsToNow(expirationDate)})`)
+        expect(ctx.stdout).to.contain(`(in ${formatDistanceToNow(expirationDate)})`)
       })
   })
 

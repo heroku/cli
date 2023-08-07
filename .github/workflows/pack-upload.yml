@@ -22,7 +22,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
       - name: Building deb
         run: yarn oclif pack:deb --root="./packages/cli"
       - uses: actions/upload-artifact@v3
@@ -43,7 +43,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
       - name: Building tarballs
         run: yarn oclif pack tarballs --root="./packages/cli"
       - uses: actions/upload-artifact@v3
@@ -106,7 +106,7 @@ jobs:
         run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn --frozen-lockfile --prefer-offline --network-timeout 1000000
+          yarn --immutable --prefer-offline --network-timeout 1000000
       - name: Upload production artifacts
         run: |
           cd packages/cli
