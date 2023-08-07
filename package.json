@@ -30,9 +30,9 @@
   "private": true,
   "scripts": {
     "build": "lerna run prepack --concurrency 4",
-    "test": "lerna run test --concurrency 4",
+    "test": "yarn run build && lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache"
   },
   "workspaces": {
     "packages": [
