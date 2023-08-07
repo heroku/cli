@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import {formatDistanceToNow} from 'date-fns'
 import HTTP from 'http-call'
 
 import {maxBy} from '../lib/status/util'
@@ -49,7 +49,7 @@ export default class Status extends Command {
 
       const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
       for (const u of incident.updates) {
-        ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${distanceInWordsToNow(new Date(u.updated_at))} ago)`)
+        ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
         ux.log(`${u.contents}\n`)
       }
     }

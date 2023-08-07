@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
-
+import {formatDistanceToNow} from 'date-fns'
 describe('authorizations:info', () => {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
   const authorization = {
@@ -33,7 +32,7 @@ describe('authorizations:info', () => {
         'Description: desc\n' +
         'Scope:       global\n' +
         'Token:       secrettoken\n' +
-        `Updated at:  ${new Date(0)} (${distanceInWordsToNow(new Date(0))} ago)\n`,
+        `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`,
       )
     })
 
