@@ -2,13 +2,13 @@ import 'dotenv/config'
 import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
+import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
 const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
-const opentelemetry = require('@opentelemetry/api')
 const {version} = require('../../../packages/cli/package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const path = require('path')
@@ -78,10 +78,6 @@ export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
 }
 
-interface cliError extends Error {
-  cli_run_duration?: number
-}
-
 export function initializeInstrumentation() {
   provider.register()
 }
@@ -137,10 +133,9 @@ export async function sendTelemetry(currentTelemetry: any) {
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
-    const cliError: cliError = {name: telemetry.name, message: telemetry.message, stack: telemetry.stack, cli_run_duration: currentTelemetry.cliRunDuration}
     await Promise.all([
-      sendToRollbar(cliError),
-      sendToHoneycomb(cliError),
+      sendToRollbar(telemetry),
+      sendToHoneycomb(telemetry),
     ])
   } else {
     await sendToHoneycomb(telemetry)
@@ -153,10 +148,11 @@ export async function sendToHoneycomb(data: any) {
     const span = tracer.startSpan('node_app_execution')
 
     if (data instanceof Error) {
-      const cliError: cliError = data
-      span.setAttribute('error_name', cliError.name)
-      span.setAttribute('error_message', cliError.message)
-      span.setAttribute('cli_run_duration', cliError.cli_run_duration)
+      span.recordException(data)
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: 'Error',
+      })
     } else {
       span.setAttribute('command', data.command)
       span.setAttribute('os', data.os)
@@ -179,9 +175,10 @@ export async function sendToHoneycomb(data: any) {
 }
 
 export async function sendToRollbar(data: any) {
+  const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
   try {
     // send data to rollbar
-    rollbar.error('Failed to complete execution', data, () => {
+    rollbar.error('Failed to complete execution', rollbarError, () => {
       process.exit(1)
     })
   } catch {
