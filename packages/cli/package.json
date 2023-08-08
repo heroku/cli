@@ -315,7 +315,7 @@
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
-    "pretest": "tsc -p test --noEmit && cd ../.. && yarn  --cwd=\"../..\" workspaces foreach run prepack",
+    "pretest": "tsc -p test --noEmit && cd ../.. && yarn workspaces foreach run prepack",
     "test": "yarn pretest && nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test:acceptance": "mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
     "test:integration": "mocha --forbid-only \"test/**/*.integration.test.ts\"",
