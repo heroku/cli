@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const {sortBy, compact} = require('lodash')
 
-const costs = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576}
+const costsHourly = {Eco: 0, Hobby: '0.01', Basic: '0.01', 'Standard-1X': '0.03', 'Standard-2X': '0.06', 'Performance-M': '0.34', 'Performance-L': '0.69'}
 
 let emptyFormationErr = app => {
   return new Error(`No process types on ${app}.
@@ -69,7 +69,7 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),
       qty: cli.color.yellow(d.quantity.toString()),
-      'cost/mo': costs[d.size] ? '$' + (costs[d.size] * d.quantity).toString() : '',
+      'cost/hr': costsHourly[d.size] ? '~$' + (costsHourly[d.size] * d.quantity).toString() : '',
     }))
 
     if (formation.length === 0) throw emptyFormationErr()
@@ -80,7 +80,7 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
         {key: 'type'},
         {key: 'size'},
         {key: 'qty'},
-        {key: 'cost/mo'},
+        {key: 'cost/hr'},
       ],
     })
 
