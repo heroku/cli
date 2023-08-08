@@ -30,10 +30,10 @@ describe('ps:type', function () {
 
     return cmd.run({app: 'myapp', args: ['basic']})
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type    size   qty  cost/mo
+type    size   qty  cost/hr
 ──────  ─────  ───  ───────
-web     Basic  1    $7
-worker  Basic  2    $14
+web     Basic  1    ~$0.01
+worker  Basic  2    ~$0.02
 === Dyno Totals
 type   total
 ─────  ─────
@@ -56,10 +56,10 @@ Basic  3
 
     return cmd.run({app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x']})
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type    size         qty  cost/mo
+type    size         qty  cost/hr
 ──────  ───────────  ───  ───────
-web     Standard-1X  1    $25
-worker  Standard-2X  2    $100
+web     Standard-1X  1    ~$0.03
+worker  Standard-2X  2    ~$0.12
 === Dyno Totals
 type         total
 ───────────  ─────
@@ -79,7 +79,7 @@ Standard-2X  2
 
     return cmd.run({app: 'myapp', args: []})
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type  size      qty  cost/mo
+type  size      qty  cost/hr
 ────  ────────  ───  ───────
 web   Shield-M  0
 web   Shield-L  0
