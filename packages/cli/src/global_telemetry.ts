@@ -49,9 +49,7 @@ const devHeaders = {
 const prodHeaders = {Authorization: `Bearer ${token}`}
 
 const exporter = new OTLPTraceExporter({
-  // optional - default url is http://localhost:4318/v1/traces
-  // https://api.honeycomb.io:443/v1/traces --> dev environment
-  url: isDev ? 'http://localhost:4318/v1/traces' : 'https://backboard-staging.herokuapp.com/otel/v1/traces',
+  url: isDev ? 'https://api.honeycomb.io:443/v1/traces' : 'https://backboard-staging.herokuapp.com/otel/v1/traces',
   headers: isDev ? devHeaders : prodHeaders,
   compression: 'none',
 })
@@ -151,20 +149,20 @@ export async function sendToHoneycomb(data: any) {
       span.recordException(data)
       span.setStatus({
         code: SpanStatusCode.ERROR,
-        message: 'Error',
+        message: data.message,
       })
     } else {
-      span.setAttribute('command', data.command)
-      span.setAttribute('os', data.os)
-      span.setAttribute('version', data.version)
-      span.setAttribute('exit_code', data.exitCode)
-      span.setAttribute('exit_state', data.exitState)
-      span.setAttribute('cli_run_duration', data.cliRunDuration)
-      span.setAttribute('command_run_duration', data.commandRunDuration)
-      span.setAttribute('lifecycle_hook.init', data.lifecycleHookCompletion.init)
-      span.setAttribute('lifecycle_hook.prerun', data.lifecycleHookCompletion.prerun)
-      span.setAttribute('lifecycle_hook.postrun', data.lifecycleHookCompletion.postrun)
-      span.setAttribute('lifecycle_hook.command_not_found', data.lifecycleHookCompletion.command_not_found)
+      span.setAttribute('heroku_client.command', data.command)
+      span.setAttribute('heroku_client.os', data.os)
+      span.setAttribute('heroku_client.version', data.version)
+      span.setAttribute('heroku_client.exit_code', data.exitCode)
+      span.setAttribute('heroku_client.exit_state', data.exitState)
+      span.setAttribute('heroku_client.cli_run_duration', data.cliRunDuration)
+      span.setAttribute('heroku_client.command_run_duration', data.commandRunDuration)
+      span.setAttribute('heroku_client.lifecycle_hook.init', data.lifecycleHookCompletion.init)
+      span.setAttribute('heroku_client.lifecycle_hook.prerun', data.lifecycleHookCompletion.prerun)
+      span.setAttribute('heroku_client.lifecycle_hook.postrun', data.lifecycleHookCompletion.postrun)
+      span.setAttribute('heroku_client.lifecycle_hook.command_not_found', data.lifecycleHookCompletion.command_not_found)
     }
 
     span.end()
