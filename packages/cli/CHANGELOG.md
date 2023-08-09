@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.12](https://github.com/heroku/cli/compare/v8.2.0-beta.11...v8.2.0-beta.12) (2023-08-09)
+
+
+### Bug Fixes
+
+* downgrade @oclif/plugin-plugins so legacy plugin installs work again ([5cb74ec](https://github.com/heroku/cli/commit/5cb74ecfccf90c4250dce3aeb2213f294f7c88e3))
+
+
+### Reverts
+
+* Revert "whitespace for version bump" ([510071d](https://github.com/heroku/cli/commit/510071d87f2956f9cc9b5767a83c2c1acb55e1c9))
+
+
+
+
+
 # [8.2.0-beta.11](https://github.com/heroku/cli/compare/v8.2.0-beta.10...v8.2.0-beta.11) (2023-08-09)
 
 **Note:** Version bump only for package heroku
