@@ -10,6 +10,7 @@ const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'autocomplete-scri
 
 export default class Create extends AutocompleteBase {
   static hidden = true
+
   static description = 'create autocomplete setup scripts and completion functions'
 
   private _commands?: Command.Loadable[]
