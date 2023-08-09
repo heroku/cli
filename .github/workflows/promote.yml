@@ -57,7 +57,8 @@ jobs:
             # get SHA directly from NPM
             SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           fi
-          yarn oclif promote --deb --xz --root="./packages/cli" --indexes --version=${{ inputs.version }} --sha="$SHA" --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || 'beta' }}
+          VARIABLE_FLAGS=${{}}
+          yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" ${{ inputs.isStableRelease && '--indexes' || ''}} --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || 'beta' }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
