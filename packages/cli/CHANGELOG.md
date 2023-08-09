@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0-beta.10](https://github.com/heroku/cli/compare/v8.2.0-beta.9...v8.2.0-beta.10) (2023-08-09)
+
+
+### Bug Fixes
+
+* account for yarn3 not running `yarn pretest` before `yarn test` ([50a6688](https://github.com/heroku/cli/commit/50a6688672d23e12014ca3faafee465e844cbf5f))
+* not building greatly improved unit test times ([220ab84](https://github.com/heroku/cli/commit/220ab84993249fb57da9e1e48f3106eefcd54987))
+* remove ignored yarn flag ([967947f](https://github.com/heroku/cli/commit/967947f2de0ca5fbf94c4ad11847fcbf5672db3c))
+* use build from root ([753a207](https://github.com/heroku/cli/commit/753a207f4b4177258bfbf9742eb0bd3d3da44532))
+
+
+
+
+
 # [8.2.0-beta.9](https://github.com/heroku/cli/compare/v8.2.0-beta.8...v8.2.0-beta.9) (2023-08-07)
 
 **Note:** Version bump only for package heroku
