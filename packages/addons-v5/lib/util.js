@@ -31,14 +31,14 @@ module.exports = {
   },
 
   formatPrice: function (price) {
-    const printf = require('printf')
-
     if (!price) return
     if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
 
-    let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
-    return printf(fmt, price.cents / 100, price.unit)
+    let priceHourly = Number(Math.round(Number.parseFloat((price.cents / 100) / 720) + 'e2') + 'e-2')
+    const decimals = priceHourly % 100 === 0 ? 0 : 2
+    const formattedPrice = `~$${priceHourly.toFixed(decimals)}/hour`
+    return formattedPrice
   },
 
   trapConfirmationRequired: async function (app, confirm, fn) {
