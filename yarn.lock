@@ -2523,6 +2523,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/core@npm:^2.6.4":
+  version: 2.11.8
+  resolution: "@oclif/core@npm:2.11.8"
+  dependencies:
+    "@types/cli-progress": ^3.11.0
+    ansi-escapes: ^4.3.2
+    ansi-styles: ^4.3.0
+    cardinal: ^2.1.1
+    chalk: ^4.1.2
+    clean-stack: ^3.0.1
+    cli-progress: ^3.12.0
+    debug: ^4.3.4
+    ejs: ^3.1.8
+    fs-extra: ^9.1.0
+    get-package-type: ^0.1.0
+    globby: ^11.1.0
+    hyperlinker: ^1.0.0
+    indent-string: ^4.0.0
+    is-wsl: ^2.2.0
+    js-yaml: ^3.14.1
+    natural-orderby: ^2.0.3
+    object-treeify: ^1.1.33
+    password-prompt: ^1.1.2
+    semver: ^7.5.3
+    slice-ansi: ^4.0.0
+    string-width: ^4.2.3
+    strip-ansi: ^6.0.1
+    supports-color: ^8.1.1
+    supports-hyperlinks: ^2.2.0
+    ts-node: ^10.9.1
+    tslib: ^2.5.0
+    widest-line: ^3.1.0
+    wordwrap: ^1.0.0
+    wrap-ansi: ^7.0.0
+  checksum: 492715fa5454c18c38d8718f042512775a58cada8ee4e61b188fbee7afcd75157fa3e53cbc3df7b3790e6a3d9278cde90385bb14c0627aae251f5f37c4ee83c5
+  languageName: node
+  linkType: hard
+
 "@oclif/core@npm:^2.7.1":
   version: 2.8.1
   resolution: "@oclif/core@npm:2.8.1"
@@ -2843,22 +2881,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-plugins@npm:2.4.7":
-  version: 2.4.7
-  resolution: "@oclif/plugin-plugins@npm:2.4.7"
+"@oclif/plugin-plugins@npm:2.4.3":
+  version: 2.4.3
+  resolution: "@oclif/plugin-plugins@npm:2.4.3"
   dependencies:
     "@oclif/color": ^1.0.4
-    "@oclif/core": ^2.8.2
+    "@oclif/core": ^2.6.4
     chalk: ^4.1.2
     debug: ^4.3.4
     fs-extra: ^9.0
     http-call: ^5.2.2
     load-json-file: ^5.3.0
     npm-run-path: ^4.0.1
-    semver: ^7.5.0
+    semver: ^7.3.8
     tslib: ^2.4.1
     yarn: ^1.22.18
-  checksum: 0f25ca7d072a01d6e9d3902882d40ee2e20740b93456b4965eb3e70f3afecdea8a10b0097ae65bdfc8e227d9370d67cbee54c40337a7817d4773ee98329bbea3
+  checksum: e2dd6e95701f4d92097b9f72c6cf714393093e8fd8254fd00dce4928e17652e6d635b1cac93a370e7510ebdd4710d5f81e2d32289ee6160e4ba1ade7f4d897df
   languageName: node
   linkType: hard
 
@@ -9000,7 +9038,7 @@ __metadata:
     "@oclif/plugin-help": ^5
     "@oclif/plugin-legacy": ^1.3.0
     "@oclif/plugin-not-found": 2.3.16
-    "@oclif/plugin-plugins": 2.4.7
+    "@oclif/plugin-plugins": 2.4.3
     "@oclif/plugin-update": 3.1.10
     "@oclif/plugin-version": ^1.2.1
     "@oclif/plugin-warn-if-update-available": 2.0.29
@@ -14741,7 +14779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.1.1, semver@npm:^7.1.3, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.0":
+"semver@npm:^7.1.1, semver@npm:^7.1.3, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8":
   version: 7.5.0
   resolution: "semver@npm:7.5.0"
   dependencies:
