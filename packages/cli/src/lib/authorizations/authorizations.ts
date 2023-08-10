@@ -2,8 +2,7 @@
 
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import * as addSeconds from 'date-fns/add_seconds'
-import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import {formatDistanceToNow, addSeconds} from 'date-fns'
 
 export function display(auth: Heroku.OAuthAuthorization) {
   interface StyledObject {
@@ -32,12 +31,12 @@ export function display(auth: Heroku.OAuthAuthorization) {
   if (auth.access_token) {
     obj.Token = auth.access_token.token
     if (auth.updated_at) {
-      obj['Updated at'] = `${addSeconds(auth.updated_at, 0)} (${distanceInWordsToNow(auth.updated_at)} ago)`
+      obj['Updated at'] = `${addSeconds(new Date(auth.updated_at), 0)} (${formatDistanceToNow(new Date(auth.updated_at))} ago)`
     }
 
     if (auth.access_token.expires_in) {
       const date = addSeconds(new Date(), auth.access_token.expires_in)
-      obj['Expires at'] = `${date} (in ${distanceInWordsToNow(date)})`
+      obj['Expires at'] = `${date} (in ${formatDistanceToNow(date)})`
     }
   }
 

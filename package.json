@@ -8,8 +8,12 @@
     "eslint-config-oclif-typescript": "^1.0.2",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
+    "execa": "5.1.1",
     "lerna": "^6.4.1",
+    "mkdirp": "^0.5.2",
+    "oclif": "3.11.3",
     "promise-request-retry": "^1.0.2",
+    "qqjs": "0.3.11",
     "standard": "12.0.1",
     "tmp": "^0.2.1"
   },
@@ -28,9 +32,12 @@
     "build": "lerna run prepack --concurrency 4",
     "test": "lerna run test --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules"
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "packageManager": "yarn@3.6.1"
 }
