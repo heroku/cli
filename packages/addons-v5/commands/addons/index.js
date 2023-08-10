@@ -6,6 +6,7 @@ async function run(ctx, api) {
   const util = require('../../lib/util')
   const table = util.table
   const style = util.style
+  const formatHourlyPrice = util.formatHourlyPrice
   const formatPrice = util.formatPrice
   const formatState = util.formatState
   const grandfatheredPrice = util.grandfatheredPrice
@@ -125,6 +126,14 @@ async function run(ctx, api) {
         label: 'Price',
         format: function (price) {
           if (typeof price === 'undefined') return style('dim', '?')
+          return formatHourlyPrice(price)
+        },
+      },
+      {
+        key: 'plan.maxPrice',
+        label: 'Max Price',
+        format: function (price) {
+          if (typeof price === 'undefined') return style('dim', '?')
           return formatPrice(price)
         },
       },
@@ -223,10 +232,17 @@ async function run(ctx, api) {
         label: 'Price',
         format: function (addon) {
           if (addon.app.name === app) {
-            return formatPrice(addon.plan.price)
+            return formatHourlyPrice(addon.plan.price)
           }
 
           return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
+        },
+      }, {
+        label: 'Max Price',
+        format: function (addon) {
+          if (addon.app.name === app) {
+            return formatPrice(addon.plan.price)
+          }
         },
       }, {
         label: 'State',

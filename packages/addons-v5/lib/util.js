@@ -30,15 +30,29 @@ module.exports = {
     })
   },
 
-  formatPrice: function (price) {
+  // This function assumes that price.cents will reflect price per month.
+  // If the API returns any unit other than month
+  // this function will need to be updated.
+  formatHourlyPrice: function (price) {
     if (!price) return
     if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
 
+    // we are using a standardized 720 hours/month
     let priceHourly = Number(Math.round(Number.parseFloat((price.cents / 100) / 720) + 'e2') + 'e-2')
-    const decimals = priceHourly % 100 === 0 ? 0 : 2
-    const formattedPrice = `~$${priceHourly.toFixed(decimals)}/hour`
-    return formattedPrice
+    const decimals = priceHourly.toString().includes('.') ? 2 : 0
+    return `~$${priceHourly.toFixed(decimals)}/hour`
+  },
+
+  formatPrice: function (price) {
+    const printf = require('printf')
+
+    if (!price) return
+    if (price.contract) return 'contract'
+    if (price.cents === 0) return 'free'
+
+    let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
+    return printf(fmt, price.cents / 100, price.unit)
   },
 
   trapConfirmationRequired: async function (app, confirm, fn) {
