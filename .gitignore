@@ -16,4 +16,10 @@ node_modules
 .vscode
 **/.nyc_output
 
-
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

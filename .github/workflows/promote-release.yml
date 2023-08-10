@@ -70,5 +70,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          yarn --frozen-lockfile --network-timeout 1000000
+          yarn --immutable --network-timeout 1000000
           ./scripts/postrelease/change_management
