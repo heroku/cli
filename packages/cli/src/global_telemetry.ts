@@ -144,6 +144,7 @@ export async function sendToHoneycomb(data: any) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', version)
     const span = tracer.startSpan('node_app_execution')
+    console.log('span', span)
 
     if (data instanceof Error) {
       span.recordException(data)
