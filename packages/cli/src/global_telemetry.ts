@@ -2,7 +2,7 @@ import 'dotenv/config'
 import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
-import opentelemetry, {SpanStatusCode, diag, DiagConsoleLogger, DiagLogLevel} from '@opentelemetry/api'
+import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
@@ -16,10 +16,6 @@ const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
-
-if (!isProd) {
-  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG)
-}
 
 const debug = require('debug')('global_telemetry')
 

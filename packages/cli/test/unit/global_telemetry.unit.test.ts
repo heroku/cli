@@ -1,15 +1,16 @@
 import {expect} from '@oclif/test'
+import {identity} from 'lodash'
 import * as telemetry from '../../src/global_telemetry'
 import * as os from 'os'
 
 const {version} = require('../../../../packages/cli/package.json')
 const nock = require('nock')
 
+nock.disableNetConnect()
+
 describe('telemetry', async () => {
   beforeEach(() => {
     nock.cleanAll()
-    process.env.IS_DEV_ENVIRONMENT = 'true'
-    process.env.HONEYCOMB_API_KEY = 'example-api-key'
   })
 
   const now = new Date()
@@ -95,13 +96,11 @@ describe('telemetry', async () => {
   })
 
   it('confirms successful request to honeycomb', async () => {
-    nock.disableNetConnect()
-
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
 
     const honeycombAPI = nock('https://api.honeycomb.io:443')
-      .post('/v1/traces',  (body :any)  => body)
+      .post('/v1/traces',  identity)
       .reply(200)
 
     await telemetry.sendToHoneycomb(mockTelemetry)
