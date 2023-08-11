@@ -10,14 +10,14 @@ const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
 const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
 const {version} = require('../../../packages/cli/package.json')
-const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
+const isProd = process.env.NODE_ENV === 'production'
 const path = require('path')
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
 
-if (isDev) {
+if (!isProd) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG)
 }
 
@@ -27,7 +27,7 @@ const rollbar = new Rollbar({
   accessToken: '41f8730238814af69c248e2f7ca59ff2',
   captureUncaught: true,
   captureUnhandledRejections: true,
-  environment: isDev ? 'development' : 'production',
+  environment: process.env.NODE_ENV || 'development',
 })
 
 registerInstrumentations({
@@ -48,13 +48,13 @@ const provider = new NodeTracerProvider({
 
 const devHeaders = {
   'x-honeycomb-team': process.env.HONEYCOMB_API_KEY,
-  'x-honeycomb-dataset': `front-end-metrics-${isDev ? 'development' : 'production'}`,
+  'x-honeycomb-dataset': `front-end-metrics-${process.env.NODE_ENV}`,
 }
 const prodHeaders = {Authorization: `Bearer ${token}`}
 
 const exporter = new OTLPTraceExporter({
-  url: isDev ? 'https://api.honeycomb.io:443/v1/traces' : 'https://backboard-staging.herokuapp.com/otel/v1/traces',
-  headers: isDev ? devHeaders : prodHeaders,
+  url: isProd ? 'https://backboard-staging.herokuapp.com/otel/v1/traces' : 'https://api.honeycomb.io:443/v1/traces',
+  headers: isProd ? prodHeaders : devHeaders,
   compression: 'none',
 })
 
@@ -172,7 +172,7 @@ export async function sendToHoneycomb(data: any) {
     }
 
     span.end()
-    processor.forceFlush()
+    await processor.forceFlush()
   } catch {
     debug('could not send telemetry')
   }
