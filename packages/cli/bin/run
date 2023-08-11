@@ -20,14 +20,18 @@ process.on('SIGINT', async () => {
   // capture as unsuccessful exit
   let error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.sendTelemetry(error)
+  await globalTelemetry.sendTelemetry(error, () => {
+    process.exit(1)
+  })
 })
 
 process.on('SIGTERM', async () => {
   // capture as unsuccessful exit
   let error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.sendTelemetry(error)
+  await globalTelemetry.sendTelemetry(error, () => {
+    process.exit(1)
+  })
 })
 
 globalTelemetry.initializeInstrumentation()

@@ -130,13 +130,13 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any) {
+export async function sendTelemetry(currentTelemetry: any, rollbarCb: () => void = () => Promise.resolve()) {
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
     await Promise.all([
-      sendToRollbar(telemetry),
+      sendToRollbar(telemetry, rollbarCb),
       sendToHoneycomb(telemetry),
     ])
   } else {
@@ -148,7 +148,6 @@ export async function sendToHoneycomb(data: any) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', version)
     const span = tracer.startSpan('node_app_execution')
-    console.log('span', span)
 
     if (data instanceof Error) {
       span.recordException(data)
@@ -177,13 +176,11 @@ export async function sendToHoneycomb(data: any) {
   }
 }
 
-export async function sendToRollbar(data: any) {
+export async function sendToRollbar(data: any, rollbarCb?: () => void) {
   const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
   try {
     // send data to rollbar
-    rollbar.error('Failed to complete execution', rollbarError, () => {
-      process.exit(1)
-    })
+    rollbar.error('Failed to complete execution', rollbarError, rollbarCb)
   } catch {
     debug('Could not send error report')
     process.exit(1)

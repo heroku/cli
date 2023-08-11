@@ -1,14 +1,16 @@
 import {expect} from '@oclif/test'
-import * as sinon from 'sinon'
 import * as telemetry from '../../src/global_telemetry'
+import {identity} from 'lodash'
 import * as os from 'os'
 const {version} = require('../../../../packages/cli/package.json')
 const nock = require('nock')
 
-describe.only('telemetry', async () => {
-//   afterEach(() => {
-//     nock.cleanAll()
-//   })
+nock.disableNetConnect()
+
+describe('telemetry', async () => {
+  afterEach(() => {
+    nock.cleanAll()
+  })
 
   const now = new Date()
   const mockCmdStartTime = now.getTime()
@@ -80,13 +82,6 @@ describe.only('telemetry', async () => {
     expect(result.lifecycleHookCompletion.command_not_found).to.equal(mockTelemetryObject.lifecycleHookCompletion.command_not_found)
   }
 
-//   const sendTelemetryTest = async (currentTelemetry: any) => {
-//     telemetry.initializeInstrumentation()
-//     await telemetry.sendToHoneycomb(currentTelemetry)
-
-//     expect(true).to.be.true
-//   }
-
   it('confirms successful telemetry object creation', () => {
     setupTelemetryTest(mockConfig, mockOpts)
   })
@@ -100,22 +95,34 @@ describe.only('telemetry', async () => {
   })
 
   it('confirms successful request to honeycomb', async () => {
-    process.env.IS_DEV_ENVIRONMENT = 'true'
-    process.env.HONEYCOMB_API_KEY = 'example-api-key'
-    const honeycombAPI = nock('https://api.honeycomb.io:443')
-
-    honeycombAPI
-      .post('/v1/traces', {hello: 'hello'})
-      .reply(200, {})
-
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
+
+    const honeycombAPI = nock('https://api.honeycomb.io:443')
+      .post('/v1/traces', identity)
+      .reply(200)
+
     await telemetry.sendToHoneycomb(mockTelemetry)
-    // console.log(honeycombAPI.pendingMocks())
-    // if (!honeycombAPI.isDone()) {
-      console.error('pending mocks: %j', honeycombAPI.pendingMocks())
-    // }
-    // expect(honeycombAPI.isDone()).to.be.true
-    // await sendTelemetryTest(mockTelemetry)
+    honeycombAPI.done()
+  })
+
+  it('confirms successful request to rollbar', async () => {
+    const mockRollbarError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
+
+    const rollbarAPI = nock('https://api.rollbar.com:443')
+      .post('/api/1/item/', identity)
+      .reply(200)
+
+    await new Promise((resolve, reject) => {
+      telemetry.sendToRollbar(mockRollbarError, () => {
+        try {
+          // rollbar does not return a promise. We have to wrap this in callbacks
+          rollbarAPI.done()
+          resolve(null)
+        } catch (error) {
+          reject(error)
+        }
+      })
+    })
   })
 })
