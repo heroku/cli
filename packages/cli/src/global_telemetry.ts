@@ -2,7 +2,7 @@ import 'dotenv/config'
 import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
-import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
+import opentelemetry, {SpanStatusCode, diag, DiagConsoleLogger, DiagLogLevel} from '@opentelemetry/api'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
@@ -16,6 +16,10 @@ const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
+
+if (isDev) {
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG)
+}
 
 const debug = require('debug')('global_telemetry')
 
@@ -53,6 +57,7 @@ const exporter = new OTLPTraceExporter({
   headers: isDev ? devHeaders : prodHeaders,
   compression: 'none',
 })
+
 export const processor = new BatchSpanProcessor(exporter)
 provider.addSpanProcessor(processor)
 
@@ -144,7 +149,7 @@ export async function sendToHoneycomb(data: any) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', version)
     const span = tracer.startSpan('node_app_execution')
-    console.log('span', span)
+    // console.log('span', span)
 
     if (data instanceof Error) {
       span.recordException(data)
