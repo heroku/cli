@@ -1,11 +1,13 @@
 'use strict'
 
+const _ = require('lodash')
+
 exports.topics = [
   {name: 'spaces', description: 'manage heroku private spaces'},
   {name: 'trusted-ips', hidden: true},
 ]
 
-exports.commands = [
+exports.commands = _.flatten([
   require('./commands'),
   require('./commands/create'),
   require('./commands/destroy'),
@@ -35,4 +37,4 @@ exports.commands = [
   require('./commands/outbound-rules/add'),
   require('./commands/outbound-rules/remove'),
   require('./commands/hosts'),
-]
+])

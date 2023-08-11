@@ -10,10 +10,7 @@ async function run(context, heroku) {
   cli.warn('It may take a few moments for the changes to take effect.')
 }
 
-module.exports = {
-  topic: 'drains',
-  command: 'set',
-  hidden: true,
+const cmd = {
   description: 'replaces the log drain for a space',
   needsApp: false,
   needsAuth: true,
@@ -25,3 +22,8 @@ module.exports = {
   ],
   run: cli.command(run),
 }
+
+module.exports = [
+  Object.assign({topic: 'spaces', command: 'drains:set', hidden: false}, cmd),
+  Object.assign({topic: 'drains', command: 'set', hidden: true}, cmd)
+]

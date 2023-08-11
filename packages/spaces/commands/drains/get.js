@@ -13,16 +13,18 @@ async function run(context, heroku) {
   }
 }
 
-module.exports = {
-  topic: 'drains',
-  command: 'get',
-  hidden: true,
+const cmd = {
   description: 'display the log drain for a space',
   needsApp: false,
   needsAuth: true,
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true},
-    {name: 'json', description: 'output in json format'},
+    { name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true },
+    { name: 'json', description: 'output in json format' },
   ],
   run: cli.command(run),
 }
+
+module.exports = [
+  Object.assign({topic: 'spaces', command: 'drains:get', hidden: false}, cmd),
+  Object.assign({topic: 'drains', command: 'get', hidden: true}, cmd)
+]
