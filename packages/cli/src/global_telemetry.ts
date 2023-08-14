@@ -30,8 +30,9 @@ registerInstrumentations({
   instrumentations: [],
 })
 
-const resource
-  = Resource.default().merge(
+const resource = Resource
+  .default()
+  .merge(
     new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
       [SemanticResourceAttributes.SERVICE_VERSION]: version,
@@ -126,7 +127,7 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any, rollbarCb: () => void = () => Promise.resolve()) {
+export async function sendTelemetry(currentTelemetry: any,  rollbarCb: () => void) {
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
@@ -173,12 +174,30 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
 }
 
 export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
+  // Make this awaitable so we can wait for it to finish before exiting
+  let promiseResolve
+  const rollbarPromise = new Promise(function (resolve, reject) {
+    promiseResolve = () => {
+      if (rollbarCb) {
+        try {
+          rollbarCb()
+        } catch (error: any) {
+          reject(error)
+        }
+      }
+
+      resolve(null)
+    }
+  })
+
   const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
   try {
     // send data to rollbar
-    rollbar.error('Failed to complete execution', rollbarError, rollbarCb)
+    rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
   } catch {
     debug('Could not send error report')
     process.exit(1)
   }
+
+  return rollbarPromise
 }

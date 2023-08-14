@@ -115,16 +115,7 @@ describe('telemetry', async () => {
       .post('/api/1/item/', identity)
       .reply(200)
 
-    await new Promise((resolve, reject) => {
-      telemetry.sendToRollbar(mockRollbarError, () => {
-        try {
-          // rollbar does not return a promise. We have to wrap this in callbacks
-          rollbarAPI.done()
-          resolve(null)
-        } catch (error) {
-          reject(error)
-        }
-      })
-    })
+    await telemetry.sendToRollbar(mockRollbarError)
+    rollbarAPI.done()
   })
 })
