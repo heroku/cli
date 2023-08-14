@@ -73,7 +73,7 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),
       qty: cli.color.yellow(d.quantity.toString()),
-      'cost/hour': calculateHourly(d.size) ? '~$' + (calculateHourly(d.size) * d.quantity).toPrecision(4).toString() : '',
+      'cost/hour': calculateHourly(d.size) ? '~$' + (calculateHourly(d.size) * d.quantity).toFixed(3).toString() : '',
       'max cost/month': costMonthly[d.size] ? '$' + (costMonthly[d.size] * d.quantity).toString() : '',
     }))
 

@@ -49,7 +49,7 @@ module.exports = {
     if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
 
-    if (hourly) return `~$${((price.cents / 100) / 720).toPrecision(4)}/hour`
+    if (hourly) return `~$${((price.cents / 100) / 720).toFixed(3)}/hour`
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
     return printf(fmt, price.cents / 100, price.unit)
