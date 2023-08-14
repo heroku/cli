@@ -1,9 +1,11 @@
+import 'dotenv/config'
 import {expect} from '@oclif/test'
 import * as telemetry from '../../src/global_telemetry'
 import {identity} from 'lodash'
 import * as os from 'os'
 const {version} = require('../../../../packages/cli/package.json')
 const nock = require('nock')
+const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
 
@@ -98,7 +100,7 @@ describe('telemetry', async () => {
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
 
-    const honeycombAPI = nock('https://api.honeycomb.io:443')
+    const honeycombAPI = nock(`${isDev ? 'https://api.honeycomb.io:443' : 'https://backboard-staging.herokuapp.com/otel'}`)
       .post('/v1/traces', identity)
       .reply(200)
 
