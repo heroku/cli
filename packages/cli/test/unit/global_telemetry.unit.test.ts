@@ -100,7 +100,7 @@ describe('telemetry', async () => {
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
 
-    const honeycombAPI = nock(`${isDev ? 'https://api.honeycomb.io:443' : 'https://backboard-staging.herokuapp.com/otel'}`)
+    const honeycombAPI = nock(`${isDev ? 'https://backboard-staging.herokuapp.com/otel' : 'https://backboard.heroku.com/otel'}`)
       .post('/v1/traces', identity)
       .reply(200)
 

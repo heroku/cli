@@ -26,14 +26,6 @@ const rollbar = new Rollbar({
   environment: isDev ? 'development' : 'production',
 })
 
-// const otelSDK = new HoneycombSDK({
-//   apiKey: process.env.HONEYCOMB_API_KEY,
-//   serviceName: 'heroku-cli',
-//   instrumentations: [],
-//   dataset: `front-end-metrics-${isDev ? 'development' : 'production'}`,
-//   debug: true,
-// })
-
 registerInstrumentations({
   instrumentations: [],
 })
