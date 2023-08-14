@@ -30,8 +30,9 @@ registerInstrumentations({
   instrumentations: [],
 })
 
-const resource =
-  Resource.default().merge(
+const resource = Resource
+  .default()
+  .merge(
     new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
       [SemanticResourceAttributes.SERVICE_VERSION]: version,
@@ -39,14 +40,14 @@ const resource =
   )
 
 const provider = new NodeTracerProvider({
-  resource: resource,
+  resource,
 })
 
 const headers = {Authorization: `Bearer ${token}`}
 
 const exporter = new OTLPTraceExporter({
   url: isDev ? 'https://backboard-staging.herokuapp.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces',
-  headers: headers,
+  headers,
   compression: 'none',
 })
 export const processor = new BatchSpanProcessor(exporter)
@@ -70,6 +71,10 @@ interface Telemetry {
 
 export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
+}
+
+interface CLIError extends Error {
+  cliRunDuration?: string
 }
 
 export function initializeInstrumentation() {
@@ -122,13 +127,13 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any) {
+export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => void) {
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
     await Promise.all([
-      sendToRollbar(telemetry),
+      sendToRollbar(telemetry, rollbarCb),
       sendToHoneycomb(telemetry),
     ])
   } else {
@@ -136,7 +141,7 @@ export async function sendTelemetry(currentTelemetry: any) {
   }
 }
 
-export async function sendToHoneycomb(data: any) {
+export async function sendToHoneycomb(data: Telemetry | CLIError) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', version)
     const span = tracer.startSpan('node_app_execution')
@@ -168,15 +173,31 @@ export async function sendToHoneycomb(data: any) {
   }
 }
 
-export async function sendToRollbar(data: any) {
+export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
+  // Make this awaitable so we can wait for it to finish before exiting
+  let promiseResolve
+  const rollbarPromise = new Promise((resolve, reject) => {
+    promiseResolve = () => {
+      if (rollbarCb) {
+        try {
+          rollbarCb()
+        } catch (error: any) {
+          reject(error)
+        }
+      }
+
+      resolve(null)
+    }
+  })
+
   const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
   try {
     // send data to rollbar
-    rollbar.error('Failed to complete execution', rollbarError, () => {
-      process.exit(1)
-    })
+    rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
   } catch {
     debug('Could not send error report')
-    process.exit(1)
+    return Promise.reject()
   }
+
+  return rollbarPromise
 }
