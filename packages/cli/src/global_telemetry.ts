@@ -42,15 +42,11 @@ const provider = new NodeTracerProvider({
   resource: resource,
 })
 
-const devHeaders = {
-  'x-honeycomb-team': process.env.HONEYCOMB_API_KEY,
-  'x-honeycomb-dataset': `front-end-metrics-${isDev ? 'development' : 'production'}`,
-}
-const prodHeaders = {Authorization: `Bearer ${token}`}
+const headers = {Authorization: `Bearer ${token}`}
 
 const exporter = new OTLPTraceExporter({
-  url: isDev ? 'https://api.honeycomb.io:443/v1/traces' : 'https://backboard-staging.herokuapp.com/otel/v1/traces',
-  headers: isDev ? devHeaders : prodHeaders,
+  url: isDev ? 'https://backboard-staging.herokuapp.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces',
+  headers: headers,
   compression: 'none',
 })
 export const processor = new BatchSpanProcessor(exporter)
