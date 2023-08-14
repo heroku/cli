@@ -17,6 +17,28 @@ describe('ps:type', function () {
     nock.cleanAll()
   })
 
+  it('displays cost/hour and max cost/month for all individually-priced dyno sizes', function () {
+    let api = nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .reply(200, app())
+      .get('/apps/myapp/formation')
+      .reply(200, [
+        {type: 'web', quantity: 1, size: 'Eco'},
+        {type: 'web', quantity: 1, size: 'Basic'},
+        {type: 'web', quantity: 1, size: 'Standard-1X'},
+        {type: 'web', quantity: 1, size: 'Standard-2X'},
+        {type: 'web', quantity: 1, size: 'Performance-M'},
+        {type: 'web', quantity: 1, size: 'Performance-L'},
+      ])
+
+    return cmd.run({app: 'myapp'})
+      .then(() => {
+        console.log(`\n \n ${cli.stdout} \n \n`)
+        expect(cli.stdout).to.eq('')
+      })
+      .then(() => api.done())
+  })
+
   it('switches to hobby dynos', function () {
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
@@ -29,8 +51,9 @@ describe('ps:type', function () {
       .reply(200, [{type: 'web', quantity: 1, size: 'Basic'}, {type: 'worker', quantity: 2, size: 'Basic'}])
 
     return cmd.run({app: 'myapp', args: ['basic']})
-      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type    size   qty  cost/hr
+      .then(() => expect(cli.stdout).to.eq(`
+=== Dyno Types
+type    size   qty  cost/hour
 ──────  ─────  ───  ───────
 web     Basic  1    ~$0.01
 worker  Basic  2    ~$0.02
