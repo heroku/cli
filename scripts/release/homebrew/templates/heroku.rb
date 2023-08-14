@@ -17,6 +17,16 @@ class Heroku < Formula
     end
   end
 
+  on_linux do
+    if Hardware::CPU.arm?
+      url "__CLI_DOWNLOAD_URL_LINUX__"
+      sha256 "__CLI_SHA256_LINUX__"
+    else
+      url "__CLI_DOWNLOAD_URL_LINUX_64__"
+      sha256 "__CLI_SHA256_LINUX_64__"
+    end
+  end
+
   def install
     inreplace "bin/heroku", /^CLIENT_HOME=/, "export HEROKU_OCLIF_CLIENT_HOME=#{lib/"client"}\nCLIENT_HOME="
     libexec.install Dir["*"]
