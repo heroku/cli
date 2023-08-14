@@ -53,8 +53,10 @@ Created at: ${now.toISOString()}
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: ['one', 'two'], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20'},
       )
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two'}})
-      .then(() => expect(cli.stderr).to.include(
-        'Each Heroku Standard Private Space costs $1000'))
+      .then(() => {
+        console.log(`\n \n ${cli.stderr} \n \n`)
+        expect(cli.stderr).to.include('Each Heroku Standard Private Space costs $1000')
+      })
       .then(() => api.done())
   })
 

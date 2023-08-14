@@ -34,6 +34,7 @@ describe('addons:info', function () {
 
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}, args: {addon: 'www-db'}}).then(function () {
+        console.log(`\n \n ${cli.stdout} \n \n`)
         util.expectOutput(cli.stdout,
           `=== www-db
 Attachments:  acme-inc-www::DATABASE

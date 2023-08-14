@@ -52,12 +52,12 @@ describe('addons --app', function () {
 
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                      Plan       Price      State
-──────────────────────────  ─────────  ─────────  ────────
-heroku-postgresql (www-db)  mini       $5/month   created
+Add-on                      Plan       Price        Max Price      State
+──────────────────────────  ─────────  ───────────  ─────────  ────────
+heroku-postgresql (www-db)  mini       ~$0.01/hour  $5/month   created
  └─ as DATABASE
 
-heroku-redis (www-redis)    premium-2  $60/month  creating
+heroku-redis (www-redis)    premium-2  ~$0.08/hour  $60/month  creating
  └─ as REDIS
 
 The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
@@ -72,9 +72,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
       ])
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                             Plan  Price     State
-─────────────────────────────────  ────  ────────  ───────
-heroku-postgresql (www-db)         mini  $5/month  created
+Add-on                             Plan  Price        Max Price     State
+─────────────────────────────────  ────  ───────────  ─────────  ───────
+heroku-postgresql (www-db)         mini  ~$0.01/hour  $5/month  created
  ├─ as DATABASE
  └─ as WWW_DB on acme-inc-dwh app
 
@@ -281,9 +281,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
     it('prints add-ons in a table with contract', function () {
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout,
-          `Add-on                      Plan        Price     State
-──────────────────────────  ──────────  ────────  ───────
-heroku-postgresql (dwh-db)  standard-2  contract  created
+          `
+Add-on                      Plan        Price     Max Price  State
+──────────────────────────  ──────────  ────────  ─────────  ───────
+heroku-postgresql (dwh-db)  standard-2  contract  contract   created
  └─ as DATABASE
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
       })

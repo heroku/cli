@@ -26,6 +26,7 @@ describe('addons --all', function () {
 
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}}).then(function () {
+        console.log(`\n \n ${cli.stdout} \n \n`)
         util.expectOutput(cli.stdout,
           `Owning App    Add-on     Plan                    Price      State
 ────────────  ─────────  ──────────────────────  ─────────  ────────
