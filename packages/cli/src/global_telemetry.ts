@@ -127,7 +127,7 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any,  rollbarCb: () => void) {
+export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => void) {
   // send telemetry to honeycomb and rollbar
   const telemetry = currentTelemetry
 
@@ -176,7 +176,7 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
 export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
   // Make this awaitable so we can wait for it to finish before exiting
   let promiseResolve
-  const rollbarPromise = new Promise(function (resolve, reject) {
+  const rollbarPromise = new Promise((resolve, reject) => {
     promiseResolve = () => {
       if (rollbarCb) {
         try {
@@ -196,7 +196,7 @@ export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
     rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
   } catch {
     debug('Could not send error report')
-    process.exit(1)
+    return Promise.reject()
   }
 
   return rollbarPromise
