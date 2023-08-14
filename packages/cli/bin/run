@@ -30,6 +30,8 @@ process.on('SIGTERM', async () => {
   await globalTelemetry.sendTelemetry(error)
 })
 
+globalTelemetry.initializeInstrumentation()
+
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
