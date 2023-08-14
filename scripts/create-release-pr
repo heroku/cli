@@ -55,4 +55,4 @@ git add . -u
 echo "Creating git commit and pushing to GitHub..."
 git commit -m "v${PACKAGE_VERSION}"
 git push origin "${BRANCH_NAME}"
-#gh pr create --title="release v${PACKAGE_VERSION}" --body "release v${PACKAGE_VERSION}"
+gh pr create --title="release v${PACKAGE_VERSION}" --body "release v${PACKAGE_VERSION}"
