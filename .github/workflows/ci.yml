@@ -58,9 +58,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - name: Build packages
-        run: yarn lerna run prepack
-      - run: ./bin/run whoami
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
