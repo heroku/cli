@@ -19,7 +19,7 @@ describe('telemetry', async () => {
   const mockOs = os.platform()
   const mockConfig = {
     platform: mockOs,
-    version: version,
+    version,
   }
   const mockOpts = {
     Command: {
@@ -29,7 +29,7 @@ describe('telemetry', async () => {
   const mockTelemetryObject = {
     command: 'pipelines:open',
     os: mockOs,
-    version: version,
+    version,
     exitCode: 0,
     exitState: 'successful',
     cliRunDuration: 0,

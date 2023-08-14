@@ -18,7 +18,7 @@ process.once('beforeExit', async code => {
 
 process.on('SIGINT', async () => {
   // capture as unsuccessful exit
-  let error = new Error('Received SIGINT')
+  const error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error, () => {
     process.exit(1)
@@ -27,7 +27,7 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   // capture as unsuccessful exit
-  let error = new Error('Received SIGTERM')
+  const error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error, () => {
     process.exit(1)
@@ -40,7 +40,7 @@ const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
   // capture any errors raised by oclif
-  let cliError = error
+  const cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(cliError)
   console.log(`Error: ${error.message}`)
