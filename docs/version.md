@@ -22,3 +22,5 @@ FLAG DESCRIPTIONS
 
     Additionally shows the architecture, node version, operating system, and versions of plugins that the CLI is using.
 ```
+
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v1.3.0/src/commands/version.ts)_
