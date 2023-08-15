@@ -33,15 +33,6 @@ module.exports = {
   // This function assumes that price.cents will reflect price per month.
   // If the API returns any unit other than month
   // this function will need to be updated.
-  // formatHourlyPrice: function (priceCents) {
-  //   // we are using a standardized 720 hours/month
-  //   // let priceHourly = Number(Math.round(Number.parseFloat((price.cents / 100) / 720) + 'e2') + 'e-2')
-  //   // const decimals = priceHourly.toString().includes('.') ? 2 : 0
-  //   // return `~$${priceHourly.toFixed(decimals)}/hour`
-  //   const priceHourly = ((priceCents / 100) / 720).toPrecision(4)
-  //   return `~$${priceHourly}/hour`
-  // },
-
   formatPrice: function ({price, hourly}) {
     const printf = require('printf')
 
@@ -49,6 +40,7 @@ module.exports = {
     if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
 
+    // we are using a standardized 720 hours/month
     if (hourly) return `~$${((price.cents / 100) / 720).toFixed(3)}/hour`
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
@@ -62,6 +54,14 @@ module.exports = {
         return cli.confirmApp(app, confirm, error.body.message)
           .then(() => fn(app))
       })
+  },
+
+  formatPriceText: function (price) {
+    const priceHourly = this.formatPrice({price, hourly: true})
+    const priceMonthly = this.formatPrice({price, hourly: false})
+    if (!priceHourly) return ''
+    if (priceHourly === 'free' || priceHourly === 'contract') return `${cli.color.green(priceHourly)}`
+    return `${cli.color.green(priceHourly)} (max ${priceMonthly})`
   },
 
   formatState: function (state) {
