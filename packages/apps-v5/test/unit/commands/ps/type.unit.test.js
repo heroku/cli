@@ -33,8 +33,27 @@ describe('ps:type', function () {
 
     return cmd.run({app: 'myapp'})
       .then(() => {
-        console.log(`\n \n ${cli.stdout} \n \n`)
-        expect(cli.stdout).to.eq('')
+        expect(cli.stdout).to.eq(`=== Dyno Types
+type  size           qty  cost/hour  max cost/month
+────  ─────────────  ───  ─────────  ──────────────
+web   Eco            1
+web   Basic          1    ~$0.010    $7
+web   Standard-1X    1    ~$0.035    $25
+web   Standard-2X    1    ~$0.069    $50
+web   Performance-M  1    ~$0.347    $250
+web   Performance-L  1    ~$0.694    $500
+=== Dyno Totals
+type           total
+─────────────  ─────
+Eco            1
+Basic          1
+Standard-1X    1
+Standard-2X    1
+Performance-M  1
+Performance-L  1
+
+$5 (flat monthly fee, shared across all Eco dynos)
+`)
       })
       .then(() => api.done())
   })
@@ -51,12 +70,11 @@ describe('ps:type', function () {
       .reply(200, [{type: 'web', quantity: 1, size: 'Basic'}, {type: 'worker', quantity: 2, size: 'Basic'}])
 
     return cmd.run({app: 'myapp', args: ['basic']})
-      .then(() => expect(cli.stdout).to.eq(`
-=== Dyno Types
-type    size   qty  cost/hour
-──────  ─────  ───  ───────
-web     Basic  1    ~$0.01
-worker  Basic  2    ~$0.02
+      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
+type    size   qty  cost/hour  max cost/month
+──────  ─────  ───  ─────────  ──────────────
+web     Basic  1    ~$0.010    $7
+worker  Basic  2    ~$0.019    $14
 === Dyno Totals
 type   total
 ─────  ─────
@@ -79,10 +97,10 @@ Basic  3
 
     return cmd.run({app: 'myapp', args: ['web=standard-1x', 'worker=standard-2x']})
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type    size         qty  cost/hr
-──────  ───────────  ───  ───────
-web     Standard-1X  1    ~$0.03
-worker  Standard-2X  2    ~$0.12
+type    size         qty  cost/hour  max cost/month
+──────  ───────────  ───  ─────────  ──────────────
+web     Standard-1X  1    ~$0.035    $25
+worker  Standard-2X  2    ~$0.139    $100
 === Dyno Totals
 type         total
 ───────────  ─────
@@ -102,8 +120,8 @@ Standard-2X  2
 
     return cmd.run({app: 'myapp', args: []})
       .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
-type  size      qty  cost/hr
-────  ────────  ───  ───────
+type  size      qty  cost/hour  max cost/month
+────  ────────  ───  ─────────  ──────────────
 web   Shield-M  0
 web   Shield-L  0
 === Dyno Totals
