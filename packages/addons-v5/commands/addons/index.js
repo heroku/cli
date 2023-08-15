@@ -242,6 +242,8 @@ async function run(ctx, api) {
           if (addon.app.name === app) {
             return formatPrice({price: addon.plan.price, hourly: false})
           }
+
+          return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
         },
       }, {
         label: 'State',

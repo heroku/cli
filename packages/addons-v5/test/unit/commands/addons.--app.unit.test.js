@@ -91,9 +91,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
 
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout, `
-Add-on                               Plan  Price                         State
-───────────────────────────────────  ────  ────────────────────────────  ───────
-heroku-postgresql (www-db)           mini  (billed to acme-inc-www app)  created
+Add-on                               Plan  Price                         Max Price                     State
+───────────────────────────────────  ────  ────────────────────────────  ────────────────────────────  ───────
+heroku-postgresql (www-db)           mini  (billed to acme-inc-www app)  (billed to acme-inc-www app)  created
  ├─ as WWW_DB
  └─ as DATABASE on acme-inc-www app
 
@@ -296,9 +296,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
 
     return run('acme-inc-api', function () {
       util.expectOutput(cli.stdout, `
-Add-on         Plan  Price                         State
-─────────────  ────  ────────────────────────────  ─────
-? (www-db)     ?     (billed to acme-inc-www app)
+Add-on         Plan  Price                         Max Price                     State
+─────────────  ────  ────────────────────────────  ────────────────────────────  ─────
+? (www-db)     ?     (billed to acme-inc-www app)  (billed to acme-inc-www app)
  └─ as WWW_DB
 
 The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.
