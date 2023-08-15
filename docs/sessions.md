@@ -21,6 +21,8 @@ DESCRIPTION
   list your OAuth sessions
 ```
 
+_See code: [src/commands/sessions/index.ts](https://github.com/heroku/cli/blob/v8.2.0/src/commands/sessions/index.ts)_
+
 ## `heroku sessions:destroy ID`
 
 delete (logout) OAuth session by ID
@@ -32,3 +34,5 @@ USAGE
 DESCRIPTION
   delete (logout) OAuth session by ID
 ```
+
+_See code: [src/commands/sessions/destroy.ts](https://github.com/heroku/cli/blob/v8.2.0/src/commands/sessions/destroy.ts)_

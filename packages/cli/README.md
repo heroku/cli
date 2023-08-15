@@ -48,7 +48,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
-* [`heroku git`](docs/git.md) - manage local git repository for app
+* [`heroku git`](docs/git.md) - set git remote and clone Heroku repository
 * [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
@@ -58,12 +58,12 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku members`](docs/members.md) - manage organization members
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
-* [`heroku pipelines`](docs/pipelines.md) - manage pipelines
+* [`heroku pipelines`](docs/pipelines.md) - list pipelines you have access to
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
-* [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
+* [`heroku reviewapps`](docs/reviewapps.md) - disable review apps and/or settings on an existing pipeline
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
