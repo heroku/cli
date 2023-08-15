@@ -231,7 +231,7 @@ async function run(ctx, api) {
         label: 'Price',
         format: function (addon) {
           if (addon.app.name === app) {
-            return formatPrice(addon.plan.price, true)
+            return formatPrice({price: addon.plan.price, hourly: true})
           }
 
           return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
@@ -240,7 +240,7 @@ async function run(ctx, api) {
         label: 'Max Price',
         format: function (addon) {
           if (addon.app.name === app) {
-            return formatPrice(addon.plan.price, false)
+            return formatPrice({price: addon.plan.price, hourly: false})
           }
         },
       }, {

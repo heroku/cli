@@ -96,7 +96,7 @@ async function run(c, h) {
         'X-Heroku-Legacy-Provider-Messages': 'true',
       },
     }).catch(error => handlePlanChangeAPIError(error))
-    cli.action.done(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
+    cli.action.done(`done${addon.plan.price ? `, ${util.formatPriceText(addon.plan.price)}` : ''}`)
     if (addon.provision_message) cli.log(addon.provision_message)
   })())
 }
