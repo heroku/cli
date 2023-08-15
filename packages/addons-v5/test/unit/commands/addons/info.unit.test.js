@@ -34,14 +34,14 @@ describe('addons:info', function () {
 
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}, args: {addon: 'www-db'}}).then(function () {
-        console.log(`\n \n ${cli.stdout} \n \n`)
         util.expectOutput(cli.stdout,
           `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
+Max Price:    $5/month
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
-Price:        $5/month
+Price:        ~$0.007/hour
 State:        created
 `)
       })
@@ -71,9 +71,10 @@ State:        created
           `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
+Max Price:    $5/month
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
-Price:        $5/month
+Price:        ~$0.007/hour
 State:        created
 `)
       })
@@ -109,9 +110,10 @@ State:        created
           `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
+Max Price:    $5/month
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
-Price:        $5/month
+Price:        ~$0.007/hour
 State:        created
 `)
       })
@@ -144,9 +146,10 @@ State:        created
           `=== dwh-db
 Attachments:  acme-inc-dwh::DATABASE
 Installed at: Invalid Date
+Max Price:    $100/month
 Owning app:   acme-inc-dwh
 Plan:         heroku-postgresql:standard-2
-Price:        $100/month
+Price:        ~$0.139/hour
 State:        created
 `)
       })
@@ -179,6 +182,7 @@ State:        created
           `=== dwh-db
 Attachments:  acme-inc-dwh::DATABASE
 Installed at: Invalid Date
+Max Price:    contract
 Owning app:   acme-inc-dwh
 Plan:         heroku-postgresql:standard-2
 Price:        contract
