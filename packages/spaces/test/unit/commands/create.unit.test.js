@@ -55,7 +55,7 @@ Created at: ${now.toISOString()}
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two'}})
       .then(() => {
         console.log(`\n \n ${cli.stderr} \n \n`)
-        expect(cli.stderr).to.include('Each Heroku Standard Private Space costs $1000')
+        expect(cli.stderr).to.include('Spend Alert. During the limited GA period, each Heroku Standard Private\n ▸    Space costs $1.67/hour (max $1200/month), pro-rated to the second.')
       })
       .then(() => api.done())
   })
@@ -100,7 +100,7 @@ Created at: ${now.toISOString()}
       )
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stderr).to.include(
-        'Each Heroku Shield Private Space costs $3000'))
+        'Spend Alert. During the limited GA period, each Heroku Shield Private\n ▸    Space costs $5/hour (max $3600/month), pro-rated to the second.'))
       .then(() => api.done())
   })
 
