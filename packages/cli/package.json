@@ -33,6 +33,13 @@
     "@oclif/plugin-version": "^1.2.1",
     "@oclif/plugin-warn-if-update-available": "2.0.29",
     "@oclif/plugin-which": "2.2.8",
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.41.1",
+    "@opentelemetry/instrumentation": "^0.41.1",
+    "@opentelemetry/resources": "^1.15.1",
+    "@opentelemetry/sdk-trace-base": "^1.15.1",
+    "@opentelemetry/sdk-trace-node": "^1.15.1",
+    "@opentelemetry/semantic-conventions": "^1.15.1",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
     "chalk": "^2.4.2",
@@ -254,7 +261,8 @@
     "hooks": {
       "init": [
         "./lib/hooks/init/version",
-        "./lib/hooks/init/terms-of-service"
+        "./lib/hooks/init/terms-of-service",
+        "./lib/hooks/init/performance_analytics"
       ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
