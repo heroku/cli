@@ -66,7 +66,8 @@ interface Telemetry {
       prerun: boolean,
       postrun: boolean,
       command_not_found: boolean,
-    }
+    },
+    isVersionOrHelp: boolean
 }
 
 export interface TelemetryGlobal extends NodeJS.Global {
@@ -84,20 +85,45 @@ export function initializeInstrumentation() {
 export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
-  return {
-    command: opts.Command.id,
-    os: config.platform,
-    version: config.version,
-    exitCode: 0,
-    exitState: 'successful',
-    cliRunDuration: 0,
-    commandRunDuration: cmdStartTime,
-    lifecycleHookCompletion: {
-      init: true,
-      prerun: true,
-      postrun: false,
-      command_not_found: false,
-    },
+  const isHelpOrVersionCmd = (opts.id === 'version' || opts.id === '--help')
+  const isRegularCmd = Boolean(opts.Command)
+
+  if (isHelpOrVersionCmd) {
+    return {
+      command: opts.id,
+      os: config.platform,
+      version: config.version,
+      exitCode: 0,
+      exitState: 'successful',
+      cliRunDuration: 0,
+      commandRunDuration: cmdStartTime,
+      lifecycleHookCompletion: {
+        init: true,
+        prerun: false,
+        postrun: false,
+        command_not_found: false,
+      },
+      isVersionOrHelp: true,
+    }
+  }
+
+  if (isRegularCmd) {
+    return {
+      command: opts.Command.id,
+      os: config.platform,
+      version: config.version,
+      exitCode: 0,
+      exitState: 'successful',
+      cliRunDuration: 0,
+      commandRunDuration: cmdStartTime,
+      lifecycleHookCompletion: {
+        init: true,
+        prerun: true,
+        postrun: false,
+        command_not_found: false,
+      },
+      isVersionOrHelp: false,
+    }
   }
 }
 
@@ -124,6 +150,7 @@ export function reportCmdNotFound(config: any) {
       postrun: false,
       command_not_found: true,
     },
+    isVersionOrHelp: false,
   }
 }
 

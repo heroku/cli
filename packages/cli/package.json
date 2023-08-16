@@ -261,7 +261,8 @@
     "hooks": {
       "init": [
         "./lib/hooks/init/version",
-        "./lib/hooks/init/terms-of-service"
+        "./lib/hooks/init/terms-of-service",
+        "./lib/hooks/init/performance_analytics"
       ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
