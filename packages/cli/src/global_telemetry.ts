@@ -9,10 +9,10 @@ const {registerInstrumentations} = require('@opentelemetry/instrumentation')
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
 const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
-const {version} = require('../../../packages/cli/package.json')
+const root = require('../package.json')
+
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-const path = require('path')
-const root = path.resolve(__dirname, '../../../package.json')
+const {version} = root
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
