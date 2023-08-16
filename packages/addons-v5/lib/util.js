@@ -30,12 +30,18 @@ module.exports = {
     })
   },
 
-  formatPrice: function (price) {
+  // This function assumes that price.cents will reflect price per month.
+  // If the API returns any unit other than month
+  // this function will need to be updated.
+  formatPrice: function ({price, hourly}) {
     const printf = require('printf')
 
     if (!price) return
     if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
+
+    // we are using a standardized 720 hours/month
+    if (hourly) return `~$${((price.cents / 100) / 720).toFixed(3)}/hour`
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
     return printf(fmt, price.cents / 100, price.unit)
@@ -48,6 +54,14 @@ module.exports = {
         return cli.confirmApp(app, confirm, error.body.message)
           .then(() => fn(app))
       })
+  },
+
+  formatPriceText: function (price) {
+    const priceHourly = this.formatPrice({price, hourly: true})
+    const priceMonthly = this.formatPrice({price, hourly: false})
+    if (!priceHourly) return ''
+    if (priceHourly === 'free' || priceHourly === 'contract') return `${cli.color.green(priceHourly)}`
+    return `${cli.color.green(priceHourly)} (max ${priceMonthly})`
   },
 
   formatState: function (state) {
