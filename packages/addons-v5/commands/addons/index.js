@@ -125,7 +125,15 @@ async function run(ctx, api) {
         label: 'Price',
         format: function (price) {
           if (typeof price === 'undefined') return style('dim', '?')
-          return formatPrice(price)
+          return formatPrice({price, hourly: true})
+        },
+      },
+      {
+        key: 'plan.price',
+        label: 'Max Price',
+        format: function (price) {
+          if (typeof price === 'undefined') return style('dim', '?')
+          return formatPrice({price, hourly: false})
         },
       },
       {
@@ -223,7 +231,16 @@ async function run(ctx, api) {
         label: 'Price',
         format: function (addon) {
           if (addon.app.name === app) {
-            return formatPrice(addon.plan.price)
+            return formatPrice({price: addon.plan.price, hourly: true})
+          }
+
+          return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))
+        },
+      }, {
+        label: 'Max Price',
+        format: function (addon) {
+          if (addon.app.name === app) {
+            return formatPrice({price: addon.plan.price, hourly: false})
           }
 
           return style('dim', printf('(billed to %s app)', style('app', addon.app.name)))

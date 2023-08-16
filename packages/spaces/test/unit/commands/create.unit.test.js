@@ -53,8 +53,11 @@ Created at: ${now.toISOString()}
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: ['one', 'two'], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20'},
       )
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two'}})
-      .then(() => expect(cli.stderr).to.include(
-        'Each Heroku Standard Private Space costs $1000'))
+      .then(() => {
+        console.log(`\n \n ${cli.stderr} \n \n`)
+        expect(cli.stderr).to.include('Spend Alert. During the limited GA period, each Heroku Standard Private')
+        expect(cli.stderr).to.include('Space costs $1.67/hour (max $1200/month), pro-rated to the second.')
+      })
       .then(() => api.done())
   })
 
@@ -97,8 +100,8 @@ Created at: ${now.toISOString()}
         {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: ['one', 'two'], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20'},
       )
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
-      .then(() => expect(cli.stderr).to.include(
-        'Each Heroku Shield Private Space costs $3000'))
+      .then(() => expect(cli.stderr).to.include('Spend Alert. During the limited GA period, each Heroku Shield Private'))
+      .then(() => expect(cli.stderr).to.include('Space costs $5/hour (max $3600/month), pro-rated to the second.'))
       .then(() => api.done())
   })
 
