@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.3.1-beta.0](https://github.com/heroku/cli/compare/v8.3.0...v8.3.1-beta.0) (2023-08-16)
+
+
+### Bug Fixes
+
+* don't go past repo root for require ([45af3b6](https://github.com/heroku/cli/commit/45af3b61e042b16038b4dfc2ef9aaad4808c2769))
+
+
+
+
+
 # [8.3.0](https://github.com/heroku/cli/compare/v8.2.0...v8.3.0) (2023-08-16)
 
 
