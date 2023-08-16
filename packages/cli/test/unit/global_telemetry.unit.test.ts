@@ -40,21 +40,22 @@ describe('telemetry', async () => {
       postrun: false,
       command_not_found: false,
     },
+    isVersionOrHelp: false,
   }
 
   const setupTelemetryTest = (config: any, opts: any) => {
     const result = telemetry.setupTelemetry(config, opts)
-    expect(result.command).to.equal(mockTelemetryObject.command)
-    expect(result.os).to.equal(mockTelemetryObject.os)
-    expect(result.version).to.equal(mockTelemetryObject.version)
-    expect(result.exitCode).to.equal(mockTelemetryObject.exitCode)
-    expect(result.exitState).to.equal(mockTelemetryObject.exitState)
-    expect(result.cliRunDuration).to.equal(mockTelemetryObject.cliRunDuration)
-    expect(result.commandRunDuration).to.greaterThan(mockTelemetryObject.commandRunDuration)
-    expect(result.lifecycleHookCompletion.init).to.equal(mockTelemetryObject.lifecycleHookCompletion.init)
-    expect(result.lifecycleHookCompletion.prerun).to.equal(mockTelemetryObject.lifecycleHookCompletion.prerun)
-    expect(result.lifecycleHookCompletion.postrun).to.equal(mockTelemetryObject.lifecycleHookCompletion.postrun)
-    expect(result.lifecycleHookCompletion.command_not_found).to.equal(mockTelemetryObject.lifecycleHookCompletion.command_not_found)
+    expect(result!.command).to.equal(mockTelemetryObject.command)
+    expect(result!.os).to.equal(mockTelemetryObject.os)
+    expect(result!.version).to.equal(mockTelemetryObject.version)
+    expect(result!.exitCode).to.equal(mockTelemetryObject.exitCode)
+    expect(result!.exitState).to.equal(mockTelemetryObject.exitState)
+    expect(result!.cliRunDuration).to.equal(mockTelemetryObject.cliRunDuration)
+    expect(result!.commandRunDuration).to.greaterThan(mockTelemetryObject.commandRunDuration)
+    expect(result!.lifecycleHookCompletion.init).to.equal(mockTelemetryObject.lifecycleHookCompletion.init)
+    expect(result!.lifecycleHookCompletion.prerun).to.equal(mockTelemetryObject.lifecycleHookCompletion.prerun)
+    expect(result!.lifecycleHookCompletion.postrun).to.equal(mockTelemetryObject.lifecycleHookCompletion.postrun)
+    expect(result!.lifecycleHookCompletion.command_not_found).to.equal(mockTelemetryObject.lifecycleHookCompletion.command_not_found)
   }
 
   const computeDurationTest = (cmdStartTime: any) => {
@@ -104,7 +105,7 @@ describe('telemetry', async () => {
       .post('/v1/traces', identity)
       .reply(200)
 
-    await telemetry.sendToHoneycomb(mockTelemetry)
+    await telemetry.sendToHoneycomb(mockTelemetry!)
     honeycombAPI.done()
   })
 
