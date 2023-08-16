@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.3.0](https://github.com/heroku/cli/compare/v8.2.0...v8.3.0) (2023-08-16)
+
+
+### Features
+
+* **cli:** add cli performance telemetry ([#2425](https://github.com/heroku/cli/issues/2425)) ([#2435](https://github.com/heroku/cli/issues/2435)) ([465c806](https://github.com/heroku/cli/commit/465c806e967e66ec94f9b5fd3a4fac4baea4af78)), closes [#2434](https://github.com/heroku/cli/issues/2434)
+
+
+
+
+
 # [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
 
 
