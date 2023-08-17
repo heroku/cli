@@ -17,12 +17,7 @@ async function run(context, heroku) {
         {key: 'default', label: '', format: d => d ? 'default' : ''},
         {key: 'name', label: 'slug'},
         {key: 'human_name', label: 'name'},
-        {key: 'price', format: function (price) {
-          return util.formatPrice({price, hourly: true})
-        }},
-        {key: 'price', label: 'max price', format: function (price) {
-          return util.formatPrice({price, hourly: false})
-        }},
+        {key: 'price', format: util.formatPrice},
       ],
     })
   }
