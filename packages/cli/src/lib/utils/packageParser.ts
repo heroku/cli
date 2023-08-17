@@ -5,5 +5,5 @@ export function getAllVersionFlags() {
 }
 
 export function getAllHelpFlags() {
-  return oclif.additionalHelpFlags
+  return [...oclif.additionalHelpFlags, '--help', 'help']
 }
