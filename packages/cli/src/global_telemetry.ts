@@ -3,6 +3,7 @@ import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
+import {getAllHelpFlags, getAllVersionFlags} from './lib/utils/packageParser'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
@@ -85,42 +86,37 @@ export function initializeInstrumentation() {
 export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
-  const isHelpOrVersionCmd = (opts.id === 'version' || opts.id === '--help')
+  const isHelpOrVersionCmd = (['--version', ...getAllVersionFlags()].includes(opts.id) || ['--help', 'help', ...getAllHelpFlags()].includes(opts.id))
   const isRegularCmd = Boolean(opts.Command)
 
+  const baseTelemetryObject = {
+    command: opts.id,
+    os: config.platform,
+    version: config.version,
+    exitCode: 0,
+    exitState: 'successful',
+    cliRunDuration: 0,
+    commandRunDuration: cmdStartTime,
+    lifecycleHookCompletion: {
+      init: true,
+      prerun: false,
+      postrun: false,
+      command_not_found: false,
+    },
+    isVersionOrHelp: true,
+  }
+
   if (isHelpOrVersionCmd) {
-    return {
-      command: opts.id,
-      os: config.platform,
-      version: config.version,
-      exitCode: 0,
-      exitState: 'successful',
-      cliRunDuration: 0,
-      commandRunDuration: cmdStartTime,
-      lifecycleHookCompletion: {
-        init: true,
-        prerun: false,
-        postrun: false,
-        command_not_found: false,
-      },
-      isVersionOrHelp: true,
-    }
+    return baseTelemetryObject
   }
 
   if (isRegularCmd) {
     return {
+      ...baseTelemetryObject,
       command: opts.Command.id,
-      os: config.platform,
-      version: config.version,
-      exitCode: 0,
-      exitState: 'successful',
-      cliRunDuration: 0,
-      commandRunDuration: cmdStartTime,
       lifecycleHookCompletion: {
-        init: true,
+        ...baseTelemetryObject.lifecycleHookCompletion,
         prerun: true,
-        postrun: false,
-        command_not_found: false,
       },
       isVersionOrHelp: false,
     }

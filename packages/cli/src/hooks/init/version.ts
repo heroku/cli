@@ -1,4 +1,5 @@
 import {Hook} from '@oclif/core'
+import {getAllVersionFlags} from '../../lib/utils/packageParser'
 
 const allowlist = [
   'HEROKU_API_KEY',
@@ -12,7 +13,7 @@ const allowlist = [
 ]
 
 const version: Hook.Init = async function () {
-  if (['-v', '--version', 'version'].includes(process.argv[2])) {
+  if (['--version', ...getAllVersionFlags()].includes(process.argv[2])) {
     for (const env of allowlist) {
       if (process.env[env]) {
         const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
