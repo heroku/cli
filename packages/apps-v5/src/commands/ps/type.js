@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const {sortBy, compact} = require('lodash')
 
-const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576}
+const costs = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576}
 
 let emptyFormationErr = app => {
   return new Error(`No process types on ${app}.
@@ -15,7 +15,7 @@ async function run(context, heroku) {
   let app = context.app
 
   let parse = async function (args) {
-    if (!args || args.length === 0) return []
+    if (args.length === 0) return []
     let formation = await heroku.get(`/apps/${app}/formation`)
     if (args.find(a => a.match(/=/))) {
       return compact(args.map(arg => {
@@ -32,10 +32,6 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
     }
 
     return formation.map(p => ({type: p.type, size: args[0]}))
-  }
-
-  const calculateHourly = function (size) {
-    return costMonthly[size] / 720
   }
 
   let displayFormation = async function () {
@@ -73,8 +69,7 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),
       qty: cli.color.yellow(d.quantity.toString()),
-      'cost/hour': calculateHourly(d.size) ? '~$' + (calculateHourly(d.size) * d.quantity).toFixed(3).toString() : '',
-      'max cost/month': costMonthly[d.size] ? '$' + (costMonthly[d.size] * d.quantity).toString() : '',
+      'cost/mo': costs[d.size] ? '$' + (costs[d.size] * d.quantity).toString() : '',
     }))
 
     if (formation.length === 0) throw emptyFormationErr()
@@ -85,8 +80,7 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
         {key: 'type'},
         {key: 'size'},
         {key: 'qty'},
-        {key: 'cost/hour'},
-        {key: 'max cost/month'},
+        {key: 'cost/mo'},
       ],
     })
 

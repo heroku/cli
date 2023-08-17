@@ -85,7 +85,7 @@ describe('addons:create', () => {
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb'},
       })
-        .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+        .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout).to.equal(`provision message
 Created db3-swiftly-123 as DATABASE_URL
 Use heroku addons:docs heroku-db3 to view documentation
@@ -132,7 +132,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'},
         })
-          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout).to.equal(`provision message
 db3-swiftly-123 is being created in the background. The app will restart when complete...
 Use heroku addons:info db3-swiftly-123 to check creation progress
@@ -162,7 +162,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'},
         })
-          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout).to.equal(`db3-swiftly-123 is being created in the background. The app will restart when complete...
 Use heroku addons:info db3-swiftly-123 to check creation progress
 Use heroku addons:docs heroku-db3 to view documentation
@@ -191,7 +191,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'},
         })
-          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout).to.equal(`provision message
 db3-swiftly-123 is being created in the background. The app will restart when complete...
 Use heroku addons:info db3-swiftly-123 to check creation progress
@@ -246,7 +246,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           .then(() => provisionedResponse.done())
           .then(() => expect(notifySpy.called).to.equal(true))
           .then(() => expect(notifySpy.calledOnce).to.equal(true))
-          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\nCreating db3-swiftly-123... done\n'))
+          .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\nCreating db3-swiftly-123... done\n'))
           .then(() => expect(cli.stdout).to.equal(`provision message
 Waiting for db3-swiftly-123...
 Created db3-swiftly-123 as DATABASE_URL
@@ -352,7 +352,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb', confirm: 'myapp'},
-      }).then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+      }).then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout).to.equal(`provision message
 Created db3-swiftly-123 as DATABASE_URL
 Use heroku addons:docs heroku-db3 to view documentation
@@ -399,7 +399,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         args: ['heroku-postgresql:standard-0'],
         flags: {as: 'mydb'},
       })
-        .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+        .then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout).to.equal(`provision message
 Created db3-swiftly-123
 Use heroku addons:docs heroku-db3 to view documentation

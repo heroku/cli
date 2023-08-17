@@ -8,12 +8,10 @@ const {RegionCompletion} = require('@heroku-cli/command/lib/completions')
 
 async function run(context, heroku) {
   let space = context.flags.space || context.args.space
-  let dollarAmountMonthly = '$1200'
-  let dollarAmountHourly = '$1.67'
+  let dollarAmount = '$1000'
   let spaceType = 'Standard'
   if (context.flags.shield) {
-    dollarAmountMonthly = '$3600'
-    dollarAmountHourly = '$5'
+    dollarAmount = '$3000'
     spaceType = 'Shield'
   }
 
@@ -38,8 +36,7 @@ async function run(context, heroku) {
   })
 
   space = await cli.action(`Creating space ${cli.color.green(space)} in team ${cli.color.cyan(team)}`, request)
-  cli.warn(`${cli.color.bold('Spend Alert.')} During the limited GA period, each Heroku ${spaceType} Private Space costs ${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
-  // cli.warn(`${cli.color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ${dollarAmount} in Add-on Credits/month (pro-rated to the second).`)
+  cli.warn(`${cli.color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ${dollarAmount} in Add-on Credits/month (pro-rated to the second).`)
   cli.warn('Use spaces:wait to track allocation.')
   cli.styledHeader(space.name)
   cli.styledObject({
