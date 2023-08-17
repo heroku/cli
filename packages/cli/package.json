@@ -234,8 +234,14 @@
         "description": "space outbound IP rules",
         "hidden": true
       },
+      "pipelines": {
+        "description": "manage pipelines"
+      },
       "ps": {
         "description": "manage app dynos"
+      },
+      "reviewapps": {
+        "description": "manage reviewapps in pipelines"
       },
       "run": {
         "description": "run a one-off process inside a Heroku dyno"
