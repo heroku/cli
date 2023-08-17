@@ -1,7 +1,7 @@
 const {oclif} = require('../../../package.json')
 
 export function getAllVersionFlags() {
-  return oclif.additionalVersionFlags
+  return [...oclif.additionalVersionFlags, '--version']
 }
 
 export function getAllHelpFlags() {
