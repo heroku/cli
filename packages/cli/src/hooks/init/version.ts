@@ -13,7 +13,7 @@ const allowlist = [
 ]
 
 const version: Hook.Init = async function () {
-  if (['--version', ...getAllVersionFlags()].includes(process.argv[2])) {
+  if (getAllVersionFlags().includes(process.argv[2])) {
     for (const env of allowlist) {
       if (process.env[env]) {
         const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`

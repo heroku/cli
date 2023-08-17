@@ -86,7 +86,7 @@ export function initializeInstrumentation() {
 export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
-  const isHelpOrVersionCmd = (['--version', ...getAllVersionFlags()].includes(opts.id) || ['--help', 'help', ...getAllHelpFlags()].includes(opts.id))
+  const isHelpOrVersionCmd = (getAllVersionFlags().includes(opts.id) || getAllHelpFlags().includes(opts.id))
   const isRegularCmd = Boolean(opts.Command)
 
   const baseTelemetryObject = {
