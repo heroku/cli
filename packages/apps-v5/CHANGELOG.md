@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.3.1-beta.3](https://github.com/heroku/cli/compare/v8.3.1-beta.2...v8.3.1-beta.3) (2023-08-17)
+
+
+### Reverts
+
+* Revert "refactor: add per hour and max price per month to pricing displays (#2439)" (#2447) ([0a4a28e](https://github.com/heroku/cli/commit/0a4a28ec016f9f59c24a74bd0af3ea7c873129a3)), closes [#2439](https://github.com/heroku/cli/issues/2439) [#2447](https://github.com/heroku/cli/issues/2447)
+
+
+
+
+
 ## [8.3.1-beta.2](https://github.com/heroku/cli/compare/v8.3.1-beta.1...v8.3.1-beta.2) (2023-08-16)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
