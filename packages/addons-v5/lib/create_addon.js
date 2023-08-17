@@ -34,7 +34,7 @@ module.exports = async function (heroku, app, plan, confirm, wait, options) {
           'x-heroku-legacy-provider-messages': 'true',
         },
       }).then(function (addon) {
-        cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
+        cli.action.done(cli.color.green(util.formatPriceText(addon.plan.price)))
         return addon
       }),
     )
