@@ -110,11 +110,11 @@ export function setupTelemetry(config: any, opts: any) {
     return {
       ...irregularTelemetryObject,
       command: opts.Command.id,
+      isVersionOrHelp: false,
       lifecycleHookCompletion: {
         ...irregularTelemetryObject.lifecycleHookCompletion,
         prerun: true,
       },
-      isVersionOrHelp: false,
     }
   }
 
