@@ -11,8 +11,8 @@ const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
 const path = require('path')
 const {version} = require('../package.json')
-const root = path.resolve(__dirname, '../package.json')
 
+const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const config = new Config({root})
 const heroku = new APIClient(config)
