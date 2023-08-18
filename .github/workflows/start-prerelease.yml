@@ -45,12 +45,12 @@ jobs:
       - name: install heroku & correct version
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-          version=$(node -e "console.log(require('./packages/cli.package.json').version)"
+          version=$(node -e "console.log(require('./packages/cli/package.json').version)"
           heroku update --version=$version
         shell: bash
       - name: test beta release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          sh ./scripts/postrelease/test_release.js
+          sh ./scripts/postrelease/test_release
         shell: bash
