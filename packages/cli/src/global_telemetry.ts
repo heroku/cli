@@ -3,7 +3,6 @@ import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
-import {getAllHelpFlags, getAllVersionFlags} from './lib/utils/packageParser'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
