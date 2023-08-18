@@ -48,6 +48,8 @@ jobs:
           version=$(node -e "console.log(require('./packages/cli/package.json').version)"
           heroku update --version=$version
         shell: bash
+      - name: set NPM auth for sudo install
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
       - name: test beta release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
