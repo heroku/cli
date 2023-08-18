@@ -56,7 +56,7 @@ Created at: ${now.toISOString()}
       .then(() => {
         console.log(`\n \n ${cli.stderr} \n \n`)
         expect(cli.stderr).to.include('Spend Alert. During the limited GA period, each Heroku Standard Private')
-        expect(cli.stderr).to.include('Space costs $1.67/hour (max $1200/month), pro-rated to the second.')
+        expect(cli.stderr).to.include('Space costs ~$1.39/hour (max $1000/month), pro-rated to the second.')
       })
       .then(() => api.done())
   })
@@ -101,7 +101,7 @@ Created at: ${now.toISOString()}
       )
     return cmd.run({flags: {team: 'my-team', space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stderr).to.include('Spend Alert. During the limited GA period, each Heroku Shield Private'))
-      .then(() => expect(cli.stderr).to.include('Space costs $5/hour (max $3600/month), pro-rated to the second.'))
+      .then(() => expect(cli.stderr).to.include('Space costs ~$4.17/hour (max $3000/month), pro-rated to the second.'))
       .then(() => api.done())
   })
 
