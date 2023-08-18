@@ -89,7 +89,7 @@ export function setupTelemetry(config: any, opts: any) {
   const cmdStartTime = now.getTime()
   const isRegularCmd = Boolean(opts.Command)
 
-  const baseTelemetryObject = {
+  const irregularTelemetryObject = {
     command: opts.id,
     os: config.platform,
     version: config.version,
@@ -106,19 +106,19 @@ export function setupTelemetry(config: any, opts: any) {
     isVersionOrHelp: true,
   }
 
-  if (!isRegularCmd) {
-    return baseTelemetryObject
+  if (isRegularCmd) {
+    return {
+      ...irregularTelemetryObject,
+      command: opts.Command.id,
+      lifecycleHookCompletion: {
+        ...irregularTelemetryObject.lifecycleHookCompletion,
+        prerun: true,
+      },
+      isVersionOrHelp: false,
+    }
   }
 
-  return {
-    ...baseTelemetryObject,
-    command: opts.Command.id,
-    lifecycleHookCompletion: {
-      ...baseTelemetryObject.lifecycleHookCompletion,
-      prerun: true,
-    },
-    isVersionOrHelp: false,
-  }
+  return irregularTelemetryObject
 }
 
 export function computeDuration(cmdStartTime: any) {
