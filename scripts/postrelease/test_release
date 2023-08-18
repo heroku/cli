@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+
+# this will test whatever version is installed locally. Install what you want first.
+
+declare -a COMMANDS=(
+  "heroku"
+  "heroku apps -p"
+  "heroku addons --app status-ui"
+  "heroku domains --app status-ui"
+  "heroku auth:whoami"
+  "heroku auth:2fa"
+  "heroku autocomplete zsh"
+  "heroku buildpacks:search ruby"
+  "heroku certs --app status-ui"
+  "heroku ci --pipeline status-ui"
+  "heroku ci --app particleboard-staging"
+  "heroku ci:config --pipeline status-ui"
+  "rm -rf ~/status-ui && heroku git:clone ~/status-ui --app status-ui && rm -rf ~/status-ui"
+  "heroku local:version"
+  "heroku authorizations"
+  "heroku access --app particleboard-staging"
+  "heroku pg:backups --app status-ui"
+  "heroku pipelines"
+  "heroku regions"
+  "heroku redis:info --app status-ui"
+  "heroku spaces"
+  "heroku status"
+  "heroku commands"
+  "heroku help"
+  "heroku -h"
+  "heroku --help"
+  "heroku version"
+  "heroku -v"
+  "heroku --version"
+  "heroku plugins:install sudo"
+  "heroku auth:whoami"
+  "heroku apps:info --app heroku-cli-test-staging"
+  "heroku clients"
+  "heroku drains --app heroku-cli-test-staging"
+  "heroku features --app heroku-cli-test-staging"
+  "heroku keys"
+  "heroku labs"
+  "heroku maintenance --app heroku-cli-test-staging"
+  "heroku members --team heroku-front-end"
+  "heroku notifications"
+  "heroku orgs"
+  "heroku plugins"
+  "heroku releases --app heroku-cli-test-staging"
+  "heroku sessions"
+  "heroku teams"
+  "heroku which authorizations"
+)
+
+#  "heroku login"
+#  "heroku logs --app status-ui"
+#  "heroku config --app status-ui"
+#  "heroku webhooks --app status-ui"
+
+for cmd in "${COMMANDS[@]}"
+do
+  echo "\n\n\nRUNNING: $cmd"
+  message=$(eval "$cmd")
+#  todo: don't echo if sensitive info here?
+  echo $message
+  # command not found exits with 0, so catch here
+  if [[ "${message}" == *"Run heroku help for a list of available commands."* ]]; then
+    echo "Command not found: $cmd"
+    exit 1
+  fi
+done
