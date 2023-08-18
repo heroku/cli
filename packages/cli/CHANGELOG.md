@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.3.1](https://github.com/heroku/cli/compare/v8.3.0...v8.3.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* **cli:** update boolean logic and add package parser util ([#2449](https://github.com/heroku/cli/issues/2449)) ([9c7099c](https://github.com/heroku/cli/commit/9c7099c03fbfe85320cad7dad3776c758043b2ac))
+
+
+
+
+
 # [8.3.0](https://github.com/heroku/cli/compare/v8.2.0...v8.3.0) (2023-08-16)
 
 
