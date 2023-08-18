@@ -10,6 +10,9 @@ const globalTelemetry = require('../lib/global_telemetry')
 
 process.once('beforeExit', async code => {
   // capture as successful exit
+  if (!global.cliTelemetry) {
+    console.error('global.cliTelemetry undefined')
+  }
   if (global.cliTelemetry.isVersionOrHelp) {
     const cmdStartTime = global.cliTelemetry.commandRunDuration
     global.cliTelemetry.commandRunDuration = globalTelemetry.computeDuration(cmdStartTime)

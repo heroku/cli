@@ -12,8 +12,9 @@ const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const path = require('path')
-const root = path.resolve(__dirname, '../package.json')
 const {version} = require('../package.json')
+
+const root = path.resolve(__dirname, '../package.json')
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
@@ -25,6 +26,7 @@ const rollbar = new Rollbar({
   captureUncaught: true,
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
+  codeVersion: version,
 })
 
 registerInstrumentations({
@@ -86,7 +88,6 @@ export function initializeInstrumentation() {
 export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
-  const isHelpOrVersionCmd = (getAllVersionFlags().includes(opts.id) || getAllHelpFlags().includes(opts.id))
   const isRegularCmd = Boolean(opts.Command)
 
   const baseTelemetryObject = {
@@ -106,20 +107,18 @@ export function setupTelemetry(config: any, opts: any) {
     isVersionOrHelp: true,
   }
 
-  if (isHelpOrVersionCmd) {
+  if (!isRegularCmd) {
     return baseTelemetryObject
   }
 
-  if (isRegularCmd) {
-    return {
-      ...baseTelemetryObject,
-      command: opts.Command.id,
-      lifecycleHookCompletion: {
-        ...baseTelemetryObject.lifecycleHookCompletion,
-        prerun: true,
-      },
-      isVersionOrHelp: false,
-    }
+  return {
+    ...baseTelemetryObject,
+    command: opts.Command.id,
+    lifecycleHookCompletion: {
+      ...baseTelemetryObject.lifecycleHookCompletion,
+      prerun: true,
+    },
+    isVersionOrHelp: false,
   }
 }
 
