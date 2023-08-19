@@ -13,7 +13,6 @@ declare -a COMMANDS=(
   "heroku apps:info --app heroku-cli-test-staging"
   "heroku auth:2fa"
   "heroku auth:whoami"
-  "heroku auth:whoami"
   "heroku authorizations"
   "heroku autocomplete zsh"
   "heroku buildpacks:search ruby"
