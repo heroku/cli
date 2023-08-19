@@ -14,7 +14,7 @@ declare -a COMMANDS=(
   "heroku auth:2fa"
   "heroku auth:whoami"
   "heroku authorizations"
-  "heroku autocomplete zsh"
+  "heroku autocomplete"
   "heroku buildpacks:search ruby"
   "heroku certs --app status-ui"
   "heroku ci --app particleboard-staging"
