@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.3.2-beta.3](https://github.com/heroku/cli/compare/v8.3.2-beta.2...v8.3.2-beta.3) (2023-08-22)
+
+
+### Bug Fixes
+
+* random typo ([5b47fd4](https://github.com/heroku/cli/commit/5b47fd4bbec51118d2eb6621a8c7360e2a6badb5))
+* rollbar version segmentation and telemetry initialization ([#2451](https://github.com/heroku/cli/issues/2451)) ([46725e7](https://github.com/heroku/cli/commit/46725e712f6d8bc17ff3b34bc4dc7e296bbf08fe))
+
+
+
+
+
 ## [8.3.2-beta.2](https://github.com/heroku/cli/compare/v8.3.2-beta.1...v8.3.2-beta.2) (2023-08-22)
 
 
