@@ -28,7 +28,7 @@ DESCRIPTION
   display the config vars for an app
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.0/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.1/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -64,7 +64,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.0/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.1/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -87,7 +87,7 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.0/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.1/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -167,4 +167,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.0/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v8.4.0-beta.1/src/commands/config/unset.ts)_
