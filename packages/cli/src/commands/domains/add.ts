@@ -16,6 +16,7 @@ export default class DomainsAdd extends Command {
   static description = 'add a domain to an app'
 
   static examples = ['heroku domains:add www.example.com']
+
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
