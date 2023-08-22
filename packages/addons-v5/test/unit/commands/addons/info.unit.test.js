@@ -215,9 +215,10 @@ describe('addons:info', function () {
           === www-redis
           Attachments:  acme-inc-www::REDIS
           Installed at: Invalid Date
+          Max Price:    $60/month
           Owning app:   acme-inc-www
           Plan:         heroku-redis:premium-2
-          Price:        $60/month
+          Price:        ~$0.083/hour
           State:        creating\n
         `)
       })
@@ -247,9 +248,10 @@ describe('addons:info', function () {
           === www-redis-2
           Attachments:  acme-inc-www::REDIS
           Installed at: Invalid Date
+          Max Price:    $60/month
           Owning app:   acme-inc-www
           Plan:         heroku-redis:premium-2
-          Price:        $60/month
+          Price:        ~$0.083/hour
           State:        destroying\n
         `)
       })
