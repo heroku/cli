@@ -42,7 +42,7 @@ jobs:
       - name: install heroku & correct version
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-          version=$(node -e "console.log(require('./packages/cli/package.json').version)"
+          version=$(node -e "console.log(require('./packages/cli/package.json').version)")
           heroku update --version=$version
         shell: bash
       - name: set NPM auth for sudo install
