@@ -3,17 +3,17 @@ import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
-import {getAllHelpFlags, getAllVersionFlags} from './lib/utils/packageParser'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
 const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
-const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const path = require('path')
-const root = path.resolve(__dirname, '../package.json')
 const {version} = require('../package.json')
+
+const root = path.resolve(__dirname, '../package.json')
+const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const config = new Config({root})
 const heroku = new APIClient(config)
 const token = heroku.auth
@@ -25,6 +25,7 @@ const rollbar = new Rollbar({
   captureUncaught: true,
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
+  codeVersion: version,
 })
 
 registerInstrumentations({
@@ -86,10 +87,9 @@ export function initializeInstrumentation() {
 export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
-  const isHelpOrVersionCmd = (getAllVersionFlags().includes(opts.id) || getAllHelpFlags().includes(opts.id))
   const isRegularCmd = Boolean(opts.Command)
 
-  const baseTelemetryObject = {
+  const irregularTelemetryObject = {
     command: opts.id,
     os: config.platform,
     version: config.version,
@@ -106,21 +106,19 @@ export function setupTelemetry(config: any, opts: any) {
     isVersionOrHelp: true,
   }
 
-  if (isHelpOrVersionCmd) {
-    return baseTelemetryObject
-  }
-
   if (isRegularCmd) {
     return {
-      ...baseTelemetryObject,
+      ...irregularTelemetryObject,
       command: opts.Command.id,
+      isVersionOrHelp: false,
       lifecycleHookCompletion: {
-        ...baseTelemetryObject.lifecycleHookCompletion,
+        ...irregularTelemetryObject.lifecycleHookCompletion,
         prerun: true,
       },
-      isVersionOrHelp: false,
     }
   }
+
+  return irregularTelemetryObject
 }
 
 export function computeDuration(cmdStartTime: any) {
