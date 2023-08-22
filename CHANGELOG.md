@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.3.2-beta.2](https://github.com/heroku/cli/compare/v8.3.2-beta.1...v8.3.2-beta.2) (2023-08-22)
+
+
+### Bug Fixes
+
+* update to latest @oclif/plugin-update ([1f3e2ef](https://github.com/heroku/cli/commit/1f3e2efd17f06a7ea4294718f6f2f6ac6abc187d))
+
+
+
+
+
 ## [8.3.2-beta.1](https://github.com/heroku/cli/compare/v8.3.2-beta.0...v8.3.2-beta.1) (2023-08-22)
 
 **Note:** Version bump only for package heroku
