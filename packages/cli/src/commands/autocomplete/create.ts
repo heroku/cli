@@ -12,7 +12,6 @@ export default class Create extends AutocompleteBase {
   static hidden = true
 
   static description = 'create autocomplete setup scripts and completion functions'
-
   private _commands?: Command.Loadable[]
 
   async run() {
