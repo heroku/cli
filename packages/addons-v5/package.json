@@ -31,7 +31,8 @@
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
     "proxyquire": "^2.1.0",
-    "sinon": "^6.3.5"
+    "sinon": "^6.3.5",
+    "theredoc": "^1.0.0"
   },
   "files": [
     "oclif.manifest.json",
