@@ -555,6 +555,7 @@ __metadata:
     printf: 0.6.1
     proxyquire: ^2.1.0
     sinon: ^6.3.5
+    theredoc: ^1.0.0
   languageName: unknown
   linkType: soft
 
