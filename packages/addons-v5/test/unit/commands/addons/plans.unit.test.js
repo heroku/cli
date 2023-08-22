@@ -16,12 +16,12 @@ describe('addons:plans', function () {
         {name: 'fourth', human_name: 'Fourth', price: {cents: 0, unit: 'month', contract: true}, default: false},
       ])
     return cmd.run({args: {service: 'daservice'}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal(`         slug    name    price
-───────  ──────  ──────  ──────────
-default  first   First   free
-         second  Second  $20/month
-         third   Third   $100/month
-         fourth  Fourth  contract
+      .then(() => expect(cli.stdout).to.equal(`         slug    name    price         max price
+───────  ──────  ──────  ────────────  ──────────
+default  first   First   free          free
+         second  Second  ~$0.028/hour  $20/month
+         third   Third   ~$0.139/hour  $100/month
+         fourth  Fourth  contract      contract
 `))
       .then(() => api.done())
   })

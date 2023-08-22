@@ -26,6 +26,32 @@ describe('addons:upgrade', () => {
       .then(() => api.done())
   })
 
+  it('displays hourly and monthly price when upgrading an add-on', () => {
+    let addon = {name: 'kafka-swiftly-123', addon_service: {name: 'heroku-kafka'}, app: {name: 'myapp'}, plan: {name: 'premium-0'}}
+
+    let api = nock('https://api.heroku.com:443')
+      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-kafka'}).reply(200, [addon])
+      .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:standard'}})
+      .reply(200, {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'})
+    return cmd.run({app: 'myapp', args: {addon: 'heroku-kafka', plan: 'heroku-kafka:standard'}})
+      .then(() => expect(cli.stdout).to.equal('provision msg\n'))
+      .then(() => expect(cli.stderr).to.equal('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)\n'))
+      .then(() => api.done())
+  })
+
+  it('does not display a price when upgrading an add-on and no price is returned from the api', () => {
+    let addon = {name: 'kafka-swiftly-123', addon_service: {name: 'heroku-kafka'}, app: {name: 'myapp'}, plan: {name: 'premium-0'}}
+
+    let api = nock('https://api.heroku.com:443')
+      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-kafka'}).reply(200, [addon])
+      .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
+      .reply(200, {plan: {}, provision_message: 'provision msg'})
+    return cmd.run({app: 'myapp', args: {addon: 'heroku-kafka', plan: 'heroku-kafka:hobby'}})
+      .then(() => expect(cli.stdout).to.equal('provision msg\n'))
+      .then(() => expect(cli.stderr).to.equal('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done\n'))
+      .then(() => api.done())
+  })
+
   it('upgrades to a contract add-on', () => {
     let addon = {name: 'connect-swiftly-123', addon_service: {name: 'heroku-connect'}, app: {name: 'myapp'}, plan: {name: 'free'}}
 
