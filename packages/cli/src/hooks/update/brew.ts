@@ -32,6 +32,7 @@ const brewHook: Hook<'update'> = async function () {
   let cellarPath: string
   if (binPath && binPath.startsWith(path.join(brewRoot, 'Cellar'))) {
     cellarPath = path.resolve(binPath, path.dirname(path.relative(binPath, path.join(brewRoot, 'Cellar/heroku'))))
+    console.error('brew update path:', cellarPath)
   }
 
   const fetchInstallReceipt = async (): Promise<InstallReceipt | undefined> => {
