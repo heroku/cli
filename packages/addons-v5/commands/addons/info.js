@@ -1,17 +1,17 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const cli = require('heroku-cli-util')
 
-let grandfatheredPrice = require('../../lib/util').grandfatheredPrice
-let formatPrice = require('../../lib/util').formatPrice
-let formatState = require('../../lib/util').formatState
-let style = require('../../lib/util').style
+const grandfatheredPrice = require('../../lib/util').grandfatheredPrice
+const formatPrice = require('../../lib/util').formatPrice
+const formatState = require('../../lib/util').formatState
+const style = require('../../lib/util').style
 
-let run = cli.command({preauth: true}, function (ctx, api) {
+const run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
   return (async function () {
-    let addon = await resolve.addon(api, ctx.app, ctx.args.addon)
-    let attachments = await api.request({
+    const addon = await resolve.addon(api, ctx.app, ctx.args.addon)
+    const attachments = await api.request({
       method: 'GET',
       path: `/addons/${addon.id}/addon-attachments`,
     })
@@ -37,7 +37,8 @@ let run = cli.command({preauth: true}, function (ctx, api) {
   })()
 })
 
-let topic = 'addons'
+const topic = 'addons'
+
 module.exports = {
   topic: topic,
   command: 'info',
