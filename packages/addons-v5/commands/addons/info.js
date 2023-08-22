@@ -22,7 +22,8 @@ let run = cli.command({preauth: true}, function (ctx, api) {
     cli.styledHeader(style('addon', addon.name))
     cli.styledHash({
       Plan: addon.plan.name,
-      Price: formatPrice(addon.plan.price),
+      Price: formatPrice({price: addon.plan.price, hourly: true}),
+      'Max Price': formatPrice({price: addon.plan.price, hourly: false}),
       Attachments: addon.attachments.map(function (att) {
         return [
           style('app', att.app.name),
