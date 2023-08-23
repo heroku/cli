@@ -33,6 +33,4 @@ jobs:
       - name: test beta release
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          sh ./scripts/postrelease/test_release
-        shell: bash
+        run: ./scripts/postrelease/test_release
