@@ -30,26 +30,20 @@ jobs:
     with:
       isStableCandidate: ${{ false }}
 
-  beta-smoke-tests:
-    needs: [ start-pre-release ]
-    runs-on: pub-hk-ubuntu-22.04-small
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
-      - name: install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-      - name: install heroku & correct version
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-          version=$(node -e "console.log(require('./packages/cli/package.json').version)")
-          heroku update --version=$version
+      - name: get CLI version
+        id: version
         shell: bash
-      - name: set NPM auth for sudo install
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
-      - name: test beta release
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          sh ./scripts/postrelease/test_release
-        shell: bash
+        run: echo "version=$(node -e "console.log(require('./packages/cli/package.json').version)")" >> $GITHUB_OUTPUT
+
+  beta-smoke-tests:
+    needs: [ start-pre-release, get-version ]
+    uses: ./.github/workflows/test-installed-cli.yml
+    secrets: inherit
+    with:
+      version: ${{ needs.get-version.outputs.sourceName }}
