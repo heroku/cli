@@ -42,7 +42,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v8.3.2-beta.6/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v8.3.2-beta.7/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
