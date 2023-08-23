@@ -17,6 +17,10 @@ on:
 jobs:
   test-installed-cli:
     runs-on: pub-hk-ubuntu-22.04-small
+    environment: AcceptanceTests
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      ENABLE_NET_CONNECT: true
     steps:
       - uses: actions/checkout@v3
       - name: install dependencies
@@ -31,6 +35,4 @@ jobs:
       - name: set NPM auth for sudo install
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
       - name: test beta release
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: ./scripts/postrelease/test_release
