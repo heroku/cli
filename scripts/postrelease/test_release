@@ -3,7 +3,7 @@
 # NOTE: this will test whatever version is installed locally. Install what you want first.
 
 # pipefail is necessary for "command not found" to throw an error in these tests.
-set -eo pipefail
+set -e -o pipefail
 
 declare -a COMMANDS=(
   "heroku"
