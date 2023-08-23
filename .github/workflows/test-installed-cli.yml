@@ -26,10 +26,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y curl
-      - name: install heroku & correct version
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-          heroku update --version=${{ inputs.version }}
+      - name: install latest heroku
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+        shell: bash
+      - name: updating to heroku version ${{ inputs.version }}
+        run: heroku update --version=${{ inputs.version }}
         shell: bash
       - name: set NPM auth for sudo install
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
