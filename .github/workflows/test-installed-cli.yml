@@ -18,6 +18,7 @@ jobs:
   test-installed-cli:
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
+      - uses: actions/checkout@v3
       - name: install dependencies
         run: |
           sudo apt-get update
