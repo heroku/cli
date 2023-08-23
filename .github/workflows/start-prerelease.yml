@@ -46,4 +46,4 @@ jobs:
     uses: ./.github/workflows/test-installed-cli.yml
     secrets: inherit
     with:
-      version: ${{ needs.get-version.outputs.sourceName }}
+      version: ${{ needs.get-version.outputs.version }}

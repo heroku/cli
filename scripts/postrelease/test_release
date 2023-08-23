@@ -7,6 +7,7 @@ set -e -o pipefail
 
 declare -a COMMANDS=(
   "heroku"
+  "heroku whoami"
   "heroku access --app particleboard-staging"
   "heroku addons --app status-ui"
   "heroku apps -p"
@@ -51,7 +52,6 @@ declare -a COMMANDS=(
   "heroku --version"
   "heroku -v"
   "heroku which authorizations"
-  "heroku whoami"
 )
 
 # todo: find a way to test these with automation. They require 2fa or a browser for login
