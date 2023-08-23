@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.4.0-beta.2](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0-beta.2) (2023-08-23)
+
+
+### Reverts
+
+* Revert "Revert "refactor: add per hour and max price per month to pricing displays"" (#2448) ([dd535a5](https://github.com/heroku/cli/commit/dd535a506e781e24b48208dcb666947a201460ba)), closes [#2448](https://github.com/heroku/cli/issues/2448) [#2439](https://github.com/heroku/cli/issues/2439) [#2447](https://github.com/heroku/cli/issues/2447)
+
+
+
+
+
 # [8.4.0-beta.1](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0-beta.1) (2023-08-22)
 
 

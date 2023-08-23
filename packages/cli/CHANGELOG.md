@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.4.0-beta.2](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0-beta.2) (2023-08-23)
+
+
+### Bug Fixes
+
+* rollbar version segmentation and telemetry initialization ([#2451](https://github.com/heroku/cli/issues/2451)) ([46725e7](https://github.com/heroku/cli/commit/46725e712f6d8bc17ff3b34bc4dc7e296bbf08fe))
+
+
+
+
+
 # [8.4.0-beta.1](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0-beta.1) (2023-08-22)
 
 **Note:** Version bump only for package heroku
