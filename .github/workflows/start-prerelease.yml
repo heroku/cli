@@ -29,3 +29,21 @@ jobs:
     secrets: inherit
     with:
       isStableCandidate: ${{ false }}
+
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: get CLI version
+        id: version
+        shell: bash
+        run: echo "version=$(node -e "console.log(require('./packages/cli/package.json').version)")" >> $GITHUB_OUTPUT
+
+  beta-smoke-tests:
+    needs: [ start-pre-release, get-version ]
+    uses: ./.github/workflows/test-installed-cli.yml
+    secrets: inherit
+    with:
+      version: ${{ needs.get-version.outputs.sourceName }}

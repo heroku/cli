@@ -1,0 +1,36 @@
+name: Test installed CLI
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: version to test
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: version to test
+        type: string
+        required: true
+
+jobs:
+  test-installed-cli:
+    runs-on: pub-hk-ubuntu-22.04-small
+    steps:
+      - uses: actions/checkout@v3
+      - name: install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+      - name: install heroku & correct version
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+          heroku update --version=${{ inputs.version }}
+        shell: bash
+      - name: set NPM auth for sudo install
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
+      - name: test beta release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: ./scripts/postrelease/test_release
