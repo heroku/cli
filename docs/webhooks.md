@@ -32,7 +32,7 @@ EXAMPLES
   $ heroku webhooks
 ```
 
-_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/index.ts)_
+_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/index.ts)_
 
 ## `heroku webhooks:add`
 
@@ -48,7 +48,7 @@ FLAGS
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use
   -s, --secret=<value>         value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=<value>  authoriation header to send with webhooks
+  -t, --authorization=<value>  authorization header to send with webhooks
   -u, --url=<value>            (required) URL for receiver
 
 DESCRIPTION
@@ -58,7 +58,7 @@ EXAMPLES
   $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/add.ts)_
+_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/add.ts)_
 
 ## `heroku webhooks:deliveries`
 
@@ -80,7 +80,7 @@ EXAMPLES
   $ heroku webhooks:deliveries
 ```
 
-_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/deliveries/index.ts)_
+_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/deliveries/index.ts)_
 
 ## `heroku webhooks:deliveries:info ID`
 
@@ -101,7 +101,7 @@ EXAMPLES
   $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/deliveries/info.ts)_
+_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:events`
 
@@ -122,7 +122,7 @@ EXAMPLES
   $ heroku webhooks:events
 ```
 
-_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/events/index.ts)_
+_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/events/index.ts)_
 
 ## `heroku webhooks:events:info ID`
 
@@ -143,7 +143,7 @@ EXAMPLES
   $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/events/info.ts)_
+_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/events/info.ts)_
 
 ## `heroku webhooks:info ID`
 
@@ -164,7 +164,7 @@ EXAMPLES
   $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/info.ts)_
+_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/info.ts)_
 
 ## `heroku webhooks:remove ID`
 
@@ -188,7 +188,7 @@ EXAMPLES
   $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/remove.ts)_
+_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/remove.ts)_
 
 ## `heroku webhooks:update ID`
 
@@ -204,7 +204,7 @@ FLAGS
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use
   -s, --secret=<value>         value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
-  -t, --authorization=<value>  authoriation header to send with webhooks
+  -t, --authorization=<value>  authorization header to send with webhooks
   -u, --url=<value>            (required) URL for receiver
 
 DESCRIPTION
@@ -214,4 +214,4 @@ EXAMPLES
   $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v8.4.0/src/commands/webhooks/update.ts)_
+_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v8.4.1-beta.0/src/commands/webhooks/update.ts)_
