@@ -55,7 +55,7 @@ declare -a COMMANDS=(
 # todo: how to test this?
 #  "heroku login"
 
-# todo: find a way to test these with automation. They require 2fa or a browser for login
+# todo: find a way to test commands that require 2fa
 #  "heroku logs --app status-ui"
 #  "heroku config --app status-ui"
 #  "heroku webhooks --app status-ui"
