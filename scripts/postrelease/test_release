@@ -62,7 +62,7 @@ declare -a COMMANDS=(
 
 for cmd in "${COMMANDS[@]}"
 do
-  echo "\n\n\nRUNNING: $cmd"
+  echo -e "\n\n\nRUNNING: $cmd"
 #  todo: swallow output if sensitive info here?
   eval "$cmd"
 
