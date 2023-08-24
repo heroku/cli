@@ -18,7 +18,7 @@ export default class WebhooksAdd extends BaseCommand {
     include: flags.string({char: 'i', description: 'comma delimited event types your server will receive ', required: true}),
     level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
     secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
-    authorization: flags.string({char: 't', description: 'authoriation header to send with webhooks'}),
+    authorization: flags.string({char: 't', description: 'authorization header to send with webhooks'}),
     url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
   }
 
