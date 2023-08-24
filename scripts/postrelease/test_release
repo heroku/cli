@@ -40,7 +40,6 @@ declare -a COMMANDS=(
   "heroku pg:backups --app status-ui"
   "heroku pipelines"
   "heroku plugins"
-  "heroku plugins:install sudo"
   "heroku redis:info --app status-ui"
   "heroku regions"
   "heroku releases --app heroku-cli-test-staging"
@@ -59,6 +58,9 @@ declare -a COMMANDS=(
 #  "heroku logs --app status-ui"
 #  "heroku config --app status-ui"
 #  "heroku webhooks --app status-ui"
+
+# todo: add this to list once PR approved: https://github.com/heroku/access-requests/pull/8700
+#  "heroku plugins:install sudo"
 
 for cmd in "${COMMANDS[@]}"
 do
