@@ -34,5 +34,6 @@ jobs:
         shell: bash
       - name: set NPM auth for sudo install
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
+      - run: npm whoami
       - name: test release
         run: ./scripts/postrelease/test_release
