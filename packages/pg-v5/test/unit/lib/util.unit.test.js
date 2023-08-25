@@ -36,5 +36,17 @@ describe('util', () => {
       expect(parsed.user).to.equal('user')
       expect(parsed.password).to.equal('pass')
     })
+
+    it('correctly identifies essential plans', () => {
+      const addon = (plan) => ({ plan: { name: plan } })
+      const parsed = (addon) => util.essentialPlan(addon)
+
+      expect(parsed(addon("mini"))).to.equal(true)
+      expect(parsed(addon("basic"))).to.equal(true)
+      expect(parsed(addon("essential-0"))).to.equal(true)
+      expect(parsed(addon("standard-0"))).to.equal(false)
+      expect(parsed(addon("private-0"))).to.equal(false)
+      expect(parsed(addon("shield-0"))).to.equal(false)
+    })
   })
 })
