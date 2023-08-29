@@ -5,6 +5,7 @@
 # pipefail is necessary for "command not found" to throw an error in these tests.
 set -e -o pipefail
 
+# these can be run against local changes by running `USE_BINRUN=1 ./scripts/postrelease/test_release` from repo root
 if [[ -z "$USE_BINRUN" ]]; then
   CMD_BIN="heroku"
 else
