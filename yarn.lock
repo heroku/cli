@@ -834,6 +834,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@heroku-cli/plugin-run@npm:8.1.4":
+  version: 8.1.4
+  resolution: "@heroku-cli/plugin-run@npm:8.1.4"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/command": ^9.0.2
+    "@heroku-cli/notifications": ^1.2.2
+    "@heroku/eventsource": ^1.0.7
+    "@oclif/core": 1.26.2
+    debug: ^4.1.1
+    tslib: ^1
+  checksum: c09956b8160839b2a442b593235637f02b49d88fe32164aab5db89e112a9b3144f8e70832053ad1d90c57bb63bc2eb1c09b052c86a69c8ad9e6a4d39175851a5
+  languageName: node
+  linkType: hard
+
 "@heroku-cli/plugin-spaces@^8.4.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
@@ -2341,7 +2356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
+"@oclif/core@npm:1.26.2, @oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
   version: 1.26.2
   resolution: "@oclif/core@npm:1.26.2"
   dependencies:
@@ -9251,6 +9266,7 @@ __metadata:
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
     "@heroku-cli/plugin-redis-v5": ^8.2.0
+    "@heroku-cli/plugin-run": 8.1.4
     "@heroku-cli/plugin-spaces": ^8.4.0
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
