@@ -34,4 +34,22 @@ describe('run/index', () => {
       })
       .it('throws an error')
   })
+
+  describe('passes through additional options', async () => {
+    let dynoOpts: { command: any }
+    test
+      .nock('https://api.heroku.com', api => {
+        api.get('/account')
+          .reply(200, {})
+      })
+      .stub(Dyno.prototype, 'start', sinon.stub().callsFake(function () {
+        // @ts-ignore
+        dynoOpts = this.opts
+        return Promise.resolve()
+      }))
+      .command(['run', 'bash', '--app=heroku-cli-ci-smoke-test-app', '--', '--writable'])
+      .it('throws an error', () => {
+        expect(dynoOpts.command).to.equal('bash --writable')
+      })
+  })
 })
