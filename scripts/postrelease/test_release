@@ -11,13 +11,14 @@ declare -a COMMANDS=(
   "heroku access --app particleboard-staging"
   "heroku addons --app status-ui"
   "heroku apps -p"
+  "heroku apps -t heroku-front-end"
   "heroku apps:info --app heroku-cli-test-staging"
   "heroku auth:2fa"
   "heroku auth:whoami"
   "heroku authorizations"
   "heroku autocomplete"
   "heroku buildpacks:search ruby"
-  "heroku certs --app status-ui"
+  "heroku certs --app particleboard-staging"
   "heroku ci --app particleboard-staging"
   "heroku ci --pipeline status-ui"
   "heroku ci:config --pipeline status-ui"
@@ -37,10 +38,11 @@ declare -a COMMANDS=(
   "heroku members --team heroku-front-end"
   "heroku notifications"
   "heroku orgs"
-  "heroku pg:backups --app status-ui"
+  "heroku pg:backups --app particleboard-staging"
   "heroku pipelines"
-  "heroku plugins"
+  "heroku plugins:install api"
   "heroku plugins:install sudo"
+  "heroku plugins"
   "heroku redis:info --app status-ui"
   "heroku regions"
   "heroku releases --app heroku-cli-test-staging"
@@ -53,9 +55,10 @@ declare -a COMMANDS=(
   "heroku -v"
   "heroku which authorizations"
 )
-
-# todo: find a way to test these with automation. They require 2fa or a browser for login
+# todo: how to test this?
 #  "heroku login"
+
+# todo: find a way to test commands that require 2fa
 #  "heroku logs --app status-ui"
 #  "heroku config --app status-ui"
 #  "heroku webhooks --app status-ui"
