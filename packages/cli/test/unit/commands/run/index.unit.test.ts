@@ -47,9 +47,9 @@ describe('run/index', () => {
         dynoOpts = this.opts
         return Promise.resolve()
       }))
-      .command(['run', 'bash', '--app=heroku-cli-ci-smoke-test-app', '--', '--writable'])
+      .command(['run', 'bash', '--app=heroku-cli-ci-smoke-test-app', '--', '--additional-option'])
       .it('throws an error', () => {
-        expect(dynoOpts.command).to.equal('bash --writable')
+        expect(dynoOpts.command).to.equal('bash --additional-option')
       })
   })
 })
