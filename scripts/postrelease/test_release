@@ -51,7 +51,7 @@ declare -a COMMANDS=(
   "$CMD_BIN plugins:install api"
   "$CMD_BIN plugins:install sudo"
   "$CMD_BIN plugins"
-  "$CMD_BIN redis:info --app status-ui"
+  "$CMD_BIN redis:info --app particleboard-staging"
   "$CMD_BIN regions"
   "$CMD_BIN releases --app heroku-cli-test-staging"
   "$CMD_BIN run ls -a heroku-cli-test-staging -- --color"
