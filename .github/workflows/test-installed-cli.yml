@@ -22,6 +22,10 @@ jobs:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
       - name: install dependencies
         run: |
           sudo apt-get update
@@ -32,7 +36,7 @@ jobs:
       - name: updating to heroku version ${{ inputs.version }}
         run: heroku update --version=${{ inputs.version }}
         shell: bash
-      - name: set NPM auth for sudo install
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmr
       - name: test release
         run: ./scripts/postrelease/test_release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}
