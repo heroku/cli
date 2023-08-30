@@ -35,7 +35,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v8.1.4/src/commands/run/index.ts)_
+_See code: [@heroku-cli/plugin-run](https://www.npmjs.com/package/@heroku-cli/plugin-run#user-content-heroku-run)_
 
 ## `heroku run:detached`
 
@@ -60,4 +60,4 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v8.1.4/src/commands/run/detached.ts)_
+_See code: [@heroku-cli/plugin-run](https://www.npmjs.com/package/@heroku-cli/plugin-run#user-content-heroku-rundetached)_
