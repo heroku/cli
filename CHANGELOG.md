@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.4.2-beta.1](https://github.com/heroku/cli/compare/v8.4.2-beta.0...v8.4.2-beta.1) (2023-08-30)
+
+
+### Bug Fixes
+
+* re-implment run commands using @oclif/core v1 dependencies. ([1e205be](https://github.com/heroku/cli/commit/1e205be1e0a4f77fd34688afdc200c6e3cfb3b69))
+
+
+
+
+
 ## [8.4.2-beta.0](https://github.com/heroku/cli/compare/v8.4.1...v8.4.2-beta.0) (2023-08-30)
 
 
