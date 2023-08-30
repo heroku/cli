@@ -8,6 +8,7 @@
   "dependencies": {
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^10.0.0",
+    "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku-cli/plugin-addons-v5": "^8.4.0",
     "@heroku-cli/plugin-apps-v5": "^8.4.0",
@@ -25,6 +26,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
     "@oclif/core": "^2.8.11",
+    "@oclif/core-v1": "npm:@oclif/core@^1.26.2",
     "@oclif/plugin-commands": "2.2.2",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-legacy": "^1.3.0",
@@ -151,7 +153,6 @@
       "@heroku-cli/plugin-pg-v5",
       "@heroku-cli/plugin-ps-exec",
       "@heroku-cli/plugin-redis-v5",
-      "@heroku-cli/plugin-run",
       "@heroku-cli/plugin-spaces",
       "@oclif/plugin-commands",
       "@oclif/plugin-help",
