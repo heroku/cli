@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.4.1](https://github.com/heroku/cli/compare/v8.4.0...v8.4.1) (2023-08-29)
+
+
+### Bug Fixes
+
+* **pg-v5:** update rules for essentialPlan ([#2455](https://github.com/heroku/cli/issues/2455)) ([b6eb41d](https://github.com/heroku/cli/commit/b6eb41da6ef9722fd68e115fc3dfaaaeb98aa34c))
+
+
+
+
+
 # [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
 
 
