@@ -41,14 +41,12 @@ globalTelemetry.initializeInstrumentation()
 
 const oclif = require('@oclif/core')
 
-oclif.run()
-  .then(require('@oclif/core/flush'))
-  .catch(async error => {
-    // capture any errors raised by oclif
-    const cliError = error
-    cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-    await globalTelemetry.sendTelemetry(cliError)
+oclif.run().then(require('@oclif/core/flush')).catch(async error => {
+  // capture any errors raised by oclif
+  const cliError = error
+  cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+  await globalTelemetry.sendTelemetry(cliError)
 
-    return require('@oclif/core/handle')(error)
-  })
+  return require('@oclif/core/handle')(error)
+})
 
