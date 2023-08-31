@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.4.2](https://github.com/heroku/cli/compare/v8.4.1...v8.4.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* **run:** downgrade @heroku-cli/plugins-run to @oclif/core v1 ([#2460](https://github.com/heroku/cli/issues/2460)) ([7666459](https://github.com/heroku/cli/commit/76664592e108babd934e1d15c9481009f4fb422f))
+* **run:** move commands back into CLI & use @oclif/core v1 ([#2463](https://github.com/heroku/cli/issues/2463)) ([d072a64](https://github.com/heroku/cli/commit/d072a647d506026a541b16f8d311f9c7c59c582f)), closes [#2460](https://github.com/heroku/cli/issues/2460) [#2460](https://github.com/heroku/cli/issues/2460)
+
+
+
+
+
 ## [8.4.1](https://github.com/heroku/cli/compare/v8.4.0...v8.4.1) (2023-08-29)
 
 **Note:** Version bump only for package heroku
