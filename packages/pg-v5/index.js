@@ -44,6 +44,7 @@ exports.commands = flatten([
   require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),
+  require('./commands/relocate_heroku_ext_extensions'),
   require('./commands/repoint'),
   require('./commands/reset'),
   require('./commands/settings'),
