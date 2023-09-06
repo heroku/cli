@@ -46,6 +46,7 @@ oclif.run().then(require('@oclif/core/flush')).catch(async error => {
   const cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(cliError)
-  console.log(`Error: ${error.message}`)
+
+  return require('@oclif/core/handle')(error)
 })
 

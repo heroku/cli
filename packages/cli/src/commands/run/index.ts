@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command-v9'
-import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
+import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command-v9/lib/completions'
 import {CliUx} from '@oclif/core-v1'
 import '@oclif/core-v1/lib/parser'
 import debugFactory from 'debug'
