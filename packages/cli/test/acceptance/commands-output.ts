@@ -194,6 +194,7 @@ export default `\u001B[1m Command                                        Summary
  pg:psql                                        open a psql shell to the database                                                                                                                       
  pg:pull                                        pull Heroku database into local or remote database                                                                                                      
  pg:push                                        push local or remote into Heroku database                                                                                                               
+ pg:relocate-heroku-ext-extensions              Migrate extensions out of the heroku_ext schema and into the public schema.                                                                             
  pg:reset                                       delete all data in DATABASE                                                                                                                             
  pg:settings                                    show your current database settings                                                                                                                     
  pg:settings:auto-explain                       Automatically log execution plans of queries without running EXPLAIN by hand.                                                                           
