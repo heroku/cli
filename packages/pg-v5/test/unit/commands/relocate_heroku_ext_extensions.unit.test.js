@@ -36,7 +36,7 @@ describe('pg:relocate-heroku-ext-extensions', () => {
   it('sends api request to control plane', () => {
     let message = `Extensions on ${db.name} are being migrated from 'heroku_ext' to 'public'. This operation may take a few minutes.`
 
-    pg.get(`/client/v11/databases/${db.name}/migrate_extensions_to_public_schema`).reply(200,
+    pg.post(`/client/v11/databases/${db.name}/migrate_extensions_to_public_schema`).reply(200,
       {message: message})
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
