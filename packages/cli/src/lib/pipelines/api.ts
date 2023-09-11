@@ -53,6 +53,13 @@ export function findPipelineByName(heroku: APIClient, idOrName: string) {
   })
 }
 
+export function getConfigVars(heroku: APIClient, pipelineID: string) {
+  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
+    method: 'GET',
+    headers: {Accept: PIPELINES_HEADER},
+  })
+}
+
 export function getCoupling(heroku: APIClient, app: string) {
   return heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
 }
