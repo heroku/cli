@@ -28,7 +28,7 @@ jobs:
           path: /home/runner/work/cli/cli/packages/cli/dist
 
   pack_tarballs:
-    runs-on: ubuntu-latest
+    runs-on: pub-hk-ubuntu-22.04-2xlarge
     steps:
       - uses: actions/checkout@v3
       - name: Install system deps

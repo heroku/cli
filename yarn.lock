@@ -455,6 +455,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku-cli/command-v9@npm:@heroku-cli/command@^9.0.2, @heroku-cli/command@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "@heroku-cli/command@npm:9.0.2"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@oclif/core": ^1.26.2
+    cli-ux: ^6.0.9
+    debug: ^4.1.1
+    fs-extra: ^7.0.1
+    heroku-client: ^3.1.0
+    http-call: ^5.2.4
+    netrc-parser: ^3.1.6
+    open: ^6.2.0
+    uuid: ^8.3.0
+  checksum: bbe4933dd94517491f34cd24ba762ed75e7ce5b3ec615047fd8287c58b2ef029b6599c252c6b6f739554f329d160a6c5e8634b58206818ff332a668eb257fae4
+  languageName: node
+  linkType: hard
+
 "@heroku-cli/command@npm:^10.0.0":
   version: 10.0.0
   resolution: "@heroku-cli/command@npm:10.0.0"
@@ -491,24 +509,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@heroku-cli/command@npm:9.0.2"
-  dependencies:
-    "@heroku-cli/color": ^1.1.14
-    "@oclif/core": ^1.26.2
-    cli-ux: ^6.0.9
-    debug: ^4.1.1
-    fs-extra: ^7.0.1
-    heroku-client: ^3.1.0
-    http-call: ^5.2.4
-    netrc-parser: ^3.1.6
-    open: ^6.2.0
-    uuid: ^8.3.0
-  checksum: bbe4933dd94517491f34cd24ba762ed75e7ce5b3ec615047fd8287c58b2ef029b6599c252c6b6f739554f329d160a6c5e8634b58206818ff332a668eb257fae4
-  languageName: node
-  linkType: hard
-
 "@heroku-cli/heroku-exec-util@npm:0.7.6":
   version: 0.7.6
   resolution: "@heroku-cli/heroku-exec-util@npm:0.7.6"
@@ -535,7 +535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.2.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@^8.4.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -572,7 +572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.2.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.4.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -730,7 +730,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.2.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^8.4.2, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -834,7 +834,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-spaces@^8.2.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
+"@heroku-cli/plugin-run@npm:8.1.4":
+  version: 8.1.4
+  resolution: "@heroku-cli/plugin-run@npm:8.1.4"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/command": ^9.0.2
+    "@heroku-cli/notifications": ^1.2.2
+    "@heroku/eventsource": ^1.0.7
+    "@oclif/core": 1.26.2
+    debug: ^4.1.1
+    tslib: ^1
+  checksum: c09956b8160839b2a442b593235637f02b49d88fe32164aab5db89e112a9b3144f8e70832053ad1d90c57bb63bc2eb1c09b052c86a69c8ad9e6a4d39175851a5
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-spaces@^8.4.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
   dependencies:
@@ -2341,7 +2356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
+"@oclif/core-v1@npm:@oclif/core@^1.26.2, @oclif/core@npm:1.26.2, @oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
   version: 1.26.2
   resolution: "@oclif/core@npm:1.26.2"
   dependencies:
@@ -9240,22 +9255,25 @@ __metadata:
   dependencies:
     "@heroku-cli/color": 1.1.14
     "@heroku-cli/command": ^10.0.0
+    "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
-    "@heroku-cli/plugin-addons-v5": ^8.2.0
-    "@heroku-cli/plugin-apps-v5": ^8.2.0
+    "@heroku-cli/plugin-addons-v5": ^8.4.0
+    "@heroku-cli/plugin-apps-v5": ^8.4.0
     "@heroku-cli/plugin-certs-v5": ^8.2.0
     "@heroku-cli/plugin-ci-v5": ^8.2.0
     "@heroku-cli/plugin-container-registry-v5": ^8.2.0
     "@heroku-cli/plugin-orgs-v5": ^8.2.0
-    "@heroku-cli/plugin-pg-v5": ^8.2.0
+    "@heroku-cli/plugin-pg-v5": ^8.4.2
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
     "@heroku-cli/plugin-redis-v5": ^8.2.0
-    "@heroku-cli/plugin-spaces": ^8.2.0
+    "@heroku-cli/plugin-run": 8.1.4
+    "@heroku-cli/plugin-spaces": ^8.4.0
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
     "@oclif/core": ^2.8.11
+    "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-help": ^5
     "@oclif/plugin-legacy": ^1.3.0

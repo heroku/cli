@@ -56,15 +56,16 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members
+* [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
-* [`heroku pipelines`](docs/pipelines.md) - list pipelines you have access to
+* [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
-* [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
-* [`heroku reviewapps`](docs/reviewapps.md) - disable review apps and/or settings on an existing pipeline
+* [`heroku releases`](docs/releases.md) - display the releases for an app
+* [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces

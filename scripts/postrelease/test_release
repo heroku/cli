@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# NOTE: this will test whatever version is installed locally. Install what you want first.
+
+# pipefail is necessary for "command not found" to throw an error in these tests.
+set -e -o pipefail
+
+# these can be run against local changes by running `USE_BINRUN=1 ./scripts/postrelease/test_release` from repo root
+if [[ -z "$USE_BINRUN" ]]; then
+  CMD_BIN="heroku"
+else
+  CMD_BIN="./bin/run"
+  yarn
+  yarn build
+fi
+
+declare -a COMMANDS=(
+  "$CMD_BIN"
+  "$CMD_BIN whoami"
+  "$CMD_BIN access --app particleboard-staging"
+  "$CMD_BIN addons --app status-ui"
+  "$CMD_BIN apps -p"
+  "$CMD_BIN apps -t heroku-front-end"
+  "$CMD_BIN apps:info --app heroku-cli-test-staging"
+  "$CMD_BIN auth:2fa"
+  "$CMD_BIN auth:whoami"
+  "$CMD_BIN authorizations"
+  "$CMD_BIN autocomplete"
+  "$CMD_BIN buildpacks:search ruby"
+  "$CMD_BIN certs --app particleboard-staging"
+  "$CMD_BIN ci --app particleboard-staging"
+  "$CMD_BIN ci --pipeline status-ui"
+  "$CMD_BIN ci:config --pipeline status-ui"
+  "$CMD_BIN clients"
+  "$CMD_BIN commands"
+  "$CMD_BIN domains --app status-ui"
+  "$CMD_BIN drains --app heroku-cli-test-staging"
+  "$CMD_BIN features --app heroku-cli-test-staging"
+  "rm -rf ~/status-ui && $CMD_BIN git:clone ~/status-ui --app status-ui && rm -rf ~/status-ui" # `rm` used so it will always run locally
+  "$CMD_BIN help"
+  "$CMD_BIN --help"
+  "$CMD_BIN -h"
+  "$CMD_BIN keys"
+  "$CMD_BIN labs"
+  "$CMD_BIN local:version"
+  "$CMD_BIN maintenance --app heroku-cli-test-staging"
+  "$CMD_BIN members --team heroku-front-end"
+  "$CMD_BIN notifications"
+  "$CMD_BIN orgs"
+  "$CMD_BIN pg:backups --app particleboard-staging"
+  "$CMD_BIN pipelines"
+  "$CMD_BIN plugins:install api"
+  "$CMD_BIN plugins:install sudo"
+  "$CMD_BIN plugins"
+  "$CMD_BIN redis:info --app particleboard-staging"
+  "$CMD_BIN regions"
+  "$CMD_BIN releases --app heroku-cli-test-staging"
+  "$CMD_BIN run ls -a heroku-cli-test-staging -- --color"
+  "$CMD_BIN run -x -a heroku-cli-test-staging -- 'bash -c \"exit 2\"'"
+  "$CMD_BIN run:detached \"echo 'Hello World'\" -a heroku-cli-test-staging"
+  "$CMD_BIN sessions"
+  "$CMD_BIN spaces"
+  "$CMD_BIN status"
+  "$CMD_BIN teams"
+  "$CMD_BIN version"
+  "$CMD_BIN --version"
+  "$CMD_BIN -v"
+  "$CMD_BIN which authorizations"
+)
+# todo: how to test this?
+#  "$CMD_BIN login"
+
+# todo: find a way to test commands that require 2fa
+#  "$CMD_BIN logs --app status-ui"
+#  "$CMD_BIN config --app status-ui"
+#  "$CMD_BIN webhooks --app status-ui"
+
+for cmd in "${COMMANDS[@]}"
+do
+  echo -e "\n\n\nRUNNING: $cmd"
+  eval "$cmd"
+
+done
