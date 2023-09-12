@@ -1,7 +1,7 @@
 const cli = require('heroku-cli-util')
-const api = require('../../lib/heroku-api')
-const Utils = require('../../lib/utils')
-const PipelineCompletion = require('../../lib/completions')
+const api = require('@heroku-cli/plugin-ci-v5/lib/heroku-api')
+const Utils = require('@heroku-cli/plugin-ci-v5/lib/utils')
+const PipelineCompletion = require('@heroku-cli/plugin-ci-v5/lib/completions')
 
 function validateArgs(args) {
   if (args.length === 0) {
