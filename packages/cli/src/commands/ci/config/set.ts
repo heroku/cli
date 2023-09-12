@@ -1,67 +1,68 @@
-const cli = require('heroku-cli-util')
-const api = require('@heroku-cli/plugin-ci-v5/lib/heroku-api')
-const Utils = require('@heroku-cli/plugin-ci-v5/lib/utils')
-const PipelineCompletion = require('@heroku-cli/plugin-ci-v5/lib/completions')
+import {ux} from '@oclif/core'
+import {ParserOutput} from '@oclif/core/lib/interfaces/parser'
+import {getPipeline} from '../../../lib/ci/pipelines'
+import {Command, flags} from '@heroku-cli/command'
+import {setConfigVars} from '../../../lib/pipelines/api'
+import color from '@heroku-cli/color'
 
-function validateArgs(args) {
-  if (args.length === 0) {
-    cli.exit(1, 'Usage: heroku ci:config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
-  }
-}
-
-function validateInput(str) {
+function validateInput(str: string) {
   if (!str.includes('=')) {
-    cli.exit(1, `${cli.color.cyan(str)} is invalid. Must be in the format ${cli.color.cyan('FOO=bar')}.`)
+    ux.error(`${color.cyan(str)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
   }
 
   return true
 }
 
-async function run(context, heroku) {
-  validateArgs(context.args)
-
-  const vars = context.args.reduce((memo, str) => {
-    validateInput(str)
-    const [key, value] = str.split('=')
-    memo[key] = value
-    return memo
-  }, {})
-
-  const pipeline = await Utils.getPipeline(context, heroku)
-
-  await cli.action(
-    `Setting ${Object.keys(vars).join(', ')}`,
-    api.setConfigVars(heroku, pipeline.id, vars),
-  )
-
-  cli.styledObject(Object.keys(vars).reduce((memo, key) => {
-    memo[cli.color.green(key)] = vars[key]
-    return memo
-  }, {}))
+function validateArgs(argv: ParserOutput['argv']) {
+  if (argv.length === 0) {
+    ux.error('Usage: heroku ci:config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.', {exit: 1})
+  }
 }
 
-module.exports = {
-  topic: 'ci',
-  command: 'config:set',
-  wantsApp: true,
-  needsAuth: true,
-  variableArgs: true,
-  description: 'set CI config vars',
-  flags: [
-    {
-      name: 'pipeline',
-      char: 'p',
-      hasValue: true,
-      description: 'pipeline',
-      completion: PipelineCompletion,
-    },
-  ],
-  help: `Examples:
+export default class CiConfigSet extends Command {
+  static description = 'set CI config vars'
 
-    $ heroku ci:config:set RAILS_ENV=test
+  static topic = 'ci'
+
+  static examples = [
+    `$ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
     Setting test config vars... done
 
-    RAILS_ENV: test
-`,
-  run: cli.command(run),
+    RAILS_ENV: test`,
+  ]
+
+  static flags = {
+    app: flags.app(),
+    pipeline: flags.pipeline({required: true}),
+  }
+
+  static strict = false
+
+  async run() {
+    const {argv, flags} = await this.parse(CiConfigSet)
+    validateArgs(argv)
+
+    const vars: Record<string, string> = {}
+
+    for (const str of argv) {
+      const iAmStr: string = str as string
+      validateInput(iAmStr)
+      const [key, value] = iAmStr.split('=')
+      vars[key] = value
+    }
+
+    const pipeline = await getPipeline(flags, this)
+
+    ux.action.start(`Setting ${Object.keys(vars).join(', ')}`)
+    await setConfigVars(this.heroku, pipeline.id, vars)
+    ux.action.stop()
+
+    ux.styledObject(
+      Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
+        memo[color.green(key)] = vars[key]
+        return memo
+      }, {}),
+    )
+  }
 }
+

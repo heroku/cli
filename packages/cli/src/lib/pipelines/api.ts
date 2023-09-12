@@ -60,6 +60,15 @@ export function getConfigVars(heroku: APIClient, pipelineID: string) {
   })
 }
 
+export function setConfigVars(heroku: APIClient, pipelineID: string, body: Heroku.ConfigVars) {
+  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
+    method: 'PATCH',
+    headers: {Accept: PIPELINES_HEADER},
+    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
+    body,
+  })
+}
+
 export function getCoupling(heroku: APIClient, app: string) {
   return heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
 }
