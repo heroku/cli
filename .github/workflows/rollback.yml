@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version-to-roll-back:
-        description: version that needs to be rolled back
+        description: version number that needs to be rolled back (format x.x.x)
         type: string
         required: true
 
@@ -67,6 +67,16 @@ jobs:
           npm deprecate heroku@${{ inputs.version-to-roll-back }} "Version is deprecated due to problems with the release"
 
   rollback-brew:
-    needs: determine-target-tag
     name: Rollback brew release
-    runs-on: ubuntu-latest
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    environment: ReleaseHomebrew
+    steps:
+      - name: yarn install
+        if: ${{ !contains(github.ref_name, 'beta') }}
+        run: yarn --immutable --network-timeout 1000000
+      - name: rollback homebrew
+        if: ${{ !contains(github.ref_name, 'beta') }}
+        run: ./scripts/rollback/homebrew.js
+    env:
+      ROLLBACK_VERSION: ${{ inputs.version-to-roll-back }}
