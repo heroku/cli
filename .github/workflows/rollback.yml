@@ -16,6 +16,9 @@ jobs:
       targetTag: ${{ github.ref_name }}
       isStableRelease: ${{ steps.isStableRelease.outputs.isStableRelease }}
     steps:
+      - name: is input a tag
+        if: github.ref_type != 'tag'
+        run: exit 1
       - name: Get target version
         id: isStableRelease
         shell: bash
@@ -68,15 +71,15 @@ jobs:
 
   rollback-brew:
     name: Rollback brew release
+    needs: determine-target-tag
+    if: needs.determine-target-tag.outputs.isStableRelease
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     environment: ReleaseHomebrew
     steps:
       - name: yarn install
-        if: ${{ !contains(github.ref_name, 'beta') }}
         run: yarn --immutable --network-timeout 1000000
       - name: rollback homebrew
-        if: ${{ !contains(github.ref_name, 'beta') }}
         run: ./scripts/rollback/homebrew.js
     env:
       ROLLBACK_VERSION: ${{ inputs.version-to-roll-back }}
