@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.4.3](https://github.com/heroku/cli/compare/v8.4.2...v8.4.3) (2023-09-18)
+
+
+### Bug Fixes
+
+* correctly handling CLI errors again. ([#2467](https://github.com/heroku/cli/issues/2467)) ([e8f3f5f](https://github.com/heroku/cli/commit/e8f3f5f5b9ae785389f10f88f84f72007a2a5782))
+
+
+
+
+
 ## [8.4.2](https://github.com/heroku/cli/compare/v8.4.1...v8.4.2) (2023-08-30)
 
 
