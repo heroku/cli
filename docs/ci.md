@@ -67,23 +67,21 @@ get a CI config var
 
 ```
 USAGE
-  $ heroku ci:config:get KEY [-h] [-a <value>] [-p <value>] [-s]
+  $ heroku ci:config:get KEY [-s] [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -h, --help              Show CLI help.
-  -p, --pipeline=<value>  name of pipeline
+  -p, --pipeline=<value>  pipeline
+  -r, --remote=<value>    git remote of app to use
   -s, --shell             output config var in shell format
 
 DESCRIPTION
   get a CI config var
+  Examples:
 
-EXAMPLES
-  $ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV
-      test
+  $ heroku ci:config:get RAILS_ENV
+  test
 ```
-
-_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/config/get.ts)_
 
 ## `heroku ci:config:set`
 
@@ -91,22 +89,22 @@ set CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:set -p <value> [-a <value>]
+  $ heroku ci:config:set [-p <value>] [-a <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  (required) name of pipeline
+  -p, --pipeline=<value>  pipeline
+  -r, --remote=<value>    git remote of app to use
 
 DESCRIPTION
   set CI config vars
+  Examples:
 
-EXAMPLES
-  $ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
-      Setting test config vars... done
-      RAILS_ENV: test
+  $ heroku ci:config:set RAILS_ENV=test
+  Setting test config vars... done
+
+  RAILS_ENV: test
 ```
-
-_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/config/set.ts)_
 
 ## `heroku ci:config:unset`
 
@@ -176,7 +174,7 @@ EXAMPLES
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.4.4/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -198,7 +196,7 @@ EXAMPLES
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.4.4/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -260,7 +258,7 @@ EXAMPLES
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.4.4/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -281,4 +279,4 @@ EXAMPLES
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.4.4/src/commands/ci/run.ts)_
