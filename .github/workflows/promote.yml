@@ -12,6 +12,13 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        description: If this is a prerelease, is it alpha or beta?
+        type: choice
+        options:
+          - alpha
+          - beta
+        required: false
 
   workflow_dispatch:
     inputs:
@@ -24,6 +31,10 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
 
 jobs:
   promote:
@@ -47,9 +58,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli jq
       - name: promote
+        env:
+          prerelease-channel: ${{ fromJSON(inputs.channel) || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || 'beta' }}
+          yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
