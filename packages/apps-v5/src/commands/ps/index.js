@@ -96,9 +96,10 @@ function printDynos(dynos) {
     let size = dyno.size || '1X'
 
     if (dyno.type === 'run') {
-      let key = 'run: one-off processes'
+      let key = `${cli.color.green('run')}: one-off processes`
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
-      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`)
+      let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state)
+      dynosByCommand[key].push(`${dyno.name} (${cli.color.cyan(size)}): ${state} ${cli.color.dim(since)}: ${dyno.command}`)
     } else {
       let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
