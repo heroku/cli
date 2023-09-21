@@ -8,6 +8,13 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        type: choice
+        description: If this is a prerelease, is it alpha or beta?
+        options:
+          - alpha
+          - beta
+        required: false
   workflow_call:
     inputs:
       isStableRelease:
@@ -15,6 +22,10 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
 
 jobs:
   publish-npm:
@@ -36,6 +47,6 @@ jobs:
           then
             yarn lerna publish --yes from-package
           else
-            yarn lerna publish --dist-tag beta --yes from-package
+            yarn lerna publish --dist-tag ${{ fromJSON(inputs.channel) || 'beta' }} --yes from-package
           fi
         shell: bash
