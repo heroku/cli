@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.4.4-beta.0](https://github.com/heroku/cli/compare/v8.4.3...v8.4.4-beta.0) (2023-09-25)
+
+
+### Features
+
+* **apps-v5:** Use colors when showing run dynos in the ps output ([#2480](https://github.com/heroku/cli/issues/2480)) ([711feef](https://github.com/heroku/cli/commit/711feef617a889166b7cd07f76f6d99c4ef29d35))
+
+
+
+
+
 # [8.4.0](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0) (2023-08-23)
 
 
