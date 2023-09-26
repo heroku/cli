@@ -6,7 +6,7 @@ import {isUUID} from 'validator'
 import {
   findPipelineByName,
   getPipeline,
-} from './api'
+} from '../api'
 
 export default async function disambiguate(heroku: APIClient, pipelineIDOrName: string): Promise<Heroku.Pipeline> {
   let pipeline: Heroku.Pipeline

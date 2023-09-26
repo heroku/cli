@@ -3,7 +3,7 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import {destroyPipeline} from '../../lib/pipelines/api'
+import {destroyPipeline} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 
 export default class PipelinesDestroy extends Command {
