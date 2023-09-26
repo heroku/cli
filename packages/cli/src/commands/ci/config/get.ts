@@ -1,48 +1,38 @@
-const cli = require('heroku-cli-util')
-const shellescape = require('shell-escape')
-const api = require('../../lib/heroku-api')
-const Utils = require('../../lib/utils')
-const PipelineCompletion = require('../../lib/completions')
+import {Command, flags} from '@heroku-cli/command'
+import {Args, ux} from '@oclif/core'
+import * as shellescape from 'shell-escape'
+import {getConfigVars} from '../../../lib/api'
+import {getPipeline} from '../../../lib/ci/pipelines'
 
-async function run(context, heroku) {
-  const pipeline = await Utils.getPipeline(context, heroku)
-  const config = await api.configVars(heroku, pipeline.id)
-  const value = config[context.args.key]
+export default class CiConfigGet extends Command {
+  static description = 'get a CI config var'
+  static topic = 'ci'
+  static examples = [
+    `$ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV
+    test`,
+  ]
 
-  if (context.flags.shell) {
-    cli.log(`${context.args.key}=${shellescape([value])}`)
-  } else {
-    cli.log(value)
+  static flags = {
+    help: flags.help({char: 'h'}),
+    app: flags.app({required: false}),
+    pipeline: flags.pipeline({required: false}),
+    shell: flags.boolean({char: 's', description: 'output config var in shell format'}),
   }
-}
 
-module.exports = {
-  topic: 'ci',
-  command: 'config:get',
-  wantsApp: true,
-  needsAuth: true,
-  description: 'get a CI config var',
-  help: `Examples:
+  static args = {
+    key: Args.string({required: true}),
+  }
 
-    $ heroku ci:config:get RAILS_ENV
-    test
-`,
-  args: [{
-    name: 'key',
-  }],
-  flags: [
-    {
-      name: 'shell',
-      char: 's',
-      description: 'output config var in shell format',
-    },
-    {
-      name: 'pipeline',
-      char: 'p',
-      hasValue: true,
-      description: 'pipeline',
-      completion: PipelineCompletion,
-    },
-  ],
-  run: cli.command(run),
+  async run() {
+    const {args, flags} = await this.parse(CiConfigGet)
+    const pipeline = await getPipeline(flags, this)
+    const {body: config} = await getConfigVars(this.heroku, pipeline.id)
+    const value = config[args.key]
+
+    if (flags.shell) {
+      ux.log(`${args.key}=${shellescape([value])}`)
+    } else {
+      ux.log((value !== null && value !== undefined) ? value : 'undefined')
+    }
+  }
 }
