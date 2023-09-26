@@ -13,11 +13,8 @@ on:
         required: true
         default: false
       channel:
-        description: If this is a prerelease, is it alpha or beta?
-        type: choice
-        options:
-          - alpha
-          - beta
+        type: string
+        description: Release channel for prereleases
         required: false
 
   workflow_dispatch:
