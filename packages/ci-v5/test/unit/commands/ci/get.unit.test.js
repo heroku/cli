@@ -3,7 +3,7 @@
 const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
-const cmd = require('../../../../commands/ci/config-get')
+const cmd = require('../../../../commands/ci/get')
 const Factory = require('../../lib/factory')
 
 describe('heroku ci:config:get', function () {
