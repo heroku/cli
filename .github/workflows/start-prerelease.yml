@@ -28,7 +28,10 @@ jobs:
         VERSION: ${{ needs.get-version-channel.outputs.version }}
         CURRENT_BRANCH_NAME: $${{ github.ref_name }}
     steps:
-      - run: ./scripts/release/validate-prerelease
+      - uses: actions/checkout@v3
+      - run: |
+          yarn --immutable --network-timeout 1000000
+          ./scripts/release/validate-prerelease
 
   beta-smoke-tests:
     needs: [ get-version-channel, validate-prerelease ]
