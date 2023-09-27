@@ -2,7 +2,7 @@ import {ux} from '@oclif/core'
 import {ParserOutput} from '@oclif/core/lib/interfaces/parser'
 import {getPipeline} from '../../../lib/ci/pipelines'
 import {Command, flags} from '@heroku-cli/command'
-import {setConfigVars} from '../../../lib/api'
+import {setPipelineConfigVars} from '../../../lib/api'
 import color from '@heroku-cli/color'
 
 function validateInput(str: string) {
@@ -53,7 +53,7 @@ export default class CiConfigSet extends Command {
     const pipeline = await getPipeline(flags, this)
 
     ux.action.start(`Setting ${Object.keys(vars).join(', ')}`)
-    await setConfigVars(this.heroku, pipeline.id, vars)
+    await setPipelineConfigVars(this.heroku, pipeline.id, vars)
     ux.action.stop()
 
     ux.styledObject(
