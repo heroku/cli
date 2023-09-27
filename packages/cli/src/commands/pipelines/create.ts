@@ -4,7 +4,7 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, ux} from '@oclif/core'
 import {prompt} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../lib/pipelines/api'
+import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../lib/api'
 import infer from '../../lib/pipelines/infer'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
 

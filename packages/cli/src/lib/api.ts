@@ -136,3 +136,10 @@ export function getReleases(heroku: APIClient, appId: string) {
     partial: true,
   })
 }
+
+export function getPipelineConfigVars(heroku: APIClient, pipelineID: string) {
+  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
+    method: 'GET',
+    headers: {Accept: PIPELINES_HEADER},
+  })
+}
