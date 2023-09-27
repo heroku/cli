@@ -137,18 +137,9 @@ export function getReleases(heroku: APIClient, appId: string) {
   })
 }
 
-export function getConfigVars(heroku: APIClient, pipelineID: string) {
+export function getPipelineConfigVars(heroku: APIClient, pipelineID: string) {
   return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
     method: 'GET',
     headers: {Accept: PIPELINES_HEADER},
-  })
-}
-
-export function setConfigVars(heroku: APIClient, pipelineID: string, body: Heroku.ConfigVars) {
-  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
-    method: 'PATCH',
-    headers: {Accept: PIPELINES_HEADER},
-    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
-    body,
   })
 }
