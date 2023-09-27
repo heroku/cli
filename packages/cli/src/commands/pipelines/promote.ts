@@ -7,7 +7,7 @@ import fetch from 'node-fetch'
 import * as Stream from 'stream'
 import * as util from 'util'
 
-import {listPipelineApps} from '../../lib/pipelines/api'
+import {listPipelineApps} from '../../lib/api'
 import keyBy from '../../lib/pipelines/key-by'
 
 export const sleep  = (time: number) => {

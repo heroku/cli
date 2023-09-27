@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/pipelines/api'
+import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 import renderPipeline from '../../lib/pipelines/render-pipeline'
 

@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import {ux} from '@oclif/core'
 
-import {updateCoupling} from '../../lib/pipelines/api'
+import {updateCoupling} from '../../lib/api'
 
 export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
