@@ -143,12 +143,3 @@ export function getPipelineConfigVars(heroku: APIClient, pipelineID: string) {
     headers: {Accept: PIPELINES_HEADER},
   })
 }
-
-export function setConfigVars(heroku: APIClient, pipelineID: string, body: Heroku.ConfigVars) {
-  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
-    method: 'PATCH',
-    headers: {Accept: PIPELINES_HEADER},
-    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
-    body,
-  })
-}
