@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as shellescape from 'shell-escape'
-import {getConfigVars} from '../../../lib/api'
+import {getPipelineConfigVars} from '../../../lib/api'
 import {getPipeline} from '../../../lib/ci/pipelines'
 
 export default class CiConfigGet extends Command {
@@ -26,7 +26,7 @@ export default class CiConfigGet extends Command {
   async run() {
     const {args, flags} = await this.parse(CiConfigGet)
     const pipeline = await getPipeline(flags, this)
-    const {body: config} = await getConfigVars(this.heroku, pipeline.id)
+    const {body: config} = await getPipelineConfigVars(this.heroku, pipeline.id)
     const value = config[args.key]
 
     if (flags.shell) {
