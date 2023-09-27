@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {updatePipeline} from '../../lib/pipelines/api'
+import {updatePipeline} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 
 export default class PipelinesRename extends Command {
