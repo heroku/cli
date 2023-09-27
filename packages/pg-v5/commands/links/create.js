@@ -25,7 +25,7 @@ async function run(context, heroku) {
         target: target.name,
         as: flags.as,
       },
-      host: host(db),
+      host: host(),
     })
     if (link.message) throw new Error(link.message)
     cli.action.done(`done, ${cli.color.cyan(link.name)}`)

@@ -16,7 +16,7 @@ async function run(context, heroku) {
       if (!appInfo.maintenance) throw new Error('Application must be in maintenance mode or run with --force')
     }
 
-    let response = await heroku.post(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
+    let response = await heroku.post(`/client/v11/databases/${db.id}/maintenance`, {host: host()})
     cli.action.done(response.message || 'done')
   })())
 }

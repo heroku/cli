@@ -50,7 +50,7 @@ async function run(context, heroku) {
   await cli.confirmApp(app, flags.confirm, `WARNING: Destructive Action
 ${warnings.join('\n')}`)
 
-  let body = flags.force ? {host: host(db), forced: true} : {host: host(db)}
+  let body = flags.force ? {host: host(), forced: true} : {host: host()}
   if (all) {
     await cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, (async function () {
       await heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,

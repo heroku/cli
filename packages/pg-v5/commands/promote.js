@@ -51,7 +51,7 @@ async function run(context, heroku) {
 
   if (!force) {
     let status = await heroku.request({
-      host: host(attachment.addon),
+      host: host(),
       path: `/client/v11/databases/${attachment.addon.id}/wait_status`,
     })
 
@@ -99,7 +99,7 @@ async function run(context, heroku) {
   }
 
   let promotedDatabaseDetails = await heroku.request({
-    host: host(attachment.addon),
+    host: host(),
     path: `/client/v11/databases/${attachment.addon.id}`,
   })
 

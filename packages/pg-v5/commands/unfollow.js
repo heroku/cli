@@ -9,7 +9,7 @@ async function run(context, heroku) {
   let {app, args, flags} = context
   let db = await fetcher.addon(app, args.database)
 
-  let replica = await heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)})
+  let replica = await heroku.get(`/client/v11/databases/${db.id}`, {host: host()})
 
   if (!replica.following) throw new Error(`${cli.color.addon(db.name)} is not a follower`)
 
@@ -19,7 +19,7 @@ ${cli.color.addon(db.name)} will become writeable and no longer follow ${origin}
 `)
 
   await cli.action(`${cli.color.addon(db.name)} unfollowing`, (async function () {
-    await heroku.put(`/client/v11/databases/${db.id}/unfollow`, {host: host(db)})
+    await heroku.put(`/client/v11/databases/${db.id}/unfollow`, {host: host()})
   })())
 }
 

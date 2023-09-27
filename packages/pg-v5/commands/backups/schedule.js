@@ -40,7 +40,7 @@ async function run(context, heroku) {
   let at = cli.color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
 
   let dbInfo = await heroku.request({
-    host: host(db),
+    host: host(),
     method: 'get',
     path: `/client/v11/databases/${db.id}`,
   }).catch(error => {
@@ -62,7 +62,7 @@ async function run(context, heroku) {
 
     await heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
       body: schedule,
-      host: host(db),
+      host: host(),
     })
   })())
 }

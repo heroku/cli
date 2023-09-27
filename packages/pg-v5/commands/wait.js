@@ -24,7 +24,7 @@ async function run(context, heroku) {
     while (true) {
       try {
         status = await heroku.request({
-          host: host(db),
+          host: host(),
           path: `/client/v11/databases/${db.id}/wait_status`,
         })
       } catch (error) {

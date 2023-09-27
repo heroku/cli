@@ -12,8 +12,8 @@ async function run(context, heroku) {
   if (util.essentialPlan(db)) throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
 
   let [replica, status] = await Promise.all([
-    heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)}),
-    heroku.get(`/client/v11/databases/${db.id}/upgrade_status`, {host: host(db)}),
+    heroku.get(`/client/v11/databases/${db.id}`, {host: host()}),
+    heroku.get(`/client/v11/databases/${db.id}/upgrade_status`, {host: host()}),
   ])
 
   if (status.error) throw new Error(status.error)
@@ -32,7 +32,7 @@ This cannot be undone.`)
   let data = {version: flags.version}
 
   await cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, (async function () {
-    await heroku.post(`/client/v11/databases/${db.id}/upgrade`, {host: host(db), body: data})
+    await heroku.post(`/client/v11/databases/${db.id}/upgrade`, {host: host(), body: data})
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
   })())
 }

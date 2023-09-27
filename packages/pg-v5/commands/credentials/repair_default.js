@@ -18,7 +18,7 @@ This command will also grant the default credential admin option for all additio
 `)
 
   await cli.action('Resetting permissions and object ownership for default role to factory settings', (async function () {
-    await heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {host: host(db)})
+    await heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {host: host()})
   })())
 }
 

@@ -8,7 +8,7 @@ async function run(context, heroku) {
   const {app} = context
 
   let db = await fetcher.arbitraryAppDB(app)
-  let schedules = await heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, {host: host(db)})
+  let schedules = await heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, {host: host()})
 
   if (schedules.length === 0) {
     cli.warn(`No backup schedules found on ${cli.color.app(app)}

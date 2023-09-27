@@ -17,7 +17,7 @@ async function run(context, heroku) {
     `Enabling Connection Pooling on ${cli.color.addon(addon.name)} to ${cli.color.app(app)}`,
     heroku.post(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
       body: {name: flags.as, credential: 'default', app: app},
-      host: host(db),
+      host: host(),
     }),
   )
 

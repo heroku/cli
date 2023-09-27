@@ -10,7 +10,7 @@ async function run(context, heroku) {
   const db = await fetcher.addon(app, args.database)
 
   if (util.essentialPlan(db)) throw new Error('pg:maintenance is only available for production databases')
-  let info = await heroku.get(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
+  let info = await heroku.get(`/client/v11/databases/${db.id}/maintenance`, {host: host()})
   cli.log(info.message)
 }
 

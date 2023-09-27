@@ -62,7 +62,7 @@ async function run(context, heroku) {
   await cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, (async function () {
     restore = await heroku.post(`/client/v11/databases/${db.id}/restores`, {
       body: {backup_url: backupURL, extensions: extensions},
-      host: host(db),
+      host: host(),
     })
   })())
   cli.log(`

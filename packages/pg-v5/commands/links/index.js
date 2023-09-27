@@ -14,7 +14,7 @@ async function run(context, heroku) {
   if (dbs.length === 0) throw new Error(`No databases on ${cli.color.app(app)}`)
 
   dbs = await Promise.all(dbs.map(async db => {
-    db.links = await heroku.get(`/client/v11/databases/${db.id}/links`, {host: host(db)})
+    db.links = await heroku.get(`/client/v11/databases/${db.id}/links`, {host: host()})
     return db
   }))
 

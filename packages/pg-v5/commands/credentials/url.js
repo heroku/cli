@@ -17,7 +17,7 @@ async function run(context, heroku) {
   }
 
   let credInfo = await heroku.get(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}`,
-    {host: host(db)})
+    {host: host()})
 
   let activeCreds = credInfo.credentials.find(c => c.state === 'active')
   if (!activeCreds) {

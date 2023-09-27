@@ -12,7 +12,7 @@ async function run(context, heroku) {
 
   if (util.essentialPlan(db)) throw new Error('You can’t perform this operation on Essential-tier databases.')
 
-  let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host(db)})
+  let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host()})
   cli.styledHeader(db.name)
   let remapped = Object.keys(settings).reduce((s, key) => {
     s[key.replace(/_/g, '-')] = settings[key].value

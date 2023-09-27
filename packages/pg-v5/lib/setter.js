@@ -39,13 +39,13 @@ exports.generate = (name, convert, explain) => {
     if (util.essentialPlan(db)) throw new Error('You can’t perform this operation on Essential-tier databases.')
 
     if (!value) {
-      let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host(db)})
+      let settings = await heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host()})
       let setting = settings[name]
       cli.log(`${name.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))
     } else {
       let settings = await heroku.patch(`/postgres/v0/databases/${db.id}/config`, {
-        host: host(db),
+        host: host(),
         body: {[name]: convert(value)},
       })
       let setting = settings[name]

@@ -27,7 +27,7 @@ async function run(context, heroku) {
     }
 
     credentials = await heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
-      {host: host(addon)})
+      {host: host()})
     let isDefaultCredential = cred => cred.name !== 'default'
     credentials = sortBy(credentials, isDefaultCredential, 'name')
     attachments = await heroku.get(`/addons/${addon.name}/addon-attachments`)

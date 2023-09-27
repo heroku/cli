@@ -8,7 +8,7 @@ async function run(context, heroku) {
 
   await cli.action('Terminating connections for all credentials', (async function () {
     const db = await fetcher.addon(context.app, context.args.database)
-    await heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host(db)})
+    await heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host()})
   })())
 }
 

@@ -136,7 +136,7 @@ async function fetchConfig(heroku, db) {
   return heroku.get(
     `/client/v11/databases/${encodeURIComponent(db.id)}/bastion`,
     {
-      host: host(db),
+      host: host(),
     },
   )
 }

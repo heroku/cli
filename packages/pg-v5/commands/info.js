@@ -59,7 +59,7 @@ async function run(context, heroku) {
       addon,
       config,
       db: await heroku.request({
-        host: host(addon),
+        host: host(),
         method: 'get',
         path: `/client/v11/databases/${addon.id}`,
       }).catch(error => {

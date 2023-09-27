@@ -22,8 +22,8 @@ async function run(context, heroku) {
     }
 
     if (!util.essentialPlan(db)) {
-      base_params.metrics = await heroku.get(`/client/v11/databases/${db.id}/metrics`, {host: host(db)})
-      let burstData = await heroku.get(`/client/v11/databases/${db.id}/burst_status`, {host: host(db)})
+      base_params.metrics = await heroku.get(`/client/v11/databases/${db.id}/metrics`, {host: host()})
+      let burstData = await heroku.get(`/client/v11/databases/${db.id}/burst_status`, {host: host()})
       if (burstData && Object.keys(burstData).length > 0) {
         base_params.burst_data_present = true
         base_params.burst_status = burstData.burst_status

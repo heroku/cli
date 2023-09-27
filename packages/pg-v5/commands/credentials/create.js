@@ -16,7 +16,7 @@ async function run(context, heroku) {
     name: flags.name,
   }
   await cli.action(`Creating credential ${cli.color.cmd(flags.name)}`, (async function () {
-    await heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {host: host(db), body: data})
+    await heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {host: host(), body: data})
   })())
   let attachCmd = `heroku addons:attach ${db.name} --credential ${flags.name} -a ${app}`
   let psqlCmd = `heroku pg:psql ${db.name} -a ${app}`
