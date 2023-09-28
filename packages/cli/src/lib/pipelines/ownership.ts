@@ -3,7 +3,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import {getTeam} from './api'
+import {getTeam} from '../api'
 
 export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: Heroku.Pipeline, owner: string) {
   const hasMixedOwnership = pipelineApps.some(app => {

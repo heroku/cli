@@ -4,7 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import HTTP from 'http-call'
 
-import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../lib/pipelines/api'
+import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 
 interface AppInfo {

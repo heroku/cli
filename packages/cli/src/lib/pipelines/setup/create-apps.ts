@@ -2,7 +2,7 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import {createAppSetup} from '../api'
+import {createAppSetup} from '../../api'
 
 interface CreateAppOptions {
   archiveURL: string;

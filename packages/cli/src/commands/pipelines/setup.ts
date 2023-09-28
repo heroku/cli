@@ -4,7 +4,7 @@ import {Args, ux} from '@oclif/core'
 import * as open from 'open'
 import Debug from 'debug'
 
-import {createPipeline, getAccountInfo, getTeam} from '../../lib/pipelines/api'
+import {createPipeline, getAccountInfo, getTeam} from '../../lib/api'
 import GitHubAPI from '../../lib/pipelines/github-api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import createApps from '../../lib/pipelines/setup/create-apps'

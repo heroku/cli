@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {getPipeline} from '../../lib/pipelines/api'
+import {getPipeline} from '../../lib/api'
 import GitHubAPI from '../../lib/pipelines/github-api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
