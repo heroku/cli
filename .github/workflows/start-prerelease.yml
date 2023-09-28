@@ -39,7 +39,7 @@ jobs:
     runs-on: pub-hk-ubuntu-22.04-small
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TAG_NAME: v${{ fromJSON(needs.get-version-channel.outputs.version) }}
+      TAG_NAME: ${{ format('v{0}', needs.get-version-channel.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
