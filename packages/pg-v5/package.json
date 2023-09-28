@@ -60,10 +60,9 @@
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "yarn lint",
     "prepack": "oclif manifest",
     "release": "np",
-    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
+    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }
