@@ -56,7 +56,7 @@ jobs:
           sudo apt-get install -y awscli jq
       - name: promote
         env:
-          prerelease-channel: ${{ fromJSON(inputs.channel) || 'beta'}}
+          prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
