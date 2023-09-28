@@ -26,12 +26,18 @@ jobs:
     env:
         CHANNEL: ${{ needs.get-version-channel.outputs.channel }}
         VERSION: ${{ needs.get-version-channel.outputs.version }}
-        CURRENT_BRANCH_NAME: $${{ github.ref_name }}
+        CURRENT_BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          yarn --immutable --network-timeout 1000000
-          ./scripts/release/validate-prerelease
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: set git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "heroku-front-end+npm-releases@salesforce.com"
+      - name: validate prerelease
+        run: ./scripts/release/validate-prerelease
 
   publish-github-tag:
     needs: [ get-version-channel, validate-prerelease ]

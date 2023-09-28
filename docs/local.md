@@ -19,7 +19,7 @@ USAGE
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
-  -p, --port=<value>      port to listen on
+  -p, --port=<value>      [default: 5001] port to listen on
 
 DESCRIPTION
   run heroku app locally
@@ -35,7 +35,7 @@ EXAMPLES
   $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v8.4.4-beta.2/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -56,7 +56,7 @@ EXAMPLES
   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v8.4.4-beta.2/src/commands/local/run.ts)_
 
 ## `heroku local:start [PROCESSNAME]`
 
@@ -69,7 +69,7 @@ USAGE
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
-  -p, --port=<value>      port to listen on
+  -p, --port=<value>      [default: 5001] port to listen on
 
 DESCRIPTION
   run heroku app locally
@@ -97,4 +97,4 @@ DESCRIPTION
   display node-foreman version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v8.4.3/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v8.4.4-beta.2/src/commands/local/version.ts)_
