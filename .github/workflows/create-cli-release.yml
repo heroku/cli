@@ -30,6 +30,11 @@ jobs:
         uses: ./.github/actions/get-version-and-channel/
         with:
           path: './packages/cli/package.json'
+      - run: |
+          echo "channel: ${{ steps.getVersion.outputs.channel }}"
+          echo "version: ${{ steps.getVersion.outputs.version }}"
+          echo "isStableCandidate: ${{ inputs.isStableCandidate }}"
+
 
   publish-npm:
     needs: [get-version-channel]
