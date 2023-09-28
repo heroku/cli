@@ -33,20 +33,13 @@ jobs:
           yarn --immutable --network-timeout 1000000
           ./scripts/release/validate-prerelease
 
-  beta-smoke-tests:
-    needs: [ get-version-channel, validate-prerelease ]
-    uses: ./.github/workflows/test-installed-cli.yml
-    secrets: inherit
-    with:
-      version: ${{ needs.get-version-channel.outputs.version }}
-
   publish-github-tag:
     needs: [ get-version-channel, validate-prerelease ]
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TAG_NAME: v${{ fromJSON(needs.get-version-channel.outputs.version) }}
+      TAG_NAME: ${{ format('v{0}', needs.get-version-channel.outputs.version) }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
@@ -67,3 +60,10 @@ jobs:
     secrets: inherit
     with:
       isStableCandidate: ${{ false }}
+
+  prerelease-smoke-tests:
+    needs: [ create-prerelease ]
+    uses: ./.github/workflows/test-installed-cli.yml
+    secrets: inherit
+    with:
+      version: ${{ needs.get-version-channel.outputs.version }}
