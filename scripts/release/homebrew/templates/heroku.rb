@@ -5,13 +5,15 @@
 class Heroku < Formula
   desc "Everything you need to get started with Heroku"
   homepage "https://cli.heroku.com"
-  url "__CLI_DOWNLOAD_URL__"
-  sha256 "__CLI_SHA256__"
   version "__CLI_VERSION__"
   version_scheme 1
 
   on_macos do
-    if Hardware::CPU.arm?
+    on_intel do
+      url "__CLI_DOWNLOAD_URL__"
+      sha256 "__CLI_SHA256__"
+    end
+    on_arm do
       url "__CLI_DOWNLOAD_URL_M1__"
       sha256 "__CLI_SHA256_M1__"
     end
