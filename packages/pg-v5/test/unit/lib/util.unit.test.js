@@ -36,7 +36,9 @@ describe('util', () => {
       expect(parsed.user).to.equal('user')
       expect(parsed.password).to.equal('pass')
     })
+  })
 
+  describe('essentialPlan', () => {
     it('correctly identifies essential plans', () => {
       const addon = (plan) => ({ plan: { name: plan } })
       const parsed = (addon) => util.essentialPlan(addon)
