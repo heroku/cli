@@ -51,15 +51,21 @@ async function updateHerokuFormula (brewDir) {
 
   const fileNameMacIntel = `${fileNamePrefix}-darwin-${INTEL_ARCH}${fileSuffix}`
   const fileNameMacM1 = `${fileNamePrefix}-darwin-${M1_ARCH}${fileSuffix}`
+  const fileNameLinuxIntel = `${fileNamePrefix}-linux-${INTEL_ARCH}${fileSuffix}`
+  const fileNameLinuxArm = `${fileNamePrefix}-linux-arm${fileSuffix}`
 
   // download files from S3 for SHA calc
   await Promise.all([
     downloadFileFromS3(s3KeyPrefix, fileNameMacIntel, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameMacM1, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm, __dirname),
   ])
 
   const sha256MacIntel = await calculateSHA256(path.join(__dirname, fileNameMacIntel))
   const sha256MacM1 = await calculateSHA256(path.join(__dirname, fileNameMacM1))
+  const sha256LinuxIntel = await calculateSHA256(path.join(__dirname, fileNameLinuxIntel))
+  const sha256LinuxArm = await calculateSHA256(path.join(__dirname, fileNameLinuxArm))
 
   const templateReplaced =
     template
@@ -67,6 +73,10 @@ async function updateHerokuFormula (brewDir) {
       .replace('__CLI_MAC_M1_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacM1}`)
       .replace('__CLI_MAC_SHA256__', sha256MacIntel)
       .replace('__CLI_MAC_M1_SHA256__', sha256MacM1)
+      .replace('__CLI_LINUX_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxIntel}`)
+      .replace('__CLI_LINUX_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxArm}`)
+      .replace('__CLI_LINUX_SHA256__', sha256LinuxIntel)
+      .replace('__CLI_LINUX_ARM_SHA256__', sha256LinuxArm)
       .replace('__CLI_VERSION__', VERSION)
 
   fs.writeFileSync(formulaPath, templateReplaced)
