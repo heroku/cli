@@ -140,8 +140,6 @@ exports.essentialPlan = (a) => {
   return this.essentialNumPlan(a) || this.legacyEssentialPlan(a)
 }
 
-// } => !!a.plan.name.split(':')[1].match(/(dev|basic|mini)$|^essential/)
-
 // eslint-disable-next-line no-implicit-coercion
 exports.bastionKeyPlan = a => !!a.plan.name.match(/private/)
 
