@@ -10,12 +10,12 @@ class Heroku < Formula
 
   on_macos do
     on_intel do
-      url "__CLI_DOWNLOAD_URL__"
-      sha256 "__CLI_SHA256__"
+      url "__CLI_MAC_DOWNLOAD_URL__"
+      sha256 "__CLI_MAC_SHA256__"
     end
     on_arm do
-      url "__CLI_DOWNLOAD_URL_M1__"
-      sha256 "__CLI_SHA256_M1__"
+      url "__CLI_MAC_M1_DOWNLOAD_URL__"
+      sha256 "__CLI_MAC_M1_SHA256__"
     end
   end
 

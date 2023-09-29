@@ -45,29 +45,28 @@ async function updateHerokuFormula (brewDir) {
   const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
   // todo: support both Linux architectures that oclif does
-  const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}-darwin-`
+  const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}`
   const s3KeyPrefix = `versions/${VERSION}/${GITHUB_SHA_SHORT}`
   const urlPrefix = `https://cli-assets.heroku.com/${s3KeyPrefix}`
-  const fileParts = [fileNamePrefix, fileSuffix]
 
-  const fileNameIntel = fileParts.join(INTEL_ARCH)
-  const fileNameM1 = fileParts.join(M1_ARCH)
+  const fileNameMacIntel = `${fileNamePrefix}-darwin-${INTEL_ARCH}${fileSuffix}`
+  const fileNameMacM1 = `${fileNamePrefix}-darwin-${M1_ARCH}${fileSuffix}`
 
   // download files from S3 for SHA calc
   await Promise.all([
-    downloadFileFromS3(s3KeyPrefix, fileNameIntel, __dirname),
-    downloadFileFromS3(s3KeyPrefix, fileNameM1, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacM1, __dirname),
   ])
 
-  const sha256Intel = await calculateSHA256(path.join(__dirname, fileNameIntel))
-  const sha256M1 = await calculateSHA256(path.join(__dirname, fileNameM1))
+  const sha256MacIntel = await calculateSHA256(path.join(__dirname, fileNameMacIntel))
+  const sha256MacM1 = await calculateSHA256(path.join(__dirname, fileNameMacM1))
 
   const templateReplaced =
     template
-      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}/${fileNameIntel}`)
-      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}/${fileNameM1}`)
-      .replace('__CLI_SHA256__', sha256Intel)
-      .replace('__CLI_SHA256_M1__', sha256M1)
+      .replace('__CLI_MAC_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacIntel}`)
+      .replace('__CLI_MAC_M1_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacM1}`)
+      .replace('__CLI_MAC_SHA256__', sha256MacIntel)
+      .replace('__CLI_MAC_M1_SHA256__', sha256MacM1)
       .replace('__CLI_VERSION__', VERSION)
 
   fs.writeFileSync(formulaPath, templateReplaced)
