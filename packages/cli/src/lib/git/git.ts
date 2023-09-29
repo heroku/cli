@@ -54,4 +54,29 @@ export default class Git {
   url(app: string) {
     return this.httpGitUrl(app)
   }
+
+  async getBranch(symbolicRef: string) {
+    return this.exec(['symbolic-ref', '--short', symbolicRef])
+  }
+
+  async getRef(branch: string) {
+    return this.exec(['rev-parse', branch || 'HEAD'])
+  }
+
+  async getCommitTitle(ref: string) {
+    return this.exec(['log', ref || '', '-1', '--pretty=format:%s'])
+  }
+
+  async readCommit(commit: string) {
+    const branch = await this.getBranch('HEAD')
+    const ref = await this.getRef(commit)
+    const message = await this.getCommitTitle(ref)
+
+    return Promise.resolve({
+      branch: branch,
+      ref: ref,
+      message: message,
+    })
+  }
 }
+
