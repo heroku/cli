@@ -1,4 +1,3 @@
-const https = require('https')
 const KOLKRABBI = 'https://kolkrabbi.heroku.com'
 const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const VERSION_HEADER = `${V3_HEADER}.ci`
@@ -92,10 +91,6 @@ function updateTestRun(client, id, body) {
   })
 }
 
-function logStream(url, fn) {
-  return https.get(url, fn)
-}
-
 async function createSource(client) {
   return await client.post('/sources')
 }
@@ -129,12 +124,7 @@ function setConfigVars(client, pipelineID, body) {
   })
 }
 
-function appSetup(client, id) {
-  return client.get(`/app-setups/${id}`)
-}
-
 module.exports = {
-  appSetup,
   configVars,
   createSource,
   createTestRun,
@@ -144,7 +134,6 @@ module.exports = {
   testNodes,
   testRun,
   testRuns,
-  logStream,
   pipelineCoupling,
   pipelineRepository,
   setConfigVars,
