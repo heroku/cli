@@ -8,7 +8,7 @@ export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 const CI_HEADER = `${V3_HEADER}.ci`
 
 export function createAppSetup(heroku: APIClient, body: {body: any}) {
-  return heroku.post('/app-setups', {body})
+  return heroku.post<Heroku.AppSetup>('/app-setups', {body})
 }
 
 export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
@@ -22,7 +22,7 @@ export function createCoupling(heroku: APIClient, pipeline: any, app: string, st
 }
 
 export function createPipeline(heroku: APIClient, name: any, owner: any) {
-  return heroku.request('/pipelines', {
+  return heroku.request<Heroku.Pipeline>('/pipelines', {
     method: 'POST',
     headers: {Accept: PIPELINES_HEADER},
     body: {name, owner},
@@ -71,10 +71,6 @@ export function updatePipeline(heroku: APIClient, id: string, body: Heroku.Pipel
   })
 }
 
-// function getApp(heroku: APIClient, app) {
-//   return heroku.get(`/apps/${app}`)
-// }
-
 export function getTeam(heroku: APIClient, teamId: any) {
   return heroku.get<Heroku.Team>(`/teams/${teamId}`)
 }
@@ -116,7 +112,7 @@ export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise
 }
 
 export function patchCoupling(heroku: APIClient, id: string, stage: string) {
-  return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
+  return heroku.patch<Heroku.PipelineCoupling>(`/pipeline-couplings/${id}`, {body: {stage}})
 }
 
 export function removeCoupling(heroku: APIClient, app: string) {
