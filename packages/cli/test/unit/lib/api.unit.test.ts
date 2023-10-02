@@ -1,10 +1,9 @@
 import {createTestRun, getTestNodes, updateTestRun} from '../../../src/lib/api'
-import {APIClient} from '@heroku-cli/command'
-import {getConfig} from '../../helpers/oclifConfig'
+import {getHerokuAPI} from '../../helpers/testInstances'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-const herokuAPI = new APIClient(getConfig())
+const herokuAPI = getHerokuAPI()
 const TEST_RUN = {id: 'uuid-999'}
 
 describe('api', () => {
@@ -14,7 +13,7 @@ describe('api', () => {
         .post('/test-runs', TEST_RUN)
         .reply(200, [TEST_RUN])
 
-      const {body: testRun} = await createTestRun(new APIClient(getConfig()), TEST_RUN)
+      const {body: testRun} = await createTestRun(herokuAPI, TEST_RUN)
       expect(testRun).to.deep.eq([TEST_RUN])
       api.done()
     })
