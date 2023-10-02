@@ -145,7 +145,7 @@ export function getPipelineConfigVars(heroku: APIClient, pipelineID: string) {
   })
 }
 
-export async function createTestRun(heroku: APIClient, body) {
+export async function createTestRun(heroku: APIClient, body: Heroku.TestRun) {
   const headers = {
     Accept: CI_HEADER,
   }
