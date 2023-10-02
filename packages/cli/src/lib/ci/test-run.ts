@@ -198,7 +198,7 @@ async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testN
   command.log(printLine(testRun))
 }
 
-async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
+export async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
   let newTestRun = testRun
 
   while (!states.includes(newTestRun.status!.toString())) {
