@@ -18,7 +18,7 @@ export default class Debug extends Command {
 
   static help = `Example:
 
-    $ heroku ci:debug
+    $ heroku ci:debug --pipeline PIPELINE
     Preparing source... done
     Creating test run... done
     Running setup and attaching to test dyno...
@@ -33,6 +33,9 @@ export default class Debug extends Command {
   }
 
   static topic = 'ci'
+
+  static strict = false
+
   async run() {
     const {flags, argv} = await this.parse(Debug)
     const pipeline = await getPipeline(flags, this)
