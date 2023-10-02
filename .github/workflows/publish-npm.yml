@@ -47,6 +47,6 @@ jobs:
           then
             yarn lerna publish --yes from-package
           else
-            yarn lerna publish --dist-tag ${{ fromJSON(inputs.channel) || 'beta' }} --yes from-package
+            yarn lerna publish --dist-tag ${{ inputs.channel || 'beta' }} --yes from-package
           fi
         shell: bash
