@@ -1,4 +1,6 @@
 import {ux} from '@oclif/core'
+import {Command, flags as cmdFlags} from '@heroku-cli/command'
+import {get} from 'lodash'
 import {createTestRun, getAppSetup, getTestNodes, updateTestRun} from '../../lib/api'
 import {getPipeline} from '../../lib/ci/pipelines'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
@@ -6,8 +8,6 @@ import Dyno from '../../lib/run/dyno'
 import Git from '../../lib/git/git'
 import {createSourceBlob} from '../../lib/ci/source'
 import {waitForStates} from '../../lib/ci/test-run'
-import {get} from 'lodash'
-import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {buildCommand} from '../../lib/run/helpers'
 
 // Default command. Run setup, source profile.d scripts and open a bash session
@@ -34,7 +34,7 @@ export default class Debug extends Command {
 
   static topic = 'ci'
   async run() {
-    const {flags} = await this.parse(Debug)
+    const {flags, argv} = await this.parse(Debug)
     const pipeline = await getPipeline(flags, this)
 
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
@@ -47,10 +47,11 @@ export default class Debug extends Command {
     const commit = await git.readCommit('HEAD')
     ux.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)
+    ux.action.stop()
     // Create test run and wait for it to transition to `debugging`
     ux.action.start('Creating test run')
 
-    const run = await createTestRun(this.heroku, {
+    const {body: run} = await createTestRun(this.heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
@@ -60,8 +61,8 @@ export default class Debug extends Command {
       pipeline: pipeline.id,
       source_blob_url: sourceBlobUrl,
     })
-
     const testRun = await waitForStates(['debugging', 'errored'], run, this)
+    ux.action.stop()
 
     if (testRun.status === 'errored') {
       ux.error(`Test run creation failed while ${testRun.error_state} with message "${testRun.message}"`, {exit: 1})
@@ -78,13 +79,13 @@ export default class Debug extends Command {
       ux.warn('to execute a build and configure the environment')
     }
 
-    const testNodes = await getTestNodes(this.heroku, testRun.id!)
+    const {body: testNodes} = await getTestNodes(this.heroku, testRun.id!)
 
     const dyno = new Dyno({
       heroku: this.heroku,
       app: appSetup?.app?.id || '', // this should exist by here. ` || ''` is TS nudging
       showStatus: false,
-      command: buildCommand(['ci:debug', 'WHAT GOES HERE? Pass flags through?']),
+      command: buildCommand(argv as string[]),
     })
 
     dyno.dyno = {attach_url: get(testNodes, [0, 'dyno', 'attach_url'])}
@@ -103,7 +104,7 @@ export default class Debug extends Command {
     try {
       await dyno.attach()
     } catch (error: any) {
-      if (error.exitCode) ux.error(error, {exit: error.exitCode})
+      if (error.exitCode) this.error(error, {exit: error.exitCode})
       else throw error
     }
 
@@ -112,5 +113,6 @@ export default class Debug extends Command {
       status: 'cancelled',
       message: 'debug run cancelled by Heroku CLI',
     })
+    await ux.action.stop()
   }
 }
