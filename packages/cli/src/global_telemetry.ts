@@ -21,7 +21,7 @@ const token = heroku.auth
 const debug = require('debug')('global_telemetry')
 
 const rollbar = new Rollbar({
-  accessToken: '41f8730238814af69c248e2f7ca59ff2',
+  accessToken: '20783109b0064dbb85be0b2c5a5a5f79',
   captureUncaught: true,
   captureUnhandledRejections: true,
   environment: isDev ? 'development' : 'production',
