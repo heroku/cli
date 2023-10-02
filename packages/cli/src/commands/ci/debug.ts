@@ -8,7 +8,6 @@ import Dyno from '../../lib/run/dyno'
 import Git from '../../lib/git/git'
 import {createSourceBlob} from '../../lib/ci/source'
 import {waitForStates} from '../../lib/ci/test-run'
-import {buildCommand} from '../../lib/run/helpers'
 
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
@@ -34,10 +33,8 @@ export default class Debug extends Command {
 
   static topic = 'ci'
 
-  static strict = false
-
   async run() {
-    const {flags, argv} = await this.parse(Debug)
+    const {flags} = await this.parse(Debug)
     const pipeline = await getPipeline(flags, this)
 
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
@@ -88,7 +85,7 @@ export default class Debug extends Command {
       heroku: this.heroku,
       app: appSetup?.app?.id || '', // this should exist by here. ` || ''` is TS nudging
       showStatus: false,
-      command: buildCommand(argv as string[]),
+      command: '', // command is required, but is not used.
     })
 
     dyno.dyno = {attach_url: get(testNodes, [0, 'dyno', 'attach_url'])}
