@@ -10,6 +10,8 @@ export default class CiConfigUnset extends Command {
     '$ heroku ci:config:unset RAILS_ENV',
   ]
 
+static strict = false
+
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: false}),
