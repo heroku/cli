@@ -50,7 +50,7 @@ export default class CiConfigSet extends Command {
       vars[key] = value
     }
 
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
 
     ux.action.start(`Setting ${Object.keys(vars).join(', ')}`)
     await setPipelineConfigVars(this.heroku, pipeline.id, vars)
