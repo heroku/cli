@@ -17,7 +17,7 @@ export default class CiOpen extends Command {
 
   async run() {
     const {flags} = await this.parse(CiOpen)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
   }
 }
