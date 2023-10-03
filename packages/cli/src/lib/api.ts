@@ -141,6 +141,15 @@ export function getPipelineConfigVars(heroku: APIClient, pipelineID: string) {
   })
 }
 
+export function setPipelineConfigVars(heroku: APIClient, pipelineID: string, body: Heroku.ConfigVars) {
+  return heroku.request<Heroku.ConfigVars>(`/pipelines/${pipelineID}/stage/test/config-vars`, {
+    method: 'PATCH',
+    headers: {Accept: PIPELINES_HEADER},
+    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
+    body,
+  })
+}
+
 export async function createTestRun(heroku: APIClient, body: Heroku.TestRun) {
   const headers = {
     Accept: CI_HEADER,
