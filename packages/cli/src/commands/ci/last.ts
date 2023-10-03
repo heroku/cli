@@ -21,7 +21,7 @@ export default class CiLast extends Command {
 
   async run() {
     const {flags} = await this.parse(CiLast)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     const headers = {Range: 'number ..; order=desc,max=1'}
     const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})
 

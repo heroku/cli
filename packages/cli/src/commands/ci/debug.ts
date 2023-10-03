@@ -35,7 +35,7 @@ export default class Debug extends Command {
 
   async run() {
     const {flags} = await this.parse(Debug)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
 
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
