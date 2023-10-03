@@ -25,7 +25,7 @@ export default class CiInfo extends Command {
 
   async run() {
     const {args, flags} = await this.parse(CiInfo)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
     const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 

@@ -5,9 +5,10 @@ import {keyBy} from 'lodash'
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const FILTERS_HEADER = `${V3_HEADER}.filters`
 export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
+const CI_HEADER = `${V3_HEADER}.ci`
 
 export function createAppSetup(heroku: APIClient, body: {body: any}) {
-  return heroku.post('/app-setups', {body})
+  return heroku.post<Heroku.AppSetup>('/app-setups', {body})
 }
 
 export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
@@ -21,7 +22,7 @@ export function createCoupling(heroku: APIClient, pipeline: any, app: string, st
 }
 
 export function createPipeline(heroku: APIClient, name: any, owner: any) {
-  return heroku.request('/pipelines', {
+  return heroku.request<Heroku.Pipeline>('/pipelines', {
     method: 'POST',
     headers: {Accept: PIPELINES_HEADER},
     body: {name, owner},
@@ -70,10 +71,6 @@ export function updatePipeline(heroku: APIClient, id: string, body: Heroku.Pipel
   })
 }
 
-// function getApp(heroku: APIClient, app) {
-//   return heroku.get(`/apps/${app}`)
-// }
-
 export function getTeam(heroku: APIClient, teamId: any) {
   return heroku.get<Heroku.Team>(`/teams/${teamId}`)
 }
@@ -91,7 +88,7 @@ export function getAccountInfo(heroku: APIClient, id = '~') {
 }
 
 export function getAppSetup(heroku: APIClient, buildId: any) {
-  return heroku.get(`/app-setups/${buildId}`)
+  return heroku.get<Heroku.AppSetup>(`/app-setups/${buildId}`)
 }
 
 function listCouplings(heroku: APIClient, pipelineId: string) {
@@ -115,7 +112,7 @@ export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise
 }
 
 export function patchCoupling(heroku: APIClient, id: string, stage: string) {
-  return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
+  return heroku.patch<Heroku.PipelineCoupling>(`/pipeline-couplings/${id}`, {body: {stage}})
 }
 
 export function removeCoupling(heroku: APIClient, app: string) {
@@ -150,5 +147,36 @@ export function setPipelineConfigVars(heroku: APIClient, pipelineID: string, bod
     headers: {Accept: PIPELINES_HEADER},
     path: `/pipelines/${pipelineID}/stage/test/config-vars`,
     body,
+  })
+}
+
+export async function createTestRun(heroku: APIClient, body: Heroku.TestRun) {
+  const headers = {
+    Accept: CI_HEADER,
+  }
+
+  return heroku.request<Heroku.TestRun>('/test-runs', {
+    headers,
+    method: 'POST',
+    body,
+  })
+}
+
+export async function getTestNodes(heroku: APIClient, testRunIdD: string) {
+  return heroku.request<Heroku.TestRun>(`/test-runs/${testRunIdD}/test-nodes`, {
+    headers: {
+      Authorization: `Bearer ${heroku.auth}`,
+      Accept: CI_HEADER,
+    },
+  })
+}
+
+export function updateTestRun(heroku: APIClient, id: string, body: Heroku.TestRun) {
+  return heroku.request<Heroku.TestRun>(`/test-runs/${id}`, {
+    body,
+    method: 'PATCH',
+    headers: {
+      Accept: CI_HEADER,
+    },
   })
 }

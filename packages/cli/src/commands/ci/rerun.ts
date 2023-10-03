@@ -27,7 +27,7 @@ export default class CiReRun extends Command {
 
   async run() {
     const {flags, args} = await this.parse(CiReRun)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
 
     let sourceTestRun: Heroku.TestRun
 
