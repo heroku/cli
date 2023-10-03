@@ -9308,6 +9308,7 @@ __metadata:
     async-file: ^2.0.2
     aws-sdk: ^2.421.0
     bats: ^1.1.0
+    bluebird: ^3.5.3
     chai: ^4.2.0
     chalk: ^2.4.2
     date-fns: ^2.30.0
