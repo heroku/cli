@@ -23,7 +23,7 @@ export default class CiRun extends Command {
 
   async run() {
     const {flags} = await this.parse(CiRun)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     const commit = await git.readCommit('HEAD')
 
     ux.action.start('Preparing source')

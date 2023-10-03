@@ -25,7 +25,7 @@ export default class CiConfigGet extends Command {
 
   async run() {
     const {args, flags} = await this.parse(CiConfigGet)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     const {body: config} = await getPipelineConfigVars(this.heroku, pipeline.id)
     const value = config[args.key]
 
