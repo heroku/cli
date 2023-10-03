@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import {expect} from '@oclif/test'
 import * as telemetry from '../../src/global_telemetry'
 import {identity} from 'lodash'
