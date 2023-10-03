@@ -7,12 +7,11 @@ const pipeline =  {
 }
 describe('heroku ci:config:unset', function () {
   test
-    .stdout()
     .stderr()
     .nock('https://api.heroku.com', api => {
       api.get(`/pipelines/${pipeline.id}`)
         .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+        .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
         .reply(200, {[key]: null})
     })
     .command(['ci:config:unset', `--pipeline=${pipeline.id}`, key])
