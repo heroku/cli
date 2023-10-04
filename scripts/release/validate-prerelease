@@ -19,7 +19,7 @@ if [ -n "${EXISTING_REMOTE_TAG}" ]; then
 fi
 
 # we are only allowing for alpha and beta channel releases currently.
-if [[ "${CHANNEL}" != "alpha" ]] && [[ "${CHANNEL}" != "beta"]]; then
+if [[ "${CHANNEL}" != "alpha" ]] && [[ "${CHANNEL}" != "beta" ]]; then
   echo "script must be run on a branch with an alpha or a beta prerelease tag."
   echo "to create an alpha or beta prerelease tag, see the Heroku CLI release instructions on creating a prerelease"
   exit 1
