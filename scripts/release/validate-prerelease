@@ -5,9 +5,10 @@ set -e -o pipefail
 PRERELEASE_PREFIX="prerelease/"
 TAG_NAME="v${VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
+CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
 if [[ "${CURRENT_BRANCH_NAME}" != "${PRERELEASE_PREFIX}"* ]]; then
-  echo "script must be run on a branch that begins with '${PRERELEASE_PREFIX}'."
+  echo "script ran on '${CURRENT_BRANCH_NAME}, must be run on a branch that begins with '${PRERELEASE_PREFIX}'."
   exit 1
 fi
 
