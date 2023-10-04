@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
+
+
+### Bug Fixes
+
+* run lint after every test. ([#2490](https://github.com/heroku/cli/issues/2490)) ([d4db466](https://github.com/heroku/cli/commit/d4db46648baef355f9e362679fca827591f037c1))
+
+
+
+
+
 # [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
 
 

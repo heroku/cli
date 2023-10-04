@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
+
+
+### Bug Fixes
+
+* remove dotenv as no longer necessary ([#2497](https://github.com/heroku/cli/issues/2497)) ([a5ae035](https://github.com/heroku/cli/commit/a5ae035a4d9bc3b5392b62c57c6a283c6e4bcea5))
+
+
+
+
+
 # [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
 
 
