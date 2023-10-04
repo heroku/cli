@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
