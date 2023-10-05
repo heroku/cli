@@ -1,27 +1,41 @@
-'use strict'
+import color from '@heroku-cli/color'
+import {ux} from '@oclif/core'
+import {Command, flags} from '@heroku-cli/command'
+import {Favorites} from '../../../lib/types/favortites'
 
-let cli = require('heroku-cli-util')
+export default class Add extends Command {
+  static description = 'favorites an app'
+  static topic = 'apps'
+  static flags  = {
+    app: flags.app({required: true}),
+  }
 
-async function run(context, heroku) {
-  let app = context.app
+  async run() {
+    const {flags} = await this.parse(Add)
+    const {app} = flags
 
-  await cli.action(`Adding ${cli.color.app(app)} to favorites`, (async function () {
-    let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
-    if (favorites.find(f => f.resource_name === app)) throw new Error(`${cli.color.app(app)} is already a favorite app.`)
-    await heroku.request({
-      host: 'particleboard.heroku.com',
-      path: '/favorites',
-      method: 'POST',
+    ux.action.start(`Adding ${color.app(app)} to favorites`)
+    let favorites: Favorites = []
+
+    try {
+      const response = await this.heroku.get<Favorites>(
+        'https://particleboard.heroku.com/favorites?type=app',
+      )
+      favorites = response.body
+    } catch (error: any) {
+      console.log(error)
+    }
+
+    if (favorites.find(f => f.resource_name === app)) {
+      throw new Error(`${color.app(app)} is already a favorite app.`)
+    }
+
+    await this.heroku.post('/favorites', {
+      hostname: 'particleboard.heroku.com',
       body: {type: 'app', resource_id: app},
     })
-  })())
+
+    ux.action.stop()
+  }
 }
 
-module.exports = {
-  topic: 'apps',
-  command: 'favorites:add',
-  description: 'favorites an app',
-  needsAuth: true,
-  needsApp: true,
-  run: cli.command(run),
-}
