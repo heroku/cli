@@ -1,10 +1,6 @@
-const cli = require('heroku-cli-util')
-// const shellescape = require('shell-escape')
-// const api = require('../../lib/heroku-api')
-// const Utils = require('../../lib/utils')
-const PipelineCompletion = require('../../lib/completions')
-
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags as cmdFlags} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
+import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import * as shellescape from 'shell-escape'
 
@@ -20,56 +16,30 @@ export default class CiConfig extends Command {
   ]
 
   static flags = {
-    shell:
-    json: flags.boolean({description: 'output config vars in json format'})
+    app: cmdFlags.string({char: 'a', description: 'app name'}),
+    shell: cmdFlags.string({char: 's', description: 'output config vars in shell format'}),
+    json: cmdFlags.boolean({description: 'output config vars in json format'}),
+    pipeline: cmdFlags.pipeline(),
   }
-}
 
-async function run(context, heroku) {
-  const pipeline = await getPipeline(context, heroku)
-  const config = await configVars(heroku, pipeline.id)
+  async run() {
+    const {flags} = await this.parse(CiConfig)
+    const pipeline = await getPipeline(flags, this)
+    const {body: config} = await configVars(pipeline.id, this)
 
-  if (context.flags.shell) {
-    Object.keys(config).forEach(key => {
-      cli.log(`${key}=${shellescape([config[key]])}`)
-    })
-  } else if (context.flags.json) {
-    cli.styledJSON(config)
-  } else {
-    cli.styledHeader(`${pipeline.name} test config vars`)
-    cli.styledObject(Object.keys(config).reduce((memo, key) => {
-      memo[cli.color.green(key)] = config[key]
-      return memo
-    }, {}))
+    if (flags.shell) {
+      Object.keys(config).forEach(key => {
+        ux.log(`${key}=${shellescape([config[key]])}`)
+      })
+    } else if (flags.json) {
+      ux.styledJSON(config)
+    } else {
+      ux.styledHeader(`${pipeline.name} test config vars`)
+      const formattedConfig: Heroku.Pipeline = {}
+      Object.keys(config).forEach(key => {
+        formattedConfig[color.green(key)] = config[key]
+      })
+      ux.styledObject(formattedConfig)
+    }
   }
-}
-
-module.exports = {
-  topic: 'ci',
-  command: 'config',
-  wantsApp: true,
-  needsAuth: true,
-  description: 'display CI config vars',
-  flags: [
-    {
-      name: 'shell',
-      char: 's',
-      description: 'output config vars in shell format',
-    },
-    {
-      name: 'json',
-      description: 'output config vars in json format',
-    },
-    {
-      name: 'pipeline',
-      char: 'p',
-      hasValue: true,
-      description: 'pipeline',
-      completion: PipelineCompletion,
-    },
-  ],
-  run: cli.command(run),
-  help: `Example:
-
-    $ heroku ci:config --app murmuring-headland-14719 --json`,
 }
