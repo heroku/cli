@@ -1,14 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import {getPipeline} from '../../../lib/ci/pipelines'
 import {setPipelineConfigVars} from '../../../lib/api'
-
-const validateArgs = (argv: any) => {
-  if (argv.length === 0) {
-    ux.error('Usage: heroku ci:config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.', {exit: 1})
-  }
-}
+import {validateArgvPresent} from '../../../lib/ci/validate'
 
 export default class CiConfigUnset extends Command {
   static description = 'unset CI config vars'
@@ -27,7 +21,8 @@ export default class CiConfigUnset extends Command {
 
   async run() {
     const {argv, flags} = await this.parse(CiConfigUnset)
-    validateArgs(argv)
+    const isUnset = true
+    validateArgvPresent(argv, isUnset)
 
     const pipeline = await getPipeline(flags, this.heroku)
 
