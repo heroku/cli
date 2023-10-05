@@ -15,25 +15,28 @@ export default class Add extends Command {
     const {app} = flags
 
     ux.action.start(`Adding ${color.app(app)} to favorites`)
-    let favorites: Favorites = []
 
-    try {
-      const response = await this.heroku.get<Favorites>(
-        'https://particleboard.heroku.com/favorites?type=app',
-      )
-      favorites = response.body
-    } catch (error: any) {
-      console.log(error)
-    }
+    const {body: favorites} = await this.heroku.get<Favorites>(
+      '/favorites?type=app',
+      {hostname: 'particleboard.heroku.com'},
+    )
 
     if (favorites.find(f => f.resource_name === app)) {
       throw new Error(`${color.app(app)} is already a favorite app.`)
     }
 
-    await this.heroku.post('/favorites', {
-      hostname: 'particleboard.heroku.com',
-      body: {type: 'app', resource_id: app},
-    })
+    try {
+      await this.heroku.post('/favorites', {
+        hostname: 'particleboard.heroku.com',
+        body: {type: 'app', resource_id: app},
+      })
+    } catch (error: any) {
+      if (error.statusCode === 404) {
+        ux.error('App not found')
+      } else {
+        ux.error(error.cause)
+      }
+    }
 
     ux.action.stop()
   }
