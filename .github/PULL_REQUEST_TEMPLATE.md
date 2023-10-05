@@ -17,9 +17,7 @@ Examples:
 
 Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 -->
-
-
-## Description
+# Description
 <!--
 Include ticket and/or brief description of the changes.
 -->
