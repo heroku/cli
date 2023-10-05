@@ -15,7 +15,15 @@ describe('heroku ci:config:unset', function () {
         .reply(200, {[key]: null})
     })
     .command(['ci:config:unset', `--pipeline=${pipeline.id}`, key])
-    .it('displays the config value', ({stderr}) => {
+    .it('displays the config value key being unset', ({stderr}) => {
       expect(stderr).to.contain('Unsetting FOO... done')
     })
+
+  test
+    .stderr()
+    .command(['ci:config:unset', `--pipeline=${pipeline.id}`])
+    .catch(error => {
+      expect(error.message).to.equal('Usage: heroku ci:config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.')
+    })
+    .it('errors with example of valid args')
 })
