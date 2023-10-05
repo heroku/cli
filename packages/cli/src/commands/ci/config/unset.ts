@@ -25,20 +25,20 @@ export default class CiConfigUnset extends Command {
     pipeline: flags.pipeline({required: false}),
   }
 
-  static args = {
-    key: Args.string({required: true}),
-  }
-
   async run() {
-    const {args, argv, flags} = await this.parse(CiConfigUnset)
+    const {argv, flags} = await this.parse(CiConfigUnset)
     validateArgs(argv)
 
     const pipeline = await getPipeline(flags, this.heroku)
 
-    const vars: Heroku.ConfigVars = {}
-    vars[args.key] = ''
+    const vars: Record<string, null> = {}
 
-    await ux.action.start(`Unsetting ${args.key}`)
+    for (const str of argv) {
+      const iAmStr: string = str as string
+      vars[iAmStr] = null
+    }
+
+    await ux.action.start(`Unsetting ${Object.keys(vars).join(', ')}`)
 
     setPipelineConfigVars(this.heroku, pipeline.id, vars)
 
