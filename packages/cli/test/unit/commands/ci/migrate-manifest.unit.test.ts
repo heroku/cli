@@ -1,4 +1,3 @@
-/* eslint-disable quote-props */
 import {expect, test} from '@oclif/test'
 import * as fs from 'async-file'
 import * as _ from 'lodash'
@@ -6,95 +5,156 @@ const BB = require('bluebird')
 const writeFile = BB.promisify(fs.writeFile)
 const unlinkFile = BB.promisify(fs.unlink)
 
-describe('ci:migrate-manifest', async () => {
+describe('ci:migrate-manifest', () => {
   let appJsonFileContents
-  const appJSONPath = './app.json'
-  const mockNewAppJSONFileContents = {environments: {}}
-  const mockOldAppCiJSONFileContents = {
-    'name': 'Small Sharp Tool',
-    'description': 'This app does one little thing, and does it well.',
-    'keywords': [
+  const appJsonPath = './app.json'
+  const mockNewAppJsonFileContents = {environments: {}}
+  const mockOldAppCiJsonFileContents = {
+    name: 'Small Sharp Tool',
+    description: 'This app does one little thing, and does it well.',
+    keywords: [
       'productivity',
       'HTML5',
       'scalpel',
     ],
-    'website': 'https://small-sharp-tool.com/',
-    'repository': 'https://github.com/jane-doe/small-sharp-tool',
-    'logo': 'https://small-sharp-tool.com/logo.svg',
-    'success_url': '/welcome',
-    'scripts': {
-      'postdeploy': 'bundle exec rake bootstrap',
+    website: 'https://small-sharp-tool.com/',
+    repository: 'https://github.com/jane-doe/small-sharp-tool',
+    logo: 'https://small-sharp-tool.com/logo.svg',
+    success_url: '/welcome',
+    scripts: {
+      postdeploy: 'bundle exec rake bootstrap',
     },
-    'env': {
-      'SECRET_TOKEN': {
-        'description': 'A secret key for verifying the integrity of signed cookies.',
-        'generator': 'secret',
+    env: {
+      SECRET_TOKEN: {
+        description: 'A secret key for verifying the integrity of signed cookies.',
+        generator: 'secret',
       },
-      'WEB_CONCURRENCY': {
-        'description': 'The number of processes to run.',
-        'value': '5',
-      },
-    },
-    'formation': {
-      'web': {
-        'quantity': 1,
-        'size': 'standard-1x',
+      WEB_CONCURRENCY: {
+        description: 'The number of processes to run.',
+        value: '5',
       },
     },
-    'image': 'heroku/ruby',
-    'addons': [
+    formation: {
+      web: {
+        quantity: 1,
+        size: 'standard-1x',
+      },
+    },
+    image: 'heroku/ruby',
+    addons: [
       'openredis',
       {
-        'plan': 'mongolab:shared-single-small',
-        'as': 'MONGO',
+        plan: 'mongolab:shared-single-small',
+        as: 'MONGO',
       },
       {
-        'plan': 'heroku-postgresql',
-        'options': {
-          'version': '9.5',
+        plan: 'heroku-postgresql',
+        options: {
+          version: '9.5',
         },
       },
     ],
-    'buildpacks': [
+    buildpacks: [
       {
-        'url': 'https://github.com/stomita/heroku-buildpack-phantomjs',
+        url: 'https://github.com/stomita/heroku-buildpack-phantomjs',
       },
     ],
-    'environments': {
-      'test': {
-        'scripts': {
-          'test': 'bundle exec rake test',
+    environments: {
+      test: {
+        scripts: {
+          test: 'bundle exec rake test',
         },
       },
     },
   }
 
-  const mockConvertedAppJSONFileContents {
-    
+  const mockConvertedAppJSONFileContents = {
+    environments: {
+      test: {
+        name: 'Small Sharp Tool',
+        description: 'This app does one little thing, and does it well.',
+        keywords: [
+          'productivity',
+          'HTML5',
+          'scalpel',
+        ],
+        website: 'https://small-sharp-tool.com/',
+        repository: 'https://github.com/jane-doe/small-sharp-tool',
+        logo: 'https://small-sharp-tool.com/logo.svg',
+        success_url: '/welcome',
+        scripts: {
+          postdeploy: 'bundle exec rake bootstrap',
+        },
+        env: {
+          SECRET_TOKEN: {
+            description: 'A secret key for verifying the integrity of signed cookies.',
+            generator: 'secret',
+          },
+          WEB_CONCURRENCY: {
+            description: 'The number of processes to run.',
+            value: '5',
+          },
+        },
+        formation: {
+          web: {
+            quantity: 1,
+            size: 'standard-1x',
+          },
+        },
+        image: 'heroku/ruby',
+        addons: [
+          'openredis',
+          {
+            plan: 'mongolab:shared-single-small',
+            as: 'MONGO',
+          },
+          {
+            plan: 'heroku-postgresql',
+            options: {
+              version: '9.5',
+            },
+          },
+        ],
+        buildpacks: [
+          {
+            url: 'https://github.com/stomita/heroku-buildpack-phantomjs',
+          },
+        ],
+        environments: {
+          test: {
+            scripts: {
+              test: 'bundle exec rake test',
+            },
+          },
+        },
+      },
+    },
   }
 
   test
-    .stdout({print: true})
+    .stdout()
     .command(['ci:migrate-manifest'])
-    .it('creates an app.json file if none exists', async ({stdout}) => {
+    .it('creates an app.json file if none exists', ({stdout}) => {
       appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJSONFileContents)
+      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJsonFileContents)
+
       expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
       expect(areJSONObjectsEqual).to.equal(true)
-      unlinkFile(appJSONPath)
+      unlinkFile(appJsonPath)
     })
 
   test
-    .stdout({print: true})
+    .stdout()
     .do(() => {
-      writeFile(appJSONPath, `${JSON.stringify(mockOldAppCiJSONFileContents, null, '  ')}\n`)
+      writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
     })
     .command(['ci:migrate-manifest'])
-    .it('creates converted app.json file when app-ci.json file is present', async ({stdout}) => {
+    .it('creates converted app.json file when app-ci.json file is present', ({stdout}) => {
       appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJSONFileContents)
-      expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
+      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockConvertedAppJSONFileContents)
+
+      expect(stdout).to.equal('Please check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
       expect(areJSONObjectsEqual).to.equal(true)
-      unlinkFile(appJSONPath)
+      unlinkFile(appJsonPath)
     })
 })
