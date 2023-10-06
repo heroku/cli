@@ -54,7 +54,7 @@ async function updateHerokuFormula(brewDir) {
 
   // download files from S3 for SHA calc
   await Promise.all([
-    downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacIntel, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameLinuxIntel, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm, __dirname),
