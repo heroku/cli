@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
-  "version": "8.1.7",
+  "version": "8.2.0",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -52,9 +52,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }

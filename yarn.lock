@@ -455,6 +455,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku-cli/command-v9@npm:@heroku-cli/command@^9.0.2, @heroku-cli/command@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "@heroku-cli/command@npm:9.0.2"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@oclif/core": ^1.26.2
+    cli-ux: ^6.0.9
+    debug: ^4.1.1
+    fs-extra: ^7.0.1
+    heroku-client: ^3.1.0
+    http-call: ^5.2.4
+    netrc-parser: ^3.1.6
+    open: ^6.2.0
+    uuid: ^8.3.0
+  checksum: bbe4933dd94517491f34cd24ba762ed75e7ce5b3ec615047fd8287c58b2ef029b6599c252c6b6f739554f329d160a6c5e8634b58206818ff332a668eb257fae4
+  languageName: node
+  linkType: hard
+
 "@heroku-cli/command@npm:^10.0.0":
   version: 10.0.0
   resolution: "@heroku-cli/command@npm:10.0.0"
@@ -491,24 +509,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@heroku-cli/command@npm:9.0.2"
-  dependencies:
-    "@heroku-cli/color": ^1.1.14
-    "@oclif/core": ^1.26.2
-    cli-ux: ^6.0.9
-    debug: ^4.1.1
-    fs-extra: ^7.0.1
-    heroku-client: ^3.1.0
-    http-call: ^5.2.4
-    netrc-parser: ^3.1.6
-    open: ^6.2.0
-    uuid: ^8.3.0
-  checksum: bbe4933dd94517491f34cd24ba762ed75e7ce5b3ec615047fd8287c58b2ef029b6599c252c6b6f739554f329d160a6c5e8634b58206818ff332a668eb257fae4
-  languageName: node
-  linkType: hard
-
 "@heroku-cli/heroku-exec-util@npm:0.7.6":
   version: 0.7.6
   resolution: "@heroku-cli/heroku-exec-util@npm:0.7.6"
@@ -535,7 +535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.1.7, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@^8.4.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -555,6 +555,7 @@ __metadata:
     printf: 0.6.1
     proxyquire: ^2.1.0
     sinon: ^6.3.5
+    theredoc: ^1.0.0
   languageName: unknown
   linkType: soft
 
@@ -571,7 +572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.1.8, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.5.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -609,7 +610,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs-v5@^8.1.7, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
+"@heroku-cli/plugin-certs-v5@^8.2.0, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
   dependencies:
@@ -635,12 +636,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^8.1.8, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
+"@heroku-cli/plugin-ci-v5@^8.2.0, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
-    "@heroku-cli/plugin-run-v5": ^8.1.4
+    "@heroku-cli/plugin-run-v5": ^8.2.0
     "@oclif/plugin-legacy": ^1.3.0
     ansi-escapes: 3.2.0
     bluebird: ^3.5.3
@@ -664,7 +665,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-container-registry-v5@^8.1.7, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
+"@heroku-cli/plugin-container-registry-v5@^8.2.0, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
@@ -709,7 +710,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^8.1.4, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
+"@heroku-cli/plugin-orgs-v5@^8.2.0, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
@@ -729,7 +730,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.1.7, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^8.5.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -786,7 +787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-redis-v5@^8.1.7, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
+"@heroku-cli/plugin-redis-v5@^8.2.0, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
@@ -806,7 +807,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run-v5@^8.1.4, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
+"@heroku-cli/plugin-run-v5@^8.2.0, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
@@ -833,7 +834,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-spaces@^8.1.7, @heroku-cli/plugin-spaces@workspace:packages/spaces":
+"@heroku-cli/plugin-run@npm:8.1.4":
+  version: 8.1.4
+  resolution: "@heroku-cli/plugin-run@npm:8.1.4"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/command": ^9.0.2
+    "@heroku-cli/notifications": ^1.2.2
+    "@heroku/eventsource": ^1.0.7
+    "@oclif/core": 1.26.2
+    debug: ^4.1.1
+    tslib: ^1
+  checksum: c09956b8160839b2a442b593235637f02b49d88fe32164aab5db89e112a9b3144f8e70832053ad1d90c57bb63bc2eb1c09b052c86a69c8ad9e6a4d39175851a5
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-spaces@^8.4.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
   dependencies:
@@ -2340,7 +2356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
+"@oclif/core-v1@npm:@oclif/core@^1.26.2, @oclif/core@npm:1.26.2, @oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
   version: 1.26.2
   resolution: "@oclif/core@npm:1.26.2"
   dependencies:
@@ -3268,6 +3284,195 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@opentelemetry/api-logs@npm:0.41.2":
+  version: 0.41.2
+  resolution: "@opentelemetry/api-logs@npm:0.41.2"
+  dependencies:
+    "@opentelemetry/api": ^1.0.0
+  checksum: 9a33466baa5269df2c9153cf8385b06b957c1abdbae0c1fe3e16183d25fd89f93df58e98efb72994518ae07abb8215b803f67f62bdfb7a5050762cca1a3a3f07
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/api@npm:^1.0.0, @opentelemetry/api@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@opentelemetry/api@npm:1.4.1"
+  checksum: e783c40d1a518abf9c4c5d65223237c1392cd9a6c53ac6e2c3ef0c05ff7266e3dfc4fd9874316dae0dcb7a97950878deb513bcbadfaad653d48f0215f2a0911b
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/context-async-hooks@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@opentelemetry/context-async-hooks@npm:1.15.2"
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: f5e00a9920e14f12a4abd4f855927d7f2fcae3e57048b9853860529608d680e43473216643089c95de95519cf3642f635b178849acafec034cd7174198297295
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/core@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@opentelemetry/core@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/semantic-conventions": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 0040d1952b13d1cf5c7f428f9b061806023e2d08acd716e9aa72caa0c4bca99059ac4ddfbecebc4f3b993c576b834d4bcf0914586d0020719a1b1c428461a16a
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/exporter-trace-otlp-http@npm:^0.41.1":
+  version: 0.41.2
+  resolution: "@opentelemetry/exporter-trace-otlp-http@npm:0.41.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/otlp-exporter-base": 0.41.2
+    "@opentelemetry/otlp-transformer": 0.41.2
+    "@opentelemetry/resources": 1.15.2
+    "@opentelemetry/sdk-trace-base": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ^1.0.0
+  checksum: 53e9f0f28386fbd5dff4238496d869cfc75771191f43aac2db37d412ce14f31bd723d354af43130370ca02b3c5d5a8893bddd4c9480cadcafc22728039561b65
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/instrumentation@npm:^0.41.1":
+  version: 0.41.2
+  resolution: "@opentelemetry/instrumentation@npm:0.41.2"
+  dependencies:
+    "@types/shimmer": ^1.0.2
+    import-in-the-middle: 1.4.2
+    require-in-the-middle: ^7.1.1
+    semver: ^7.5.1
+    shimmer: ^1.2.1
+  peerDependencies:
+    "@opentelemetry/api": ^1.3.0
+  checksum: 73df84c356064aaf2465f691001d6c165877d7204d2c66063b89dfa8b7206bc47442cd6dec88c40af86b104dbe72081c2e234376a63b3afaa529a9648ac016cd
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/otlp-exporter-base@npm:0.41.2":
+  version: 0.41.2
+  resolution: "@opentelemetry/otlp-exporter-base@npm:0.41.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ^1.0.0
+  checksum: e2f27327247de65316e64b625fa4e496e7978c8bf503d2720ec48e7b0201f9065e230b439a9186a3764cc1be2e0df1efcf9b0def93db0fc80de2db0220628763
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/otlp-transformer@npm:0.41.2":
+  version: 0.41.2
+  resolution: "@opentelemetry/otlp-transformer@npm:0.41.2"
+  dependencies:
+    "@opentelemetry/api-logs": 0.41.2
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/resources": 1.15.2
+    "@opentelemetry/sdk-logs": 0.41.2
+    "@opentelemetry/sdk-metrics": 1.15.2
+    "@opentelemetry/sdk-trace-base": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.3.0 <1.5.0"
+  checksum: dc3332377012296597243b45faca0e83ad4b60b30b6b256d81056a211bf70c3a4ec27be15bf07a9e9f21338e862016792029c1320ce41ffe73db7a413dd38be5
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/propagator-b3@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@opentelemetry/propagator-b3@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 830b34f678b1b6c12f51135ada6555f2981d1d9c44f59fa21c4a550b0edb483b644791368ffc0b09b4ec7aed77e9ff6e437df91513c86c4dc35a25841f6248c1
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/propagator-jaeger@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@opentelemetry/propagator-jaeger@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 319e4c5e197d338d016ad3d5eddc7307c34d2217e81c182d17868c3b5a44442d59de5c0eb4b88c9690d253c42cf8151201d69169641349d250503d9f36d9fe7b
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/resources@npm:1.15.2, @opentelemetry/resources@npm:^1.15.1":
+  version: 1.15.2
+  resolution: "@opentelemetry/resources@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/semantic-conventions": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 072d64bee2a073ac3f1218ba9d24bd0a20fc69988d206688c2f53e813c9d84ae325093c3c0e8909c2208cfa583fe5bad71d16af7d6b087a348d866c1d0857396
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-logs@npm:0.41.2":
+  version: 0.41.2
+  resolution: "@opentelemetry/sdk-logs@npm:0.41.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/resources": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.4.0 <1.5.0"
+    "@opentelemetry/api-logs": ">=0.39.1"
+  checksum: 055dd8dbb78442dc9742bce12491c5ccb48ffa8b9a5ed3046294a21bf40802cc4ddc753a6324b1f571a1af8d2936c93027c1d4e90bb7c8536390be12fc9cbc8a
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-metrics@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@opentelemetry/sdk-metrics@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/resources": 1.15.2
+    lodash.merge: ^4.6.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.3.0 <1.5.0"
+  checksum: 15eb40b977618ea24a7ce5bea264ab4c8a428d91c2ef0d824c9c98bea9fe3e136c92d03e5538ce86438e123f59977516112a657c4fc572e71ac544d483348b17
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-trace-base@npm:1.15.2, @opentelemetry/sdk-trace-base@npm:^1.15.1":
+  version: 1.15.2
+  resolution: "@opentelemetry/sdk-trace-base@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/resources": 1.15.2
+    "@opentelemetry/semantic-conventions": 1.15.2
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 3ca9d71919451f8e4a0644434981c7fa6dc29d002da03784578fbe47689625d106c00ab5b35539a8d348e40676ea57d44ba6845a9a604dd6be670911f83835bf
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/sdk-trace-node@npm:^1.15.1":
+  version: 1.15.2
+  resolution: "@opentelemetry/sdk-trace-node@npm:1.15.2"
+  dependencies:
+    "@opentelemetry/context-async-hooks": 1.15.2
+    "@opentelemetry/core": 1.15.2
+    "@opentelemetry/propagator-b3": 1.15.2
+    "@opentelemetry/propagator-jaeger": 1.15.2
+    "@opentelemetry/sdk-trace-base": 1.15.2
+    semver: ^7.5.1
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.5.0"
+  checksum: 67ffa3c9c40a4571ee1aadeec3623bb9bbf981593b5d68b157250b9a4a6a544605b4c68107b5cffb8bb81775868b9d5fee23ccec643f79d773d800ac8d4c155b
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:1.15.2, @opentelemetry/semantic-conventions@npm:^1.15.1":
+  version: 1.15.2
+  resolution: "@opentelemetry/semantic-conventions@npm:1.15.2"
+  checksum: 6de4f8ffa277af18351dff19b821f04438bd4f3917f84816f0bf1577a810424d11ba5f15dca9739a17812a996eeb251048fc7d61b0eef9dc39beb9d4304f57e2
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher@npm:2.0.4":
   version: 2.0.4
   resolution: "@parcel/watcher@npm:2.0.4"
@@ -3767,6 +3972,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/shimmer@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@types/shimmer@npm:1.0.2"
+  checksum: 952b5555e914f632f3312a7b54e2b720b12ddce7373e1da58d25f25f32c07e5513afeb53bfce4256035a1205bbe81223fe8e47c160163de3e56fb93a3e0da42b
+  languageName: node
+  linkType: hard
+
 "@types/sinon@npm:*":
   version: 7.0.5
   resolution: "@types/sinon@npm:7.0.5"
@@ -4173,6 +4385,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"acorn-import-assertions@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "acorn-import-assertions@npm:1.9.0"
+  peerDependencies:
+    acorn: ^8
+  checksum: 944fb2659d0845c467066bdcda2e20c05abe3aaf11972116df457ce2627628a81764d800dd55031ba19de513ee0d43bb771bc679cc0eda66dc8b4fade143bc0c
+  languageName: node
+  linkType: hard
+
 "acorn-jsx@npm:^5.0.0":
   version: 5.0.1
   resolution: "acorn-jsx@npm:5.0.1"
@@ -4222,6 +4443,15 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 4079b67283b94935157698831967642f24a075c52ce3feaaaafe095776dfbe15d86a1b33b1e53860fc0d062ed6c83f4284a5c87c85b9ad51853a01173da6097f
+  languageName: node
+  linkType: hard
+
+"acorn@npm:^8.8.2":
+  version: 8.10.0
+  resolution: "acorn@npm:8.10.0"
+  bin:
+    acorn: bin/acorn
+  checksum: 538ba38af0cc9e5ef983aee196c4b8b4d87c0c94532334fa7e065b2c8a1f85863467bb774231aae91613fcda5e68740c15d97b1967ae3394d20faddddd8af61d
   languageName: node
   linkType: hard
 
@@ -5390,6 +5620,13 @@ __metadata:
   version: 0.3.3
   resolution: "circular-json@npm:0.3.3"
   checksum: 61c5e5c244cc752f2d81fa337260327bf9dcb0332eb801039f21b69383050318fd4b30541ce4ebfe6fdd62993a38cb1be3a0d777abfeadf723479a4fc2da70ed
+  languageName: node
+  linkType: hard
+
+"cjs-module-lexer@npm:^1.2.2":
+  version: 1.2.3
+  resolution: "cjs-module-lexer@npm:1.2.3"
+  checksum: 5ea3cb867a9bb609b6d476cd86590d105f3cfd6514db38ff71f63992ab40939c2feb68967faa15a6d2b1f90daa6416b79ea2de486e9e2485a6f8b66a21b4fb0a
   languageName: node
   linkType: hard
 
@@ -6563,13 +6800,6 @@ __metadata:
   dependencies:
     is-obj: ^2.0.0
   checksum: 0f47600a4b93e1dc37261da4e6909652c008832a5d3684b5bf9a9a0d3f4c67ea949a86dceed9b72f5733ed8e8e6383cc5958df3bbd0799ee317fd181f2ece700
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^16.3.1":
-  version: 16.3.1
-  resolution: "dotenv@npm:16.3.1"
-  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
   languageName: node
   linkType: hard
 
@@ -9018,22 +9248,25 @@ __metadata:
   dependencies:
     "@heroku-cli/color": 1.1.14
     "@heroku-cli/command": ^10.0.0
+    "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
-    "@heroku-cli/plugin-addons-v5": ^8.1.7
-    "@heroku-cli/plugin-apps-v5": ^8.1.8
-    "@heroku-cli/plugin-certs-v5": ^8.1.7
-    "@heroku-cli/plugin-ci-v5": ^8.1.8
-    "@heroku-cli/plugin-container-registry-v5": ^8.1.7
-    "@heroku-cli/plugin-orgs-v5": ^8.1.4
-    "@heroku-cli/plugin-pg-v5": ^8.1.7
+    "@heroku-cli/plugin-addons-v5": ^8.4.0
+    "@heroku-cli/plugin-apps-v5": ^8.5.0
+    "@heroku-cli/plugin-certs-v5": ^8.2.0
+    "@heroku-cli/plugin-ci-v5": ^8.2.0
+    "@heroku-cli/plugin-container-registry-v5": ^8.2.0
+    "@heroku-cli/plugin-orgs-v5": ^8.2.0
+    "@heroku-cli/plugin-pg-v5": ^8.5.0
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
-    "@heroku-cli/plugin-redis-v5": ^8.1.7
-    "@heroku-cli/plugin-spaces": ^8.1.7
+    "@heroku-cli/plugin-redis-v5": ^8.2.0
+    "@heroku-cli/plugin-run": 8.1.4
+    "@heroku-cli/plugin-spaces": ^8.4.0
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
     "@oclif/core": ^2.8.11
+    "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-help": ^5
     "@oclif/plugin-legacy": ^1.3.0
@@ -9044,6 +9277,13 @@ __metadata:
     "@oclif/plugin-warn-if-update-available": 2.0.29
     "@oclif/plugin-which": 2.2.8
     "@oclif/test": ^2.3.25
+    "@opentelemetry/api": ^1.4.1
+    "@opentelemetry/exporter-trace-otlp-http": ^0.41.1
+    "@opentelemetry/instrumentation": ^0.41.1
+    "@opentelemetry/resources": ^1.15.1
+    "@opentelemetry/sdk-trace-base": ^1.15.1
+    "@opentelemetry/sdk-trace-node": ^1.15.1
+    "@opentelemetry/semantic-conventions": ^1.15.1
     "@types/ansi-styles": ^3.2.1
     "@types/chai": ^4.1.7
     "@types/debug": ^4.1.2
@@ -9072,7 +9312,6 @@ __metadata:
     chalk: ^2.4.2
     date-fns: ^2.30.0
     debug: 4.1.1
-    dotenv: ^16.3.1
     edit-string: ^1.1.6
     execa: 5.1.1
     foreman: ^3.0.1
@@ -9435,6 +9674,18 @@ __metadata:
     parent-module: ^1.0.0
     resolve-from: ^4.0.0
   checksum: 2cacfad06e652b1edc50be650f7ec3be08c5e5a6f6d12d035c440a42a8cc028e60a5b99ca08a77ab4d6b1346da7d971915828f33cdab730d3d42f08242d09baa
+  languageName: node
+  linkType: hard
+
+"import-in-the-middle@npm:1.4.2":
+  version: 1.4.2
+  resolution: "import-in-the-middle@npm:1.4.2"
+  dependencies:
+    acorn: ^8.8.2
+    acorn-import-assertions: ^1.9.0
+    cjs-module-lexer: ^1.2.2
+    module-details-from-path: ^1.0.3
+  checksum: 52971f821e9a3c94834cd5cf0ab5178321c07d4f4babd547b3cb24c4de21670d05b42ca1523890e7e90525c3bba6b7db7e54cf45421919b0b2712a34faa96ea5
   languageName: node
   linkType: hard
 
@@ -11664,6 +11915,13 @@ __metadata:
   version: 1.0.1
   resolution: "modify-values@npm:1.0.1"
   checksum: 8296610c608bc97b03c2cf889c6cdf4517e32fa2d836440096374c2209f6b7b3e256c209493a0b32584b9cb32d528e99d0dd19dcd9a14d2d915a312d391cc7e9
+  languageName: node
+  linkType: hard
+
+"module-details-from-path@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "module-details-from-path@npm:1.0.3"
+  checksum: 378a8a26013889aa3086bfb0776b7860c5bb957336253e1ba5d779c2f239a218930b145ca76e52c1dd7c8079d52b2af64b8eec30822f81ffdb0dfa27d6fe6f33
   languageName: node
   linkType: hard
 
@@ -14250,6 +14508,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"require-in-the-middle@npm:^7.1.1":
+  version: 7.2.0
+  resolution: "require-in-the-middle@npm:7.2.0"
+  dependencies:
+    debug: ^4.1.1
+    module-details-from-path: ^1.0.3
+    resolve: ^1.22.1
+  checksum: 5ed219d12aec4d0f098029827f9e929d8e0ca4f2fe01f23a9b02169e57c5157cced9e7acaef6a871d3f56646f2cb807b08f2f23d66912ee53eca16cb88eff743
+  languageName: node
+  linkType: hard
+
 "require-main-filename@npm:^2.0.0":
   version: 2.0.0
   resolution: "require-main-filename@npm:2.0.0"
@@ -14916,6 +15185,13 @@ __metadata:
   version: 0.1.1
   resolution: "shellwords@npm:0.1.1"
   checksum: 8d73a5e9861f5e5f1068e2cfc39bc0002400fe58558ab5e5fa75630d2c3adf44ca1fac81957609c8320d5533e093802fcafc72904bf1a32b95de3c19a0b1c0d4
+  languageName: node
+  linkType: hard
+
+"shimmer@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "shimmer@npm:1.2.1"
+  checksum: aa0d6252ad1c682a4fdfda69e541be987f7a265ac7b00b1208e5e48cc68dc55f293955346ea4c71a169b7324b82c70f8400b3d3d2d60b2a7519f0a3522423250
   languageName: node
   linkType: hard
 

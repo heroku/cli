@@ -12,6 +12,10 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
 
   workflow_dispatch:
     inputs:
@@ -24,6 +28,10 @@ on:
         description: Is this a stable/prod release?
         required: true
         default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
 
 jobs:
   promote:
@@ -31,6 +39,7 @@ jobs:
     with:
         version: ${{ inputs.version }}
         isStableRelease: ${{ fromJSON(inputs.isStableRelease) }}
+        channel: ${{ inputs.channel }}
     secrets: inherit
 
   ## POST release jobs

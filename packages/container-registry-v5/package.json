@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-container-registry-v5",
   "description": "Use containers to build and deploy Heroku apps",
-  "version": "8.1.7",
+  "version": "8.2.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -55,9 +55,8 @@
     "depcheck": "depcheck || true",
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
+    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
     "version": "oclif readme && git add README.md"
   },
   "topic": "container"

@@ -15,7 +15,7 @@ function formatConfigVarsMessage(addon) {
 
 module.exports = async function (heroku, app, plan, confirm, wait, options) {
   const util = require('./util')
-  const waitForAddonProvisioning = require('./addons_wait')
+  const {waitForAddonProvisioning} = require('./addons_wait')
 
   function createAddonRequest(confirm) {
     let body = {
@@ -34,7 +34,7 @@ module.exports = async function (heroku, app, plan, confirm, wait, options) {
           'x-heroku-legacy-provider-messages': 'true',
         },
       }).then(function (addon) {
-        cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
+        cli.action.done(cli.color.green(util.formatPriceText(addon.plan.price)))
         return addon
       }),
     )

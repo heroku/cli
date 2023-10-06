@@ -8,7 +8,7 @@ invalidationResponse=''
 if [[ "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" = v* ]]; then
   invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*")
 elif [[ "$CURRENT_BRANCH" == "prerelease/"* ]]; then
-  invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*")
+  invalidationResponse=$(aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*" "/channels/versions/*")
 else
   echo "Not on stable or beta release, skipping invalidate cdn cache"
 fi

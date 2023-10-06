@@ -3,6 +3,100 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
+
+
+### Bug Fixes
+
+* default to --port 5001 for heroku local ([#2475](https://github.com/heroku/cli/issues/2475)) ([4f7a7c3](https://github.com/heroku/cli/commit/4f7a7c3d87f6cb6010369460a30b272a39883223))
+
+
+
+
+
+## [8.4.3](https://github.com/heroku/cli/compare/v8.4.2...v8.4.3) (2023-09-18)
+
+
+### Bug Fixes
+
+* correctly handling CLI errors again. ([#2467](https://github.com/heroku/cli/issues/2467)) ([e8f3f5f](https://github.com/heroku/cli/commit/e8f3f5f5b9ae785389f10f88f84f72007a2a5782))
+
+
+
+
+
+## [8.4.2](https://github.com/heroku/cli/compare/v8.4.1...v8.4.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* **run:** downgrade @heroku-cli/plugins-run to @oclif/core v1 ([#2460](https://github.com/heroku/cli/issues/2460)) ([7666459](https://github.com/heroku/cli/commit/76664592e108babd934e1d15c9481009f4fb422f))
+* **run:** move commands back into CLI & use @oclif/core v1 ([#2463](https://github.com/heroku/cli/issues/2463)) ([d072a64](https://github.com/heroku/cli/commit/d072a647d506026a541b16f8d311f9c7c59c582f)), closes [#2460](https://github.com/heroku/cli/issues/2460) [#2460](https://github.com/heroku/cli/issues/2460)
+
+
+
+
+
+## [8.4.1](https://github.com/heroku/cli/compare/v8.4.0...v8.4.1) (2023-08-29)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.4.0](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0) (2023-08-23)
+
+
+### Bug Fixes
+
+* rollbar version segmentation and telemetry initialization ([#2451](https://github.com/heroku/cli/issues/2451)) ([46725e7](https://github.com/heroku/cli/commit/46725e712f6d8bc17ff3b34bc4dc7e296bbf08fe))
+
+
+
+
+
+## [8.3.1](https://github.com/heroku/cli/compare/v8.3.0...v8.3.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* **cli:** update boolean logic and add package parser util ([#2449](https://github.com/heroku/cli/issues/2449)) ([9c7099c](https://github.com/heroku/cli/commit/9c7099c03fbfe85320cad7dad3776c758043b2ac))
+
+
+
+
+
+# [8.3.0](https://github.com/heroku/cli/compare/v8.2.0...v8.3.0) (2023-08-16)
+
+
+### Features
+
+* **cli:** add cli performance telemetry ([#2425](https://github.com/heroku/cli/issues/2425)) ([#2435](https://github.com/heroku/cli/issues/2435)) ([465c806](https://github.com/heroku/cli/commit/465c806e967e66ec94f9b5fd3a4fac4baea4af78)), closes [#2434](https://github.com/heroku/cli/issues/2434)
+
+
+
+
+
+# [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
+
+
+### Bug Fixes
+
+* build cli for all tests to save time. ([#2436](https://github.com/heroku/cli/issues/2436)) ([c81c801](https://github.com/heroku/cli/commit/c81c801e310738460f3d27d7241bfa2462426dcd))
+* monorepo dependency issues - upgrade to yarn 3 ([#2429](https://github.com/heroku/cli/issues/2429)) ([0d7e5ca](https://github.com/heroku/cli/commit/0d7e5ca519799af4352ec973f51b45748699f3a1))
+* turns out tslib is actually a runtime dependency, not just dev. ([#2427](https://github.com/heroku/cli/issues/2427)) ([76b3dc3](https://github.com/heroku/cli/commit/76b3dc3829a998c5235879f21b8b3795d1fd2044))
+* use correct path for update hooks ([#2426](https://github.com/heroku/cli/issues/2426)) ([e55e00f](https://github.com/heroku/cli/commit/e55e00f920a066af01f1febd697054f812183c92))
+
+
+### Features
+
+* **cli:** add rollbar ([#2424](https://github.com/heroku/cli/issues/2424)) ([9a52f2f](https://github.com/heroku/cli/commit/9a52f2f8e9c8bf27e0d5c5cf04ca592e61188359))
+
+
+
+
+
 ## [8.1.9](https://github.com/heroku/cli/compare/v8.1.8...v8.1.9) (2023-06-21)
 
 **Note:** Version bump only for package heroku
