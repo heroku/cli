@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 const fs = require('fs')
 const execa = require('execa')
@@ -30,9 +29,8 @@ async function calculateSHA256(fileName) {
 const ROOT = path.join(__dirname, 'homebrew')
 const TEMPLATES = path.join(ROOT, 'templates')
 const fileSuffix = '.tar.xz'
-const ARCH_x64 = 'x64'
-const ARCH_M1 = 'arm64'
-const ARCH_ARM = 'arm'
+const ARCH_INTEL = 'x64'
+const ARCH_ARM = 'arm64'
 
 function downloadFileFromS3(s3Path, fileName, downloadPath) {
   const downloadTo = path.join(downloadPath, fileName)
@@ -49,40 +47,39 @@ async function updateHerokuFormula(brewDir) {
   const s3KeyPrefix = `versions/${VERSION}/${GITHUB_SHA_SHORT}`
   const urlPrefix = `https://cli-assets.heroku.com/${s3KeyPrefix}`
 
-  const macFileNamePrefix = `${fileNamePrefix}-darwin-`
-  const linuxFileNamePrefix = `${fileNamePrefix}-linux-`
-  const macFileParts = [macFileNamePrefix, fileSuffix]
-  const linuxFileParts = [linuxFileNamePrefix, fileSuffix]
-
-  const fileName64Mac = macFileParts.join(ARCH_x64)
-  const fileNameM1Mac = macFileParts.join(ARCH_M1)
-  const fileNameLinux = linuxFileParts.join(ARCH_ARM)
-  const fileName64Linux = linuxFileParts.join(ARCH_x64)
+  const fileNameMacIntel = `${fileNamePrefix}-darwin-${ARCH_INTEL}${fileSuffix}`
+  const fileNameMacArm = `${fileNamePrefix}-darwin-${ARCH_ARM}${fileSuffix}`
+  const fileNameLinuxIntel = `${fileNamePrefix}-linux-${ARCH_INTEL}${fileSuffix}`
+  const fileNameLinuxArm = `${fileNamePrefix}-linux-arm${fileSuffix}`
 
   // download files from S3 for SHA calc
   await Promise.all([
-    downloadFileFromS3(s3KeyPrefix, fileName64Mac, __dirname),
-    downloadFileFromS3(s3KeyPrefix, fileNameM1Mac, __dirname),
-    downloadFileFromS3(s3KeyPrefix, fileNameLinux, __dirname),
-    downloadFileFromS3(s3KeyPrefix, fileName64Linux, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm, __dirname),
   ])
 
-  const sha256_64Mac = await calculateSHA256(path.join(__dirname, fileName64Mac))
-  const sha256M1Mac = await calculateSHA256(path.join(__dirname, fileNameM1Mac))
-  const sha256Linux = await calculateSHA256(path.join(__dirname, fileNameLinux))
-  const sha256_64Linux = await calculateSHA256(path.join(__dirname, fileName64Linux))
+  const sha256MacIntel = await calculateSHA256(path.join(__dirname, fileNameMacIntel))
+  const sha256MacArm = await calculateSHA256(path.join(__dirname, fileNameMacArm))
+  const sha256LinuxIntel = await calculateSHA256(path.join(__dirname, fileNameLinuxIntel))
+  const sha256LinuxArm = await calculateSHA256(path.join(__dirname, fileNameLinuxArm))
 
   const templateReplaced =
     template
       .replace('__CLI_VERSION__', VERSION)
-      .replace('__CLI_DOWNLOAD_URL__', `${urlPrefix}/${fileName64Mac}`)
-      .replace('__CLI_SHA256__', sha256_64Mac)
-      .replace('__CLI_DOWNLOAD_URL_M1__', `${urlPrefix}/${fileNameM1Mac}`)
-      .replace('__CLI_SHA256_M1__', sha256M1Mac)
-      .replace('__CLI_DOWNLOAD_URL_LINUX__', `${urlPrefix}/${fileNameLinux}`)
-      .replace('__CLI_SHA256_LINUX__', sha256Linux)
-      .replace('__CLI_DOWNLOAD_URL_LINUX_64__', `${urlPrefix}/${fileName64Linux}`)
-      .replace('__CLI_SHA256_LINUX_64__', sha256_64Linux)
+
+      .replace('__CLI_MAC_INTEL_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacIntel}`)
+      .replace('__CLI_MAC_INTEL_SHA256__', sha256MacIntel)
+
+      .replace('__CLI_MAC_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacArm}`)
+      .replace('__CLI_MAC_ARM_SHA256__', sha256MacArm)
+
+      .replace('__CLI_LINUX_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxIntel}`)
+      .replace('__CLI_LINUX_SHA256__', sha256LinuxIntel)
+
+      .replace('__CLI_LINUX_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxArm}`)
+      .replace('__CLI_LINUX_ARM_SHA256__', sha256LinuxArm)
 
   fs.writeFileSync(formulaPath, templateReplaced)
 
