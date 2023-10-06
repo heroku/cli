@@ -14,7 +14,7 @@ describe('host', () => {
   })
 
   context('for numbered essential plans', () => {
-    it ('shows data host', () => {
+    it('shows data host', () => {
       expect(host({plan: {name: 'heroku-postgresql:essential-0'}})).to.equal('https://postgres-api.heroku.com')
     })
   })
@@ -36,7 +36,7 @@ describe('host', () => {
     })
 
     context('for numbered essential plans', () => {
-      it ('shows data host', () => {
+      it('shows data host', () => {
         expect(host({plan: {name: 'heroku-postgresql:essential-0'}})).to.equal('https://data-host.herokuapp.com')
       })
     })
@@ -57,7 +57,7 @@ describe('host', () => {
     })
 
     context('for numbered essential plans', () => {
-      it ('shows data host', () => {
+      it('shows data host', () => {
         expect(host({plan: {name: 'heroku-postgresql:essential-0'}})).to.equal('https://postgresql-host.herokuapp.com')
       })
     })
@@ -78,7 +78,7 @@ describe('host', () => {
     })
 
     context('for numbered essential plans', () => {
-      it ('shows prod host', () => {
+      it('shows prod host', () => {
         expect(host({plan: {name: 'heroku-postgresql:essential-0'}})).to.equal('https://postgres-api.heroku.com')
       })
     })
