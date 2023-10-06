@@ -4,8 +4,8 @@ import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import * as shellescape from 'shell-escape'
 
-import {getPipeline} from '../../lib/ci/pipelines'
-import {configVars} from '../../lib/ci/heroku-api'
+import {getPipeline} from '../../../lib/ci/pipelines'
+import {getPipelineConfigVars} from '../../../lib/api'
 
 export default class CiConfig extends Command {
   static description = 'display CI config vars'
@@ -24,8 +24,8 @@ export default class CiConfig extends Command {
 
   async run() {
     const {flags} = await this.parse(CiConfig)
-    const pipeline = await getPipeline(flags, this)
-    const {body: config} = await configVars(pipeline.id, this)
+    const pipeline = await getPipeline(flags, this.heroku)
+    const {body: config} = await getPipelineConfigVars(this.heroku, pipeline.id)
 
     if (flags.shell) {
       Object.keys(config).forEach(key => {
