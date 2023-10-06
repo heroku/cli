@@ -1,11 +1,10 @@
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
+import * as fs from 'async-file'
 
-const fs = require('fs')
-const BB = require('bluebird')
-const writeFile = BB.promisify(fs.writeFile)
-const unlinkFile = BB.promisify(fs.unlink)
+const writeFile = fs.writeFile
+const unlinkFile = fs.unlink
 
 export default class CiMigrateManifest extends Command {
   static description = 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.'
@@ -26,7 +25,7 @@ export default class CiMigrateManifest extends Command {
     async function updateAppJson() {
       // Updating / Creating
       ux.action.start(`${action.charAt(0).toUpperCase() + action.slice(1)} app.json file`)
-      writeFile(appJSONPath, `${JSON.stringify(appJSON, null, '  ')}\n`)
+      await writeFile(appJSONPath, `${JSON.stringify(appJSON, null, '  ')}\n`)
       ux.action.stop()
     }
 
@@ -71,7 +70,7 @@ export default class CiMigrateManifest extends Command {
       appJSON.environments.test = appCiJSON
       await updateAppJson()
       ux.action.start('Deleting app-ci.json file')
-      unlinkFile(appCiJSONPath)
+      await unlinkFile(appCiJSONPath)
       ux.action.stop()
       showWarning()
     }

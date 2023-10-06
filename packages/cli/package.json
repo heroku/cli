@@ -45,7 +45,6 @@
     "@opentelemetry/semantic-conventions": "^1.15.1",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
-    "bluebird": "^3.5.3",
     "chalk": "^2.4.2",
     "date-fns": "^2.30.0",
     "debug": "4.1.1",

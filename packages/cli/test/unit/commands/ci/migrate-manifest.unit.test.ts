@@ -1,11 +1,10 @@
 import {expect, test} from '@oclif/test'
 import * as fs from 'async-file'
 import * as _ from 'lodash'
-const BB = require('bluebird')
-const writeFile = BB.promisify(fs.writeFile)
-const unlinkFile = BB.promisify(fs.unlink)
+const writeFile = fs.writeFile
+const unlinkFile = fs.unlink
 
-describe('ci:migrate-manifest', () => {
+describe('ci:migrate-manifest', async () => {
   let appJsonFileContents
   const appJsonPath = './app.json'
   const mockNewAppJsonFileContents = {environments: {}}
@@ -134,27 +133,27 @@ describe('ci:migrate-manifest', () => {
   test
     .stdout()
     .command(['ci:migrate-manifest'])
-    .it('creates an app.json file if none exists', ({stdout}) => {
+    .it('creates an app.json file if none exists', async ({stdout}) => {
       appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJsonFileContents)
+      const areJsonObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJsonFileContents)
 
       expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(areJSONObjectsEqual).to.equal(true)
-      unlinkFile(appJsonPath)
+      expect(areJsonObjectsEqual).to.equal(true)
+      await unlinkFile(appJsonPath)
     })
 
   test
     .stdout()
-    .do(() => {
-      writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
+    .do(async () => {
+      await writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
     })
     .command(['ci:migrate-manifest'])
-    .it('creates converted app.json file when app-ci.json file is present', ({stdout}) => {
+    .it('creates converted app.json file when app-ci.json file is present', async ({stdout}) => {
       appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJSONObjectsEqual = _.isEqual(appJsonFileContents, mockConvertedAppJSONFileContents)
+      const areJsonObjectsEqual = _.isEqual(appJsonFileContents, mockConvertedAppJSONFileContents)
 
       expect(stdout).to.equal('Please check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(areJSONObjectsEqual).to.equal(true)
-      unlinkFile(appJsonPath)
+      expect(areJsonObjectsEqual).to.equal(true)
+      await unlinkFile(appJsonPath)
     })
 })
