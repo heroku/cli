@@ -18,18 +18,31 @@ async function run(context, heroku) {
 
   if (status.error) throw new Error(status.error)
 
-  if (!replica.following) {
-    throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
+  let confirmText
+  if (flags.fast) {
+    // TODO: Scary warning about in-place upgrades being beta?
+    confirmText = `WARNING: Destructive action
+    ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
+     
+    This cannot be undone.`
+  } else {
+    if (!replica.following) {
+      throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
+    }
+
+    let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
+    confirmText = `WARNING: Destructive action
+    ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
+    
+    This cannot be undone.`
   }
 
-  let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
-
-  await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
-${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
-
-This cannot be undone.`)
+  await cli.confirmApp(app, flags.confirm, confirmText)
 
   let data = {version: flags.version}
+  if (flags.fast) {
+    data.fast = true
+  }
 
   await cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, (async function () {
     await heroku.post(`/client/v11/databases/${db.id}/upgrade`, {host: host(db), body: data})
@@ -48,6 +61,7 @@ module.exports = {
   flags: [
     {name: 'confirm', char: 'c', hasValue: true},
     {name: 'version', char: 'v', description: 'PostgreSQL version to upgrade to', hasValue: true},
+    {name: 'fast'},
   ],
   run: cli.command({preauth: true}, run),
 }
