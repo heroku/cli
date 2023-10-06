@@ -108,6 +108,13 @@ async function createTestRun(client, body) {
   })
 }
 
+function configVars(client, pipelineID) {
+  return client.request({
+    headers: {Accept: PIPELINE_HEADER},
+    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
+  })
+}
+
 function setConfigVars(client, pipelineID, body) {
   return client.request({
     method: 'PATCH',
@@ -118,6 +125,7 @@ function setConfigVars(client, pipelineID, body) {
 }
 
 module.exports = {
+  configVars,
   createSource,
   createTestRun,
   getDyno,
