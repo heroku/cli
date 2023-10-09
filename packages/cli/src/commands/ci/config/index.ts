@@ -17,7 +17,7 @@ export default class CiConfig extends Command {
 
   static flags = {
     app: cmdFlags.string({char: 'a', description: 'app name'}),
-    shell: cmdFlags.string({char: 's', description: 'output config vars in shell format'}),
+    shell: cmdFlags.boolean({char: 's', description: 'output config vars in shell format'}),
     json: cmdFlags.boolean({description: 'output config vars in json format'}),
     pipeline: cmdFlags.pipeline(),
   }

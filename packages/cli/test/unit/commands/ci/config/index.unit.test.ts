@@ -68,7 +68,7 @@ describe('ci:config', () => {
       api.get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
         .reply(200, config)
     })
-    .command(['ci:config', `--pipeline=${pipeline.name}`, '--shell=true'])
+    .command(['ci:config', `--pipeline=${pipeline.name}`, '--shell'])
     .it('displays config formatted for shell', ({stdout}) => {
       expect(stdout).to.equal('KEY1=VALUE1\nOTHER=test\nRAILS_ENV=test\n')
     })
