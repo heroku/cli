@@ -42,5 +42,5 @@ describe('apps:favorites:add', () => {
       expect(error).to.be.an.instanceof(Error)
       expect(error.message).to.contain('App not found')
     })
-    .it('errors if app is already favorited')
+    .it('errors if app not found')
 })
