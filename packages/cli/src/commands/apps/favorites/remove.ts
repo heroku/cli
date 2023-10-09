@@ -27,17 +27,9 @@ export default class Remove extends Command {
       throw new Error(`${color.app(app)} is not already a favorite app.`)
     }
 
-    try {
-      await this.heroku.delete(`/favorites/${favorite.id}`, {
-        hostname: 'particleboard.heroku.com',
-      })
-    } catch (error: any) {
-      if (error.statusCode === 404) {
-        ux.error('App not found')
-      } else {
-        ux.error(error.cause)
-      }
-    }
+    await this.heroku.delete(`/favorites/${favorite.id}`, {
+      hostname: 'particleboard.heroku.com',
+    })
 
     ux.action.stop()
   }
