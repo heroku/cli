@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
-import {Favorites} from '../../../lib/types/favortites'
+import {Favorites} from '../../../lib/types/favorites'
 
 export default class Add extends Command {
   static description = 'favorites an app'
