@@ -36,17 +36,19 @@ describe('util', () => {
       expect(parsed.user).to.equal('user')
       expect(parsed.password).to.equal('pass')
     })
+  })
 
+  describe('essentialPlan', () => {
     it('correctly identifies essential plans', () => {
-      const addon = (plan) => ({ plan: { name: plan } })
-      const parsed = (addon) => util.essentialPlan(addon)
+      const addon = plan => ({plan: {name: plan}})
+      const parsed = addon => util.essentialPlan(addon)
 
-      expect(parsed(addon("heroku-postgresql:mini"))).to.equal(true)
-      expect(parsed(addon("heroku-postgresql:basic"))).to.equal(true)
-      expect(parsed(addon("heroku-postgresql:essential-0"))).to.equal(true)
-      expect(parsed(addon("heroku-postgresql:standard-0"))).to.equal(false)
-      expect(parsed(addon("heroku-postgresql:private-0"))).to.equal(false)
-      expect(parsed(addon("heroku-postgresql:shield-0"))).to.equal(false)
+      expect(parsed(addon('heroku-postgresql:mini'))).to.equal(true)
+      expect(parsed(addon('heroku-postgresql:basic'))).to.equal(true)
+      expect(parsed(addon('heroku-postgresql:essential-0'))).to.equal(true)
+      expect(parsed(addon('heroku-postgresql:standard-0'))).to.equal(false)
+      expect(parsed(addon('heroku-postgresql:private-0'))).to.equal(false)
+      expect(parsed(addon('heroku-postgresql:shield-0'))).to.equal(false)
     })
   })
 })
