@@ -6,7 +6,7 @@ const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
-const buildCmd = (addon) => {
+const buildCmd = addon => {
   return proxyquire('../../../../commands/links/destroy', {
     '@heroku-cli/plugin-addons': {
       resolve: {addon: () => addon},
@@ -34,7 +34,7 @@ describe('pg:links:destroy', () => {
     pg.done()
   })
 
-  context("on an essential database", () => {
+  describe('on an essential database', () => {
     let addon = {
       id: 1,
       name: 'postgres-1',
@@ -50,7 +50,7 @@ describe('pg:links:destroy', () => {
     })
   })
 
-  context("on a production database", () => {
+  describe('on a production database', () => {
     let addon = {
       id: 1,
       name: 'postgres-1',
