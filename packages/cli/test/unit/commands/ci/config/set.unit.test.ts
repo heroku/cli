@@ -21,4 +21,12 @@ describe('heroku ci:config:set', function () {
       expect(stdout).to.include(key)
       expect(stdout).to.include(value)
     })
+
+  test
+    .stderr()
+    .command(['ci:config:set', `--pipeline=${pipeline.id}`])
+    .catch(error => {
+      expect(error.message).to.equal('Usage: heroku ci:config:set KEY1 [KEY2 ...]\nMust specify KEY to set.')
+    })
+    .it('errors with example of valid args')
 })
