@@ -8,8 +8,7 @@ describe('apps:favorites:add', () => {
     .nock('https://particleboard.heroku.com', api => {
       api.get('/favorites?type=app')
         .reply(200, [])
-
-      api.post('/favorites', {type: 'app', resource_id: MY_APP})
+        .post('/favorites', {type: 'app', resource_id: MY_APP})
         .reply(201)
     })
     .command(['apps:favorites:add', `--app=${MY_APP}`])
@@ -33,9 +32,11 @@ describe('apps:favorites:add', () => {
 
   test
     .stderr()
-    .nock('https://particleboard.heroku.com', api => {
+    .nock('https://particleboard.heroku.com', {}, api => {
       api.get('/favorites?type=app')
         .reply(200, [{resource_name: MY_APP}])
+        .post('/favorites', {type: 'app', resource_id: 'NOT_AN_APP'})
+        .replyWithError({statusCode: 404})
     })
     .command(['apps:favorites:add', '--app=NOT_AN_APP'])
     .catch((error: any) => {
