@@ -1,31 +1,51 @@
 import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
-const MY_APP2 = 'myotherapp'
-describe('apps:favorites', () => {
+
+describe('apps:stacks', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://particleboard.heroku.com', api => {
-      api.get('/favorites?type=app')
-        .reply(200, [{resource_name: MY_APP}, {resource_name: MY_APP2}])
+    .nock('https://api.heroku.com:443', api => {
+      api.get(`/apps/${MY_APP}`)
+        .reply(200, {
+          name: MY_APP,
+          build_stack: {name: 'cedar-14'},
+          stack: {name: 'cedar-14'},
+        })
+
+      api.get('/stacks')
+        .reply(200, [
+          {name: 'cedar'},
+          {name: 'cedar-14'},
+        ])
     })
-    .command(['apps:favorites'])
-    .it('shows all favorite apps', ({stdout, stderr}) => {
-      expect(stdout).to.contain('=== Favorited Apps\n\nmyapp\nmyotherapp\n')
+    .command(['apps:stacks', '-a', MY_APP])
+    .it('show available stacks', ({stdout, stderr}) => {
+      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar\n* cedar-14\n')
       expect(stderr).to.equal('')
     })
 
   test
     .stdout()
     .stderr()
-    .nock('https://particleboard.heroku.com', api => {
-      api.get('/favorites?type=app')
-        .reply(200, [{resource_name: MY_APP}, {resource_name: MY_APP2}])
+    .nock('https://api.heroku.com:443', api => {
+      api.get(`/apps/${MY_APP}`)
+        .reply(200, {
+          name: MY_APP,
+          build_stack: {name: 'cedar'},
+          stack: {name: 'cedar-14'},
+        })
+
+      api.get('/stacks')
+        .reply(200, [
+          {name: 'cedar'},
+          {name: 'cedar-14'},
+        ])
     })
-    .command(['apps:favorites', '--json'])
-    .it('shows all favorite apps as json', ({stdout, stderr}) => {
-      expect(stdout).to.contain('[\n  {\n    "resource_name": "myapp"\n  },\n  {\n    "resource_name": "myotherapp"\n  }\n]\n')
+    .command(['apps:stacks', '-a', MY_APP])
+    .it('show an undeployed build stack', ({stdout, stderr}) => {
+      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar (active on next deploy)\n* cedar-14\n')
       expect(stderr).to.equal('')
     })
 })
