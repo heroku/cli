@@ -636,35 +636,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^9.0.0-alpha.0, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
-  version: 0.0.0-use.local
-  resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
-  dependencies:
-    "@heroku-cli/command": ^9.0.2
-    "@heroku-cli/plugin-run-v5": ^9.0.0-alpha.0
-    "@oclif/plugin-legacy": ^1.3.0
-    ansi-escapes: 3.2.0
-    bluebird: ^3.5.3
-    chai: ^4.2.0
-    estraverse: ^4.2.0
-    github-url-to-object: ^4.0.4
-    got: ^9.6.0
-    heroku-cli-util: ^8.0.11
-    heroku-client: ^3.0.7
-    inquirer: ^7.0.0
-    lodash.flatten: ^4.4.0
-    mocha: ^5.1.1
-    nock: ^10.0.6
-    nyc: ^15.1.0
-    oclif: 3.11.3
-    shell-escape: ^0.2.0
-    sinon: ^1.17.6
-    std-mocks: ^1.0.1
-    temp: ^0.9.4
-    validator: ^13.7.0
-  languageName: unknown
-  linkType: soft
-
 "@heroku-cli/plugin-container-registry-v5@^9.0.0-alpha.0, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
@@ -807,7 +778,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run-v5@^9.0.0-alpha.0, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
+"@heroku-cli/plugin-run-v5@workspace:packages/run-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
@@ -5074,7 +5045,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.5.1, bluebird@npm:^3.5.3":
+"bluebird@npm:^3.5.1":
   version: 3.7.1
   resolution: "bluebird@npm:3.7.1"
   checksum: 58c295399e109925149977ebcb40e42fd109d3e458899e71441bc7e5e0867bbd796fdd20278b425fa29f13377fe335fbfc2a6e68e5ca1da03b1c3afdc439d097
@@ -7667,7 +7638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"estraverse@npm:^4.0.0, estraverse@npm:^4.1.0, estraverse@npm:^4.1.1, estraverse@npm:^4.2.0":
+"estraverse@npm:^4.0.0, estraverse@npm:^4.1.0, estraverse@npm:^4.1.1":
   version: 4.2.0
   resolution: "estraverse@npm:4.2.0"
   checksum: 88c3ec2ef3550a5ddb0dc88d596e9c87c92e6e6a58183d3e5851fff844206081abc92ce57a0f227e685f18742cbc90b2019d12951f7d7dbe066e4440ab3acda6
@@ -8267,15 +8238,6 @@ __metadata:
     combined-stream: ^1.0.6
     mime-types: ^2.1.12
   checksum: 10c1780fa13dbe1ff3100114c2ce1f9307f8be10b14bf16e103815356ff567b6be39d70fc4a40f8990b9660012dc24b0f5e1dde1b6426166eb23a445ba068ca3
-  languageName: node
-  linkType: hard
-
-"formatio@npm:1.1.1":
-  version: 1.1.1
-  resolution: "formatio@npm:1.1.1"
-  dependencies:
-    samsam: ~1.1
-  checksum: 5b3610ebb10fb13e8923c54efd1cb3e336c9181ae15b76d823a37849fb9cf81b033a7d0c95857ab080bf6855e322858ee1ce5009682e79113930b4c8c3d311fc
   languageName: node
   linkType: hard
 
@@ -9253,7 +9215,6 @@ __metadata:
     "@heroku-cli/plugin-addons-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-apps-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-certs-v5": ^9.0.0-alpha.0
-    "@heroku-cli/plugin-ci-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-container-registry-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-orgs-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-pg-v5": ^9.0.0-alpha.0
@@ -9807,27 +9768,6 @@ __metadata:
     strip-ansi: ^5.0.0
     through: ^2.3.6
   checksum: e7799200103f7b7a7e51b5bf9a00848cf0f7c4b596a19e196ecf6e7f3f96d26f5dd1dd3be49bdd0217e0b7ad9ed4216d35a41236fb8ef5621a780eec316de333
-  languageName: node
-  linkType: hard
-
-"inquirer@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "inquirer@npm:7.0.0"
-  dependencies:
-    ansi-escapes: ^4.2.1
-    chalk: ^2.4.2
-    cli-cursor: ^3.1.0
-    cli-width: ^2.0.0
-    external-editor: ^3.0.3
-    figures: ^3.0.0
-    lodash: ^4.17.15
-    mute-stream: 0.0.8
-    run-async: ^2.2.0
-    rxjs: ^6.4.0
-    string-width: ^4.1.0
-    strip-ansi: ^5.1.0
-    through: ^2.3.6
-  checksum: 0e02dc507abd571a6153dc4ec54b87aee4ad32593ddf9fe22cf5aac1627c7f1afc626c5ae48055c1ee7462e6f65bd7dcaeadd407c5104a91b585b0b2d69dfa1d
   languageName: node
   linkType: hard
 
@@ -11165,13 +11105,6 @@ __metadata:
     chalk: ^4.1.0
     is-unicode-supported: ^0.1.0
   checksum: fce1497b3135a0198803f9f07464165e9eb83ed02ceb2273930a6f8a508951178d8cf4f0378e9d28300a2ed2bc49050995d2bd5f53ab716bb15ac84d58c6ef74
-  languageName: node
-  linkType: hard
-
-"lolex@npm:1.3.2":
-  version: 1.3.2
-  resolution: "lolex@npm:1.3.2"
-  checksum: 9989a89d7c1bc0b5d549a60d8822a93a8d5af9fe381840f5a9c4d0a1291a70be102db6989a29a06b917f4481c9dc4ba69961157a66a9b22ff49fc045e5c5a1e1
   languageName: node
   linkType: hard
 
@@ -14927,24 +14860,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"samsam@npm:1.1.2":
-  version: 1.1.2
-  resolution: "samsam@npm:1.1.2"
-  checksum: 7a500245529b856f5299b3d39ceee71e39e6b9a5ec420f34d77b6fa0523e44c0c1b6592ff53c57fd525e2172417e07ed54676f7395a3388c293eecc70c267aed
-  languageName: node
-  linkType: hard
-
 "samsam@npm:1.3.0, samsam@npm:1.x, samsam@npm:^1.1.3":
   version: 1.3.0
   resolution: "samsam@npm:1.3.0"
   checksum: 084914f7707538b735a41e0edba86abd8f9dd2a47a79511b56b55e8032801db767d9eb31899246179295fbb9ab7ab4d12ebc3410ad4265d897cbf0056c3db63d
-  languageName: node
-  linkType: hard
-
-"samsam@npm:~1.1":
-  version: 1.1.3
-  resolution: "samsam@npm:1.1.3"
-  checksum: 5332ddb59f54f5b66ad8f7c5458ef8732101da4a3bd7d75f3439b58f32a800255df416b04fea899bd04566ffdc3c8f18d107e3522f271894130dbe89ac3fe75a
   languageName: node
   linkType: hard
 
@@ -15256,18 +15175,6 @@ __metadata:
     nise: ^1.4.10
     supports-color: ^5.5.0
   checksum: a95a1deb1c4cd5a904a629c60f49040ff7555d85099f761b853b88fefc84b7ce482016b44924690da7ea2f46e3747d192fd58a5141eec04ecbdcc474343184c3
-  languageName: node
-  linkType: hard
-
-"sinon@npm:^1.17.6":
-  version: 1.17.7
-  resolution: "sinon@npm:1.17.7"
-  dependencies:
-    formatio: 1.1.1
-    lolex: 1.3.2
-    samsam: 1.1.2
-    util: ">=0.10.3 <1"
-  checksum: e1b761ade2149f1c47a89a8796625392cb38a7fa189f71883696bf09c5a20d0780ca73bb95c7eae91a6f0d072905da65ff4ce5e49a5196ed4eb573d28fbcd9ca
   languageName: node
   linkType: hard
 
@@ -15878,7 +15785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^5.0.0, strip-ansi@npm:^5.1.0, strip-ansi@npm:^5.2.0":
+"strip-ansi@npm:^5.0.0, strip-ansi@npm:^5.2.0":
   version: 5.2.0
   resolution: "strip-ansi@npm:5.2.0"
   dependencies:
@@ -16187,16 +16094,6 @@ __metadata:
   dependencies:
     rimraf: ~2.6.2
   checksum: 568be30ec54f2a9d74b10caebb0c8e169577741122822aaeee13150af83fab2a73954ef12d7772b85f136529ffa80e940a51b42735d010dea0a634fbc70c0223
-  languageName: node
-  linkType: hard
-
-"temp@npm:^0.9.4":
-  version: 0.9.4
-  resolution: "temp@npm:0.9.4"
-  dependencies:
-    mkdirp: ^0.5.1
-    rimraf: ~2.6.2
-  checksum: 8709d4d63278bd309ca0e49e80a268308dea543a949e71acd427b3314cd9417da9a2cc73425dd9c21c6780334dbffd67e05e7be5aaa73e9affe8479afc6f20e3
   languageName: node
   linkType: hard
 
@@ -16969,7 +16866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:>=0.10.3 <1, util@npm:^0.12.4":
+"util@npm:^0.12.4":
   version: 0.12.4
   resolution: "util@npm:0.12.4"
   dependencies:
