@@ -1,41 +1,48 @@
-'use strict'
+import color from '@heroku-cli/color'
+import {Command, flags} from '@heroku-cli/command'
+import {Args, ux} from '@oclif/core'
+import push from '../../../lib/git/push'
+import * as Heroku from '@heroku-cli/schema'
 
-const cli = require('heroku-cli-util')
-const push = require('../../../push')
-
-function map(stack) {
+function map(stack: string): string {
   return stack === 'cedar-10' ? 'cedar' : stack
 }
 
-async function run(context, heroku) {
-  let stack = map(context.args.stack)
-  const request = heroku.request({
-    method: 'PATCH',
-    path: `/apps/${context.app}`,
-    body: {build_stack: stack},
-  })
-  const app = await cli.action(`Setting stack to ${cli.color.green(stack)}`, request)
-  // A redeploy is not required for apps that have never been deployed, since
-  // API updates the app's `stack` to match `build_stack` immediately.
-  if (app.stack.name !== app.build_stack.name) {
-    cli.log(`You will need to redeploy ${cli.color.app(context.app)} for the change to take effect.`)
-    cli.log(`Run ${cli.color.cmd(push(context.flags.remote))} to trigger a new build on ${cli.color.app(context.app)}.`)
-  }
-}
+export default class Set extends Command {
+  static description = 'set the stack of an app'
 
-let cmd = {
-  needsApp: true,
-  needsAuth: true,
-  description: 'set the stack of an app',
-  examples: `$ heroku stack:set heroku-22 -a myapp
+  static example = `$ heroku stack:set heroku-22 -a myapp
 Setting stack to heroku-22... done
 You will need to redeploy myapp for the change to take effect.
-Run git push heroku main to trigger a new build on myapp.`,
-  args: [{name: 'stack'}],
-  run: cli.command(run),
-}
+Run git push heroku main to trigger a new build on myapp.`
 
-module.exports = [
-  Object.assign({topic: 'apps', command: 'stacks:set'}, cmd),
-  Object.assign({topic: 'stack', command: 'set', hidden: true}, cmd),
-]
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+
+  static args = {
+    stack: Args.string({required: true}),
+  }
+
+  static aliases = ['stack:set']
+
+  async run() {
+    const {flags, args} = await this.parse(Set)
+    const stack = map(args.stack)
+
+    ux.action.start(`Setting stack to ${color.green(stack)}`)
+    const {body: app} = await this.heroku.patch<Heroku.App>(`/apps/${flags.app}`, {
+      body: {build_stack: stack},
+    })
+
+    // A redeployment is not required for apps that have never been deployed, since
+    // API updates the app's `stack` to match `build_stack` immediately.
+    if (app.stack?.name !== app.build_stack?.name) {
+      ux.log(`You will need to redeploy ${color.app(flags.app)} for the change to take effect.`)
+      ux.log(`Run ${color.cmd(push(flags.remote))} to trigger a new build on ${color.app(flags.app)}.`)
+    }
+
+    ux.action.stop()
+  }
+}

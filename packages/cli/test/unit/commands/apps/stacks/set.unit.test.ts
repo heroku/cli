@@ -1,68 +1,71 @@
-'use strict'
-/* globals beforeEach commands */
+import {expect, test} from '@oclif/test'
 
-const expect = require('chai').expect
-const cli = require('heroku-cli-util')
-const nock = require('nock')
-const cmd = commands.find(c => c.topic === 'stack' && c.command === 'set')
+const APP = 'myapp'
+const TO_STACK = 'heroku-22'
+const MAIN_REMOTE = 'main'
+const STAGE_REMOTE = 'staging'
 
 const pendingUpgradeApp = {
-  name: 'myapp',
+  name: APP,
   stack: {
     name: 'heroku-16',
   },
   build_stack: {
-    name: 'heroku-22',
+    name: TO_STACK,
   },
 }
 
 const completedUpgradeApp = {
-  name: 'myapp',
+  name: APP,
   stack: {
-    name: 'heroku-22',
+    name: TO_STACK,
   },
   build_stack: {
-    name: 'heroku-22',
+    name: TO_STACK,
   },
 }
 
-describe('stack:set', function () {
-  beforeEach(() => cli.mockConsole())
+describe('stack:set', () => {
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com', api => {
+      api
+        .patch(`/apps/${APP}`, {build_stack: TO_STACK})
+        .reply(200, pendingUpgradeApp)
+    })
+    .command(['apps:stacks:set', `--app=${APP}`, TO_STACK])
+    .it('sets the stack', ({stderr, stdout}) => {
+      expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
+      expect(stderr).to.contain('... done')
+      expect(stdout).to.equal(`You will need to redeploy ⬢ ${APP} for the change to take effect.\nRun git push heroku ${MAIN_REMOTE} to trigger a new build on ⬢ ${APP}.\n`)
+    })
 
-  it('sets the stack', function () {
-    let api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp', {build_stack: 'heroku-22'})
-      .reply(200, pendingUpgradeApp)
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com', api => {
+      api.patch(`/apps/${APP}`, {build_stack: TO_STACK})
+        .reply(200, pendingUpgradeApp)
+    })
+    .command(['apps:stacks:set', `--app=${APP}`, '--remote=staging', TO_STACK])
+    .it('sets the stack on a different remote', ({stderr, stdout}) => {
+      expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
+      expect(stderr).to.contain('... done')
+      expect(stdout).to.equal(`You will need to redeploy ⬢ ${APP} for the change to take effect.\nRun git push ${STAGE_REMOTE} main to trigger a new build on ⬢ ${APP}.\n`)
+    })
 
-    return cmd.run({app: 'myapp', args: {stack: 'heroku-22'}, flags: {}})
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-22... done\n'))
-      .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
-Run git push heroku main to trigger a new build on myapp.
-`))
-      .then(() => api.done())
-  })
-
-  it('sets the stack on a different remote', function () {
-    let api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp', {build_stack: 'heroku-22'})
-      .reply(200, pendingUpgradeApp)
-
-    return cmd.run({app: 'myapp', args: {stack: 'heroku-22'}, flags: {remote: 'staging'}})
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-22... done\n'))
-      .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
-Run git push staging main to trigger a new build on myapp.
-`))
-      .then(() => api.done())
-  })
-
-  it('does not show the redeploy message if the stack was immediately updated by API', function () {
-    let api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp', {build_stack: 'heroku-22'})
-      .reply(200, completedUpgradeApp)
-
-    return cmd.run({app: 'myapp', args: {stack: 'heroku-22'}, flags: {}})
-      .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-22... done\n'))
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => api.done())
-  })
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com', api => {
+      api.patch(`/apps/${APP}`, {build_stack: TO_STACK})
+        .reply(200, completedUpgradeApp)
+    })
+    .command(['apps:stacks:set', `--app=${APP}`, TO_STACK])
+    .it('does not show the redeploy message if the stack was immediately updated by API', ({stderr, stdout}) => {
+      expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
+      expect(stderr).to.contain('... done')
+      expect(stdout).to.equal('')
+    })
 })
