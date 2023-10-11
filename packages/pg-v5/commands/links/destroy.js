@@ -5,9 +5,12 @@ const cli = require('heroku-cli-util')
 async function run(context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
+  const util = require('../../lib/util')
   let {app, args, flags} = context
 
   const db = await fetcher.addon(app, args.database)
+
+  if (util.essentialPlan(db)) throw new Error('pg:links isn’t available for Essential-tier databases.')
 
   await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
 This command will affect the database ${cli.color.addon(db.name)}
