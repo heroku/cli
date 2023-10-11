@@ -8,7 +8,7 @@ import {App} from '../../../lib/types/app'
 export default class StacksIndex extends Command {
   static description = 'show the list of available stacks'
   static topic = 'apps'
-  static aliases = ['apps:stacks:index', 'stack']
+  static aliases = ['stack']
 
   static flags = {
     app: flags.app({required: true}),
