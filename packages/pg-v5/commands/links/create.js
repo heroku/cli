@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 async function run(context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
+  const util = require('../../lib/util')
   const addons = require('@heroku-cli/plugin-addons').resolve
   let {app, args, flags} = context
 
@@ -18,6 +19,9 @@ async function run(context, heroku) {
     fetcher.addon(app, args.database),
     service(args.remote),
   ])
+
+  if (util.essentialPlan(db)) throw new Error('pg:links isn’t available for Essential-tier databases.')
+  if (util.essentialPlan(target)) throw new Error('pg:links isn’t available for Essential-tier databases.')
 
   await cli.action(`Adding link from ${cli.color.addon(target.name)} to ${cli.color.addon(db.name)}`, (async function () {
     let link = await heroku.post(`/client/v11/databases/${db.id}/links`, {
