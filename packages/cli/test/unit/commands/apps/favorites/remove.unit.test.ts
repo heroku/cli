@@ -14,8 +14,8 @@ describe('apps:favorites:remove', () => {
     })
     .command(['apps:favorites:remove', `--app=${MY_APP}`])
     .it('removes the app as a favorite', ({stdout, stderr}) => {
-      expect(stdout).to.equal('')
-      expect(stderr).to.contain(`Removing ⬢ ${MY_APP} from favorites... done`)
+      expect(stdout).to.contain('Removing ⬢ myapp from favorites... done')
+      expect(stderr).to.equal('')
     })
 
   test
