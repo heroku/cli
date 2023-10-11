@@ -129,6 +129,7 @@ exports.getConnectionDetails = function (attachment, config) {
 
   return payload
 }
+
 // eslint-disable-next-line no-implicit-coercion
 exports.essentialNumPlan = a => !!a.plan.name.split(':')[1].match(/^essential/)
 
@@ -136,7 +137,7 @@ exports.essentialNumPlan = a => !!a.plan.name.split(':')[1].match(/^essential/)
 exports.legacyEssentialPlan = a => !!a.plan.name.split(':')[1].match(/(dev|basic|mini)$/)
 
 // eslint-disable-next-line no-implicit-coercion
-exports.essentialPlan = (a) => {
+exports.essentialPlan = a => {
   return this.essentialNumPlan(a) || this.legacyEssentialPlan(a)
 }
 
