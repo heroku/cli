@@ -25,8 +25,6 @@ Run git push heroku main to trigger a new build on myapp.`
     stack: Args.string({required: true}),
   }
 
-  static aliases = ['stack:set']
-
   async run() {
     const {flags, args} = await this.parse(Set)
     const stack = map(args.stack)
