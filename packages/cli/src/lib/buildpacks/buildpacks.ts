@@ -6,7 +6,7 @@ import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 
 // eslint-disable-next-line node/no-missing-require
-const push = require('./push')
+const push = require('../git/push')
 const validUrl = require('valid-url')
 
 export type BuildpackResponse = {
