@@ -1,5 +1,4 @@
 import {Config, Plugin} from '@oclif/core'
-import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
 import * as path from 'path'
 
@@ -36,7 +35,7 @@ runtest('Create', () => {
       cmd.config.plugins = [plugin]
       await plugin.load()
       // eslint-disable-next-line require-atomic-updates
-      plugin.manifest = await loadJSON(path.resolve(__dirname, '../../../test.oclif.manifest.json'))
+      plugin.manifest = require('../../../test.oclif.manifest.json')
       // eslint-disable-next-line require-atomic-updates
       plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({
         ...c as Record<string, unknown>,
