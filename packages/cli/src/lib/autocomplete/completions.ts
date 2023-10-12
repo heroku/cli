@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import {deps} from '@heroku-cli/command/lib/deps'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git'
-import {Completion, CompletionContext} from '@oclif/core/lib/interfaces/parser'
+import {Completion, CompletionContext} from '@heroku-cli/command/lib/completions'
 import * as path from 'path'
 import {flatten} from 'lodash'
 

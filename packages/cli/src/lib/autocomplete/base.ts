@@ -1,5 +1,5 @@
 import Command from '@heroku-cli/command'
-import {Completion} from '@oclif/core/lib/interfaces/parser'
+import {Completion} from '@heroku-cli/command/lib/completions'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
