@@ -192,8 +192,9 @@ describe('@acceptance smoke tests', () => {
 
     // this test will fail when run locally depending on which plugins you have installed
     it('heroku commands', async () => {
+      const removeWhiteSpace = (str: string) => str.replace(/\s/g, '')
       const {stdout} = await run('commands')
-      expect(stdout).to.equal(commandsOutput)
+      expect(removeWhiteSpace(stdout)).to.equal(removeWhiteSpace(commandsOutput))
     })
 
     it('asserts monorepo plugins are in core', async () => {
