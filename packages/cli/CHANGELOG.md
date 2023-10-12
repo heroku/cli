@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.6.0-beta.1](https://github.com/heroku/cli/compare/v8.6.0-beta.0...v8.6.0-beta.1) (2023-10-12)
+
+
+### Reverts
+
+* Revert "v8.6.0-beta.1" ([3e26913](https://github.com/heroku/cli/commit/3e2691307e6d11c2c5f66e2fe91bfa6b90ac843e))
+
+
+
+
+
 # [8.6.0-beta.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0-beta.0) (2023-10-06)
 
 
