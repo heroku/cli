@@ -4,9 +4,9 @@ import * as _ from 'lodash'
 import color from '@heroku-cli/color'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
 // import {Stacks} from '../../../lib/types/stacks'
-// import {App} from '../../../lib/types/app'
+import {App, Apps} from '../../lib/types/app'
 
-function annotateAppName(app) {
+function annotateAppName(app: App) {
   let name = `${app.name}`
   if (app.locked && app.internal_routing) {
     name = `${app.name} [internal/locked]`
@@ -19,7 +19,7 @@ function annotateAppName(app) {
   return name
 }
 
-function regionizeAppName(app) {
+function regionizeAppName(app: App) {
   const name = annotateAppName(app)
   if (app.region && app.region.name !== 'us') {
     return `${name} (${color.green(app.region.name)})`
@@ -28,12 +28,12 @@ function regionizeAppName(app) {
   return name
 }
 
-function listApps(apps) {
-  apps.forEach(app => cli.log(regionizeAppName(app)))
+function listApps(apps: Apps) {
+  apps.forEach(app => ux.log(regionizeAppName(app)))
   ux.log()
 }
 
-function print(apps, user) {
+function print(apps: any, user, space, team) {
   if (apps.length === 0) {
     if (space) ux.log(`There are no apps in space ${color.green(space)}.`)
     else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
@@ -45,7 +45,7 @@ function print(apps, user) {
     ux.styledHeader(`Apps in team ${color.magenta(team)}`)
     listApps(apps)
   } else {
-    apps = partition(apps, app => app.owner.email === user.email)
+    apps = _.partition(apps, (app: App) => app.owner.email === user.email)
     if (apps[0].length > 0) {
       ux.styledHeader(`${color.cyan(user.email)} Apps`)
       listApps(apps[0])
@@ -89,10 +89,8 @@ export default class AppsIndex extends Command {
   async run() {
     const {flags} = await this.parse(AppsIndex)
 
-    const {body: app} = await this.heroku.get<App>(`/apps/${flags.app}`)
-    const {body: stacks} = await this.heroku.get<Stacks>('/stacks')
-
-    const {sortBy, partition} = require('lodash')
+    // const {body: app} = await this.heroku.get<App>(`/apps/${flags.app}`)
+    // const {body: stacks} = await this.heroku.get<Stacks>('/stacks')
 
     const teamIdentifier = flags.team
     let team = (!flags.personal && teamIdentifier) ? teamIdentifier : null
@@ -107,19 +105,19 @@ export default class AppsIndex extends Command {
       heroku.get(path),
       heroku.get('/account'),
     ])
-    apps = sortBy(apps, 'name')
+    apps = _.sortBy(apps, 'name')
     if (space) {
-      apps = apps.filter(a => a.space && (a.space.name === space || a.space.id === space))
+      apps = apps.filter((a: App) => a.space && (a.space.name === space || a.space.id === space))
     }
 
     if (internalRouting) {
-      apps = apps.filter(a => a.internal_routing)
+      apps = apps.filter((a: App) => a.internal_routing)
     }
 
     if (flags.json) {
       ux.styledJSON(apps)
     } else {
-      print(apps, user)
+      print(apps, user, space, team)
     }
   }
 }
