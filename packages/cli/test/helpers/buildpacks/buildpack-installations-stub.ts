@@ -1,4 +1,5 @@
-import {Scope} from 'nock'
+// eslint-disable-next-line node/no-extraneous-import
+import {NockScope as Scope} from 'fancy-test/lib/types'
 
 export namespace BuildpackInstallationsStub {
   export function get(nock: Scope, buildpacks?: Array<string | {url: string; name: string}>) {

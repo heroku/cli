@@ -85,7 +85,7 @@
     "@types/inquirer": "7.3.0",
     "@types/lodash": "^4.14.123",
     "@types/mocha": "^5.2.6",
-    "@types/nock": "^9.3.1",
+    "@types/node": "18.16.1",
     "@types/node-fetch": "^2.1.6",
     "@types/phoenix": "^1.4.0",
     "@types/proxyquire": "^1.3.28",
@@ -102,7 +102,7 @@
     "globby": "^10.0.2",
     "lodash": "^4.17.11",
     "mocha": "^5.2.0",
-    "nock": "^10.0.6",
+    "nock": "^11",
     "nyc": "^15.1.0",
     "oclif": "4.0.2",
     "open": "^8.4.2",
@@ -290,7 +290,7 @@
     },
     "update": {
       "node": {
-        "version": "16.19.0"
+        "version": "18.16.1"
       },
       "s3": {
         "xz": true,
