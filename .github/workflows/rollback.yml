@@ -34,7 +34,7 @@ jobs:
     needs: determine-target-tag
     name: Promote ${{ needs.determine-target-tag.outputs.targetTag }} to ${{ needs.determine-target-tag.outputs.isStableRelease && 'stable' || 'beta' }}
     # if statement only here to protect our prod release while we test this functionality
-    if: fromJSON(${{ !needs.determine-target-tag.outputs.isStableRelease }})
+    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
     uses: ./.github/workflows/promote.yml
     with:
       version: ${{ needs.determine-target-tag.outputs.targetTag }}
@@ -45,7 +45,7 @@ jobs:
     needs: [determine-target-tag, promote-previous-tag]
     name: Invalidate Cloudfront cache
     # if statement only here to protect our prod release while we test this functionality
-    if: fromJSON(${{ !needs.determine-target-tag.outputs.isStableRelease }})
+    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
     runs-on: ubuntu-latest
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
@@ -64,7 +64,7 @@ jobs:
     needs: determine-target-tag
     name: Deprecate rollback version on NPM
     # if statement only here to protect our prod release while we test this functionality
-    if: fromJSON(${{ !needs.determine-target-tag.outputs.isStableRelease }})
+    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
@@ -78,7 +78,7 @@ jobs:
   rollback-brew:
     name: Rollback brew release
     needs: determine-target-tag
-    if: fromJSON(${{ needs.determine-target-tag.outputs.isStableRelease }})
+    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     environment: ReleaseHomebrew
