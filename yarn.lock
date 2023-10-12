@@ -560,7 +560,7 @@ __metadata:
     lodash: ^4.17.11
     lolex: ^3.1.0
     mocha: ^5.2.0
-    nock: 9.0.13
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     printf: 0.6.1
@@ -602,7 +602,7 @@ __metadata:
     mocha: ^5.2.0
     mockdate: ^2.0.2
     netrc-parser: ^3.1.6
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     proxyquire: ^2.1.0
@@ -636,7 +636,7 @@ __metadata:
     lodash: ^4.17.13
     lolex: ^3.1.0
     mocha: ^5.2.0
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     proxyquire: ^2.1.0
@@ -665,7 +665,7 @@ __metadata:
     lolex: ^3.1.0
     mocha: ^5.0.4
     mockdate: ^2.0.2
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     sinon: ^5.0.7
@@ -686,7 +686,7 @@ __metadata:
     lodash: ^4.17.11
     mocha: ^5.2.0
     mocha-junit-reporter: 1.18.0
-    nock: 10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
   languageName: unknown
@@ -704,7 +704,7 @@ __metadata:
     lodash: ^4.17.11
     lodash.flatten: ^4.4.0
     mocha: ^5.2.0
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     proxyquire: ^2.1.0
@@ -729,7 +729,7 @@ __metadata:
     lodash: ^4.17.11
     mkdirp: ^0.5.2
     mocha: ^5.1.1
-    nock: ^10.0.6
+    nock: ^11.9.1
     node-notifier: ^10.0.0
     nyc: ^15.1.0
     oclif: 4.0.2
@@ -779,7 +779,7 @@ __metadata:
     heroku-cli-util: ^8.0.11
     lolex: ^3.1.0
     mocha: ^5.2.0
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     proxyquire: ^2.1.0
@@ -808,7 +808,7 @@ __metadata:
     mocha: ^5.2.0
     mocha-junit-reporter: 1.18.0
     netrc: 0.1.4
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     shellwords: ^0.1.1
@@ -843,7 +843,7 @@ __metadata:
     heroku-cli-util: ^8.0.11
     lodash: ^4.17.11
     mocha: ^5.2.0
-    nock: ^10.0.6
+    nock: ^11.9.1
     nyc: ^15.1.0
     oclif: 4.0.2
     sinon: ^7.2.3
@@ -4786,7 +4786,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assertion-error@npm:^1.0.1, assertion-error@npm:^1.1.0":
+"assertion-error@npm:^1.1.0":
   version: 1.1.0
   resolution: "assertion-error@npm:1.1.0"
   checksum: fd9429d3a3d4fd61782eb3962ae76b6d08aa7383123fca0596020013b3ebd6647891a85b05ce821c47d1471ed1271f00b0545cf6a4326cf2fc91efcc3b0fbecf
@@ -5423,18 +5423,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai@npm:>=1.9.2 <4.0.0":
-  version: 3.5.0
-  resolution: "chai@npm:3.5.0"
-  dependencies:
-    assertion-error: ^1.0.1
-    deep-eql: ^0.1.3
-    type-detect: ^1.0.0
-  checksum: d7e0c52913ebc5411ebf26bbaa014abec4e25ba341fe3e8c2fad09ee657706360d9114dda81e3ebb2931e54e86caf745b9fe4c07143a8121be13a4a5ac331a50
-  languageName: node
-  linkType: hard
-
-"chai@npm:^4.1.2, chai@npm:^4.2.0":
+"chai@npm:^4.2.0":
   version: 4.2.0
   resolution: "chai@npm:4.2.0"
   dependencies:
@@ -6480,28 +6469,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-eql@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "deep-eql@npm:0.1.3"
-  dependencies:
-    type-detect: 0.1.1
-  checksum: 959734acb233d00727b3e64c8c803d233315ad8d4f7ccf89455a8a12f745055e78df087d1afabbe8931a9387f585d3bc4bf57bdb94e5e52055b38f5ae9360ca7
-  languageName: node
-  linkType: hard
-
 "deep-eql@npm:^3.0.1":
   version: 3.0.1
   resolution: "deep-eql@npm:3.0.1"
   dependencies:
     type-detect: ^4.0.0
   checksum: 4f4c9fb79eb994fb6e81d4aa8b063adc40c00f831588aa65e20857d5d52f15fb23034a6576ecf886f7ff6222d5ae42e71e9b7d57113e0715b1df7ea1e812b125
-  languageName: node
-  linkType: hard
-
-"deep-equal@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "deep-equal@npm:1.0.1"
-  checksum: 5af8cbfcebf190491878a498caccc7dc9592f8ebd1685b976eacc3825619d222b5e929923163b92c4f414494e2b884f7ebf00c022e8198e8292deb70dd9785f4
   languageName: node
   linkType: hard
 
@@ -9324,7 +9297,7 @@ __metadata:
     lodash: ^4.17.11
     mocha: ^5.2.0
     netrc-parser: 3.1.6
-    nock: ^11
+    nock: ^11.9.1
     node-fetch: ^2.6.7
     nyc: ^15.1.0
     oclif: 4.0.2
@@ -11130,7 +11103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21, lodash@npm:^4.11.1, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.3.0, lodash@npm:~4.17.2":
+"lodash@npm:4.17.21, lodash@npm:^4.11.1, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.3.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -12102,40 +12075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:10.0.6, nock@npm:^10.0.6":
-  version: 10.0.6
-  resolution: "nock@npm:10.0.6"
-  dependencies:
-    chai: ^4.1.2
-    debug: ^4.1.0
-    deep-equal: ^1.0.0
-    json-stringify-safe: ^5.0.1
-    lodash: ^4.17.5
-    mkdirp: ^0.5.0
-    propagate: ^1.0.0
-    qs: ^6.5.1
-    semver: ^5.5.0
-  checksum: 42cb7b015768818335ded3a641e3908b5ef7ba0d4d2360add0de69bcea12dedb5dd07a386790f411ac2343f27984f2a37eeddf1f6ff51169001568fd55932e36
-  languageName: node
-  linkType: hard
-
-"nock@npm:9.0.13":
-  version: 9.0.13
-  resolution: "nock@npm:9.0.13"
-  dependencies:
-    chai: ">=1.9.2 <4.0.0"
-    debug: ^2.2.0
-    deep-equal: ^1.0.0
-    json-stringify-safe: ^5.0.1
-    lodash: ~4.17.2
-    mkdirp: ^0.5.0
-    propagate: 0.4.0
-    qs: ^6.0.2
-  checksum: 3f99a216e0b44cc2b4e6d7de98cc0f0a76de381fdcf1cd2d180ca552babe1df694eb20fd66b5a8b2bd9ea66dc7b970ca08b0dc4c89c91a71646a59391e8312fe
-  languageName: node
-  linkType: hard
-
-"nock@npm:^11":
+"nock@npm:^11.9.1":
   version: 11.9.1
   resolution: "nock@npm:11.9.1"
   dependencies:
@@ -13883,20 +13823,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"propagate@npm:0.4.0":
-  version: 0.4.0
-  resolution: "propagate@npm:0.4.0"
-  checksum: 96bb7723afd7c79713a9801b6cf2568f0a93aadd2f45d538530879c6f4fd45a3e39810a0a3c962f6ba94bc98e66f3e6050b2ef5bfacfa978305cd02ffe22c9e0
-  languageName: node
-  linkType: hard
-
-"propagate@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "propagate@npm:1.0.0"
-  checksum: f7fbff2f68fe3624d863a6196dc0ae8389a1c85905fa63d6e619d0e038d0c3d797b75a244f58d499e99dcbda2596354d1f265a354b1fc785809dce54552d4e29
-  languageName: node
-  linkType: hard
-
 "propagate@npm:^2.0.0":
   version: 2.0.1
   resolution: "propagate@npm:2.0.1"
@@ -14013,13 +13939,6 @@ __metadata:
     tmp: ^0.1.0
     write-json-file: ^4.1.1
   checksum: 7962df855b7a0405550ae39beb5c133574a11db475635d4fb6311c469d83cf9cae03efa4c8a0e02b82a4cae9d7bec072383354249f12ab136dc8590e57a40dbd
-  languageName: node
-  linkType: hard
-
-"qs@npm:^6.0.2, qs@npm:^6.5.1":
-  version: 6.6.0
-  resolution: "qs@npm:6.6.0"
-  checksum: 17166e879b75f93a13befa26ae32c4bf3104f4f32ce6467da168106a059eebc2904f2afb6dd1d9fe3ba2e3768dc8acb71bffd563639ab378b73e3953124ec482
   languageName: node
   linkType: hard
 
@@ -16612,24 +16531,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-detect@npm:0.1.1":
-  version: 0.1.1
-  resolution: "type-detect@npm:0.1.1"
-  checksum: 3660c29269d15d4cb7d8a6ed26b1cf8cb5789ec9b8ca78c99aef642a83794aba662c57d303e2eb0c2910af57de00db8f38dba8bd7bce13d30c49b0b5fa6b7bde
-  languageName: node
-  linkType: hard
-
 "type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5, type-detect@npm:^4.0.8":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
-  languageName: node
-  linkType: hard
-
-"type-detect@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "type-detect@npm:1.0.0"
-  checksum: ea4eb0a9da4bbdfc92f00c2eab4b1f6e769ae0dbf98219992aeea3b207f2bc40bd4ee9d3fc71adac0ee7799f1e21efe0002858f4ed09a04ee15bc9051c6b8bb2
   languageName: node
   linkType: hard
 

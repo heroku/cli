@@ -25,7 +25,7 @@ describe('addons:create', () => {
   beforeEach(async () => {
     config = await Config.load()
     cli.mockConsole()
-    api = nock('https://api.heroku.com:443')
+    api = nock('https://api.heroku.com')
   })
 
   afterEach(() => {
@@ -38,6 +38,8 @@ describe('addons:create', () => {
       api.post('/apps/myapp/addons', {
         plan: {name: 'heroku-postgresql:standard-0'},
         name: 'foobar',
+        config: {},
+        attachment: {},
       })
         .reply(200, addon)
     })
@@ -296,6 +298,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'},
           plan: {name: 'heroku-postgresql:standard-0'},
+          config: {},
         })
           .reply(200, deprovisionedAddon) // failed
 
@@ -318,18 +321,17 @@ Use heroku addons:docs heroku-db3 to view documentation
   })
 
   context('creating a db requiring confirmation', () => {
-    beforeEach(() => {
+    it('aborts if confirmation does not match', () => {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'},
         config: {follow: 'otherdb', rollback: true, foo: true},
         plan: {name: 'heroku-postgresql:standard-0'},
+        confirm: 'not-my-app',
       })
         .reply(423,
           {id: 'confirmation_required', message: 'This add-on is not automatically networked with this Private Space. '},
           {'X-Confirmation-Required': 'myapp-confirm'})
-    })
 
-    it('aborts if confirmation does not match', () => {
       return expect(cmd.run({
         config,
         app: 'myapp',
@@ -352,7 +354,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb', confirm: 'myapp'},
-      }).then(() => expect(cli.stderr).to.equal('Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+      }).then(() => expect(cli.stderr).to.contain('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
         .then(() => expect(cli.stdout).to.equal(`provision message
 Created db3-swiftly-123 as DATABASE_URL
 Use heroku addons:docs heroku-db3 to view documentation

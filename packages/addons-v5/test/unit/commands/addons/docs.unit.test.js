@@ -40,7 +40,7 @@ describe('addons:docs', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
-      .post('/actions/addons/resolve', {addon: 'my-attachment-1111'})
+      .post('/actions/addons/resolve', {addon: 'my-attachment-1111', app: null})
       .reply(200, [{addon_service: {name: 'slowdb'}}])
 
     return cmd.run({args: {addon: 'my-attachment-1111'}, flags: {'show-url': true}})
