@@ -16,6 +16,8 @@ Setting stack to heroku-22... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`
 
+  static aliases = ['stack:set']
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
