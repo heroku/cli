@@ -104,7 +104,6 @@ Database objects owned by credname will be assigned to the default credential.
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
-
   it('throws an error when the credential is still used for an attachment', () => {
     let attachments = [
       {
