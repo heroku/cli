@@ -292,6 +292,7 @@ export default `\u001B[1m Command                                        Summary
  spaces:vpn:update                              update VPN
  spaces:vpn:wait                                wait for VPN Connection to be created
  spaces:wait                                    wait for a space to be created
+ stack                                          show the list of available stacks
  stack:set                                      set the stack of an app
  status                                         display current status of the Heroku platform
  teams                                          list the teams that you are a member of
