@@ -28,9 +28,7 @@ function createBackboardMock(expectedGetter: (data: AnalyticsInterface) => any, 
   })
     .get('/hamurai')
     .query(({data: analyticsData}) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData, 'base64').toString())
+      const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData.toString(), 'base64').toString())
       const expected = expectedGetter(data)
       expect(expected).to.eq(actual)
       return true
