@@ -60,7 +60,7 @@ describe('pg:credentials', () => {
     }
 
     const cmd = proxyquire('../../../commands/credentials', {
-      '../../lib/fetcher': fetcher,
+      '../lib/fetcher': fetcher,
     })
 
     const err = 'You can’t perform this operation on Essential-tier databases.'
