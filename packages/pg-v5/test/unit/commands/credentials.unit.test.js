@@ -59,7 +59,7 @@ describe('pg:credentials', () => {
       }
     }
 
-    const cmd = proxyquire('../../../../commands/credentials', {
+    const cmd = proxyquire('../../../commands/credentials', {
       '../../lib/fetcher': fetcher,
     })
 
