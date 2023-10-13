@@ -12,7 +12,7 @@ async function run(context, heroku) {
 
   let db = await fetcher.addon(app, args.database)
   let cred = flags.name || 'default'
-  if (util.essentialPlan(db)) {
+  if ((util.essentialNumPlan(db) || util.legacyEssentialPlan(db)) && cred !== 'default') {
     throw new Error('You can’t perform this operation on Essential-tier databases.')
   }
 
