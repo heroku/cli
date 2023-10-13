@@ -126,6 +126,27 @@ describe('pg:credentials:rotate', () => {
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
+  it('throws an error when the db is numbered essential plan', () => {
+    const essentialAddon = {
+      name: 'postgres-1',
+      plan: {name: 'heroku-postgresql:essential-0'},
+    }
+
+    const fetcher = () => {
+      return {
+        database: () => db,
+        addon: () => essentialAddon,
+      }
+    }
+
+    const cmd = proxyquire('../../../../commands/credentials/rotate', {
+      '../../lib/fetcher': fetcher,
+    })
+
+    const err = 'You can’t perform this operation on Essential-tier databases.'
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+  })
+
   it('rotates credentials with no --name with starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',

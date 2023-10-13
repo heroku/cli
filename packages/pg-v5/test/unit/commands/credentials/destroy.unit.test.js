@@ -83,6 +83,28 @@ Database objects owned by credname will be assigned to the default credential.
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
+  it('throws an error when the db is numbered essential plan', () => {
+    const essentialAddon = {
+      name: 'postgres-1',
+      plan: {name: 'heroku-postgresql:essential-0'},
+    }
+
+    const fetcher = () => {
+      return {
+        database: () => db,
+        addon: () => essentialAddon,
+      }
+    }
+
+    const cmd = proxyquire('../../../../commands/credentials/destroy', {
+      '../../lib/fetcher': fetcher,
+    })
+
+    const err = 'You can’t perform this operation on Essential-tier databases.'
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+  })
+
+
   it('throws an error when the credential is still used for an attachment', () => {
     let attachments = [
       {

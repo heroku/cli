@@ -46,6 +46,27 @@ describe('pg:credentials', () => {
     api.done()
   })
 
+  it('throws an error when the db is numbered essential plan', () => {
+    const essentialAddon = {
+      name: 'postgres-1',
+      plan: {name: 'heroku-postgresql:essential-0'},
+    }
+
+    const fetcher = () => {
+      return {
+        database: () => db,
+        addon: () => essentialAddon,
+      }
+    }
+
+    const cmd = proxyquire('../../../../commands/credentials', {
+      '../../lib/fetcher': fetcher,
+    })
+
+    const err = 'You can’t perform this operation on Essential-tier databases.'
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+  })
+
   it('shows the correct credentials', () => {
     let credentials = [
       {uuid: 'aaaa',

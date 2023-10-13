@@ -15,7 +15,10 @@ async function run(context, heroku) {
   }
 
   let db = await fetcher.addon(app, args.database)
-  if (util.essentialPlan(db)) {
+
+  if (util.essentialNumPlan(db)) {
+    throw new Error('You can’t perform this operation on Essential-tier databases.')
+  } else if (util.legacyEssentialPlan(db)) {
     throw new Error('Essential-tier databases support only one default credential.')
   }
 

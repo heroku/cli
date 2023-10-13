@@ -15,6 +15,10 @@ async function run(context, heroku) {
     let attachments = []
     let credentials = []
 
+    if (util.essentialNumPlan(addon)) {
+      throw new Error('You can’t perform this operation on Essential-tier databases.')
+    }
+
     function presentCredential(cred) {
       let credAttachments = []
       if (cred !== 'default') {
