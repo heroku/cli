@@ -22,7 +22,7 @@ describe('apps:stacks', () => {
     })
     .command(['apps:stacks', '-a', MY_APP])
     .it('show available stacks', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar\n* cedar-14\n')
+      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar-10\n* cedar-14\n')
       expect(stderr).to.equal('')
     })
 
@@ -45,7 +45,7 @@ describe('apps:stacks', () => {
     })
     .command(['apps:stacks', '-a', MY_APP])
     .it('show an undeployed build stack', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar (active on next deploy)\n* cedar-14\n')
+      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar-10 (active on next deploy)\n* cedar-14\n')
       expect(stderr).to.equal('')
     })
 })
