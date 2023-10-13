@@ -34,7 +34,7 @@
     "mocha-junit-reporter": "1.18.0",
     "nock": "^11.9.1",
     "nyc": "^15.1.0",
-    "oclif": "4.0.2"
+    "oclif": "3.11.3"
   },
   "files": [
     "oclif.manifest.json",
