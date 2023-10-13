@@ -41,9 +41,9 @@ jobs:
       TAG_NAME: ${{ format('v{0}', needs.get-version-channel.outputs.version) }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18.x
       - name: set git user
         run: |
           git config user.name "GitHub Actions Bot"

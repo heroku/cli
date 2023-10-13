@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         os: [ubuntu-latest, macos-latest]
     environment: AcceptanceTests
     env:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         os: [ubuntu-latest]
     environment: AcceptanceTests
     env:
