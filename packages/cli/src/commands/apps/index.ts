@@ -53,12 +53,12 @@ function print(apps: Heroku.App, user: Heroku.Account, space: string, team: stri
 
     const columns = {
       name: {header: 'name', get: regionizeAppName},
-      email: {header: 'owner.email'},
+      email: {get: ({owner}: any) => owner.email},
     }
 
     if (apps[1].length > 0) {
       ux.styledHeader('Collaborated Apps')
-      ux.table(apps[1], columns)
+      ux.table(apps[1], columns, {'no-header': true})
     }
   }
 }
