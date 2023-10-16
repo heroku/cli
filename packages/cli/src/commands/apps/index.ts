@@ -34,7 +34,7 @@ function listApps(apps: Apps) {
   ux.log()
 }
 
-function print(apps: any, user, space, team) {
+function print(apps: any, user: Heroku.Account, space: string, team: string) {
   if (apps.length === 0) {
     if (space) ux.log(`There are no apps in space ${color.green(space)}.`)
     else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
@@ -48,7 +48,7 @@ function print(apps: any, user, space, team) {
   } else {
     apps = _.partition(apps, (app: App) => app.owner.email === user.email)
     if (apps[0].length > 0) {
-      ux.styledHeader(`${color.cyan(user.email)} Apps`)
+      ux.styledHeader(`${color.cyan(user.email!)} Apps`)
       listApps(apps[0])
     }
 
@@ -121,7 +121,7 @@ export default class AppsIndex extends Command {
     if (flags.json) {
       ux.styledJSON(apps)
     } else {
-      print(apps, user, space, team)
+      print(apps, user, space!, team!)
     }
   }
 }
