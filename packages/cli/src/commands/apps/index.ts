@@ -1,5 +1,6 @@
 import {ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
 import color from '@heroku-cli/color'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
@@ -89,22 +90,25 @@ export default class AppsIndex extends Command {
   async run() {
     const {flags} = await this.parse(AppsIndex)
 
-    // const {body: app} = await this.heroku.get<App>(`/apps/${flags.app}`)
-    // const {body: stacks} = await this.heroku.get<Stacks>('/stacks')
-
     const teamIdentifier = flags.team
     let team = (!flags.personal && teamIdentifier) ? teamIdentifier : null
     const space = flags.space
     const internalRouting = flags['internal-routing']
-    if (space) team = ((await this.heroku.get(`/spaces/${space}`))).team.name
+    if (space) {
+      const teamResponse = await this.heroku.get<Heroku.Team>(`/spaces/${space}`)
+      team = teamResponse.body.team.name
+    }
 
     let path = '/users/~/apps'
     if (team) path = `/teams/${team}/apps`
     else if (flags.all) path = '/apps'
-    let [apps, user] = await Promise.all([
-      heroku.get(path),
-      heroku.get('/account'),
+    const [appsResponse, userResponse] = await Promise.all([
+      this.heroku.get<Heroku.App>(path),
+      this.heroku.get<Heroku.Account>('/account'),
     ])
+    let apps = appsResponse.body
+    const user = userResponse.body
+
     apps = _.sortBy(apps, 'name')
     if (space) {
       apps = apps.filter((a: App) => a.space && (a.space.name === space || a.space.id === space))
