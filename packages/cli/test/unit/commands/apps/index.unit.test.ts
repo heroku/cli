@@ -1,51 +1,91 @@
 import {expect, test} from '@oclif/test'
 
-const MY_APP = 'myapp'
+let example = {
+  name: 'example',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+}
 
-describe('apps:stacks', () => {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => {
-      api.get(`/apps/${MY_APP}`)
-        .reply(200, {
-          name: MY_APP,
-          build_stack: {name: 'cedar-14'},
-          stack: {name: 'cedar-14'},
-        })
+let lockedApp = {
+  name: 'locked-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  locked: true,
+}
 
-      api.get('/stacks')
-        .reply(200, [
-          {name: 'cedar'},
-          {name: 'cedar-14'},
-        ])
-    })
-    .command(['apps:stacks', '-a', MY_APP])
-    .it('show available stacks', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar\n* cedar-14\n')
-      expect(stderr).to.equal('')
-    })
+let internalApp = {
+  name: 'internal-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal_routing: true,
+}
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => {
-      api.get(`/apps/${MY_APP}`)
-        .reply(200, {
-          name: MY_APP,
-          build_stack: {name: 'cedar'},
-          stack: {name: 'cedar-14'},
-        })
+let internalLockedApp = {
+  name: 'internal-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal_routing: true,
+  locked: true,
+}
 
-      api.get('/stacks')
-        .reply(200, [
-          {name: 'cedar'},
-          {name: 'cedar-14'},
-        ])
-    })
-    .command(['apps:stacks', '-a', MY_APP])
-    .it('show an undeployed build stack', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar (active on next deploy)\n* cedar-14\n')
-      expect(stderr).to.equal('')
-    })
+let euApp = {
+  name: 'example-eu',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'eu'},
+}
+
+let collabApp = {
+  name: 'collab-app',
+  owner: {email: 'someone-else@bar.com'},
+}
+
+let teamApp1 = {
+  name: 'team-app-1',
+  owner: {email: 'test-team@herokumanager.com'},
+}
+
+let teamApp2 = {
+  name: 'team-app-2',
+  owner: {email: 'test-team@herokumanager.com'},
+}
+
+let teamSpaceApp1 = {
+  name: 'space-app-1',
+  owner: {email: 'test-team@herokumanager.com'},
+  space: {id: 'test-space-id', name: 'test-space'},
+}
+
+let teamSpaceApp2 = {
+  name: 'space-app-2',
+  owner: {email: 'test-team@herokumanager.com'},
+  space: {id: 'test-space-id', name: 'test-space'},
+}
+
+let teamSpaceInternalApp = {
+  name: 'space-internal-app',
+  owner: {email: 'test-team@herokumanager.com'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal_routing: true,
+}
+
+describe('apps', () => {
+  describe('with no args', () => {
+    test
+      .stdout()
+      .stderr()
+      .nock('https://api.heroku.com:443', api => {
+        api.get('/account')
+          .reply(200, {email: 'foo@bar.com'})
+
+        api.get('/users/~/apps')
+          .reply(200, [])
+      })
+      .command(['apps'])
+      .it('displays a message when the user has no apps', ({stdout, stderr}) => {
+        expect(stderr).to.equal('')
+        expect(stdout).to.equal('You have no apps.\n')
+      })
+  })
 })
