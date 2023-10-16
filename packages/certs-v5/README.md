@@ -7,17 +7,17 @@ heroku-certs
 
 <!-- commands -->
 * [`heroku certs`](#heroku-certs)
-* [`heroku certs:add [CRT] [KEY]`](#heroku-certsadd-crt-key)
+* [`heroku certs:add CRT KEY`](#heroku-certsadd-crt-key)
 * [`heroku certs:auto`](#heroku-certsauto)
 * [`heroku certs:auto:disable`](#heroku-certsautodisable)
 * [`heroku certs:auto:enable`](#heroku-certsautoenable)
 * [`heroku certs:auto:refresh`](#heroku-certsautorefresh)
 * [`heroku certs:chain`](#heroku-certschain)
-* [`heroku certs:generate [DOMAIN]`](#heroku-certsgenerate-domain)
+* [`heroku certs:generate DOMAIN`](#heroku-certsgenerate-domain)
 * [`heroku certs:info`](#heroku-certsinfo)
 * [`heroku certs:key`](#heroku-certskey)
 * [`heroku certs:remove`](#heroku-certsremove)
-* [`heroku certs:update [CRT] [KEY]`](#heroku-certsupdate-crt-key)
+* [`heroku certs:update CRT KEY`](#heroku-certsupdate-crt-key)
 
 ## `heroku certs`
 
@@ -25,7 +25,11 @@ list SSL certificates for an app
 
 ```
 USAGE
-  $ heroku certs
+  $ heroku certs -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   list SSL certificates for an app
@@ -33,19 +37,22 @@ DESCRIPTION
 
 _See code: [commands/certs/index.js](https://github.com/heroku/cli/blob/v8.6.0/packages/certs-v5/commands/certs/index.js)_
 
-## `heroku certs:add [CRT] [KEY]`
+## `heroku certs:add CRT KEY`
 
 add an SSL certificate to an app
 
 ```
 USAGE
-  $ heroku certs:add [CRT] [KEY] [--0]
+  $ heroku certs:add CRT KEY -a <value> [--bypass] [-r <value>]
 
 FLAGS
-  --0  bypass the trust chain completion step
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --bypass              bypass the trust chain completion step
 
 DESCRIPTION
   add an SSL certificate to an app
+  Note: certificates with PEM encoding are also valid
 
 EXAMPLES
   $ heroku certs:add example.com.crt example.com.key
@@ -61,10 +68,12 @@ show ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto [--0]
+  $ heroku certs:auto -a <value> [--wait] [-r <value>]
 
 FLAGS
-  --0  watch ACM status and display the status when complete
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --wait                watch ACM status and display the status when complete
 
 DESCRIPTION
   show ACM status for an app
@@ -78,7 +87,11 @@ disable ACM for an app
 
 ```
 USAGE
-  $ heroku certs:auto:disable
+  $ heroku certs:auto:disable -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   disable ACM for an app
@@ -92,10 +105,12 @@ enable ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto:enable [--0]
+  $ heroku certs:auto:enable -a <value> [--wait] [-r <value>]
 
 FLAGS
-  --0  watch ACM status and exit when complete
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --wait                watch ACM status and exit when complete
 
 DESCRIPTION
   enable ACM status for an app
@@ -109,7 +124,11 @@ refresh ACM for an app
 
 ```
 USAGE
-  $ heroku certs:auto:refresh
+  $ heroku certs:auto:refresh -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   refresh ACM for an app
@@ -123,7 +142,11 @@ print an ordered & complete chain for a certificate
 
 ```
 USAGE
-  $ heroku certs:chain
+  $ heroku certs:chain -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   print an ordered & complete chain for a certificate
@@ -131,26 +154,33 @@ DESCRIPTION
 
 _See code: [commands/certs/chain.js](https://github.com/heroku/cli/blob/v8.6.0/packages/certs-v5/commands/certs/chain.js)_
 
-## `heroku certs:generate [DOMAIN]`
+## `heroku certs:generate DOMAIN`
 
 generate a key and a CSR or self-signed certificate
 
 ```
 USAGE
-  $ heroku certs:generate [DOMAIN] [--0] [--1] [--2] [--3] [--4] [--5] [--6] [--7]
+  $ heroku certs:generate DOMAIN -a <value> [--selfsigned] [--keysize <value>] [--owner <value>] [--country <value>]
+    [--area <value>] [--city <value>] [--subject <value>] [--now] [-r <value>]
 
 FLAGS
-  --0  generate a self-signed certificate instead of a CSR
-  --1  RSA key size in bits (default: 2048)
-  --2  name of organization certificate belongs to
-  --3  country of owner, as a two-letter ISO country code
-  --4  sub-country area (state, province, etc.) of owner
-  --5  city of owner
-  --6  specify entire certificate subject
-  --7  do not prompt for any owner information
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --area=<value>        sub-country area (state, province, etc.) of owner
+  --city=<value>        city of owner
+  --country=<value>     country of owner, as a two-letter ISO country code
+  --keysize=<value>     RSA key size in bits (default: 2048)
+  --now                 do not prompt for any owner information
+  --owner=<value>       name of organization certificate belongs to
+  --selfsigned          generate a self-signed certificate instead of a CSR
+  --subject=<value>     specify entire certificate subject
 
 DESCRIPTION
   generate a key and a CSR or self-signed certificate
+  Generate a key and certificate signing request (or self-signed certificate)
+  for an app. Prompts for information to put in the certificate unless --now
+  is used, or at least one of the --subject, --owner, --country, --area, or
+  --city options is specified.
 
 EXAMPLES
   $ heroku certs:generate example.com
@@ -164,12 +194,14 @@ show certificate information for an SSL certificate
 
 ```
 USAGE
-  $ heroku certs:info [--0] [--1] [--2]
+  $ heroku certs:info -a <value> [--name <value>] [--endpoint <value>] [--show-domains] [-r <value>]
 
 FLAGS
-  --0  name to check info on
-  --1  endpoint to check info on
-  --2  show associated domains
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --endpoint=<value>    endpoint to check info on
+  --name=<value>        name to check info on
+  --show-domains        show associated domains
 
 DESCRIPTION
   show certificate information for an SSL certificate
@@ -183,10 +215,16 @@ print the correct key for the given certificate
 
 ```
 USAGE
-  $ heroku certs:key
+  $ heroku certs:key -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   print the correct key for the given certificate
+  You must pass one single certificate, and one or more keys.
+  The first key that signs the certificate will be printed back.
 
 EXAMPLES
   $ heroku certs:key example.com.crt example.com.key
@@ -200,11 +238,13 @@ remove an SSL certificate from an app
 
 ```
 USAGE
-  $ heroku certs:remove [--1] [--2]
+  $ heroku certs:remove -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
 
 FLAGS
-  --1  name to remove
-  --2  endpoint to remove
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --endpoint=<value>    endpoint to remove
+  --name=<value>        name to remove
 
 DESCRIPTION
   remove an SSL certificate from an app
@@ -212,21 +252,24 @@ DESCRIPTION
 
 _See code: [commands/certs/remove.js](https://github.com/heroku/cli/blob/v8.6.0/packages/certs-v5/commands/certs/remove.js)_
 
-## `heroku certs:update [CRT] [KEY]`
+## `heroku certs:update CRT KEY`
 
 update an SSL certificate on an app
 
 ```
 USAGE
-  $ heroku certs:update [CRT] [KEY] [--0] [--2] [--3]
+  $ heroku certs:update CRT KEY -a <value> [--bypass] [--name <value>] [--endpoint <value>] [-r <value>]
 
 FLAGS
-  --0  bypass the trust chain completion step
-  --2  name to update
-  --3  endpoint to update
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --bypass              bypass the trust chain completion step
+  --endpoint=<value>    endpoint to update
+  --name=<value>        name to update
 
 DESCRIPTION
   update an SSL certificate on an app
+  Note: certificates with PEM encoding are also valid
 
 EXAMPLES
   $ heroku certs:update example.com.crt example.com.key
