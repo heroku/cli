@@ -52,15 +52,14 @@ function print(apps: any, user: Heroku.Account, space: string, team: string) {
       listApps(apps[0])
     }
 
+    const columns = {
+      name: {header: 'name', get: regionizeAppName},
+      email: {header: 'owner.email'},
+    }
+
     if (apps[1].length > 0) {
       ux.styledHeader('Collaborated Apps')
-      cli.table(apps[1], {
-        printHeader: false,
-        columns: [
-          {key: 'name', get: regionizeAppName},
-          {key: 'owner.email'},
-        ],
-      })
+      ux.table(apps[1], columns)
     }
   }
 }
