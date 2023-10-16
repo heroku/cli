@@ -73,7 +73,7 @@ export default class AppsIndex extends Command {
   ]
 
   static flags = {
-    all: flags.string({char: 'A', description: 'include apps in all teams'}),
+    all: flags.boolean({char: 'A', description: 'include apps in all teams'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     space: flags.string({
       char: 's',
