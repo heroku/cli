@@ -81,7 +81,7 @@ export default class AppsIndex extends Command {
       completion: SpaceCompletion,
     }),
     personal: flags.boolean({char: 'p', description: 'list apps in personal account when a default team is set'}),
-    'internal-routing': flags.string({char: 'i', description: 'filter to Internal Web Apps', hidden: true}),
+    'internal-routing': flags.boolean({char: 'i', description: 'filter to Internal Web Apps', hidden: true}),
     team: flags.team(),
   }
 
