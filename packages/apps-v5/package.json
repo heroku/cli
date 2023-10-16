@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "commands": "./src/commands",
     "topics": {
       "stack": {
         "description": "manage heroku stacks",
@@ -59,7 +60,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "src/index.js",
   "publishConfig": {
     "access": "public"
   },

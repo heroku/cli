@@ -6,6 +6,8 @@ let flags = require('../../lib/flags.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
 async function run(context, heroku) {
+  console.log(context)
+
   let endpoint = await flags(context, heroku)
 
   let cert = await cli.action(`Fetching SSL certificate ${endpoint.name} info for ${cli.color.app(context.app)}`, {}, heroku.request({
