@@ -4,8 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
 import color from '@heroku-cli/color'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
-// import {Stacks} from '../../../lib/types/stacks'
-import {App, Apps} from '../../lib/types/app'
+import {App} from '../../lib/types/app'
 
 function annotateAppName(app: App) {
   let name = `${app.name}`
@@ -29,12 +28,12 @@ function regionizeAppName(app: App) {
   return name
 }
 
-function listApps(apps: Apps) {
-  apps.forEach(app => ux.log(regionizeAppName(app)))
+function listApps(apps: Heroku.App) {
+  apps.forEach((app: App) => ux.log(regionizeAppName(app)))
   ux.log()
 }
 
-function print(apps: any, user: Heroku.Account, space: string, team: string) {
+function print(apps: Heroku.App, user: Heroku.Account, space: string, team: string) {
   if (apps.length === 0) {
     if (space) ux.log(`There are no apps in space ${color.green(space)}.`)
     else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
