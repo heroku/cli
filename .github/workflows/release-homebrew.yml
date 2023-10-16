@@ -27,7 +27,7 @@ jobs:
         run: yarn --immutable --network-timeout 1000000
       - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
       - name: release homebrew
-        run: ./scripts/release/homebrew.js
+        run: node ./scripts/release/homebrew.js
         env:
           GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
           CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
