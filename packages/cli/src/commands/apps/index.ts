@@ -30,7 +30,6 @@ function regionizeAppName(app: App) {
 
 function listApps(apps: Heroku.App) {
   apps.forEach((app: App) => ux.log(regionizeAppName(app)))
-  ux.log()
 }
 
 function print(apps: Heroku.App, user: Heroku.Account, space: string, team: string) {
