@@ -52,7 +52,7 @@ function print(apps: Heroku.App, user: Heroku.Account, space: string, team: stri
     }
 
     const columns = {
-      name: {header: 'name', get: regionizeAppName},
+      name: {get: regionizeAppName},
       email: {get: ({owner}: any) => owner.email},
     }
 
