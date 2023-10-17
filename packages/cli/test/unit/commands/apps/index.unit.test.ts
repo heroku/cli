@@ -105,7 +105,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('list all user apps', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n\n=== Collaborated Apps\n\n collab-app someone-else@bar.com \n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n=== Collaborated Apps\n\n collab-app someone-else@bar.com \n')
       })
 
     test
@@ -121,7 +121,7 @@ describe('apps', () => {
       .command(['apps', '--all'])
       .it('lists all apps', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n\n=== Collaborated Apps\n\n collab-app someone-else@bar.com        \n team-app-1 test-team@herokumanager.com \n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n=== Collaborated Apps\n\n collab-app someone-else@bar.com        \n team-app-1 test-team@herokumanager.com \n')
       })
 
     test
@@ -153,7 +153,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows region if not us', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\n')
       })
 
     test
@@ -169,7 +169,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows locked app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked]\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked]\n')
       })
 
     test
@@ -188,7 +188,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows locked eu app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked] (eu)\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked] (eu)\n')
       })
 
     test
@@ -204,7 +204,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows internal app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal]\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal]\n')
       })
 
     test
@@ -220,7 +220,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows internal locked app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked]\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked]\n')
       })
 
     test
@@ -239,7 +239,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows internal eu app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal] (eu)\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal] (eu)\n')
       })
 
     test
@@ -258,7 +258,7 @@ describe('apps', () => {
       .command(['apps'])
       .it('shows internal locked eu app', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked] (eu)\n\n')
+        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked] (eu)\n')
       })
   })
 
@@ -292,7 +292,7 @@ describe('apps', () => {
       .command(['apps', '--team', 'test-team'])
       .it('list all in a team', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== Apps in team test-team\n\nteam-app-1\nteam-app-2\n\n')
+        expect(stdout).to.equal('=== Apps in team test-team\n\nteam-app-1\nteam-app-2\n')
       })
   })
 
@@ -332,7 +332,7 @@ describe('apps', () => {
       .command(['apps', '--space', 'test-space'])
       .it('lists only apps in spaces by name', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== Apps in space test-space\n\nspace-app-1\nspace-app-2\n\n')
+        expect(stdout).to.equal('=== Apps in space test-space\n\nspace-app-1\nspace-app-2\n')
       })
 
     test
@@ -351,7 +351,7 @@ describe('apps', () => {
       .command(['apps', '--space', 'test-space', '--internal-routing'])
       .it('lists only internal apps in spaces by name', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== Apps in space test-space\n\nspace-internal-app [internal]\n\n')
+        expect(stdout).to.equal('=== Apps in space test-space\n\nspace-internal-app [internal]\n')
       })
   })
 })
