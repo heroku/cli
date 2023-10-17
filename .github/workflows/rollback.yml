@@ -1,35 +1,34 @@
-name: Rollback release
+name: Rollback latest release
 
 on:
   workflow_dispatch:
     inputs:
-      version-to-roll-back:
-        description: version number that needs to be rolled back (format x.x.x)
-        type: string
+      rollbackChannel:
+        description: Which channel needs to be rolled back?
+        type: choice
         required: true
+        options:
+        - stable
+        - beta
+        - alpha
 
 jobs:
-  determine-target-tag:
+  determine-target-and-rollback-tags:
     name: Determine target tag for rollback
     runs-on: ubuntu-latest
     outputs:
-      targetTag: ${{ github.ref_name }}
-      isStableRelease: ${{ steps.isStableRelease.outputs.isStableRelease }}
+      targetTag
+      rollbackTag
+      channel: ${{ inputs.rollbackChannel }}
+    env:
+      VERSIONS_LIST: ${{ steps.getVersionsList.outputs.versionsList }}
     steps:
-      - name: is input a tag
-        if: github.ref_type != 'tag'
-        run: exit 1
-      - name: Get target version
-        id: isStableRelease
-        shell: bash
-        run: |
-          if [[ ${{ github.ref_name }} =~"beta" ]]
-          then
-            echo "isStableRelease=true" >> $GITHUB_OUTPUT
-          else
-            echo "isStableRelease=false" >> $GITHUB_OUTPUT
-          fi
+      - name: get package versions
+        id: getVersionsList
+        run: echo "versionsList=$(npm view heroku versions --json)" >> $GITHUB_OUTPUT
+      - name: get rollback and target tags (will need to use a js script)
 
+  
   promote-previous-tag:
     needs: determine-target-tag
     name: Promote ${{ needs.determine-target-tag.outputs.targetTag }} to ${{ needs.determine-target-tag.outputs.isStableRelease && 'stable' || 'beta' }}
