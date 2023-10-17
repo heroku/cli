@@ -42,6 +42,10 @@ async function run(context, heroku) {
     throw new Error('Usage: heroku addons:create SERVICE:PLAN')
   }
 
+  if ((args[0].includes('essential') || args[0].includes('mini')) && (args[1] === ('--follow'))) {
+    throw new Error('You can’t perform this operation on Essential-tier databases.')
+  }
+
   let {name, as, wait, confirm} = flags
   let config = parseConfig(args.slice(1))
   let addon
