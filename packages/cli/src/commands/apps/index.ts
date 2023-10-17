@@ -32,7 +32,7 @@ function listApps(apps: Heroku.App) {
   apps.forEach((app: App) => ux.log(regionizeAppName(app)))
 }
 
-function print(apps: Heroku.App, user: Heroku.Account, space: string, team: string) {
+function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: string | null) {
   if (apps.length === 0) {
     if (space) ux.log(`There are no apps in space ${color.green(space)}.`)
     else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
@@ -118,7 +118,7 @@ export default class AppsIndex extends Command {
     if (flags.json) {
       ux.styledJSON(apps)
     } else {
-      print(apps, user, space!, team!)
+      print(apps, user, space, team)
     }
   }
 }
