@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@oclif/core": "^1.26.2",
-    "@oclif/plugin-legacy": "^1.3.0",
+    "@oclif/plugin-legacy": "^2.0.0-beta.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "heroku-client": "^3.0.7",

@@ -548,7 +548,7 @@ __metadata:
   dependencies:
     "@heroku-cli/notifications": ^1.2.2
     "@oclif/core": ^1.26.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
@@ -585,7 +585,7 @@ __metadata:
   dependencies:
     "@heroku-cli/command": ^9.0.2
     "@oclif/core": ^1.26.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     filesize: ^4.0.0
@@ -623,7 +623,7 @@ __metadata:
   dependencies:
     "@heroku-cli/color": ^1.1.14
     "@heroku-cli/notifications": ^1.2.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     date-fns: ^1.29.0
@@ -647,7 +647,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     cross-env: ^7.0.2
@@ -673,7 +673,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5"
   dependencies:
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     cross-env: ^7.0.2
@@ -693,7 +693,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     heroku-cli-util: ^8.0.11
     inquirer: ^6.2.2
@@ -713,7 +713,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
     "@heroku-cli/plugin-addons": ^1.2.29
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     bytes: ^3.1.0
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -769,7 +769,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
@@ -794,7 +794,7 @@ __metadata:
     "@heroku-cli/notifications": ^1.2.2
     "@heroku/eventsource": ^1.0.7
     "@oclif/core": ^1.26.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     debug: ^4.1.1
     fixture-stdout: 0.2.1
@@ -833,7 +833,7 @@ __metadata:
   dependencies:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.2
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
@@ -2374,16 +2374,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/color@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@oclif/color@npm:0.1.2"
+"@oclif/color@npm:^1.0.12":
+  version: 1.0.12
+  resolution: "@oclif/color@npm:1.0.12"
   dependencies:
-    ansi-styles: ^3.2.1
-    chalk: ^3.0.0
-    strip-ansi: ^5.2.0
-    supports-color: ^5.4.0
-    tslib: ^1
-  checksum: 4b99ffed7fe1551e95e7d3c1aae7fa79f3139521c9014f1906846ae7aa0a7eb16be1cd2db48392a8dd3d71d528b5fa8a1e0d56fffaae703dc25c8f72dbeb249a
+    ansi-styles: ^4.2.1
+    chalk: ^4.1.0
+    strip-ansi: ^6.0.1
+    supports-color: ^8.1.1
+    tslib: ^2
+  checksum: 380681bb1fe6e73450e9089278841647db774cbe002bee1ec8eb4f1ba554a2510ecbc778b25f6c92a8e94df3f7d5bde7d47d342579f5b3e7b9ac81dfe5ed2f06
   languageName: node
   linkType: hard
 
@@ -2410,50 +2410,6 @@ __metadata:
     supports-color: ^8.1.1
     tslib: ^2
   checksum: b94d47f4436b1467f428489bc1482a45d82790432f4cc45ccb38f273fac1b096f792bda2f22490924e17b9ff2c02012bd97e4858c169778066d0580bd49bb6a3
-  languageName: node
-  linkType: hard
-
-"@oclif/command@npm:1.8.15":
-  version: 1.8.15
-  resolution: "@oclif/command@npm:1.8.15"
-  dependencies:
-    "@oclif/config": ^1.18.2
-    "@oclif/errors": ^1.3.5
-    "@oclif/help": ^1.0.1
-    "@oclif/parser": ^3.8.6
-    debug: ^4.1.1
-    semver: ^7.3.2
-  peerDependencies:
-    "@oclif/config": ^1
-  checksum: 7e2fbd9ea9dcdb840754bd6088cd5c62a0b32d5675aa488f60bd2d916a13bc567656ad6301045071aec7e739ef62dfbd333ea5b9d8a8cda2cebb1140000a9d76
-  languageName: node
-  linkType: hard
-
-"@oclif/config@npm:1.18.6":
-  version: 1.18.6
-  resolution: "@oclif/config@npm:1.18.6"
-  dependencies:
-    "@oclif/errors": ^1.3.6
-    "@oclif/parser": ^3.8.9
-    debug: ^4.3.4
-    globby: ^11.1.0
-    is-wsl: ^2.1.1
-    tslib: ^2.3.1
-  checksum: 25baa87943d95428d2a5e64856fb9368474592badc5dad5fc2302d2f263885c766158a0ff071f1b4c0a69c39b279adfdd35037f2445fccec1544946aaf7a978a
-  languageName: node
-  linkType: hard
-
-"@oclif/config@npm:^1.18.2":
-  version: 1.18.8
-  resolution: "@oclif/config@npm:1.18.8"
-  dependencies:
-    "@oclif/errors": ^1.3.6
-    "@oclif/parser": ^3.8.10
-    debug: ^4.3.4
-    globby: ^11.1.0
-    is-wsl: ^2.1.1
-    tslib: ^2.5.0
-  checksum: b4dd7996b31ece66cc173bf56af6f332ae2a2d364bc3b53419d6f8cf2321c64b2903cd5af119af6852bd56d03772e8296d139cefbeefb7afa10b78ca1abe8bff
   languageName: node
   linkType: hard
 
@@ -2783,7 +2739,40 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/errors@npm:1.3.6, @oclif/errors@npm:^1.2.2, @oclif/errors@npm:^1.3.5, @oclif/errors@npm:^1.3.6":
+"@oclif/core@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@oclif/core@npm:3.3.1"
+  dependencies:
+    ansi-escapes: ^4.3.2
+    ansi-styles: ^4.3.0
+    cardinal: ^2.1.1
+    chalk: ^4.1.2
+    clean-stack: ^3.0.1
+    cli-progress: ^3.12.0
+    debug: ^4.3.4
+    ejs: ^3.1.9
+    get-package-type: ^0.1.0
+    globby: ^11.1.0
+    hyperlinker: ^1.0.0
+    indent-string: ^4.0.0
+    is-wsl: ^2.2.0
+    js-yaml: ^3.14.1
+    natural-orderby: ^2.0.3
+    object-treeify: ^1.1.33
+    password-prompt: ^1.1.2
+    slice-ansi: ^4.0.0
+    string-width: ^4.2.3
+    strip-ansi: ^6.0.1
+    supports-color: ^8.1.1
+    supports-hyperlinks: ^2.2.0
+    widest-line: ^3.1.0
+    wordwrap: ^1.0.0
+    wrap-ansi: ^7.0.0
+  checksum: 940f9bced4653896d4f5336b72020dc57f3e508d3dd6d083b45fa9c18527c5da76161e251f2f5f6f6a0790a51ed687c08078bd259eb781247cbe6cf26d4ade8b
+  languageName: node
+  linkType: hard
+
+"@oclif/errors@npm:^1.2.2":
   version: 1.3.6
   resolution: "@oclif/errors@npm:1.3.6"
   dependencies:
@@ -2796,39 +2785,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/help@npm:^1.0.1":
-  version: 1.0.5
-  resolution: "@oclif/help@npm:1.0.5"
-  dependencies:
-    "@oclif/config": 1.18.6
-    "@oclif/errors": 1.3.6
-    chalk: ^4.1.2
-    indent-string: ^4.0.0
-    lodash: ^4.17.21
-    string-width: ^4.2.0
-    strip-ansi: ^6.0.0
-    widest-line: ^3.1.0
-    wrap-ansi: ^6.2.0
-  checksum: d71e034532def4d45cd7c843ef5ff4da812d886ac1b1dad511340a61294749f552de2f805ecdd460f1c8ff05152720829f8b27be880b0359180a72c8ee95de18
-  languageName: node
-  linkType: hard
-
 "@oclif/linewrap@npm:^1.0.0":
   version: 1.0.0
   resolution: "@oclif/linewrap@npm:1.0.0"
   checksum: a072016a58b5e1331bbc21303ad5100fcda846ac4b181e344aec88bb24c5da09c416651e51313ffcc846a83514b74b8b987dd965982900f3edbb42b4e87cc246
-  languageName: node
-  linkType: hard
-
-"@oclif/parser@npm:^3.8.10, @oclif/parser@npm:^3.8.6, @oclif/parser@npm:^3.8.9":
-  version: 3.8.10
-  resolution: "@oclif/parser@npm:3.8.10"
-  dependencies:
-    "@oclif/errors": ^1.3.6
-    "@oclif/linewrap": ^1.0.0
-    chalk: ^4.1.0
-    tslib: ^2.5.0
-  checksum: 5399e494ec25ead6917fe5710a9a94f294617dcfb59e3c46b11db8ef17d5bb660316beeea4a8d0dfaecef18ae06489b1356dddaee5e57b71560370965689feea
   languageName: node
   linkType: hard
 
@@ -2860,18 +2820,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-legacy@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@oclif/plugin-legacy@npm:1.3.0"
+"@oclif/plugin-legacy@npm:^2.0.0-beta.1":
+  version: 2.0.0-beta.1
+  resolution: "@oclif/plugin-legacy@npm:2.0.0-beta.1"
   dependencies:
     "@heroku-cli/command": ^8.5.0
-    "@oclif/color": ^0.1.2
-    "@oclif/command": 1.8.15
+    "@oclif/color": ^1.0.12
+    "@oclif/core": ^3.3.1
     ansi-escapes: ^4.3.2
     debug: ^4.3.3
     semver: ^7.3.5
-    tslib: ^2.0.0
-  checksum: 9a76e6744c93c34c9779075cbaa5003452de4bef3bad8d5de051480ae9cf425b78d0a79b1da89b3ed436d4234548f50b11c19d7757dbff2f96d3865379b1c682
+  checksum: 808e49d5f11b13d2bdb9900cb1581ed4b3f1d2b2df45889a371a7d3da51746951446745f73642d1c614fb0b6b345afec5affab1dd6fa8b7fb432d4b264734576
   languageName: node
   linkType: hard
 
@@ -5557,16 +5516,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "chalk@npm:3.0.0"
-  dependencies:
-    ansi-styles: ^4.1.0
-    supports-color: ^7.1.0
-  checksum: 8e3ddf3981c4da405ddbd7d9c8d91944ddf6e33d6837756979f7840a29272a69a5189ecae0ff84006750d6d1e92368d413335eab4db5476db6e6703a1d1e0505
-  languageName: node
-  linkType: hard
-
 "chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
@@ -6915,7 +6864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.6, ejs@npm:^3.1.7, ejs@npm:^3.1.8":
+"ejs@npm:^3.1.6, ejs@npm:^3.1.7, ejs@npm:^3.1.8, ejs@npm:^3.1.9":
   version: 3.1.9
   resolution: "ejs@npm:3.1.9"
   dependencies:
@@ -9353,7 +9302,7 @@ __metadata:
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-help": ^5
-    "@oclif/plugin-legacy": ^1.3.0
+    "@oclif/plugin-legacy": ^2.0.0-beta.1
     "@oclif/plugin-not-found": 2.3.16
     "@oclif/plugin-plugins": 3.9.1
     "@oclif/plugin-update": 3.1.10
@@ -10466,7 +10415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-wsl@npm:^2.1.1, is-wsl@npm:^2.2.0":
+"is-wsl@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-wsl@npm:2.2.0"
   dependencies:
@@ -16246,7 +16195,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^5.0.0, strip-ansi@npm:^5.2.0":
+"strip-ansi@npm:^5.0.0":
   version: 5.2.0
   resolution: "strip-ansi@npm:5.2.0"
   dependencies:
