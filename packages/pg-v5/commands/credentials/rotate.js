@@ -16,7 +16,7 @@ async function run(context, heroku) {
     throw new Error('cannot pass both --all and --name')
   }
 
-  if ((util.essentialNumPlan(db) || util.legacyEssentialPlan(db)) && cred !== 'default') {
+  if ((util.essentialNumPlan(db)) || (util.legacyEssentialPlan(db) && cred !== 'default')) {
     throw new Error('You can’t perform this operation on Essential-tier databases.')
   }
 
