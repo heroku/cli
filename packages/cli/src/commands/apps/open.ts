@@ -27,6 +27,7 @@ export default class AppsOpen extends Command {
 
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const app = appResponse.body
-    await open(url.resolve(app.web_url!, args.path || ''))
+    const url = args.path ? `${app.web_url}${args.path}` : `${app.web_url}`
+    await open(url)
   }
 }
