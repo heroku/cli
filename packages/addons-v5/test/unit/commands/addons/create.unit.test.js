@@ -361,16 +361,15 @@ Use heroku addons:docs heroku-db3 to view documentation
   })
 
   context('--follow=--otherdb', () => {
-    beforeEach(() => {
+
+    it('creates an addon with =-- args', () => {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'},
         config: {follow: '--otherdb', rollback: true, foo: true},
         plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
-    })
 
-    it('creates an addon with =-- args', () => {
       return cmd.run({
         config,
         app: 'myapp',
@@ -378,7 +377,22 @@ Use heroku addons:docs heroku-db3 to view documentation
         flags: {as: 'mydb'},
       })
     })
+
+    it('does not create if addon is essential', () => {
+      api.post('/apps/myapp/addons', {
+        plan: {name: 'heroku-postgresql:essential-0'},
+        name: 'foobar',
+      })
+        .reply(200, addon)
+
+      return expect(cmd.run({
+        config,
+        app: 'myapp',
+        args: ['heroku-postgresql:essential-0', '--follow', 'otherdb', '--foo']
+      })).to.be.rejectedWith(Error, /You can’t perform this operation on Essential-tier databases./)
+    })
   })
+
   context('no config vars supplied by add-on provider', () => {
     beforeEach(() => {
       const noConfigAddon = _.clone(addon)
