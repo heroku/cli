@@ -480,12 +480,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@https://github.com/heroku/heroku-cli-command.git#2c7cac4b3d15cca5cd71b44e4ed2171b7dce6423":
+"@heroku-cli/command@https://github.com/heroku/heroku-cli-command.git#1b0029fadaae7fc5ea43bbb09dd36c2d9541a305":
   version: 10.0.0
-  resolution: "@heroku-cli/command@https://github.com/heroku/heroku-cli-command.git#commit=2c7cac4b3d15cca5cd71b44e4ed2171b7dce6423"
+  resolution: "@heroku-cli/command@https://github.com/heroku/heroku-cli-command.git#commit=1b0029fadaae7fc5ea43bbb09dd36c2d9541a305"
   dependencies:
     "@heroku-cli/color": ^1.1.14
-    "@oclif/core": ^3.0.6
+    "@oclif/core": 3.3.3-dev.0
     cli-ux: ^6.0.9
     debug: ^4.1.1
     fs-extra: ^7.0.1
@@ -494,7 +494,7 @@ __metadata:
     netrc-parser: ^3.1.6
     open: ^6.2.0
     uuid: ^8.3.0
-  checksum: 155049d05b8ff3812cc72c9d6b51c77c5dfa09f40f381e1b7635adb0877751e698d4f15d94d887be03c40de0e05f505f1d2f0814098bdd79aecd58c39c5eb2bf
+  checksum: 046e6a00add2ddf767875fdeac18935ada335af29eb3244b75641451129686b363013573b132508615db595f41e9fe9d40c649d90e739888af89396431f7eadb
   languageName: node
   linkType: hard
 
@@ -547,6 +547,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
@@ -584,6 +585,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
@@ -623,6 +625,7 @@ __metadata:
   dependencies:
     "@heroku-cli/color": ^1.1.14
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -647,6 +650,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -673,6 +677,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -693,6 +698,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     heroku-cli-util: ^8.0.11
@@ -713,6 +719,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
     "@heroku-cli/plugin-addons": ^1.2.29
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     bytes: ^3.1.0
     chai: ^4.2.0
@@ -769,6 +776,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -793,6 +801,7 @@ __metadata:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.2
     "@heroku/eventsource": ^1.0.7
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
@@ -833,6 +842,7 @@ __metadata:
   dependencies:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": ^2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -2413,6 +2423,50 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/command@npm:1.8.15":
+  version: 1.8.15
+  resolution: "@oclif/command@npm:1.8.15"
+  dependencies:
+    "@oclif/config": ^1.18.2
+    "@oclif/errors": ^1.3.5
+    "@oclif/help": ^1.0.1
+    "@oclif/parser": ^3.8.6
+    debug: ^4.1.1
+    semver: ^7.3.2
+  peerDependencies:
+    "@oclif/config": ^1
+  checksum: 7e2fbd9ea9dcdb840754bd6088cd5c62a0b32d5675aa488f60bd2d916a13bc567656ad6301045071aec7e739ef62dfbd333ea5b9d8a8cda2cebb1140000a9d76
+  languageName: node
+  linkType: hard
+
+"@oclif/config@npm:1.18.16":
+  version: 1.18.16
+  resolution: "@oclif/config@npm:1.18.16"
+  dependencies:
+    "@oclif/errors": ^1.3.6
+    "@oclif/parser": ^3.8.16
+    debug: ^4.3.4
+    globby: ^11.1.0
+    is-wsl: ^2.1.1
+    tslib: ^2.6.1
+  checksum: 951aa32b8938ec29575abaddc4bb6b96c68f6efb74821a83ee2105c8c73923001c26cd1f68c004192cb55b6dde647bfa420d0913bff02111efb2a4bbb26f2149
+  languageName: node
+  linkType: hard
+
+"@oclif/config@npm:^1.18.2":
+  version: 1.18.17
+  resolution: "@oclif/config@npm:1.18.17"
+  dependencies:
+    "@oclif/errors": ^1.3.6
+    "@oclif/parser": ^3.8.17
+    debug: ^4.3.4
+    globby: ^11.1.0
+    is-wsl: ^2.1.1
+    tslib: ^2.6.1
+  checksum: 57c136058cc79eed881f03510dbfb94377abb7331640bff95d9cdd5dcacb5b6fff31241661bcbe9245683d4d71e94d76fb9ea5ed6db6e32ef9d2c04b98306379
+  languageName: node
+  linkType: hard
+
 "@oclif/core-v1@npm:@oclif/core@^1.26.2, @oclif/core@npm:1.26.2, @oclif/core@npm:^1.1.1, @oclif/core@npm:^1.2.0, @oclif/core@npm:^1.25.0, @oclif/core@npm:^1.26.2":
   version: 1.26.2
   resolution: "@oclif/core@npm:1.26.2"
@@ -2446,6 +2500,39 @@ __metadata:
     widest-line: ^3.1.0
     wrap-ansi: ^7.0.0
   checksum: 1da7f22fff1eb4bba10f17f07a97bad308d317a0b591561be7f1171edff2f40bf84830295965b26cfcb80d3c5df7958df35bbbba4ce030e14a68bbc8e3cedc82
+  languageName: node
+  linkType: hard
+
+"@oclif/core@npm:3.3.3-dev.0, @oclif/core@npm:^3.3.3-dev.0":
+  version: 3.3.3-dev.0
+  resolution: "@oclif/core@npm:3.3.3-dev.0"
+  dependencies:
+    ansi-escapes: ^4.3.2
+    ansi-styles: ^4.3.0
+    cardinal: ^2.1.1
+    chalk: ^4.1.2
+    clean-stack: ^3.0.1
+    cli-progress: ^3.12.0
+    debug: ^4.3.4
+    ejs: ^3.1.9
+    get-package-type: ^0.1.0
+    globby: ^11.1.0
+    hyperlinker: ^1.0.0
+    indent-string: ^4.0.0
+    is-wsl: ^2.2.0
+    js-yaml: ^3.14.1
+    natural-orderby: ^2.0.3
+    object-treeify: ^1.1.33
+    password-prompt: ^1.1.2
+    slice-ansi: ^4.0.0
+    string-width: ^4.2.3
+    strip-ansi: ^6.0.1
+    supports-color: ^8.1.1
+    supports-hyperlinks: ^2.2.0
+    widest-line: ^3.1.0
+    wordwrap: ^1.0.0
+    wrap-ansi: ^7.0.0
+  checksum: a0b20df74e2aeb783e9d57e8508373afdbbb6a8faa7e72aa3e66c2a6e224e60914eb2b5406de23cccbe33d2d5553f230d47f611a7f4710bd0ae214dc26e213cd
   languageName: node
   linkType: hard
 
@@ -2706,39 +2793,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "@oclif/core@npm:3.0.6"
-  dependencies:
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.12.0
-    debug: ^4.3.4
-    ejs: ^3.1.8
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    slice-ansi: ^4.0.0
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: e3c65e372fd23cefd9eba569ac4f2aa6ab4e8a90cc35e0cf35c8007d0db51971bfe2e6b62e33bbafbf0a50ac248adfdae3378fea95c4b6c3988f7ed0d2b3ad66
-  languageName: node
-  linkType: hard
-
 "@oclif/core@npm:^3.3.1":
   version: 3.3.1
   resolution: "@oclif/core@npm:3.3.1"
@@ -2772,7 +2826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/errors@npm:^1.2.2":
+"@oclif/errors@npm:1.3.6, @oclif/errors@npm:^1.2.2, @oclif/errors@npm:^1.3.5, @oclif/errors@npm:^1.3.6":
   version: 1.3.6
   resolution: "@oclif/errors@npm:1.3.6"
   dependencies:
@@ -2785,10 +2839,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/help@npm:^1.0.1":
+  version: 1.0.15
+  resolution: "@oclif/help@npm:1.0.15"
+  dependencies:
+    "@oclif/config": 1.18.16
+    "@oclif/errors": 1.3.6
+    chalk: ^4.1.2
+    indent-string: ^4.0.0
+    lodash: ^4.17.21
+    string-width: ^4.2.0
+    strip-ansi: ^6.0.0
+    widest-line: ^3.1.0
+    wrap-ansi: ^6.2.0
+  checksum: 7402a39e066018023673438cb87ecce7f04c8fda4952f8c95a7b0a358e7ae25ebcc97fef555baee4e49fd214f117befda23e598f9b0466a298f5440e651d70df
+  languageName: node
+  linkType: hard
+
 "@oclif/linewrap@npm:^1.0.0":
   version: 1.0.0
   resolution: "@oclif/linewrap@npm:1.0.0"
   checksum: a072016a58b5e1331bbc21303ad5100fcda846ac4b181e344aec88bb24c5da09c416651e51313ffcc846a83514b74b8b987dd965982900f3edbb42b4e87cc246
+  languageName: node
+  linkType: hard
+
+"@oclif/parser@npm:^3.8.16, @oclif/parser@npm:^3.8.17, @oclif/parser@npm:^3.8.6":
+  version: 3.8.17
+  resolution: "@oclif/parser@npm:3.8.17"
+  dependencies:
+    "@oclif/errors": ^1.3.6
+    "@oclif/linewrap": ^1.0.0
+    chalk: ^4.1.0
+    tslib: ^2.6.2
+  checksum: 269d258842ca0ed27100dbc3ac3da505dcd9735e6d1916838d35cb7a93bb27e0d39e1c2239d1b8b150231e473d19c4d184f78e92ad2732377f1de2e2d1f454fb
   languageName: node
   linkType: hard
 
@@ -9281,7 +9364,7 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 1.1.14
-    "@heroku-cli/command": "https://github.com/heroku/heroku-cli-command.git#2c7cac4b3d15cca5cd71b44e4ed2171b7dce6423"
+    "@heroku-cli/command": "https://github.com/heroku/heroku-cli-command.git#1b0029fadaae7fc5ea43bbb09dd36c2d9541a305"
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
     "@heroku-cli/plugin-addons-v5": ^9.0.0-alpha.0
@@ -9298,7 +9381,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@oclif/core": ^3.0.6
+    "@oclif/core": ^3.3.3-dev.0
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-help": ^5
@@ -10415,7 +10498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-wsl@npm:^2.2.0":
+"is-wsl@npm:^2.1.1, is-wsl@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-wsl@npm:2.2.0"
   dependencies:
@@ -16893,7 +16976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.6.2":
+"tslib@npm:^2.6.1, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad

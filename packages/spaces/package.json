@@ -19,6 +19,7 @@
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
     "@heroku-cli/notifications": "^1.2.2",
+    "@oclif/command": "1.8.15",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
     "strftime": "^0.10.0"

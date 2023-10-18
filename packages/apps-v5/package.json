@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
+    "@oclif/command": "1.8.15",
     "@oclif/core": "^1.26.2",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",

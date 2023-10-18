@@ -13,6 +13,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/container-registry-v5/<%- commandPath %>"
   },
   "dependencies": {
+    "@oclif/command": "1.8.15",
     "debug": "^4.3.4",
     "glob": "^7.1.3",
     "heroku-cli-util": "^8.0.11",
