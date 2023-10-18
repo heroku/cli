@@ -39,10 +39,9 @@ describe('apps:open', () => {
       .command(['apps:open', '-a', 'myapp', '/mypath'])
       .it('opens the url with path', () => {
         const urlArgArray = spawnStub.getCall(0).args[1]
-        console.log('urlArgArray', urlArgArray)
         // For darwin-based platforms this arg is an array that contains the site url.
         // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-        const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAiAA==')
+        const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')
         expect(hasCorrectUrl).to.be.true
       })
   })
