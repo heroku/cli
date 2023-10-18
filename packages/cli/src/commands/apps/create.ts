@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const cli = require('heroku-cli-util')
 const {safeLoad} = require('js-yaml')
 const {readFile} = require('fs-extra')
 const {flags} = require('@heroku-cli/command')
@@ -16,7 +16,7 @@ function createText(name, space) {
 }
 
 async function createApp(context, heroku, name, stack) {
-  let params = {
+  const params = {
     name,
     team: context.flags.team,
     region: context.flags.region,
@@ -28,7 +28,7 @@ async function createApp(context, heroku, name, stack) {
     locked: context.flags.locked,
   }
 
-  let app = await heroku.request({
+  const app = await heroku.request({
     method: 'POST',
     path: (params.space || params.team) ? '/teams/apps' : '/apps',
     body: params,
@@ -42,8 +42,8 @@ async function createApp(context, heroku, name, stack) {
 }
 
 async function addAddons(heroku, app, addons) {
-  for (let addon of addons) {
-    let body = {
+  for (const addon of addons) {
+    const body = {
       plan: addon.plan,
     }
     if (addon.as) {
@@ -52,7 +52,7 @@ async function addAddons(heroku, app, addons) {
       }
     }
 
-    let request = heroku.post(`/apps/${app.name}/addons`, {body})
+    const request = heroku.post(`/apps/${app.name}/addons`, {body})
     await cli.action(`Adding ${cli.color.green(addon.plan)}`, request)
   }
 }
@@ -72,7 +72,7 @@ function addonsFromPlans(plans) {
 }
 
 async function configureGitRemote(context, app, git) {
-  let remoteUrl = git.gitUrl(app.name)
+  const remoteUrl = git.gitUrl(app.name)
   if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
   return remoteUrl
 }
@@ -88,8 +88,8 @@ function printAppSummary(context, app, remoteUrl) {
 async function runFromFlags(context, heroku) {
   if (context.flags['internal-routing'] && !context.flags.space) throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
 
-  let git = require('../../git')(context)
-  let name = context.flags.app || context.args.app || process.env.HEROKU_APP
+  const git = require('@heroku-cli/plugin-apps-v5/src/git')(context)
+  const name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
   function addBuildpack(app, buildpack) {
     return cli.action(`Setting buildpack to ${cli.color.cyan(buildpack)}`, heroku.request({
@@ -100,43 +100,43 @@ async function runFromFlags(context, heroku) {
     }))
   }
 
-  let app = await cli.action(
+  const app = await cli.action(
     createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, context.flags.stack))
 
   if (context.flags.addons) {
-    let plans = context.flags.addons.split(',')
-    let addons = addonsFromPlans(plans)
+    const plans = context.flags.addons.split(',')
+    const addons = addonsFromPlans(plans)
     await addAddons(heroku, app, addons)
   }
 
   if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
-  let remoteUrl = await configureGitRemote(context, app, git)
+  const remoteUrl = await configureGitRemote(context, app, git)
 
   await context.config.runHook('recache', {type: 'app', app: app.name})
   printAppSummary(context, app, remoteUrl)
 }
 
 async function readManifest() {
-  let buffer = await readFile('heroku.yml')
+  const buffer = await readFile('heroku.yml')
   return safeLoad(buffer, {filename: 'heroku.yml'})
 }
 
 async function runFromManifest(context, heroku) {
-  let git = require('../../git')(context)
-  let name = context.flags.app || context.args.app || process.env.HEROKU_APP
+  const git = require('@heroku-cli/plugin-apps-v5/src/git')(context)
+  const name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
-  let manifest = await cli.action('Reading heroku.yml manifest', readManifest())
+  const manifest = await cli.action('Reading heroku.yml manifest', readManifest())
 
-  let app = await cli.action(
+  const app = await cli.action(
     createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, 'container'))
 
-  let setup = manifest.setup || {}
-  let addons = setup.addons || []
-  let configVars = setup.config || {}
+  const setup = manifest.setup || {}
+  const addons = setup.addons || []
+  const configVars = setup.config || {}
 
   await addAddons(heroku, app, addons)
   await addConfigVars(heroku, app, configVars)
-  let remoteUrl = await configureGitRemote(context, app, git)
+  const remoteUrl = await configureGitRemote(context, app, git)
 
   printAppSummary(context, app, remoteUrl)
 }
@@ -151,7 +151,7 @@ function run(context, heroku) {
   return runFromFlags(context, heroku)
 }
 
-let cmd = {
+const cmd = {
   description: 'creates a new app',
   examples: `$ heroku apps:create
 Creating app... done, stack is heroku-22
