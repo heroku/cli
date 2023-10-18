@@ -31,6 +31,7 @@ export default `\u001B[1m Command                                        Summary
  apps:info                                      show detailed app information
  apps:join                                      add yourself to a team app
  apps:leave                                     remove yourself from a team app
+ apps:list                                      list your apps
  apps:lock                                      prevent team members from joining an app
  apps:open                                      open the app in a web browser
  apps:rename                                    rename an app
@@ -137,6 +138,7 @@ export default `\u001B[1m Command                                        Summary
  labs:enable                                    enables an experimental feature
  labs:info                                      show feature info
  leave                                          remove yourself from a team app
+ list                                           list your apps
  local                                          run heroku app locally
  local:run                                      run a one-off command
  local:start                                    run heroku app locally
