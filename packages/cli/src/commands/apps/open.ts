@@ -1,7 +1,6 @@
 import {Args} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as url from 'url'
 import * as open from 'open'
 
 export default class AppsOpen extends Command {

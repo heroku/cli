@@ -9,7 +9,7 @@ describe('apps:open', () => {
   const spawnStub = sinon.stub().returns({unref: () => {}})
 
   test
-    .stdout({print: true})
+    .stdout()
     .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
@@ -19,7 +19,6 @@ describe('apps:open', () => {
     .command(['apps:open', '-a', 'myapp'])
     .it('opens the url', () => {
       const urlArgArray = spawnStub.getCall(0).args[1]
-      console.log('urlArgArray is:', urlArgArray)
       // For darwin-based platforms this arg is an array that contains the site url.
       // For windows-based platforms this arg is an array that contains an encoded command that includes the url
       const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAiAA==')
