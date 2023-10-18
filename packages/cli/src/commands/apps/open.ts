@@ -23,10 +23,11 @@ export default class AppsOpen extends Command {
 
   async run() {
     const {flags, args} = await this.parse(AppsOpen)
-
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const app = appResponse.body
-    const url = args.path ? `${app.web_url}${args.path}` : `${app.web_url}`
-    await open(url)
+    const path = args.path || ''
+    const url = new URL(path, app.web_url)
+
+    await open(url.toString())
   }
 }

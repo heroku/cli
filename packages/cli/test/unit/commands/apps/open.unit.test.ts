@@ -21,7 +21,25 @@ describe('apps:open', () => {
       const urlArgArray = spawnStub.getCall(0).args[1]
       // For darwin-based platforms this arg is an array that contains the site url.
       // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-      const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAiAA==')
+      const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAiAA==')
+      expect(hasCorrectUrl).to.be.true
+    })
+
+  test
+    .stdout({print: true})
+    .nock('https://api.heroku.com', api =>
+      api
+        .get('/apps/myapp')
+        .reply(200, app),
+    )
+    .stub(childProcess, 'spawn', spawnStub)
+    .command(['apps:open', '-a', 'myapp', '/mypath'])
+    .it('opens the url with path', () => {
+      const urlArgArray = spawnStub.getCall(1).args[1]
+      console.log('urlArgArray', urlArgArray)
+      // For darwin-based platforms this arg is an array that contains the site url.
+      // For windows-based platforms this arg is an array that contains an encoded command that includes the url
+      const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAiAA==')
       expect(hasCorrectUrl).to.be.true
     })
 })
