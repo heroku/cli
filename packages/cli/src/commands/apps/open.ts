@@ -6,7 +6,7 @@ import * as open from 'open'
 export default class AppsOpen extends Command {
   static description = 'open the app in a web browser'
   static topic = 'apps'
-  static aliases = ['apps:open', 'open']
+  static aliases = ['open']
 
   static examples = [
     '$ heroku open -a myapp',
