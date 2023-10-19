@@ -30,7 +30,7 @@ jobs:
       - name: get package versions
         id: getVersionsList
         run: |
-          versionsList=$(npm view heroku versions --json)
+          versionsList=$(npm view heroku versions)
           echo $versionsList
           echo "versionsList=$versionsList" >> $GITHUB_OUTPUT
       # - name: get rollback and target tags (will need to use a js script)
