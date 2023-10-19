@@ -155,6 +155,7 @@ export default `\u001B[1m Command                                        Summary
  members:remove                                 removes a user from a team
  members:set                                    sets a members role in a team
  notifications                                  display notifications
+ open                                           open the app in a web browser
  orgs                                           list the teams that you are a member of
  orgs:open                                      open the team interface in a browser window
  pg                                             show database information
