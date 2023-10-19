@@ -2,7 +2,7 @@ import {Args, ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
-import * as git from '../../lib/git/git'
+import * as git from '../../lib/ci/git'
 import color from '@heroku-cli/color'
 
 export default class AppsRename extends Command {
@@ -20,7 +20,7 @@ export default class AppsRename extends Command {
   }
 
   static args = {
-    newname: Args.string({required: false}),
+    newname: Args.string({required: true}),
   }
 
   async run() {
@@ -33,7 +33,7 @@ export default class AppsRename extends Command {
     const app = appResponse.body
     ux.action.stop()
 
-    const gitUrl = git.gitUrl(app.name)
+    const gitUrl = git.gitUrl(this, app.name)
     ux.log(`${app.web_url} | ${gitUrl}`)
 
     if (!app.web_url!.includes('https')) {
@@ -43,7 +43,7 @@ export default class AppsRename extends Command {
     if (git.inGitRepo()) {
     // delete git remotes pointing to this app
       await _(await git.listRemotes())
-        .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
+        .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(this, oldApp) === r[1])
         .map(r => r[0])
         .uniq()
         .map(r => {

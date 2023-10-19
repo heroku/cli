@@ -1,4 +1,6 @@
 import * as fs from 'fs-extra'
+import {APIClient, Command} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 
 const gh = require('github-url-to-object')
 const spawn = require('child_process').spawn
@@ -83,8 +85,56 @@ async function readCommit(commit: string) {
   })
 }
 
+function sshGitUrl(context: any, app: string) {
+  return `git@${context.gitHost}:${app}.git`
+}
+
+function gitUrl(context: any, app?: string) {
+  return `https://${context.httpGitHost}/${app}.git`
+}
+
+async function listRemotes() {
+  return runGit('remote', '-v').then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)))
+}
+
+function inGitRepo() {
+  try {
+    fs.lstatSync('.git')
+    return true
+  } catch (error: any) {
+    if (error.code !== 'ENOENT') throw error
+  }
+}
+
+function rmRemote(remote: string) {
+  return runGit('remote', 'rm', remote)
+}
+
+function hasGitRemote(remote: string) {
+  return runGit('remote')
+    .then(remotes => remotes.split('\n'))
+    .then(remotes => remotes.find(r => r === remote))
+}
+
+function createRemote(remote: string, url: string) {
+  return hasGitRemote(remote)
+    .then(exists => {
+      if (!exists) {
+        return runGit('remote', 'add', remote, url)
+      }
+
+      return null
+    })
+}
+
 export {
   createArchive,
   githubRepository,
   readCommit,
+  sshGitUrl,
+  gitUrl,
+  createRemote,
+  listRemotes,
+  rmRemote,
+  inGitRepo,
 }
