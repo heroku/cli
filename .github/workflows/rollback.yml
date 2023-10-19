@@ -29,7 +29,7 @@ jobs:
       - name: get package versions
         id: getVersionsList
         run: |
-          VERSION_LIST=$(npm view heroku versions)
+          VERSION_LIST=$(npm view heroku versions --json)
           CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | grep ${{ inputs.rollbackChannel == 'beta' && '-v "-"' || inputs.rollbackChannel }})
           echo $CHANNEL_VERSION_LIST
 
