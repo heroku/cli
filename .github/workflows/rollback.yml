@@ -30,6 +30,7 @@ jobs:
         id: getVersionsList
         run: |
           VERSION_LIST=$(npm view heroku versions --json)
+          echo $VERSION_LIST
           CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | grep -v '-')
           echo $CHANNEL_VERSION_LIST
 
