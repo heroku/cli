@@ -30,7 +30,7 @@ jobs:
         id: getVersionsList
         run: |
           VERSION_LIST=$(npm view heroku versions --json)
-          CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | grep ${{ inputs.rollbackChannel == 'stable' && '-v "-"' || inputs.rollbackChannel }})
+          CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | grep -v '-'
           echo $CHANNEL_VERSION_LIST
 
       # - name: get rollback and target tags (will need to use a js script)
