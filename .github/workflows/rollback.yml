@@ -13,78 +13,83 @@ on:
         - alpha
 
 jobs:
-  determine-target-and-rollback-tags:
-    name: Determine target tag for rollback
+  get-target-and-rollback-tags:
+    name: Get target tag and rollback tags
     runs-on: ubuntu-latest
     outputs:
-      targetTag
-      rollbackTag
-      channel: ${{ inputs.rollbackChannel }}
-    env:
-      VERSIONS_LIST: ${{ steps.getVersionsList.outputs.versionsList }}
+      targetTag: ${{ steps.getTags.target }}
+      rollbackTag: ${{ steps.getRollbackTag.rollback }}
     steps:
       - name: get package versions
         id: getVersionsList
         run: echo "versionsList=$(npm view heroku versions --json)" >> $GITHUB_OUTPUT
+      - name: get latest dist tags
+        id: getRollbackTag
+        run: |
+          ROLLBACK_DIST_TAG=${{ inputs.rollbackChannel == 'stable' && 'latest' || inputs.rollbackChannel }}
+          echo $ROLLBACK_DIST_TAG
+          echo "rollback=$(npm view heroku dist-tags.$ROLLBACK_DIST_TAG --json)" >> $GITHUB_OUTPUT
       - name: get rollback and target tags (will need to use a js script)
+        id: getTags
+        run: ./scripts/rollback/getTags.js
 
   
-  promote-previous-tag:
-    needs: determine-target-tag
-    name: Promote ${{ needs.determine-target-tag.outputs.targetTag }} to ${{ needs.determine-target-tag.outputs.isStableRelease && 'stable' || 'beta' }}
-    # if statement only here to protect our prod release while we test this functionality
-    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-    uses: ./.github/workflows/promote.yml
-    with:
-      version: ${{ needs.determine-target-tag.outputs.targetTag }}
-      isStableRelease: ${{ needs.determine-target-tag.outputs.isStableRelease }}
-    secrets: inherit
+  # promote-previous-tag:
+  #   needs: determine-target-tag
+  #   name: Promote ${{ needs.determine-target-tag.outputs.targetTag }} to ${{ needs.determine-target-tag.outputs.isStableRelease && 'stable' || 'beta' }}
+  #   # if statement only here to protect our prod release while we test this functionality
+  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
+  #   uses: ./.github/workflows/promote.yml
+  #   with:
+  #     version: ${{ needs.determine-target-tag.outputs.targetTag }}
+  #     isStableRelease: ${{ needs.determine-target-tag.outputs.isStableRelease }}
+  #   secrets: inherit
 
-  invalidate-cdn-cache:
-    needs: [determine-target-tag, promote-previous-tag]
-    name: Invalidate Cloudfront cache
-    # if statement only here to protect our prod release while we test this functionality
-    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-    runs-on: ubuntu-latest
-    env:
-      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_EC2_METADATA_DISABLED: true
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          aws configure set preview.cloudfront true
-      - run: ./scripts/postrelease/invalidate_cdn_cache
+  # invalidate-cdn-cache:
+  #   needs: [determine-target-tag, promote-previous-tag]
+  #   name: Invalidate Cloudfront cache
+  #   # if statement only here to protect our prod release while we test this functionality
+  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #     AWS_EC2_METADATA_DISABLED: true
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y awscli
+  #         aws configure set preview.cloudfront true
+  #     - run: ./scripts/postrelease/invalidate_cdn_cache
 
-  deprecate-npm-version:
-    needs: determine-target-tag
-    name: Deprecate rollback version on NPM
-    # if statement only here to protect our prod release while we test this functionality
-    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
-    runs-on: pub-hk-ubuntu-22.04-small
-    steps:
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
-      - name: deprecate release
-        run: |
-          npm dist-tag add heroku@${{ needs.determine-target-tag.outputs.targetTag }} ${{ needs.determine-target-tag.outputs.isStableRelease && 'latest' || 'beta' }}
-          npm deprecate heroku@${{ inputs.version-to-roll-back }} "Version is deprecated due to problems with the release"
+  # deprecate-npm-version:
+  #   needs: determine-target-tag
+  #   name: Deprecate rollback version on NPM
+  #   # if statement only here to protect our prod release while we test this functionality
+  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
+  #   # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+  #   runs-on: pub-hk-ubuntu-22.04-small
+  #   steps:
+  #     - name: set NPM auth
+  #       run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+  #     - name: deprecate release
+  #       run: |
+  #         npm dist-tag add heroku@${{ needs.determine-target-tag.outputs.targetTag }} ${{ needs.determine-target-tag.outputs.isStableRelease && 'latest' || 'beta' }}
+  #         npm deprecate heroku@${{ inputs.version-to-roll-back }} "Version is deprecated due to problems with the release"
 
-  rollback-brew:
-    name: Rollback brew release
-    needs: determine-target-tag
-    if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
-    runs-on: pub-hk-ubuntu-22.04-small
-    environment: ReleaseHomebrew
-    steps:
-      - name: yarn install
-        run: yarn --immutable --network-timeout 1000000
-      - name: rollback homebrew
-        run: node ./scripts/rollback/homebrew.js
-    env:
-      ROLLBACK_VERSION: ${{ inputs.version-to-roll-back }}
+  # rollback-brew:
+  #   name: Rollback brew release
+  #   needs: determine-target-tag
+  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
+  #   # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+  #   runs-on: pub-hk-ubuntu-22.04-small
+  #   environment: ReleaseHomebrew
+  #   steps:
+  #     - name: yarn install
+  #       run: yarn --immutable --network-timeout 1000000
+  #     - name: rollback homebrew
+  #       run: ./scripts/rollback/homebrew.js
+  #   env:
+  #     ROLLBACK_VERSION: ${{ inputs.version-to-roll-back }}
