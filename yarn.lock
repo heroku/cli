@@ -3808,6 +3808,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-yaml@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "@types/js-yaml@npm:4.0.8"
+  checksum: a5a77a5a1eac7e7fb667156c251c2b947ca4ddfdda570726369dd50bd5b2b1d0da2d0fb4273d1b10aa1782406d7b3da8923d957df4fb89dbfa1db06f43297de2
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.7":
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
@@ -9252,6 +9259,7 @@ __metadata:
     "@types/glob": ^7.1.1
     "@types/got": ^9.6.7
     "@types/inquirer": 7.3.0
+    "@types/js-yaml": ^4.0.8
     "@types/lodash": ^4.14.123
     "@types/mocha": ^5.2.6
     "@types/nock": ^9.3.1
@@ -9283,7 +9291,7 @@ __metadata:
     heroku-cli-util: ^8.0.12
     http-call: 5.3.0
     inquirer: ^7.3.0
-    js-yaml: ^3.12.1
+    js-yaml: ^4.0.8
     lodash: ^4.17.11
     mocha: ^5.2.0
     netrc-parser: 3.1.6
@@ -10516,7 +10524,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.0.8, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
