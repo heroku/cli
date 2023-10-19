@@ -19,7 +19,6 @@ jobs:
     outputs:
       # targetTag: ${{ steps.getTags.target }}
       rollbackTag: ${{ steps.getRollbackTag.rollback }}
-      versionsList: ${{ steps.getVersionsList.versionsList}}
     steps:
       - name: get rollback dist tag
         id: getRollbackTag
@@ -30,9 +29,10 @@ jobs:
       - name: get package versions
         id: getVersionsList
         run: |
-          versionsList=$(npm view heroku versions)
-          echo $versionsList
-          echo "versionsList=$versionsList" >> $GITHUB_OUTPUT
+          VERSION_LIST=$(npm view heroku versions)
+          CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | grep ${{ inputs.rollbackChannel == 'beta' && '-v "-"' || inputs.rollbackChannel }}
+          echo CHANNEL_VERSION_LIST
+
       # - name: get rollback and target tags (will need to use a js script)
       #   id: getTags
 
