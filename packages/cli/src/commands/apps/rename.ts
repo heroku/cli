@@ -21,6 +21,7 @@ export default class AppsRename extends Command {
 
   static args = {
     newname: Args.string({required: true}),
+    httpGitHost: Args.string({required: false}),
   }
 
   async run() {

@@ -1,48 +1,26 @@
 import {expect, test} from '@oclif/test'
-import * as childProcess from 'child_process'
-import * as sinon from 'sinon'
 
-describe('apps:open', () => {
-  const app = {
-    web_url: 'https://myapp.herokuapp.com',
+describe('apps:rename', () => {
+  const newApp = {
+    name: 'newname',
+    web_url: 'https://newname.com',
   }
-  const spawnStub = sinon.stub().returns({unref: () => {}})
+  const oldApp = {
+    name: 'myapp',
+  }
 
   test
     .stdout()
+    .stderr()
     .nock('https://api.heroku.com', api =>
       api
-        .get('/apps/myapp')
-        .reply(200, app),
+        .patch(`/apps/${oldApp.name}`, {name: newApp.name})
+        .reply(200, newApp),
     )
-    .stub(childProcess, 'spawn', spawnStub)
-    .command(['apps:open', '-a', 'myapp'])
-    .it('opens the url', () => {
-      const urlArgArray = spawnStub.getCall(0).args[1]
-      // For darwin-based platforms this arg is an array that contains the site url.
-      // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-      const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
-      expect(hasCorrectUrl).to.be.true
+    .command(['apps:rename', '-a', oldApp.name, newApp.name, 'git.heroku.com'])
+    .it('renames an app', ({stdout, stderr}) => {
+      expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
+      expect(stderr).to.equal(`Renaming ${oldApp.name} to ${newApp.name}... done Don't forget to update git remotes for all other local checkouts of the app.
+`)
     })
-
-  describe('apps:open reset stub', () => {
-    const spawnStub = sinon.stub().returns({unref: () => {}})
-
-    test
-      .stdout()
-      .nock('https://api.heroku.com', api =>
-        api
-          .get('/apps/myapp')
-          .reply(200, app),
-      )
-      .stub(childProcess, 'spawn', spawnStub)
-      .command(['apps:open', '-a', 'myapp', '/mypath'])
-      .it('opens the url with path', () => {
-        const urlArgArray = spawnStub.getCall(0).args[1]
-        // For darwin-based platforms this arg is an array that contains the site url.
-        // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-        const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')
-        expect(hasCorrectUrl).to.be.true
-      })
-  })
 })
