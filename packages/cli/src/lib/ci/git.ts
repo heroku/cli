@@ -1,6 +1,4 @@
 import * as fs from 'fs-extra'
-import {APIClient, Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 
 const gh = require('github-url-to-object')
 const spawn = require('child_process').spawn
