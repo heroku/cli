@@ -1,7 +1,7 @@
 import {vars} from '@heroku-cli/command'
 import * as cp from 'child_process'
 import {ux} from '@oclif/core'
-import fs from 'fs'
+import * as fs from 'fs'
 import {promisify} from 'util'
 const execFile = promisify(cp.execFile)
 

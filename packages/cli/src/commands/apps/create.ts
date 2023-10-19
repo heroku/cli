@@ -143,6 +143,7 @@ async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient)
   const app = await createApp(context, heroku, name, 'container')
   ux.action.stop()
 
+  // _.get used here to avoid type guards when working with `unknown`
   const setup = get(manifest, 'setup', {})
   const addons = setup.addons || []
   const configVars = setup.config || {}
