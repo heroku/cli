@@ -17,21 +17,24 @@ jobs:
     name: Get target tag and rollback tags
     runs-on: ubuntu-latest
     outputs:
-      targetTag: ${{ steps.getTags.target }}
+      # targetTag: ${{ steps.getTags.target }}
       rollbackTag: ${{ steps.getRollbackTag.rollback }}
+      versionsList: ${{ steps.getVersionsList.versionsList}}
     steps:
       - name: get package versions
         id: getVersionsList
-        run: echo "versionsList=$(npm view heroku versions --json)" >> $GITHUB_OUTPUT
-      - name: get latest dist tags
+        run: |
+          versionsList=$(npm view heroku versions --json)
+          echo $versionsList
+          echo "versionsList=$versionsList >> $GITHUB_OUTPUT
+      - name: get rollback dist tag
         id: getRollbackTag
         run: |
           ROLLBACK_DIST_TAG=${{ inputs.rollbackChannel == 'stable' && 'latest' || inputs.rollbackChannel }}
           echo $ROLLBACK_DIST_TAG
           echo "rollback=$(npm view heroku dist-tags.$ROLLBACK_DIST_TAG --json)" >> $GITHUB_OUTPUT
-      - name: get rollback and target tags (will need to use a js script)
-        id: getTags
-        run: ./scripts/rollback/getTags.js
+      # - name: get rollback and target tags (will need to use a js script)
+      #   id: getTags
 
   
   # promote-previous-tag:
