@@ -84,7 +84,10 @@ function addonsFromPlans(plans: string[]) {
 
 async function configureGitRemote(context: ParserOutput<Create>, app: Heroku.App) {
   const remoteUrl = git.httpGitUrl(app.name || '')
-  if (git.inGitRepo() && !context.flags['no-remote']) await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+  if (git.inGitRepo() && !context.flags['no-remote']) {
+    await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+  }
+
   return remoteUrl
 }
 
@@ -97,9 +100,12 @@ function printAppSummary(context: ParserOutput<Create>, app: Heroku.App, remoteU
 }
 
 async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, config: Interfaces.Config) {
-  if (context.flags['internal-routing'] && !context.flags.space) throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
+  const {flags, args} = context
+  if (flags['internal-routing'] && !flags.space) {
+    throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
+  }
 
-  const name = context.flags.app || context.args.app || process.env.HEROKU_APP
+  const name = flags.app || args.app || process.env.HEROKU_APP
 
   async function addBuildpack(app: Heroku.App, buildpack: string) {
     ux.action.start(`Setting buildpack to ${color.cyan(buildpack)}`)
@@ -110,17 +116,20 @@ async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, co
     ux.action.stop()
   }
 
-  ux.action.start(createText(name, context.flags.space)/* , {success: false} */)
-  const app = await createApp(context, heroku, name, context.flags.stack)
+  ux.action.start(createText(name, flags.space))
+  const app = await createApp(context, heroku, name, flags.stack)
   ux.action.stop()
 
-  if (context.flags.addons) {
-    const plans = context.flags.addons.split(',')
+  if (flags.addons) {
+    const plans = flags.addons.split(',')
     const addons = addonsFromPlans(plans)
     await addAddons(heroku, app, addons)
   }
 
-  if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
+  if (flags.buildpack) {
+    await addBuildpack(app, flags.buildpack)
+  }
+
   const remoteUrl = await configureGitRemote(context, app)
 
   await config.runHook('recache', {type: 'app', app: app.name})
@@ -133,13 +142,14 @@ async function readManifest() {
 }
 
 async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient) {
-  const name = context.flags.app || context.args.app || process.env.HEROKU_APP
+  const {flags, args} = context
+  const name = flags.app || args.app || process.env.HEROKU_APP
 
   ux.action.start('Reading heroku.yml manifest')
   const manifest = await  readManifest()
   ux.action.stop()
 
-  ux.action.start(createText(name, context.flags.space))
+  ux.action.start(createText(name, flags.space))
   const app = await createApp(context, heroku, name, 'container')
   ux.action.stop()
 
@@ -199,22 +209,20 @@ $ heroku apps:create --region eu`,
     stack: flags.string({char: 's', description: 'the stack to create the app on', completion: StackCompletion}),
     space: flags.string({description: 'the private space to create the app in', completion: SpaceCompletion}),
     region: flags.string({description: 'specify region for the app to run in', completion: RegionCompletion}),
-    'internal-routing': flags.boolean({description: 'private space-only. create as an Internal Web App that is only routable in the local network.'}),
+    'internal-routing': flags.boolean({hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.'}),
     features: flags.string({hidden: true}),
     kernel: flags.string({hidden: true}),
     locked: flags.boolean({hidden: true}),
     json: flags.boolean({description: 'output in json format'}),
-    team: flags.team({description: 'team to use'}),
+    team: flags.team(),
   }
 
   async run() {
     const context = await this.parse(Create)
     const {flags} = context
 
-    if (this.config.channel === 'beta') {
-      if (flags.manifest) {
-        return runFromManifest(context, this.heroku)
-      }
+    if (this.config.channel === 'beta' && flags.manifest) {
+      return runFromManifest(context, this.heroku)
     }
 
     await runFromFlags(context, this.heroku, this.config)
