@@ -84,7 +84,7 @@ function addonsFromPlans(plans: string[]) {
 
 async function configureGitRemote(context: ParserOutput<Create>, app: Heroku.App) {
   const remoteUrl = git.httpGitUrl(app.name || '')
-  if (git.inGitRepo() && !context.flags['no-remote']) {
+  if (!context.flags['no-remote'] && git.inGitRepo()) {
     await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
   }
 

@@ -92,7 +92,9 @@ describe('apps:create', async function () {
       expect(error.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
       thrown = true
     })
-    .it('does not create an Internal Web App outside of a space', () => expect(thrown).to.equal(true))
+    .it('does not create an Internal Web App outside of a space', () => {
+      expect(thrown).to.equal(true)
+    })
 
   const json = {
     name: 'foobar',
@@ -211,8 +213,8 @@ describe('apps:create', async function () {
     const exampleBuildpack = 'https://github.com/some/buildpack.git'
 
     test
-      .stdout({print: true})
-      .stderr({print: true})
+      .stdout()
+      .stderr()
       .nock('https://api.heroku.com', api => {
         api
           .post('/apps', {name: 'foo'})
@@ -237,5 +239,40 @@ describe('apps:create', async function () {
         expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
       })
   })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api.post('/apps', {region: 'eu'})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+          region: {name: 'eu'},
+        })
+    })
+    .command(['apps:create', '--region', 'eu'])
+    .it('creates an app in the region', ({stderr, stdout}) => {
+      expect(stderr).to.contain('Creating app... done, ⬢ foobar, region is eu')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api.post('/apps', {stack: 'test'})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'test'},
+          web_url: 'https://foobar.com',
+        })
+    })
+    .command(['apps:create', '--stack', 'test'])
+    .it('creates an with stack', ({stderr, stdout}) => {
+      expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
+    })
 })
 
