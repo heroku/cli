@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {unwrap} from '../../lib/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap'
 
 describe('apps:rename', () => {
   const newApp = {
@@ -25,7 +25,7 @@ describe('apps:rename', () => {
     .command(['apps:rename', '-a', oldApp.name, newApp.name])
     .it('renames an app', ({stdout, stderr}) => {
       expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
-      expect(unwrap(stderr)).to.contains('Renaming myapp to newname... done\n ›   Warning: Don\'t forget to update git remotes for all other local checkouts of the \n ›   app.\n')
+      expect(unwrap(stderr)).to.contains('Renaming myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
     })
 
   test
@@ -39,6 +39,6 @@ describe('apps:rename', () => {
     .command(['apps:rename', '-a', oldApp.name, newApp.name])
     .it('gives a message if the web_url is still http', ({stdout, stderr}) => {
       expect(stdout).to.equal('http://newname.com | https://git.heroku.com/newname.git\nPlease note that it may take a few minutes for Heroku to provision a SSL certificate for your application.\n')
-      expect(unwrap(stderr)).to.contains('Renaming myapp to newname... done\n ›   Warning: Don\'t forget to update git remotes for all other local checkouts of the \n ›   app.\n')
+      expect(unwrap(stderr)).to.contains('Renaming myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
     })
 })
