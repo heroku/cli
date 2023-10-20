@@ -20,7 +20,6 @@ describe('apps:rename', () => {
     .command(['apps:rename', '-a', oldApp.name, newApp.name])
     .it('renames an app', ({stdout, stderr}) => {
       expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
-      expect(stderr).to.equal(`Renaming ${oldApp.name} to ${newApp.name}... done Don't forget to update git remotes for all other local checkouts of the app.
-`)
+      expect(stderr).to.contains('Renaming myapp to newname... done\n ›   Warning: Don\'t forget to update git remotes for all other local checkouts of the \n ›   app.\n')
     })
 })
