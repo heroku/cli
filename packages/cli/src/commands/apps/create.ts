@@ -189,7 +189,8 @@ $ heroku apps:create --region eu`,
   }
 
   static flags = {
-    app: flags.app({required: false, hidden: true}),
+    // `app` set to `flags.string` instead of `flags.app` to maintain original v5 functionality and avoid a default value from the git remote set when used without an app
+    app: flags.string({hidden: true}),
     addons: flags.string({description: 'comma-delimited list of addons to install'}),
     buildpack: flags.string({char: 'b', description: 'buildpack url to use for this app', completion: BuildpackCompletion}),
     manifest: flags.boolean({char: 'm', description: 'use heroku.yml settings for this app', hidden: true}),
@@ -198,7 +199,7 @@ $ heroku apps:create --region eu`,
     stack: flags.string({char: 's', description: 'the stack to create the app on', completion: StackCompletion}),
     space: flags.string({description: 'the private space to create the app in', completion: SpaceCompletion}),
     region: flags.string({description: 'specify region for the app to run in', completion: RegionCompletion}),
-    'internal-routing': flags.string({description: 'private space-only. create as an Internal Web App that is only routable in the local network.'}),
+    'internal-routing': flags.boolean({description: 'private space-only. create as an Internal Web App that is only routable in the local network.'}),
     features: flags.string({hidden: true}),
     kernel: flags.string({hidden: true}),
     locked: flags.boolean({hidden: true}),
