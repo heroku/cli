@@ -15,7 +15,6 @@ async function run(context, heroku) {
   }
 
   let db = await fetcher.addon(app, args.database)
-
   if (util.essentialPlan(db)) {
     throw new Error('You can’t perform this operation on Essential-tier databases.')
   }
