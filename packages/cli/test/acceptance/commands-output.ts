@@ -105,6 +105,7 @@ export default `\u001B[1m Command                                        Summary
  container:release                              Releases previously pushed Docker images to your Heroku app
  container:rm                                   remove the process type from your app
  container:run                                  builds, then runs the docker image locally
+ create                                         creates a new app
  domains                                        list domains for an app
  domains:add                                    add a domain to an app
  domains:clear                                  remove all domains from an app
