@@ -21,7 +21,6 @@ export default class AppsRename extends Command {
 
   static args = {
     newname: Args.string({required: true}),
-    httpGitHost: Args.string({required: false}),
   }
 
   async run() {
@@ -34,7 +33,7 @@ export default class AppsRename extends Command {
     const app = appResponse.body
     ux.action.stop()
 
-    const gitUrl = git.gitUrl(this, app.name)
+    const gitUrl = git.gitUrl(app.name)
     ux.log(`${app.web_url} | ${gitUrl}`)
 
     if (!app.web_url!.includes('https')) {
@@ -44,7 +43,7 @@ export default class AppsRename extends Command {
     if (git.inGitRepo()) {
     // delete git remotes pointing to this app
       await _(await git.listRemotes())
-        .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(this, oldApp) === r[1])
+        .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
         .map(r => r[0])
         .uniq()
         .map(r => {

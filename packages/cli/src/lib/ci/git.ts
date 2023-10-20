@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra'
+import {vars} from '@heroku-cli/command'
 
 const gh = require('github-url-to-object')
 const spawn = require('child_process').spawn
@@ -83,12 +84,12 @@ async function readCommit(commit: string) {
   })
 }
 
-function sshGitUrl(context: any, app: string) {
-  return `git@${context.gitHost}:${app}.git`
+function sshGitUrl(app: string) {
+  return `git@${vars.gitHost}:${app}.git`
 }
 
-function gitUrl(context: any, app?: string) {
-  return `https://${context.httpGitHost}/${app}.git`
+function gitUrl(app?: string) {
+  return `https://${vars.httpGitHost}/${app}.git`
 }
 
 async function listRemotes() {

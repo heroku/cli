@@ -17,7 +17,7 @@ describe('apps:rename', () => {
         .patch(`/apps/${oldApp.name}`, {name: newApp.name})
         .reply(200, newApp),
     )
-    .command(['apps:rename', '-a', oldApp.name, newApp.name, 'git.heroku.com'])
+    .command(['apps:rename', '-a', oldApp.name, newApp.name])
     .it('renames an app', ({stdout, stderr}) => {
       expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
       expect(stderr).to.equal(`Renaming ${oldApp.name} to ${newApp.name}... done Don't forget to update git remotes for all other local checkouts of the app.
