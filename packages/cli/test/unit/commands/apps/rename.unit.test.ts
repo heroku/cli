@@ -5,6 +5,10 @@ describe('apps:rename', () => {
     name: 'newname',
     web_url: 'https://newname.com',
   }
+  const newAppSillUsingHttp = {
+    name: 'newname',
+    web_url: 'http://newname.com',
+  }
   const oldApp = {
     name: 'myapp',
   }
@@ -20,6 +24,20 @@ describe('apps:rename', () => {
     .command(['apps:rename', '-a', oldApp.name, newApp.name])
     .it('renames an app', ({stdout, stderr}) => {
       expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
+      expect(stderr).to.contains('Renaming myapp to newname... done\n ›   Warning: Don\'t forget to update git remotes for all other local checkouts of the \n ›   app.\n')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api =>
+      api
+        .patch(`/apps/${oldApp.name}`, {name: newApp.name})
+        .reply(200, newAppSillUsingHttp),
+    )
+    .command(['apps:rename', '-a', oldApp.name, newApp.name])
+    .it('gives a message if the web_url is still http', ({stdout, stderr}) => {
+      expect(stdout).to.equal('http://newname.com | https://git.heroku.com/newname.git\nPlease note that it may take a few minutes for Heroku to provision a SSL certificate for your application.\n')
       expect(stderr).to.contains('Renaming myapp to newname... done\n ›   Warning: Don\'t forget to update git remotes for all other local checkouts of the \n ›   app.\n')
     })
 })
