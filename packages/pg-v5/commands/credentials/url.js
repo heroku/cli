@@ -12,8 +12,8 @@ async function run(context, heroku) {
 
   let db = await fetcher.addon(app, args.database)
   let cred = flags.name || 'default'
-  if (util.essentialPlan(db) && cred !== 'default') {
-    throw new Error('Essential-tier databases support only one default credential.')
+  if (util.essentialNumPlan(db) || (util.legacyEssentialPlan(db) && cred !== 'default')) {
+    throw new Error("You can't view credentials on Essential-tier databases.")
   }
 
   let credInfo = await heroku.get(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}`,
