@@ -55,10 +55,31 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
       .then(() => expect(cli.stderr).to.equal('Creating credential credname... done\n'))
   })
 
+  it('throws an error when the db is numbered essential plan', () => {
+    const essentialAddon = {
+      name: 'postgres-1',
+      plan: {name: 'heroku-postgresql:essential-0'},
+    }
+
+    const fetcher = () => {
+      return {
+        database: () => db,
+        addon: () => essentialAddon,
+      }
+    }
+
+    const cmd = proxyquire('../../../../commands/credentials/create', {
+      '../../lib/fetcher': fetcher,
+    })
+
+    const err = "You can't create a custom credential on Essential-tier databases."
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+  })
+
   it('throws an error when the db is essential plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'},
+      plan: {name: 'heroku-postgresql:mini'},
     }
 
     const fetcher = () => {
@@ -72,7 +93,7 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
       '../../lib/fetcher': fetcher,
     })
 
-    const err = 'You can’t perform this operation on Essential-tier databases.'
+    const err = "You can't create a custom credential on Essential-tier databases."
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 })
