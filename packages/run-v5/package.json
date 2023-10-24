@@ -30,6 +30,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
+    "@oclif/command": "1.8.15",
     "@oclif/plugin-legacy": "2.0.0-beta.1",
     "chai": "^4.2.0",
     "fixture-stdout": "0.2.1",

@@ -547,8 +547,9 @@ __metadata:
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
-    "@oclif/plugin-legacy": ^2.0.0-beta.1
+    "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
@@ -584,6 +585,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
@@ -623,6 +625,7 @@ __metadata:
   dependencies:
     "@heroku-cli/color": ^1.1.14
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -647,6 +650,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -673,6 +677,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-oauth-v5@workspace:packages/oauth-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -693,6 +698,8 @@ __metadata:
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
+    "@oclif/command": 1.8.15
+    "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     heroku-cli-util: ^8.0.11
     inquirer: ^6.2.2
@@ -712,6 +719,7 @@ __metadata:
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
     "@heroku-cli/plugin-addons": ^1.2.29
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     bytes: ^3.1.0
     chai: ^4.2.0
@@ -768,6 +776,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -792,6 +801,7 @@ __metadata:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.2
     "@heroku/eventsource": ^1.0.7
+    "@oclif/command": 1.8.15
     "@oclif/core": ^1.26.2
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
@@ -832,6 +842,7 @@ __metadata:
   dependencies:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.2
+    "@oclif/command": 1.8.15
     "@oclif/plugin-legacy": 2.0.0-beta.1
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
@@ -2815,39 +2826,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^3.7.1":
-  version: 3.7.1
-  resolution: "@oclif/core@npm:3.7.1"
-  dependencies:
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.12.0
-    debug: ^4.3.4
-    ejs: ^3.1.9
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    slice-ansi: ^4.0.0
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: 19e7dad7fcb7e7fea8678e664c9958c46171a3d0190fbb63e2bd0f801f3e0e369ec615b5cc4e98e8819bd35475bbf61baaf9c90ec0e6b8e6900a77429689a420
-  languageName: node
-  linkType: hard
-
 "@oclif/errors@npm:1.3.6, @oclif/errors@npm:^1.2.2, @oclif/errors@npm:^1.3.5, @oclif/errors@npm:^1.3.6":
   version: 1.3.6
   resolution: "@oclif/errors@npm:1.3.6"
@@ -2936,21 +2914,6 @@ __metadata:
     debug: ^4.3.3
     semver: ^7.3.5
   checksum: 808e49d5f11b13d2bdb9900cb1581ed4b3f1d2b2df45889a371a7d3da51746951446745f73642d1c614fb0b6b345afec5affab1dd6fa8b7fb432d4b264734576
-  languageName: node
-  linkType: hard
-
-"@oclif/plugin-legacy@npm:^2.0.0-beta.1":
-  version: 2.0.0
-  resolution: "@oclif/plugin-legacy@npm:2.0.0"
-  dependencies:
-    "@oclif/color": ^1.0.12
-    "@oclif/core": ^3.7.1
-    ansi-escapes: ^4.3.2
-    debug: ^4.3.3
-    semver: ^7.5.4
-  peerDependencies:
-    "@heroku-cli/command": "*"
-  checksum: 2350c9287813efd02a15c4dba40ef840ecddade094e6c42a197ff23dfed5889610c7ee16ecef00050f05c8765f3f8e0f241a9b38102d6f2a2120d6ca310d16d0
   languageName: node
   linkType: hard
 

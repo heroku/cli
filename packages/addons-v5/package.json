@@ -15,13 +15,14 @@
   },
   "dependencies": {
     "@heroku-cli/notifications": "^1.2.2",
+    "@oclif/command": "1.8.15",
+    "@oclif/plugin-legacy": "2.0.0-beta.1",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11",
     "printf": "0.6.1"
   },
   "devDependencies": {
     "@oclif/core": "^1.26.2",
-    "@oclif/plugin-legacy": "^2.0.0-beta.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "heroku-client": "^3.0.7",
