@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.7.0](https://github.com/heroku/cli/compare/v8.6.0...v8.7.0) (2023-10-24)
+
+
+### Features
+
+* **pg-v5:** credentials adding capabilities for numbered essential plans ([#2513](https://github.com/heroku/cli/issues/2513)) ([51dc3ac](https://github.com/heroku/cli/commit/51dc3ac92ebc0757a14bfdb46734077cd008543a))
+
+
+
+
+
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
