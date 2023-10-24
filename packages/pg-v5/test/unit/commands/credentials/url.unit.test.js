@@ -95,7 +95,7 @@ Connection URL:
       '../../lib/fetcher': fetcher,
     })
 
-    const err = 'You can’t perform this operation on Essential-tier databases.'
+    const err = "You can't view credentials on Essential-tier databases."
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
@@ -116,7 +116,7 @@ Connection URL:
       '../../lib/fetcher': fetcher,
     })
 
-    const err = 'You can’t perform this operation on Essential-tier databases.'
+    const err = "You can't view credentials on Essential-tier databases."
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
