@@ -21,13 +21,12 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/oauth-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@oclif/command": "1.8.15",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "@oclif/plugin-legacy": "^2.0.0-beta.1",
+    "@oclif/plugin-legacy": "2.0.0-beta.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",

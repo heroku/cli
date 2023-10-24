@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
-    "@oclif/command": "1.8.15",
     "@oclif/core": "^1.26.2",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
@@ -33,7 +32,7 @@
     "urijs": "1.19.11"
   },
   "devDependencies": {
-    "@oclif/plugin-legacy": "^2.0.0-beta.1",
+    "@oclif/plugin-legacy": "2.0.0-beta.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",

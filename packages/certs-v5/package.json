@@ -17,7 +17,6 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/notifications": "^1.2.2",
-    "@oclif/command": "1.8.15",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
@@ -25,7 +24,7 @@
     "psl": "^1.1.29"
   },
   "devDependencies": {
-    "@oclif/plugin-legacy": "^2.0.0-beta.1",
+    "@oclif/plugin-legacy": "2.0.0-beta.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
