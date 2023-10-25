@@ -17,7 +17,7 @@ async function run(context, heroku) {
     try {
       space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
     } catch (error) {
-      cli.warn(error)
+      cli.warn(`Retrieving NAT details for the space failed with ${error}`)
     }
   }
 
