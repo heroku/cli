@@ -30,7 +30,11 @@ async function run(context, heroku) {
     space = await heroku.get(`/spaces/${spaceName}`, {headers})
   }
 
-  space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+  try {
+    space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+  } catch (error) {
+    cli.warn(error)
+  }
   spinner.stop('done\n')
 
   info.render(space, context.flags)
