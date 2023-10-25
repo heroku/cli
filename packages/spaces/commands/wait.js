@@ -35,6 +35,7 @@ async function run(context, heroku) {
   } catch (error) {
     cli.warn(`Retrieving NAT details for the space failed with ${error}`)
   }
+
   spinner.stop('done\n')
 
   info.render(space, context.flags)
