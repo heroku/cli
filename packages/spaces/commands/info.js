@@ -14,7 +14,11 @@ async function run(context, heroku) {
 
   let space = await heroku.get(`/spaces/${spaceName}`, {headers})
   if (space.state === 'allocated') {
-    space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+    try {
+      space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+    } catch (error) {
+      cli.warn(error)
+    }
   }
 
   render(space, context.flags)
