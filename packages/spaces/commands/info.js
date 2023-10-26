@@ -17,7 +17,7 @@ async function run(context, heroku) {
     try {
       space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
     } catch (error) {
-      const debug = require('debug')('spaces:info')
+      const debug = require('debug')('spaces:info') // eslint-disable-line node/no-extraneous-require
       debug(`Retrieving NAT details for the space failed with ${error}`)
     }
   }
