@@ -136,4 +136,24 @@ Created at:   ${now.toISOString()}
 `))
       .then(() => api.done())
   })
+
+  it('test if nat API call fails ', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/spaces/my-space')
+      .reply(200,
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20'},
+      )
+    return cmd.run({flags: {space: 'my-space'}})
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space
+Team:         my-team
+Region:       region
+CIDR:         10.0.0.0/16
+Data CIDR:    172.23.0.0/20
+State:        allocated
+Shield:       off
+Created at:   ${now.toISOString()}
+`))
+      .then(() => api.done())
+  })
 })
