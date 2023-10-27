@@ -166,7 +166,7 @@ async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient)
 }
 
 export default class Create extends Command {
-  static description = 'create a new app'
+  static description = 'creates a new app'
 
   static aliases = ['create']
 
