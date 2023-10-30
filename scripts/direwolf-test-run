@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -euo pipefail
+
+DIREWOLF_SUITE="cli"
+
+# default CLI version is stable
+HEROKU_CLI_VERSION=${HEROKU_CLI_VERSION:="stable"}
+
+DIREWOLF_URL="https://$DIREWOLF_TOKEN@direwolf-api.herokai.com"
+
+POST_BODY=$(jq --null-input \
+  --arg cloud "$DIREWOLF_CLOUD_UUID" \
+  --arg suite "$DIREWOLF_SUITE" \
+  --arg env "$HEROKU_CLI_VERSION \
+  '{"cloud": { "id": $cloud}, "suite": { "label": $suite }, "env": { "HEROKU_CLI_VERSION": $env })
+
+echo "Enqueuing: $POST_BODY"
+ 
+RUN_INFO=$(curl -sf $DIREWOLF_URL/runs \
+               -H "Content-Type: application/json" \
+               -d "${POST_BODY}")
+
+RUN_ID=$(echo $RUN_INFO | jq -r '.id')
+RUN_URL="https://direwolf.herokai.com/dashboard?run=$RUN_ID"
+echo "Enqueued: $RUN_URL"
+
+echo -n "Running: ..."
+RUN_STATE="running"
+while [[ $RUN_STATE == "running" ]]; do
+  echo -n "."
+  RUN_INFO=$(curl -sf $DIREWOLF_URL/runs/$RUN_ID)
+  RUN_STATE=$(echo $RUN_INFO | jq -r '.state')
+  sleep 10
+done
+echo " done"
+echo "Result: $RUN_STATE"
+echo "Details:"
+curl -sf $DIREWOLF_URL/runs/$RUN_ID/results | \
+    jq -r '.[] | .state + "\t\t" + .class + ": " + .label' | \
+    sort
+
+[[ $RUN_STATE == "passed" ]] || exit 1
