@@ -106,6 +106,7 @@ export default `\u001B[1m Command                                        Summary
  container:release                              Releases previously pushed Docker images to your Heroku app
  container:rm                                   remove the process type from your app
  container:run                                  builds, then runs the docker image locally
+ create                                         creates a new app
  domains                                        list domains for an app
  domains:add                                    add a domain to an app
  domains:clear                                  remove all domains from an app
@@ -269,6 +270,7 @@ export default `\u001B[1m Command                                        Summary
  releases:info                                  view detailed information for a release
  releases:output                                View the release command output
  releases:rollback                              rollback to a previous release
+ rename                                         rename an app
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline
  run                                            run a one-off process inside a heroku dyno
