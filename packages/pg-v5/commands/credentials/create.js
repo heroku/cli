@@ -10,7 +10,7 @@ async function run(context, heroku) {
   const {app, args, flags} = context
 
   let db = await fetcher.addon(app, args.database)
-  if (util.essentialPlan(db)) throw new Error('You can’t perform this operation on Essential-tier databases.')
+  if (util.essentialPlan(db)) throw new Error("You can't create a custom credential on Essential-tier databases.")
 
   let data = {
     name: flags.name,
