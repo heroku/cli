@@ -23,6 +23,7 @@ export default `\u001B[1m Command                                        Summary
  addons:wait                                    show provisioning status of the add-ons on the app
  apps                                           list your apps
  apps:create                                    creates a new app
+ apps:delete                                    permanently destroy an app
  apps:destroy                                   permanently destroy an app
  apps:errors                                    view app errors
  apps:favorites                                 list favorited apps
@@ -107,6 +108,7 @@ export default `\u001B[1m Command                                        Summary
  container:rm                                   remove the process type from your app
  container:run                                  builds, then runs the docker image locally
  create                                         creates a new app
+ destroy                                        permanently destroy an app
  domains                                        list domains for an app
  domains:add                                    add a domain to an app
  domains:clear                                  remove all domains from an app
