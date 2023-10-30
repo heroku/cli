@@ -26,4 +26,11 @@ describe('apps:destroy', function () {
       expect(stdout).to.equal('')
       expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done\n')
     })
+
+  test
+    .command(['apps:destroy'])
+    .catch(error => {
+      expect(error.message).to.include('No app specified.')
+    })
+    .it('errors without an app')
 })
