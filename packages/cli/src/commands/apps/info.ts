@@ -11,7 +11,22 @@ function formatDate(date: Date) {
 }
 
 async function getInfo(app: string, client: Command, extended: boolean) {
-  const promises = [
+  // const promises = [
+  //   // client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
+  //   client.heroku.request<Heroku.App>(`/apps/${app}`, {
+  //     headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
+  //   }),
+  //   client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => []),
+  //   client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => []),
+  //   client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => null),
+  // ]
+
+  // if (extended) {
+  //   promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
+  // }
+
+  let appExtendedResponse: Heroku.App = []
+  const [addonsResponse, appWithMoreInfoResponse, dynosResponse, collaboratorsResponse, pipelineCouplingsResponse] = await Promise.all([
     client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
     client.heroku.request<Heroku.App>(`/apps/${app}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
@@ -19,20 +34,24 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => []),
     client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => []),
     client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => null),
-  ]
+  ])
 
   if (extended) {
-    promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
+    appExtendedResponse = client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`)
   }
 
-  const [
-    addons,
-    appWithMoreInfo,
-    dynos,
-    collaborators,
-    pipelineCouplings,
-    appExtended,
-  ] = await Promise.all(promises)
+  const addons = addonsResponse.body
+  const appWithMoreInfo = appWithMoreInfoResponse.body
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const dynos = dynosResponse.body
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const collaborators = collaboratorsResponse.body
+  const pipelineCouplings = pipelineCouplingsResponse!.body
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const appExtended = appExtendedResponse!.body || []
 
   const data: Heroku.App = {
     addons,
@@ -41,6 +60,8 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     collaborators,
     pipeline_coupling: pipelineCouplings,
   }
+
+  console.log('DATA:', data)
 
   if (appExtended) {
     data.appExtended = appExtended
@@ -55,7 +76,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   return data
 }
 
-function print(info: Heroku.App, addons:  Record<string, Record<string, string>>, collaborators:  Record<string, Record<string, string>>, extended: boolean) {
+function print(info: Heroku.App, addons: any, collaborators: any, extended: boolean) {
   const data: Heroku.App = {}
   data.Addons = addons
   data.Collaborators = collaborators
@@ -108,7 +129,7 @@ export default class AppsInfo extends Command {
   ]
 
   static flags = {
-    app: flags.app({required: true}),
+    app: flags.app({required: false}),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
     extended: flags.boolean({char: 'x'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
@@ -127,8 +148,9 @@ export default class AppsInfo extends Command {
     flags.app = app // make sure context.app is always set for herkou-cli-util
 
     const info = await getInfo(app, this, flags.extended)
-    const addons = info.addons.map((a: Record<string, Record<string, string>>) => a.plan.name).sort()
-    const collaborators = info.collaborators.map((c: Record<string, Record<string, string>>) => c.user.email).filter((c: Record<string, Record<string, string>>) => c !== info.app.owner.email).sort()
+    // console.log('info', info)
+    const addons = info.addons.map((a: any) => a.plan.name).sort()
+    const collaborators = info.collaborators.map((c: any) => c.user.email).filter((c: any) => c !== info.app.owner.email).sort()
 
     function shell() {
       function print(k: string, v: string) {
