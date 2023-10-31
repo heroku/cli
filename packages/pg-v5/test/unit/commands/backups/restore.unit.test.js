@@ -25,7 +25,7 @@ const shouldRestore = function (cmdRun) {
       addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     cli.mockConsole()
   })
 

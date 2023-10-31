@@ -33,12 +33,10 @@ const cmd = proxyquire('../../../../commands/credentials/url', {
 describe('pg:credentials:url', () => {
   let api
   let pg
-  let starter
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
-    starter = nock('https://postgres-starter-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     cli.mockConsole()
   })
 
@@ -163,7 +161,7 @@ Connection URL:
         },
       ],
     }
-    starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
+    pg.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:

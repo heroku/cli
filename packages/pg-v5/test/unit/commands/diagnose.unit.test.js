@@ -75,7 +75,7 @@ describe('pg:diagnose', () => {
     reportID = uuid.v4()
 
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     diagnose = nock('https://pgdiagnose.herokai.com')
     cli.mockConsole()
   })
