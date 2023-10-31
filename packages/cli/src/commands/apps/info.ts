@@ -6,6 +6,10 @@ import * as _ from 'lodash'
 const filesize = require('filesize')
 const {countBy, snakeCase} = _
 
+function formatDate(date: Date) {
+  return date.toISOString()
+}
+
 async function getInfo(app: string, client: Command, extended: boolean) {
   const promises = [
     client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
@@ -56,9 +60,9 @@ function print(info: Heroku.App, addons:  Record<string, Record<string, string>>
   data.Addons = addons
   data.Collaborators = collaborators
 
-  if (info.app.archived_at) data['Archived At'] = cli.formatDate(new Date(info.app.archived_at))
-  if (info.app.cron_finished_at) data['Cron Finished At'] = cli.formatDate(new Date(info.app.cron_finished_at))
-  if (info.app.cron_next_run) data['Cron Next Run'] = cli.formatDate(new Date(info.app.cron_next_run))
+  if (info.app.archived_at) data['Archived At'] = formatDate(new Date(info.app.archived_at))
+  if (info.app.cron_finished_at) data['Cron Finished At'] = formatDate(new Date(info.app.cron_finished_at))
+  if (info.app.cron_next_run) data['Cron Next Run'] = formatDate(new Date(info.app.cron_next_run))
   if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0})
   if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
   if (info.app.space) data.Space = info.app.space.name
@@ -135,9 +139,9 @@ export default class AppsInfo extends Command {
       print('addons', addons)
       print('collaborators', collaborators)
 
-      if (info.app.archived_at) print('archived_at', cli.formatDate(new Date(info.app.archived_at)))
-      if (info.app.cron_finished_at) print('cron_finished_at', cli.formatDate(new Date(info.app.cron_finished_at)))
-      if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(new Date(info.app.cron_next_run)))
+      if (info.app.archived_at) print('archived_at', formatDate(new Date(info.app.archived_at)))
+      if (info.app.cron_finished_at) print('cron_finished_at', formatDate(new Date(info.app.cron_finished_at)))
+      if (info.app.cron_next_run) print('cron_next_run', formatDate(new Date(info.app.cron_next_run)))
       if (info.app.database_size) print('database_size', filesize(info.app.database_size, {round: 0}))
       if (info.app.create_status !== 'complete') print('create_status', info.app.create_status)
       if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline_coupling.stage}`)
