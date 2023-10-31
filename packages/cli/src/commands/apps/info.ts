@@ -23,7 +23,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   ])
 
   if (extended) {
-    appExtendedResponse = client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`)
+    appExtendedResponse = await Promise.resolve(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
   }
 
   const addons = addonsResponse.body
@@ -49,7 +49,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
 
   console.log('DATA:', data)
 
-  if (appExtended) {
+  if (appExtended.length > 0) {
     data.appExtended = appExtended
   }
 
