@@ -40,7 +40,7 @@ describe('confirmApp', () => {
     .stderr()
     .stub(ux, 'prompt', () => Promise.resolve('app'))
     .do(() => confirmApp('app', undefined, customMessage))
-    .it('should custom message', ({stderr, stdout}) => {
+    .it('should display custom message', ({stderr, stdout}) => {
       expect(stderr).to.contain(customMessage)
       expect(stdout).to.equal('')
     })
