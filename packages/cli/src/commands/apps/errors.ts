@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 
-let colorize = (level, s) => {
+const colorize = (level, s) => {
   switch (level) {
   case 'critical':
     return cli.color.red(s)
@@ -16,11 +16,11 @@ let colorize = (level, s) => {
 }
 
 function buildErrorTable(errors, source) {
-  const errorInfo = require('../../error_info')
+  const errorInfo = require('@heroku-cli/plugin-apps-v5/src/error_info')
 
   return Object.keys(errors).map(name => {
-    let count = errors[name]
-    let info = errorInfo.find(e => e.name === name)
+    const count = errors[name]
+    const info = errorInfo.find(e => e.name === name)
     return {name, count, source, level: info.level, title: info.title}
   })
 }
@@ -75,17 +75,17 @@ async function run(context, heroku) {
     })
   }
 
-  let formation = await heroku.get(`/apps/${context.app}/formation`)
-  let types = formation.map(p => p.type)
-  let showDyno = context.flags.dyno || !context.flags.router
-  let showRouter = context.flags.router || !context.flags.dyno
+  const formation = await heroku.get(`/apps/${context.app}/formation`)
+  const types = formation.map(p => p.type)
+  const showDyno = context.flags.dyno || !context.flags.router
+  const showRouter = context.flags.router || !context.flags.dyno
 
-  let [dyno, router] = await Promise.all([
+  const [dyno, router] = await Promise.all([
     showDyno ? getAllDynoErrors(types) : {},
     showRouter ? routerErrors() : {},
   ])
 
-  let errors = {
+  const errors = {
     dyno,
     router,
   }
@@ -94,7 +94,7 @@ async function run(context, heroku) {
     cli.styledJSON(errors)
   } else {
     let t = buildErrorTable(errors.router, 'router')
-    for (let type of Object.keys(errors.dyno)) t = t.concat(buildErrorTable(errors.dyno[type], type))
+    for (const type of Object.keys(errors.dyno)) t = t.concat(buildErrorTable(errors.dyno[type], type))
     if (t.length === 0) {
       cli.log(`No errors on ${cli.color.app(context.app)} in the last ${hours} hours`)
     } else {
