@@ -1,7 +1,97 @@
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as open from 'open'
+import * as util from 'util'
+import * as _ from 'lodash'
+const filesize = require('filesize')
+const {countBy, snakeCase} = _
+
+async function getInfo(app: string, client: Command, extended: boolean) {
+  const promises = [
+    client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
+    client.heroku.request<Heroku.App>(`/apps/${app}`, {
+      headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
+    }),
+    client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => []),
+    client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => []),
+    client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => null),
+  ]
+
+  if (extended) {
+    promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
+  }
+
+  const [
+    addons,
+    appWithMoreInfo,
+    dynos,
+    collaborators,
+    pipelineCouplings,
+    appExtended,
+  ] = await Promise.all(promises)
+
+  const data: Heroku.App = {
+    addons,
+    app: appWithMoreInfo,
+    dynos,
+    collaborators,
+    pipeline_coupling: pipelineCouplings,
+  }
+
+  if (appExtended) {
+    data.appExtended = appExtended
+  }
+
+  if (extended) {
+    data.appExtended.acm = data.app.acm
+    data.app = data.appExtended
+    delete data.appExtended
+  }
+
+  return data
+}
+
+function print() {
+  const data = {}
+  data.Addons = addons
+  data.Collaborators = collaborators
+
+  if (info.app.archived_at) data['Archived At'] = cli.formatDate(new Date(info.app.archived_at))
+  if (info.app.cron_finished_at) data['Cron Finished At'] = cli.formatDate(new Date(info.app.cron_finished_at))
+  if (info.app.cron_next_run) data['Cron Next Run'] = cli.formatDate(new Date(info.app.cron_next_run))
+  if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0})
+  if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
+  if (info.app.space) data.Space = info.app.space.name
+  if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
+  if (info.pipeline_coupling) data.Pipeline = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
+
+  data['Auto Cert Mgmt'] = info.app.acm
+  data['Git URL'] = info.app.git_url
+  data['Web URL'] = info.app.web_url
+  data['Repo Size'] = filesize(info.app.repo_size, {round: 0})
+  data['Slug Size'] = filesize(info.app.slug_size, {round: 0})
+  data.Owner = info.app.owner.email
+  data.Region = info.app.region.name
+  data.Dynos = countBy(info.dynos, 'type')
+  data.Stack = (function (app) {
+    let stack = info.app.stack.name
+    if (app.stack.name !== app.build_stack.name) {
+      stack += ` (next build will use ${app.build_stack.name})`
+    }
+
+    return stack
+  })(info.app)
+
+  ux.styledHeader(info.app.name)
+  ux.styledObject(data)
+
+  if (context.flags.extended) {
+    ux.log('\n\n--- Extended Information ---\n\n')
+    if (info.app.extended) {
+      ux.log(util.inspect(info.app.extended))
+    }
+  }
+}
 
 export default class AppsInfo extends Command {
   static description = 'show detailed app information'
@@ -14,6 +104,7 @@ export default class AppsInfo extends Command {
   ]
 
   static flags = {
+    app: flags.app({required: true}),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
     extended: flags.boolean({char: 'x'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
@@ -26,110 +117,18 @@ export default class AppsInfo extends Command {
   async run() {
     const {flags, args} = await this.parse(AppsInfo)
 
-    const filesize = require('filesize')
-    const util = require('util')
-    const {countBy, snakeCase} = require('lodash')
-
-    async function getInfo(app) {
-      const promises = [
-        heroku.get(`/apps/${app}/addons`),
-        heroku.request({
-          path: `/apps/${app}`,
-          headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-        }),
-        heroku.get(`/apps/${app}/dynos`).catch(() => []),
-        heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-        heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null),
-      ]
-
-      if (context.flags.extended) {
-        promises.push(heroku.get(`/apps/${app}?extended=true`))
-      }
-
-      const [
-        addons,
-        appWithMoreInfo,
-        dynos,
-        collaborators,
-        pipelineCouplings,
-        appExtended,
-      ] = await Promise.all(promises)
-
-      const data = {
-        addons,
-        app: appWithMoreInfo,
-        dynos,
-        collaborators,
-        pipeline_coupling: pipelineCouplings,
-      }
-
-      if (appExtended) {
-        data.appExtended = appExtended
-      }
-
-      if (context.flags.extended) {
-        data.appExtended.acm = data.app.acm
-        data.app = data.appExtended
-        delete data.appExtended
-      }
-
-      return data
-    }
-
-    const app = context.args.app || context.app
+    const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
 
-    context.app = app // make sure context.app is always set for herkou-cli-util
+    flags.app = app // make sure context.app is always set for herkou-cli-util
 
-    const info = await getInfo(app)
+    const info = await getInfo(app, this, flags.extended)
     const addons = info.addons.map(a => a.plan.name).sort()
     const collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
 
-    function print() {
-      const data = {}
-      data.Addons = addons
-      data.Collaborators = collaborators
-
-      if (info.app.archived_at) data['Archived At'] = cli.formatDate(new Date(info.app.archived_at))
-      if (info.app.cron_finished_at) data['Cron Finished At'] = cli.formatDate(new Date(info.app.cron_finished_at))
-      if (info.app.cron_next_run) data['Cron Next Run'] = cli.formatDate(new Date(info.app.cron_next_run))
-      if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0})
-      if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
-      if (info.app.space) data.Space = info.app.space.name
-      if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
-      if (info.pipeline_coupling) data.Pipeline = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
-
-      data['Auto Cert Mgmt'] = info.app.acm
-      data['Git URL'] = info.app.git_url
-      data['Web URL'] = info.app.web_url
-      data['Repo Size'] = filesize(info.app.repo_size, {round: 0})
-      data['Slug Size'] = filesize(info.app.slug_size, {round: 0})
-      data.Owner = info.app.owner.email
-      data.Region = info.app.region.name
-      data.Dynos = countBy(info.dynos, 'type')
-      data.Stack = (function (app) {
-        let stack = info.app.stack.name
-        if (app.stack.name !== app.build_stack.name) {
-          stack += ` (next build will use ${app.build_stack.name})`
-        }
-
-        return stack
-      })(info.app)
-
-      cli.styledHeader(info.app.name)
-      cli.styledObject(data)
-
-      if (context.flags.extended) {
-        cli.log('\n\n--- Extended Information ---\n\n')
-        if (info.app.extended) {
-          cli.log(util.inspect(info.app.extended))
-        }
-      }
-    }
-
     function shell() {
       function print(k, v) {
-        cli.log(`${snakeCase(k)}=${v}`)
+        ux.log(`${snakeCase(k)}=${v}`)
       }
 
       print('auto_cert_mgmt', info.app.acm)
@@ -153,10 +152,10 @@ export default class AppsInfo extends Command {
       print('stack', info.app.stack.name)
     }
 
-    if (context.flags.shell) {
+    if (flags.shell) {
       shell()
-    } else if (context.flags.json) {
-      cli.styledJSON(info)
+    } else if (flags.json) {
+      ux.styledJSON(info)
     } else {
       print()
     }
