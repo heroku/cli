@@ -11,20 +11,6 @@ function formatDate(date: Date) {
 }
 
 async function getInfo(app: string, client: Command, extended: boolean) {
-  // const promises = [
-  //   // client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
-  //   client.heroku.request<Heroku.App>(`/apps/${app}`, {
-  //     headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-  //   }),
-  //   client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => []),
-  //   client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => []),
-  //   client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => null),
-  // ]
-
-  // if (extended) {
-  //   promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
-  // }
-
   let appExtendedResponse: Heroku.App = []
   const [addonsResponse, appWithMoreInfoResponse, dynosResponse, collaboratorsResponse, pipelineCouplingsResponse] = await Promise.all([
     client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
@@ -145,10 +131,9 @@ export default class AppsInfo extends Command {
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
 
-    flags.app = app // make sure context.app is always set for herkou-cli-util
+    flags.app = app
 
     const info = await getInfo(app, this, flags.extended)
-    // console.log('info', info)
     const addons = info.addons.map((a: any) => a.plan.name).sort()
     const collaborators = info.collaborators.map((c: any) => c.user.email).filter((c: any) => c !== info.app.owner.email).sort()
 
