@@ -1,48 +1,86 @@
 import {expect, test} from '@oclif/test'
-import * as childProcess from 'child_process'
-import * as sinon from 'sinon'
+import {unwrap} from '../../../helpers/utils/unwrap'
 
-describe('apps:open', () => {
-  const app = {
-    web_url: 'https://myapp.herokuapp.com',
-  }
-  const spawnStub = sinon.stub().returns({unref: () => {}})
+const app = {
+  name: 'myapp',
+  database_size: 1000,
+  create_status: 'complete',
+  repo_size: 1000,
+  slug_size: 1000,
+  git_url: 'https://git.heroku.com/myapp',
+  web_url: 'https://myapp.herokuapp.com',
+  region: {name: 'eu'},
+  build_stack: {name: 'cedar-14'},
+  stack: {name: 'cedar-14'},
+  owner: {email: 'foo@foo.com'},
+  space: {name: 'myspace'},
+  internal_routing: true,
+}
 
+const appStackChange = Object.assign({}, app, {
+  build_stack: {name: 'heroku-22'},
+})
+
+const appExtended = Object.assign({}, app, {
+  extended: {
+    foo: 'bar',
+    id: 12345,
+  },
+})
+
+const appAcm = Object.assign({}, app, {
+  acm: true,
+})
+
+const addons = [
+  {plan: {name: 'papertrail'}},
+  {plan: {name: 'heroku-redis'}},
+]
+
+const collaborators = [
+  {user: {email: 'foo@foo.com'}},
+  {user: {email: 'foo2@foo.com'}},
+]
+
+describe('apps:info', () => {
   test
     .stdout()
-    .nock('https://api.heroku.com', api =>
+    .stderr()
+    .nock('https://api.heroku.com', {
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
+    }, api =>
       api
         .get('/apps/myapp')
-        .reply(200, app),
+        .reply(200, appAcm),
     )
-    .stub(childProcess, 'spawn', spawnStub)
-    .command(['apps:open', '-a', 'myapp'])
-    .it('opens the url', () => {
-      const urlArgArray = spawnStub.getCall(0).args[1]
-      // For darwin-based platforms this arg is an array that contains the site url.
-      // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-      const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
-      expect(hasCorrectUrl).to.be.true
+    .nock('https://api.heroku.com:443', api =>
+      api
+        .get('/apps/myapp/addons')
+        .reply(200, addons)
+        .get('/apps/myapp/collaborators')
+        .reply(200, collaborators)
+        .get('/apps/myapp/dynos')
+        .reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}]),
+    )
+    .command(['apps:info', '-a', 'myapp'])
+    .it('shows app info', ({stdout, stderr}) => {
+      expect(stdout).to.equal(`=== myapp
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
+`)
+      expect(unwrap(stderr)).to.contains('')
     })
-
-  describe('apps:open reset stub', () => {
-    const spawnStub = sinon.stub().returns({unref: () => {}})
-
-    test
-      .stdout()
-      .nock('https://api.heroku.com', api =>
-        api
-          .get('/apps/myapp')
-          .reply(200, app),
-      )
-      .stub(childProcess, 'spawn', spawnStub)
-      .command(['apps:open', '-a', 'myapp', '/mypath'])
-      .it('opens the url with path', () => {
-        const urlArgArray = spawnStub.getCall(0).args[1]
-        // For darwin-based platforms this arg is an array that contains the site url.
-        // For windows-based platforms this arg is an array that contains an encoded command that includes the url
-        const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')
-        expect(hasCorrectUrl).to.be.true
-      })
-  })
 })
