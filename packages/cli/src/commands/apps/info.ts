@@ -51,8 +51,8 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   return data
 }
 
-function print() {
-  const data = {}
+function print(info: Heroku.App, addons:  Record<string, Record<string, string>>, collaborators:  Record<string, Record<string, string>>, extended: boolean) {
+  const data: Heroku.App = {}
   data.Addons = addons
   data.Collaborators = collaborators
 
@@ -85,7 +85,7 @@ function print() {
   ux.styledHeader(info.app.name)
   ux.styledObject(data)
 
-  if (context.flags.extended) {
+  if (extended) {
     ux.log('\n\n--- Extended Information ---\n\n')
     if (info.app.extended) {
       ux.log(util.inspect(info.app.extended))
@@ -123,11 +123,11 @@ export default class AppsInfo extends Command {
     flags.app = app // make sure context.app is always set for herkou-cli-util
 
     const info = await getInfo(app, this, flags.extended)
-    const addons = info.addons.map(a => a.plan.name).sort()
-    const collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
+    const addons = info.addons.map((a: Record<string, Record<string, string>>) => a.plan.name).sort()
+    const collaborators = info.collaborators.map((c: Record<string, Record<string, string>>) => c.user.email).filter((c: Record<string, Record<string, string>>) => c !== info.app.owner.email).sort()
 
     function shell() {
-      function print(k, v) {
+      function print(k: string, v: string) {
         ux.log(`${snakeCase(k)}=${v}`)
       }
 
@@ -157,7 +157,7 @@ export default class AppsInfo extends Command {
     } else if (flags.json) {
       ux.styledJSON(info)
     } else {
-      print()
+      print(info, addons, collaborators, flags.extended)
     }
   }
 }
