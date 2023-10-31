@@ -47,8 +47,6 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     pipeline_coupling: pipelineCouplings,
   }
 
-  console.log('DATA:', data)
-
   if (appExtended.length > 0) {
     data.appExtended = appExtended
   }
