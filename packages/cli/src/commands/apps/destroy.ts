@@ -24,8 +24,6 @@ export default class Destroy extends Command {
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')
 
-    // context.app = app // make sure context.app is always set for herkou-cli-util
-
     // this appears to report errors if app not found
     await this.heroku.get(`/apps/${app}`)
     await confirmApp(app, flags.confirm, `WARNING: This will delete ${color.app(app)} including all add-ons.`)
