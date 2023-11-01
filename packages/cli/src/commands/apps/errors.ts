@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {HTTP} from 'http-call'
 import {sum} from 'lodash'
 import errorInfo from '../../lib/apps/error_info'
 import * as Heroku from '@heroku-cli/schema'
@@ -25,6 +26,14 @@ function buildErrorTable(errors, source) {
     const info = errorInfo.find(e => e.name === name)
     return {name, count, source, level: info.level, title: info.title}
   })
+}
+
+const sumErrors = (errors: AppErrors) => {
+  const summed: Record<string, number> = {}
+  Object.keys(errors.data).forEach(key => {
+    summed[key] = sum(errors.data[key])
+  })
+  return summed
 }
 
 export default class Errors extends Command {
@@ -54,17 +63,14 @@ export default class Errors extends Command {
       }, {})
     }
 
-    const routerErrors = () => {
-      return this.heroku.request({
-        host: 'api.metrics.herokai.com',
-        path: `/apps/${app}/router-metrics/errors?${DATE}&process_type=web`,
-        headers: {Range: ''},
-      }).then(rsp => {
-        Object.keys(rsp.data).forEach(key => {
-          rsp.data[key] = sum(rsp.data[key])
+    const routerErrors = async () => {
+      const {body} = await this.heroku.get<AppErrors>(
+        `/apps/${flags.app}/router-metrics/errors?${DATE}&process_type=web`,
+        {
+          host: 'api.metrics.herokai.com',
+          headers: {Range: ''},
         })
-        return rsp.data
-      })
+      return sumErrors(body)
     }
 
     const dynoErrors = (type: string) => {
@@ -78,21 +84,13 @@ export default class Errors extends Command {
         // eslint-disable-next-line prefer-regex-literals
         const match = new RegExp('^invalid process_type provided', 'i')
         if (error.statusCode === 400 && error.body && error.body.message && match.test(error.body.message)) {
-          return
+          return {body: {data: {}}}
         }
 
         throw error
       }).then(rsp => {
-        const data = rsp?.body?.data
-        if (data) {
-          const summedData: Record<string, number> = {}
-          Object.keys(data).forEach(key => {
-            summedData[key] = sum(data[key])
-          })
-          return summedData
-        }
-
-        return {}
+        const {body} = rsp as HTTP<AppErrors>
+        return sumErrors(body)
       })
     }
 
