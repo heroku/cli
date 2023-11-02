@@ -57,7 +57,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   return data
 }
 
-function print(info: Heroku.App, addons: Heroku.AddOn, collaborators: Heroku.Collaborator, extended: boolean) {
+function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.Collaborator[], extended: boolean) {
   const data: Heroku.App = {}
   data.Addons = addons
   data.Collaborators = collaborators
@@ -138,8 +138,10 @@ repo_size=5000000
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
     const info = await getInfo(app, this, flags.extended)
-    const addons = info.addons.map((a: any) => a.plan.name).sort()
-    const collaborators = info.collaborators.map((c: any) => c.user.email).filter((c: any) => c !== info.app.owner.email).sort()
+    const addons = info.addons.map((a: Heroku.AddOn) => a.plan?.name).sort()
+    const collaborators = info.collaborators.map((c: Heroku.Collaborator) => c.user.email)
+      .filter((c: Heroku.Collaborator) => c !== info.app.owner.email)
+      .sort()
 
     function shell() {
       function print(k: string, v: string) {
