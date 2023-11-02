@@ -1,8 +1,5 @@
 import {test, expect} from '@oclif/test'
-import * as sinon from 'sinon'
 
-const now = new Date()
-const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000))
 const formation = [
   {
     command: 'npm start',
@@ -30,116 +27,173 @@ const errors = {
   },
 }
 
-describe('apps:errors', () => {
-  let clock: ReturnType<typeof sinon.useFakeTimers>
-  before(() => {
-    clock = sinon.useFakeTimers(now)
-  })
-  after(() => {
-    clock.restore()
-  })
+const APP = 'myapp'
 
+describe('apps:errors', () => {
   test
-    .stdout({print: true})
-    .stderr({print: true})
+    .stdout()
+    .stderr()
     .nock('https://api.heroku.com', api => {
       api
-        .get('/apps/myapp/formation')
+        .get(`/apps/${APP}/formation`)
         .reply(200, formation)
     })
     .nock('https://api.metrics.herokai.com', api => {
       api
-        .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get(`/apps/${APP}/router-metrics/errors`)
+        .query(params => {
+          return params.process_type === 'web' && params.step === '1h'
+        })
         .reply(200, {data: {}})
-        .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get(`/apps/${APP}/formation/node/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
         .reply(200, {data: {}})
-        .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get(`/apps/${APP}/formation/web/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
         .reply(200, {data: {}})
     })
-    .command(['apps:errors', '--app', 'myapp'])
+    .command(['apps:errors', '--app', APP])
     .it('shows no errors', ({stdout, stderr}) => {
       expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
       expect(stderr).to.be.equal('')
     })
 
-//
-//   it('traps bad request', () => {
-//     const heroku = nock('https://api.heroku.com')
-//       .get('/apps/myapp/formation')
-//       .reply(200, formation)
-//     const metrics = nock('https://api.metrics.herokai.com')
-//       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
-//
-//     return cmd.run({app: 'myapp', flags: {json: false}})
-//       .then(() => expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
-// `))
-//       .then(() => expect(cli.stderr, 'to be empty'))
-//       .then(() => metrics.done())
-//       .then(() => heroku.done())
-//   })
-//
-//   it('propagates other bad request', () => {
-//     nock('https://api.heroku.com')
-//       .get('/apps/myapp/formation')
-//       .reply(200, formation)
-//     nock('https://api.metrics.herokai.com')
-//       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(400, {id: 'bad_request', message: 'ack!'})
-//
-//     return expect(cmd.run({app: 'myapp', flags: {json: false}})).to.be.rejected
-//   })
-//
-//   it('shows errors', () => {
-//     const heroku = nock('https://api.heroku.com')
-//       .get('/apps/myapp/formation')
-//       .reply(200, formation)
-//     const metrics = nock('https://api.metrics.herokai.com')
-//       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
-//       .reply(200, errors.router)
-//       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {R14: [1]}})
-//
-//     return cmd.run({app: 'myapp', flags: {json: false}})
-//       .then(() => expect(cli.stdout, 'to be', `=== Errors on myapp in the last 24 hours
-// source  name  level     desc                        count
-// ──────  ────  ────────  ──────────────────────────  ─────
-// router  H12   critical  Request Timeout             2
-// router  H25   critical  HTTP Restriction            3
-// router  H27   info      Client Request Interrupted  9
-// web     R14   critical  Memory quota exceeded       1
-// `))
-//       .then(() => expect(cli.stderr, 'to be empty'))
-//       .then(() => metrics.done())
-//       .then(() => heroku.done())
-//   })
-//
-//   it('shows errors as json', () => {
-//     const heroku = nock('https://api.heroku.com')
-//       .get('/apps/myapp/formation')
-//       .reply(200, formation)
-//     const metrics = nock('https://api.metrics.herokai.com')
-//       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
-//       .reply(200, errors.router)
-//       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {}})
-//       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-//       .reply(200, {data: {}})
-//
-//     return cmd.run({app: 'myapp', flags: {json: true}})
-//       .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {router: {H12: 2}}))
-//       .then(() => expect(cli.stderr, 'to be empty'))
-//       .then(() => metrics.done())
-//       .then(() => heroku.done())
-//   })
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api
+        .get(`/apps/${APP}/formation`)
+        .reply(200, formation)
+    })
+    .nock('https://api.metrics.herokai.com', api => {
+      api
+        .get(`/apps/${APP}/router-metrics/errors`)
+        .query(params => {
+          return params.process_type === 'web' && params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/node/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/web/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
+    })
+    .command(['apps:errors', '--app', APP])
+    .it('traps bad request', ({stdout, stderr}) => {
+      expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
+      expect(stderr).to.be.equal('')
+    })
+
+  const ERROR_MESSAGE = 'ack!'
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api
+        .get(`/apps/${APP}/formation`)
+        .reply(200, formation)
+    })
+    .nock('https://api.metrics.herokai.com', api => {
+      api
+        .get(`/apps/${APP}/router-metrics/errors`)
+        .query(params => {
+          return params.process_type === 'web' && params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/node/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/web/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(400, {id: 'bad_request', message: ERROR_MESSAGE})
+    })
+    .command(['apps:errors', '--app', APP])
+    .catch((error: any) => {
+      expect(error.message).to.include(ERROR_MESSAGE)
+    })
+    .it('propagates other bad request')
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api
+        .get(`/apps/${APP}/formation`)
+        .reply(200, formation)
+    })
+    .nock('https://api.metrics.herokai.com', api => {
+      api
+        .get(`/apps/${APP}/router-metrics/errors`)
+        .query(params => {
+          return params.process_type === 'web' && params.step === '1h'
+        })
+        .reply(200, errors.router)
+        .get(`/apps/${APP}/formation/node/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/web/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {R14: [1]}})
+    })
+    .command(['apps:errors', '--app', APP])
+    .it('traps bad request', ({stdout, stderr}) => {
+      expect(stdout).to.include('=== Errors on ⬢ myapp in the last 24 hours')
+      expect(stdout).to.include('Source Name Level    desc                       Count')
+      expect(stdout).to.include('────── ──── ──────── ────────────────────────── ─────')
+      expect(stdout).to.include('router H12  critical Request Timeout            2')
+      expect(stdout).to.include('router H25  critical HTTP Restriction           3')
+      expect(stdout).to.include('router H27  info     Client Request Interrupted 9')
+      expect(stdout).to.include('web    R14  critical Memory quota exceeded      1')
+      expect(stderr).to.be.equal('')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api => {
+      api
+        .get(`/apps/${APP}/formation`)
+        .reply(200, formation)
+    })
+    .nock('https://api.metrics.herokai.com', api => {
+      api
+        .get(`/apps/${APP}/router-metrics/errors`)
+        .query(params => {
+          return params.process_type === 'web' && params.step === '1h'
+        })
+        .reply(200, errors.router)
+        .get(`/apps/${APP}/formation/node/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {}})
+        .get(`/apps/${APP}/formation/web/metrics/errors`)
+        .query(params => {
+          return params.step === '1h'
+        })
+        .reply(200, {data: {}})
+    })
+    .command(['apps:errors', '--app', APP, '--json'])
+    .it('shows errors as json', ({stdout, stderr}) => {
+      expect(JSON.parse(stdout).router.H12).to.equal(2)
+      expect(stderr).to.be.equal('')
+    })
 })
