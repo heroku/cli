@@ -11,31 +11,30 @@ function formatDate(date: Date) {
 }
 
 async function getInfo(app: string, client: Command, extended: boolean) {
-  let appExtendedResponse: Heroku.App = []
-  const [addonsResponse, appWithMoreInfoResponse, dynosResponse, collaboratorsResponse, pipelineCouplingsResponse] = await Promise.all([
-    client.heroku.get<Heroku.App>(`/apps/${app}/addons`),
+  const promises = [
+    client.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
     client.heroku.request<Heroku.App>(`/apps/${app}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     }),
-    client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),
-  ])
+    client.heroku.get<Heroku.Dyno[]>(`/apps/${app}/dynos`).catch(() => ({body: []})),
+    client.heroku.get<Heroku.Collaborator[]>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
+    client.heroku.get<Heroku.PipelineCoupling[]>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),
+  ]
 
   if (extended) {
-    appExtendedResponse = await Promise.resolve(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
+    promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
   }
 
-  const addons = addonsResponse.body
-  const appWithMoreInfo = appWithMoreInfoResponse.body
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const dynos = dynosResponse.body
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const collaborators = collaboratorsResponse.body
-  const pipelineCouplings = pipelineCouplingsResponse.body
-  const appExtended = appExtendedResponse.body
+  const [
+    {body: addons},
+    {body: appWithMoreInfo},
+    {body: dynos},
+    {body: collaborators},
+    {body: pipelineCouplings},
+    appExtendedResponse,
+  ] = await Promise.all(promises)
+
+  const appExtended = appExtendedResponse?.body
 
   const data: Heroku.App = {
     addons,
@@ -58,7 +57,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   return data
 }
 
-function print(info: Heroku.App, addons: any, collaborators: any, extended: boolean) {
+function print(info: Heroku.App, addons: Heroku.AddOn, collaborators: Heroku.Collaborator, extended: boolean) {
   const data: Heroku.App = {}
   data.Addons = addons
   data.Collaborators = collaborators
@@ -110,24 +109,33 @@ export default class AppsInfo extends Command {
     '$ heroku apps:info --shell',
   ]
 
+  static help = `$ heroku apps:info
+=== example
+Git URL:   https://git.heroku.com/example.git
+Repo Size: 5M
+...
+
+$ heroku apps:info --shell
+git_url=https://git.heroku.com/example.git
+repo_size=5000000
+...`
+
   static flags = {
-    app: flags.app({required: false}),
+    app: flags.app(),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
-    extended: flags.boolean({char: 'x'}),
+    extended: flags.boolean({char: 'x', hidden: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
 
   static args = {
-    app: Args.string({required: false}),
+    app: Args.string({hidden: true}),
   }
 
   async run() {
     const {flags, args} = await this.parse(AppsInfo)
 
     const app = args.app || flags.app
-    if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
-
-    flags.app = app
+    if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
     const info = await getInfo(app, this, flags.extended)
     const addons = info.addons.map((a: any) => a.plan.name).sort()

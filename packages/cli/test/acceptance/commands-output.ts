@@ -129,6 +129,7 @@ export default `\u001B[1m Command                                        Summary
  git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)
  git:remote                                     adds a git remote to an app repo
  help                                           Display help for heroku.
+ info                                           show detailed app information
  join                                           add yourself to a team app
  keys                                           display your SSH keys
  keys:add                                       add an SSH key for a user
