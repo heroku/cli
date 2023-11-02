@@ -1,4 +1,10 @@
-export default [
+export type ErrorInfo = {
+  name: string
+  title: string
+  level: string
+}
+
+const ERROR_INFO: ErrorInfo[] = [
   {
     name: 'H10',
     title: 'App Crashed',
@@ -180,3 +186,5 @@ export default [
     level: 'critical',
   },
 ]
+
+export default ERROR_INFO
