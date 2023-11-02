@@ -34,8 +34,6 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     appExtendedResponse,
   ] = await Promise.all(promises)
 
-  const appExtended = appExtendedResponse?.body
-
   const data: Heroku.App = {
     addons,
     app: appWithMoreInfo,
@@ -44,8 +42,8 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     pipeline_coupling: pipelineCouplings,
   }
 
-  if (appExtended) {
-    data.appExtended = appExtended
+  if (appExtendedResponse) {
+    data.appExtended = appExtendedResponse.body
   }
 
   if (extended) {
