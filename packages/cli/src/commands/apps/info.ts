@@ -35,9 +35,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   // @ts-ignore
   const collaborators = collaboratorsResponse.body
   const pipelineCouplings = pipelineCouplingsResponse.body
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const appExtended = appExtendedResponse.body || []
+  const appExtended = appExtendedResponse.body
 
   const data: Heroku.App = {
     addons,
