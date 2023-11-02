@@ -59,7 +59,7 @@ export default class Errors extends Command {
     const hours = Number.parseInt(flags.hours || '') || 24
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(Date.now() - (hours * 60 * 60 * 1000)).toISOString()
-    const DATE = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
+    const DATE_QUERY = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
 
     async function getAllDynoErrors(types: string[]) {
       const values = await Promise.all(types.map(dynoErrors))
@@ -70,27 +70,26 @@ export default class Errors extends Command {
       return memo
     }
 
-    const routerErrors = async () => {
-      const {body} = await this.heroku.get<AppErrors>(
-        `/apps/${flags.app}/router-metrics/errors?${DATE}&process_type=web`,
+    const routerErrors = () => {
+      return this.heroku.get<AppErrors>(
+        `/apps/${flags.app}/router-metrics/errors?${DATE_QUERY}&process_type=web`,
         {
-          host: 'api.metrics.herokai.com',
-          headers: {Range: ''},
-        })
-      return sumErrors(body)
+          hostname: 'api.metrics.herokai.com',
+        },
+      ).then(({body}) => sumErrors(body))
     }
 
     const dynoErrors = (type: string) => {
       return this.heroku.get<AppErrors>(
-        `/apps/${flags.app}/formation/${type}/metrics/errors?${DATE}`,
+        `/apps/${flags.app}/formation/${type}/metrics/errors?${DATE_QUERY}`,
         {
-          host: 'api.metrics.herokai.com',
-          headers: {Range: ''},
+          hostname: 'api.metrics.herokai.com',
         },
       ).catch(error => {
+        const {http} = error
         // eslint-disable-next-line prefer-regex-literals
         const match = new RegExp('^invalid process_type provided', 'i')
-        if (error.statusCode === 400 && error.body && error.body.message && match.test(error.body.message)) {
+        if (http && http.statusCode === 400 && http.body && http.body.message && match.test(http.body.message)) {
           return {body: {data: {}}}
         }
 
