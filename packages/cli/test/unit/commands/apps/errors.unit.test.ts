@@ -154,9 +154,9 @@ describe('apps:errors', () => {
         .reply(200, {data: {R14: [1]}})
     })
     .command(['apps:errors', '--app', APP])
-    .it('traps bad request', ({stdout, stderr}) => {
+    .it('shows errors', ({stdout, stderr}) => {
       expect(stdout).to.include('=== Errors on ⬢ myapp in the last 24 hours')
-      expect(stdout).to.include('Source Name Level    desc                       Count')
+      expect(stdout).to.include('Source Name Level    Desc                       Count')
       expect(stdout).to.include('────── ──── ──────── ────────────────────────── ─────')
       expect(stdout).to.include('router H12  critical Request Timeout            2')
       expect(stdout).to.include('router H25  critical HTTP Restriction           3')

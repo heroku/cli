@@ -48,7 +48,7 @@ export default class Errors extends Command {
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({description: 'output in json format'}),
-    hours: flags.string({description: 'number of hours to look back (default 24)'}),
+    hours: flags.string({description: 'number of hours to look back (default 24)', default: '24'}),
     router: flags.boolean({description: 'show only router errors'}),
     dyno: flags.boolean({description: 'show only dyno errors'}),
   }
@@ -56,7 +56,7 @@ export default class Errors extends Command {
   async run() {
     const {flags} = await this.parse(Errors)
 
-    const hours = Number.parseInt(flags.hours || '') || 24
+    const hours = Number.parseInt(flags.hours)
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(Date.now() - (hours * 60 * 60 * 1000)).toISOString()
     const DATE_QUERY = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
@@ -133,7 +133,7 @@ export default class Errors extends Command {
           source: {},
           name: {get: ({name, level}) => colorize(level, name)},
           level: {get: ({level}) => colorize(level, level)},
-          title: {header: 'desc'},
+          title: {header: 'Desc'},
           count: {},
         })
       }
