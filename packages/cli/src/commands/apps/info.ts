@@ -17,9 +17,9 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     client.heroku.request<Heroku.App>(`/apps/${app}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     }),
-    client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => []),
-    client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => []),
-    client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => null),
+    client.heroku.get<Heroku.App>(`/apps/${app}/dynos`).catch(() => ({body: []})),
+    client.heroku.get<Heroku.App>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
+    client.heroku.get<Heroku.App>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),
   ])
 
   if (extended) {
@@ -34,10 +34,10 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const collaborators = collaboratorsResponse.body
-  const pipelineCouplings = pipelineCouplingsResponse!.body
+  const pipelineCouplings = pipelineCouplingsResponse.body
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const appExtended = appExtendedResponse!.body || []
+  const appExtended = appExtendedResponse.body || []
 
   const data: Heroku.App = {
     addons,
@@ -47,7 +47,7 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     pipeline_coupling: pipelineCouplings,
   }
 
-  if (appExtended.length > 0) {
+  if (appExtended) {
     data.appExtended = appExtended
   }
 
