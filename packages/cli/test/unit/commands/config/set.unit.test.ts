@@ -1,4 +1,5 @@
 import {test, expect} from '@oclif/test'
+const stripAnsi = require('strip-ansi')
 
 describe('config:set', () => {
   test
@@ -43,5 +44,15 @@ describe('config:set', () => {
       expect(error.message).to.equal('Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
       expect(error.oclif.exit).to.equal(1)
     })
-    .it('errors out on empty')
+    .it('errors without args')
+
+  test
+    .stdout()
+    .stderr()
+    .command(['config:set', '--app', 'myapp', 'WRONG'])
+    .catch((error: any) => {
+      expect(stripAnsi(error.message)).to.equal('WRONG is invalid. Must be in the format FOO=bar.')
+      expect(error.oclif.exit).to.equal(1)
+    })
+    .it('errors with invalid args')
 })

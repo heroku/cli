@@ -9310,6 +9310,7 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.6.1
     sinon: ^7.2.4
+    strip-ansi: 6.0.1
     tmp: ^0.0.33
     true-myth: 2.2.3
     ts-node: ^10.9.1

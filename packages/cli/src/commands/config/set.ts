@@ -44,12 +44,10 @@ RACK_ENV:  staging`,
     argv.forEach((v: string) => {
       const idx = v.indexOf('=')
       if (idx === -1) {
-        ux.error(`${color.cyan(v)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`)
-        process.exit(1)
+        ux.error(`${color.cyan(v)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
       }
 
       vars[v.slice(0, idx)] = v.slice(idx + 1)
-      return vars
     })
 
     const varsCopy = argv.map((v: string) => color.green(v.split('=')[0])).join(', ')
