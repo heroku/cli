@@ -12,8 +12,8 @@ DIREWOLF_URL="https://$DIREWOLF_TOKEN@direwolf-api.herokai.com"
 POST_BODY=$(jq --null-input \
   --arg cloud "$DIREWOLF_CLOUD_UUID" \
   --arg suite "$DIREWOLF_SUITE" \
-  --arg env "$HEROKU_CLI_VERSION \
-  '{"cloud": { "id": $cloud}, "suite": { "label": $suite }, "env": { "HEROKU_CLI_VERSION": $env })
+  --arg env "$HEROKU_CLI_VERSION" \
+  '{"cloud": { "id": $cloud }, "suite": { "label": $suite }, "env": { "HEROKU_CLI_VERSION": $env }}')
 
 echo "Enqueuing: $POST_BODY"
  
