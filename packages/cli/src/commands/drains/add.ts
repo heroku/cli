@@ -1,22 +1,25 @@
-'use strict'
+import {Args, ux} from '@oclif/core'
+import color from '@heroku-cli/color'
+import * as Heroku from '@heroku-cli/schema'
+import {flags, Command} from '@heroku-cli/command'
 
-let cli = require('heroku-cli-util')
+export default class Add extends Command {
+  static description = 'adds a log drain to an app'
+  static flags = {
+    app: flags.app({required: true}),
+  }
 
-async function run(context, heroku) {
-  let drain = await heroku.request({
-    method: 'post',
-    path: `/apps/${context.app}/log-drains`,
-    body: {url: context.args.url},
-  })
-  cli.log(`Successfully added drain ${cli.color.cyan(drain.url)}`)
+  static args = {
+    url: Args.string({required: true}),
+  }
+
+  async run() {
+    const {flags, args} = await this.parse(Add)
+
+    const {body: drain} = await this.heroku.post<Heroku.LogDrain>(`/apps/${flags.app}/log-drains`, {
+      body: {url: args.url},
+    })
+    ux.log(`Successfully added drain ${color.cyan(drain.url || '')}`)
+  }
 }
 
-module.exports = {
-  topic: 'drains',
-  command: 'add',
-  description: 'adds a log drain to an app',
-  needsApp: true,
-  needsAuth: true,
-  args: [{name: 'url'}],
-  run: cli.command(run),
-}

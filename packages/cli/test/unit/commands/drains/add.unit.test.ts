@@ -1,20 +1,17 @@
-'use strict'
-/* globals beforeEach */
-
-const cli = require('heroku-cli-util')
-const nock = require('nock')
-const cmd = require('packages/cli/src/commands/drains/add')
-const expect = require('chai').expect
+import {expect, test} from '@oclif/test'
 
 describe('drains:add', function () {
-  beforeEach(() => cli.mockConsole())
-
-  it('adds a log drain', function () {
-    const api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/log-drains', {url: 'syslog://logs.example.com'})
-      .reply(200, {url: 'syslog://logs.example.com'})
-    return cmd.run({app: 'myapp', args: {url: 'syslog://logs.example.com'}})
-      .then(() => expect(cli.stdout).to.equal('Successfully added drain syslog://logs.example.com\n'))
-      .then(() => api.done())
-  })
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com:443', api => {
+      api
+        .post('/apps/myapp/log-drains', {url: 'syslog://logs.example.com'})
+        .reply(200, {url: 'syslog://logs.example.com'})
+    })
+    .command(['drains:add', '-a', 'myapp', 'syslog://logs.example.com'])
+    .it('adds a log drain', ({stdout, stderr}) => {
+      expect(stdout).to.equal('Successfully added drain syslog://logs.example.com\n')
+      expect(stderr).to.equal('')
+    })
 })
