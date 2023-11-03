@@ -5,10 +5,10 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'config' && c.command === 'set')
 const {expect} = require('chai')
-const unwrap = require('../../../unwrap')
+const unwrap = require('@heroku-cli/plugin-apps-v5/test/unwrap')
 let config
 
-const assertExit = require('../../../assert_exit.js')
+const assertExit = require('@heroku-cli/plugin-apps-v5/test/assert_exit.js')
 
 describe('config:set', () => {
   beforeEach(async () => {
