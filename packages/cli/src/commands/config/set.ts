@@ -1,59 +1,24 @@
-'use strict'
+import color from '@heroku-cli/color'
+import {Command, flags, APIClient} from '@heroku-cli/command'
+import {mapKeys, pickBy} from 'lodash'
+import {ux} from '@oclif/core'
+import * as Heroku from '@heroku-cli/schema'
 
-const cli = require('heroku-cli-util')
-
-async function run(context, heroku) {
-  if (context.args.length === 0) {
-    cli.exit(1, 'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
-  }
-
-  const {reduce, pickBy, mapKeys} = require('lodash')
-
-  function lastRelease() {
-    return heroku.request({
-      method: 'GET',
-      partial: true,
-      path: `/apps/${context.app}/releases`,
-      headers: {Range: 'version ..; order=desc,max=1'},
-    }).then(releases => releases[0])
-  }
-
-  let vars = reduce(context.args, function (vars, v) {
-    let idx = v.indexOf('=')
-    if (idx === -1) {
-      cli.error(`${cli.color.cyan(v)} is invalid. Must be in the format ${cli.color.cyan('FOO=bar')}.`)
-      process.exit(1)
-    }
-
-    vars[v.slice(0, idx)] = v.slice(idx + 1)
-    return vars
-  }, {})
-
-  let config
-
-  await cli.action(
-    `Setting ${context.args.map(v => cli.color.configVar(v.split('=')[0])).join(', ')} and restarting ${cli.color.app(context.app)}`,
-    {success: false},
-    (async function () {
-      config = await heroku.request({
-        method: 'patch',
-        path: `/apps/${context.app}/config-vars`,
-        body: vars,
-      })
-      let release = await lastRelease()
-      cli.action.done(`done, ${cli.color.release('v' + release.version)}`)
-    })(),
-  )
-
-  config = pickBy(config, (_, k) => vars[k])
-  config = mapKeys(config, (_, k) => cli.color.green(k))
-  cli.styledObject(config)
-  await context.config.runHook('recache', {type: 'config', app: context.app})
+const lastRelease = async (client: APIClient, app: string) => {
+  const {body: releases} = await client.get<Heroku.Release[]>(`/apps/${app}/releases`, {
+    method: 'GET',
+    partial: true,
+    headers: {Range: 'version ..; order=desc,max=1'},
+  })
+  return releases[0]
 }
 
-let cmd = {
-  description: 'set one or more config vars',
-  examples: `$ heroku config:set RAILS_ENV=staging
+export default class Set extends Command {
+  static description = 'set one or more config vars'
+  static strict = false
+  static aliases = ['config:add']
+  static examples = [
+    `$ heroku config:set RAILS_ENV=staging
 Setting config vars and restarting example... done, v10
 RAILS_ENV: staging
 
@@ -61,13 +26,45 @@ $ heroku config:set RAILS_ENV=staging RACK_ENV=staging
 Setting config vars and restarting example... done, v11
 RAILS_ENV: staging
 RACK_ENV:  staging`,
-  needsApp: true,
-  needsAuth: true,
-  variableArgs: true,
-  run: cli.command({preauth: true}, run),
+  ]
+
+  static flags = {
+    app: flags.app({required: true}),
+  }
+
+  async run() {
+    const {flags, argv: _argv} = await this.parse(Set)
+    const argv = _argv as string[]
+
+    if (argv.length === 0) {
+      ux.error('Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.', {exit: 1})
+    }
+
+    const vars: Record<string, string> = {}
+    argv.forEach((v: string) => {
+      const idx = v.indexOf('=')
+      if (idx === -1) {
+        ux.error(`${color.cyan(v)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`)
+        process.exit(1)
+      }
+
+      vars[v.slice(0, idx)] = v.slice(idx + 1)
+      return vars
+    })
+
+    const varsCopy = argv.map((v: string) => color.green(v.split('=')[0])).join(', ')
+    ux.action.start(`Setting ${varsCopy} and restarting ${color.app(flags.app)}`)
+
+    let {body: config} = await this.heroku.patch<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`, {
+      body: vars,
+    })
+    const release = await lastRelease(this.heroku, flags.app)
+    ux.action.stop(`done, ${color.release('v' + release.version)}`)
+
+    config = pickBy(config, (_, k) => vars[k])
+    config = mapKeys(config, (_, k) => color.green(k))
+    ux.styledObject(config)
+    await this.config.runHook('recache', {type: 'config', app: flags.app})
+  }
 }
 
-module.exports = [
-  Object.assign({topic: 'config', command: 'set'}, cmd),
-  Object.assign({topic: 'config', command: 'add', hidden: true}, cmd),
-]
