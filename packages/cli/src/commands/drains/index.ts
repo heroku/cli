@@ -32,7 +32,7 @@ export default class Drains extends Command {
     if (flags.json) {
       ux.styledJSON(drains)
     } else {
-      const [drainsWithAddons, drainsWithoutAddons]: Heroku.LogDrain[][] = partition(drains, 'addon')
+      const [drainsWithAddons, drainsWithoutAddons] = partition<Heroku.LogDrain>(drains, 'addon')
       if (drainsWithoutAddons.length > 0) {
         ux.styledHeader('Drains')
         drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
