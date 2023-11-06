@@ -23,8 +23,12 @@ export default class Drains extends Command {
     const {flags} = await this.parse(Drains)
 
     let path = `/apps/${flags.app}/log-drains`
-    if (flags.extended) path += '?extended=true'
+    if (flags.extended) {
+      path += '?extended=true'
+    }
+
     const {body: drains} = await this.heroku.get<Heroku.LogDrain[]>(path)
+
     if (flags.json) {
       ux.styledJSON(drains)
     } else {
