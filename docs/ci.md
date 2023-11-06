@@ -37,7 +37,7 @@ EXAMPLES
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v8.7.0/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -45,21 +45,22 @@ display CI config vars
 
 ```
 USAGE
-  $ heroku ci:config [-s] [--json] [-p <value>] [-a <value>] [-r <value>]
+  $ heroku ci:config [-a <value>] [-s] [--json] [-p <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -a, --app=<value>       app name
+  -p, --pipeline=<value>  name of pipeline
   -s, --shell             output config vars in shell format
   --json                  output config vars in json format
 
 DESCRIPTION
   display CI config vars
-  Example:
 
+EXAMPLES
   $ heroku ci:config --app murmuring-headland-14719 --json
 ```
+
+_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/config/index.ts)_
 
 ## `heroku ci:config:get KEY`
 
@@ -67,21 +68,23 @@ get a CI config var
 
 ```
 USAGE
-  $ heroku ci:config:get KEY [-s] [-p <value>] [-a <value>] [-r <value>]
+  $ heroku ci:config:get KEY [-h] [-a <value>] [-p <value>] [-s]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -h, --help              Show CLI help.
+  -p, --pipeline=<value>  name of pipeline
   -s, --shell             output config var in shell format
 
 DESCRIPTION
   get a CI config var
-  Examples:
 
-  $ heroku ci:config:get RAILS_ENV
-  test
+EXAMPLES
+  $ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV
+      test
 ```
+
+_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/config/get.ts)_
 
 ## `heroku ci:config:set`
 
@@ -89,22 +92,22 @@ set CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:set [-p <value>] [-a <value>] [-r <value>]
+  $ heroku ci:config:set -p <value> [-a <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -p, --pipeline=<value>  (required) name of pipeline
 
 DESCRIPTION
   set CI config vars
-  Examples:
 
-  $ heroku ci:config:set RAILS_ENV=test
-  Setting test config vars... done
-
-  RAILS_ENV: test
+EXAMPLES
+  $ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
+      Setting test config vars... done
+      RAILS_ENV: test
 ```
+
+_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/config/set.ts)_
 
 ## `heroku ci:config:unset`
 
@@ -112,20 +115,21 @@ unset CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:unset [-p <value>] [-a <value>] [-r <value>]
+  $ heroku ci:config:unset [-h] [-a <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -h, --help              Show CLI help.
+  -p, --pipeline=<value>  name of pipeline
 
 DESCRIPTION
   unset CI config vars
-  Examples:
 
-  $ heroku ci:config:uset RAILS_ENV
-  Unsetting RAILS_ENV... done
+EXAMPLES
+  $ heroku ci:config:unset RAILS_ENV
 ```
+
+_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/config/unset.ts)_
 
 ## `heroku ci:debug`
 
@@ -133,26 +137,19 @@ opens an interactive test debugging session with the contents of the current dir
 
 ```
 USAGE
-  $ heroku ci:debug [--no-setup] [-p <value>] [--no-cache] [-a <value>] [-r <value>]
+  $ heroku ci:debug [-a <value>] [--no-cache] [--no-setup] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -p, --pipeline=<value>  name of pipeline
   --no-cache              start test run with an empty cache
   --no-setup              start test dyno without running test-setup
 
 DESCRIPTION
   opens an interactive test debugging session with the contents of the current directory
-  Example:
-
-  $ heroku ci:debug
-  Preparing source... done
-  Creating test run... done
-  Running setup and attaching to test dyno...
-
-  ~ $
 ```
+
+_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/debug.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -174,7 +171,7 @@ EXAMPLES
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.7.0/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -196,7 +193,7 @@ EXAMPLES
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.7.0/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -208,14 +205,12 @@ USAGE
 
 DESCRIPTION
   app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.
-  Example:
 
+EXAMPLES
   $ heroku ci:migrate-manifest
-  Writing app.json file... done
-  Deleting app-ci.json file... done
-  Please check the contents of your app.json before committing to your repo
-  You're all set! 🎉.
 ```
+
+_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/migrate-manifest.ts)_
 
 ## `heroku ci:open`
 
@@ -223,21 +218,21 @@ open the Dashboard version of Heroku CI
 
 ```
 USAGE
-  $ heroku ci:open [-p <value>] [-a <value>] [-r <value>]
+  $ heroku ci:open -a <value> [-h] [-p <value>]
 
 FLAGS
-  -a, --app=<value>       app to run command against
-  -p, --pipeline=<value>  pipeline
-  -r, --remote=<value>    git remote of app to use
+  -a, --app=<value>       (required) app to run command against
+  -h, --help              Show CLI help.
+  -p, --pipeline=<value>  name of pipeline
 
 DESCRIPTION
   open the Dashboard version of Heroku CI
-  opens a browser to view the Dashboard version of Heroku CI
 
-  Example:
-
+EXAMPLES
   $ heroku ci:open --app murmuring-headland-14719
 ```
+
+_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/open.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -258,7 +253,7 @@ EXAMPLES
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.7.0/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -279,4 +274,4 @@ EXAMPLES
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.7.0/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/ci/run.ts)_

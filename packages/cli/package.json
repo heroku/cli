@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "8.7.0",
+  "version": "8.7.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -21,7 +21,7 @@
     "@heroku-cli/plugin-ps-exec": "^2.4.0",
     "@heroku-cli/plugin-redis-v5": "^8.6.0",
     "@heroku-cli/plugin-run": "8.1.4",
-    "@heroku-cli/plugin-spaces": "^8.6.0",
+    "@heroku-cli/plugin-spaces": "^8.7.1",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
