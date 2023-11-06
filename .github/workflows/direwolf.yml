@@ -1,0 +1,60 @@
+name: Run CLI Direwolf Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseChannel:
+        type: choice
+        description: Channel to run the Direwolf tests against
+        required: true
+        options:
+        - stable
+        - beta
+        - alpha
+      direwolfEnvironment:
+        type: choice
+        description: Direwolf environment
+        required: false
+        options:
+        - production
+        - staging
+        default: staging
+
+  workflow_call:
+    inputs:
+      releaseChannel:
+        type: string
+        description: Channel to run the Direwolf tests against
+        required: true
+        default: stable
+      direwolfEnvironment:
+        type: string
+        description: Direwolf environment
+        required: false
+        default: staging
+
+jobs:
+  run-direwolf-tests:
+    name: Run Direwolf CLI tests
+    runs-on: pub-hk-ubuntu-22.04-small
+    timeout-minutes: 20
+    environment: direwolf
+    steps:
+    - name: set direwolf environment UUID
+      run: |
+        direwolf_UUID=${{ secrets.DIREWOLF_CLOUD_UUID_STAGING }}
+        if [[ ${{ inputs.direwolfEnvironment }} == 'production' ]]
+        then direwolf_UUID=${{ secrets.DIREWOLF_CLOUD_UUID_PRODUCTION }}
+        fi
+        echo "DIREWOLF_CLOUD_UUID=direwolf_UUID" >> $GITHUB_ENV
+    - uses: actions/checkout@v3
+    - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y awscli jq
+    - name: run direwolf suite
+      run: ./scripts/direwolf-test-run
+      env:
+        HEROKU_CLI_VERSION: ${{ inputs.releaseChannel }}
+        DIREWOLF_TOKEN: ${{ secrets.DEV_TOOLING_DIREWOLF_TOKEN }}
+        DIREWOLF_CLOUD_UUID: ${{ env.DIREWOLF_CLOUD_UUID }}
