@@ -6,7 +6,7 @@ updates:
       interval: "weekly"
     labels:
       - "dependencies"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     pull-request-branch-name:
       separator: "-"
     ignore:
