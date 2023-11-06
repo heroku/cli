@@ -9349,7 +9349,7 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.6.1
     sinon: ^7.2.4
-    strip-ansi: ^6
+    strip-ansi: 6.0.1
     tmp: ^0.0.33
     true-myth: 2.2.3
     ts-node: ^10.9.1
@@ -15862,7 +15862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1, strip-ansi@npm:6.0.1, strip-ansi@npm:^6, strip-ansi@npm:^6.0.0, strip-ansi@npm:^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1, strip-ansi@npm:6.0.1, strip-ansi@npm:^6.0.0, strip-ansi@npm:^6.0.1":
   version: 6.0.1
   resolution: "strip-ansi@npm:6.0.1"
   dependencies:
