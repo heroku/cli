@@ -1,50 +1,51 @@
-'use strict'
+import {ux} from '@oclif/core'
+import color from '@heroku-cli/color'
+import * as Heroku from '@heroku-cli/schema'
+import {flags, Command} from '@heroku-cli/command'
+import {partition} from 'lodash'
 
-let cli = require('heroku-cli-util')
-
-function styledDrain(id, name, drain) {
+function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
   let output = `${id} (${name})`
   if (drain.extended) output += ` drain_id=${drain.extended.drain_id}`
-  cli.log(output)
+  ux.log(output)
 }
 
-async function run(context, heroku) {
-  const {partition} = require('lodash')
+export default class Drains extends Command {
+  static description = 'display the log drains of an app'
 
-  let path = `/apps/${context.app}/log-drains`
-  if (context.flags.extended) path += '?extended=true'
-  let drains = await heroku.request({path})
-  if (context.flags.json) {
-    cli.styledJSON(drains)
-  } else {
-    drains = partition(drains, 'addon')
-    if (drains[1].length > 0) {
-      cli.styledHeader('Drains')
-      drains[1].forEach(drain => {
-        styledDrain(drain.url, cli.color.green(drain.token), drain)
-      })
-    }
+  static flags = {
+    app: flags.app({required: true}),
+    extended: flags.boolean({char: 'x', hidden: true}),
+    json: flags.boolean({description: 'output in json format'}),
+  }
 
-    if (drains[0].length > 0) {
-      let addons = await Promise.all(
-        drains[0].map(d => heroku.get(`/apps/${context.app}/addons/${d.addon.name}`)),
-      )
-      cli.styledHeader('Add-on Drains')
-      addons.forEach((addon, i) => {
-        styledDrain(cli.color.yellow(addon.plan.name), cli.color.green(addon.name), drains[0][i])
-      })
+  async run() {
+    const {flags} = await this.parse(Drains)
+
+    let path = `/apps/${flags.app}/log-drains`
+    if (flags.extended) path += '?extended=true'
+    const {body: drains} = await this.heroku.get<Heroku.LogDrain[]>(path)
+    if (flags.json) {
+      ux.styledJSON(drains)
+    } else {
+      const [drainsWithAddons, drainsWithoutAddons]: Heroku.LogDrain[][] = partition(drains, 'addon')
+      if (drainsWithoutAddons.length > 0) {
+        ux.styledHeader('Drains')
+        drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
+          styledDrain(drain.url || '', color.green(drain.token || ''), drain)
+        })
+      }
+
+      if (drainsWithAddons.length > 0) {
+        const addons = await Promise.all(
+          drainsWithAddons.map((d: Heroku.LogDrain) => this.heroku.get<Heroku.AddOn>(`/apps/${flags.app}/addons/${d.addon?.name}`)),
+        )
+        ux.styledHeader('Add-on Drains')
+        addons.forEach(({body: addon}, i) => {
+          styledDrain(color.yellow(addon.plan?.name || ''), color.green(addon.name || ''), drainsWithAddons[i])
+        })
+      }
     }
   }
 }
 
-module.exports = {
-  topic: 'drains',
-  description: 'display the log drains of an app',
-  needsApp: true,
-  needsAuth: true,
-  flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'extended', char: 'x', hidden: true},
-  ],
-  run: cli.command(run),
-}
