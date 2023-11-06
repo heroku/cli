@@ -3,7 +3,7 @@ import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
-import {unwrap} from '../../../helpers/buildpacks/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap'
 nock.disableNetConnect()
 
 describe('buildpacks:remove', () => {

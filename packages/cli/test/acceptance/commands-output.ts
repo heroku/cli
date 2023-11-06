@@ -23,6 +23,7 @@ export default `\u001B[1m Command                                        Summary
  addons:wait                                    show provisioning status of the add-ons on the app
  apps                                           list your apps
  apps:create                                    creates a new app
+ apps:delete                                    permanently destroy an app
  apps:destroy                                   permanently destroy an app
  apps:errors                                    view app errors
  apps:favorites                                 list favorited apps
@@ -31,6 +32,7 @@ export default `\u001B[1m Command                                        Summary
  apps:info                                      show detailed app information
  apps:join                                      add yourself to a team app
  apps:leave                                     remove yourself from a team app
+ apps:list                                      list your apps
  apps:lock                                      prevent team members from joining an app
  apps:open                                      open the app in a web browser
  apps:rename                                    rename an app
@@ -92,6 +94,7 @@ export default `\u001B[1m Command                                        Summary
  clients:update                                 update OAuth client
  commands                                       list all the commands
  config                                         display the config vars for an app
+ config:add                                     set one or more config vars
  config:edit                                    interactively edit config vars
  config:get                                     display a single config value for an app
  config:remove                                  unset one or more config vars
@@ -105,6 +108,8 @@ export default `\u001B[1m Command                                        Summary
  container:release                              Releases previously pushed Docker images to your Heroku app
  container:rm                                   remove the process type from your app
  container:run                                  builds, then runs the docker image locally
+ create                                         creates a new app
+ destroy                                        permanently destroy an app
  domains                                        list domains for an app
  domains:add                                    add a domain to an app
  domains:clear                                  remove all domains from an app
@@ -127,6 +132,7 @@ export default `\u001B[1m Command                                        Summary
  git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)
  git:remote                                     adds a git remote to an app repo
  help                                           Display help for heroku.
+ info                                           show detailed app information
  join                                           add yourself to a team app
  keys                                           display your SSH keys
  keys:add                                       add an SSH key for a user
@@ -137,6 +143,7 @@ export default `\u001B[1m Command                                        Summary
  labs:enable                                    enables an experimental feature
  labs:info                                      show feature info
  leave                                          remove yourself from a team app
+ list                                           list your apps
  local                                          run heroku app locally
  local:run                                      run a one-off command
  local:start                                    run heroku app locally
@@ -153,6 +160,7 @@ export default `\u001B[1m Command                                        Summary
  members:remove                                 removes a user from a team
  members:set                                    sets a members role in a team
  notifications                                  display notifications
+ open                                           open the app in a web browser
  orgs                                           list the teams that you are a member of
  orgs:open                                      open the team interface in a browser window
  pg                                             show database information
@@ -266,6 +274,7 @@ export default `\u001B[1m Command                                        Summary
  releases:info                                  view detailed information for a release
  releases:output                                View the release command output
  releases:rollback                              rollback to a previous release
+ rename                                         rename an app
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline
  run                                            run a one-off process inside a heroku dyno

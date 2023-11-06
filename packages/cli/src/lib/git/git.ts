@@ -1,6 +1,7 @@
 import {vars} from '@heroku-cli/command'
 import * as cp from 'child_process'
 import {ux} from '@oclif/core'
+import * as fs from 'fs'
 import {promisify} from 'util'
 const execFile = promisify(cp.execFile)
 
@@ -77,6 +78,25 @@ export default class Git {
       ref: ref,
       message: message,
     })
+  }
+
+  inGitRepo() {
+    try {
+      fs.lstatSync('.git')
+      return true
+    } catch (error: any) {
+      if (error.code !== 'ENOENT') throw error
+    }
+  }
+
+  hasGitRemote(remote: string) {
+    return this.remoteUrl(remote)
+      .then((remote?: string) => Boolean(remote))
+  }
+
+  createRemote(remote: string, url: string) {
+    return this.hasGitRemote(remote)
+      .then(exists => !exists ? this.exec(['remote', 'add', remote, url]) : null)
   }
 }
 
