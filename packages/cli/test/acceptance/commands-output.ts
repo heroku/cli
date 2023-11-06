@@ -94,6 +94,7 @@ export default `\u001B[1m Command                                        Summary
  clients:update                                 update OAuth client
  commands                                       list all the commands
  config                                         display the config vars for an app
+ config:add                                     set one or more config vars
  config:edit                                    interactively edit config vars
  config:get                                     display a single config value for an app
  config:remove                                  unset one or more config vars
