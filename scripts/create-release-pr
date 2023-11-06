@@ -39,6 +39,9 @@ echo "Installing dependencies with yarn..."
 yarn
 echo "Done installing dependencies with yarn"
 
+# remove any oclif manifests. They interfere with doc generation
+rm -rf ./packages/*/oclif.manifest.json
+
 echo "Creating new CLI package(s) versions with yarn lerna version..."
 yarn lerna version \
   --allow-branch ${BRANCH_NAME} \
