@@ -7,7 +7,6 @@ let endpoints = require('../../lib/endpoints.js').all
 let displayTable = require('../../lib/display_table.js')
 
 async function run(context, heroku) {
-  console.log(context)
   let certs = await endpoints(context.app, heroku)
 
   if (certs.length === 0) {

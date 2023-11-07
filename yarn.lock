@@ -2812,7 +2812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^3.3.1, @oclif/core@npm:^3.3.3-dev.0":
+"@oclif/core@npm:^3.3.1":
   version: 3.10.7
   resolution: "@oclif/core@npm:3.10.7"
   dependencies:
@@ -9427,7 +9427,7 @@ __metadata:
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
     "@oclif/command": 1.8.15
-    "@oclif/core": ^3.3.3-dev.0
+    "@oclif/core": 3.3.3-dev.0
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
     "@oclif/plugin-help": ^5
