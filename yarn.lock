@@ -2975,9 +2975,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-plugins@npm:4.1.0":
+"@oclif/plugin-plugins@https://github.com/ryandagg/plugin-plugins.git#7db731255396b5092d9e9fcabd16a0b70b2fc894":
   version: 4.1.0
-  resolution: "@oclif/plugin-plugins@npm:4.1.0"
+  resolution: "@oclif/plugin-plugins@https://github.com/ryandagg/plugin-plugins.git#commit=7db731255396b5092d9e9fcabd16a0b70b2fc894"
   dependencies:
     "@oclif/core": ^3.10.2
     chalk: ^5.3.0
@@ -2988,7 +2988,7 @@ __metadata:
     shelljs: ^0.8.5
     validate-npm-package-name: ^5.0.0
     yarn: ^1.22.18
-  checksum: afa7b45152336b69e793728e2a2eea8837ffaa00830b51e9f343d50fb18906c710631f51061dd15cefd58d4f63fa62485dd7d0b2b24e3fee6dae50711d752c06
+  checksum: 406a36ff9ba3896140d2013ff286b1b46565c827086b2d08c1ba04ccedde15c0e874e659630a8653c67fd6a9c9ae2666e01cde3328e7e5b22f04ac5969df93c9
   languageName: node
   linkType: hard
 
@@ -9430,7 +9430,7 @@ __metadata:
     "@oclif/plugin-help": ^5
     "@oclif/plugin-legacy": 2.0.0-beta.1
     "@oclif/plugin-not-found": 2.3.16
-    "@oclif/plugin-plugins": 4.1.0
+    "@oclif/plugin-plugins": "https://github.com/ryandagg/plugin-plugins.git#7db731255396b5092d9e9fcabd16a0b70b2fc894"
     "@oclif/plugin-update": 3.1.10
     "@oclif/plugin-version": ^1.2.1
     "@oclif/plugin-warn-if-update-available": 2.0.29

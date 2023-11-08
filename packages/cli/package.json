@@ -31,7 +31,7 @@
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-legacy": "2.0.0-beta.1",
     "@oclif/plugin-not-found": "2.3.16",
-    "@oclif/plugin-plugins": "4.1.0",
+    "@oclif/plugin-plugins": "https://github.com/ryandagg/plugin-plugins.git#7db731255396b5092d9e9fcabd16a0b70b2fc894",
     "@oclif/plugin-update": "3.1.10",
     "@oclif/plugin-version": "^1.2.1",
     "@oclif/plugin-warn-if-update-available": "2.0.29",
