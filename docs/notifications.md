@@ -23,3 +23,5 @@ FLAGS
 DESCRIPTION
   display notifications
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/notifications/index.js)_

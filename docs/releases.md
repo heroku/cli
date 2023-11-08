@@ -34,6 +34,8 @@ EXAMPLES
   v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/index.js)_
+
 ## `heroku releases:info [RELEASE]`
 
 view detailed information for a release
@@ -52,6 +54,8 @@ DESCRIPTION
   view detailed information for a release
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/info.js)_
+
 ## `heroku releases:output [RELEASE]`
 
 View the release command output
@@ -67,6 +71,8 @@ FLAGS
 DESCRIPTION
   View the release command output
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/output.js)_
 
 ## `heroku releases:rollback [RELEASE]`
 
@@ -84,3 +90,5 @@ DESCRIPTION
   rollback to a previous release
   If RELEASE is not specified, it will rollback one release
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/rollback.js)_

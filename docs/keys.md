@@ -24,6 +24,8 @@ DESCRIPTION
   display your SSH keys
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/index.js)_
+
 ## `heroku keys:add [KEY]`
 
 add an SSH key for a user
@@ -49,6 +51,8 @@ EXAMPLES
   Uploading SSH public key /my/key.pub... done
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/add.js)_
+
 ## `heroku keys:clear`
 
 remove all SSH keys for current user
@@ -60,6 +64,8 @@ USAGE
 DESCRIPTION
   remove all SSH keys for current user
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/clear.js)_
 
 ## `heroku keys:remove KEY`
 
@@ -77,3 +83,5 @@ EXAMPLES
   $ heroku keys:remove email@example.com
   Removing email@example.com SSH key... done
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/remove.js)_

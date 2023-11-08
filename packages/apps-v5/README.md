@@ -13,7 +13,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (--version)
-@heroku-cli/plugin-apps-v5/9.0.0-alpha.0 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-apps-v5/9.0.0-dev.0 darwin-arm64 node-v18.16.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -25,23 +25,13 @@ USAGE
 * [`heroku apps:create [APP]`](#heroku-appscreate-app)
 * [`heroku apps:destroy`](#heroku-appsdestroy)
 * [`heroku apps:errors`](#heroku-appserrors)
-* [`heroku apps:favorites`](#heroku-appsfavorites)
-* [`heroku apps:favorites:add`](#heroku-appsfavoritesadd)
-* [`heroku apps:favorites:remove`](#heroku-appsfavoritesremove)
 * [`heroku apps:info`](#heroku-appsinfo)
 * [`heroku apps:open [PATH]`](#heroku-appsopen-path)
 * [`heroku apps:rename NEWNAME`](#heroku-appsrename-newname)
-* [`heroku apps:stacks`](#heroku-appsstacks)
-* [`heroku apps:stacks:set STACK`](#heroku-appsstacksset-stack)
 * [`heroku config:set`](#heroku-configset)
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)
 * [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
-* [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
-* [`heroku dyno:resize`](#heroku-dynoresize)
-* [`heroku dyno:restart [DYNO]`](#heroku-dynorestart-dyno)
-* [`heroku dyno:scale`](#heroku-dynoscale)
-* [`heroku dyno:stop DYNO`](#heroku-dynostop-dyno)
 * [`heroku features`](#heroku-features)
 * [`heroku features:disable FEATURE`](#heroku-featuresdisable-feature)
 * [`heroku features:enable FEATURE`](#heroku-featuresenable-feature)
@@ -58,8 +48,6 @@ USAGE
 * [`heroku maintenance:on`](#heroku-maintenanceon)
 * [`heroku notifications`](#heroku-notifications)
 * [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
-* [`heroku ps:resize`](#heroku-psresize)
 * [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
 * [`heroku ps:scale`](#heroku-psscale)
 * [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
@@ -96,6 +84,8 @@ EXAMPLES
   === Collaborated Apps
   theirapp   other@owner.name
 ```
+
+_See code: [src/commands/apps/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/index.js)_
 
 ## `heroku apps:create [APP]`
 
@@ -142,6 +132,8 @@ EXAMPLES
   $ heroku apps:create --region eu
 ```
 
+_See code: [src/commands/apps/create.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/create.js)_
+
 ## `heroku apps:destroy`
 
 permanently destroy an app
@@ -159,6 +151,8 @@ DESCRIPTION
   permanently destroy an app
   This will also destroy all add-ons on the app.
 ```
+
+_See code: [src/commands/apps/destroy.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/destroy.js)_
 
 ## `heroku apps:errors`
 
@@ -180,52 +174,7 @@ DESCRIPTION
   view app errors
 ```
 
-## `heroku apps:favorites`
-
-list favorited apps
-
-```
-USAGE
-  $ heroku apps:favorites [--json]
-
-FLAGS
-  --json  output in json format
-
-DESCRIPTION
-  list favorited apps
-```
-
-## `heroku apps:favorites:add`
-
-favorites an app
-
-```
-USAGE
-  $ heroku apps:favorites:add -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  favorites an app
-```
-
-## `heroku apps:favorites:remove`
-
-unfavorites an app
-
-```
-USAGE
-  $ heroku apps:favorites:remove -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  unfavorites an app
-```
+_See code: [src/commands/apps/errors.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/errors.js)_
 
 ## `heroku apps:info`
 
@@ -255,6 +204,8 @@ DESCRIPTION
   ...
 ```
 
+_See code: [src/commands/apps/info.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/info.js)_
+
 ## `heroku apps:open [PATH]`
 
 open the app in a web browser
@@ -278,6 +229,8 @@ EXAMPLES
   # opens https://myapp.herokuapp.com/foo
 ```
 
+_See code: [src/commands/apps/open.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/open.js)_
+
 ## `heroku apps:rename NEWNAME`
 
 rename an app
@@ -300,44 +253,7 @@ EXAMPLES
   Git remote heroku updated
 ```
 
-## `heroku apps:stacks`
-
-show the list of available stacks
-
-```
-USAGE
-  $ heroku apps:stacks -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  show the list of available stacks
-```
-
-## `heroku apps:stacks:set STACK`
-
-set the stack of an app
-
-```
-USAGE
-  $ heroku apps:stacks:set STACK -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  set the stack of an app
-
-
-EXAMPLES
-  $ heroku stack:set heroku-22 -a myapp
-  Setting stack to heroku-22... done
-  You will need to redeploy myapp for the change to take effect.
-  Run git push heroku main to trigger a new build on myapp.
-```
+_See code: [src/commands/apps/rename.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/rename.js)_
 
 ## `heroku config:set`
 
@@ -365,6 +281,8 @@ EXAMPLES
   RACK_ENV:  staging
 ```
 
+_See code: [src/commands/config/set.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/config/set.js)_
+
 ## `heroku drains`
 
 display the log drains of an app
@@ -382,6 +300,8 @@ DESCRIPTION
   display the log drains of an app
 ```
 
+_See code: [src/commands/drains/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/index.js)_
+
 ## `heroku drains:add URL`
 
 adds a log drain to an app
@@ -397,6 +317,8 @@ FLAGS
 DESCRIPTION
   adds a log drain to an app
 ```
+
+_See code: [src/commands/drains/add.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/add.js)_
 
 ## `heroku drains:remove [URL|TOKEN]`
 
@@ -414,127 +336,7 @@ DESCRIPTION
   removes a log drain from an app
 ```
 
-## `heroku dyno:kill DYNO`
-
-stop app dyno
-
-```
-USAGE
-  $ heroku dyno:kill DYNO -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  stop app dyno
-
-  stop app dyno or dyno type
-
-EXAMPLES
-  $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
-  $ heroku ps:stop run
-  Stopping run dynos... done
-```
-
-## `heroku dyno:resize`
-
-manage dyno sizes
-
-```
-USAGE
-  $ heroku dyno:resize -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  manage dyno sizes
-
-  Called with no arguments shows the current dyno size.
-
-  Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
-
-  Called with 1..n TYPE=SIZE arguments sets the quantity per type.
-```
-
-## `heroku dyno:restart [DYNO]`
-
-restart app dynos
-
-```
-USAGE
-  $ heroku dyno:restart [DYNO] -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  restart app dynos
-  if DYNO is not specified, restarts all dynos on app
-
-EXAMPLES
-  $ heroku ps:restart web.1
-  Restarting web.1 dyno... done
-  $ heroku ps:restart web
-  Restarting web dynos... done
-  $ heroku ps:restart
-  Restarting dynos... done
-```
-
-## `heroku dyno:scale`
-
-scale dyno quantity up or down
-
-```
-USAGE
-  $ heroku dyno:scale -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  scale dyno quantity up or down
-  Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
-
-  Omitting any arguments will display the app's current dyno formation, in a
-  format suitable for passing back into ps:scale.
-
-EXAMPLES
-  $ heroku ps:scale web=3:Standard-2X worker+1
-  Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
-  $ heroku ps:scale
-  web=3:Standard-2X worker=1:Standard-1X
-```
-
-## `heroku dyno:stop DYNO`
-
-stop app dyno
-
-```
-USAGE
-  $ heroku dyno:stop DYNO -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  stop app dyno
-
-  stop app dyno or dyno type
-
-EXAMPLES
-  $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
-  $ heroku ps:stop run
-  Stopping run dynos... done
-```
+_See code: [src/commands/drains/remove.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/remove.js)_
 
 ## `heroku features`
 
@@ -553,6 +355,8 @@ DESCRIPTION
   list available app features
 ```
 
+_See code: [src/commands/features/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/index.js)_
+
 ## `heroku features:disable FEATURE`
 
 disables an app feature
@@ -569,6 +373,8 @@ DESCRIPTION
   disables an app feature
 ```
 
+_See code: [src/commands/features/disable.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/disable.js)_
+
 ## `heroku features:enable FEATURE`
 
 enables an app feature
@@ -584,6 +390,8 @@ FLAGS
 DESCRIPTION
   enables an app feature
 ```
+
+_See code: [src/commands/features/enable.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/enable.js)_
 
 ## `heroku features:info FEATURE`
 
@@ -602,6 +410,8 @@ DESCRIPTION
   display information about a feature
 ```
 
+_See code: [src/commands/features/info.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/info.js)_
+
 ## `heroku keys`
 
 display your SSH keys
@@ -617,6 +427,8 @@ FLAGS
 DESCRIPTION
   display your SSH keys
 ```
+
+_See code: [src/commands/keys/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/index.js)_
 
 ## `heroku keys:add [KEY]`
 
@@ -643,6 +455,8 @@ EXAMPLES
   Uploading SSH public key /my/key.pub... done
 ```
 
+_See code: [src/commands/keys/add.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/add.js)_
+
 ## `heroku keys:clear`
 
 remove all SSH keys for current user
@@ -654,6 +468,8 @@ USAGE
 DESCRIPTION
   remove all SSH keys for current user
 ```
+
+_See code: [src/commands/keys/clear.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/clear.js)_
 
 ## `heroku keys:remove KEY`
 
@@ -672,6 +488,8 @@ EXAMPLES
   Removing email@example.com SSH key... done
 ```
 
+_See code: [src/commands/keys/remove.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/keys/remove.js)_
+
 ## `heroku labs`
 
 list experimental features
@@ -689,6 +507,8 @@ DESCRIPTION
   list experimental features
 ```
 
+_See code: [src/commands/labs/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/index.js)_
+
 ## `heroku labs:enable FEATURE`
 
 enables an experimental feature
@@ -704,6 +524,8 @@ FLAGS
 DESCRIPTION
   enables an experimental feature
 ```
+
+_See code: [src/commands/labs/enable.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/enable.js)_
 
 ## `heroku labs:info FEATURE`
 
@@ -722,6 +544,8 @@ DESCRIPTION
   show feature info
 ```
 
+_See code: [src/commands/labs/info.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/info.js)_
+
 ## `heroku maintenance`
 
 display the current maintenance status of app
@@ -737,6 +561,8 @@ FLAGS
 DESCRIPTION
   display the current maintenance status of app
 ```
+
+_See code: [src/commands/maintenance/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/maintenance/index.js)_
 
 ## `heroku maintenance:off`
 
@@ -754,6 +580,8 @@ DESCRIPTION
   take the app out of maintenance mode
 ```
 
+_See code: [src/commands/maintenance/off.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/maintenance/off.js)_
+
 ## `heroku maintenance:on`
 
 put the app into maintenance mode
@@ -769,6 +597,8 @@ FLAGS
 DESCRIPTION
   put the app into maintenance mode
 ```
+
+_See code: [src/commands/maintenance/on.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/maintenance/on.js)_
 
 ## `heroku notifications`
 
@@ -788,6 +618,8 @@ FLAGS
 DESCRIPTION
   display notifications
 ```
+
+_See code: [src/commands/notifications/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/notifications/index.js)_
 
 ## `heroku ps [TYPE [TYPE ...]]`
 
@@ -817,52 +649,7 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
-## `heroku ps:kill DYNO`
-
-stop app dyno
-
-```
-USAGE
-  $ heroku ps:kill DYNO -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  stop app dyno
-
-  stop app dyno or dyno type
-
-EXAMPLES
-  $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
-  $ heroku ps:stop run
-  Stopping run dynos... done
-```
-
-## `heroku ps:resize`
-
-manage dyno sizes
-
-```
-USAGE
-  $ heroku ps:resize -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  manage dyno sizes
-
-  Called with no arguments shows the current dyno size.
-
-  Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
-
-  Called with 1..n TYPE=SIZE arguments sets the quantity per type.
-```
+_See code: [src/commands/ps/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/index.js)_
 
 ## `heroku ps:restart [DYNO]`
 
@@ -888,6 +675,8 @@ EXAMPLES
   $ heroku ps:restart
   Restarting dynos... done
 ```
+
+_See code: [src/commands/ps/restart.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/restart.js)_
 
 ## `heroku ps:scale`
 
@@ -915,6 +704,8 @@ EXAMPLES
   web=3:Standard-2X worker=1:Standard-1X
 ```
 
+_See code: [src/commands/ps/scale.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/scale.js)_
+
 ## `heroku ps:stop DYNO`
 
 stop app dyno
@@ -939,6 +730,8 @@ EXAMPLES
   Stopping run dynos... done
 ```
 
+_See code: [src/commands/ps/stop.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/stop.js)_
+
 ## `heroku ps:type`
 
 manage dyno sizes
@@ -961,6 +754,8 @@ DESCRIPTION
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
+
+_See code: [src/commands/ps/type.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/type.js)_
 
 ## `heroku releases`
 
@@ -988,6 +783,8 @@ EXAMPLES
   v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
 
+_See code: [src/commands/releases/index.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/index.js)_
+
 ## `heroku releases:info [RELEASE]`
 
 view detailed information for a release
@@ -1006,6 +803,8 @@ DESCRIPTION
   view detailed information for a release
 ```
 
+_See code: [src/commands/releases/info.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/info.js)_
+
 ## `heroku releases:output [RELEASE]`
 
 View the release command output
@@ -1021,6 +820,8 @@ FLAGS
 DESCRIPTION
   View the release command output
 ```
+
+_See code: [src/commands/releases/output.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/output.js)_
 
 ## `heroku releases:rollback [RELEASE]`
 
@@ -1038,4 +839,6 @@ DESCRIPTION
   rollback to a previous release
   If RELEASE is not specified, it will rollback one release
 ```
+
+_See code: [src/commands/releases/rollback.js](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/releases/rollback.js)_
 <!-- commandsstop -->

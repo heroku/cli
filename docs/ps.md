@@ -9,8 +9,6 @@ Client tools for Heroku Exec
 * [`heroku ps:copy FILE`](#heroku-pscopy-file)
 * [`heroku ps:exec`](#heroku-psexec)
 * [`heroku ps:forward PORT`](#heroku-psforward-port)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
-* [`heroku ps:resize`](#heroku-psresize)
 * [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
 * [`heroku ps:scale`](#heroku-psscale)
 * [`heroku ps:socks`](#heroku-pssocks)
@@ -46,6 +44,8 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/index.js)_
+
 ## `heroku ps:autoscale:disable`
 
 disable web dyno autoscaling
@@ -62,7 +62,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -84,7 +84,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -154,53 +154,6 @@ DESCRIPTION
   $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
-## `heroku ps:kill DYNO`
-
-stop app dyno
-
-```
-USAGE
-  $ heroku ps:kill DYNO -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  stop app dyno
-
-  stop app dyno or dyno type
-
-EXAMPLES
-  $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
-  $ heroku ps:stop run
-  Stopping run dynos... done
-```
-
-## `heroku ps:resize`
-
-manage dyno sizes
-
-```
-USAGE
-  $ heroku ps:resize -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  manage dyno sizes
-
-  Called with no arguments shows the current dyno size.
-
-  Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
-
-  Called with 1..n TYPE=SIZE arguments sets the quantity per type.
-```
-
 ## `heroku ps:restart [DYNO]`
 
 restart app dynos
@@ -225,6 +178,8 @@ EXAMPLES
   $ heroku ps:restart
   Restarting dynos... done
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/restart.js)_
 
 ## `heroku ps:scale`
 
@@ -251,6 +206,8 @@ EXAMPLES
   $ heroku ps:scale
   web=3:Standard-2X worker=1:Standard-1X
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/scale.js)_
 
 ## `heroku ps:socks`
 
@@ -299,6 +256,8 @@ EXAMPLES
   Stopping run dynos... done
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/stop.js)_
+
 ## `heroku ps:type`
 
 manage dyno sizes
@@ -322,6 +281,8 @@ DESCRIPTION
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/ps/type.js)_
+
 ## `heroku ps:wait`
 
 wait for all dynos to be running latest version after a release
@@ -341,4 +302,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/ps/wait.ts)_

@@ -49,6 +49,8 @@ EXAMPLES
   theirapp   other@owner.name
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/index.js)_
+
 ## `heroku apps:create [APP]`
 
 creates a new app
@@ -94,6 +96,8 @@ EXAMPLES
   $ heroku apps:create --region eu
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/create.js)_
+
 ## `heroku apps:destroy`
 
 permanently destroy an app
@@ -111,6 +115,8 @@ DESCRIPTION
   permanently destroy an app
   This will also destroy all add-ons on the app.
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/destroy.js)_
 
 ## `heroku apps:errors`
 
@@ -132,20 +138,24 @@ DESCRIPTION
   view app errors
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/errors.js)_
+
 ## `heroku apps:favorites`
 
 list favorited apps
 
 ```
 USAGE
-  $ heroku apps:favorites [--json]
+  $ heroku apps:favorites [-j]
 
 FLAGS
-  --json  output in json format
+  -j, --json  output in json format
 
 DESCRIPTION
   list favorited apps
 ```
+
+_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/apps/favorites/index.ts)_
 
 ## `heroku apps:favorites:add`
 
@@ -153,15 +163,16 @@ favorites an app
 
 ```
 USAGE
-  $ heroku apps:favorites:add -a <value> [-r <value>]
+  $ heroku apps:favorites:add -a <value>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>  (required) app to run command against
 
 DESCRIPTION
   favorites an app
 ```
+
+_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/apps/favorites/add.ts)_
 
 ## `heroku apps:favorites:remove`
 
@@ -169,15 +180,16 @@ unfavorites an app
 
 ```
 USAGE
-  $ heroku apps:favorites:remove -a <value> [-r <value>]
+  $ heroku apps:favorites:remove -a <value>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>  (required) app to run command against
 
 DESCRIPTION
   unfavorites an app
 ```
+
+_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/apps/favorites/remove.ts)_
 
 ## `heroku apps:info`
 
@@ -206,6 +218,8 @@ DESCRIPTION
   repo_size=5000000
   ...
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/info.js)_
 
 ## `heroku apps:join`
 
@@ -278,6 +292,8 @@ EXAMPLES
   # opens https://myapp.herokuapp.com/foo
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/open.js)_
+
 ## `heroku apps:rename NEWNAME`
 
 rename an app
@@ -300,21 +316,27 @@ EXAMPLES
   Git remote heroku updated
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/apps/rename.js)_
+
 ## `heroku apps:stacks`
 
 show the list of available stacks
 
 ```
 USAGE
-  $ heroku apps:stacks -a <value> [-r <value>]
+  $ heroku apps:stacks -a <value>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>  (required) app to run command against
 
 DESCRIPTION
   show the list of available stacks
+
+ALIASES
+  $ heroku stack
 ```
+
+_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/apps/stacks/index.ts)_
 
 ## `heroku apps:stacks:set STACK`
 
@@ -331,6 +353,8 @@ FLAGS
 DESCRIPTION
   set the stack of an app
 
+ALIASES
+  $ heroku stack:set
 
 EXAMPLES
   $ heroku stack:set heroku-22 -a myapp
@@ -338,6 +362,8 @@ EXAMPLES
   You will need to redeploy myapp for the change to take effect.
   Run git push heroku main to trigger a new build on myapp.
 ```
+
+_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/apps/stacks/set.ts)_
 
 ## `heroku apps:transfer RECIPIENT`
 

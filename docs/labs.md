@@ -25,6 +25,8 @@ DESCRIPTION
   list experimental features
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/index.js)_
+
 ## `heroku labs:disable FEATURE`
 
 disables an experimental feature
@@ -42,7 +44,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-dev.0/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -60,6 +62,8 @@ DESCRIPTION
   enables an experimental feature
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/enable.js)_
+
 ## `heroku labs:info FEATURE`
 
 show feature info
@@ -76,3 +80,5 @@ FLAGS
 DESCRIPTION
   show feature info
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/labs/info.js)_

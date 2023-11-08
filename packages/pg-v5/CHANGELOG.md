@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-dev.0](https://github.com/heroku/cli/compare/v9.0.0-alpha.0...v9.0.0-dev.0) (2023-11-08)
+
+
+### Bug Fixes
+
+* bump nock in all packages. Fix some incomplete nock intercepts. All unit tests passing. ([7f0ff57](https://github.com/heroku/cli/commit/7f0ff57926d90e884d09e46d6588a01c3342478c))
+* revert oclif deps version bump ([de0282b](https://github.com/heroku/cli/commit/de0282b0aa9638c9f3b327c8225be28173d69a32))
+
+
+### Features
+
+* **pg-v5:** Updates pg commands to route to essential plans to correct host ([#2494](https://github.com/heroku/cli/issues/2494)) ([ef03279](https://github.com/heroku/cli/commit/ef0327923e265ade46a9f279874121b3f6d779ef))
+
+
+
+
+
 # [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
 
 

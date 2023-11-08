@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-dev.0](https://github.com/heroku/cli/compare/v9.0.0-alpha.0...v9.0.0-dev.0) (2023-11-08)
+
+
+### Bug Fixes
+
+* all CLI tests passing!!! nock bump to v11 was key. dyno.ts change is unverified. ([cdc09ae](https://github.com/heroku/cli/commit/cdc09ae520e363257051f2afe8479e831ff7138e))
+* bump @oclif/plugin-plugins for breaking changes in core@3 ([03af1b4](https://github.com/heroku/cli/commit/03af1b466c5cac51a34c3de1fb38aa7b5685fd6f))
+* bump nock in all packages. Fix some incomplete nock intercepts. All unit tests passing. ([7f0ff57](https://github.com/heroku/cli/commit/7f0ff57926d90e884d09e46d6588a01c3342478c))
+* pin core version to match cli-command ([deca1d3](https://github.com/heroku/cli/commit/deca1d3276e41d0a6b99f4584c1d492d4e87ba50))
+* revert oclif deps version bump ([de0282b](https://github.com/heroku/cli/commit/de0282b0aa9638c9f3b327c8225be28173d69a32))
+* use fixed version of plugin-plugins ([3bc162f](https://github.com/heroku/cli/commit/3bc162f19fafaa058605af51298b590b15640e09))
+* use require to do the same thing ([04c9cbc](https://github.com/heroku/cli/commit/04c9cbc1360568626823c3c12231efdfdf9f16a3))
+
+
+
+
+
 # [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
 
 

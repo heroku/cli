@@ -24,6 +24,8 @@ DESCRIPTION
   display the log drains of an app
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/index.js)_
+
 ## `heroku drains:add URL`
 
 adds a log drain to an app
@@ -40,6 +42,8 @@ DESCRIPTION
   adds a log drain to an app
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/add.js)_
+
 ## `heroku drains:remove [URL|TOKEN]`
 
 removes a log drain from an app
@@ -55,3 +59,5 @@ FLAGS
 DESCRIPTION
   removes a log drain from an app
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/drains/remove.js)_

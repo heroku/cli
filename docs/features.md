@@ -25,6 +25,8 @@ DESCRIPTION
   list available app features
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/index.js)_
+
 ## `heroku features:disable FEATURE`
 
 disables an app feature
@@ -40,6 +42,8 @@ FLAGS
 DESCRIPTION
   disables an app feature
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/disable.js)_
 
 ## `heroku features:enable FEATURE`
 
@@ -57,6 +61,8 @@ DESCRIPTION
   enables an app feature
 ```
 
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/enable.js)_
+
 ## `heroku features:info FEATURE`
 
 display information about a feature
@@ -73,3 +79,5 @@ FLAGS
 DESCRIPTION
   display information about a feature
 ```
+
+_See code: [@heroku-cli/plugin-apps-v5](https://github.com/heroku/cli/blob/v9.0.0-dev.0/packages/apps-v5/src/commands/features/info.js)_
