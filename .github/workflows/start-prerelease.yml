@@ -61,8 +61,15 @@ jobs:
       isStableCandidate: ${{ false }}
 
   prerelease-smoke-tests:
-    needs: [ create-prerelease ]
+    needs: [ get-version-channel, create-prerelease ]
     uses: ./.github/workflows/test-installed-cli.yml
     secrets: inherit
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
+
+  prerelease-direwolf-tests:
+    needs: [ get-version-channel, create-prerelease ]
+    uses: ./.github/workflows/direwolf.yml
+    secrets: inherit
+    with:
+      releaseChannel: ${{ needs.get-version-channel.outputs.channel }}
