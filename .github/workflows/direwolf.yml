@@ -11,14 +11,6 @@ on:
         - stable
         - beta
         - alpha
-      direwolfEnvironment:
-        type: choice
-        description: Direwolf environment
-        required: false
-        options:
-        - production
-        - staging
-        default: staging
 
   workflow_call:
     inputs:
@@ -27,11 +19,6 @@ on:
         description: Channel to run the Direwolf tests against
         required: true
         default: stable
-      direwolfEnvironment:
-        type: string
-        description: Direwolf environment
-        required: false
-        default: staging
 
 jobs:
   run-direwolf-tests:
@@ -40,13 +27,6 @@ jobs:
     timeout-minutes: 20
     environment: direwolf
     steps:
-    - name: set direwolf environment UUID
-      run: |
-        direwolf_UUID=${{ secrets.DIREWOLF_CLOUD_UUID_STAGING }}
-        if [[ ${{ inputs.direwolfEnvironment }} == 'production' ]]
-        then direwolf_UUID=${{ secrets.DIREWOLF_CLOUD_UUID_PRODUCTION }}
-        fi
-        echo "DIREWOLF_CLOUD_UUID=direwolf_UUID" >> $GITHUB_ENV
     - uses: actions/checkout@v3
     - name: Install jq
       run: |
@@ -57,4 +37,4 @@ jobs:
       env:
         HEROKU_CLI_VERSION: ${{ inputs.releaseChannel }}
         DIREWOLF_TOKEN: ${{ secrets.DEV_TOOLING_DIREWOLF_TOKEN }}
-        DIREWOLF_CLOUD_UUID: ${{ env.DIREWOLF_CLOUD_UUID }}
+        DIREWOLF_CLOUD_UUID: ${{ secrets.DIREWOLF_CLOUD_UUID_PRODUCTION }}
