@@ -1,29 +1,35 @@
-'use strict'
+import {Args, ux} from '@oclif/core'
+import color from '@heroku-cli/color'
+import * as Heroku from '@heroku-cli/schema'
+import {flags, Command} from '@heroku-cli/command'
 
-let cli = require('heroku-cli-util')
+export default class Disable extends Command {
+  static description = 'disables an app feature'
+  static flags = {
+    app: flags.app({required: true}),
+  }
 
-async function run(context, heroku) {
-  let app = context.app
-  let feature = context.args.feature
+  static args = {
+    feature: Args.string({required: true}),
+  }
 
-  await cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.app(app)}`, (async function () {
-    let f = await heroku.get(`/apps/${app}/features/${feature}`)
-    if (!f.enabled) throw new Error(`${cli.color.red(feature)} is already disabled.`)
+  async run() {
+    const {flags, args} = await this.parse(Disable)
 
-    await heroku.request({
-      path: `/apps/${app}/features/${feature}`,
-      method: 'PATCH',
+    const {app} = flags
+    const {feature} = args
+
+    ux.action.start(`Disabling ${color.green(feature)} for ${color.app(app)}`)
+    const {body: f} = await this.heroku.get<Heroku.AppFeature>(`/apps/${app}/features/${feature}`)
+    if (!f.enabled) {
+      throw new Error(`${color.red(feature)} is already disabled.`)
+    }
+
+    await this.heroku.patch(`/apps/${app}/features/${feature}`, {
       body: {enabled: false},
     })
-  })())
+
+    ux.action.stop()
+  }
 }
 
-module.exports = {
-  topic: 'features',
-  command: 'disable',
-  description: 'disables an app feature',
-  args: [{name: 'feature'}],
-  needsAuth: true,
-  needsApp: true,
-  run: cli.command(run),
-}
