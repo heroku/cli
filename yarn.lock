@@ -2665,7 +2665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.11.4, @oclif/core@npm:^2.15.0":
+"@oclif/core@npm:^2.11.4":
   version: 2.15.0
   resolution: "@oclif/core@npm:2.15.0"
   dependencies:
@@ -2812,7 +2812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^3.3.1":
+"@oclif/core@npm:^3.10.2, @oclif/core@npm:^3.3.1":
   version: 3.10.7
   resolution: "@oclif/core@npm:3.10.7"
   dependencies:
@@ -2975,23 +2975,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-plugins@npm:3.9.1":
-  version: 3.9.1
-  resolution: "@oclif/plugin-plugins@npm:3.9.1"
+"@oclif/plugin-plugins@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@oclif/plugin-plugins@npm:4.1.0"
   dependencies:
-    "@oclif/core": ^2.15.0
-    chalk: ^4.1.2
+    "@oclif/core": ^3.10.2
+    chalk: ^5.3.0
     debug: ^4.3.4
-    http-call: ^5.2.2
-    load-json-file: ^5.3.0
     npm: 9.8.1
     npm-run-path: ^4.0.1
     semver: ^7.5.4
     shelljs: ^0.8.5
-    tslib: ^2.6.2
     validate-npm-package-name: ^5.0.0
     yarn: ^1.22.18
-  checksum: ae9edf9cb9afcbada28cfa8d29a54b2685887a3ebe52194be01e67e8616ec578e480fec0dcb6e0c6732fa8a60bafd918f68e90fcdaaf874b75858a9ec6feee00
+  checksum: afa7b45152336b69e793728e2a2eea8837ffaa00830b51e9f343d50fb18906c710631f51061dd15cefd58d4f63fa62485dd7d0b2b24e3fee6dae50711d752c06
   languageName: node
   linkType: hard
 
@@ -9433,7 +9430,7 @@ __metadata:
     "@oclif/plugin-help": ^5
     "@oclif/plugin-legacy": 2.0.0-beta.1
     "@oclif/plugin-not-found": 2.3.16
-    "@oclif/plugin-plugins": 3.9.1
+    "@oclif/plugin-plugins": 4.1.0
     "@oclif/plugin-update": 3.1.10
     "@oclif/plugin-version": ^1.2.1
     "@oclif/plugin-warn-if-update-available": 2.0.29
@@ -11307,19 +11304,6 @@ __metadata:
     pify: ^3.0.0
     strip-bom: ^3.0.0
   checksum: 8f5d6d93ba64a9620445ee9bde4d98b1eac32cf6c8c2d20d44abfa41a6945e7969456ab5f1ca2fb06ee32e206c9769a20eec7002fe290de462e8c884b6b8b356
-  languageName: node
-  linkType: hard
-
-"load-json-file@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "load-json-file@npm:5.3.0"
-  dependencies:
-    graceful-fs: ^4.1.15
-    parse-json: ^4.0.0
-    pify: ^4.0.1
-    strip-bom: ^3.0.0
-    type-fest: ^0.3.0
-  checksum: 8bf15599db9471e264d916f98f1f51eb5d1e6a26d0ec3711d17df54d5983ccba1a0a4db2a6490bb27171f1261b72bf237d557f34e87d26e724472b92bdbdd4f7
   languageName: node
   linkType: hard
 
@@ -17142,13 +17126,6 @@ __metadata:
   version: 0.21.3
   resolution: "type-fest@npm:0.21.3"
   checksum: e6b32a3b3877f04339bae01c193b273c62ba7bfc9e325b8703c4ee1b32dc8fe4ef5dfa54bf78265e069f7667d058e360ae0f37be5af9f153b22382cd55a9afe0
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "type-fest@npm:0.3.1"
-  checksum: 347ff46c2285616635cb59f722e7f396bee81b8988b6fc1f1536b725077f2abf6ccfa22ab7a78e9b6ce7debea0e6614bbf5946cbec6674ec1bde12113af3a65c
   languageName: node
   linkType: hard
 
