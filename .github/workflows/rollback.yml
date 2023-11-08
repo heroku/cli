@@ -35,7 +35,7 @@ jobs:
         run: |
           VERSION_LIST=$(npm view heroku versions --json)
           echo $VERSION_LIST
-          CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '.[]' | select(test("-") | not ))
+          CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '.[] | select(test("-") | not )')
           echo $CHANNEL_VERSION_LIST
 
       # - name: get rollback and target tags (will need to use a js script)
