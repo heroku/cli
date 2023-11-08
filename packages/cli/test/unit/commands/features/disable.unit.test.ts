@@ -3,8 +3,8 @@ import stripAnsi = require('strip-ansi')
 
 describe('features:disable',  () => {
   test
-    .stderr({print: true})
-    .stdout({print: true})
+    .stderr()
+    .stdout()
     .nock('https://api.heroku.com:443', api => {
       api
         .get('/apps/myapp/features/feature-a')
