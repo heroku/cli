@@ -30,6 +30,7 @@ EXAMPLES
 ```
 
 _See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/index.ts)_
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/index.ts)_
 
 ## `heroku authorizations:create`
 
@@ -54,6 +55,7 @@ EXAMPLES
 ```
 
 _See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/create.ts)_
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/create.ts)_
 
 ## `heroku authorizations:destroy ID`
 
@@ -90,6 +92,7 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/info.ts)_
+_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/info.ts)_
 
 ## `heroku authorizations:revoke ID`
 
@@ -111,6 +114,7 @@ EXAMPLES
 ```
 
 _See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/revoke.ts)_
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/revoke.ts)_
 
 ## `heroku authorizations:rotate ID`
 
@@ -125,6 +129,7 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/rotate.ts)_
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/rotate.ts)_
 
 ## `heroku authorizations:update ID`
 
@@ -144,3 +149,4 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.0/src/commands/authorizations/update.ts)_
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/authorizations/update.ts)_

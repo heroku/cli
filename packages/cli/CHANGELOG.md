@@ -3,7 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
+## [8.7.1](https://github.com/heroku/cli/compare/v8.7.0...v8.7.1) (2023-11-06)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.7.0](https://github.com/heroku/cli/compare/v8.6.0...v8.7.0) (2023-10-24)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
 ### Bug Fixes
