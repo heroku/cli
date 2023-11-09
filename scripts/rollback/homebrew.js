@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const execa = require('execa')
 const mkdirp = require('mkdirp')
 const path = require('path')
@@ -40,7 +38,7 @@ async function rollbackHomebrew() {
   // get commit to revert
   const commitToRevert = await git(['log', `--grep=v${ROLLBACK_VERSION}`])
 
-  if(commitToRevert.contains('revert')) {
+  if (commitToRevert.contains('revert')) {
     console.log(`${ROLLBACK_VERSION} has already been reverted`)
     process.exit(1)
   }
@@ -48,7 +46,7 @@ async function rollbackHomebrew() {
   // revert commit
   await git(['revert', commitToRevert])
   if (SKIP_GIT_PUSH === undefined) {
-    await git(['push', 'origin', 'master'])
+    await git(['push', 'origin', 'main'])
   }
 }
 
