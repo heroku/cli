@@ -9,7 +9,6 @@ export default class Features extends Command {
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({description: 'output in json format'}),
-
   }
 
   async run() {
