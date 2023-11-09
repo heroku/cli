@@ -4,8 +4,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
 function formatKey(key: string) {
-  const trimmedKey = key.trim().split(/\s/)
-  return `${trimmedKey[0]} ${trimmedKey[1].slice(0, 10)}...${trimmedKey[1].slice(-10)} ${color.green(trimmedKey[2])}`
+  const [name, pub, email] = key.trim().split(/\s/)
+  return `${name} ${pub.slice(0, 10)}...${pub.slice(-10)} ${color.green(email)}`
 }
 
 export default class Keys extends Command {

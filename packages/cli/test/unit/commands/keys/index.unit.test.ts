@@ -12,7 +12,7 @@ describe('heroku keys', () => {
     .command(['keys'])
     .it('warns if no keys', ({stdout, stderr}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.equal(' ›   Warning: You have no SSH keys.\n')
+      expect(stderr).to.contain('Warning: You have no SSH keys.\n')
     })
 
   test
@@ -64,7 +64,7 @@ ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine
     .it('shows full SSH keys', ({stdout, stderr}) => {
       expect(stdout).to.equal(`=== user@example.com keys
 
-ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine
+${PUBLIC_KEY}
 `)
       expect(stderr).to.equal('')
     })

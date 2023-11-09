@@ -16,7 +16,10 @@ Removing email@example.com SSH key... done`
 
     ux.action.start(`Removing ${color.cyan(args.key)} SSH key`)
     const {body: keys} = await this.heroku.get<Heroku.Key[]>('/account/keys')
-    if (keys.length === 0) throw new Error('No SSH keys on account')
+    if (keys.length === 0) {
+      throw new Error('No SSH keys on account')
+    }
+
     const toRemove = keys.filter(k => k.comment === args.key)
     if (toRemove.length === 0) {
       throw new Error(`SSH Key ${color.red(args.key)} not found.
