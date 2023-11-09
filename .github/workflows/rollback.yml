@@ -38,12 +38,19 @@ jobs:
           echo $VERSION_LIST
           CHANNEL_VERSION_LIST=[]
           if [[ ${{ inputs.rollbackChannel }} == 'stable' ]]; then
-            CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '.[] | select(test("-") | not )')
+            CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '[.[] | select(test("-") | not )]')
           else
-            CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '.[] | select(test("'${{ inputs.rollbackChannel }}'"))')
+            CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '[.[] | select(test("'${{ inputs.rollbackChannel }}'"))]')
           fi
           echo 'Channel version list'
           echo $CHANNEL_VERSION_LIST
+          ROLLBACK_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-1]')
+          echo 'Rollback version'
+          echo $ROLLBACK_VERSION
+
+          TARGET_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-2]')
+          echo 'Target version'
+          echo $TARGET_VERSION
 
       # - name: get rollback and target tags (will need to use a js script)
       #   id: getTags
