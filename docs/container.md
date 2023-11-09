@@ -99,17 +99,17 @@ DESCRIPTION
 
 
 EXAMPLES
-  heroku container:push web                          # Pushes Dockerfile to web process type
+  $ heroku container:push web                          # Pushes Dockerfile to web process type
 
-  heroku container:push worker                       # Pushes Dockerfile to worker process type
+  $ heroku container:push worker                       # Pushes Dockerfile to worker process type
 
-  heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
+  $ heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
 
-  heroku container:push --recursive                  # Pushes Dockerfile.*
+  $ heroku container:push --recursive                  # Pushes Dockerfile.*
 
-  heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
+  $ heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
 
-  heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context
+  $ heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context
 ```
 
 ## `heroku container:release`
