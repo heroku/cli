@@ -47,7 +47,8 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - run: |
+      - if: ${{ inputs.rollbackChannel == 'stable' }}
+        run: |
           GITHUB_LATEST_RELEASE=$(gh release view --repo heroku/cli --json tagName -q '.tagName.[1:]')
           if [[ "${GITHUB_LATEST_RELEASE}" != "'${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}'"* ]]; then
             echo "The Github latest release (${GITHUB_LATEST_RELEASE}) and the NPM latest release ("${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}") do not match."
