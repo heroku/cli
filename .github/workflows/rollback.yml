@@ -39,6 +39,23 @@ jobs:
           TARGET_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-2]')
           echo "targetTag=${TARGET_VERSION}" >> $GITHUB_OUTPUT
 
+  validate-tags:
+    name: Validate rollback tag
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    needs: [get-target-and-rollback-tags]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - run: |
+           CURRENT_LATEST=${gh release view --repo heroku/cli --json tagName -q '.tagName'}
+           echo 'Current latest on github'
+           echo $CURRENT_LATEST
+           echo 'rollback tag'
+           echo ${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}
+           echo 'target tag'
+           echo ${{ needs.get-target-and-rollback-tags.outputs.targetTag }}
+
   
   # promote-previous-tag:
   #   needs: determine-target-tag
