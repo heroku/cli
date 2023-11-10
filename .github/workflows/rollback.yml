@@ -17,43 +17,27 @@ jobs:
     name: Get target tag and rollback tags
     runs-on: ubuntu-latest
     outputs:
-      # targetTag: ${{ steps.getTags.target }}
-      rollbackTag: ${{ steps.getRollbackTag.rollbackTag }}
+      targetTag: ${{ steps.getRollbackTargetTags.outputs.targetTag }}
+      rollbackTag: ${{ steps.getRollbackTargetTags.outputs.rollbackTag }}
     steps:
       - name: install apt-get dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli jq
-      - name: get rollback dist tag
-        id: getRollbackTag
-        run: |
-          ROLLBACK_DIST_TAG=${{ inputs.rollbackChannel == 'stable' && 'latest' || inputs.rollbackChannel }}
-          echo $ROLLBACK_DIST_TAG
-          echo "rollbackTag=$(npm view heroku dist-tags.$ROLLBACK_DIST_TAG --json)" >> $GITHUB_OUTPUT
-      - name: get package versions
-        id: getVersionsList
+      - name: get rollback and target tags
+        id: getRollbackTargetTags
         run: |
           VERSION_LIST=$(npm view heroku versions --json)
-          echo 'Version list'
-          echo $VERSION_LIST
           CHANNEL_VERSION_LIST=[]
           if [[ ${{ inputs.rollbackChannel }} == 'stable' ]]; then
             CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '[.[] | select(test("-") | not )]')
           else
             CHANNEL_VERSION_LIST=$(echo ${VERSION_LIST} | jq '[.[] | select(test("'${{ inputs.rollbackChannel }}'"))]')
           fi
-          echo 'Channel version list'
-          echo $CHANNEL_VERSION_LIST
           ROLLBACK_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-1]')
-          echo 'Rollback version'
-          echo $ROLLBACK_VERSION
-
+          echo "rollbackTag=${ROLLBACK_VERSION}" >> $GITHUB_OUTPUT
           TARGET_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-2]')
-          echo 'Target version'
-          echo $TARGET_VERSION
-
-      # - name: get rollback and target tags (will need to use a js script)
-      #   id: getTags
+          echo "targetTag=${TARGET_VERSION}" >> $GITHUB_OUTPUT
 
   
   # promote-previous-tag:
