@@ -46,11 +46,11 @@ jobs:
     needs: [get-target-and-rollback-tags]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CURRENT_LATEST: gh release view --repo heroku/cli --json tagName -q '.tagName'
     steps:
       - run: |
-           CURRENT_LATEST=${gh release view --repo heroku/cli --json tagName -q '.tagName'}
            echo 'Current latest on github'
-           echo $CURRENT_LATEST
+           echo ${{ env.CURRENT_LATEST }}
            echo 'rollback tag'
            echo ${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}
            echo 'target tag'
