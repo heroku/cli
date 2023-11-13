@@ -39,7 +39,7 @@ jobs:
           TARGET_VERSION=$(echo ${CHANNEL_VERSION_LIST} | jq '.[-2]')
           echo "targetTag=${TARGET_VERSION}" >> $GITHUB_OUTPUT
 
-  validate-tags:
+  validate-stable-tags:
     name: Validate rollback tag
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
@@ -57,7 +57,7 @@ jobs:
   
   # This job needs to go before the promote job, as the promote job looks for the current channel release on NPM.
   deprecate-npm-rollback-tag:
-    needs: [get-target-and-rollback-tags, validate-tags]
+    needs: [get-target-and-rollback-tags, validate-stable-tags]
     name: Deprecate rollback version on NPM
     # if statement only here to protect our prod release while we test this functionality
     if: ${{ inputs.rollbackChannel != 'stable' }}
@@ -72,7 +72,7 @@ jobs:
           npm deprecate heroku@${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }} "Version is deprecated due to problems with the release"
   
   promote-target-tag:
-    needs: [get-target-and-rollback-tags, validate-tags, deprecate-npm-rollback-tag]
+    needs: [get-target-and-rollback-tags, validate-stable-tags, deprecate-npm-rollback-tag]
     name: Promote ${{ needs.get-target-and-rollback-tags.outputs.targetTag }} to ${{ inputs.rollbackChannel }}
     # if statement only here to protect our prod release while we test this functionality
     if: ${{ inputs.rollbackChannel != 'stable' }}
@@ -84,7 +84,7 @@ jobs:
     secrets: inherit
 
   invalidate-cdn-cache:
-    needs: [get-target-and-rollback-tags, validate-tags, promote-target-tag]
+    needs: [get-target-and-rollback-tags, validate-stable-tags, promote-target-tag]
     name: Invalidate Cloudfront cache
     # if statement only here to protect our prod release while we test this functionality
     if: ${{ inputs.rollbackChannel != 'stable' }}
@@ -104,7 +104,7 @@ jobs:
 
   rollback-brew:
     name: Rollback brew release
-    needs: [get-target-and-rollback-tags, validate-tags]
+    needs: [get-target-and-rollback-tags, validate-stable-tags]
     if: ${{ inputs.rollbackChannel != 'stable' }}
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
