@@ -86,20 +86,20 @@ jobs:
           aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
 
-  # deprecate-npm-version:
-  #   needs: determine-target-tag
-  #   name: Deprecate rollback version on NPM
-  #   # if statement only here to protect our prod release while we test this functionality
-  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-  #   # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
-  #   runs-on: pub-hk-ubuntu-22.04-small
-  #   steps:
-  #     - name: set NPM auth
-  #       run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
-  #     - name: deprecate release
-  #       run: |
-  #         npm dist-tag add heroku@${{ needs.determine-target-tag.outputs.targetTag }} ${{ needs.determine-target-tag.outputs.isStableRelease && 'latest' || 'beta' }}
-  #         npm deprecate heroku@${{ inputs.version-to-roll-back }} "Version is deprecated due to problems with the release"
+  deprecate-npm-version:
+    needs: [get-target-and-rollback-tags, validate-tags]
+    name: Deprecate rollback version on NPM
+    # if statement only here to protect our prod release while we test this functionality
+    if: ${{ inputs.rollbackChannel != 'stable' }}
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    steps:
+      - name: set NPM auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+      - name: deprecate release
+        run: |
+          npm dist-tag add heroku@${{ needs.get-target-and-rollback-tags.outputs.targetTag }} ${{ inputs.rollbackChannel }}
+          npm deprecate heroku@${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }} "Version is deprecated due to problems with the release"
 
   # rollback-brew:
   #   name: Rollback brew release
