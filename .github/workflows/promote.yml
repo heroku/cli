@@ -35,7 +35,7 @@ on:
 
 jobs:
   promote:
-    name: Promote ${{ inputs.version }} to ${{ fromJSON(inputs.isStableRelease) && 'stable' || inputs.channel }}
+    name: Promote ${{ inputs.version }} to ${{ inputs.channel }}
     runs-on: ubuntu-latest
     env:
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
