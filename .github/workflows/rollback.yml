@@ -67,24 +67,24 @@ jobs:
       isStableRelease: ${{ inputs.rollbackChannel == 'stable' }}
     secrets: inherit
 
-  # invalidate-cdn-cache:
-  #   needs: [determine-target-tag, promote-previous-tag]
-  #   name: Invalidate Cloudfront cache
-  #   # if statement only here to protect our prod release while we test this functionality
-  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #     AWS_EC2_METADATA_DISABLED: true
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - run: |
-  #         sudo apt-get update
-  #         sudo apt-get install -y awscli
-  #         aws configure set preview.cloudfront true
-  #     - run: ./scripts/postrelease/invalidate_cdn_cache
+  invalidate-cdn-cache:
+    needs: [get-target-and-rollback-tags, validate-tags, promote-previous-tag]
+    name: Invalidate Cloudfront cache
+    # if statement only here to protect our prod release while we test this functionality
+    if: ${{ inputs.rollbackChannel != 'stable' }}
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+          aws configure set preview.cloudfront true
+      - run: ./scripts/postrelease/invalidate_cdn_cache
 
   # deprecate-npm-version:
   #   needs: determine-target-tag
