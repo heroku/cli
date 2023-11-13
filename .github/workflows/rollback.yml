@@ -54,10 +54,23 @@ jobs:
             echo "The Github latest release (${GITHUB_LATEST_RELEASE}) and the NPM latest release ("${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}") do not match."
             exit 1
           fi
-
-  
-  promote-previous-tag:
+  deprecate-npm-rollback-tag:
     needs: [get-target-and-rollback-tags, validate-tags]
+    name: Deprecate rollback version on NPM
+    # if statement only here to protect our prod release while we test this functionality
+    if: ${{ inputs.rollbackChannel != 'stable' }}
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    steps:
+      - name: set NPM auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
+      - name: deprecate NPM release and set previous release to latest/prerelease channel
+        run: |
+          npm dist-tag add heroku@${{ needs.get-target-and-rollback-tags.outputs.targetTag }} ${{ inputs.rollbackChannel }}
+          npm deprecate heroku@${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }} "Version is deprecated due to problems with the release"
+  
+  promote-target-tag:
+    needs: [get-target-and-rollback-tags, validate-tags, deprecate-npm-rollback-tag]
     name: Promote ${{ needs.get-target-and-rollback-tags.outputs.targetTag }} to ${{ inputs.rollbackChannel }}
     # if statement only here to protect our prod release while we test this functionality
     if: ${{ inputs.rollbackChannel != 'stable' }}
@@ -65,10 +78,11 @@ jobs:
     with:
       version: ${{ needs.get-target-and-rollback-tags.outputs.targetTag }}
       isStableRelease: ${{ inputs.rollbackChannel == 'stable' }}
+      channel: ${{ inputs.rollbackChannel }}
     secrets: inherit
 
   invalidate-cdn-cache:
-    needs: [get-target-and-rollback-tags, validate-tags, promote-previous-tag]
+    needs: [get-target-and-rollback-tags, validate-tags, promote-target-tag]
     name: Invalidate Cloudfront cache
     # if statement only here to protect our prod release while we test this functionality
     if: ${{ inputs.rollbackChannel != 'stable' }}
@@ -85,21 +99,6 @@ jobs:
           sudo apt-get install -y awscli
           aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
-
-  deprecate-npm-version:
-    needs: [get-target-and-rollback-tags, validate-tags]
-    name: Deprecate rollback version on NPM
-    # if statement only here to protect our prod release while we test this functionality
-    if: ${{ inputs.rollbackChannel != 'stable' }}
-    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
-    runs-on: pub-hk-ubuntu-22.04-small
-    steps:
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
-      - name: deprecate release
-        run: |
-          npm dist-tag add heroku@${{ needs.get-target-and-rollback-tags.outputs.targetTag }} ${{ inputs.rollbackChannel }}
-          npm deprecate heroku@${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }} "Version is deprecated due to problems with the release"
 
   rollback-brew:
     name: Rollback brew release
