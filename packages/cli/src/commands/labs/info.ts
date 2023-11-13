@@ -12,7 +12,7 @@ function print(feature: Record<string, string>) {
   })
 }
 
-export default class LabsIndex extends Command {
+export default class LabsInfo extends Command {
   static description = 'show feature info'
   static topic = 'labs'
 
@@ -21,22 +21,22 @@ export default class LabsIndex extends Command {
   }
 
   static flags = {
-    app: flags.string({char: 'a', description: 'app name'}),
+    app: flags.app({required: false}),
     json: flags.boolean({description: 'output in json format', required: false}),
   }
 
   async run() {
-    const {args, flags} = await this.parse(LabsIndex)
+    const {args, flags} = await this.parse(LabsInfo)
     let feature
 
     try {
       const featureResponse = await this.heroku.get<Heroku.AppFeature>(`/account/features/${args.feature}`)
       feature = featureResponse.body
     } catch (error: any) {
-      if (error.statusCode !== 404) throw error
+      if (error.http.statusCode !== 404) throw error
       // might be an app feature
       if (!flags.app) throw error
-      const featureResponse = await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${flags.args.feature}`)
+      const featureResponse = await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${args.feature}`)
       feature = featureResponse.body
     }
 
