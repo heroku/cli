@@ -54,6 +54,8 @@ jobs:
             echo "The Github latest release (${GITHUB_LATEST_RELEASE}) and the NPM latest release ("${{ needs.get-target-and-rollback-tags.outputs.rollbackTag }}") do not match."
             exit 1
           fi
+  
+  # This job needs to go before the promote job, as the promote job looks for the current channel release on NPM.
   deprecate-npm-rollback-tag:
     needs: [get-target-and-rollback-tags, validate-tags]
     name: Deprecate rollback version on NPM
