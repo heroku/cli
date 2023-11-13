@@ -56,16 +56,16 @@ jobs:
           fi
 
   
-  # promote-previous-tag:
-  #   needs: determine-target-tag
-  #   name: Promote ${{ needs.determine-target-tag.outputs.targetTag }} to ${{ needs.determine-target-tag.outputs.isStableRelease && 'stable' || 'beta' }}
-  #   # if statement only here to protect our prod release while we test this functionality
-  #   if: ${{ !fromJSON(needs.determine-target-tag.outputs.isStableRelease) }}
-  #   uses: ./.github/workflows/promote.yml
-  #   with:
-  #     version: ${{ needs.determine-target-tag.outputs.targetTag }}
-  #     isStableRelease: ${{ needs.determine-target-tag.outputs.isStableRelease }}
-  #   secrets: inherit
+  promote-previous-tag:
+    needs: [get-target-and-rollback-tags, validate-tags]
+    name: Promote ${{ needs.get-target-and-rollback-tags.outputs.targetTag }} to ${{ inputs.rollbackChannel }}
+    # if statement only here to protect our prod release while we test this functionality
+    if: ${{ inputs.rollbackChannel != 'stable' }}
+    uses: ./.github/workflows/promote.yml
+    with:
+      version: ${{ needs.get-target-and-rollback-tags.outputs.targetTag }}
+      isStableRelease: ${{ inputs.rollbackChannel == 'stable' }}
+    secrets: inherit
 
   # invalidate-cdn-cache:
   #   needs: [determine-target-tag, promote-previous-tag]
