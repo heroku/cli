@@ -22,7 +22,7 @@ export default class LabsInfo extends Command {
 
   static flags = {
     app: flags.app({required: false}),
-    json: flags.boolean({description: 'output in json format', required: false}),
+    json: flags.boolean({description: 'display as json', required: false}),
   }
 
   async run() {
