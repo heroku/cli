@@ -60,7 +60,7 @@ Uploading SSH public key /my/key.pub... done`
     const findKey = async function () {
       const defaultKey = path.join(sshdir, 'id_rsa.pub')
       if (!(await fs.pathExists(defaultKey))) {
-        console.error('Could not find an existing SSH key at ' + path.join('~', '.ssh', 'id_rsa.pub'))
+        ux.warn('Could not find an existing SSH key at ' + path.join('~', '.ssh', 'id_rsa.pub'))
 
         if (!flags.yes) {
           const resp = await confirmPrompt('Would you like to generate a new one?')
@@ -76,7 +76,7 @@ Uploading SSH public key /my/key.pub... done`
       keys = keys.filter(k => path.extname(k) === '.pub')
       if (keys.length === 1) {
         const key = keys[0]
-        console.error(`Found an SSH public key at ${color.cyan(key)}`)
+        ux.warn(`Found an SSH public key at ${color.cyan(key)}`)
 
         if (!flags.yes) {
           const resp = await confirmPrompt('Would you like to upload it to Heroku?')
