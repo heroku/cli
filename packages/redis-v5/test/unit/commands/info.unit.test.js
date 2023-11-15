@@ -60,7 +60,7 @@ Foo: Bar
           {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
         ])
 
-      let redis = nock('https://api.data.heroku.comm:443')
+      let redis = nock('https://api.data.heroku.com:443')
         .get('/redis/v0/databases/redis-haiku')
         .reply(200, {info: [{name: 'Foo', values: ['Bar', 'Biz']}]})
 
