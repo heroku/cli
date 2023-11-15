@@ -34,7 +34,7 @@ commands.forEach(cmd => {
           {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
         ])
 
-      let redis = nock('https://redis-api.heroku.com:443')
+      let redis = nock('https://api.data.heroku.com:443')
         .get('/redis/v0/databases/redis-haiku')
         .reply(200, {info: [{name: 'Foo', values: ['Bar', 'Biz']}]})
 
@@ -60,7 +60,7 @@ Foo: Bar
           {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
         ])
 
-      let redis = nock('https://redis-api.heroku.com:443')
+      let redis = nock('https://api.data.heroku.comm:443')
         .get('/redis/v0/databases/redis-haiku')
         .reply(200, {info: [{name: 'Foo', values: ['Bar', 'Biz']}]})
 
@@ -100,7 +100,7 @@ Foo: Bar
           {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
         ])
 
-      let redis = nock('https://redis-api.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(404, {})
+      let redis = nock('https://api.data.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(404, {})
 
       return command
         .run({app: 'example', args: {}, flags: {}, auth: {username: 'foobar', password: 'password'}})
@@ -117,7 +117,7 @@ Foo: Bar
           {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
         ])
 
-      nock('https://redis-api.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(503, {})
+      nock('https://api.data.heroku.com:443').get('/redis/v0/databases/redis-haiku').reply(503, {})
 
       return expect(
         command.run({app: 'example', args: {}, flags: {}, auth: {username: 'foobar', password: 'password'}}),

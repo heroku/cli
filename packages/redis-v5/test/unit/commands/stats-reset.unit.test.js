@@ -20,7 +20,7 @@ describe('heroku redis:stats-reset', () => {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .post('/redis/v0/databases/redis-haiku/stats/reset').reply(200, {
         message: 'Stats reset successful.',
       })
