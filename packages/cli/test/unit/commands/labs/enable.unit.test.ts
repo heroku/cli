@@ -1,69 +1,45 @@
 import {expect, test} from '@oclif/test'
 
-describe('labs', () => {
+describe('labs:enable', () => {
   test
     .stdout()
     .stderr()
     .nock('https://api.heroku.com:443', api => api
       .get('/account')
       .reply(200, {email: 'jeff@heroku.com'})
-      .get('/account/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature a', description: 'a user lab feature'},
-        {enabled: false, name: 'lab feature b', description: 'a user lab feature'},
-      ])
-      .get('/apps/myapp/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature c', description: 'an app lab feature'},
-      ]),
+      .get('/account/features/feature-a')
+      .reply(200, {
+        enabled: false,
+        name: 'feature-a',
+        description: 'a user lab feature',
+        doc_url: 'https://devcenter.heroku.com',
+      })
+      .patch('/account/features/feature-a', {enabled: true})
+      .reply(200),
     )
-    .command(['labs', 'myapp'])
-    .it('shows labs features with arg', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== User Features jeff@heroku.com\n\n[+] lab feature a  a user lab feature\n[ ] lab feature b  a user lab feature\n\n=== App Features ⬢ myapp\n\n[+] lab feature c  an app lab feature\n')
-      expect(stderr).to.be.empty
+    .command(['labs:enable', 'feature-a'])
+    .it('enables a user lab feature', ({stdout, stderr}) => {
+      expect(stdout).to.be.empty
+      expect(stderr).to.equal('Enabling feature-a for jeff@heroku.com...\nEnabling feature-a for jeff@heroku.com... done\n')
     })
 
   test
     .stdout()
     .stderr()
     .nock('https://api.heroku.com:443', api => api
-      .get('/account')
-      .reply(200, {email: 'jeff@heroku.com'})
-      .get('/account/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature a', description: 'a user lab feature'},
-        {enabled: false, name: 'lab feature b', description: 'a user lab feature'},
-      ])
-      .get('/apps/myapp/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature c', description: 'an app lab feature'},
-      ]),
+      .get('/account/features/feature-a').reply(404)
+      .get('/apps/myapp/features/feature-a')
+      .reply(200, {
+        enabled: false,
+        name: 'feature-a',
+        description: 'an app labs feature',
+        doc_url: 'https://devcenter.heroku.com',
+      })
+      .patch('/apps/myapp/features/feature-a', {enabled: true}).reply(200),
     )
-    .command(['labs', '-a', 'myapp'])
-    .it('shows labs features with flag', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== User Features jeff@heroku.com\n\n[+] lab feature a  a user lab feature\n[ ] lab feature b  a user lab feature\n\n=== App Features ⬢ myapp\n\n[+] lab feature c  an app lab feature\n')
-      expect(stderr).to.be.empty
-    })
-
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
-      .get('/account')
-      .reply(200, {email: 'jeff@heroku.com'})
-      .get('/account/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature a', description: 'a user lab feature'},
-        {enabled: false, name: 'lab feature b', description: 'a user lab feature'},
-      ])
-      .get('/apps/myapp/features')
-      .reply(200, [
-        {enabled: true, name: 'lab feature c', description: 'an app lab feature'},
-      ]),
-    )
-    .command(['labs', 'myapp', '--json'])
-    .it('shows labs features with json flag', ({stdout, stderr}) => {
-      expect(stdout).to.equal('{\n  "user": [\n    {\n      "enabled": true,\n      "name": "lab feature a",\n      "description": "a user lab feature"\n    },\n    {\n      "enabled": false,\n      "name": "lab feature b",\n      "description": "a user lab feature"\n    }\n  ],\n  "app": [\n    {\n      "enabled": true,\n      "name": "lab feature c",\n      "description": "an app lab feature"\n    }\n  ]\n}\n')
-      expect(stderr).to.be.empty
+    .command(['labs:enable', 'feature-a', '-a', 'myapp'])
+    .it('enables an app feature', ({stdout, stderr}) => {
+      expect(stdout).to.be.empty
+      expect(stderr).to.contain('Enabling feature-a for myapp... done\n')
     })
 })
