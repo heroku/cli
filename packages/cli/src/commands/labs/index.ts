@@ -56,8 +56,11 @@ export default class LabsIndex extends Command {
     }
 
     // makes sure app isn't added to json object if null
+    // eslint-disable-next-line no-negated-condition
     if (appResponse !== null) {
       app = appResponse!.body
+      features.app = app
+    } else {
       features.app = app
     }
 
