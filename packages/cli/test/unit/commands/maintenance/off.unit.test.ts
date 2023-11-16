@@ -1,29 +1,16 @@
 import {expect, test} from '@oclif/test'
 
-describe('maintenance', () => {
+describe('maintenance:off', () => {
   test
     .stdout()
     .stderr()
     .nock('https://api.heroku.com:443', api => api
-      .get('/apps/myapp')
-      .reply(200, {maintenance: true}),
+      .patch('/apps/myapp', {maintenance: false})
+      .reply(200),
     )
-    .command(['maintenance', '-a', 'myapp'])
-    .it('shows that maintenance is on', ({stdout, stderr}) => {
-      expect(stdout).to.equal('on\n')
-      expect(stderr).to.be.empty
-    })
-
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
-      .get('/apps/myapp')
-      .reply(200, {maintenance: false}),
-    )
-    .command(['maintenance', '-a', 'myapp'])
-    .it('shows that maintenance is off', ({stdout, stderr}) => {
-      expect(stdout).to.equal('off\n')
-      expect(stderr).to.be.empty
+    .command(['maintenance:off', '-a', 'myapp'])
+    .it('turns maintenance mode off', ({stdout, stderr}) => {
+      expect(stdout).to.be.empty
+      expect(stderr).to.contain('Disabling maintenance mode for ⬢ myapp... done')
     })
 })
