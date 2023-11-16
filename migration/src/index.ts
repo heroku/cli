@@ -7,7 +7,16 @@ import {createCommandClass} from './createCommandClass.js'
 import {isModuleExports} from './isModuleExports.js'
 import {isRunFunctionDecl} from './isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
+import {isMigrationCandidate} from './isMigrationCandidate.js'
 
+const commonImports = `import {createRequire} from 'node:module'
+import color from '@heroku-cli/color'
+import {Command, flags} from '@heroku-cli/command'
+import {Args, ux} from '@oclif/core'
+import * as Heroku from '@heroku-cli/schema'
+
+const require = createRequire(imports.meta.url)
+`
 export class CommandMigrationFactory {
     protected readonly program: ts.Program;
     protected readonly printer: ts.Printer;
@@ -20,17 +29,20 @@ export class CommandMigrationFactory {
     }
 
     public migrate(): void {
-      this.files.forEach(file => {
+      for (let i = 0; i < this.files.length; i++) {
+        const file = this.files[i]
         let ast = this.program.getSourceFile(file)
+        if (!isMigrationCandidate(ast)) {
+          continue
+        }
+
         ast = this.migrateRunFunctionDecl(ast, file)
         ast = this.migrateModuleExports(ast)
         ast = this.removeUnnededStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        // const sourceFile = ts.factory.createSourceFile(ast.statements, ts.factory.createToken(ts.SyntaxKind.EndOfFileToken), ts.NodeFlags.None);
-        const nodeSrings = ast.statements.map(stmt => this.printer.printNode(ts.EmitHint.Unspecified, stmt, sourceFile))
-        // const sourceFileString = this.printer.printNode(ts.EmitHint.Unspecified, ast.statements, sourceFile);
-        debugger
-      })
+        const nodeStrings = commonImports + ast.statements.map(stmt => this.printer.printNode(ts.EmitHint.Unspecified, stmt, sourceFile))
+        this.writeSourceFile(nodeStrings, file)
+      }
     }
 
     private migrateRunFunctionDecl(node: ts.SourceFile, filePath: string): ts.SourceFile {
@@ -60,9 +72,17 @@ export class CommandMigrationFactory {
 
     private removeUnnededStatements(node: ts.SourceFile) : ts.SourceFile {
       const visitor = (node: ts.Node): ts.Node => {
-        if (ts.isStatement(node)) {
-          return node
+        // 'use strict'
+        if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
+          return null
         }
+
+        // module.exports
+        if (ts.isExpressionStatement(node) && isModuleExports(node.expression)) {
+          return null
+        }
+
+        return ts.visitEachChild(node, visitor, nullTransformationContext)
       }
 
       return ts.visitEachChild(node, visitor, nullTransformationContext)
