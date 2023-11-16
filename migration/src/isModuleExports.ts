@@ -8,7 +8,8 @@ import ts from 'typescript'
  * @param node The node to evaluate
  * @returns boolean if the node is a module.exports
  */
-export function isModuleExports(node: ts.Node): node is ts.ObjectLiteralExpression {
+
+export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.ObjectLiteralExpression}) {
   return ts.isBinaryExpression(node) &&
 
         ts.isPropertyAccessExpression(node.left) &&

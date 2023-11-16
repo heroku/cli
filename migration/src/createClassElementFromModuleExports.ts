@@ -5,6 +5,8 @@ export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpre
   for (let i = 0; i < node.properties?.length; i++) {
     const element = node.properties[i]
     // Inspect and convert in some way...
+    //   element.name.escapedText
+    debugger
   }
 
   return classElements
