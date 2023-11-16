@@ -1,6 +1,9 @@
 import { isModuleExports } from './isModuleExports.js';
 import { isRunFunctionDecl } from './isRunFunctionDecl.js';
 import ts from 'typescript';
+import path from 'node:path';
+import { createCommandClass } from 'createCommandClass.js';
+import { createClassElementsFromModuleExports } from 'createClassElementFromModuleExports.js';
 
 export class CommandMigrationFactory {
 
@@ -28,15 +31,15 @@ export class CommandMigrationFactory {
     public migrate(): void {
         this.files.forEach(file => {
             const ast = this.program.getSourceFile(file);
-            this.migrateRunFunctionDecl(ast);
+            this.migrateRunFunctionDecl(ast, file);
             this.migrateModuleExports(ast);
         });
     }
 
-    private migrateRunFunctionDecl(node: ts.Node): ts.Node {
+    private migrateRunFunctionDecl(node: ts.Node, filePath: string): ts.Node {
         const visitor = (node: ts.Node): ts.Node => {
             if (isRunFunctionDecl(node)) {
-                // return createCommandClass()
+                return createCommandClass(node, path.basename(filePath))
             }
             return node;
         };
@@ -46,7 +49,7 @@ export class CommandMigrationFactory {
     private migrateModuleExports(node: ts.Node): ts.Node {
         const visitor = (node: ts.Node): ts.Node => {
             if (isModuleExports(node)) {
-                debugger;
+                const classElementsFromModuleExports = createClassElementsFromModuleExports(node);
             }
             return ts.visitEachChild(node, visitor, this.nullTransformationContext);;
         }
