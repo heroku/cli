@@ -61,7 +61,7 @@ export class CommandMigrationFactory {
     private migrateModuleExports(node: ts.SourceFile): ts.SourceFile {
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
-          const classElementsFromModuleExports = createClassElementsFromModuleExports(node)
+          const classElementsFromModuleExports = createClassElementsFromModuleExports(node.right)
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
