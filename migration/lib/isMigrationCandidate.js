@@ -1,0 +1,5 @@
+import { isRunFunctionDecl } from './isRunFunctionDecl.js';
+export function isMigrationCandidate(sourceFile) {
+    return sourceFile.statements.some(stmt => isRunFunctionDecl(stmt));
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaXNNaWdyYXRpb25DYW5kaWRhdGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaXNNaWdyYXRpb25DYW5kaWRhdGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsT0FBTyxFQUFDLGlCQUFpQixFQUFDLE1BQU0sd0JBQXdCLENBQUE7QUFHeEQsTUFBTSxVQUFVLG9CQUFvQixDQUFDLFVBQXlCO0lBQzVELE9BQU8sVUFBVSxDQUFDLFVBQVUsQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLEVBQUUsQ0FBQyxpQkFBaUIsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFBO0FBQ3BFLENBQUMifQ==
