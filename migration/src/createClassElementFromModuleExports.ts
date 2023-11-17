@@ -128,8 +128,8 @@ const transformAllFlags = (additionalFlags: ts.PropertyAssignment[], existingFla
   return createStaticPropertyCall
 }
 
-export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpression): ts.ClassElement[] {
-  const classElements: ts.ClassElement[] = []
+export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpression): ts.PropertyDeclaration[] {
+  const classElements: ts.PropertyDeclaration[] = []
   const additionalFlags: ts.PropertyAssignment[] = []
   let flagAssignment : ts.PropertyAssignment
   for (let i = 0; i < node.properties?.length; i++) {
