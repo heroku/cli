@@ -9,7 +9,7 @@ export function createMethodDeclFromRunFn(runFunctionDecl: ts.FunctionDeclaratio
   const {parameters, name} = runFunctionDecl
   if (parameters.length > 0) {
     const interimRunFnDecl = migrateRunFnParamsToObjectBindingPattern(runFunctionDecl, className);
-    ({body} = updatePropertyAccessChainsToOmitParamNames(interimRunFnDecl))
+    ({body} = updatePropertyAccessChainsToAlignWithBindingPattern(interimRunFnDecl))
   }
 
   const metdodDecl = ts.factory.createMethodDeclaration([ts.factory.createModifier(ts.SyntaxKind.PublicKeyword), ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)],
@@ -28,7 +28,7 @@ function migrateRunFnParamsToObjectBindingPattern(runFunctionDecl: ts.FunctionDe
   const [contextParam, herokuParam] = runFunctionDecl.parameters // could be named anything so we'll grab names from the identifiers
 
   //-------------------
-  // const {flags, argv} = await this.parse(ClassName)
+  // const {flags, argv, args} = await this.parse(ClassName)
   //-------------------
 
   // this.parse
@@ -37,16 +37,17 @@ function migrateRunFnParamsToObjectBindingPattern(runFunctionDecl: ts.FunctionDe
   const callThisDotParse = ts.factory.createCallExpression(thisDotParse, undefined, [className])
   // await this.parse(ClassName)
   const awaitCallThisDotParse = ts.factory.createAwaitExpression(callThisDotParse)
-  // {flags, argv}
-  const bindingElements = [ts.factory.createBindingElement(undefined, undefined, contextParam.name)]
-  if (herokuParam) {
-    bindingElements.push(ts.factory.createBindingElement(undefined, undefined, herokuParam.name))
-  }
+  // {flags, argv, args}
+  const bindingElements = [
+    ts.factory.createBindingElement(undefined, undefined, ts.factory.createIdentifier('flags')),
+    ts.factory.createBindingElement(undefined, undefined, ts.factory.createIdentifier('argv')),
+    ts.factory.createBindingElement(undefined, undefined, ts.factory.createIdentifier('args')),
+  ]
 
   const objectBindingPattern = ts.factory.createObjectBindingPattern(bindingElements)
-  // const {flags, argv} = await this.parse(ClassName)
+  // const {flags, argv, args} = await this.parse(ClassName)
   const variableDecl = ts.factory.createVariableDeclaration(objectBindingPattern, undefined, undefined, awaitCallThisDotParse)
-  const variableDeclList = ts.factory.createVariableDeclarationList([variableDecl])
+  const variableDeclList = ts.factory.createVariableDeclarationList([variableDecl], ts.NodeFlags.Const)
 
   return ts.factory.updateFunctionDeclaration(
     runFunctionDecl,
@@ -59,20 +60,43 @@ function migrateRunFnParamsToObjectBindingPattern(runFunctionDecl: ts.FunctionDe
     ts.factory.updateBlock(runFunctionDecl.body, [ts.factory.createVariableStatement(undefined, variableDeclList), ...runFunctionDecl.body.statements]))
 }
 
-function updatePropertyAccessChainsToOmitParamNames(runFunctionDecl: ts.FunctionDeclaration): ts.FunctionDeclaration {
+function updatePropertyAccessChainsToAlignWithBindingPattern(runFunctionDecl: ts.FunctionDeclaration): ts.FunctionDeclaration {
   const visitor = (node: ts.Node): ts.Node => {
     node = ts.visitEachChild(node, visitor, nullTransformationContext)
-    // context.flags ---> flags
-    if (isPropertyAccessExpressionThatMatchesParamName(node, runFunctionDecl.parameters as ts.NodeArray<ts.ParameterDeclaration & { name: ts.Identifier }>)) {
-      return node.name
+    if (!ts.isPropertyAccessExpression(node)) {
+      return node
     }
 
-    return node
+    switch (contextOrHerokuPropertyAccessExpression(node)) {
+    // e.g. heroku.get() ---> this.heroku.get()
+    case 'heroku':
+      return ts.factory.updatePropertyAccessExpression(node,
+        ts.factory.createPropertyAccessExpression(ts.factory.createThis(), ts.factory.createIdentifier('heroku')),
+        node.name)
+
+    // e.g. context.flags ---> flags
+    case 'context':
+      return node.name
+
+    default:
+      return node
+    }
   }
 
   return ts.visitEachChild(runFunctionDecl, visitor, nullTransformationContext)
 }
 
-function isPropertyAccessExpressionThatMatchesParamName(node: ts.Node, params: ts.NodeArray<ts.ParameterDeclaration & { name: ts.Identifier }>): node is ts.PropertyAccessExpression {
-  return params.some(param => ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && (node.expression.escapedText === param.name.escapedText))
+function contextOrHerokuPropertyAccessExpression(node: ts.PropertyAccessExpression): 'heroku' | 'context' | undefined {
+  if (ts.isIdentifier(node.expression)) {
+    switch (node.expression.escapedText) {
+    case 'heroku':
+      return 'heroku'
+
+    case 'context':
+      return 'context'
+
+    default:
+      return null
+    }
+  }
 }
