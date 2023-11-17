@@ -1,7 +1,6 @@
-import strftime from 'strftime'
+const strftime = require('strftime')
 
-export function ago(since: number) {
-//   const strftime = require('strftime')
+export function ago(since: any) {
   const elapsed = Math.floor((Date.now() - since) / 1000)
   const message = strftime('%Y/%m/%d %H:%M:%S %z', since)
   if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`

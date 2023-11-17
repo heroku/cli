@@ -3,9 +3,11 @@ import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
+import * as time from '../../lib/notifications/time'
+const wrap = require('@heroku/linewrap')
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
-  const wrap = cli.linewrap(2, 80)
+  wrap(2, 80)
   const read = readNotification ? 'Read' : 'Unread'
   ux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
   for (const n of notifications) {
