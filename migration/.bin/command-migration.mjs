@@ -18,4 +18,4 @@ const commandMigrationFactoy = new CommandMigrationFactory(files, {
     allowJs: true,
 });
 
-commandMigrationFactoy.migrate();
+void commandMigrationFactoy.migrate();
