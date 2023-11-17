@@ -31,7 +31,8 @@ export default class NotificationsIndex extends Command {
   async run() {
     const {flags} = await this.parse(NotificationsIndex)
 
-    const app = flags.app && !flags.all ? await this.heroku.get<Heroku.App>(`/apps/${flags.app}`) : null
+    const appResponse = flags.app && !flags.all ? await this.heroku.get<Heroku.App>(`/apps/${flags.app}`) : null
+    const app = appResponse?.body
     const notificationsResponse = await this.heroku.get<Notifications>('/user/notifications', {host: 'telex.heroku.com'})
     let notifications = notificationsResponse.body
     if (app) notifications = notifications.filter(n => n.target.id === app.id)
@@ -47,10 +48,10 @@ export default class NotificationsIndex extends Command {
 
     if (notifications.length === 0) {
       if (flags.read) {
-        if (app) ux.warn(`You have no notifications on ${color.green(app.name)}.\nRun heroku notifications --all to view notifications for all apps.`)
+        if (app) ux.warn(`You have no notifications on ${color.green(app.name!)}.\nRun heroku notifications --all to view notifications for all apps.`)
         else ux.warn('You have no notifications.')
-      } else if (app) ux.warn(`No unread notifications on ${color.green(app.name)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
+      } else if (app) ux.warn(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
       else ux.warn(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
-    } else displayNotifications(notifications, app, flags.read)
+    } else displayNotifications(notifications, app!, flags.read)
   }
 }
