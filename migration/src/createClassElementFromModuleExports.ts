@@ -1,8 +1,15 @@
-import ts, {factory} from 'typescript'
+import ts from 'typescript'
 
-const createStaticProperty = (name: string, value: ts.Expression) => ts.factory.createPropertyDeclaration(
-  [ts.factory.createToken(ts.SyntaxKind.StaticKeyword)],
-  ts.factory.createIdentifier(name),
+const {
+  factory,
+  isObjectLiteralExpression,
+  SyntaxKind,
+} = ts
+
+const createStaticProperty = (name: string, value: ts.Expression) => factory.createPropertyDeclaration(
+  [factory.createToken(SyntaxKind.StaticKeyword)],
+
+  factory.createIdentifier(name),
   undefined,
   undefined,
   value,
@@ -20,13 +27,6 @@ const KEY_TO_TRANSFORM = new Map([
   ['variableArgs', (node: (ts.PropertyAssignment)) => createStaticProperty('strict', node.initializer)],
 ])
 
-const FLAG_KEY_TO_TRANSFORM = new Map([
-  ['topic', propertyAssignmentToStaticStringFunc('topic')],
-  ['description', propertyAssignmentToStaticStringFunc('description')],
-  ['hidden', propertyAssignmentToStaticStringFunc('hidden')],
-  ['variableArgs', (node: (ts.PropertyAssignment)) => createStaticProperty('strict', node.initializer)],
-])
-
 const ADDITIONAL_KEY_TO_TRANSFORM_TO_FLAG = new Map([
   ['needsApp', true], // todo: add transformers
   ['wantsApp', true],
@@ -34,12 +34,7 @@ const ADDITIONAL_KEY_TO_TRANSFORM_TO_FLAG = new Map([
   ['wantsOrg', true],
 ])
 
-const createFlagPropertyAssignment = (assignment: ts.ObjectLiteralExpression) => {
-  const nameAssignment = assignment.properties.find(prop => prop.name.escapedText === 'name')
-
-  // Create identifiers
-  const flagsIdentifier = factory.createIdentifier('flags')
-  const flatTypeIdentifier = factory.createIdentifier(nameAssignment.escapedText)
+const createFlagProperty = (property: ts.PropertyAssignment) => {
   const descriptionIdentifier = factory.createIdentifier('description')
   const requiredIdentifier = factory.createIdentifier('required')
 
@@ -53,23 +48,71 @@ const createFlagPropertyAssignment = (assignment: ts.ObjectLiteralExpression) =>
 
   // Create object literal expressions
   const objectLiteralExpressionInner = factory.createObjectLiteralExpression([descriptionPropertyAssignment, requiredPropertyAssignment], false)
+}
+
+const createFlag = (args: {flagName: string, flagType: string, flagProperties: ts.PropertyAssignment[]}) => {
+  const {flagName, flagType, flagProperties} = args
+  const flagNameIdentifier = factory.createIdentifier(flagName)
+  const flagTypeIdentifier = factory.createIdentifier(flagType)
+  const objectLiteralExpressionInner = factory.createObjectLiteralExpression(flagProperties, true)
 
   // Create call expressions
-  const propertyAccessExpression = factory.createPropertyAccessExpression(flagsIdentifier, flatTypeIdentifier)
+  const propertyAccessExpression = factory.createPropertyAccessExpression(flagNameIdentifier, flagTypeIdentifier)
   const callExpression = factory.createCallExpression(propertyAccessExpression, undefined, [objectLiteralExpressionInner])
 
   // Create property assignment for the outer object
-  const appPropertyAssignment = factory.createPropertyAssignment(flatTypeIdentifier, callExpression)
-  return appPropertyAssignment
+  return factory.createPropertyAssignment(flagTypeIdentifier, callExpression)
 }
 
-const transformAllFlags = (additionalFlags: ts.PropertyAssignment[], existingFlags?: ts.ObjectLiteralExpression[]) => {
-  // to pluck out: name => key, hasValue => flag type
+const transformFlag = (assignment: ts.ObjectLiteralExpression) => {
+  // these all return true, just making TS happy
+  let flagName = ''
+  let flagType = 'boolean'
+  const flagProperties: ts.PropertyAssignment[] = []
 
-  const transformedFlags = existingFlags.map(element => createFlagPropertyAssignment(element))
+  assignment.properties.forEach(element => {
+    if (ts.isPropertyAssignment(element) && ts.isIdentifier(element.name) && element.name.escapedText) {
+      const key = element.name.escapedText
+      switch (key) {
+      case 'name':
+        if (ts.isStringLiteral(element.initializer)) {
+          flagName = element.initializer.text
+        } else {
+          throw new Error('flag name property is not a string')
+        }
+
+        break
+      case 'hasValue':
+        if (element.initializer.kind === SyntaxKind.TrueKeyword) {
+          flagType = 'string'
+        }
+
+        break
+      default:
+        // pass through without transforming
+        flagProperties.push(element)
+      }
+    }
+  })
+
+  return createFlag({flagName, flagType, flagProperties})
+}
+
+const transformAllFlags = (additionalFlags: ts.PropertyAssignment[], existingFlags?: ts.PropertyAssignment) => {
+  // to pluck out: name => key, hasValue => flag type
+  let transformedFlags: ts.PropertyAssignment[] = []
+  if (existingFlags) {
+    if (!ts.isArrayLiteralExpression(existingFlags.initializer)) {
+      throw new Error('flags is in incorrect format')
+    }
+
+    transformedFlags = existingFlags.initializer.elements
+      .filter<ts.ObjectLiteralExpression>(isObjectLiteralExpression)
+      .map(transformFlag)
+  }
 
   // Create the outer object literal expression
-  const objectLiteralExpressionOuter = factory.createObjectLiteralExpression(transformedFlags)
+  const objectLiteralExpressionOuter = factory.createObjectLiteralExpression([...transformedFlags])
 
   // Final call to createStaticProperty
   const createStaticPropertyCall = createStaticProperty('flags', objectLiteralExpressionOuter)
@@ -80,7 +123,7 @@ const transformAllFlags = (additionalFlags: ts.PropertyAssignment[], existingFla
 export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpression): ts.ClassElement[] {
   const classElements: ts.ClassElement[] = []
   const additionalFlags: ts.PropertyAssignment[] = []
-  let flagsIndex = -1
+  let flagAssignment : ts.PropertyAssignment
   for (let i = 0; i < node.properties?.length; i++) {
     const element = node.properties[i]
     //   element.name.escapedText
@@ -92,23 +135,13 @@ export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpre
       } else if (ADDITIONAL_KEY_TO_TRANSFORM_TO_FLAG.has(element.name.escapedText)) {
         additionalFlags.push(element)
       } else if (element.name.escapedText === 'flags') {
-        flagsIndex = i
+        flagAssignment = element
       }
     }
   }
 
-  if (flagsIndex >= 0 || additionalFlags.length > 0) {
-    const flagAssignment = node.properties[flagsIndex]
-    const flagElements: ts.ObjectLiteralExpression[] = (
-      flagAssignment &&
-      ts.isPropertyAssignment(flagAssignment) &&
-      ts.isArrayLiteralExpression(flagAssignment.initializer) &&
-      flagAssignment.initializer.elements.map(ts.isObjectLiteralExpression).every(Boolean)
-    ) ?
-      new Array(flagAssignment.initializer.elements) :
-      []
-
-    classElements.push(transformAllFlags(additionalFlags, flagElements))
+  if (flagAssignment || additionalFlags.length > 0) {
+    classElements.push(transformAllFlags(additionalFlags, flagAssignment))
   }
 
   return classElements
