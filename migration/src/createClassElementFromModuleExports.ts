@@ -6,6 +6,8 @@ const {
   SyntaxKind,
 } = ts
 
+const isTrueValue = (node: ts.Node) => node.kind === SyntaxKind.TrueKeyword
+
 const createStaticProperty = (name: string, value: ts.Expression) => factory.createPropertyDeclaration(
   [factory.createToken(SyntaxKind.StaticKeyword)],
 
@@ -20,6 +22,15 @@ const propertyAssignmentToStaticStringFunc = (name: string) => (
   (node: (ts.PropertyAssignment)) => createStaticProperty(name, node.initializer)
 )
 
+const createSpecialFlag = (type: string, required?: boolean) => () => createFlag({
+  flagName: type,
+  flagType: type,
+  flagProperties: required ? [factory.createPropertyAssignment(
+    factory.createIdentifier('required'),
+    factory.createTrue(),
+  )] : [],
+})
+
 const KEY_TO_TRANSFORM = new Map([
   ['topic', propertyAssignmentToStaticStringFunc('topic')],
   ['description', propertyAssignmentToStaticStringFunc('description')],
@@ -27,28 +38,12 @@ const KEY_TO_TRANSFORM = new Map([
   ['variableArgs', (node: (ts.PropertyAssignment)) => createStaticProperty('strict', node.initializer)],
 ])
 
-const ADDITIONAL_KEY_TO_TRANSFORM_TO_FLAG = new Map([
-  ['needsApp', true], // todo: add transformers
-  ['wantsApp', true],
-  ['needsOrg', true],
-  ['wantsOrg', true],
+const ADDITIONAL_KEY_TO_FLAG = new Map([
+  ['needsApp', createSpecialFlag('app', true)],
+  ['wantsApp', createSpecialFlag('app')],
+  ['needsOrg', createSpecialFlag('team', true)],
+  ['wantsOrg', createSpecialFlag('team')],
 ])
-
-const createFlagProperty = (property: ts.PropertyAssignment) => {
-  const descriptionIdentifier = factory.createIdentifier('description')
-  const requiredIdentifier = factory.createIdentifier('required')
-
-  // Create literals
-  const descriptionStringLiteral = factory.createStringLiteral('parent app used by review apps')
-  const trueLiteral = factory.createTrue()
-
-  // Create property assignments
-  const descriptionPropertyAssignment = factory.createPropertyAssignment(descriptionIdentifier, descriptionStringLiteral)
-  const requiredPropertyAssignment = factory.createPropertyAssignment(requiredIdentifier, trueLiteral)
-
-  // Create object literal expressions
-  const objectLiteralExpressionInner = factory.createObjectLiteralExpression([descriptionPropertyAssignment, requiredPropertyAssignment], false)
-}
 
 const createFlag = (args: {flagName: string, flagType: string, flagProperties: ts.PropertyAssignment[]}) => {
   const {flagName, flagType, flagProperties} = args
@@ -83,7 +78,7 @@ const transformFlag = (assignment: ts.ObjectLiteralExpression) => {
 
         break
       case 'hasValue':
-        if (element.initializer.kind === SyntaxKind.TrueKeyword) {
+        if (isTrueValue(element.initializer)) {
           flagType = 'string'
         }
 
@@ -111,8 +106,21 @@ const transformAllFlags = (additionalFlags: ts.PropertyAssignment[], existingFla
       .map(transformFlag)
   }
 
+  const additionalTransformedFlags: ts.PropertyAssignment[] = []
+
+  for (const element of additionalFlags) {
+    //   element.name.escapedText
+
+    if (ts.isPropertyAssignment(element) && ts.isIdentifier(element.name) && element.name.escapedText) {
+      const transformer = ADDITIONAL_KEY_TO_FLAG.get(element.name.escapedText)
+      if (transformer && isTrueValue(element.initializer)) {
+        additionalTransformedFlags.push(transformer())
+      }
+    }
+  }
+
   // Create the outer object literal expression
-  const objectLiteralExpressionOuter = factory.createObjectLiteralExpression([...transformedFlags])
+  const objectLiteralExpressionOuter = factory.createObjectLiteralExpression([...transformedFlags, ...additionalTransformedFlags])
 
   // Final call to createStaticProperty
   const createStaticPropertyCall = createStaticProperty('flags', objectLiteralExpressionOuter)
@@ -132,7 +140,7 @@ export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpre
       const transformer = KEY_TO_TRANSFORM.get(element.name.escapedText)
       if (transformer) {
         classElements.push(transformer(element))
-      } else if (ADDITIONAL_KEY_TO_TRANSFORM_TO_FLAG.has(element.name.escapedText)) {
+      } else if (ADDITIONAL_KEY_TO_FLAG.has(element.name.escapedText) && isTrueValue(element.initializer)) {
         additionalFlags.push(element)
       } else if (element.name.escapedText === 'flags') {
         flagAssignment = element
