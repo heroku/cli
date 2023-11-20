@@ -46,6 +46,7 @@ export class CommandMigrationFactory {
 
         ast = this.migrateRunFunctionDecl(ast, file)
         ast = this.migrateModuleExports(ast)
+        ast = this.migrateModuleExports(ast)
         ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
         const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
@@ -99,6 +100,18 @@ export class CommandMigrationFactory {
 
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
+    }
+
+    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile): ts.SourceFile {
+      const visitor = (node: ts.Node): ts.Node => {
+        if (isModuleExports(node)) {
+          return createClassElementsFromModuleExports(node.right)
+        }
+
+        return ts.visitEachChild(node, visitor, nullTransformationContext)
+      }
+
+      return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
     }
 
     private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
