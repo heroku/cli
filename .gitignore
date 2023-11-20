@@ -12,7 +12,7 @@ node_modules
 /packages/cli/docs/*
 
 **/.DS_Store
-./idea
+.idea
 .vscode
 **/.nyc_output
 
