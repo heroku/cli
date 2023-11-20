@@ -136,6 +136,19 @@ describe('notifications', () => {
           expect(stdout).to.not.contain('title2')
           expect(unwrap(stderr)).to.be.empty
         })
+
+      test
+        .stdout()
+        .stderr()
+        .nock('https://telex.heroku.com:443', api => api
+          .get('/user/notifications')
+          .reply(200, notifications)
+        )
+        .command(['notifications', '--read', '--json'])
+        .it('shows all read notifications as json', ({stdout, stderr}) => {
+          expect(JSON.parse(stdout)[0].id).to.equal(101)
+          expect(unwrap(stderr)).to.be.empty
+        })
     })
   })
 })
