@@ -16,7 +16,7 @@ const createStaticPropertyDeclaration = (name: string, value: ts.Expression) => 
   value,
 )
 
-const createStaticPropertyAssignmentGenerator = (name: string) => (
+const createStaticPropertyDeclarationGenerator = (name: string) => (
   (node: (ts.PropertyAssignment)) => createStaticPropertyDeclaration(name, node.initializer)
 )
 
@@ -30,9 +30,9 @@ const createSpecialFlagGenerator = (type: string, required?: boolean) => () => c
 })
 
 const KEY_TO_TRANSFORM = new Map([
-  ['topic', createStaticPropertyAssignmentGenerator('topic')],
-  ['description', createStaticPropertyAssignmentGenerator('description')],
-  ['hidden', createStaticPropertyAssignmentGenerator('hidden')],
+  ['topic', createStaticPropertyDeclarationGenerator('topic')],
+  ['description', createStaticPropertyDeclarationGenerator('description')],
+  ['hidden', createStaticPropertyDeclarationGenerator('hidden')],
   ['variableArgs', (node: (ts.PropertyAssignment)) => createStaticPropertyDeclaration('strict', node.initializer)],
 ])
 
