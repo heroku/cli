@@ -74,7 +74,6 @@ export class CommandMigrationFactory {
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
           staticClassMembers = createClassElementsFromModuleExports(node.right)
-          // what removes module.exports from node??? They are gone.
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
