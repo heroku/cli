@@ -31,7 +31,7 @@ export class CommandMigrationFactory {
       this.files = files
       this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
       this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
-      this.linter = new ESLint({fix: true})
+      this.linter = new ESLint({fix: true, useEslintrc: true})
     }
 
     public async migrate(): Promise<void> {
