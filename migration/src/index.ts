@@ -6,7 +6,7 @@ import {ESLint} from 'eslint'
 
 import {createClassElementsFromModuleExports} from './createClassElementFromModuleExports.js'
 import {createCommandClass} from './createCommandClass.js'
-import {isModuleExports} from './isModuleExports.js'
+import {isExtendedCommandClassDeclaration, isModuleExports} from './isModuleExports.js'
 import {isRunFunctionDecl} from './isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './isMigrationCandidate.js'
@@ -69,16 +69,35 @@ export class CommandMigrationFactory {
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
-    private migrateModuleExports(node: ts.SourceFile): ts.SourceFile {
+    private migrateModuleExports(sourceFile: ts.SourceFile): ts.SourceFile {
+      let staticClassMembers: ts.PropertyDeclaration[]
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
-          const classElementsFromModuleExports = createClassElementsFromModuleExports(node.right)
+          staticClassMembers = createClassElementsFromModuleExports(node.right)
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
       }
 
-      return ts.visitEachChild(node, visitor, nullTransformationContext)
+      sourceFile = ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
+      if (staticClassMembers) {
+        const updateClassDef = (node: ts.Node): ts.Node => {
+          if (isExtendedCommandClassDeclaration(node)) {
+            return ts.factory.updateClassDeclaration(
+              node,
+              node.modifiers,
+              node.name,
+              node.typeParameters,
+              node.heritageClauses,
+              [...staticClassMembers, ...node.members],
+            )
+          }
+
+          return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
+        }
+
+        return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
+      }
     }
 
     private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {

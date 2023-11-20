@@ -21,3 +21,12 @@ export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.Ob
         node.left.expression.escapedText === 'module' &&
         ts.isObjectLiteralExpression(node.right)
 }
+
+export const isExtendedCommandClassDeclaration = (node: ts.Node): node is ts.ClassDeclaration => {
+  return ts.isClassDeclaration(node) &&
+    node.heritageClauses.some(
+      clause => clause.types.some(type => (
+        ts.isIdentifier(type.expression) && type.expression.escapedText === 'Command'),
+      ),
+    )
+}

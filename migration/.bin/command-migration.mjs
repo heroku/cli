@@ -11,11 +11,11 @@ const { argv } = yargs(hideBin(process.argv));
 
 const files = globSync(argv.files).map(file => file.replace("/", path.sep));
 
-const commandMigrationFactoy = new CommandMigrationFactory(files, {
+const commandMigrationFactory = new CommandMigrationFactory(files, {
     moduleResolution: ts.ModuleResolutionKind.Node10,
     module: ts.ModuleKind.ESNext,
     target: ts.ScriptTarget.ESNext,
     allowJs: true,
 });
 
-void commandMigrationFactoy.migrate();
+void commandMigrationFactory.migrate();
