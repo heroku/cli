@@ -47,21 +47,20 @@ const ADDITIONAL_KEY_TO_FLAG = new Map([
 
 const createFlag = (args: {flagName: string, flagType: string, flagProperties: ts.PropertyAssignment[]}) => {
   const {flagName, flagType, flagProperties} = args
-  const flagNameIdentifier = factory.createIdentifier(flagName)
+  const flagNameIdentifier = factory.createStringLiteral(flagName)
   const flagTypeIdentifier = factory.createIdentifier(flagType)
   const objectLiteralExpressionInner = factory.createObjectLiteralExpression(flagProperties, true)
 
   // Create call expressions
-  const propertyAccessExpression = factory.createPropertyAccessExpression(flagNameIdentifier, flagTypeIdentifier)
+  const propertyAccessExpression = factory.createPropertyAccessExpression(factory.createIdentifier('flags'), flagTypeIdentifier)
   const callExpression = factory.createCallExpression(propertyAccessExpression, undefined, [objectLiteralExpressionInner])
 
   // Create property assignment for the outer object
-  return factory.createPropertyAssignment(flagTypeIdentifier, callExpression)
+  return factory.createPropertyAssignment(flagNameIdentifier, callExpression)
 }
 
 const transformFlag = (assignment: ts.ObjectLiteralExpression) => {
-  // these all return true, just making TS happy
-  let flagName = ''
+  let flagName = 'THIS_SHOULD_NOT_HAPPEN'
   let flagType = 'boolean'
   const flagProperties: ts.PropertyAssignment[] = []
 
