@@ -80,7 +80,6 @@ export class CommandMigrationFactory {
       }
 
       sourceFile = ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
-
       if (staticClassMembers) {
         const updateClassDef = (node: ts.Node): ts.Node => {
           if (isExtendedCommandClassDeclaration(node)) {
