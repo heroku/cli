@@ -12,7 +12,7 @@ import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
 import transformCliUtils from './transformCliUtils.js'
-import {findRequiredImportVarNameIfExits} from './findRequiredImportVarNameIfExits.js'
+import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
 
 const commonImports = `import {createRequire} from 'node:module'
 import color from '@heroku-cli/color'
@@ -47,7 +47,7 @@ export class CommandMigrationFactory {
         }
 
         ast = this.migrateRunFunctionDecl(ast, file)
-        ast = this.migrateModuleExports(ast)
+        ast = this.migrateModuleExports(ast, file)
         ast = this.migrateHerokuCliUtilsExports(ast, file)
         ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
@@ -73,11 +73,15 @@ export class CommandMigrationFactory {
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
-    private migrateModuleExports(sourceFile: ts.SourceFile): ts.SourceFile {
+    private migrateModuleExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
       let staticClassMembers: ts.PropertyDeclaration[]
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
-          staticClassMembers = createClassElementsFromModuleExports(node.right)
+          try {
+            staticClassMembers = createClassElementsFromModuleExports(node.right)
+          } catch (error: any) {
+            throw new Error(`${file}: ${error.message}`)
+          }
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
@@ -105,7 +109,7 @@ export class CommandMigrationFactory {
     }
 
     private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
-      const importName = findRequiredImportVarNameIfExits(sourceFile, 'heroku-cli-util')
+      const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
 
       //  todo: hoist requires to top of the file first?
       if (!importName) {
@@ -114,8 +118,10 @@ export class CommandMigrationFactory {
       }
 
       const visitor = (node: ts.Node): ts.Node => {
-        if (isModuleExports(node)) {
-          return transformCliUtils(node.right, importName)
+        try {
+          node = transformCliUtils(node, importName)
+        } catch (error: any) {
+          throw new Error(`${file}: ${error.message}`)
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
