@@ -16,9 +16,9 @@ function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.App
 
 function printFeatures(features: any) {
   features = sortBy(features, 'name')
-  const longest = Math.max.apply(null, features.map((f: Record<string, string>) => f.name.length))
+  const longest = Math.max(...features.map((f: Record<string, string>) => f.name.length))
   for (const f of features) {
-    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name!.padEnd(longest)}`
+    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
     if (f.enabled) line = color.green(line)
     line = `${line}  ${f.description}`
     ux.log(line)
