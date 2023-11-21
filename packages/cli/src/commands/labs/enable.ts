@@ -24,9 +24,7 @@ export default class LabsEnable extends Command {
   async run() {
     const {flags, args} = await this.parse(LabsEnable)
     const feature = args.feature
-    let target
-
-    ux.action.start(`Enabling ${color.green(feature)} for ${color.cyan(target!)}`)
+    let target = null
 
     try {
       await this.heroku.get<Heroku.AccountFeature>(`/account/features/${feature}`)
@@ -42,6 +40,7 @@ export default class LabsEnable extends Command {
       target = flags.app
     }
 
+    ux.action.start(`Enabling ${color.green(feature)} for ${color.cyan(target!)}`)
     ux.action.stop()
   }
 }
