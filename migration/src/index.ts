@@ -11,7 +11,7 @@ import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
-import transformCliUtils from './transformCliUtils.js'
+import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
 
 const commonImports = `import {createRequire} from 'node:module'
@@ -42,14 +42,20 @@ export class CommandMigrationFactory {
       for (let i = 0; i < this.files.length; i++) {
         const file = this.files[i]
         let ast = this.program.getSourceFile(file)
-        if (!isMigrationCandidate(ast)) {
-          continue
+
+        try {
+          if (!isMigrationCandidate(ast)) {
+            continue
+          }
+
+          ast = this.migrateRunFunctionDecl(ast, file)
+          ast = this.migrateModuleExports(ast)
+          ast = this.migrateHerokuCliUtilsExports(ast)
+          ast = this.updateOrRemoveStatements(ast)
+        } catch (error: any) {
+          throw new Error(`${file}: ${error.message}`)
         }
 
-        ast = this.migrateRunFunctionDecl(ast, file)
-        ast = this.migrateModuleExports(ast, file)
-        ast = this.migrateHerokuCliUtilsExports(ast, file)
-        ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
         const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
@@ -73,56 +79,51 @@ export class CommandMigrationFactory {
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
-    private migrateModuleExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+    private migrateModuleExports(sourceFile: ts.SourceFile): ts.SourceFile {
       let staticClassMembers: ts.PropertyDeclaration[]
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
-          try {
-            staticClassMembers = createClassElementsFromModuleExports(node.right)
-          } catch (error: any) {
-            throw new Error(`${file}: ${error.message}`)
-          }
+          staticClassMembers = createClassElementsFromModuleExports(node.right)
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
       }
 
       sourceFile = ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
-      if (staticClassMembers) {
-        const updateClassDef = (node: ts.Node): ts.Node => {
-          if (isExtendedCommandClassDeclaration(node)) {
-            return ts.factory.updateClassDeclaration(
-              node,
-              node.modifiers,
-              node.name,
-              node.typeParameters,
-              node.heritageClauses,
-              [...staticClassMembers, ...node.members],
-            )
-          }
+      if (!staticClassMembers) {
+        // todo: error here and clean work through gaps in logic
+        return sourceFile
+      }
 
-          return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
+      const updateClassDef = (node: ts.Node): ts.Node => {
+        if (isExtendedCommandClassDeclaration(node)) {
+          return ts.factory.updateClassDeclaration(
+            node,
+            node.modifiers,
+            node.name,
+            node.typeParameters,
+            node.heritageClauses,
+            [...staticClassMembers, ...node.members],
+          )
         }
 
-        return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
+        return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
       }
+
+      return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
     }
 
-    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile): ts.SourceFile {
       const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
 
       //  todo: hoist requires to top of the file first?
       if (!importName) {
         // not found. continue transforms
-        throw new Error(`heroku-cli-utils import missing from ${file}`)
+        throw new Error('heroku-cli-utils import missing')
       }
 
       const visitor = (node: ts.Node): ts.Node => {
-        try {
-          node = transformCliUtils(node, importName)
-        } catch (error: any) {
-          throw new Error(`${file}: ${error.message}`)
-        }
+        node = transformCliUtils(node, importName)
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
       }

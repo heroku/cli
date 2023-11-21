@@ -10,6 +10,7 @@ import ts from 'typescript'
  */
 
 export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.ObjectLiteralExpression}) {
+  // todo: handle aliasing case. example: packages/pg-v5/commands/vacuum_stats.js
   return ts.isBinaryExpression(node) &&
 
         ts.isPropertyAccessExpression(node.left) &&
