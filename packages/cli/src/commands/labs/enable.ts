@@ -26,6 +26,8 @@ export default class LabsEnable extends Command {
     const feature = args.feature
     let target
 
+    ux.action.start(`Enabling ${color.green(feature)} for ${color.cyan(target!)}`)
+
     try {
       await this.heroku.get<Heroku.AccountFeature>(`/account/features/${feature}`)
       await enableFeature(this.heroku, feature)
@@ -40,7 +42,6 @@ export default class LabsEnable extends Command {
       target = flags.app
     }
 
-    ux.action.start(`Enabling ${color.green(feature)} for ${color.cyan(target!)}`)
     ux.action.stop()
   }
 }
