@@ -8,16 +8,13 @@ export type UtilCall = ts.CallExpression & {
   }
 }
 
-export const subWithUx = (callEx: UtilCall) => {
-  const propertyAccEx = callEx.expression
-  return factory.updateCallExpression(
-    callEx,
-    factory.updatePropertyAccessExpression(
-      propertyAccEx,
-      propertyAccEx.expression,
-      factory.createIdentifier('ux'),
-    ),
-    callEx.typeArguments,
-    callEx.arguments,
-  )
-}
+export const subWithUx = (callEx: UtilCall) => factory.updateCallExpression(
+  callEx,
+  factory.updatePropertyAccessExpression(
+    callEx.expression,
+    factory.createIdentifier('ux'),
+    callEx.expression.name,
+  ),
+  callEx.typeArguments,
+  callEx.arguments,
+)
