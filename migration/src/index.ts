@@ -11,7 +11,8 @@ import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
-import transformCliUtils from './transformCliUtils'
+import transformCliUtils from './transformCliUtils.js'
+import {findRequiredImportVarNameIfExits} from './findRequiredImportVarNameIfExits.js'
 
 const commonImports = `import {createRequire} from 'node:module'
 import color from '@heroku-cli/color'
@@ -47,7 +48,7 @@ export class CommandMigrationFactory {
 
         ast = this.migrateRunFunctionDecl(ast, file)
         ast = this.migrateModuleExports(ast)
-        ast = this.migrateHerokuCliUtilsExports(ast)
+        ast = this.migrateHerokuCliUtilsExports(ast, file)
         ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
         const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
@@ -103,21 +104,18 @@ export class CommandMigrationFactory {
       }
     }
 
-    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile): ts.SourceFile {
-      const doesImportCliUtils = sourceFile.statements.some(statement => (
-        ts.isImportDeclaration(statement) &&
-        ts.isStringLiteral(statement.moduleSpecifier) &&
-        statement.moduleSpecifier.text.includes('heroku-cli-util')
-      ))
+    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+      const importName = findRequiredImportVarNameIfExits(sourceFile, 'heroku-cli-util')
 
-      if (!doesImportCliUtils) {
+      //  todo: hoist requires to top of the file first?
+      if (!importName) {
         // not found. continue transforms
-        return sourceFile
+        throw new Error(`heroku-cli-utils import missing from ${file}`)
       }
 
       const visitor = (node: ts.Node): ts.Node => {
         if (isModuleExports(node)) {
-          return transformCliUtils(node.right)
+          return transformCliUtils(node.right, importName)
         }
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)

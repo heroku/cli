@@ -1,6 +1,8 @@
-import ts, {isCallExpression} from 'typescript'
+import ts from 'typescript'
 
-const transformCliUtils = (node: ts.Node) => {
+const {isCallExpression} = ts
+
+const transformCliUtils = (node: ts.Node, importName: string) => {
   const isUtilCall = isCallExpression(node) &&
     ts.isPropertyAccessExpression(node.expression) &&
     ts.isIdentifier(node.expression.expression) &&
