@@ -1,32 +1,52 @@
 import ts from 'typescript'
-import {subWithUx, UtilCall} from './helpers.js'
-
-const {isCallExpression} = ts
-
-// returns true for nodes patterns of `utilVarName.*(...args)
-// example `cli.warn(msg)`
-const isUtilCall = (node: ts.Node, utilVarName: string): node is UtilCall =>  (
-  isCallExpression(node) &&
-  ts.isPropertyAccessExpression(node.expression) &&
-  ts.isIdentifier(node.expression.expression) &&
-  node.expression.expression.escapedText.toString() === utilVarName
-)
+import {
+  buildPropertyAccessExpressionChain,
+  changeColorCall,
+  isCallWith1PrecedingPropertyAccess, isCallWith2PrecedingPropertyAccess,
+  subWithUx, transformActionStart,
+} from './helpers.js'
 
 const transformCliUtils = (node: ts.Node, utilVarName: string) => {
-  if (!isUtilCall(node, utilVarName)) {
+  if (!ts.isCallExpression(node) || !ts.isPropertyAccessExpression(node.expression)) {
     return node
   }
 
-  const callName = node.expression.name.escapedText.toString()
+  const propertyAccessChain = buildPropertyAccessExpressionChain(node.expression, utilVarName)
 
-  // transform
-  switch (callName) {
-  case 'warn':
-  case 'log':
-    return subWithUx(node)
-  default:
+  if (propertyAccessChain.length === 0) {
     return node
-    // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
+  }
+
+  if (propertyAccessChain.length === 1 && isCallWith1PrecedingPropertyAccess(node)) {
+    const [callName] = propertyAccessChain
+
+    // transform
+    switch (callName) {
+    case 'warn':
+    case 'log':
+    case 'styledObject':
+      return subWithUx(node)
+    case 'action':
+      return transformActionStart(node)
+    case 'command':
+      // ignore. Handled elsewhere
+      return node
+    default:
+      return node
+      // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
+    }
+  }
+
+  if (propertyAccessChain.length === 2 && isCallWith2PrecedingPropertyAccess(node)) {
+    const [propAccess] = propertyAccessChain
+    // transform
+    switch (propAccess) {
+    case 'color':
+      return changeColorCall(node)
+    default:
+      return node
+      // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
+    }
   }
 }
 
