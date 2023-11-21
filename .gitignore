@@ -12,7 +12,7 @@ node_modules
 /packages/cli/docs/*
 
 **/.DS_Store
-./idea
+.idea
 .vscode
 **/.nyc_output
 
@@ -23,3 +23,7 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# TEMP
+/packages/**/converted/*
+

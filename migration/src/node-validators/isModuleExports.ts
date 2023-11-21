@@ -21,3 +21,4 @@ export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.Ob
         node.left.expression.escapedText === 'module' &&
         ts.isObjectLiteralExpression(node.right)
 }
+
