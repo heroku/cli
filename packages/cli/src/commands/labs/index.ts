@@ -29,10 +29,6 @@ export default class LabsIndex extends Command {
   static description = 'list experimental features'
   static topic = 'labs'
 
-  static args = {
-    app: Args.string({required: false}),
-  }
-
   static flags = {
     app: flags.app({required: false}),
     json: flags.boolean({description: 'display as json', required: false}),
@@ -58,7 +54,7 @@ export default class LabsIndex extends Command {
     // makes sure app isn't added to json object if null
     // eslint-disable-next-line no-negated-condition
     if (appResponse !== null) {
-      app = appResponse!.body
+      app = appResponse?.body
       features.app = app
     } else {
       features.app = app
