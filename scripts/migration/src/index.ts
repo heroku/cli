@@ -101,6 +101,8 @@ export class CommandMigrationFactory {
 
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
+
+      return sourceFile
     }
 
     private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
