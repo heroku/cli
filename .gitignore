@@ -10,7 +10,7 @@ node_modules
 /package-lock.json
 /tmp
 /packages/cli/docs/*
-
+.idea
 **/.DS_Store
 .vscode
 **/.nyc_output
