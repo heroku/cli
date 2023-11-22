@@ -213,6 +213,7 @@ export function createClassElementsFromModuleExports(node: ts.ObjectLiteralExpre
   let flagsAssignment : ts.PropertyAssignment
   let argsAssignment : ts.PropertyAssignment
   node.properties.forEach(element => {
+    // todo: turn `if` below into function that verifies the type for all downstream function calls
     if (ts.isPropertyAssignment(element) && ts.isIdentifier(element.name) && element.name.escapedText) {
       const transformer = KEY_TO_TRANSFORM.get(element.name.escapedText)
       if (transformer) {
