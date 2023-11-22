@@ -12,7 +12,6 @@ node_modules
 /packages/cli/docs/*
 
 **/.DS_Store
-.idea
 .vscode
 **/.nyc_output
 
