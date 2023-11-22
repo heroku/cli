@@ -1,5 +1,6 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
+import {CallWith1PrecedingPropertyAccess} from './validators.js'
 
 const {factory} = ts
 
@@ -7,20 +8,6 @@ const {factory} = ts
 export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
   ['cmd',  ['cyan', 'bold']],
 ])
-
-type ExpressionTerminatesWithIdentifier = ts.PropertyAccessExpression & {
-  expression: ts.Identifier
-}
-
-export type CallWith1PrecedingPropertyAccess = ts.CallExpression & {
-  expression: ExpressionTerminatesWithIdentifier
-}
-
-export type CallWith2PrecedingPropertyAccess = ts.CallExpression & {
-  expression: ts.PropertyAccessExpression & {
-    expression: ExpressionTerminatesWithIdentifier
-  }
-}
 
 export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.updateCallExpression(
   callEx,
@@ -44,6 +31,7 @@ export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpres
     const additionalTransform = MISSING_FUNC_REPLACEMENT_MAP.get(node.name.text)
     if (additionalTransform) {
       // redefine node with update
+      debugger
     }
 
     if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
@@ -83,14 +71,3 @@ export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpres
   return []
 }
 
-export const isCallWith1PrecedingPropertyAccess = (node: ts.Node): node is CallWith1PrecedingPropertyAccess => (
-  ts.isCallExpression(node) &&
-  ts.isPropertyAccessExpression(node.expression) &&
-  ts.isIdentifier(node.expression.expression)
-)
-export const isCallWith2PrecedingPropertyAccess = (node: ts.Node): node is CallWith2PrecedingPropertyAccess => (
-  ts.isCallExpression(node) &&
-  ts.isPropertyAccessExpression(node.expression) &&
-  ts.isPropertyAccessExpression(node.expression.expression) &&
-  ts.isIdentifier(node.expression.expression.expression)
-)

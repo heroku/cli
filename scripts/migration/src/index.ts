@@ -51,7 +51,7 @@ export class CommandMigrationFactory {
 
           ast = this.migrateRunFunctionDecl(ast, file)
           ast = this.migrateModuleExports(ast)
-          ast = this.migrateHerokuCliUtilsExports(ast)
+          ast = this.migrateHerokuCliUtilsExports(ast, file)
           ast = this.updateOrRemoveStatements(ast)
         } catch (error: any) {
           throw new Error(`${file}: ${error.message}`)
@@ -115,7 +115,7 @@ export class CommandMigrationFactory {
       return sourceFile
     }
 
-    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile): ts.SourceFile {
+    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
       const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
 
       //  todo: hoist requires to top of the file first?
@@ -125,7 +125,7 @@ export class CommandMigrationFactory {
       }
 
       const visitor = (node: ts.Node): ts.Node => {
-        node = transformCliUtils(node, importName)
+        node = transformCliUtils(node, importName, file)
 
         return ts.visitEachChild(node, visitor, nullTransformationContext)
       }

@@ -2,11 +2,11 @@ import ts from 'typescript'
 import {
   buildPropertyAccessExpressionChain,
   removeUtilPropertyAccessFromCallExpression,
-  isCallWith1PrecedingPropertyAccess,
   subWithUx, transformActionStart, transformExit,
 } from './helpers.js'
+import {isCallWith1PrecedingPropertyAccess} from './validators.js'
 
-const transformCliUtils = (node: ts.Node, utilVarName: string) => {
+const transformCliUtils = (node: ts.Node, utilVarName: string, file: string): ts.Node => {
   if (!ts.isCallExpression(node) || !ts.isPropertyAccessExpression(node.expression)) {
     return node
   }
@@ -40,17 +40,16 @@ const transformCliUtils = (node: ts.Node, utilVarName: string) => {
     }
   }
 
-  if (propertyAccessChain.length === 2) {
-    const [propAccess] = propertyAccessChain
-    // transform
-    switch (propAccess) {
-    case 'console': // todo: verify a reason to not use console.log/error
-    case 'color':
-      return removeUtilPropertyAccessFromCallExpression(node, utilVarName)
-    default:
-      return node
-      // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
-    }
+  const [propAccess] = propertyAccessChain
+  // transform
+  switch (propAccess) {
+  case 'console': // todo: verify a reason to not use console.log/error
+  case 'color':
+    return removeUtilPropertyAccessFromCallExpression(node, utilVarName)
+  default:
+    console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}\n${file}`)
+    return node
+    // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
   }
 }
 
