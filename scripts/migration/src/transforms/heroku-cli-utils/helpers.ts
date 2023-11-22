@@ -1,34 +1,53 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {CallWith1PrecedingPropertyAccess, isCallWith1PrecedingPropertyAccess} from './validators.js'
 
 const {factory} = ts
+
+// please forgive me for this
+let utilVarName = 'cli'
+export const setUtilVarName = (newName: string) => {
+  utilVarName = newName
+}
+
+export const getUtilVarName = () => utilVarName
+
+export const showWarning = (propertyAccessChain: string[], file?: string) => {
+  console.error(`unhandled heroku-cli-util function call: cli.${propertyAccessChain.join('.')}${file ? '\n' + file : ''}`)
+}
 
 // some nested PropertyAccessExpression need to be replaced, doing so here.
 export const MISSING_MISING_FUNC_REPLACEMENT_MAP = new Map([
   ['cmd',  ['cyan', 'bold']],
 ])
 
-export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.updateCallExpression(
-  callEx,
-  factory.updatePropertyAccessExpression(
-    callEx.expression,
-    factory.createIdentifier('ux'),
-    callEx.expression.name,
-  ),
-  callEx.typeArguments,
-  callEx.arguments,
-)
+export const subWithUx = (callEx: ts.CallExpression) => {
+  const visitor = (node: ts.Node) => {
+    if (!ts.isPropertyAccessExpression(node)) {
+      return node
+    }
+
+    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === getUtilVarName()) {
+      return factory.updatePropertyAccessExpression(
+        node,
+        factory.createIdentifier('ux'),
+        node.name,
+      )
+    }
+
+    return ts.visitEachChild(node, visitor, nullTransformationContext)
+  }
+
+  return ts.visitEachChild(callEx, visitor, nullTransformationContext)
+}
 
 type RemoveUtilPropertyAccessFromCallExpressionArgs = {
   callEx: ts.CallExpression,
-  utilVarName: string,
   replaceName?: string,
   additionalTransforms?: Map<string, string[]>
 }
 
 export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
-  const {callEx, utilVarName, replaceName, additionalTransforms} = args
+  const {callEx,  replaceName, additionalTransforms} = args
   const visitor = (node: ts.Node) => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
@@ -41,7 +60,7 @@ export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPrope
       }
     }
 
-    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
+    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === getUtilVarName()) {
       return node.name
     }
 
@@ -55,12 +74,17 @@ export const transformColors = (args: RemoveUtilPropertyAccessFromCallExpression
   ...args, additionalTransforms: MISSING_MISING_FUNC_REPLACEMENT_MAP,
 })
 
-export const transformAction = (callEx: CallWith1PrecedingPropertyAccess) => {
-  // stub
+export const transformAction = (callEx: ts.CallExpression) => {
+  // stub. This might be too hard
   return callEx
 }
 
-export const transformActionFuncs = (callEx: ts.Node, propertyAccessChain: string[]) => {
+export const transformTable = (callEx: ts.CallExpression) => {
+  // stub. This might be too hard
+  return callEx
+}
+
+export const transformActionFuncs = (callEx: ts.CallExpression, propertyAccessChain: string[]) => {
   const [, firstPropAccess, secondPropAccess] = propertyAccessChain
   if (propertyAccessChain.length === 2) {
     switch (firstPropAccess) {
@@ -69,23 +93,23 @@ export const transformActionFuncs = (callEx: ts.Node, propertyAccessChain: strin
     case 'done':
       return subWithUx(callEx)
     default:
-      console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}`)
+      showWarning(propertyAccessChain)
       return callEx
     }
   }
 
-  console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}`)
+  showWarning(propertyAccessChain)
 
   // stub
   return callEx
 }
 
-export const transformExit = (callEx: CallWith1PrecedingPropertyAccess) => {
+export const transformExit = (callEx: ts.CallExpression) => {
   // stub
   return callEx
 }
 
-export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression, utilVarName: string) => {
+export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression) => {
   const propertyAccess = []
 
   let workingNode: ts.Node = node
@@ -95,7 +119,7 @@ export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpres
     workingNode = workingNode.expression
   }
 
-  if (ts.isIdentifier(workingNode) && workingNode.escapedText.toString() === utilVarName) {
+  if (ts.isIdentifier(workingNode) && workingNode.escapedText.toString() === getUtilVarName()) {
     return propertyAccess.reverse()
   }
 
