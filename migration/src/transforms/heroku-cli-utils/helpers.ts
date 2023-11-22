@@ -1,4 +1,5 @@
 import ts from 'typescript'
+import {nullTransformationContext} from '../../nullTransformationContext'
 
 const {factory} = ts
 
@@ -16,19 +17,6 @@ export type CallWith2PrecedingPropertyAccess = ts.CallExpression & {
   }
 }
 
-// // attempt to traverse upwards from "cli", but parents undefined
-// const isReferenceToUtils = (node: ts.Node, utilVarName: string) => {
-//   if (node.parent) {
-//     debugger
-//   }
-//
-//   const maybe = ts.isIdentifier(node) &&
-//     node.escapedText.toString() === utilVarName &&
-//     Boolean(node.parent)
-//
-//   return maybe
-// }
-
 export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.updateCallExpression(
   callEx,
   factory.updatePropertyAccessExpression(
@@ -42,38 +30,22 @@ export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.u
 
 // handle color calls using a separately imported package
 // cli.color.red.bold('str') => color.red.bold('str')
-export const buildCallExpressionWithNestedPropertyAccess = (callEx: ts.CallExpression,  propAccess: string[]) => {
-  let propertyAccessChain = factory.createPropertyAccessExpression(
-    factory.createIdentifier(propAccess[0]),
-    factory.createIdentifier(propAccess[1]),
-  )
+export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpression,  utilVarName: string) => {
+  const visitor = (node: ts.Node) => {
+    if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
+      return node.name
+    }
 
-  for (let i = 2; i < propAccess.length; i++) {
-    const prop = propAccess[i]
-    propertyAccessChain = factory.createPropertyAccessExpression(
-      propertyAccessChain,
-      factory.createIdentifier(prop),
-    )
+    return ts.visitEachChild(node, visitor, nullTransformationContext)
   }
 
-  return factory.createCallExpression(
-    propertyAccessChain,
-    undefined,
-    callEx.arguments,
-  )
+  return ts.visitEachChild(callEx, visitor, nullTransformationContext)
 }
 
 export const transformActionStart = (callEx: CallWith1PrecedingPropertyAccess) => {
   // stub
   return callEx
 }
-
-// returns true for nodes patterns of `utilVarName.*(...args)`
-// example `cli.warn(msg)`
-const isUtilCall = (node: ts.Node, utilVarName: string): node is CallWith1PrecedingPropertyAccess => (
-  isCallWith1PrecedingPropertyAccess(node) &&
-  node.expression.expression.escapedText.toString() === utilVarName
-)
 
 export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression, utilVarName: string) => {
   const propertyAccess = []

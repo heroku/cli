@@ -1,8 +1,8 @@
 import ts from 'typescript'
 import {
   buildPropertyAccessExpressionChain,
-  buildCallExpressionWithNestedPropertyAccess,
-  isCallWith1PrecedingPropertyAccess, isCallWith2PrecedingPropertyAccess,
+  removeUtilPropertyAccessFromCallExpression,
+  isCallWith1PrecedingPropertyAccess,
   subWithUx, transformActionStart,
 } from './helpers.js'
 
@@ -37,12 +37,13 @@ const transformCliUtils = (node: ts.Node, utilVarName: string) => {
     }
   }
 
-  if (propertyAccessChain.length === 2 && isCallWith2PrecedingPropertyAccess(node)) {
-    const [propAccess, ...rest] = propertyAccessChain
+  if (propertyAccessChain.length === 2) {
+    const [propAccess] = propertyAccessChain
     // transform
     switch (propAccess) {
+    case 'console': // todo: verify a reason to not use console.log/error
     case 'color':
-      return buildCallExpressionWithNestedPropertyAccess(node, propertyAccessChain)
+      return removeUtilPropertyAccessFromCallExpression(node, utilVarName)
     default:
       return node
       // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
