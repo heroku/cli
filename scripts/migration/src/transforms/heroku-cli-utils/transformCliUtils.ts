@@ -2,11 +2,11 @@ import ts from 'typescript'
 import {
   buildPropertyAccessExpressionChain,
   removeUtilPropertyAccessFromCallExpression,
-  subWithUx, transformActionStart, transformExit,
+  subWithUx, transformAction, transformActionFuncs, transformColors, transformExit,
 } from './helpers.js'
-import {isCallWith1PrecedingPropertyAccess} from './validators.js'
+import {isCallWith1PrecedingPropertyAccess} from './validators'
 
-const transformCliUtils = (node: ts.Node, utilVarName: string, file: string): ts.Node => {
+const transformCliUtils = (node: ts.Node, utilVarName: string) => {
   if (!ts.isCallExpression(node) || !ts.isPropertyAccessExpression(node.expression)) {
     return node
   }
@@ -28,7 +28,7 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string): ts
     case 'styledObject':
       return subWithUx(node)
     case 'action':
-      return transformActionStart(node)
+      return transformAction(node)
     case 'exit':
       return transformExit(node)
     case 'command':
@@ -40,16 +40,20 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string): ts
     }
   }
 
-  const [propAccess] = propertyAccessChain
-  // transform
-  switch (propAccess) {
-  case 'console': // todo: verify a reason to not use console.log/error
-  case 'color':
-    return removeUtilPropertyAccessFromCallExpression(node, utilVarName)
-  default:
-    console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}\n${file}`)
-    return node
-    // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
+  if (propertyAccessChain.length === 2) {
+    const [propAccess] = propertyAccessChain
+    // transform
+    switch (propAccess) {
+    case 'action':
+      return transformActionFuncs(node)
+    case 'color':
+      return transformColors({callEx: node, utilVarName})
+    case 'console': // todo: verify a reason to not use console.log/error
+      return removeUtilPropertyAccessFromCallExpression({callEx: node, utilVarName})
+    default:
+      return node
+      // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
+    }
   }
 }
 

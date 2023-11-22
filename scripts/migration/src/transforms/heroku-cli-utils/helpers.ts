@@ -1,11 +1,11 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {CallWith1PrecedingPropertyAccess} from './validators.js'
+import {CallWith1PrecedingPropertyAccess, isCallWith1PrecedingPropertyAccess} from './validators.js'
 
 const {factory} = ts
 
 // some nested PropertyAccessExpression need to be replaced, doing so here.
-export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
+export const MISSING_MISING_FUNC_REPLACEMENT_MAP = new Map([
   ['cmd',  ['cyan', 'bold']],
 ])
 
@@ -20,18 +20,25 @@ export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.u
   callEx.arguments,
 )
 
-// handle color calls using a separately imported package
-// cli.color.red.bold('str') => color.red.bold('str')
-export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpression,  utilVarName: string) => {
+type RemoveUtilPropertyAccessFromCallExpressionArgs = {
+  callEx: ts.CallExpression,
+  utilVarName: string,
+  replaceName?: string,
+  additionalTransforms?: Map<string, string[]>
+}
+
+export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
+  const {callEx, utilVarName, replaceName, additionalTransforms} = args
   const visitor = (node: ts.Node) => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
     }
 
-    const additionalTransform = MISSING_FUNC_REPLACEMENT_MAP.get(node.name.text)
-    if (additionalTransform) {
-      // redefine node with update
-      debugger
+    if (additionalTransforms) {
+      const additionalTransform = additionalTransforms.get(node.name.text)
+      if (additionalTransform) {
+        // redefine node with update
+      }
     }
 
     if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
@@ -44,7 +51,31 @@ export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpres
   return ts.visitEachChild(callEx, visitor, nullTransformationContext)
 }
 
-export const transformActionStart = (callEx: CallWith1PrecedingPropertyAccess) => {
+export const transformColors = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => removeUtilPropertyAccessFromCallExpression({
+  ...args, additionalTransforms: MISSING_MISING_FUNC_REPLACEMENT_MAP,
+})
+
+export const transformAction = (callEx: CallWith1PrecedingPropertyAccess) => {
+  // stub
+  return callEx
+}
+
+export const transformActionFuncs = (callEx: ts.Node, propertyAccessChain: string[]) => {
+  const [, firstPropAccess, secondPropAccess] = propertyAccessChain
+  if (propertyAccessChain.length === 2) {
+    switch (firstPropAccess) {
+    case 'status':
+    case 'start':
+    case 'done':
+      return subWithUx(callEx)
+    default:
+      console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}`)
+      return callEx
+    }
+  }
+
+  console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}`)
+
   // stub
   return callEx
 }
