@@ -1,5 +1,6 @@
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import {stdout} from 'node:process'
 import pascalcase from 'pascalcase'
 import ts from 'typescript'
 import {ESLint} from 'eslint'
@@ -64,6 +65,7 @@ export class CommandMigrationFactory {
 
       const lintResults = await Promise.all(lintOperations)
       await Promise.all(lintResults.map(res => this.writeSourceFile(res[0].output, res[0].filePath)))
+      stdout.write(`Migrated ${lintResults.length} commands.\n`)
     }
 
     private migrateRunFunctionDecl(node: ts.SourceFile, filePath: string): ts.SourceFile {
@@ -110,7 +112,7 @@ export class CommandMigrationFactory {
         return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
       }
 
-      return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
+      return sourceFile
     }
 
     private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile): ts.SourceFile {
@@ -145,7 +147,7 @@ export class CommandMigrationFactory {
 
         // some string literals that are no longer aligned with
         // the original source file do not print properly
-        // recreating them seems to workaround this issue.
+        // recreating them seems to work around this issue.
         if (ts.isStringLiteral(node)) {
           return ts.factory.createStringLiteral(node.text)
         }
@@ -162,6 +164,6 @@ export class CommandMigrationFactory {
       const finalPath = path.join(path.resolve(CommandMigrationFactory.outputLocation), pathFromRoot)
 
       await fs.mkdir(finalPath, {recursive: true})
-      await fs.writeFile(path.join(finalPath, `${pascalcase(name)}.ts`), content)
+      await fs.writeFile(path.join(finalPath, `${name}.ts`), content)
     }
 }

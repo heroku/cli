@@ -9,7 +9,10 @@ import ts from 'typescript';
 // --files="globPattern"
 const { argv } = yargs(hideBin(process.argv));
 
-const files = globSync(argv.files).map(file => file.replace("/", path.sep));
+const filesParts = argv.files.split(',')
+const files = filesParts.reduce((acc, filePath) => (
+  [...acc, ...globSync(filePath).map(file => file.replace("/", path.sep))]
+), []);
 
 const commandMigrationFactory = new CommandMigrationFactory(files, {
     moduleResolution: ts.ModuleResolutionKind.Node10,
