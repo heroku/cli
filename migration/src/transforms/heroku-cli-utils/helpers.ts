@@ -41,15 +41,27 @@ export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.u
 )
 
 // handle color calls using a separately imported package
-// cli.color.red('str') => color.red('str')
-export const changeColorCall = (callEx: CallWith2PrecedingPropertyAccess) => factory.createCallExpression(
-  factory.createPropertyAccessExpression(
-    factory.createIdentifier('color'),
-    factory.createIdentifier(callEx.expression.name.escapedText.toString()),
-  ),
-  undefined,
-  callEx.arguments,
-)
+// cli.color.red.bold('str') => color.red.bold('str')
+export const buildCallExpressionWithNestedPropertyAccess = (callEx: ts.CallExpression,  propAccess: string[]) => {
+  let propertyAccessChain = factory.createPropertyAccessExpression(
+    factory.createIdentifier(propAccess[0]),
+    factory.createIdentifier(propAccess[1]),
+  )
+
+  for (let i = 2; i < propAccess.length; i++) {
+    const prop = propAccess[i]
+    propertyAccessChain = factory.createPropertyAccessExpression(
+      propertyAccessChain,
+      factory.createIdentifier(prop),
+    )
+  }
+
+  return factory.createCallExpression(
+    propertyAccessChain,
+    undefined,
+    callEx.arguments,
+  )
+}
 
 export const transformActionStart = (callEx: CallWith1PrecedingPropertyAccess) => {
   // stub
@@ -62,6 +74,7 @@ const isUtilCall = (node: ts.Node, utilVarName: string): node is CallWith1Preced
   isCallWith1PrecedingPropertyAccess(node) &&
   node.expression.expression.escapedText.toString() === utilVarName
 )
+
 export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression, utilVarName: string) => {
   const propertyAccess = []
 
