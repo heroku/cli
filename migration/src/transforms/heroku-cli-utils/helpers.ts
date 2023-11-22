@@ -1,7 +1,12 @@
 import ts from 'typescript'
-import {nullTransformationContext} from '../../nullTransformationContext'
+import {nullTransformationContext} from '../../nullTransformationContext.js'
 
 const {factory} = ts
+
+// some nested PropertyAccessExpression need to be replaced, doing so here.
+export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
+  ['cmd',  ['cyan', 'bold']],
+])
 
 type ExpressionTerminatesWithIdentifier = ts.PropertyAccessExpression & {
   expression: ts.Identifier
@@ -32,7 +37,16 @@ export const subWithUx = (callEx: CallWith1PrecedingPropertyAccess) => factory.u
 // cli.color.red.bold('str') => color.red.bold('str')
 export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpression,  utilVarName: string) => {
   const visitor = (node: ts.Node) => {
-    if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
+    if (!ts.isPropertyAccessExpression(node)) {
+      return node
+    }
+
+    const additionalTransform = MISSING_FUNC_REPLACEMENT_MAP.get(node.name.text)
+    if (additionalTransform) {
+      // redefine node with update
+    }
+
+    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
       return node.name
     }
 
@@ -43,6 +57,11 @@ export const removeUtilPropertyAccessFromCallExpression = (callEx: ts.CallExpres
 }
 
 export const transformActionStart = (callEx: CallWith1PrecedingPropertyAccess) => {
+  // stub
+  return callEx
+}
+
+export const transformExit = (callEx: CallWith1PrecedingPropertyAccess) => {
   // stub
   return callEx
 }
