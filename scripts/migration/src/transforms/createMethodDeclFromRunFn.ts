@@ -1,5 +1,5 @@
 import {assert} from 'console'
-import {nullTransformationContext} from './nullTransformationContext.js'
+import {nullTransformationContext} from '../nullTransformationContext.js'
 import ts from 'typescript'
 
 export function createMethodDeclFromRunFn(runFunctionDecl: ts.FunctionDeclaration, className: ts.Identifier): ts.MethodDeclaration {
@@ -12,7 +12,7 @@ export function createMethodDeclFromRunFn(runFunctionDecl: ts.FunctionDeclaratio
     ({body} = updatePropertyAccessChainsToAlignWithBindingPattern(interimRunFnDecl))
   }
 
-  const metdodDecl = ts.factory.createMethodDeclaration([ts.factory.createModifier(ts.SyntaxKind.PublicKeyword), ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)],
+  const methodDecl = ts.factory.createMethodDeclaration([ts.factory.createModifier(ts.SyntaxKind.PublicKeyword), ts.factory.createModifier(ts.SyntaxKind.AsyncKeyword)],
     undefined,
     name.text,
     undefined,
@@ -21,7 +21,7 @@ export function createMethodDeclFromRunFn(runFunctionDecl: ts.FunctionDeclaratio
     ts.factory.createTypeReferenceNode('Promise', [ts.factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword)]),
     body)
 
-  return metdodDecl
+  return methodDecl
 }
 
 function migrateRunFnParamsToObjectBindingPattern(runFunctionDecl: ts.FunctionDeclaration, className: ts.Identifier): ts.FunctionDeclaration {

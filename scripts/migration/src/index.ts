@@ -5,7 +5,7 @@ import pascalcase from 'pascalcase'
 import ts from 'typescript'
 import {ESLint} from 'eslint'
 
-import {createClassElementsFromModuleExports} from './createClassElementFromModuleExports.js'
+import {createClassElementsFromModuleExports} from './transforms/createClassElementFromModuleExports.js'
 import {createCommandClass} from './createCommandClass.js'
 import {isModuleExports} from './node-validators/isModuleExports.js'
 import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
