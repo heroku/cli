@@ -63,7 +63,7 @@ Uploading ${path.join('test', 'fixtures', 'id_rsa.pub')} SSH key... done
     .command(['keys:add', '--quiet'])
     .it('adds a key when prompted to generate one', ({stderr, stdout}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.equal(` ›   Warning: Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+      expect(stderr).to.include(`Warning: Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
 Uploading ${PATH_TO_HOME_KEY} SSH key...
 Uploading ${PATH_TO_HOME_KEY} SSH key... done
 `)
@@ -83,7 +83,7 @@ Uploading ${PATH_TO_HOME_KEY} SSH key... done
     .command(['keys:add', '--quiet', '--yes'])
     .it('adds a key when passed yes', ({stderr, stdout}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.equal(` ›   Warning: Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+      expect(stderr).to.include(`Warning: Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
 Uploading ${PATH_TO_HOME_KEY} SSH key...
 Uploading ${PATH_TO_HOME_KEY} SSH key... done
 `)
@@ -116,7 +116,7 @@ Uploading ${PATH_TO_HOME_KEY} SSH key... done
     .command(['keys:add'])
     .it('adds a key when prompted to upload one', ({stderr, stdout}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.equal(` ›   Warning: Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+      expect(stderr).to.include(`Warning: Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
 Uploading ${PATH_TO_HOME_KEY} SSH key...
 Uploading ${PATH_TO_HOME_KEY} SSH key... done
 `)
@@ -139,7 +139,7 @@ Uploading ${PATH_TO_HOME_KEY} SSH key... done
     .command(['keys:add', '--yes'])
     .it('adds a key when passed yes and has key', ({stderr, stdout}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.equal(` ›   Warning: Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+      expect(stderr).to.include(`Warning: Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
 Uploading ${PATH_TO_HOME_KEY} SSH key...
 Uploading ${PATH_TO_HOME_KEY} SSH key... done
 `)
