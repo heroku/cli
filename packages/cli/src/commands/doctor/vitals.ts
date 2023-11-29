@@ -4,6 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {sortBy} from 'lodash'
+const {version} = require('../../../package.json')
 
 export default class DoctorVitals extends Command {
   static description = 'list local user setup for debugging'
@@ -18,14 +19,14 @@ export default class DoctorVitals extends Command {
     const {args, flags} = await this.parse(DoctorVitals)
     const time = new Date()
     let dateChecked = time.toISOString().split('T')[0]
-    let cliInstallMethod = null
-    let os = null
-    let cliVersion = null
-    let nodeVersion = null
+    let cliInstallMethod = 'brew'
+    let os = 'darwin-x64'
+    let cliVersion = `v${version}`
+    let nodeVersion = 'v16.19.0'
     let networkConfig = {
       httpsProxy: null,
     }
-    let installedPlugins = null
+    let installedPlugins = 'myplugin'
     let herokuStatus = {
       apps: 'No known issues at this time.',
       data: 'No known issues at this time.',
@@ -37,13 +38,13 @@ export default class DoctorVitals extends Command {
     const toolsUp = true
 
     ux.styledHeader(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
-    ux.log(`CLI Install Method: ${cliInstallMethod}`)
-    ux.log(`OS: ${os}`)
-    ux.log(`Heroku CLI Version: ${cliVersion}`)
-    ux.log(`Node Version: ${nodeVersion}`)
-    ux.log('Network Config:')
-    ux.log(`- HTTPSProxy: ${networkConfig.httpsProxy}`)
-    ux.log('Installed Plugins:')
+    ux.log(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
+    ux.log(`${color.cyan('OS:')} ${os}`)
+    ux.log(`${color.cyan('Heroku CLI Version:')} ${cliVersion}`)
+    ux.log(`${color.cyan('Node Version:')} ${nodeVersion}`)
+    ux.log(`${color.cyan('Network Config:')}`)
+    ux.log(`- ${color.cyan('HTTPSProxy:')} ${networkConfig.httpsProxy}`)
+    ux.log(`${color.cyan('Installed Plugins:')}`)
     ux.log(`- ${installedPlugins}`)
     ux.log('\n')
 
