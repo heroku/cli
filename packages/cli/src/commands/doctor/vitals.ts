@@ -2,38 +2,52 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
 const exec = require('child_process').exec
+
+const getLocalNodeVersion = () => {
+  exec('node -v',
+    (error: any, stdout: any) => {
+      if (error !== null) {
+        return 'unavailable'
+      }
+
+      return stdout
+    })
+}
+
+const getInstallMethod = () => {
+  return 'brew'
+}
+
+const getLocalProxySettings = (unmasked = false) => {
+  if (unmasked) {
+    return null
+  }
+
+  return 'xxxxx.proxy'
+}
 
 export default class DoctorVitals extends Command {
   static description = 'list local user setup for debugging'
   static topic = 'doctor'
 
-  //   static flags = {
-  //     app: flags.app({required: false}),
-  //     json: flags.boolean({description: 'display as json', required: false}),
-  //   }
+  static flags = {
+    unmasked: flags.boolean({required: false}),
+    json: flags.boolean({description: 'display as json', required: false}),
+  }
 
   async run() {
-    const {args, flags} = await this.parse(DoctorVitals)
+    const {flags} = await this.parse(DoctorVitals)
     const time = new Date()
-
-    exec('node -v',
-      (error: any, stdout: any, stderr: any) => {
-        console.log('stdout: ' + stdout)
-        console.log('stderr: ' + stderr)
-        if (error !== null) {
-          console.log('exec error: ' + error)
-        }
-      })
-    let dateChecked = time.toISOString().split('T')[0]
-    let cliInstallMethod = 'brew'
-    let os = this.config.platform
-    let cliVersion = `v${this.config.version}`
-    let nodeVersion = 'v16.19.0'
-    let networkConfig = {
-      httpsProxy: null,
+    const dateChecked = time.toISOString().split('T')[0]
+    const cliInstallMethod = getInstallMethod()
+    const os = this.config.platform
+    const cliVersion = `v${this.config.version}`
+    const nodeVersion = getLocalNodeVersion()
+    const networkConfig = {
+      httpsProxy: getLocalProxySettings(flags.unmasked),
     }
     let installedPlugins = 'myplugin'
     let herokuStatus = {
