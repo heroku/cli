@@ -4,6 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {sortBy} from 'lodash'
+const exec = require('child_process').exec
 
 export default class DoctorVitals extends Command {
   static description = 'list local user setup for debugging'
@@ -17,6 +18,15 @@ export default class DoctorVitals extends Command {
   async run() {
     const {args, flags} = await this.parse(DoctorVitals)
     const time = new Date()
+
+    exec('node -v',
+      (error: any, stdout: any, stderr: any) => {
+        console.log('stdout: ' + stdout)
+        console.log('stderr: ' + stderr)
+        if (error !== null) {
+          console.log('exec error: ' + error)
+        }
+      })
     let dateChecked = time.toISOString().split('T')[0]
     let cliInstallMethod = 'brew'
     let os = this.config.platform
