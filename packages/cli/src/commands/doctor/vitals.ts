@@ -4,7 +4,6 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {sortBy} from 'lodash'
-const {version} = require('../../../package.json')
 
 export default class DoctorVitals extends Command {
   static description = 'list local user setup for debugging'
@@ -20,8 +19,8 @@ export default class DoctorVitals extends Command {
     const time = new Date()
     let dateChecked = time.toISOString().split('T')[0]
     let cliInstallMethod = 'brew'
-    let os = 'darwin-x64'
-    let cliVersion = `v${version}`
+    let os = this.config.platform
+    let cliVersion = `v${this.config.version}`
     let nodeVersion = 'v16.19.0'
     let networkConfig = {
       httpsProxy: null,
