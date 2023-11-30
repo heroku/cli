@@ -23,12 +23,19 @@ const getInstallLocation = async () => {
   return formattedOutput
 }
 
-const getLocalProxySettings = (unmasked = false) => {
+const getLocalProxySettings = async (unmasked = false) => {
+  const {stdout} = await execAsync('scutil --proxy')
+
   if (unmasked) {
-    return null
+    return stdout
   }
 
   return 'xxxxx.proxy'
+}
+
+const getInstalledPLugins = async () => {
+  const {stdout} = await execAsync('heroku plugins')
+  return stdout
 }
 
 const getHerokuStatus = async () => {
@@ -58,9 +65,9 @@ export default class DoctorVitals extends Command {
     const cliVersion = `v${this.config.version}`
     const nodeVersion = await getLocalNodeVersion()
     const networkConfig = {
-      httpsProxy: getLocalProxySettings(flags.unmasked),
+      httpsProxy: await getLocalProxySettings(flags.unmasked),
     }
-    let installedPlugins = 'myplugin'
+    const installedPlugins = await getInstalledPLugins()
     const herokuStatus = await getHerokuStatus()
 
     const herokuUp = true
