@@ -24,7 +24,16 @@ const getInstallLocation = async () => {
 }
 
 const getLocalProxySettings = async (unmasked = false) => {
-  const {stdout} = await execAsync('scutil --proxy')
+  const command = `httpsProxy=$(scutil --proxy | awk -F': ' '/HTTPSProxy/ {print $2}')
+
+  # Check if HTTPSProxy has a value
+  if [ -n "$httpsProxy" ]; then
+    echo "$httpsProxy"
+  else
+    echo "no proxy set"
+  fi`
+
+  const {stdout} = await execAsync(command)
 
   if (unmasked) {
     return stdout
