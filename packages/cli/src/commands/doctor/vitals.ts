@@ -30,7 +30,7 @@ const getLocalProxySettings = async (unmasked = false) => {
     return stdout
   }
 
-  return 'xxxxx.proxy'
+  return 'xxxxx.proxy\n'
 }
 
 const getInstalledPLugins = async () => {
@@ -75,11 +75,12 @@ export default class DoctorVitals extends Command {
     ux.log(`${color.cyan('OS:')} ${os}`)
     ux.log(`${color.cyan('Heroku CLI Version:')} ${cliVersion}`)
     ux.log(`${color.cyan('Node Version:')} ${nodeVersion}`)
-    ux.log(`${color.cyan('Network Config:')}`)
-    ux.log(`${color.cyan('HTTPSProxy:')} ${networkConfig.httpsProxy}`)
-    ux.log(`${color.cyan('Installed Plugins:')}`)
+
+    ux.log(`${color.cyan('Network Config')}`)
+    ux.log(`HTTPSProxy: ${networkConfig.httpsProxy}`)
+
+    ux.log(`${color.cyan('Installed Plugins')}`)
     ux.log(`${installedPlugins}`)
-    ux.log('\n')
 
     ux.log(`${color.heroku('Heroku Status')}`)
     ux.log(`${color.heroku('----------------------------------------')}`)
