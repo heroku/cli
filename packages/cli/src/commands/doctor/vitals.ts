@@ -54,9 +54,6 @@ export default class DoctorVitals extends Command {
 
   async run() {
     const {flags} = await this.parse(DoctorVitals)
-
-    console.log(Object.entries(this.config.plugins))
-
     const time = new Date()
     const dateChecked = time.toISOString().split('T')[0]
     const cliInstallMethod = getInstallMethod()
