@@ -4,7 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
-const {exec} = require('child_process');
+const {exec} = require('child_process')
 const {promisify} = require('util')
 const execAsync = promisify(exec)
 
@@ -82,8 +82,8 @@ export default class DoctorVitals extends Command {
     ux.log(`${color.cyan('Installed Plugins')}`)
     ux.log(`${installedPlugins}`)
 
-    ux.log(`${color.heroku('Heroku Status')}`)
-    ux.log(`${color.heroku('----------------------------------------')}`)
+    ux.log(`${color.bold(color.heroku('Heroku Status'))}`)
+    ux.log(`${color.bold(color.heroku('----------------------------------------'))}`)
     ux.log(isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus))
   }
 }
