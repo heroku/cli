@@ -59,6 +59,7 @@ export default class DoctorVitals extends Command {
 
   static flags = {
     unmasked: flags.boolean({required: false}),
+    'copy-results': flags.boolean({description: 'copies results to clipboard', required: false}),
     json: flags.boolean({description: 'display as json', required: false}),
   }
 
