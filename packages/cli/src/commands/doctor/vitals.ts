@@ -1,9 +1,8 @@
-/* eslint-disable prefer-const */
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {sortBy} from 'lodash'
+import * as lodash from 'lodash'
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const execAsync = promisify(exec)
