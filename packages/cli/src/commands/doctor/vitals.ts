@@ -4,21 +4,21 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
-const exec = require('child_process').exec
+const {exec} = require('child_process');
+const {promisify} = require('util')
+const execAsync = promisify(exec)
 
-const getLocalNodeVersion = () => {
-  exec('node -v',
-    (error: any, stdout: any) => {
-      if (error !== null) {
-        return 'unavailable'
-      }
-
-      return stdout
-    })
+const getLocalNodeVersion = async () => {
+  const {stdout} = await execAsync('node -v')
+  return stdout
 }
 
 const getInstallMethod = () => {
   return 'brew'
+}
+
+const getInstallLocation = () => {
+  return null
 }
 
 const getLocalProxySettings = (unmasked = false) => {
@@ -40,12 +40,16 @@ export default class DoctorVitals extends Command {
 
   async run() {
     const {flags} = await this.parse(DoctorVitals)
+
+    console.log(Object.entries(this.config.plugins))
+
     const time = new Date()
     const dateChecked = time.toISOString().split('T')[0]
     const cliInstallMethod = getInstallMethod()
+    const cliInstallLocation = getInstallLocation()
     const os = this.config.platform
     const cliVersion = `v${this.config.version}`
-    const nodeVersion = getLocalNodeVersion()
+    const nodeVersion = await getLocalNodeVersion()
     const networkConfig = {
       httpsProxy: getLocalProxySettings(flags.unmasked),
     }
@@ -62,6 +66,7 @@ export default class DoctorVitals extends Command {
 
     ux.styledHeader(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
     ux.log(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
+    ux.log(`${color.cyan('CLI Install Location:')} ${cliInstallLocation}`)
     ux.log(`${color.cyan('OS:')} ${os}`)
     ux.log(`${color.cyan('Heroku CLI Version:')} ${cliVersion}`)
     ux.log(`${color.cyan('Node Version:')} ${nodeVersion}`)
