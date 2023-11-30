@@ -17,8 +17,10 @@ const getInstallMethod = () => {
   return 'brew'
 }
 
-const getInstallLocation = () => {
-  return null
+const getInstallLocation = async () => {
+  const {stdout} = await execAsync('which heroku')
+  const formattedOutput = stdout.replace(/\n/g, '')
+  return formattedOutput
 }
 
 const getLocalProxySettings = (unmasked = false) => {
@@ -27,6 +29,11 @@ const getLocalProxySettings = (unmasked = false) => {
   }
 
   return 'xxxxx.proxy'
+}
+
+const getHerokuStatus = async () => {
+  const {stdout} = await execAsync('heroku status')
+  return stdout
 }
 
 export default class DoctorVitals extends Command {
@@ -46,7 +53,7 @@ export default class DoctorVitals extends Command {
     const time = new Date()
     const dateChecked = time.toISOString().split('T')[0]
     const cliInstallMethod = getInstallMethod()
-    const cliInstallLocation = getInstallLocation()
+    const cliInstallLocation = await getInstallLocation()
     const os = this.config.platform
     const cliVersion = `v${this.config.version}`
     const nodeVersion = await getLocalNodeVersion()
@@ -54,15 +61,9 @@ export default class DoctorVitals extends Command {
       httpsProxy: getLocalProxySettings(flags.unmasked),
     }
     let installedPlugins = 'myplugin'
-    let herokuStatus = {
-      apps: 'No known issues at this time.',
-      data: 'No known issues at this time.',
-      tools: 'No known issues at this time.',
-    }
+    const herokuStatus = await getHerokuStatus()
 
-    const appsUp = true
-    const dataUp = true
-    const toolsUp = true
+    const herokuUp = true
 
     ux.styledHeader(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
     ux.log(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
@@ -78,8 +79,6 @@ export default class DoctorVitals extends Command {
 
     ux.log(`${color.heroku('Heroku Status')}`)
     ux.log(`${color.heroku('----------------------------------------')}`)
-    ux.log(`${appsUp ? color.green(`App: ${herokuStatus.apps}`) : color.red(`App: ${herokuStatus.apps}`)}`)
-    ux.log(`${dataUp ? color.green(`Data: ${herokuStatus.data}`) : color.red(`Data: ${herokuStatus.data}`)}`)
-    ux.log(`${toolsUp ? color.green(`Tools: ${herokuStatus.tools}`) : color.red(`Tools: ${herokuStatus.tools}`)}`)
+    ux.log(herokuUp ? color.green(herokuStatus) : color.red(herokuStatus))
   }
 }
