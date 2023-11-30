@@ -35,11 +35,13 @@ const getLocalProxySettings = async (unmasked = false) => {
 
   const {stdout} = await execAsync(command)
 
+  const hasProxySet = !stdout.includes('no proxy set')
+
   if (unmasked) {
     return stdout
   }
 
-  return 'xxxxx.proxy\n'
+  return hasProxySet ? 'xxxxx\n' : stdout
 }
 
 const getInstalledPLugins = async () => {
