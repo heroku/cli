@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as lodash from 'lodash'
+import * as clipboardy from 'clipboardy'
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const execAsync = promisify(exec)
@@ -33,7 +34,6 @@ const getLocalProxySettings = async (unmasked = false) => {
   fi`
 
   const {stdout} = await execAsync(command)
-
   const hasProxySet = !stdout.includes('no proxy set')
 
   if (unmasked) {
@@ -65,6 +65,7 @@ export default class DoctorVitals extends Command {
 
   async run() {
     const {flags} = await this.parse(DoctorVitals)
+    const copyResults = flags['copy-results']
     const time = new Date()
     const dateChecked = time.toISOString().split('T')[0]
     const cliInstallMethod = getInstallMethod()
@@ -96,5 +97,22 @@ export default class DoctorVitals extends Command {
     ux.log(`${color.bold(color.heroku('Heroku Status'))}`)
     ux.log(`${color.bold(color.heroku('----------------------------------------'))}`)
     ux.log(isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus))
+
+    if (copyResults) {
+      // copy results to clipboard here
+      clipboardy.default.writeSync(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
+      clipboardy.default.writeSync(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
+      clipboardy.default.writeSync(`${color.cyan('CLI Install Location:')} ${cliInstallLocation}`)
+      clipboardy.default.writeSync(`${color.cyan('OS:')} ${os}`)
+      clipboardy.default.writeSync(`${color.cyan('Heroku CLI Version:')} ${cliVersion}`)
+      clipboardy.default.writeSync(`${color.cyan('Node Version:')} ${nodeVersion}`)
+      clipboardy.default.writeSync(`${color.cyan('Network Config')}`)
+      clipboardy.default.writeSync(`HTTPSProxy: ${networkConfig.httpsProxy}`)
+      clipboardy.default.writeSync(`${color.cyan('Installed Plugins')}`)
+      clipboardy.default.writeSync(`${installedPlugins}`)
+      clipboardy.default.writeSync(`${color.bold(color.heroku('Heroku Status'))}`)
+      clipboardy.default.writeSync(`${color.bold(color.heroku('----------------------------------------'))}`)
+      clipboardy.default.writeSync(isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus))
+    }
   }
 }
