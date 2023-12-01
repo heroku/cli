@@ -2,6 +2,8 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+// const Font = require('ascii-art-font')
+// Font.fontPath = '../../../lib/doctor/font'
 
 export default class DoctorAsk extends Command {
   static description = 'recieve responses from HerokAI'
@@ -21,10 +23,11 @@ export default class DoctorAsk extends Command {
     const {body: user} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
     const userName = (user && user.name) ? ` ${user.name}` : ''
     const herokAIResponse = `${color.heroku(`Hi${userName},`)} \n\nI'm just a concept right now. Remember?`
+    const herokAIJsonResponse = `Hi${userName}, I'm just a concept right now. Remember?`
 
     const dialogue = {
       question: args.question,
-      response: herokAIResponse,
+      response: herokAIJsonResponse,
     }
 
     if (flags.json) {
