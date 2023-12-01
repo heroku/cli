@@ -1,0 +1,1 @@
+This is just temporary proof of concept. Actual font should be imported via heroku's cdn.
