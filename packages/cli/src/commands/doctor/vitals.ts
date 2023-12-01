@@ -62,7 +62,7 @@ export default class DoctorVitals extends Command {
   static topic = 'doctor'
 
   static flags = {
-    unmasked: flags.boolean({required: false}),
+    unmask: flags.boolean({description: 'unmasks fields heroku has deemed potentially sensitive', required: false}),
     'copy-results': flags.boolean({description: 'copies results to clipboard', required: false}),
     json: flags.boolean({description: 'display as json', required: false}),
   }
@@ -78,7 +78,7 @@ export default class DoctorVitals extends Command {
     const cliVersion = `v${this.config.version}`
     const nodeVersion = await getLocalNodeVersion()
     const networkConfig = {
-      httpsProxy: await getLocalProxySettings(flags.unmasked),
+      httpsProxy: await getLocalProxySettings(flags.unmask),
     }
     const installedPlugins = await getInstalledPLugins()
     const herokuStatus = await getHerokuStatus()
