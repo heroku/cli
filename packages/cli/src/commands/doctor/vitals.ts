@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as lodash from 'lodash'
-import * as clipboardy from 'clipboardy'
+// import clipboardy from 'clipboardy'
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const execAsync = promisify(exec)
@@ -53,6 +53,17 @@ const getHerokuStatus = async () => {
   return stdout
 }
 
+const copyToClipboard = async (value: any) => {
+  const isWindows = process.platform === 'win32'
+  const copyCommand = isWindows ? 'clip' : 'pbcopy'
+
+  const {stdout} = await execAsync(`echo ${value} | ${copyCommand}`)
+  console.log('value', value)
+  console.log('copyCommand', copyCommand)
+  console.log('stdout HERE', stdout)
+  return stdout
+}
+
 export default class DoctorVitals extends Command {
   static description = 'list local user setup for debugging'
   static topic = 'doctor'
@@ -80,6 +91,7 @@ export default class DoctorVitals extends Command {
     const herokuStatus = await getHerokuStatus()
 
     const isHerokuUp = true
+    let copiedResults = ''
 
     ux.styledHeader(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
     ux.log(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
@@ -100,19 +112,21 @@ export default class DoctorVitals extends Command {
 
     if (copyResults) {
       // copy results to clipboard here
-      clipboardy.default.writeSync(`${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}`)
-      clipboardy.default.writeSync(`${color.cyan('CLI Install Method:')} ${cliInstallMethod}`)
-      clipboardy.default.writeSync(`${color.cyan('CLI Install Location:')} ${cliInstallLocation}`)
-      clipboardy.default.writeSync(`${color.cyan('OS:')} ${os}`)
-      clipboardy.default.writeSync(`${color.cyan('Heroku CLI Version:')} ${cliVersion}`)
-      clipboardy.default.writeSync(`${color.cyan('Node Version:')} ${nodeVersion}`)
-      clipboardy.default.writeSync(`${color.cyan('Network Config')}`)
-      clipboardy.default.writeSync(`HTTPSProxy: ${networkConfig.httpsProxy}`)
-      clipboardy.default.writeSync(`${color.cyan('Installed Plugins')}`)
-      clipboardy.default.writeSync(`${installedPlugins}`)
-      clipboardy.default.writeSync(`${color.bold(color.heroku('Heroku Status'))}`)
-      clipboardy.default.writeSync(`${color.bold(color.heroku('----------------------------------------'))}`)
-      clipboardy.default.writeSync(isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus))
+      copiedResults += `${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}\n`
+      copiedResults += `${color.cyan('CLI Install Method:')} ${cliInstallMethod}\n`
+      copiedResults += `${color.cyan('CLI Install Location:')} ${cliInstallLocation}\n`
+      copiedResults += `${color.cyan('OS:')} ${os}\n`
+      copiedResults += `${color.cyan('Heroku CLI Version:')} ${cliVersion}\n`
+      copiedResults += `${color.cyan('Node Version:')} ${nodeVersion}\n`
+      copiedResults += `${color.cyan('Network Config')}\n`
+      copiedResults += `HTTPSProxy: ${networkConfig.httpsProxy}\n`
+      copiedResults += `${color.cyan('Installed Plugins')}\n`
+      copiedResults += `${installedPlugins}\n`
+      copiedResults += `${color.bold(color.heroku('Heroku Status'))}\n`
+      copiedResults += `${color.bold(color.heroku('----------------------------------------'))}\n`
+      copiedResults += isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus)
     }
+
+    await copyToClipboard(copiedResults)
   }
 }
