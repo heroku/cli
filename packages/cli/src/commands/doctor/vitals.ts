@@ -118,6 +118,8 @@ export default class DoctorVitals extends Command {
       copiedResults += 'Heroku Status\n'
       copiedResults += '----------------------------------------\n'
       copiedResults += herokuStatus
+
+      ux.log(`\n${color.bold(`${color.heroku('Results copied to clipboard!')}`)}`)
     }
 
     await copyToClipboard(copiedResults)
