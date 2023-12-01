@@ -6215,6 +6215,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"copy-paste@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "copy-paste@npm:1.5.3"
+  dependencies:
+    iconv-lite: ^0.4.8
+  checksum: 97fac26ea222478e93f2177fdb29f4e90687698a600a128032aa96f15956afe45d03b4c226756264d9266ddee39926f177992cc1809cbfe659c622275095eddd
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:1.0.2, core-util-is@npm:~1.0.0":
   version: 1.0.2
   resolution: "core-util-is@npm:1.0.2"
@@ -9317,6 +9326,7 @@ __metadata:
     bats: ^1.1.0
     chai: ^4.2.0
     chalk: ^2.4.2
+    copy-paste: ^1.5.3
     date-fns: ^2.30.0
     debug: 4.1.1
     dotenv: ^16.3.1
@@ -9564,7 +9574,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:^0.4.17, iconv-lite@npm:^0.4.24":
+"iconv-lite@npm:^0.4.17, iconv-lite@npm:^0.4.24, iconv-lite@npm:^0.4.8":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
   dependencies:

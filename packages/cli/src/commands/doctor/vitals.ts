@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as lodash from 'lodash'
-// import clipboardy from 'clipboardy'
+const clipboard = require('copy-paste')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const execAsync = promisify(exec)
@@ -54,14 +54,7 @@ const getHerokuStatus = async () => {
 }
 
 const copyToClipboard = async (value: any) => {
-  const isWindows = process.platform === 'win32'
-  const copyCommand = isWindows ? 'clip' : 'pbcopy'
-
-  const {stdout} = await execAsync(`echo ${value} | ${copyCommand}`)
-  console.log('value', value)
-  console.log('copyCommand', copyCommand)
-  console.log('stdout HERE', stdout)
-  return stdout
+  clipboard.copy(value)
 }
 
 export default class DoctorVitals extends Command {
@@ -112,19 +105,19 @@ export default class DoctorVitals extends Command {
 
     if (copyResults) {
       // copy results to clipboard here
-      copiedResults += `${color.heroku('Heroku CLI Doctor')} · ${color.cyan(`User Local Setup on ${dateChecked}`)}\n`
-      copiedResults += `${color.cyan('CLI Install Method:')} ${cliInstallMethod}\n`
-      copiedResults += `${color.cyan('CLI Install Location:')} ${cliInstallLocation}\n`
-      copiedResults += `${color.cyan('OS:')} ${os}\n`
-      copiedResults += `${color.cyan('Heroku CLI Version:')} ${cliVersion}\n`
-      copiedResults += `${color.cyan('Node Version:')} ${nodeVersion}\n`
-      copiedResults += `${color.cyan('Network Config')}\n`
+      copiedResults += `Heroku CLI Doctor · User Local Setup on ${dateChecked}\n`
+      copiedResults += `CLI Install Method: ${cliInstallMethod}\n`
+      copiedResults += `CLI Install Location: ${cliInstallLocation}\n`
+      copiedResults += `OS: ${os}\n`
+      copiedResults += `Heroku CLI Version: ${cliVersion}\n`
+      copiedResults += `Node Version: ${nodeVersion}\n`
+      copiedResults += 'Network Config\n'
       copiedResults += `HTTPSProxy: ${networkConfig.httpsProxy}\n`
-      copiedResults += `${color.cyan('Installed Plugins')}\n`
+      copiedResults += 'Installed Plugins\n'
       copiedResults += `${installedPlugins}\n`
-      copiedResults += `${color.bold(color.heroku('Heroku Status'))}\n`
-      copiedResults += `${color.bold(color.heroku('----------------------------------------'))}\n`
-      copiedResults += isHerokuUp ? color.green(herokuStatus) : color.red(herokuStatus)
+      copiedResults += 'Heroku Status\n'
+      copiedResults += '----------------------------------------\n'
+      copiedResults += herokuStatus
     }
 
     await copyToClipboard(copiedResults)
