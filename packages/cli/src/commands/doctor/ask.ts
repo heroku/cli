@@ -22,8 +22,8 @@ export default class DoctorAsk extends Command {
     const {args, flags} = await this.parse(DoctorAsk)
     const {body: user} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
     const userName = (user && user.name) ? ` ${user.name}` : ''
-    const herokAIResponse = `${color.heroku(`Hi${userName},`)} \n\nI'm just a concept right now. Remember?`
-    const herokAIJsonResponse = `Hi${userName}, I'm just a concept right now. Remember?`
+    const herokAIResponse = `${color.heroku(`${color.bold(`Hi${userName},`)} \n\nI'm just a concept right now. Remember? Maybe you can get some buy in during the demo?`)}`
+    const herokAIJsonResponse = `Hi${userName}, I'm just a concept right now. Remember? Maybe you can get some buy in during the demo?`
 
     const dialogue = {
       question: args.question,
