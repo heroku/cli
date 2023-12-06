@@ -21,7 +21,7 @@ export const MISSING_MISING_FUNC_REPLACEMENT_MAP = new Map([
 ])
 
 export const subWithUx = (callEx: ts.CallExpression) => {
-  const visitor = (node: ts.Node) => {
+  const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
     }
@@ -48,7 +48,7 @@ type RemoveUtilPropertyAccessFromCallExpressionArgs = {
 
 export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
   const {callEx,  replaceName, additionalTransforms} = args
-  const visitor = (node: ts.Node) => {
+  const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
     }
