@@ -12,8 +12,9 @@ import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
-import {isModuleExportsArray} from './node-validators/isModuleExportsArray'
-import {getCommandDeclaration} from './getCommandDeclaration'
+import {isModuleExportsArray} from './node-validators/isModuleExportsArray.js'
+import {getCommandDeclaration} from './getCommandDeclaration.js'
+import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 
 const commonImports = `import {createRequire} from 'node:module'
 import color from '@heroku-cli/color'
@@ -47,13 +48,18 @@ export class CommandMigrationFactory {
           continue
         }
 
-        ast = this.migrateRunFunctionDecl(ast, file)
-        ast = this.migrateCommandDeclaration(ast)
-        ast = this.updateOrRemoveStatements(ast)
-        const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        try {
+          ast = this.migrateRunFunctionDecl(ast, file)
+          ast = this.migrateCommandDeclaration(ast)
+          ast = this.updateOrRemoveStatements(ast)
+          const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
+          const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
-        lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+          lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+        } catch (error: any) {
+          console.error(`error file: ${file}`)
+          throw error
+        }
       }
 
       const lintResults = await Promise.all(lintOperations)
@@ -107,7 +113,8 @@ export class CommandMigrationFactory {
         }
 
         // module.exports
-        if (ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))) {
+        const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
+        if (isModuleExports || isCommandDeclaration(node)) {
           return null
         }
 
