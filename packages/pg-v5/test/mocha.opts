@@ -2,3 +2,4 @@
 --require ./test/init.js
 --timeout 60000
 --exit
+--bail
