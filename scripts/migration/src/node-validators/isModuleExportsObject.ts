@@ -9,8 +9,7 @@ import ts from 'typescript'
  * @returns boolean if the node is a module.exports
  */
 
-export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.ObjectLiteralExpression}) {
-  // todo: handle aliasing case. example: packages/pg-v5/commands/vacuum_stats.js
+export function isModuleExportsObject(node: ts.Node): node is (ts.Node & {right: ts.ObjectLiteralExpression}) {
   return ts.isBinaryExpression(node) &&
 
         ts.isPropertyAccessExpression(node.left) &&
@@ -19,7 +18,6 @@ export function isModuleExports(node: ts.Node): node is (ts.Node & {right: ts.Ob
         ts.isObjectLiteralExpression(node.right) &&
 
         ts.isIdentifier(node.left.expression) &&
-        node.left.expression.escapedText === 'module' &&
-        ts.isObjectLiteralExpression(node.right)
+        node.left.expression.escapedText === 'module'
 }
 
