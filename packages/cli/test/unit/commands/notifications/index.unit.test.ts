@@ -45,7 +45,7 @@ describe('notifications', () => {
         .command(['notifications', '-a', 'myapp', '--read'])
         .it('warns about no read notifications', ({stdout, stderr}) => {
           expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain(' ▸    You have no notifications on myapp.\n ▸    Run heroku notifications --all to view notifications for all\n ▸    apps.\n')
+          expect(unwrap(stderr)).to.contain(' You have no notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n')
         })
 
       test
@@ -62,7 +62,7 @@ describe('notifications', () => {
         .command(['notifications', '-a', 'myapp'])
         .it('warns about no unread notifications', ({stdout, stderr}) => {
           expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain(' ▸    No unread notifications on myapp.\n ▸    Run heroku notifications --all to view\n ▸    notifications for all apps.\n')
+          expect(unwrap(stderr)).to.contain(' No unread notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n')
         })
     })
 
@@ -90,7 +90,7 @@ describe('notifications', () => {
         .command(['notifications'])
         .it('warns about no unread notifications', ({stdout, stderr}) => {
           expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain(' ▸    No unread notifications.\n ▸    Run heroku notifications --read to view read\n ▸    notifications.\n')
+          expect(unwrap(stderr)).to.contain(' No unread notifications. Run heroku notifications --read to view read notifications.\n')
         })
     })
 
@@ -124,7 +124,7 @@ describe('notifications', () => {
           .get('/user/notifications')
           .reply(200, notifications)
           .patch('/user/notifications/101', {read: true})
-          .reply(200)
+          .reply(200),
         )
         .command(['notifications'])
         .it('shows all unread notifications', ({stdout, stderr}) => {
@@ -142,7 +142,7 @@ describe('notifications', () => {
         .stderr()
         .nock('https://telex.heroku.com:443', api => api
           .get('/user/notifications')
-          .reply(200, notifications)
+          .reply(200, notifications),
         )
         .command(['notifications', '--read', '--json'])
         .it('shows all read notifications as json', ({stdout, stderr}) => {
