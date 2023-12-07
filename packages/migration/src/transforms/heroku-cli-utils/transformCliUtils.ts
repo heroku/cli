@@ -1,8 +1,8 @@
 import ts from 'typescript'
 import {
   buildPropertyAccessExpressionChain,
-  removeUtilPropertyAccessFromCallExpression, setUtilVarName,
-  subWithUx, transformAction, transformActionFuncs, transformColors, transformExit, transformTable,
+  removeUtilPropertyAccessFromCallExpression, setUtilVarName, showWarning,
+  subWithUx, transformActionFuncs, transformColors, transformExit,
 } from './helpers.js'
 import {isCallWith1PrecedingPropertyAccess} from './validators.js'
 
@@ -19,9 +19,7 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
     return node
   }
 
-  const showWarning = () => {
-    console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}\n${file}`)
-  }
+  const showWarningWFile = () => showWarning(propertyAccessChain, file)
 
   if (propertyAccessChain.length === 1 && isCallWith1PrecedingPropertyAccess(node)) {
     const [callName] = propertyAccessChain
@@ -30,42 +28,37 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
     switch (callName) {
     case 'warn':
     case 'log':
+    case 'styledHeader':
     case 'styledObject':
     case 'styledJSON':
+    case 'error': // ???
       return subWithUx(node)
-    case 'action':
-      return transformAction(node)
     case 'exit':
       return transformExit(node)
-    case 'confirmApp':
-      // todo: this was reimplemented in packages/cli/src/lib/apps/confirm-app.ts.
-      //  May be too hard to add the import
-      return node
-    case 'table':
-      return transformTable(node)
     case 'command':
-      // ignore. Handled elsewhere
+      // ignore. Handled by command object transform
       return node
     default:
-      showWarning()
+      // remainder: open,prompt,linewrap, action.*, confirmApp, table
+      showWarningWFile()
       return node
       // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
     }
   }
 
   const [propAccess] = propertyAccessChain
-  // transform
+
   switch (propAccess) {
   case 'action':
     return transformActionFuncs(node, propertyAccessChain)
   case 'color':
-    return transformColors({callEx: node})
+    return transformColors({callEx: node, propertyAccessChain})
   case 'console': // todo: verify a reason to not use console.log/error
-    return removeUtilPropertyAccessFromCallExpression({callEx: node})
+    return removeUtilPropertyAccessFromCallExpression({callEx: node, propertyAccessChain})
   default:
-    showWarning()
+    showWarningWFile()
+    // remainder: action.warn
     return node
-      // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
   }
 }
 

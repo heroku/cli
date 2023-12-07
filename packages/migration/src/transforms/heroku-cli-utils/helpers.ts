@@ -12,7 +12,7 @@ export const setUtilVarName = (newName: string) => {
 export const getUtilVarName = () => utilVarName
 
 export const showWarning = (propertyAccessChain: string[], file?: string) => {
-  console.error(`unhandled heroku-cli-util function call: cli.${propertyAccessChain.join('.')}${file ? '\n' + file : ''}`)
+  console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}${file ? '\n' + file : ''}`)
 }
 
 // some nested PropertyAccessExpression need to be replaced, doing so here.
@@ -44,10 +44,12 @@ type RemoveUtilPropertyAccessFromCallExpressionArgs = {
   callEx: ts.CallExpression,
   replaceName?: string,
   additionalTransforms?: Map<string, string[]>
+  propertyAccessChain: string[]
 }
 
 export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
-  const {callEx,  replaceName, additionalTransforms} = args
+  const {callEx, propertyAccessChain,  replaceName, additionalTransforms} = args
+  let found = false
   const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
@@ -57,37 +59,35 @@ export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPrope
       const additionalTransform = additionalTransforms.get(node.name.text)
       if (additionalTransform) {
         // redefine node with update
+        showWarning(propertyAccessChain)
       }
     }
 
     if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === getUtilVarName()) {
+      found = true
       return node.name
     }
 
     return ts.visitEachChild(node, visitor, nullTransformationContext)
   }
 
-  return ts.visitEachChild(callEx, visitor, nullTransformationContext)
+  const result =  ts.visitEachChild(callEx, visitor, nullTransformationContext)
+
+  if (!found) {
+    showWarning(propertyAccessChain)
+  }
+
+  return result
 }
 
 export const transformColors = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => removeUtilPropertyAccessFromCallExpression({
   ...args, additionalTransforms: MISSING_MISING_FUNC_REPLACEMENT_MAP,
 })
 
-export const transformAction = (callEx: ts.CallExpression) => {
-  // stub. This might be too hard
-  return callEx
-}
-
-export const transformTable = (callEx: ts.CallExpression) => {
-  // stub. This might be too hard
-  return callEx
-}
-
 export const transformActionFuncs = (callEx: ts.CallExpression, propertyAccessChain: string[]) => {
-  const [, firstPropAccess, secondPropAccess] = propertyAccessChain
+  const [, secondPropAccess] = propertyAccessChain
   if (propertyAccessChain.length === 2) {
-    switch (firstPropAccess) {
+    switch (secondPropAccess) {
     case 'status':
     case 'start':
     case 'done':
