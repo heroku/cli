@@ -50,7 +50,7 @@ export class CommandMigrationFactory {
 
         try {
           ast = this.migrateRunFunctionDecl(ast, file)
-          ast = this.migrateCommandDeclaration(ast)
+          ast = this.migrateCommandDeclaration(ast, file)
           ast = this.updateOrRemoveStatements(ast)
           const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
           const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
@@ -80,7 +80,7 @@ export class CommandMigrationFactory {
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
-    private migrateCommandDeclaration(sourceFile: ts.SourceFile): ts.SourceFile {
+    private migrateCommandDeclaration(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
       const command = getCommandDeclaration(sourceFile)
       if (command) {
         const staticClassMembers = createClassElementsFromModuleExports(command)
@@ -101,6 +101,8 @@ export class CommandMigrationFactory {
 
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
+
+      console.error(`unknown command declaration in ${file}`)
 
       return sourceFile
     }
