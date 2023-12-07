@@ -32,7 +32,7 @@
     "build": "lerna run prepack --concurrency 4",
     "buildCLI": "cd packages/cli && yarn prepack",
     "lint": "lerna run lint",
-    "test": "yarn workspaces foreach run test",
+    "test": "yarn workspaces foreach --parallel run test",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache"
   },

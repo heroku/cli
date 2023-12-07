@@ -3,3 +3,4 @@
 --reporter list
 --recursive
 --timeout 60000
+--exit
