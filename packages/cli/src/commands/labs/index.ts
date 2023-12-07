@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
 
 interface Features {
@@ -35,11 +35,11 @@ export default class LabsIndex extends Command {
   }
 
   async run() {
-    const {args, flags} = await this.parse(LabsIndex)
+    const {flags} = await this.parse(LabsIndex)
     const [currentUserResponse, userResponse, appResponse] = await Promise.all([
       this.heroku.get<Heroku.Account>('/account'),
       this.heroku.get<Heroku.AccountFeature>('/account/features'),
-      (args.app || flags.app) ? this.heroku.get<Heroku.AppFeature>(`/apps/${args.app ? args.app : flags.app}/features`) : null,
+      (flags.app ? this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features`) : null),
     ])
 
     let app = null
@@ -75,7 +75,7 @@ export default class LabsIndex extends Command {
       printFeatures(features.user)
       if (features.app) {
         ux.log()
-        ux.styledHeader(`App Features ${color.app(args.app ? args.app! : flags.app!)}`)
+        ux.styledHeader(`App Features ${color.app(flags.app!)}`)
         printFeatures(features.app)
       }
     }
