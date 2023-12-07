@@ -102,7 +102,7 @@ export class CommandMigrationFactory {
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
 
-      console.error(`unknown command declaration in ${file}`)
+      console.error(`unhandled command declaration in ${file}`)
 
       return sourceFile
     }
