@@ -115,7 +115,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=14"
+    "node": "~16.20.0"
   },
   "files": [
     "/autocomplete-scripts",
@@ -292,7 +292,7 @@
     },
     "update": {
       "node": {
-        "version": "16.19.0"
+        "version": "16.20.2"
       },
       "s3": {
         "xz": true,
