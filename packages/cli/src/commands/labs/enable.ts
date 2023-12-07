@@ -25,10 +25,11 @@ export default class LabsEnable extends Command {
     const {flags, args} = await this.parse(LabsEnable)
     const feature = args.feature
     let target = null
+    let request
 
     try {
       await this.heroku.get<Heroku.AccountFeature>(`/account/features/${feature}`)
-      await enableFeature(this.heroku, feature)
+      request = enableFeature(this.heroku, feature)
       const targetResponse = await this.heroku.get<Heroku.Account>('/account')
       target = targetResponse.body.email
     } catch (error: any) {
@@ -36,11 +37,12 @@ export default class LabsEnable extends Command {
       // might be an app feature
       if (!flags.app) throw error
       await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${feature}`)
-      await enableFeature(this.heroku, feature, flags.app)
+      request = enableFeature(this.heroku, feature, flags.app)
       target = flags.app
     }
 
     ux.action.start(`Enabling ${color.green(feature)} for ${color.cyan(target!)}`)
+    await request
     ux.action.stop()
   }
 }
