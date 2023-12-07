@@ -100,8 +100,8 @@ export class CommandMigrationFactory {
             )
           }
 
-        return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
-      }
+          return ts.visitEachChild(node, updateClassDef, nullTransformationContext)
+        }
 
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
@@ -114,16 +114,29 @@ export class CommandMigrationFactory {
     private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
       const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
 
-      //  todo: hoist requires to top of the file first?
+      //  todo: hoist requires to top of the file?
       if (!importName) {
         // not found. continue transforms
-        throw new Error('heroku-cli-utils import missing')
+        console.error(`heroku-cli-utils import missing: ${file}`)
       }
 
       const visitor = (node: ts.Node): ts.Node => {
-        node = transformCliUtils(node, importName, file)
+        let newNode: ts.Node
+        if (!node) {
+          debugger
+        }
 
-        return ts.visitEachChild(node, visitor, nullTransformationContext)
+        try {
+          newNode = transformCliUtils(node, importName, file)
+        } catch {
+          debugger
+        }
+
+        if (!newNode) {
+          debugger
+        }
+
+        return ts.visitEachChild(newNode, visitor, nullTransformationContext)
       }
 
       return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)

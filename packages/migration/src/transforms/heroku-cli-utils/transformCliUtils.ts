@@ -53,21 +53,19 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
     }
   }
 
-  if (propertyAccessChain.length === 2) {
-    const [propAccess] = propertyAccessChain
-    // transform
-    switch (propAccess) {
-    case 'action':
-      return transformActionFuncs(node, propertyAccessChain)
-    case 'color':
-      return transformColors({callEx: node})
-    case 'console': // todo: verify a reason to not use console.log/error
-      return removeUtilPropertyAccessFromCallExpression({callEx: node})
-    default:
-      showWarning()
-      return node
+  const [propAccess] = propertyAccessChain
+  // transform
+  switch (propAccess) {
+  case 'action':
+    return transformActionFuncs(node, propertyAccessChain)
+  case 'color':
+    return transformColors({callEx: node})
+  case 'console': // todo: verify a reason to not use console.log/error
+    return removeUtilPropertyAccessFromCallExpression({callEx: node})
+  default:
+    showWarning()
+    return node
       // throw new Error(`Unknown heroku-cli-util call: ${callName}`)
-    }
   }
 }
 
