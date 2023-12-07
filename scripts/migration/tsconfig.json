@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ES2022",
+        "noImplicitAny": true,
+        "inlineSourceMap": true,
+        "baseUrl": "./src",
+        "outDir": "./lib",
+        "moduleResolution": "Node",
+        "allowSyntheticDefaultImports":true,
+        "skipLibCheck": true,
+        "esModuleInterop": true
+    },
+    "exclude": ["node_modules"],
+    "include": ["src"],
+    "files": ["src/index.ts"]
+}

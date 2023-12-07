@@ -1,0 +1,19 @@
+{
+    "name": "command-migration",
+    "type": "module",
+    "dependencies": {
+        "eslint": "8.53.0",
+        "glob": "10.3.10",
+        "pascalcase": "2.0.0",
+        "typescript": "5.2.2",
+        "yargs": "17.7.2"
+    },
+    "devDependencies": {
+        "@types/eslint": "^8.44.7",
+        "@types/node": "20.9.0",
+        "@types/pascalcase": "^1.0.3"
+    },
+    "scripts": {
+        "build": "tsc"
+    }
+}
