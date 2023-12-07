@@ -1,4 +1,4 @@
-import {createMethodDeclFromRunFn} from './createMethodDeclFromRunFn.js'
+import {createMethodDeclFromRunFn} from './createMethodDeclFromRunFn'
 import ts from 'typescript'
 
 /**

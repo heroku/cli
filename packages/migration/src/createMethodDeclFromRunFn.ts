@@ -1,5 +1,5 @@
 import {assert} from 'console'
-import {nullTransformationContext} from './nullTransformationContext.js'
+import {nullTransformationContext} from './nullTransformationContext'
 import ts from 'typescript'
 
 export function createMethodDeclFromRunFn(runFunctionDecl: ts.FunctionDeclaration, className: ts.Identifier): ts.MethodDeclaration {

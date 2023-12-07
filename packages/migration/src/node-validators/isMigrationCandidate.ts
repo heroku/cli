@@ -1,4 +1,4 @@
-import {isRunFunctionDecl} from './isRunFunctionDecl.js'
+import {isRunFunctionDecl} from './isRunFunctionDecl'
 import ts from 'typescript'
 
 export function isMigrationCandidate(sourceFile: ts.SourceFile): boolean {

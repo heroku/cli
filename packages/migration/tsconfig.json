@@ -12,6 +12,10 @@
         "esModuleInterop": true
     },
     "exclude": ["node_modules"],
-    "include": ["src"],
-    "files": ["src/index.ts"]
+    "include": [
+      "src"
+    ],
+    "files": [
+      "src/index.ts"
+    ]
 }

@@ -1,6 +1,6 @@
 import ts from 'typescript'
-import {isModuleExportsObject} from './node-validators/isModuleExportsObject.js'
-import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
+import {isModuleExportsObject} from './node-validators/isModuleExportsObject'
+import {isCommandDeclaration} from './node-validators/isCommandDeclaration'
 
 export function getCommandDeclaration(sourceFile: ts.SourceFile): undefined | ts.ObjectLiteralExpression {
   for (const node of sourceFile.statements) {
