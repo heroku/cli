@@ -7,11 +7,14 @@ import {ESLint} from 'eslint'
 
 import {createClassElementsFromModuleExports} from './createClassElementFromModuleExports.js'
 import {createCommandClass} from './createCommandClass.js'
-import {isModuleExports} from './node-validators/isModuleExports.js'
+import {isModuleExportsObject} from './node-validators/isModuleExportsObject.js'
 import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
 import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
+import {isModuleExportsArray} from './node-validators/isModuleExportsArray.js'
+import {getCommandDeclaration} from './getCommandDeclaration.js'
+import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 
 const commonImports = `import {createRequire} from 'node:module'
 import color from '@heroku-cli/color'
@@ -45,13 +48,18 @@ export class CommandMigrationFactory {
           continue
         }
 
-        ast = this.migrateRunFunctionDecl(ast, file)
-        ast = this.migrateModuleExports(ast)
-        ast = this.updateOrRemoveStatements(ast)
-        const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        try {
+          ast = this.migrateRunFunctionDecl(ast, file)
+          ast = this.migrateCommandDeclaration(ast, file)
+          ast = this.updateOrRemoveStatements(ast)
+          const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
+          const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
-        lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+          lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+        } catch (error: any) {
+          console.error(`error file: ${file}`)
+          throw error
+        }
       }
 
       const lintResults = await Promise.all(lintOperations)
@@ -72,18 +80,10 @@ export class CommandMigrationFactory {
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
-    private migrateModuleExports(sourceFile: ts.SourceFile): ts.SourceFile {
-      let staticClassMembers: ts.PropertyDeclaration[]
-      const visitor = (node: ts.Node): ts.Node => {
-        if (isModuleExports(node)) {
-          staticClassMembers = createClassElementsFromModuleExports(node.right)
-        }
-
-        return ts.visitEachChild(node, visitor, nullTransformationContext)
-      }
-
-      sourceFile = ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
-      if (staticClassMembers) {
+    private migrateCommandDeclaration(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+      const command = getCommandDeclaration(sourceFile)
+      if (command) {
+        const staticClassMembers = createClassElementsFromModuleExports(command)
         const updateClassDef = (node: ts.Node): ts.Node => {
           if (isExtendedCommandClassDeclaration(node)) {
             return ts.factory.updateClassDeclaration(
@@ -102,6 +102,8 @@ export class CommandMigrationFactory {
         return ts.visitEachChild(sourceFile, updateClassDef, nullTransformationContext)
       }
 
+      console.error(`unhandled command declaration in ${file}`)
+
       return sourceFile
     }
 
@@ -113,7 +115,8 @@ export class CommandMigrationFactory {
         }
 
         // module.exports
-        if (ts.isExpressionStatement(node) && isModuleExports(node.expression)) {
+        const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
+        if (isModuleExports || isCommandDeclaration(node)) {
           return null
         }
 
