@@ -121,20 +121,7 @@ export class CommandMigrationFactory {
       }
 
       const visitor = (node: ts.Node): ts.Node => {
-        let newNode: ts.Node
-        if (!node) {
-          debugger
-        }
-
-        try {
-          newNode = transformCliUtils(node, importName, file)
-        } catch {
-          debugger
-        }
-
-        if (!newNode) {
-          debugger
-        }
+        const newNode = transformCliUtils(node, importName, file)
 
         return ts.visitEachChild(newNode, visitor, nullTransformationContext)
       }

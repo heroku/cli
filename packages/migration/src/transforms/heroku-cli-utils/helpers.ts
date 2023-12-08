@@ -100,12 +100,11 @@ export const transformActionFuncs = (callEx: ts.CallExpression, propertyAccessCh
 
   showWarning(propertyAccessChain)
 
-  // stub
   return callEx
 }
 
 export const transformExit = (callEx: ts.CallExpression) => {
-  // stub
+  // todo: finish this
   return callEx
 }
 
