@@ -6,6 +6,7 @@ const Stream = require('stream')
 const util = require('util')
 // eslint-disable-next-line node/no-unsupported-features/node-builtins
 const finished = util.promisify(Stream.finished)
+const cli = require('heroku-cli-util')
 
 const bastion = require('./bastion')
 const debug = require('./debug')
@@ -58,7 +59,6 @@ function psqlInteractiveOptions(prompt, dbEnv) {
       debug('Logging psql history to %s', psqlHistoryPath)
       psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
     } else {
-      const cli = require('heroku-cli-util')
       cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
     }
   }
