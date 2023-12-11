@@ -104,3 +104,26 @@ jobs:
           pwd
           yarn oclif upload tarballs
           ./scripts/upload/deb
+
+  pack-and-upload-windows:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@41775cf0c82ef066f1eb39cea1bd74697ca5b735
+      - name: Install NSIS
+        run: brew install nsis
+      - name: yarn install
+        run: yarn --immutable --network-timeout 1000000
+      - name: pack windows installer
+        run: yarn pack:win
+      - name: upload windows installer
+        run: yarn upload:win
