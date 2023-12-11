@@ -1,3 +1,4 @@
+import {createRequire} from 'node:module'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import {stdout} from 'node:process'
@@ -18,13 +19,13 @@ import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
 
-const commonImports = `import {createRequire} from 'node:module'
-import color from '@heroku-cli/color'
+const require = createRequire(import.meta.url)
+
+const commonImports = `import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
-const require = createRequire(import.meta.url)
 `
 export class CommandMigrationFactory {
     private static outputLocation = 'converted' as const
@@ -157,10 +158,20 @@ export class CommandMigrationFactory {
 
     private async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
       const {dir, name} = path.parse(originalFilePath)
-      const pathFromRoot = dir.replace(process.cwd(), '')
-      const finalPath = path.join(path.resolve(CommandMigrationFactory.outputLocation), pathFromRoot)
+      const exported = require(`../../${originalFilePath.split('/packages/')[1]}`)
+      const commandConfig = Array.isArray(exported) ? exported[0] : exported
+      const {topic, command} = commandConfig
+      const commandName = command || name
+      const basePath = path.join('packages', 'cli', 'src', 'commands')
+      const pathFromCommands = dir.split('/commands/')[1] || ''
+
+      let finalPath = path.join(path.resolve(basePath), ...pathFromCommands.split('/'), commandName)
+      if (topic) {
+        const topicPath = path.join(...topic.split(':'))
+        finalPath = path.join(basePath, topicPath)
+      }
 
       await fs.mkdir(finalPath, {recursive: true})
-      await fs.writeFile(path.join(finalPath, `${name}.ts`), content)
+      await fs.writeFile(path.join(finalPath, `${commandName}.ts`), content)
     }
 }
