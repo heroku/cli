@@ -17,7 +17,7 @@ export const findRequiredPackageVarNameIfExits = (sourceFile: ts.SourceFile, pac
           return decl.name.escapedText.toString()
         }
 
-        throw new Error(`findRequiredImportVarNameIfExits(${packageName}): require in unexpected format`)
+        throw new Error(`findRequiredPackageVarNameIfExits(${packageName}): require in unexpected format`)
       }
     }
   }
