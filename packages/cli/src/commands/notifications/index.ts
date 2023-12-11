@@ -4,6 +4,9 @@ import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
 import * as time from '../../lib/notifications/time'
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const wrap = require('@heroku/linewrap')
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
