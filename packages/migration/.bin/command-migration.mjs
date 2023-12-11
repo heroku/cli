@@ -14,11 +14,15 @@ const files = filesParts.reduce((acc, filePath) => (
   [...acc, ...globSync(filePath).map(file => file.replace("/", path.sep))]
 ), []);
 
-const commandMigrationFactory = new CommandMigrationFactory(files, {
+const commandMigrationFactory = new CommandMigrationFactory(
+  files,
+  {
     moduleResolution: ts.ModuleResolutionKind.Node10,
     module: ts.ModuleKind.ESNext,
     target: ts.ScriptTarget.ESNext,
     allowJs: true,
-});
+  },
+  argv.outdir
+);
 
 void commandMigrationFactory.migrate();
