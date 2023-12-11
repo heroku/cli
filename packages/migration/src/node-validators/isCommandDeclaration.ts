@@ -8,6 +8,17 @@ type CommandDeclaration = ts.VariableStatement & {
   }
 }
 
+/**
+ * Determines if the specified node has this shape:
+ * var/let/const anyName = {
+ *   ...*
+ *   run: *
+ * }
+ *
+ * Intended to be run at the root level of file on ts.SourceFile['statements']
+ * @param node The node to evaluate
+ * @returns boolean if the node matches pattern
+ */
 export const isCommandDeclaration = (node: ts.Node): node is CommandDeclaration => {
   if (
     ts.isVariableStatement(node) &&
