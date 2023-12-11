@@ -86,6 +86,8 @@ export class CommandMigrationFactory {
     }
 
     private migrateCommandDeclaration(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+      // todo: handle aliases
+      // todo: handle whatever this is: packages/orgs-v5/commands/access/index.js
       const command = getCommandDeclaration(sourceFile)
       if (command) {
         const staticClassMembers = createClassElementsFromModuleExports(command)
@@ -158,20 +160,39 @@ export class CommandMigrationFactory {
 
     private async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
       const {dir, name} = path.parse(originalFilePath)
+      const basePath = path.join('packages', 'cli', 'src', 'commands')
+
       const exported = require(`../../${originalFilePath.split('/packages/')[1]}`)
       const commandConfig = Array.isArray(exported) ? exported[0] : exported
-      const {topic, command} = commandConfig
-      const commandName = command || name
-      const basePath = path.join('packages', 'cli', 'src', 'commands')
-      const pathFromCommands = dir.split('/commands/')[1] || ''
+      const {topic, command = ''} = commandConfig
+      const commandParts = command.split(':')
+      let commandName = command || name
 
-      let finalPath = path.join(path.resolve(basePath), ...pathFromCommands.split('/'), commandName)
-      if (topic) {
-        const topicPath = path.join(...topic.split(':'))
-        finalPath = path.join(basePath, topicPath)
+      // some command declarations use topic separators. example: command: 'maintenance:run'
+      if (commandParts.length > 1) {
+        commandName = commandParts[commandParts.length - 1]
       }
 
-      await fs.mkdir(finalPath, {recursive: true})
-      await fs.writeFile(path.join(finalPath, `${commandName}.ts`), content)
+      const pathFromCommands = dir.split('/commands/')[1] || ''
+
+      let finalDirPath = path.join(path.resolve(basePath), ...pathFromCommands.split('/'), commandName)
+      if (topic) {
+        const topicParts = topic.split(':')
+        if (commandParts.length > 1) {
+          topicParts.push(...commandParts.slice(0, -1))
+        }
+
+        finalDirPath = path.join(basePath, path.join(...topicParts))
+      }
+
+      const finalPath = path.join(finalDirPath, `${commandName}.ts`)
+      const exists = await fs.stat(finalPath).catch(error => false)
+      if (exists) {
+        console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
+        return
+      }
+
+      await fs.mkdir(finalDirPath, {recursive: true})
+      await fs.writeFile(finalPath, content)
     }
 }
