@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { CommandMigrationFactory } from '../lib/index.js';
+import { CommandTestMigrationFactory } from '../lib/index.js';
 import { globSync } from 'glob';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -16,7 +16,7 @@ const files = filesParts.reduce((acc, filePath) => (
   [...acc, ...globSync(filePath).map(file => file.replace("/", path.sep))]
 ), []);
 
-const commandMigrationFactory = new CommandMigrationFactory(
+const commandMigrationFactory = new CommandTestMigrationFactory(
   files,
   {
     moduleResolution: ts.ModuleResolutionKind.Node10,

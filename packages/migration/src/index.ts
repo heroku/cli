@@ -11,13 +11,15 @@ import {createCommandClass} from './createCommandClass.js'
 import {isModuleExportsObject} from './node-validators/isModuleExportsObject.js'
 import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
-import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
+import {isCommandMigrationCandidate} from './node-validators/isCommandMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
 import {isModuleExportsArray} from './node-validators/isModuleExportsArray.js'
 import {getCommandDeclaration} from './getCommandDeclaration.js'
 import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
+import {isTestItCall} from './node-validators/isTestItCall.js'
+import {migrateItCall} from './transforms/unit-tests/migrateItCall.js'
 
 const require = createRequire(import.meta.url)
 
@@ -27,14 +29,13 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 `
-export class CommandMigrationFactory {
-  private readonly outputLocation: string = path.join('packages', 'cli', 'src')
-
+abstract class MigrationFactoryBase {
+  protected readonly outputLocation: string;
   protected readonly program: ts.Program;
   protected readonly printer: ts.Printer;
   protected readonly linter: ESLint
-  private readonly files: string[];
-  private readonly allowOverwrite: boolean = false;
+  protected readonly files: string[];
+  protected readonly allowOverwrite: boolean = false;
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
@@ -50,6 +51,49 @@ export class CommandMigrationFactory {
     }
   }
 
+  abstract migrate(): Promise<void>;
+
+  async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
+    const {dir, name} = path.parse(originalFilePath)
+
+    const exported = require(`../../${originalFilePath.split('/packages/')[1]}`)
+    const commandConfig = Array.isArray(exported) ? exported[0] : exported
+    const {topic, command = ''} = commandConfig
+    const commandParts = command.split(':')
+    let commandName = command || name
+
+    // some command declarations use topic separators. example: command: 'maintenance:run'
+    if (commandParts.length > 1) {
+      commandName = commandParts[commandParts.length - 1]
+    }
+
+    const pathFromCommands = dir.split('/commands/')[1] || ''
+
+    let finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'), commandName)
+    if (topic) {
+      const topicParts = topic.split(':')
+      if (commandParts.length > 1) {
+        topicParts.push(...commandParts.slice(0, -1))
+      }
+
+      finalDirPath = path.join(this.outputLocation, 'commands', path.join(...topicParts))
+    }
+
+    const finalPath = path.join(finalDirPath, `${commandName}.ts`)
+    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
+    if (exists) {
+      console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
+      return
+    }
+
+    await fs.mkdir(finalDirPath, {recursive: true})
+    await fs.writeFile(finalPath, content)
+  }
+}
+
+export class CommandMigrationFactory extends MigrationFactoryBase {
+  protected readonly outputLocation: string = path.join('packages', 'cli', 'src')
+
   public async migrate(): Promise<void> {
     const lintOperations: Promise<ESLint.LintResult[]>[] = []
     for (let i = 0; i < this.files.length; i++) {
@@ -57,7 +101,7 @@ export class CommandMigrationFactory {
       let ast = this.program.getSourceFile(file)
 
       try {
-        if (!isMigrationCandidate(ast)) {
+        if (!isCommandMigrationCandidate(ast)) {
           continue
         }
 
@@ -165,41 +209,46 @@ export class CommandMigrationFactory {
 
     return ts.visitEachChild(node, visitor, nullTransformationContext)
   }
+}
 
-  private async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
-    const {dir, name} = path.parse(originalFilePath)
+export class CommandTestMigrationFactory extends MigrationFactoryBase {
+  protected readonly outputLocation: string = path.join('packages', 'cli', 'test', 'unit')
 
-    const exported = require(`../../${originalFilePath.split('/packages/')[1]}`)
-    const commandConfig = Array.isArray(exported) ? exported[0] : exported
-    const {topic, command = ''} = commandConfig
-    const commandParts = command.split(':')
-    let commandName = command || name
-
-    // some command declarations use topic separators. example: command: 'maintenance:run'
-    if (commandParts.length > 1) {
-      commandName = commandParts[commandParts.length - 1]
-    }
-
-    const pathFromCommands = dir.split('/commands/')[1] || ''
-
-    let finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'), commandName)
-    if (topic) {
-      const topicParts = topic.split(':')
-      if (commandParts.length > 1) {
-        topicParts.push(...commandParts.slice(0, -1))
+  private async migrateItStatements(sourceFile: ts.SourceFile) {
+    const visitor = (node: ts.Node): ts.Node => {
+      if (isTestItCall(node)) {
+        return migrateItCall(node)
       }
 
-      finalDirPath = path.join(this.outputLocation, 'commands', path.join(...topicParts))
+      return node
     }
 
-    const finalPath = path.join(finalDirPath, `${commandName}.ts`)
-    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
-    if (exists) {
-      console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
-      return
+    return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
+  }
+
+  public async migrate(): Promise<void> {
+    const lintOperations: Promise<ESLint.LintResult[]>[] = []
+    for (let i = 0; i < this.files.length; i++) {
+      const file = this.files[i]
+      const ast = this.program.getSourceFile(file)
+
+      try {
+        if (!isCommandMigrationCandidate(ast)) {
+          continue
+        }
+
+        const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
+        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+
+        lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+      } catch (error: any) {
+        console.error(`error file: ${file}`)
+        throw error
+      }
     }
 
-    await fs.mkdir(finalDirPath, {recursive: true})
-    await fs.writeFile(finalPath, content)
+    const lintResults = await Promise.all(lintOperations)
+    await Promise.all(lintResults.map(res => this.writeSourceFile(res[0].output, res[0].filePath)))
+    stdout.write(`Migrated ${lintResults.length} commands.\n`)
   }
 }
