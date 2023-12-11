@@ -7,7 +7,7 @@
         "baseUrl": "./src",
         "outDir": "./lib",
         "moduleResolution": "Node",
-        "allowSyntheticDefaultImports":true,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
         "esModuleInterop": true
     },

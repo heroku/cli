@@ -56,7 +56,7 @@ let run = async function (context) {
   }
 
   if (jobs.length === 0) {
-    cli.error('No images to run', 1)
+    cli.error('No images to run')
     return
   }
 

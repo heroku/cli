@@ -5,7 +5,7 @@ import pascalcase from 'pascalcase'
 import ts from 'typescript'
 import {ESLint} from 'eslint'
 
-import {createClassElementsFromModuleExports} from './createClassElementFromModuleExports.js'
+import {createClassElementsFromModuleExports} from './transforms/createClassElementFromModuleExports.js'
 import {createCommandClass} from './createCommandClass.js'
 import {isModuleExportsObject} from './node-validators/isModuleExportsObject.js'
 import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
@@ -15,6 +15,8 @@ import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCom
 import {isModuleExportsArray} from './node-validators/isModuleExportsArray.js'
 import {getCommandDeclaration} from './getCommandDeclaration.js'
 import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
+import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
+import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
 
 const commonImports = `import {createRequire} from 'node:module'
 import color from '@heroku-cli/color'
@@ -44,13 +46,15 @@ export class CommandMigrationFactory {
       for (let i = 0; i < this.files.length; i++) {
         const file = this.files[i]
         let ast = this.program.getSourceFile(file)
-        if (!isMigrationCandidate(ast)) {
-          continue
-        }
 
         try {
+          if (!isMigrationCandidate(ast)) {
+            continue
+          }
+
           ast = this.migrateRunFunctionDecl(ast, file)
           ast = this.migrateCommandDeclaration(ast, file)
+          ast = this.migrateHerokuCliUtilsExports(ast, file)
           ast = this.updateOrRemoveStatements(ast)
           const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
           const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
@@ -105,6 +109,24 @@ export class CommandMigrationFactory {
       console.error(`unhandled command declaration in ${file}`)
 
       return sourceFile
+    }
+
+    private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
+      const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
+
+      //  todo: hoist requires to top of the file?
+      if (!importName) {
+        // not found. continue transforms
+        console.error(`heroku-cli-utils import missing: ${file}`)
+      }
+
+      const visitor = (node: ts.Node): ts.Node => {
+        const newNode = transformCliUtils(node, importName, file)
+
+        return ts.visitEachChild(newNode, visitor, nullTransformationContext)
+      }
+
+      return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
     }
 
     private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
