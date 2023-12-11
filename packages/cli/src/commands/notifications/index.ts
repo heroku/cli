@@ -4,6 +4,7 @@ import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
 import * as time from '../../lib/notifications/time'
+import fetch from 'node-fetch'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -22,6 +23,14 @@ function displayNotifications(notifications: Notifications, app: Heroku.App | nu
   }
 }
 
+async function getNotifications(command: any) {
+  const host = 'telex.heroku.com'
+  const path = '/user/notifications'
+  const notificationsResponseBody = await fetch(`https://${host}${path}`, {headers: {Authorization: `Bearer ${command.heroku.auth}`}}).then(response => response.json()).then(data => data)
+
+  return notificationsResponseBody
+}
+
 export default class NotificationsIndex extends Command {
   static description = 'display notifications'
   static topic = 'notifications'
@@ -36,14 +45,21 @@ export default class NotificationsIndex extends Command {
   async run() {
     const {flags} = await this.parse(NotificationsIndex)
 
+    if (!this.heroku.auth) {
+      this.notloggedin()
+    }
+
     const appResponse = flags.app && !flags.all ? await this.heroku.get<Heroku.App>(`/apps/${flags.app}`) : null
-    const app = appResponse?.body
-    const notificationsResponse = await this.heroku.get<Notifications>('/user/notifications', {host: 'telex.heroku.com'})
-    let notifications = notificationsResponse.body
-    if (app) notifications = notifications.filter(n => n.target.id === app.id)
+    const app = appResponse!.body
+    const notificationsResponse = await getNotifications(this)
+    console.log('notificationsResponse', notificationsResponse)
+    console.log('this.heroku.auth', this.heroku.auth)
+
+    let notifications = notificationsResponse
+    if (app) notifications = notifications.filter((n: any) => n.target.id === app.id)
     if (!flags.read) {
-      notifications = notifications.filter(n => !n.read)
-      await Promise.all(notifications.map(n => this.heroku.patch(`/user/notifications/${n.id}`, {host: 'telex.heroku.com', body: {read: true}})))
+      notifications = notifications.filter((n: any) => !n.read)
+      await Promise.all(notifications.map((n: any) => this.heroku.patch(`/user/notifications/${n.id}`, {host: 'telex.heroku.com', body: {read: true}})))
     }
 
     if (flags.json) {
@@ -58,5 +74,9 @@ export default class NotificationsIndex extends Command {
       } else if (app) ux.warn(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
       else ux.warn(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
     } else displayNotifications(notifications, app!, flags.read)
+  }
+
+  notloggedin() {
+    this.error('not logged in', {exit: 100})
   }
 }
