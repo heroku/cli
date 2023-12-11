@@ -1,7 +1,7 @@
 import ts from 'typescript'
 import {
   buildPropertyAccessExpressionChain,
-  removeUtilPropertyAccessFromCallExpression,
+  removeCliPropertyAccessFromCallExpression,
   subWithUx, transformActionFuncs, transformColors, transformExit,
 } from './helpers.js'
 import {isCallWith1PrecedingPropertyAccess} from './validators.js'
@@ -55,7 +55,7 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
   case 'color':
     return transformColors({callEx: node, propertyAccessChain, utilVarName, showWarning})
   case 'console': // todo: verify a reason to not use console.log/error
-    return removeUtilPropertyAccessFromCallExpression({callEx: node, propertyAccessChain, utilVarName, showWarning})
+    return removeCliPropertyAccessFromCallExpression({callEx: node, propertyAccessChain, utilVarName, showWarning})
   default:
     showWarning()
     // remainder: action.warn

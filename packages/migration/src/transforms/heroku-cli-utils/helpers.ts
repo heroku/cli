@@ -3,23 +3,42 @@ import {nullTransformationContext} from '../../nullTransformationContext.js'
 
 const {factory} = ts
 
-// some nested PropertyAccessExpression need to be replaced, doing so here.
-export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
-  [
-    'cmd',
-    (callEx: ts.CallExpression) => factory.updateCallExpression(
-      callEx,
-      factory.createPropertyAccessExpression(
-        factory.createPropertyAccessExpression(
-          factory.createIdentifier('color'),
-          factory.createIdentifier('cyan'),
-        ),
-        factory.createIdentifier('bold'),
-      ),
-      callEx.typeArguments,
-      callEx.arguments,
+const replaceAccessInCallExpression = (callEx: ts.CallExpression, sub: ts.PropertyAccessExpression) => factory.updateCallExpression(
+  callEx,
+  sub,
+  callEx.typeArguments,
+  callEx.arguments,
+)
+
+const subColorAccessOneToOne = (callEx: ts.CallExpression, sub: string) => replaceAccessInCallExpression(
+  callEx,
+  factory.createPropertyAccessExpression(
+    factory.createIdentifier('color'),
+    factory.createIdentifier(sub),
+  ),
+)
+
+const subNestedColorAccess = (callEx: ts.CallExpression, sub0: string, sub1: string) => replaceAccessInCallExpression(
+  callEx,
+  factory.createPropertyAccessExpression(
+    factory.createPropertyAccessExpression(
+      factory.createIdentifier('color'),
+      factory.createIdentifier(sub0),
     ),
-  ],
+    factory.createIdentifier(sub1),
+  ),
+)
+
+// handle these https://github.com/heroku/heroku-cli-color/blob/main/src/color.ts#L12
+export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
+  ['cmd', (callEx: ts.CallExpression) => subNestedColorAccess(callEx, 'cyan', 'bold')],
+  ['attachment', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'cyan')],
+  ['addon', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'yellow')],
+  ['configVar', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'green')],
+  ['release', (callEx: ts.CallExpression) => subNestedColorAccess(callEx, 'blue', 'bold')],
+  ['pipeline', (callEx: ts.CallExpression) => subNestedColorAccess(callEx, 'green', 'bold')],
+  ['app', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'magenta')],
+  ['heroku', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'magenta')],
 ])
 
 export const subWithUx = (callEx: ts.CallExpression, utilVarName: string) => {
@@ -50,24 +69,14 @@ type SharedArgs = {
   utilVarName: string
 }
 
-type RemoveUtilPropertyAccessFromCallExpressionArgs = SharedArgs & {
-  additionalTransforms?: typeof MISSING_FUNC_REPLACEMENT_MAP
-}
-
-export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
-  const {callEx, showWarning,  utilVarName, additionalTransforms} = args
+// cli.color.*(...args) => color.*(...args)
+export const removeCliPropertyAccessFromCallExpression = (args: SharedArgs) => {
+  const {callEx, showWarning,  utilVarName} = args
   let found = false
+
   const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
-    }
-
-    if (additionalTransforms) {
-      const additionalTransform = additionalTransforms.get(node.name.text)
-      if (additionalTransform) {
-        found = true
-        return additionalTransform(callEx)
-      }
     }
 
     if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
@@ -87,9 +96,16 @@ export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPrope
   return result
 }
 
-export const transformColors = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => removeUtilPropertyAccessFromCallExpression({
-  ...args, additionalTransforms: MISSING_FUNC_REPLACEMENT_MAP,
-})
+export const transformColors = (args: SharedArgs) => {
+  const {propertyAccessChain, callEx} = args
+  const [, cliAccess] = propertyAccessChain
+  const specialReplace = MISSING_FUNC_REPLACEMENT_MAP.get(cliAccess)
+  if (specialReplace) {
+    return specialReplace(callEx)
+  }
+
+  return removeCliPropertyAccessFromCallExpression(args)
+}
 
 export const transformActionFuncs = (args: SharedArgs) => {
   const {callEx, propertyAccessChain, utilVarName, showWarning} = args
