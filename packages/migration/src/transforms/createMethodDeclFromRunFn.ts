@@ -74,7 +74,7 @@ function updatePropertyAccessChainsToAlignWithBindingPattern(runFunctionDecl: ts
         ts.factory.createPropertyAccessExpression(ts.factory.createThis(), ts.factory.createIdentifier('heroku')),
         node.name)
 
-      // e.g. context.flags ---> flags
+    // e.g. context.flags ---> flags
     case 'context':
       return node.name
 
