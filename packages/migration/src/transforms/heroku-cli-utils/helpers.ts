@@ -3,30 +3,32 @@ import {nullTransformationContext} from '../../nullTransformationContext.js'
 
 const {factory} = ts
 
-// please forgive me for this
-let utilVarName = 'cli'
-export const setUtilVarName = (newName: string) => {
-  utilVarName = newName
-}
-
-export const getUtilVarName = () => utilVarName
-
-export const showWarning = (propertyAccessChain: string[], file?: string) => {
-  console.error(`unhandled heroku-cli-util function call: ${propertyAccessChain.join('.')}${file ? '\n' + file : ''}`)
-}
-
 // some nested PropertyAccessExpression need to be replaced, doing so here.
-export const MISSING_MISING_FUNC_REPLACEMENT_MAP = new Map([
-  ['cmd',  ['cyan', 'bold']],
+export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
+  [
+    'cmd',
+    (callEx: ts.CallExpression) => factory.updateCallExpression(
+      callEx,
+      factory.createPropertyAccessExpression(
+        factory.createPropertyAccessExpression(
+          factory.createIdentifier('color'),
+          factory.createIdentifier('cyan'),
+        ),
+        factory.createIdentifier('bold'),
+      ),
+      callEx.typeArguments,
+      callEx.arguments,
+    ),
+  ],
 ])
 
-export const subWithUx = (callEx: ts.CallExpression) => {
+export const subWithUx = (callEx: ts.CallExpression, utilVarName: string) => {
   const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
     }
 
-    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === getUtilVarName()) {
+    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
       return factory.updatePropertyAccessExpression(
         node,
         factory.createIdentifier('ux'),
@@ -40,15 +42,20 @@ export const subWithUx = (callEx: ts.CallExpression) => {
   return ts.visitEachChild(callEx, visitor, nullTransformationContext)
 }
 
-type RemoveUtilPropertyAccessFromCallExpressionArgs = {
+type SharedArgs = {
   callEx: ts.CallExpression,
   replaceName?: string,
-  additionalTransforms?: Map<string, string[]>
   propertyAccessChain: string[]
+  showWarning: () => void
+  utilVarName: string
+}
+
+type RemoveUtilPropertyAccessFromCallExpressionArgs = SharedArgs & {
+  additionalTransforms?: typeof MISSING_FUNC_REPLACEMENT_MAP
 }
 
 export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => {
-  const {callEx, propertyAccessChain,  replaceName, additionalTransforms} = args
+  const {callEx, showWarning,  utilVarName, additionalTransforms} = args
   let found = false
   const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
@@ -58,12 +65,12 @@ export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPrope
     if (additionalTransforms) {
       const additionalTransform = additionalTransforms.get(node.name.text)
       if (additionalTransform) {
-        // redefine node with update
-        showWarning(propertyAccessChain)
+        found = true
+        return additionalTransform(callEx)
       }
     }
 
-    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === getUtilVarName()) {
+    if (ts.isIdentifier(node.expression) && node.expression.escapedText.toString() === utilVarName) {
       found = true
       return node.name
     }
@@ -74,41 +81,66 @@ export const removeUtilPropertyAccessFromCallExpression = (args: RemoveUtilPrope
   const result =  ts.visitEachChild(callEx, visitor, nullTransformationContext)
 
   if (!found) {
-    showWarning(propertyAccessChain)
+    showWarning()
   }
 
   return result
 }
 
 export const transformColors = (args: RemoveUtilPropertyAccessFromCallExpressionArgs) => removeUtilPropertyAccessFromCallExpression({
-  ...args, additionalTransforms: MISSING_MISING_FUNC_REPLACEMENT_MAP,
+  ...args, additionalTransforms: MISSING_FUNC_REPLACEMENT_MAP,
 })
 
-export const transformActionFuncs = (callEx: ts.CallExpression, propertyAccessChain: string[]) => {
+export const transformActionFuncs = (args: SharedArgs) => {
+  const {callEx, propertyAccessChain, utilVarName, showWarning} = args
   const [, secondPropAccess] = propertyAccessChain
   if (propertyAccessChain.length === 2) {
     switch (secondPropAccess) {
     case 'status':
     case 'start':
     case 'done':
-      return subWithUx(callEx)
+      return subWithUx(callEx, utilVarName)
     default:
-      showWarning(propertyAccessChain)
+      showWarning()
       return callEx
     }
   }
 
-  showWarning(propertyAccessChain)
+  showWarning()
 
   return callEx
 }
 
-export const transformExit = (callEx: ts.CallExpression) => {
-  // todo: finish this
-  return callEx
+export const transformExit = (callEx: ts.CallExpression, utilVarName: string) => {
+  // * cli.exit(code, message?)
+  //   * if message
+  //       * ux.error(message, {exit: code})
+  //   * without message
+  //       * ux.exit(code)
+  if (callEx.arguments.length === 1) {
+    return subWithUx(callEx, utilVarName)
+  }
+
+  return factory.createCallExpression(
+    factory.createPropertyAccessExpression(
+      factory.createIdentifier('ux'),
+      factory.createIdentifier('error'),
+    ),
+    callEx.typeArguments,
+    [
+      callEx.arguments[1], // move msg from second to first arg
+      factory.createObjectLiteralExpression(
+        [factory.createPropertyAssignment(
+          factory.createIdentifier('exit'),
+          callEx.arguments[0], // reuse exit code
+        )],
+        false,
+      ),
+    ],
+  )
 }
 
-export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression) => {
+export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpression, utilVarName: string) => {
   const propertyAccess = []
 
   let workingNode: ts.Node = node
@@ -118,7 +150,7 @@ export const buildPropertyAccessExpressionChain = (node: ts.PropertyAccessExpres
     workingNode = workingNode.expression
   }
 
-  if (ts.isIdentifier(workingNode) && workingNode.escapedText.toString() === getUtilVarName()) {
+  if (ts.isIdentifier(workingNode) && workingNode.escapedText.toString() === utilVarName) {
     return propertyAccess.reverse()
   }
 
