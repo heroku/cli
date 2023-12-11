@@ -22,7 +22,8 @@ const commandMigrationFactory = new CommandMigrationFactory(
     target: ts.ScriptTarget.ESNext,
     allowJs: true,
   },
-  argv.outdir
+  argv.outdir,
+  argv.overwrite
 );
 
 void commandMigrationFactory.migrate();

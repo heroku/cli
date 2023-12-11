@@ -28,19 +28,26 @@ import * as Heroku from '@heroku-cli/schema'
 
 `
 export class CommandMigrationFactory {
-  private readonly outputLocation: string = path.join('packages', 'cli', 'src', 'commands')
+  private readonly outputLocation: string = path.join('packages', 'cli', 'src')
 
   protected readonly program: ts.Program;
   protected readonly printer: ts.Printer;
   protected readonly linter: ESLint
   private readonly files: string[];
+  private readonly allowOverwrite: boolean = false;
 
-  constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string) {
+  constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
     this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
     this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
     this.linter = new ESLint({fix: true, useEslintrc: true})
-    this.outputLocation = outDir || this.outputLocation
+    if (outDir) {
+      this.outputLocation = outDir
+    }
+
+    if (allowOverwrite) {
+      this.allowOverwrite = true
+    }
   }
 
   public async migrate(): Promise<void> {
@@ -175,18 +182,18 @@ export class CommandMigrationFactory {
 
     const pathFromCommands = dir.split('/commands/')[1] || ''
 
-    let finalDirPath = path.join(path.resolve(this.outputLocation), ...pathFromCommands.split('/'), commandName)
+    let finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'), commandName)
     if (topic) {
       const topicParts = topic.split(':')
       if (commandParts.length > 1) {
         topicParts.push(...commandParts.slice(0, -1))
       }
 
-      finalDirPath = path.join(this.outputLocation, path.join(...topicParts))
+      finalDirPath = path.join(this.outputLocation, 'commands', path.join(...topicParts))
     }
 
     const finalPath = path.join(finalDirPath, `${commandName}.ts`)
-    const exists = await fs.stat(finalPath).catch(error => false)
+    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
     if (exists) {
       console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
       return
