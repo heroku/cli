@@ -90,7 +90,7 @@ describe('notifications', () => {
         .command(['notifications'])
         .it('warns about no unread notifications', ({stdout, stderr}) => {
           expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain(' No unread notifications. Run heroku notifications --read to view read notifications.\n')
+          expect(unwrap(stderr)).to.contain('Warning: No unread notifications.Run heroku notifications --read to view read notifications.\n')
         })
     })
 
