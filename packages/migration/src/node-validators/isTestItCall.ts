@@ -7,9 +7,6 @@ import ts from 'typescript'
  * @returns boolean if the node matches
  */
 
-export function isTestItCall(node: ts.Node): node is ts.CallExpression {
-  return ts.isCallExpression(node) &&
-    ts.isIdentifier(node.expression) &&
-    node.expression.escapedText === 'it'
-}
-
+export const isTestItCall =  (node: ts.Node): node is ts.CallExpression => ts.isCallExpression(node) &&
+  ts.isIdentifier(node.expression) &&
+  node.expression.escapedText === 'it'

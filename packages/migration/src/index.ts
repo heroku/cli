@@ -54,6 +54,32 @@ abstract class MigrationFactoryBase {
   abstract migrate(): Promise<void>;
 
   abstract writeSourceFile(content: string, originalFilePath: string): Promise<void>;
+
+  updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
+    const visitor = (node: ts.Node): ts.Node => {
+      // 'use strict'
+      if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
+        return null
+      }
+
+      // module.exports
+      const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
+      if (isModuleExports || isCommandDeclaration(node)) {
+        return null
+      }
+
+      // some string literals that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isStringLiteral(node)) {
+        return ts.factory.createStringLiteral(node.text)
+      }
+
+      return ts.visitEachChild(node, visitor, nullTransformationContext)
+    }
+
+    return ts.visitEachChild(node, visitor, nullTransformationContext)
+  }
 }
 
 export class CommandMigrationFactory extends MigrationFactoryBase {
@@ -160,32 +186,6 @@ export class CommandMigrationFactory extends MigrationFactoryBase {
     return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
   }
 
-  private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
-    const visitor = (node: ts.Node): ts.Node => {
-      // 'use strict'
-      if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
-        return null
-      }
-
-      // module.exports
-      const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
-      if (isModuleExports || isCommandDeclaration(node)) {
-        return null
-      }
-
-      // some string literals that are no longer aligned with
-      // the original source file do not print properly
-      // recreating them seems to work around this issue.
-      if (ts.isStringLiteral(node)) {
-        return ts.factory.createStringLiteral(node.text)
-      }
-
-      return ts.visitEachChild(node, visitor, nullTransformationContext)
-    }
-
-    return ts.visitEachChild(node, visitor, nullTransformationContext)
-  }
-
   async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
     const {dir, name} = path.parse(originalFilePath)
 
@@ -244,7 +244,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
         return migrateItCall(node)
       }
 
-      return node
+      return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 
     return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
@@ -263,8 +263,10 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
 
         ast = this.migrateItStatements(ast)
 
+        ast = this.updateOrRemoveStatements(ast)
+
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        const sourceStr = 'import {expect, test} from \'@oclif/test\'\n' + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
         lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
       } catch (error: any) {
