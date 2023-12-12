@@ -34,6 +34,7 @@ const KEY_TO_TRANSFORM = new Map([
   ['description', createStaticPropertyDeclarationGenerator('description')],
   ['hidden', createStaticPropertyDeclarationGenerator('hidden')],
   ['variableArgs', (node: (ts.PropertyAssignment)) => {
+    // `variableArgs: false` -> `static strict = true`
     if (isTrueValue(node.initializer)) {
       return createStaticPropertyDeclaration('strict', factory.createFalse())
     }
