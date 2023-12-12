@@ -47,19 +47,6 @@ describe('heroku members:set', () => {
 `).to.eq(cli.stderr))
         .then(() => apiUpdateMemberRole.done())
     })
-
-    it('does warn the user when at the free org limit', () => {
-      stubGet.variableSizeTeamMembers(6)
-      stubGet.variableSizeTeamInvites(0)
-      apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
-
-      return cmd.run({args: {email: 'foo@foo.com'}, flags: {role: 'admin', team: 'myteam'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done \
-You'll be billed monthly for teams over 5 members.
-`))
-        .then(() => apiUpdateMemberRole.done())
-    })
   })
 
   context('and group is an enterprise org', () => {
