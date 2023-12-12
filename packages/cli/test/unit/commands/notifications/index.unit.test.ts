@@ -43,8 +43,8 @@ describe('notifications', () => {
         )
         .command(['notifications', '-a', 'myapp', '--read'])
         .it('warns about no read notifications', ({stdout, stderr}) => {
-          expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain('Warning: You have no notifications on myapp.Run heroku notifications --all to view notifications for all apps.\n')
+          expect(stdout).to.contain('You have no notifications on myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
+          expect(unwrap(stderr)).to.be.empty
         })
 
       test
@@ -60,8 +60,8 @@ describe('notifications', () => {
         )
         .command(['notifications', '-a', 'myapp'])
         .it('warns about no unread notifications', ({stdout, stderr}) => {
-          expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain('Warning: No unread notifications on myapp.Run heroku notifications --all to view notifications for all apps.\n')
+          expect(stdout).to.contain('No unread notifications on myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
+          expect(unwrap(stderr)).to.be.empty
         })
     })
 
@@ -75,8 +75,8 @@ describe('notifications', () => {
         )
         .command(['notifications', '--read'])
         .it('warns about no read notifications', ({stdout, stderr}) => {
-          expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain('You have no notifications.\n')
+          expect(stdout).to.contain('You have no notifications.\n')
+          expect(unwrap(stderr)).to.be.empty
         })
 
       test
@@ -88,8 +88,8 @@ describe('notifications', () => {
         )
         .command(['notifications'])
         .it('warns about no unread notifications', ({stdout, stderr}) => {
-          expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain('Warning: No unread notifications.Run heroku notifications --read to view read notifications.\n')
+          expect(stdout).to.contain('No unread notifications.\nRun heroku notifications --read to view read notifications.\n')
+          expect(unwrap(stderr)).to.be.empty
         })
     })
 
