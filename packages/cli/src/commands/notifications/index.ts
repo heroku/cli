@@ -4,20 +4,17 @@ import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
 import * as time from '../../lib/notifications/time'
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const wrap = require('@heroku/linewrap')
+import * as wrap from 'word-wrap'
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
-  wrap(2, 80)
   const read = readNotification ? 'Read' : 'Unread'
   ux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
   for (const n of notifications) {
     ux.log(color.yellow(`\n${n.title}\n`))
-    ux.log(wrap(`${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`))
+    ux.log(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
     for (const followup of n.followup) {
-      ux.log(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`))
+      ux.log()
+      ux.log(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`, {width: 80}))
     }
   }
 }
