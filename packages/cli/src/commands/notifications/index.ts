@@ -52,14 +52,13 @@ export default class NotificationsIndex extends Command {
     const appResponse = flags.app && !flags.all ? await this.heroku.get<Heroku.App>(`/apps/${flags.app}`) : null
     const app = appResponse!.body
     const notificationsResponse = await getNotifications(this)
-    console.log('notificationsResponse', notificationsResponse)
-    console.log('this.heroku.auth', this.heroku.auth)
+    // console.log('notificationsResponse', notificationsResponse)
 
     let notifications = notificationsResponse
     if (app) notifications = notifications.filter((n: any) => n.target.id === app.id)
     if (!flags.read) {
       notifications = notifications.filter((n: any) => !n.read)
-      await Promise.all(notifications.map((n: any) => this.heroku.patch(`/user/notifications/${n.id}`, {host: 'telex.heroku.com', body: {read: true}})))
+      await Promise.all(notifications.map((n: any) => fetch(`https://telex.heroku.com/user/notifications/${n.id}`, {method: 'PATCH', body: JSON.stringify({read: true}), headers: {Authorization: `Bearer ${this.heroku.auth}`}})))
     }
 
     if (flags.json) {
@@ -69,10 +68,10 @@ export default class NotificationsIndex extends Command {
 
     if (notifications.length === 0) {
       if (flags.read) {
-        if (app) ux.warn(`You have no notifications on ${color.green(app.name!)}.\nRun heroku notifications --all to view notifications for all apps.`)
-        else ux.warn('You have no notifications.')
-      } else if (app) ux.warn(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
-      else ux.warn(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
+        if (app) ux.log(`You have no notifications on ${color.green(app.name!)}.\nRun heroku notifications --all to view notifications for all apps.`)
+        else ux.log('You have no notifications.')
+      } else if (app) ux.log(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
+      else ux.log(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
     } else displayNotifications(notifications, app!, flags.read)
   }
 

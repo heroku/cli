@@ -44,8 +44,8 @@ describe('notifications', () => {
         )
         .command(['notifications', '-a', 'myapp', '--read'])
         .it('warns about no read notifications', ({stdout, stderr}) => {
-          expect(stdout).to.be.empty
-          expect(unwrap(stderr)).to.contain(' You have no notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n')
+          expect(stdout).to.contain('You have no notifications on myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
+          expect(unwrap(stderr)).to.be.empty
         })
 
       // test
