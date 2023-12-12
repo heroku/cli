@@ -27,7 +27,7 @@ export default class NotificationsIndex extends Command {
   static topic = 'notifications'
 
   static flags = {
-    app: flags.app({required: true}),
+    app: flags.app({required: false}),
     all: flags.boolean({description: 'view all notifications (not just the ones for the current app)'}),
     json: flags.boolean({description: 'output in json format'}),
     read: flags.boolean({description: 'show notifications already read'}),
@@ -38,12 +38,12 @@ export default class NotificationsIndex extends Command {
 
     const appResponse = flags.app && !flags.all ? await this.heroku.get<Heroku.App>(`/apps/${flags.app}`) : null
     const app = appResponse?.body
-    const notificationsResponse = await this.heroku.get<Notifications>('/user/notifications', {host: 'telex.heroku.com'})
+    const notificationsResponse = await this.heroku.get<Notifications>('/user/notifications', {hostname: 'telex.heroku.com'})
     let notifications = notificationsResponse.body
     if (app) notifications = notifications.filter(n => n.target.id === app.id)
     if (!flags.read) {
       notifications = notifications.filter(n => !n.read)
-      await Promise.all(notifications.map(n => this.heroku.patch(`/user/notifications/${n.id}`, {host: 'telex.heroku.com', body: {read: true}})))
+      await Promise.all(notifications.map(n => this.heroku.patch(`/user/notifications/${n.id}`, {hostname: 'telex.heroku.com', body: {read: true}})))
     }
 
     if (flags.json) {
