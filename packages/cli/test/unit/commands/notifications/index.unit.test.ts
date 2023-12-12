@@ -1,5 +1,4 @@
 import {expect, test} from '@oclif/test'
-import * as time from '../../../../src/lib/notifications/time'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
 const d = new Date()
