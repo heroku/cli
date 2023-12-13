@@ -323,9 +323,6 @@
       "heroku-sudo": "@heroku/sudo",
       "heroku-webhooks": null,
       "sudo": "@heroku/sudo"
-    },
-    "windows": {
-      "name": "Heroku CLI"
     }
   },
   "repository": "heroku/cli",
