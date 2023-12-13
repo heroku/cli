@@ -1,6 +1,6 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {ItFunctionCall} from '../../node-validators/isTestItCall.js'
+import {TestFunctionCall} from './validators'
 
 const {factory} = ts
 
@@ -61,7 +61,6 @@ const migrateNock = (callEx: ts.CallExpression) =>  {
 const findNock = (node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile) => {
   const visitor = (innerNode: ts.Node): ts.Node => {
     if (isNockChainedCall(innerNode, sourceFile)) {
-      debugger
       return innerNode
     }
 
@@ -71,13 +70,13 @@ const findNock = (node: ts.FunctionLikeDeclaration, sourceFile: ts.SourceFile) =
   return ts.visitEachChild(node.body, visitor, nullTransformationContext)
 }
 
-export const migrateItCall = (node: ItFunctionCall, sourceFile: ts.SourceFile) => {
+export const migrateItCall = (node: ts.CallExpression, sourceFile: ts.SourceFile) => {
   // try bottom up creation? Start with smallest piece?
   // replace entire section? Shouldn't delete something if it's there, but how to move it? Keep track of unknown parts?
   // move ^ into a `do`? Likely not what's wanted
   const base = createTestBase()
 
-  findNock(node.arguments[1], sourceFile)
+  // findNock(node.arguments[1], sourceFile)
 
   // todo: anyway to find nock in beforeEach? example: packages/pg-v5/test/unit/commands/maintenance/run.unit.test.js
   /* todo: handle separate definition then chaining. example: packages/pg-v5/test/unit/commands/backups/capture.unit.test.js
