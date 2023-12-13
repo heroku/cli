@@ -241,7 +241,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
   private migrateItStatements(sourceFile: ts.SourceFile): ts.SourceFile {
     const visitor = (node: ts.Node): ts.Node => {
       if (isTestItCall(node)) {
-        return migrateItCall(node)
+        return migrateItCall(node, sourceFile)
       }
 
       return ts.visitEachChild(node, visitor, nullTransformationContext)
