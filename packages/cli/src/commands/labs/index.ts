@@ -17,13 +17,16 @@ function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.App
 function printFeatures(features: Heroku.AppFeature[] | Heroku.AccountFeature | null) {
   features = sortBy(features, 'name')
   const longest = Math.max(...features.map((f: Record<string, string>) => f.name.length))
-  if (features && features.length > 0) {
-    for (const f of features) {
-      let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
-      if (f.enabled) line = color.green(line)
-      line = `${line}  ${f.description}`
-      ux.log(line)
-    }
+  // Added the comments below as the current logic doesn't
+  // recognize there are different types of interfaces passed
+  // into this function
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  for (const f of features) {
+    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
+    if (f.enabled) line = color.green(line)
+    line = `${line}  ${f.description}`
+    ux.log(line)
   }
 }
 
