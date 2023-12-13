@@ -1014,13 +1014,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/linewrap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@heroku/linewrap@npm:1.0.0"
-  checksum: 96c0a92e7742fcff7331157ca0ab08a10be2449c0a6341359ce0b86a2d1eca77b55858b6a48b76d28f54d60aa143491996bfc347348250b892e740c020fe15af
-  languageName: node
-  linkType: hard
-
 "@heroku/socksv5@npm:^0.0.9":
   version: 0.0.9
   resolution: "@heroku/socksv5@npm:0.0.9"
@@ -9404,7 +9397,6 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/linewrap": ^1.0.0
     "@oclif/core": ^2.8.11
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2"
     "@oclif/plugin-commands": 2.2.2
