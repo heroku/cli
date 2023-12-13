@@ -64,7 +64,7 @@ export default class LabsIndex extends Command {
     features.user = features.user.filter((f: Record<string, string>) => f.state !== 'general')
     if (features.app) features.app = features.app.filter((f: Record<string, string>) => f.state !== 'general')
     if (flags.json) {
-      printJSON({currentUser, user})
+      printJSON({app, user})
     } else {
       ux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
       printFeatures(features.user)
