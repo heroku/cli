@@ -59,7 +59,7 @@ describe('labs', () => {
     )
     .command(['labs', '-a', 'myapp', '--json'])
     .it('shows labs features with json flag', ({stdout, stderr}) => {
-      expect(stdout).to.equal('{\n  "user": [\n    {\n      "enabled": true,\n      "name": "lab feature a",\n      "description": "a user lab feature"\n    },\n    {\n      "enabled": false,\n      "name": "lab feature b",\n      "description": "a user lab feature"\n    }\n  ],\n  "app": [\n    {\n      "enabled": true,\n      "name": "lab feature c",\n      "description": "an app lab feature"\n    }\n  ]\n}\n')
+      expect(stdout).to.equal('{\n  "app": [\n    {\n      "enabled": true,\n      "name": "lab feature c",\n      "description": "an app lab feature"\n    }\n  ],\n  "user": [\n    {\n      "enabled": true,\n      "name": "lab feature a",\n      "description": "a user lab feature"\n    },\n    {\n      "enabled": false,\n      "name": "lab feature b",\n      "description": "a user lab feature"\n    }\n  ]\n}\n')
       expect(stderr).to.be.empty
     })
 })
