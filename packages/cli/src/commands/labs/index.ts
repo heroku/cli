@@ -64,12 +64,7 @@ export default class LabsIndex extends Command {
     features.user = features.user.filter((f: Record<string, string>) => f.state !== 'general')
     if (features.app) features.app = features.app.filter((f: Record<string, string>) => f.state !== 'general')
     if (flags.json) {
-      // Added the comments below as the current logic breaks
-      // interface rules and other solutions are quite verbose
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      delete features.currentUser
-      printJSON(features)
+      printJSON({currentUser, user})
     } else {
       ux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
       printFeatures(features.user)
