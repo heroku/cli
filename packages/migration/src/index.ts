@@ -18,8 +18,7 @@ import {getCommandDeclaration} from './getCommandDeclaration.js'
 import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
-import {isTestItCall} from './node-validators/isTestItCall.js'
-import {migrateItCall} from './transforms/unit-tests/migrateItCall.js'
+import {migrateTestFile} from './transforms/unit-tests/migrageTestFile'
 
 const require = createRequire(import.meta.url)
 
@@ -238,18 +237,6 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
     }
   }
 
-  private migrateItStatements(sourceFile: ts.SourceFile): ts.SourceFile {
-    const visitor = (node: ts.Node): ts.Node => {
-      if (isTestItCall(node)) {
-        return migrateItCall(node, sourceFile)
-      }
-
-      return ts.visitEachChild(node, visitor, nullTransformationContext)
-    }
-
-    return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
-  }
-
   public async migrate(): Promise<void> {
     const lintOperations: Promise<ESLint.LintResult[]>[] = []
     for (let i = 0; i < this.files.length; i++) {
@@ -261,7 +248,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
         //   continue
         // }
 
-        ast = this.migrateItStatements(ast)
+        ast = migrateTestFile(ast)
 
         ast = this.updateOrRemoveStatements(ast)
 
