@@ -18,7 +18,7 @@ import {getCommandDeclaration} from './getCommandDeclaration.js'
 import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
-import {migrateTestFile} from './transforms/unit-tests/migrageTestFile'
+import {migrateTestFile} from './transforms/unit-tests/migrageTestFile.js'
 
 const require = createRequire(import.meta.url)
 

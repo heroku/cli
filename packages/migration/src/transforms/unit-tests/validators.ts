@@ -4,7 +4,7 @@ export type TestFunctionCall<Text extends string> = ts.CallExpression & {
   expression: ts.Identifier & {
     escapedText: Text
   }
-  arguments: [ts.StringLiteral, ts.FunctionExpression | ts.ArrowFunction]
+  arguments: [ts.StringLiteral, ts.FunctionLikeDeclaration & {body: ts.Block}]
 }
 
 /**
@@ -26,5 +26,6 @@ export const isTestDescribeCall = (node: ts.Node): node is TestFunctionCall<'des
   ts.isIdentifier(node.expression) &&
   node.expression.escapedText === 'describe' &&
   ts.isStringLiteral(node.arguments[0]) &&
-  (ts.isFunction(node.arguments[1]))
+  ts.isFunctionLike(node.arguments[1]) &&
+  ts.isBlock(node.arguments[1].body)
 )
