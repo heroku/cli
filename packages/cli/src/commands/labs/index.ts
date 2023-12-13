@@ -5,19 +5,19 @@ import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
 
 interface Features {
-  currentUser: any,
-  user: any,
-  app?: any,
+  currentUser: Heroku.Account['body'],
+  user: Heroku.AccountFeature['body'],
+  app?: Heroku.AppFeature['body'] | null,
 }
 
 function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.AppFeature) {
   ux.log(JSON.stringify(features, null, 2))
 }
 
-function printFeatures(features: any) {
-  features = sortBy(features, 'name')
-  const longest = Math.max(...features.map((f: Record<string, string>) => f.name.length))
-  for (const f of features) {
+function printFeatures(features: Heroku.AccountFeature[]) {
+  const groupedFeatures = sortBy<Heroku.AccountFeature[]>(features, 'name')
+  const longest = Math.max(...groupedFeatures.map((f: Record<string, string>) => f.name.length))
+  for (const f of groupedFeatures) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
     if (f.enabled) line = color.green(line)
     line = `${line}  ${f.description}`
