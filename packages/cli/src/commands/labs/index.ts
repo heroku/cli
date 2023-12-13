@@ -14,15 +14,10 @@ function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.App
   ux.log(JSON.stringify(features, null, 2))
 }
 
-function printFeatures(features: Heroku.AppFeature[] | Heroku.AccountFeature | null) {
-  features = sortBy(features, 'name')
-  const longest = Math.max(...features.map((f: Record<string, string>) => f.name.length))
-  // Added the comments below as the current logic doesn't
-  // recognize there are different types of interfaces passed
-  // into this function
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  for (const f of features) {
+function printFeatures(features: Heroku.AppFeature | Heroku.AccountFeature) {
+  const groupedFeatures = sortBy<(Heroku.AppFeature | Heroku.AccountFeature)>(features, 'name')
+  const longest = Math.max(...groupedFeatures.map(f => f.name.length))
+  for (const f of groupedFeatures) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
     if (f.enabled) line = color.green(line)
     line = `${line}  ${f.description}`
