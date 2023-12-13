@@ -60,7 +60,7 @@ jobs:
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
-          yarn oclif promote --win --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJson(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
+          # yarn oclif promote --win --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJson(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
