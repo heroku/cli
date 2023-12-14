@@ -39,63 +39,36 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
     const nockCalls = getNockMethodCallExpressions(node.arguments[1].body, nestedNockInBeforeEach)
 
     for (const nockCall of nockCalls) {
-      result = factory.createCallExpression(
-        factory.createPropertyAccessExpression(
-          result,
-          factory.createIdentifier('nock'),
-        ),
-        undefined,
-        [
-          nockCall.instanceCall.arguments[0], // domain nock is instantiated with
-          factory.createArrowFunction(
-            undefined,
-            undefined,
-            [factory.createParameterDeclaration(
-              undefined,
-              undefined,
-              factory.createIdentifier(nockCall.varName),
-            )],
-            undefined,
-            factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
-            factory.createBlock(
-              // nockCall.properties.map(callEx => {
-              //   return factory.createExpressionStatement(callEx)
-              // }),
-              [],
-              true,
-            ),
-            // factory.createBlock(
-            //   [ // map nockCall.properties
-            //     factory.createExpressionStatement(factory.createCallExpression(
-            //       factory.createPropertyAccessExpression(
-            //         factory.createCallExpression(
-            //           factory.createPropertyAccessExpression(
-            //             factory.createIdentifier(nockCall.varName),
-            //             factory.createIdentifier('get'),
-            //           ),
-            //           undefined,
-            //           [factory.createStringLiteral('/apps/myapp')], //path
-            //         ),
-            //         factory.createIdentifier('reply'), //
-            //       ),
-            //       undefined,
-            //       [
-            //         factory.createNumericLiteral('200'),
-            //         factory.createObjectLiteralExpression(
-            //           [factory.createPropertyAssignment(
-            //             factory.createIdentifier('maintenance'),
-            //             factory.createTrue(),
-            //           )],
-            //           false,
-            //         ),
-            //       ],
-            //     )),
-            //   ],
-            //   true,
-            // ),
+      if (nockCall.properties.length > 0) {
+        result = factory.createCallExpression(
+          factory.createPropertyAccessExpression(
+            result,
+            factory.createIdentifier('nock'),
           ),
-        ],
-      )
+          undefined,
+          [
+            nockCall.instanceCall.arguments[0], // domain nock is instantiated with
+            factory.createArrowFunction(
+              undefined,
+              undefined,
+              [factory.createParameterDeclaration(
+                undefined,
+                undefined,
+                factory.createIdentifier(nockCall.varName),
+              )],
+              undefined,
+              factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
+              factory.createBlock(
+                nockCall.properties.map(callEx => {
+                  return factory.createExpressionStatement(callEx) // this may not work in other places
+                }),
+                // [],
+                true,
+              ),
+            ),
+          ],
+        )
+      }
     }
 
     // todo: anyway to find nock in beforeEach? example: packages/pg-v5/test/unit/commands/maintenance/run.unit.test.js

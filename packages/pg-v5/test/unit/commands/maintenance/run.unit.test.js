@@ -24,6 +24,7 @@ const cmd = proxyquire('../../../../commands/maintenance/run', {
 describe('pg:maintenance', () => {
   let api
   let pg
+  let fml
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
@@ -43,5 +44,25 @@ describe('pg:maintenance', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
       .then(() => expect(cli.stdout).to.equal(''))
+  })
+
+  describe('testing', () => {
+    beforeEach(() => {
+      fml = nock('https://fml.heroku.com')
+    })
+
+    afterEach(() => {
+      nock.cleanAll()
+      api.done()
+      pg.done()
+    })
+
+    it('runs maintenance deeper', () => {
+      fml.get('/fml/myapp').reply(200, {fml: true})
+      pg.post('/client/v11/databases/1/maintenance').reply(200, {message: 'foo'})
+      return cmd.run({app: 'myapp', args: {}, flags: {}})
+        .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
+        .then(() => expect(cli.stdout).to.equal(''))
+    })
   })
 })
