@@ -1,6 +1,6 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {isTestDescribeCall, isTestItCall} from './validators.js'
+import {isTestDescribeOrContextCall, isTestItCall} from './validators.js'
 import {getNockMethodCallExpressions, getNockCallsFromBeforeEach, NockNameCallPair} from './helpers.js'
 import _ from 'lodash'
 
@@ -85,8 +85,8 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
   return node
 }
 
-export const transformDescribesAndIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
-  if (isTestDescribeCall(node)) {
+export const transformDescribesContextsAndIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
+  if (isTestDescribeOrContextCall(node)) {
     const nockInBeforeEach = getNockCallsFromBeforeEach(node.arguments[1].body)
     if (nockInBeforeEach.length > 0) {
       nestedNockInBeforeEach = [...nestedNockInBeforeEach, nockInBeforeEach]
@@ -98,5 +98,5 @@ export const transformDescribesAndIts = (node: ts.Node, nestedNockInBeforeEach: 
     return transformIts(node, nestedNockInBeforeEach)
   }
 
-  return ts.visitEachChild(node, _node => transformDescribesAndIts(_node, nestedNockInBeforeEach), nullTransformationContext)
+  return ts.visitEachChild(node, _node => transformDescribesContextsAndIts(_node, nestedNockInBeforeEach), nullTransformationContext)
 }

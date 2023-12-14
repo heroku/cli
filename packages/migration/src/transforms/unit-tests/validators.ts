@@ -32,10 +32,10 @@ export const isTestItCall =  (node: ts.Node): node is TestFunctionCall<'it'> => 
   ts.isBlock(node.arguments[1].body)
 )
 
-export const isTestDescribeCall = (node: ts.Node): node is TestFunctionCall<'describe'> => (
+export const isTestDescribeOrContextCall = (node: ts.Node): node is TestFunctionCall<'describe' | 'context'> => (
   ts.isCallExpression(node) &&
   ts.isIdentifier(node.expression) &&
-  node.expression.escapedText === 'describe' &&
+  (node.expression.escapedText === 'describe' || node.expression.escapedText === 'context') &&
   ts.isStringLiteral(node.arguments[0]) &&
   ts.isFunctionLike(node.arguments[1]) &&
   ts.isBlock(node.arguments[1].body)
