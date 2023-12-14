@@ -30,6 +30,24 @@ jobs:
         uses: ./.github/actions/get-version-and-channel/
         with:
           path: './packages/cli/package.json'
+  
+  get-release-sha:
+    needs: [get-version-channel]
+    runs-on: ubuntu-latest
+    outputs:
+      release-sha: ${{ steps.getSha.outputs.SHA }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - name: get release sha
+        id: getSha
+        run: |
+          SHA=$(npm view heroku@${{ needs.get-version-channel.outputs.version }} --json | jq -r '.gitHead[0:7]')
+          echo $SHA >> $GITHUB_OUTPUT
 
   publish-npm:
     needs: [get-version-channel]
@@ -55,3 +73,11 @@ jobs:
       isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
       channel: ${{ needs.get-version-channel.outputs.channel }}
     secrets: inherit
+  
+  upload-to-stampy:
+    needs: [get-version-channel, get-release-sha, promote]
+    name: Upload windows installer to Stampy
+    uses: "./.github/workflows/stampy-upload.yml"
+    with:
+      sha: ${{ needs.get-release-sha.outputs.release-sha }}
+      version: ${{ needs.get-version-channel.outputs.version }}
