@@ -1,5 +1,5 @@
 import ts from 'typescript'
-import {isBeforeEachBlock, isNockChainedCall, isNockVariableStatement} from './validators.js'
+import {isBeforeEachBlock, isNockChainedCall} from './validators.js'
 
 export type NockNameCallPair = { varName: string, instanceCall: ts.CallExpression, properties: ts.CallExpression[] }
 export const searchBlock = (block: ts.Block, validator: (node: ts.Node) => boolean, doSomething: (node: ts.Node) => any) => {
@@ -49,7 +49,6 @@ export const getNockCallsFromBeforeEach = (describeBlock: ts.Block) => {
 }
 
 export const getNockMethodCallExpressions = (itBlock: ts.Block, nestedNockInBeforeEach: NockNameCallPair[][]) => {
-  const nockCalls: NockNameCallPair[] = []
   const callPairsHash = nestedNockInBeforeEach
     .flat()
     .reduce<Record<string, NockNameCallPair>>((acc, callPair) => {
@@ -71,12 +70,8 @@ export const getNockMethodCallExpressions = (itBlock: ts.Block, nestedNockInBefo
         ts.isCallExpression(statement.expression) &&
         isNockChainedCall(statement.expression, nockPair.varName)) {
         nockPair.properties.push(statement.expression)
-        debugger
       }
-      // repurpose getNockCallsFromBeforeEach here
     }
-
-    // for (const callPair of callPairsHash) {}
   }
 
   return callPairs

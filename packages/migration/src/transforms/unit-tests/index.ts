@@ -1,10 +1,10 @@
 import ts from 'typescript'
-import {transformDescribes, transformNode} from './migrations.js'
+import {transformDescribesAndIts, transformNode} from './migrations.js'
 
 const {factory} = ts
 
 export const migrateTestFile = (sourceFile: ts.SourceFile): ts.SourceFile => {
-  const transformed = transformNode(sourceFile, transformDescribes)
+  const transformed = transformNode(sourceFile, transformDescribesAndIts)
 
   return transformed
 }

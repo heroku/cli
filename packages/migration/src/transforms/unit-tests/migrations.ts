@@ -1,7 +1,8 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {isTestDescribeCall, isTestItCall, TestFunctionCall} from './validators.js'
+import {isTestDescribeCall, isTestItCall} from './validators.js'
 import {getNockMethodCallExpressions, getNockCallsFromBeforeEach, NockNameCallPair} from './helpers.js'
+import _ from 'lodash'
 
 const {factory} = ts
 
@@ -36,7 +37,9 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
     // move ^ into a `do`? Likely not what's wanted
     let result = createTestBase()
 
-    const nockCalls = getNockMethodCallExpressions(node.arguments[1].body, nestedNockInBeforeEach)
+    // clone deeply here to avoid modifying anything that is passed by reference downstream
+    const clonedNestedNockInBeforeEach = _.cloneDeep<typeof nestedNockInBeforeEach>(nestedNockInBeforeEach)
+    const nockCalls = getNockMethodCallExpressions(node.arguments[1].body, clonedNestedNockInBeforeEach)
 
     for (const nockCall of nockCalls) {
       if (nockCall.properties.length > 0) {
@@ -79,31 +82,21 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
     return result
   }
 
-  if (isTestDescribeCall(node)) {
-    return transformDescribes(node, nestedNockInBeforeEach)
-  }
-
-  return ts.visitEachChild(node, _node => transformIts(_node, nestedNockInBeforeEach), nullTransformationContext)
+  return node
 }
 
-// can be called recursively through `transformIts` as describe blocks can be nested
-export const transformDescribes = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
+export const transformDescribesAndIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
   if (isTestDescribeCall(node)) {
     const nockInBeforeEach = getNockCallsFromBeforeEach(node.arguments[1].body)
     if (nockInBeforeEach.length > 0) {
-      nestedNockInBeforeEach.push(nockInBeforeEach)
+      nestedNockInBeforeEach = [...nestedNockInBeforeEach, nockInBeforeEach]
     }
-
-    const itVisitor = (iNode: ts.Node): ts.Node => {
-      if (isTestItCall(iNode)) {
-        return transformIts(iNode, nestedNockInBeforeEach)
-      }
-
-      return ts.visitEachChild(iNode, itVisitor, nullTransformationContext)
-    }
-
-    return ts.visitEachChild(node, itVisitor, nullTransformationContext)
   }
 
-  return ts.visitEachChild(node, _node => transformDescribes(_node, nestedNockInBeforeEach), nullTransformationContext)
+  if (isTestItCall(node)) {
+    // terminate recursion and transformIt in place
+    return transformIts(node, nestedNockInBeforeEach)
+  }
+
+  return ts.visitEachChild(node, _node => transformDescribesAndIts(_node, nestedNockInBeforeEach), nullTransformationContext)
 }

@@ -6269,6 +6269,7 @@ __metadata:
     "@types/pascalcase": ^1.0.3
     eslint: 8.53.0
     glob: 10.3.10
+    lodash: ^4.17.11
     pascalcase: 2.0.0
     typescript: 5.2.2
     yargs: 17.7.2
