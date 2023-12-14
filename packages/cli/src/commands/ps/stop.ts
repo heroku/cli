@@ -3,21 +3,20 @@ import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
 import {Args, ux} from '@oclif/core'
 
-export default class Restart extends Command {
-  static description = 'restart app dynos'
+export default class Stop extends Command {
+  static description = 'stop app dyno'
   static topic = 'ps'
-  static aliases = ['restart', 'dyno:restart']
+  static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill', 'stop', 'kill']
 
   static examples = [
-    '$ heroku ps:restart web.1',
-    '$ heroku ps:restart web',
-    '$ heroku ps:restart',
+    '$ heroku ps:stop run.1828',
+    '$ heroku ps:stop run',
   ]
 
-  static help = 'if DYNO is not specified, restarts all dynos on app'
+  static help = 'stop app dyno or dyno type'
 
   static args = {
-    dyno: Args.string({required: false}),
+    dyno: Args.string({required: true}),
   }
 
   static flags = {
@@ -25,19 +24,15 @@ export default class Restart extends Command {
   }
 
   async run() {
-    const {args, flags} = await this.parse(Restart)
+    const {args, flags} = await this.parse(Stop)
 
     const app = flags.app
     const dyno = args.dyno
 
-    let msg = 'Restarting'
+    const type = dyno.includes('.') ? 'ps' : 'type'
 
-    if (dyno) msg += ` ${color.cyan(dyno)}`
-    msg += (dyno && dyno.includes('.')) ? ' dyno' : ' dynos'
-    msg += ` on ${color.app(app)}`
-
-    ux.action.start(msg)
-    await this.heroku.delete<Heroku.Dyno>(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
+    ux.action.start(`Stopping ${color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${color.app(app)}`)
+    await this.heroku.post<Heroku.Dyno>(`/apps/${app}/dynos/${dyno}/actions/stop`)
     ux.action.stop()
   }
 }
