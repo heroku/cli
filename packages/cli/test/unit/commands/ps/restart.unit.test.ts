@@ -1,23 +1,16 @@
 import {expect, test} from '@oclif/test'
 
-const API_HOST = 'https://api.heroku.com'
-const METRICS_HOST = 'https://api.metrics.heroku.com'
-const APP_NAME = 'wubalubadubdub'
-const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'
-const MONITOR_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-222222222222'
-
 describe('ps:restart', () => {
   test
+    .stdout()
     .stderr()
-    .nock(API_HOST, api => api
-      .get(`/apps/${APP_NAME}`)
-      .reply(200, {id: APP_ID, name: APP_NAME}),
+    .nock('https://api.heroku.com:443', api => api
+      .delete('/apps/myapp/dynos')
+      .reply(200),
     )
-    .nock(METRICS_HOST, api => api
-      .get(`/apps/${APP_ID}/formation/web/monitors`)
-      .reply(200, []),
-    )
-    .command(['ps:autoscale:disable', '--app', APP_NAME])
-    .catch(error => expect(error.message).to.contain(`${APP_NAME} does not have autoscale enabled`))
-    .it('throws an error')
+    .command(['ps:restart', '-a', 'myapp'])
+    .it('restarts all dynos', ({stdout, stderr}) => {
+      expect(stdout).to.be.empty
+      expect(stderr).to.equal('Restarting dynos on ⬢ myapp...\nRestarting dynos on ⬢ myapp... done\n')
+    })
 })
