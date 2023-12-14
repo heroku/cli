@@ -40,7 +40,17 @@ describe('pg:maintenance', () => {
 
   it('runs maintenance', () => {
     api.get('/apps/myapp').reply(200, {maintenance: true})
+    api.get('/apps/dupe').reply(200, {dup: true})
     pg.post('/client/v11/databases/1/maintenance').reply(200, {message: 'foo'})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
+      .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+  })
+
+  it('uses declaration in it', () => {
+    let seperateAPI = nock('https://declaration.heroku.com:443')
+      .post('/spaces', {test: 1})
+      .reply(201, {test: 1})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal('Starting maintenance for postgres-1... foo\n'))
       .then(() => expect(cli.stdout).to.equal(''))

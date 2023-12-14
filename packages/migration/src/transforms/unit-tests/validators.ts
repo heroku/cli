@@ -1,4 +1,5 @@
 import ts from 'typescript'
+import {getEndOfCallPropertyAccessChain} from './helpers.js'
 
 export type TestFunctionCall<Text extends string> = ts.CallExpression & {
   expression: ts.Identifier & {
@@ -68,18 +69,9 @@ export const isNockVariableStatement = (node: ts.Node, varName: string): node is
       .reply(201, responseBody)
 *  */
 export const isNockChainedCall = (node: ts.CallExpression, varName: string) => {
-  let workingNode: ts.Node = node
-  /* nodes are "upside down" compared to human reading. Given:
-  * let api = nock('https://api.heroku.com:443')
-    .post('/account/keys', {public_key: key})
-    .reply(200)
-  * node starts as `.reply(200)`, and last CallExpression/PropertyAccessExpression pair is our target `nock('https://api.heroku.com:443')`
-  * */
-  while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression)) {
-    workingNode = workingNode.expression.expression
-  }
+  const lastNode = getEndOfCallPropertyAccessChain(node)
 
-  return (ts.isIdentifier(workingNode) && workingNode.escapedText === varName) ||
-    (ts.isCallExpression(workingNode) && ts.isIdentifier(workingNode.expression) && workingNode.expression.escapedText === varName)
+  return (ts.isIdentifier(lastNode) && lastNode.escapedText === varName) ||
+    (ts.isCallExpression(lastNode) && ts.isIdentifier(lastNode.expression) && lastNode.expression.escapedText === varName)
 }
 
