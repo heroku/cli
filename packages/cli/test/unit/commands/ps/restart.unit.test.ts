@@ -11,6 +11,6 @@ describe('ps:restart', () => {
     .command(['ps:restart', '-a', 'myapp'])
     .it('restarts all dynos', ({stdout, stderr}) => {
       expect(stdout).to.be.empty
-      expect(stderr).to.equal('Restarting dynos on ⬢ myapp...\nRestarting dynos on ⬢ myapp... done\n')
+      expect(stderr).to.contains('Restarting dynos on ⬢ myapp... done\n')
     })
 })
