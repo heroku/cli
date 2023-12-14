@@ -1,20 +1,30 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
 import * as time from '../../lib/notifications/time'
 import * as wrap from 'word-wrap'
 
 export default class Restart extends Command {
-  static description = 'display notifications'
-  static topic = 'notifications'
+  static description = 'restart app dynos'
+  static topic = 'ps'
+  static aliases = ['restart', 'dyno:restart']
+
+  static examples = [
+    '$ heroku ps:restart web.1',
+    '$ heroku ps:restart web',
+    '$ heroku ps:restart',
+  ]
+
+  static help = 'if DYNO is not specified, restarts all dynos on app'
+
+  static args = {
+    dyno: Args.string({required: false}),
+  }
 
   static flags = {
-    app: flags.app({required: false}),
-    all: flags.boolean({description: 'view all notifications (not just the ones for the current app)'}),
-    json: flags.boolean({description: 'output in json format'}),
-    read: flags.boolean({description: 'show notifications already read'}),
+    app: flags.app({required: true}),
   }
 
   async run() {
