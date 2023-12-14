@@ -5,17 +5,18 @@ on:
         type: string
         required: true
         description: version for upload. Do not include the 'v'.
+      sha:
+        type: string
+        required: true
+        description: release sha
 
 jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
-      - name: get sha
-        id: get-sha
-      # need sha
       - name: save filename (without arch/extension) for reuse
         id: filename
-        run: echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.get-sha.sha}}" >> "$GITHUB_OUTPUT"
+        run: echo "FILEBASE=heroku-v${{inputs.version}}-${{inputs.sha}}" >> "$GITHUB_OUTPUT"
       - name: download from s3
         env:
           # workaround for AWS CLI not having its region set.  see https://github.com/actions/runner-images/issues/2791
@@ -23,8 +24,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         run: |
-          aws s3 cp s3://dfc-data-production/media/salesforce-cli/heroku/versions/${{inputs.version}}/${{steps.get-sha.sha}}/${{steps.filename.outputs.FILEBASE}}-x86.exe .
-          aws s3 cp s3://dfc-data-production/media/salesforce-cli/heroku/versions/${{inputs.version}}/${{steps.get-sha.sha}}/${{steps.filename.outputs.FILEBASE}}-x64.exe .
+          aws s3 cp s3://dfc-data-production/media/salesforce-cli/heroku/versions/${{inputs.version}}/${{inputs.sha}}/${{steps.filename.outputs.FILEBASE}}-x86.exe .
+          aws s3 cp s3://dfc-data-production/media/salesforce-cli/heroku/versions/${{inputs.version}}/${{inputs.sha}}/${{steps.filename.outputs.FILEBASE}}-x64.exe .
       - name: upload to unsigned bucket
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
