@@ -25,9 +25,10 @@ export type BeforeEachCall = ts.ExpressionStatement & {
 export const isTestItCall =  (node: ts.Node): node is TestFunctionCall<'it'> => (
   ts.isCallExpression(node) &&
   ts.isIdentifier(node.expression) &&
-  node.expression.escapedText === 'describe' &&
+  node.expression.escapedText === 'it' &&
   ts.isStringLiteral(node.arguments[0]) &&
-  ts.isFunctionLike(node.arguments[1])
+  ts.isFunctionLike(node.arguments[1]) &&
+  ts.isBlock(node.arguments[1].body)
 )
 
 export const isTestDescribeCall = (node: ts.Node): node is TestFunctionCall<'describe'> => (
@@ -78,6 +79,7 @@ export const isNockChainedCall = (node: ts.CallExpression, varName: string) => {
     workingNode = workingNode.expression.expression
   }
 
-  return ts.isCallExpression(workingNode) && ts.isIdentifier(workingNode.expression) && workingNode.expression.escapedText === varName
+  return (ts.isIdentifier(workingNode) && workingNode.escapedText === varName) ||
+    (ts.isCallExpression(workingNode) && ts.isIdentifier(workingNode.expression) && workingNode.expression.escapedText === varName)
 }
 

@@ -63,7 +63,7 @@ export const transformDescribes = (node: ts.Node, nestedNockInBeforeEach: NockNa
       nestedNockInBeforeEach.push(nockInBeforeEach)
     }
 
-    return transformIts(node, nestedNockInBeforeEach)
+    return transformIts(node.arguments[1].body, nestedNockInBeforeEach)
   }
 
   return ts.visitEachChild(node, _node => transformDescribes(_node, nestedNockInBeforeEach), nullTransformationContext)

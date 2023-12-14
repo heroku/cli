@@ -70,12 +70,7 @@ export const getNockMethodCallExpressions = (itBlock: ts.Block, nestedNockInBefo
       if (ts.isExpressionStatement(statement) &&
         ts.isCallExpression(statement.expression) &&
         isNockChainedCall(statement.expression, nockPair.varName)) {
-        // nockCalls.push({varName: '???'})
-        // callPairs.push({
-        //   varName: statement.declarationList.declarations[0].name.escapedText.toString(),
-        //   instanceCall: '???',
-        //   properties: '???',
-        // })
+        nockPair.properties.push(statement.expression)
         debugger
       }
       // repurpose getNockCallsFromBeforeEach here
