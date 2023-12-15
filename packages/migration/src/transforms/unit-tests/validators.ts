@@ -17,6 +17,16 @@ export type BeforeEachCall = ts.ExpressionStatement & {
   }
 }
 
+type NockExpressionInstantiation = ts.ExpressionStatement & {
+  expression: ts.BinaryExpression & {
+    right: ts.CallExpression & {
+      expression: ts.Identifier
+      arguments: [ts.StringLiteral]
+    }
+    left: ts.Identifier
+  }
+}
+
 /**
  * Determines if the specified node matches it('str', func).
  *
@@ -49,6 +59,7 @@ export const isBeforeEachBlock = (node: ts.Node): node is BeforeEachCall => (
   ts.isFunctionLike(node.expression.arguments[0]) &&
   ts.isBlock(node.expression.arguments[0].body)
 )
+
 type NockVariableStatement = ts.VariableStatement & {
   declarationList: ts.VariableDeclarationList & {
     declarations: [
@@ -62,9 +73,10 @@ export const isNockVariableStatement = (node: ts.Node, varName: string): node is
   ts.isCallExpression(node.declarationList.declarations[0]) &&
   isNockChainedCall(node.declarationList.declarations[0], varName)
 )
+
 // output an array of CallExpression/PropertyAccessExpression pairs? Just replace the "last" `nock(`?
 /* finds patterns like this:
-* let api = nock('https://api.heroku.com:443')
+* ANYTHING nock('https://api.heroku.com:443')
       .post('/spaces', postBody)
       .reply(201, responseBody)
 *  */
@@ -75,3 +87,35 @@ export const isNockChainedCall = (node: ts.CallExpression, varName: string) => {
     (ts.isCallExpression(lastNode) && ts.isIdentifier(lastNode.expression) && lastNode.expression.escapedText === varName)
 }
 
+/* Finds patterns where `let api` is declared elsewhere like
+* api = nock('https://api.heroku.com:443')
+*  */
+export const isNockExpressionStatementInstantiation = (statement: ts.Node): statement is NockExpressionInstantiation => (
+  ts.isExpressionStatement(statement) &&
+  ts.isBinaryExpression(statement.expression) &&
+  ts.isCallExpression(statement.expression.right) &&
+  ts.isIdentifier(statement.expression.right.expression) &&
+  ts.isIdentifier(statement.expression.left) &&
+  ts.isStringLiteral(statement.expression.right.arguments[0]) &&
+  statement.expression.right.expression.escapedText === 'nock'
+)
+
+export type NockVariableDeclarationInstantiation = ts.VariableStatement & {
+  declarationList: ts.VariableDeclarationList & {
+    declarations: [{
+      name: ts.Identifier
+      initializer: ts.CallExpression
+    }]
+  }
+}
+
+/* Finds patterns like
+* let api = nock().*
+*  */
+export const isNockVariableDeclarationInstantiation = (statement: ts.Node): statement is NockVariableDeclarationInstantiation => (
+  ts.isVariableStatement(statement) &&
+  ts.isVariableDeclaration(statement.declarationList.declarations[0]) &&
+  ts.isIdentifier(statement.declarationList.declarations[0].name) &&
+  ts.isCallExpression(statement.declarationList.declarations[0].initializer) &&
+  isNockChainedCall(statement.declarationList.declarations[0].initializer, 'nock')
+)

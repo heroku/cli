@@ -1,7 +1,7 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
 import {isTestDescribeOrContextCall, isTestItCall} from './validators.js'
-import {getNockMethodCallExpressions, getNockCallsFromBeforeEach, NockNameCallPair} from './helpers.js'
+import {getNockMethodCallExpressions, getNockCallsFromBlock, NockNameCallPair, addNockToCallChain} from './helpers.js'
 import _ from 'lodash'
 
 const {factory} = ts
@@ -32,7 +32,6 @@ export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode:
 
 const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][]): ts.Node => {
   if (isTestItCall(node)) {
-    // try bottom up creation? Start with smallest piece?
     // replace entire section? Shouldn't delete something if it's there, but how to move it? Keep track of unknown parts?
     // move ^ into a `do`? Likely not what's wanted
     let result = createTestBase()
@@ -43,41 +42,9 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
 
     for (const nockCall of nockCalls) {
       if (nockCall.properties.length > 0) {
-        result = factory.createCallExpression(
-          factory.createPropertyAccessExpression(
-            result,
-            factory.createIdentifier('nock'),
-          ),
-          undefined,
-          [
-            nockCall.instanceCall.arguments[0], // domain nock is instantiated with
-            factory.createArrowFunction(
-              undefined,
-              undefined,
-              [factory.createParameterDeclaration(
-                undefined,
-                undefined,
-                factory.createIdentifier(nockCall.varName),
-              )],
-              undefined,
-              factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
-              factory.createBlock(
-                nockCall.properties.map(callEx => {
-                  return factory.createExpressionStatement(callEx) // this may not work in other places
-                }),
-                // [],
-                true,
-              ),
-            ),
-          ],
-        )
+        result = addNockToCallChain(result, nockCall)
       }
     }
-
-    // todo: anyway to find nock in beforeEach? example: packages/pg-v5/test/unit/commands/maintenance/run.unit.test.js
-    /* todo: handle separate definition then chaining. example: packages/pg-v5/test/unit/commands/backups/capture.unit.test.js
-    * look for nock, then decide if it's one expression or multiple?
-    *  */
 
     return result
   }
@@ -87,7 +54,7 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
 
 export const transformDescribesContextsAndIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
   if (isTestDescribeOrContextCall(node)) {
-    const nockInBeforeEach = getNockCallsFromBeforeEach(node.arguments[1].body)
+    const nockInBeforeEach = getNockCallsFromBlock(node.arguments[1].body, nestedNockInBeforeEach)
     if (nockInBeforeEach.length > 0) {
       nestedNockInBeforeEach = [...nestedNockInBeforeEach, nockInBeforeEach]
     }
