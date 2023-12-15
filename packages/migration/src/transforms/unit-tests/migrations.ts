@@ -1,8 +1,11 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
 import {isTestDescribeOrContextCall, isTestItCall} from './validators.js'
-import {getNockMethodCallExpressions, getNockCallsFromBlock, NockNameCallPair, addNockToCallChain} from './helpers.js'
-import _ from 'lodash'
+import {
+  getNockCallsFromDescribe,
+  addNockToCallChain,
+  NockNameCallPairLookup, getNockCallsFromBlock,
+} from './helpers.js'
 
 const {factory} = ts
 
@@ -30,17 +33,15 @@ export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode:
   return ts.visitEachChild(node, visitor, nullTransformationContext)
 }
 
-const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][]): ts.Node => {
+const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPairLookup): ts.Node => {
   if (isTestItCall(node)) {
     // replace entire section? Shouldn't delete something if it's there, but how to move it? Keep track of unknown parts?
     // move ^ into a `do`? Likely not what's wanted
     let result = createTestBase()
 
-    // clone deeply here to avoid modifying anything that is passed by reference downstream
-    const clonedNestedNockInBeforeEach = _.cloneDeep<typeof nestedNockInBeforeEach>(nestedNockInBeforeEach)
-    const nockCalls = getNockMethodCallExpressions(node.arguments[1].body, clonedNestedNockInBeforeEach)
+    const nockCalls = getNockCallsFromBlock(node.arguments[1].body, nestedNockInBeforeEach)
 
-    for (const nockCall of nockCalls) {
+    for (const nockCall of Object.values(nockCalls)) {
       if (nockCall.properties.length > 0) {
         result = addNockToCallChain(result, nockCall)
       }
@@ -52,18 +53,36 @@ const transformIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][
   return node
 }
 
-export const transformDescribesContextsAndIts = (node: ts.Node, nestedNockInBeforeEach: NockNameCallPair[][] = []): ts.Node => {
+export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: NockNameCallPairLookup = {}): ts.Node => {
   if (isTestDescribeOrContextCall(node)) {
-    const nockInBeforeEach = getNockCallsFromBlock(node.arguments[1].body, nestedNockInBeforeEach)
-    if (nockInBeforeEach.length > 0) {
-      nestedNockInBeforeEach = [...nestedNockInBeforeEach, nockInBeforeEach]
-    }
+    // only pass found nock calls from beforeEach into children of describe/context
+    const newNockData = getNockCallsFromDescribe(node.arguments[1].body, foundNockData)
+    return factory.updateCallExpression(
+      node,
+      node.expression,
+      node.typeArguments,
+      [
+        node.arguments[0],
+        // second arg is a function or arrow function. We don't care and just want to update the body. Not sure what to do besides ignore TS here.
+        {
+          ...node.arguments[1],
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          body: factory.updateBlock(
+            node.arguments[1].body,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            node.arguments[1].body.statements.map(iNode => transformDescribesContextsAndIts(iNode, newNockData)),
+          ),
+        },
+      ],
+    )
   }
 
   if (isTestItCall(node)) {
     // terminate recursion and transformIt in place
-    return transformIts(node, nestedNockInBeforeEach)
+    return transformIts(node, foundNockData)
   }
 
-  return ts.visitEachChild(node, _node => transformDescribesContextsAndIts(_node, nestedNockInBeforeEach), nullTransformationContext)
+  return ts.visitEachChild(node, _node => transformDescribesContextsAndIts(_node, foundNockData), nullTransformationContext)
 }

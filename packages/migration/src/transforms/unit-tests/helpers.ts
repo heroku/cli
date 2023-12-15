@@ -6,6 +6,7 @@ import {
   isNockVariableDeclarationInstantiation, NockVariableDeclarationInstantiation,
 } from './validators.js'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
+import _ from 'lodash'
 
 const {factory} = ts
 
@@ -28,6 +29,21 @@ const stripNockFromCallAccessChain = (callEx: ts.CallExpression, varName: string
   return ts.visitEachChild(callEx, visitor, nullTransformationContext)
 }
 
+export const getEndOfCallPropertyAccessChain = (node: ts.CallExpression): ts.Node => {
+  let workingNode: ts.Node = node
+  /* nodes are "upside down" compared to human reading. Given:
+    * let api = nock('https://api.heroku.com:443')
+      .post('/account/keys', {public_key: key})
+      .reply(200)
+    * node starts as `.reply(200)`, and last CallExpression/PropertyAccessExpression pair is our target `nock('https://api.heroku.com:443')`
+    * */
+  while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression)) {
+    workingNode = workingNode.expression.expression
+  }
+
+  return workingNode
+}
+
 export const createNockNameCallPairFromVarDeclInstantiation = (statement: NockVariableDeclarationInstantiation) => {
   const varName = statement.declarationList.declarations[0].name.escapedText.toString()
   const nockCallEx = statement.declarationList.declarations[0].initializer
@@ -44,6 +60,45 @@ export const createNockNameCallPairFromVarDeclInstantiation = (statement: NockVa
   throw new Error('createNockNameCallPairFromVarDeclInstantiation: found nock with unexpected shape')
 }
 
+export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup) => {
+  // clone deeply here to avoid modifying anything that is passed by reference from separate node branches
+  nestedNockInBeforeEach = _.cloneDeep<NockNameCallPairLookup>(nestedNockInBeforeEach)
+  for (const statement of block.statements) {
+    if (isNockExpressionStatementInstantiation(statement)) {
+      const varName = statement.expression.left.escapedText.toString()
+      if (nestedNockInBeforeEach[varName]) {
+        debugger
+      }
+
+      nestedNockInBeforeEach[varName] = {
+        varName: statement.expression.left.escapedText.toString(),
+        domain: statement.expression.right.arguments[0],
+        properties: [],
+      }
+    } else if (isNockVariableDeclarationInstantiation(statement)) {
+      const nockPair = createNockNameCallPairFromVarDeclInstantiation(statement)
+      if (nestedNockInBeforeEach[nockPair.varName]) {
+        debugger
+      }
+
+      nestedNockInBeforeEach[nockPair.varName] = nockPair
+    } else {
+      for (const varName in nestedNockInBeforeEach) {
+        // case: api.post().reply() where api is declared elsewhere
+        if (
+          ts.isExpressionStatement(statement) &&
+          ts.isCallExpression(statement.expression) &&
+          isNockChainedCall(statement.expression, varName)
+        ) {
+          nestedNockInBeforeEach[varName].properties.push(statement.expression)
+        }
+      }
+    }
+  }
+
+  return nestedNockInBeforeEach
+}
+
 /* gets nock calls and assigned variable names from this pattern
 let api
 let pg
@@ -54,101 +109,14 @@ beforeEach(() => {
   cli.mockConsole()
 })
 * *  */
-export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPair[][]) => {
-  const nockVarNames: NockNameCallPair[] = []
-  const callPairsHash = nestedNockInBeforeEach
-    .flat()
-    .reduce<Record<string, NockNameCallPair>>((acc, callPair) => {
-      const exists = acc[callPair.varName]
-      if (exists) {
-        acc[callPair.varName] = {...exists, properties: [...exists.properties, ...callPair.properties]}
-      } else {
-        acc[callPair.varName] = callPair
-      }
-
-      return acc
-    }, {})
-  const callPairs = Object.values(callPairsHash)
-
+export const getNockCallsFromDescribe = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup): NockNameCallPairLookup => {
   for (const describeStatement of block.statements) {
     if (isBeforeEachBlock(describeStatement)) {
-      const beforeEachStatements = describeStatement.expression.arguments[0].body.statements
-      for (const beforeEachStatement of beforeEachStatements) {
-        if (isNockExpressionStatementInstantiation(beforeEachStatement)) {
-          nockVarNames.push({
-            varName: beforeEachStatement.expression.left.escapedText.toString(),
-            domain: beforeEachStatement.expression.right.arguments[0],
-            properties: [],
-          })
-        } else if (isNockVariableDeclarationInstantiation(beforeEachStatement)) {
-          nockVarNames.push(createNockNameCallPairFromVarDeclInstantiation(beforeEachStatement))
-        } else {
-          for (const nockPair of callPairs) {
-            // case: api.post().reply() where api is declared elsewhere
-            if (
-              ts.isExpressionStatement(beforeEachStatement) &&
-              ts.isCallExpression(beforeEachStatement.expression) &&
-              isNockChainedCall(beforeEachStatement.expression, nockPair.varName)
-            ) {
-              nockPair.properties.push(beforeEachStatement.expression)
-            }
-          }
-      }
+      return getNockCallsFromBlock(describeStatement.expression.arguments[0].body, nestedNockInBeforeEach)
     }
   }
 
-  return nockVarNames
-}
-
-export const getEndOfCallPropertyAccessChain = (node: ts.CallExpression): ts.Node => {
-  let workingNode: ts.Node = node
-  /* nodes are "upside down" compared to human reading. Given:
-    * let api = nock('https://api.heroku.com:443')
-      .post('/account/keys', {public_key: key})
-      .reply(200)
-    * node starts as `.reply(200)`, and last CallExpression/PropertyAccessExpression pair is our target `nock('https://api.heroku.com:443')`
-    * */
-  while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression)) {
-    workingNode = workingNode.expression.expression
-  }
-
-  return workingNode
-}
-
-export const getNockMethodCallExpressions = (itBlock: ts.Block, nestedNockInBeforeEach: NockNameCallPair[][]) => {
-  const callPairsHash = nestedNockInBeforeEach
-    .flat()
-    .reduce<Record<string, NockNameCallPair>>((acc, callPair) => {
-      const exists = acc[callPair.varName]
-      if (exists) {
-        acc[callPair.varName] = {...exists, properties: [...exists.properties, ...callPair.properties]}
-      } else {
-        acc[callPair.varName] = callPair
-      }
-
-      return acc
-    }, {})
-
-  const callPairs = Object.values(callPairsHash)
-
-  for (const statement of itBlock.statements) {
-    if (isNockVariableDeclarationInstantiation(statement)) {
-      callPairs.push(createNockNameCallPairFromVarDeclInstantiation(statement))
-    } else {
-      for (const nockPair of callPairs) {
-        // case: api.post().reply() where api is declared elsewhere
-        if (
-          ts.isExpressionStatement(statement) &&
-          ts.isCallExpression(statement.expression) &&
-          isNockChainedCall(statement.expression, nockPair.varName)
-        ) {
-          nockPair.properties.push(statement.expression)
-        }
-      }
-    }
-  }
-
-  return callPairs
+  return nestedNockInBeforeEach
 }
 
 export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockNameCallPair) => factory.createCallExpression(
