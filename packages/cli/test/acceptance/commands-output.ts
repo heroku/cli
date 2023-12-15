@@ -138,6 +138,7 @@ export default `\u001B[1m Command                                        Summary
  keys:add                                       add an SSH key for a user
  keys:clear                                     remove all SSH keys for current user
  keys:remove                                    remove an SSH key from the user
+ kill                                           stop app dyno
  labs                                           list experimental features
  labs:disable                                   disables an experimental feature
  labs:enable                                    enables an experimental feature
