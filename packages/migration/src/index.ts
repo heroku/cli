@@ -40,7 +40,7 @@ abstract class MigrationFactoryBase {
     this.files = files
     this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions, true)})
     this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
-    this.linter = new ESLint({fix: true, useEslintrc: true})
+    this.linter = new ESLint({fix: true, overrideConfigFile: './packages/migration/.eslintrc'})
     if (outDir) {
       this.outputLocation = outDir
     }
@@ -219,7 +219,8 @@ export class CommandMigrationFactory extends MigrationFactoryBase {
     }
 
     const finalPath = path.join(finalDirPath, `${commandName}.ts`)
-    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
+    const exists = !this.allowOverwrite && await fs.stat(finalPath)
+      .catch(() => false)
     if (exists) {
       console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
       return
@@ -282,7 +283,8 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
     const finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'), name)
 
     const finalPath = path.join(finalDirPath, `${name}.ts`)
-    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
+    const exists = !this.allowOverwrite && await fs.stat(finalPath)
+      .catch(() => false)
     if (exists) {
       console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
       return
