@@ -4,7 +4,7 @@ import {isTestDescribeOrContextCall, isTestItCall} from './validators.js'
 import {
   getNockCallsFromBeforeEach,
   addNockToCallChain,
-  NockNameCallPairLookup, getNockCallsFromBlock,
+  NockInterceptsLookup, getNockCallsFromBlock,
 } from './helpers.js'
 
 const {factory} = ts
@@ -33,7 +33,7 @@ export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode:
   return ts.visitEachChild(node, visitor, nullTransformationContext)
 }
 
-const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockNameCallPairLookup): ts.CallExpression => {
+const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockInterceptsLookup): ts.CallExpression => {
   if (isTestItCall(node)) {
     // replace entire section? Shouldn't delete something if it's there, but how to move it? Keep track of unknown parts?
     // move ^ into a `do`? Likely not what's wanted
@@ -42,7 +42,7 @@ const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockNameC
     const nockCalls = getNockCallsFromBlock(node.arguments[1].body, nestedNockInBeforeEach)
 
     for (const nockCall of Object.values(nockCalls)) {
-      if (nockCall.properties.length > 0) {
+      if (nockCall.intercepts.length > 0) {
         result = addNockToCallChain(result, nockCall)
       }
     }
@@ -102,7 +102,7 @@ describe('string', function () {
             otherAPI.get('path').reply(200, response)
         })
         it('string', function () {
-            otherAPI.post('otherPath').repply(200, otherResponse)
+            otherAPI.post('otherPath').reply(200, otherResponse)
             api.post('path').reply(200, response)
         })
         context(() => {
@@ -132,7 +132,7 @@ describe('string', function () {
 * output:
 
 *  */
-export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: NockNameCallPairLookup = {}): ts.Node => {
+export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: NockInterceptsLookup = {}): ts.Node => {
   // nothing interesting, continue visiting nodes
   if (!isTestDescribeOrContextCall(node)) {
     return ts.visitEachChild(
@@ -160,7 +160,7 @@ export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: N
         ...statement.expression.arguments[1].body.statements,
       )
     } else {
-      // recursively call transformDescribesContextsAndIts on statements directly instead of every child
+      // recursively call transformDescribesContextsAndIts on statements directly
       newStatements.push(transformDescribesContextsAndIts(statement, newNockData))
     }
   }

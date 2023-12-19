@@ -10,8 +10,9 @@ import _ from 'lodash'
 
 const {factory} = ts
 
-export type NockNameCallPair = { varName: string, domain: ts.StringLiteral, properties: ts.CallExpression[] }
-export type NockNameCallPairLookup = Record<string, NockNameCallPair>
+export type NockIntercepts = { varName: string, domain: ts.StringLiteral, intercepts: ts.CallExpression[] }
+// top level keys are varNames used when defining nock instance
+export type NockInterceptsLookup = Record<string, NockIntercepts>
 
 const stripNockFromCallAccessChain = (callEx: ts.CallExpression, varName: string): ts.CallExpression => {
   const visitor = (node: ts.Node): ts.Node => {
@@ -52,7 +53,7 @@ export const createNockNameCallPairFromVarDeclInstantiation = (statement: NockVa
     return {
       varName,
       domain: nockCallTerminus.arguments[0],
-      properties: [stripNockFromCallAccessChain(nockCallEx, varName)],
+      intercepts: [stripNockFromCallAccessChain(nockCallEx, varName)],
     }
   }
 
@@ -60,9 +61,9 @@ export const createNockNameCallPairFromVarDeclInstantiation = (statement: NockVa
   throw new Error('createNockNameCallPairFromVarDeclInstantiation: found nock with unexpected shape')
 }
 
-export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup) => {
+export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: NockInterceptsLookup) => {
   // clone deeply here to avoid modifying anything that is passed by reference from separate node branches
-  nestedNockInBeforeEach = _.cloneDeep<NockNameCallPairLookup>(nestedNockInBeforeEach)
+  nestedNockInBeforeEach = _.cloneDeep<NockInterceptsLookup>(nestedNockInBeforeEach)
   for (const statement of block.statements) {
     if (isNockExpressionStatementInstantiation(statement)) {
       const varName = statement.expression.left.escapedText.toString()
@@ -73,7 +74,7 @@ export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: N
       nestedNockInBeforeEach[varName] = {
         varName: statement.expression.left.escapedText.toString(),
         domain: statement.expression.right.arguments[0],
-        properties: [],
+        intercepts: [],
       }
     } else if (isNockVariableDeclarationInstantiation(statement)) {
       const nockPair = createNockNameCallPairFromVarDeclInstantiation(statement)
@@ -90,7 +91,7 @@ export const getNockCallsFromBlock = (block: ts.Block, nestedNockInBeforeEach: N
           ts.isCallExpression(statement.expression) &&
           isNockChainedCall(statement.expression, varName)
         ) {
-          nestedNockInBeforeEach[varName].properties.push(statement.expression)
+          nestedNockInBeforeEach[varName].intercepts.push(statement.expression)
         }
       }
     }
@@ -109,7 +110,7 @@ beforeEach(() => {
   cli.mockConsole()
 })
 * *  */
-export const getNockCallsFromBeforeEach = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup): NockNameCallPairLookup => {
+export const getNockCallsFromBeforeEach = (block: ts.Block, nestedNockInBeforeEach: NockInterceptsLookup): NockInterceptsLookup => {
   for (const describeStatement of block.statements) {
     if (isBeforeEachBlock(describeStatement)) {
       return getNockCallsFromBlock(describeStatement.expression.arguments[0].body, nestedNockInBeforeEach)
@@ -119,7 +120,7 @@ export const getNockCallsFromBeforeEach = (block: ts.Block, nestedNockInBeforeEa
   return nestedNockInBeforeEach
 }
 
-export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockNameCallPair) => factory.createCallExpression(
+export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockIntercepts) => factory.createCallExpression(
   factory.createPropertyAccessExpression(
     existing,
     factory.createIdentifier('nock'),
@@ -138,7 +139,7 @@ export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockNa
       undefined,
       factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
       factory.createBlock(
-        nockCall.properties.map(callEx => {
+        nockCall.intercepts.map(callEx => {
           return factory.createExpressionStatement(callEx) // this may not work in other places
         }),
         // [],
