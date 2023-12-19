@@ -30,6 +30,7 @@
     "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "warn", // TODO: fix issues and turn this back on
     "unicorn/no-lonely-if":"off",
