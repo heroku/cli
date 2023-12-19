@@ -280,7 +280,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
 
     const pathFromCommands = dir.split('/commands/')[1] || ''
 
-    const finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'), name)
+    const finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'))
 
     const finalPath = path.join(finalDirPath, `${name}.ts`)
     const exists = !this.allowOverwrite && await fs.stat(finalPath)
