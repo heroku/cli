@@ -33,7 +33,12 @@ const KEY_TO_TRANSFORM = new Map([
   ['topic', createStaticPropertyDeclarationGenerator('topic')],
   ['description', createStaticPropertyDeclarationGenerator('description')],
   ['hidden', createStaticPropertyDeclarationGenerator('hidden')],
-  ['variableArgs', (node: (ts.PropertyAssignment)) => createStaticPropertyDeclaration('strict', node.initializer)],
+  ['variableArgs', (node: (ts.PropertyAssignment)) => {
+    // `variableArgs: false` -> `static strict = true`
+    if (isTrueValue(node.initializer)) {
+      return createStaticPropertyDeclaration('strict', factory.createFalse())
+    }
+  }],
 ])
 
 const ADDITIONAL_KEY_TO_FLAG = new Map([

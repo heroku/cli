@@ -38,7 +38,7 @@ abstract class MigrationFactoryBase {
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
-    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions, true)})
+    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
     this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
     this.linter = new ESLint({fix: true, overrideConfigFile: './packages/migration/.eslintrc'})
     if (outDir) {
