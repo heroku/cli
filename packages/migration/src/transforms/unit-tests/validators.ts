@@ -74,8 +74,7 @@ export const isNockVariableStatement = (node: ts.Node, varName: string): node is
   isNockChainedCall(node.declarationList.declarations[0], varName)
 )
 
-// output an array of CallExpression/PropertyAccessExpression pairs? Just replace the "last" `nock(`?
-/* finds patterns like this:
+/* finds patterns like this, regardless of depth of call chain:
 * ANYTHING nock('https://api.heroku.com:443')
       .post('/spaces', postBody)
       .reply(201, responseBody)
