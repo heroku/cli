@@ -109,7 +109,7 @@ beforeEach(() => {
   cli.mockConsole()
 })
 * *  */
-export const getNockCallsFromDescribe = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup): NockNameCallPairLookup => {
+export const getNockCallsFromBeforeEach = (block: ts.Block, nestedNockInBeforeEach: NockNameCallPairLookup): NockNameCallPairLookup => {
   for (const describeStatement of block.statements) {
     if (isBeforeEachBlock(describeStatement)) {
       return getNockCallsFromBlock(describeStatement.expression.arguments[0].body, nestedNockInBeforeEach)

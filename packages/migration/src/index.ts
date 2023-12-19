@@ -38,7 +38,7 @@ abstract class MigrationFactoryBase {
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
-    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
+    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions, true)})
     this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
     this.linter = new ESLint({fix: true, useEslintrc: true})
     if (outDir) {
@@ -72,6 +72,13 @@ abstract class MigrationFactoryBase {
       // recreating them seems to work around this issue.
       if (ts.isStringLiteral(node)) {
         return ts.factory.createStringLiteral(node.text)
+      }
+
+      // some number literals that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isNumericLiteral(node)) {
+        return ts.factory.createNumericLiteral(node.text)
       }
 
       return ts.visitEachChild(node, visitor, nullTransformationContext)
