@@ -146,7 +146,7 @@ export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: N
   * Everything below is a bit awkward. We need to get nock info from beforeEach children in the describe/context
   * and pass what we find into other children (siblings of beforeEach).
   * We also need to flatten/hoist it() statements to parent describe/context statements to preserve anything defined there. These
-  * statements will almost certainly be "wrong" in the output and will require dev effort to determine what to do with them.
+  * flattened statements will almost certainly be "wrong" in the output and will require dev effort to determine what to do with them.
   *  */
 
   // only pass found nock calls from beforeEach into children of describe/context
