@@ -138,6 +138,7 @@ export default `\u001B[1m Command                                        Summary
  keys:add                                       add an SSH key for a user
  keys:clear                                     remove all SSH keys for current user
  keys:remove                                    remove an SSH key from the user
+ kill                                           stop app dyno
  labs                                           list experimental features
  labs:disable                                   disables an experimental feature
  labs:enable                                    enables an experimental feature
@@ -275,6 +276,7 @@ export default `\u001B[1m Command                                        Summary
  releases:output                                View the release command output
  releases:rollback                              rollback to a previous release
  rename                                         rename an app
+ restart                                        restart app dynos
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline
  run                                            run a one-off process inside a heroku dyno
@@ -304,6 +306,7 @@ export default `\u001B[1m Command                                        Summary
  stack                                          show the list of available stacks
  stack:set                                      set the stack of an app
  status                                         display current status of the Heroku platform
+ stop                                           stop app dyno
  teams                                          list the teams that you are a member of
  trusted-ips                                    list trusted IP ranges for a space
  trusted-ips:add                                Add one range to the list of trusted IP ranges
