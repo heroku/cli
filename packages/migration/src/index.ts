@@ -81,6 +81,13 @@ abstract class MigrationFactoryBase {
         return ts.factory.createNumericLiteral(node.text)
       }
 
+      // some NoSubstitutionTemplateLiterals that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isNoSubstitutionTemplateLiteral(node)) {
+        return ts.factory.createNoSubstitutionTemplateLiteral(node.text)
+      }
+
       return ts.visitEachChild(node, visitor, nullTransformationContext)
     }
 

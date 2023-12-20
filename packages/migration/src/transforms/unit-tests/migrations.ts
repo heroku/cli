@@ -141,66 +141,73 @@ export const transformDescribesContextsAndIts = (node: ts.Node, commandName: str
   )
 }
 
-export const migrateCommandRun = (prop: ts.ObjectLiteralElementLike): (string | ts.Expression)[] => {
-  if (!ts.isIdentifier(prop.name)) {
-    // this should never happen
-    throw new Error('unexpected migrateCommandRun input')
-  }
-
-  const isShorthand = ts.isShorthandPropertyAssignment(prop)
-  const isLongHand = ts.isPropertyAssignment(prop)
-
-  if (!(isShorthand || isLongHand)) {
-    return []
-  }
-
-  // check ShorthandPropertyAssignment vs PropertyAssignment
-  switch (prop.name.escapedText.toString()) {
-  case 'app':
-    if (isShorthand) {
-      return ['--app', prop.name]
+export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): (string | ts.Expression)[] => {
+  const transformedCommand: (string | ts.Expression)[] = []
+  // args handled separately because they sometimes need to be the last values added to .command(string[])
+  const transformedArgs: (string | ts.Expression)[] = []
+  for (const prop of runArgs.properties) {
+    if (!ts.isIdentifier(prop.name)) {
+      // this should never happen
+      throw new Error('unexpected migrateCommandRun input')
     }
 
-    return ['--app', prop.initializer]
+    const isShorthand = ts.isShorthandPropertyAssignment(prop)
+    const isLongHand = ts.isPropertyAssignment(prop)
 
-  case 'flags': {
-    const transformed: ReturnType<typeof migrateCommandRun> = []
+    if (!(isShorthand || isLongHand)) {
+      continue
+    }
 
-    if (isLongHand && ts.isObjectLiteralExpression(prop.initializer)) {
-      for (const flagProp of prop.initializer.properties) {
-        if (ts.isIdentifier(flagProp.name)) {
-          transformed.push(`--${flagProp.name.escapedText.toString()}`)
-          if (ts.isShorthandPropertyAssignment(flagProp)) {
-            transformed.push(flagProp.name)
-          } else if (ts.isPropertyAssignment(flagProp)) {
-            transformed.push(prop.initializer)
-          } else {
-            console.error('deeply nested issue in migrateCommandRun')
+    // check ShorthandPropertyAssignment vs PropertyAssignment
+    switch (prop.name.escapedText.toString()) {
+    case 'app': {
+      if (isShorthand) {
+        transformedCommand.push('--app', prop.name)
+      } else {
+        transformedCommand.push('--app', prop.initializer)
+      }
+
+      break
+    }
+
+    case 'flags': {
+      if (isLongHand && ts.isObjectLiteralExpression(prop.initializer)) {
+        for (const flagProp of prop.initializer.properties) {
+          if (ts.isIdentifier(flagProp.name)) {
+            transformedCommand.push(`--${flagProp.name.escapedText.toString()}`)
+            if (ts.isShorthandPropertyAssignment(flagProp)) {
+              transformedCommand.push(flagProp.name)
+            } else if (ts.isPropertyAssignment(flagProp)) {
+              transformedCommand.push(prop.initializer)
+            } else {
+              console.error('deeply nested issue in migrateCommandRun')
+            }
           }
         }
+      } else {
+        // todo: could spread and transform, but will be a nightmare to create via TS
+        console.error('can not map command.run({flags})) short hand property assignment')
       }
-    } else {
-      // todo: could spread and transform, but will be a nightmare to create via TS
-      console.error('can not map command.run({flags})) short hand property assignment')
+
+      break
     }
 
-    return transformed
+    case 'args': {
+      if (isLongHand && ts.isArrayLiteralExpression(prop.initializer)) {
+        // it's already an array, just spread what is in there
+        transformedArgs.push(...prop.initializer.elements)
+      } else if (isShorthand) {
+        transformedArgs.push(factory.createSpreadElement(prop.name))
+      } else {
+        // todo: could spread and transform, but will be a nightmare to create via TS
+        console.error('can not map command.run({args})) short hand property assignment')
+      }
+
+      break
+    }
+    }
   }
 
-  case 'args':
-    if (isLongHand && ts.isArrayLiteralExpression(prop.initializer)) {
-      return [...prop.initializer.elements]
-    }
-
-    if (isShorthand) {
-      return [factory.createSpreadElement(prop.name)]
-    }
-
-    // todo: could spread and transform, but will be a nightmare to create via TS
-    console.error('can not map command.run({args})) short hand property assignment')
-    return []
-
-  default:
-    return []
-  }
+  // args need to come last due to `static strict false` argv handling
+  return [...transformedCommand, ...transformedArgs]
 }

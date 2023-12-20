@@ -41,8 +41,8 @@ const stripNockFromCallAccessChain = (callEx: ts.CallExpression, varName: string
 export const getEndOfCallPropertyAccessChain = (node: ts.CallExpression): ts.Node => {
   let workingNode: ts.Node = node
 
-  while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression)) {
-    workingNode = workingNode.expression.expression
+  while (ts.isCallExpression(workingNode) || ts.isPropertyAccessExpression(workingNode)) {
+    workingNode = workingNode.expression
   }
 
   return workingNode
@@ -188,13 +188,13 @@ const findExpects = (node: ts.Node): ts.CallExpression[] => {
     if (ts.isCallExpression(vNode)) {
       const terminus = getEndOfCallPropertyAccessChain(vNode)
       if (
-        ts.isPropertyAccessExpression(terminus.parent) &&
-        ts.isIdentifier(terminus.parent.name) &&
-        terminus.parent.name.escapedText.toString() === 'expect' &&
-        ts.isCallExpression((terminus.parent.parent)) &&
-        ts.isObjectLiteralExpression(terminus.parent.parent.arguments[0])
+        ts.isIdentifier(terminus) &&
+        terminus.escapedText.toString() === 'expect' &&
+        ts.isCallExpression((terminus.parent))
       ) {
         expects.push(vNode)
+        // found it, don't continue down chain and push duplicates in call/propertyAccess chain
+        return vNode
       }
     }
 
@@ -218,9 +218,7 @@ export const getCommandRunAndExpects = (itBlock: ts.Block, commandName: string) 
         debugger
       }
 
-      for (const prop of runArgs.properties) {
-        commandArr.push(...migrateCommandRun(prop))
-      }
+      commandArr.push(...migrateCommandRun(runArgs))
     }
 
     if (ts.isReturnStatement(statement) && ts.isCallExpression(statement.expression)) {
