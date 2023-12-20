@@ -2,9 +2,11 @@ import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
 import {isTestDescribeOrContextCall, isTestItCall} from './validators.js'
 import {
-  getNockCallsFromBeforeEach,
   addNockToCallChain,
-  NockInterceptsLookup, getNockCallsFromBlock,
+  getCommandRunAndExpects,
+  getNockCallsFromBeforeEach,
+  getNockCallsFromBlock,
+  NockInterceptsLookup,
 } from './helpers.js'
 
 const {factory} = ts
@@ -25,21 +27,14 @@ const createTestBase = () => factory.createCallExpression(
   [],
 )
 
-export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode: ts.Node) => ts.Node) => {
-  const visitor = (vNode: ts.Node): ts.Node => {
-    return ts.visitEachChild(transform(vNode), visitor, nullTransformationContext)
-  }
-
-  return ts.visitEachChild(node, visitor, nullTransformationContext)
-}
-
-const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockInterceptsLookup): ts.CallExpression => {
+const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockInterceptsLookup, commandName: string): ts.CallExpression => {
   if (isTestItCall(node)) {
     // replace entire section? Shouldn't delete something if it's there, but how to move it? Keep track of unknown parts?
     // move ^ into a `do`? Likely not what's wanted
     let result = createTestBase()
 
     const nockCalls = getNockCallsFromBlock(node.arguments[1].body, nestedNockInBeforeEach)
+    const commandAndAsserts = getCommandRunAndExpects(node.arguments[1].body, commandName)
 
     for (const nockCall of Object.values(nockCalls)) {
       if (nockCall.intercepts.length > 0) {
@@ -88,56 +83,12 @@ const transformIts = (node: ts.CallExpression, nestedNockInBeforeEach: NockInter
   return node
 }
 
-/* must keep track of all nock calls in potential patterns like this with nested describe/context beforeEach calls:
-let api
-describe('string', function () {
-    beforeEach(() => {
-        api = nock('domain')
-        api.get('path').reply(200, response)
-    })
-    describe('string2', function () {
-        let otherAPI
-        beforeEach(() => {
-            otherAPI = nock('domain')
-            otherAPI.get('path').reply(200, response)
-        })
-        it('string', function () {
-            otherAPI.post('otherPath').reply(200, otherResponse)
-            api.post('path').reply(200, response)
-        })
-        context(() => {
-            let thirdNockInstance
-            beforeEach(() => {
-                api = nock('domain')
-                api.get('path').reply(200, response)
-            })
-            it('string', function () {
-                thirdNockInstance.post('otherPath').repply(200, otherResponse)
-                api.post('path').reply(200, response)
-            })
-        })
-        context(() => {
-            beforeEach(() => {
-                api = nock('domain')
-                api.get('path').reply(200, response)
-            })
-            it('string', function () {
-                otherAPI.post('otherPath').repply(200, otherResponse)
-                thirdNockInstance.post('path').reply(200, response)
-            })
-        })
-    })
-})
-*
-* output:
-
-*  */
-export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: NockInterceptsLookup = {}): ts.Node => {
+export const transformDescribesContextsAndIts = (node: ts.Node, commandName: string, foundNockData: NockInterceptsLookup = {}): (ts.SourceFile | ts.Node) => {
   // nothing interesting, continue visiting nodes
   if (!isTestDescribeOrContextCall(node)) {
     return ts.visitEachChild(
       node,
-      vNode => transformDescribesContextsAndIts(vNode, foundNockData),
+      vNode => transformDescribesContextsAndIts(vNode, commandName, foundNockData),
       nullTransformationContext,
     )
   }
@@ -155,13 +106,16 @@ export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: N
   for (const statement of node.arguments[1].body.statements) {
     if (ts.isExpressionStatement(statement) && isTestItCall(statement.expression)) {
       newStatements.push(
-        factory.createExpressionStatement(transformIts(statement.expression, newNockData)),
+        factory.createExpressionStatement(transformIts(statement.expression, newNockData, commandName)),
         // move it() block statements up to parent describe/context
-        ...statement.expression.arguments[1].body.statements,
+        ...statement.expression.arguments[1].body.statements.filter(() => {
+          // todo: filter out expressions used for nock/command.run/etc
+          return true
+        }),
       )
     } else {
       // recursively call transformDescribesContextsAndIts on statements directly
-      newStatements.push(transformDescribesContextsAndIts(statement, newNockData))
+      newStatements.push(transformDescribesContextsAndIts(statement, commandName, newNockData))
     }
   }
 
@@ -185,4 +139,68 @@ export const transformDescribesContextsAndIts = (node: ts.Node, foundNockData: N
       },
     ],
   )
+}
+
+export const migrateCommandRun = (prop: ts.ObjectLiteralElementLike): (string | ts.Expression)[] => {
+  if (!ts.isIdentifier(prop.name)) {
+    // this should never happen
+    throw new Error('unexpected migrateCommandRun input')
+  }
+
+  const isShorthand = ts.isShorthandPropertyAssignment(prop)
+  const isLongHand = ts.isPropertyAssignment(prop)
+
+  if (!(isShorthand || isLongHand)) {
+    return []
+  }
+
+  // check ShorthandPropertyAssignment vs PropertyAssignment
+  switch (prop.name.escapedText.toString()) {
+  case 'app':
+    if (isShorthand) {
+      return ['--app', prop.name]
+    }
+
+    return ['--app', prop.initializer]
+
+  case 'flags': {
+    const transformed: ReturnType<typeof migrateCommandRun> = []
+
+    if (isLongHand && ts.isObjectLiteralExpression(prop.initializer)) {
+      for (const flagProp of prop.initializer.properties) {
+        if (ts.isIdentifier(flagProp.name)) {
+          transformed.push(`--${flagProp.name.escapedText.toString()}`)
+          if (ts.isShorthandPropertyAssignment(flagProp)) {
+            transformed.push(flagProp.name)
+          } else if (ts.isPropertyAssignment(flagProp)) {
+            transformed.push(prop.initializer)
+          } else {
+            console.error('deeply nested issue in migrateCommandRun')
+          }
+        }
+      }
+    } else {
+      // todo: could spread and transform, but will be a nightmare to create via TS
+      console.error('can not map command.run({flags})) short hand property assignment')
+    }
+
+    return transformed
+  }
+
+  case 'args':
+    if (isLongHand && ts.isArrayLiteralExpression(prop.initializer)) {
+      return [...prop.initializer.elements]
+    }
+
+    if (isShorthand) {
+      return [factory.createSpreadElement(prop.name)]
+    }
+
+    // todo: could spread and transform, but will be a nightmare to create via TS
+    console.error('can not map command.run({args})) short hand property assignment')
+    return []
+
+  default:
+    return []
+  }
 }

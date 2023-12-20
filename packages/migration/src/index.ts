@@ -38,7 +38,7 @@ abstract class MigrationFactoryBase {
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
-    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
+    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions, true)})
     this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
     this.linter = new ESLint({fix: true, overrideConfigFile: './packages/migration/.eslintrc'})
     if (outDir) {
@@ -256,7 +256,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
         //   continue
         // }
 
-        ast = migrateTestFile(ast)
+        ast = migrateTestFile(ast, this.getCommandPath(file).finalPath)
 
         ast = this.updateOrRemoveStatements(ast)
 
@@ -275,14 +275,18 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
     stdout.write(`Migrated ${lintResults.length} tests.\n`)
   }
 
-  async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
+  getCommandPath(originalFilePath: string): {finalDirPath: string, finalPath: string} {
     const {dir, name} = path.parse(originalFilePath)
 
     const pathFromCommands = dir.split('/commands/')[1] || ''
 
     const finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'))
 
-    const finalPath = path.join(finalDirPath, `${name}.ts`)
+    return {finalDirPath, finalPath: path.join(finalDirPath, `${name}.ts`)}
+  }
+
+  async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
+    const {finalPath, finalDirPath} = this.getCommandPath(originalFilePath)
     const exists = !this.allowOverwrite && await fs.stat(finalPath)
       .catch(() => false)
     if (exists) {

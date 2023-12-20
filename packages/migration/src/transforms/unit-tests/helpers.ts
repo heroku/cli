@@ -1,12 +1,14 @@
 import ts from 'typescript'
+import _ from 'lodash'
 import {
   isBeforeEachBlock,
   isNockChainedCall,
   isNockExpressionStatementInstantiation,
-  isNockVariableDeclarationInstantiation, NockVariableDeclarationInstantiation,
+  isNockVariableDeclarationInstantiation,
+  NockVariableDeclarationInstantiation,
 } from './validators.js'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import _ from 'lodash'
+import {migrateCommandRun} from './migrations.js'
 
 const {factory} = ts
 
@@ -149,3 +151,101 @@ export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockIn
     ),
   ],
 )
+
+// looks for this pattern regardless of beginning of ExpressionStatement:
+// *.run({})
+const findCommandRun = (node: ts.Node): ts.ObjectLiteralExpression | undefined => {
+  let commandRun: ts.ObjectLiteralExpression
+  const visitor = (vNode: ts.Node): ts.Node | undefined => {
+    if (ts.isCallExpression(vNode)) {
+      const terminus = getEndOfCallPropertyAccessChain(vNode)
+      if (
+        ts.isPropertyAccessExpression(terminus.parent) &&
+        ts.isIdentifier(terminus.parent.name) &&
+        terminus.parent.name.escapedText.toString() === 'run' &&
+        ts.isCallExpression((terminus.parent.parent)) &&
+        ts.isObjectLiteralExpression(terminus.parent.parent.arguments[0])
+      ) {
+        commandRun = terminus.parent.parent.arguments[0]
+        return
+      }
+    }
+
+    return ts.visitEachChild(vNode, visitor, nullTransformationContext)
+  }
+
+  visitor(node)
+
+  return commandRun
+}
+
+// looks for this pattern regardless of beginning of ExpressionStatement:
+// expect(*).*
+const findExpects = (node: ts.Node): ts.CallExpression[] => {
+  const expects:  ts.CallExpression[] = []
+
+  const visitor = (vNode: ts.Node): ts.Node => {
+    if (ts.isCallExpression(vNode)) {
+      const terminus = getEndOfCallPropertyAccessChain(vNode)
+      if (
+        ts.isPropertyAccessExpression(terminus.parent) &&
+        ts.isIdentifier(terminus.parent.name) &&
+        terminus.parent.name.escapedText.toString() === 'expect' &&
+        ts.isCallExpression((terminus.parent.parent)) &&
+        ts.isObjectLiteralExpression(terminus.parent.parent.arguments[0])
+      ) {
+        expects.push(vNode)
+      }
+    }
+
+    return ts.visitEachChild(vNode, visitor, nullTransformationContext)
+  }
+
+  visitor(node)
+
+  return expects
+}
+
+export const getCommandRunAndExpects = (itBlock: ts.Block, commandName: string) => {
+  const commandArr: ReturnType<typeof migrateCommandRun> = [commandName]
+  const catchCalls: ts.CallExpression[] = []
+  const expects: ts.CallExpression[] = []
+
+  for (const statement of itBlock.statements) {
+    const runArgs = findCommandRun(statement)
+    if (runArgs) {
+      if (commandArr.length > 1) {
+        debugger
+      }
+
+      for (const prop of runArgs.properties) {
+        commandArr.push(...migrateCommandRun(prop))
+      }
+    }
+
+    if (ts.isReturnStatement(statement) && ts.isCallExpression(statement.expression)) {
+      let workingNode: ts.Node = statement.expression
+      while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression) && ts.isIdentifier(workingNode.expression.name)) {
+        const callName = workingNode.expression.name.escapedText.toString()
+        if (callName === 'catch') {
+          // pass along as they are
+          catchCalls.push(workingNode)
+        } else if (callName === 'then') {
+          expects.push(...findExpects(workingNode.arguments[0]))
+        }
+
+        workingNode = workingNode.expression.expression
+      }
+    }
+  }
+
+  return {commandArr, expects, catchCalls}
+}
+
+export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode: ts.Node) => ts.Node) => {
+  const visitor = (vNode: ts.Node): ts.Node => {
+    return ts.visitEachChild(transform(vNode), visitor, nullTransformationContext)
+  }
+
+  return ts.visitEachChild(node, visitor, nullTransformationContext)
+}
