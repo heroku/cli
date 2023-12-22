@@ -301,7 +301,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
   async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
     const {finalPath, finalDirPath} = this.getCommandPath(originalFilePath)
     // replace import path in this.commonImports to be correct
-    content = content.replace(REPLACE_IMPORT_PATH, path.relative(finalDirPath, path.join('packages', 'cli', 'test', 'helpers', 'testInstances')))
+    content = content.replace(REPLACE_IMPORT_PATH, path.relative(finalDirPath, path.join('packages', 'cli', 'test', 'helpers', 'runCommand')))
 
     const exists = !this.allowOverwrite && await fs.stat(finalPath)
       .catch(() => false)
