@@ -123,34 +123,34 @@ export const getNockCallsFromBeforeEach = (block: ts.Block, nestedNockInBeforeEa
   return nestedNockInBeforeEach
 }
 
-export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockIntercepts) => factory.createCallExpression(
-  factory.createPropertyAccessExpression(
-    existing,
-    factory.createIdentifier('nock'),
-  ),
-  undefined,
-  [
-    nockCall.domain, // domain nock is instantiated with
-    factory.createArrowFunction(
-      undefined,
-      undefined,
-      [factory.createParameterDeclaration(
-        undefined,
-        undefined,
-        factory.createIdentifier(nockCall.varName),
-      )],
-      undefined,
-      factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
-      factory.createBlock(
-        nockCall.intercepts.map(callEx => {
-          return factory.createExpressionStatement(callEx) // this may not work in other places
-        }),
-        // [],
-        true,
-      ),
-    ),
-  ],
-)
+// export const addNockToCallChain = (existing: ts.CallExpression, nockCall: NockIntercepts) => factory.createCallExpression(
+//   factory.createPropertyAccessExpression(
+//     existing,
+//     factory.createIdentifier('nock'),
+//   ),
+//   undefined,
+//   [
+//     nockCall.domain, // domain nock is instantiated with
+//     factory.createArrowFunction(
+//       undefined,
+//       undefined,
+//       [factory.createParameterDeclaration(
+//         undefined,
+//         undefined,
+//         factory.createIdentifier(nockCall.varName),
+//       )],
+//       undefined,
+//       factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken), // "=>" in arrow function
+//       factory.createBlock(
+//         nockCall.intercepts.map(callEx => {
+//           return factory.createExpressionStatement(callEx) // this may not work in other places
+//         }),
+//         // [],
+//         true,
+//       ),
+//     ),
+//   ],
+// )
 
 // looks for this pattern regardless of beginning of ExpressionStatement:
 // *.run({})
@@ -206,39 +206,39 @@ const findExpects = (node: ts.Node): ts.CallExpression[] => {
   return expects
 }
 
-export const getCommandRunAndExpects = (itBlock: ts.Block, commandName: string) => {
-  const commandArr: ReturnType<typeof migrateCommandRun> = [commandName]
-  const catchCalls: ts.CallExpression[] = []
-  const expects: ts.CallExpression[] = []
-
-  for (const statement of itBlock.statements) {
-    const runArgs = findCommandRun(statement)
-    if (runArgs) {
-      if (commandArr.length > 1) {
-        debugger
-      }
-
-      commandArr.push(...migrateCommandRun(runArgs))
-    }
-
-    if (ts.isReturnStatement(statement) && ts.isCallExpression(statement.expression)) {
-      let workingNode: ts.Node = statement.expression
-      while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression) && ts.isIdentifier(workingNode.expression.name)) {
-        const callName = workingNode.expression.name.escapedText.toString()
-        if (callName === 'catch') {
-          // pass along as they are
-          catchCalls.push(workingNode)
-        } else if (callName === 'then') {
-          expects.push(...findExpects(workingNode.arguments[0]))
-        }
-
-        workingNode = workingNode.expression.expression
-      }
-    }
-  }
-
-  return {commandArr, expects, catchCalls}
-}
+// export const getCommandRunAndExpects = (itBlock: ts.Block, commandName: string) => {
+//   const commandArr: ReturnType<typeof migrateCommandRun> = [commandName]
+//   const catchCalls: ts.CallExpression[] = []
+//   const expects: ts.CallExpression[] = []
+//
+//   for (const statement of itBlock.statements) {
+//     const runArgs = findCommandRun(statement)
+//     if (runArgs) {
+//       if (commandArr.length > 1) {
+//         debugger
+//       }
+//
+//       commandArr.push(...migrateCommandRun(runArgs))
+//     }
+//
+//     if (ts.isReturnStatement(statement) && ts.isCallExpression(statement.expression)) {
+//       let workingNode: ts.Node = statement.expression
+//       while (ts.isCallExpression(workingNode) && ts.isPropertyAccessExpression(workingNode.expression) && ts.isIdentifier(workingNode.expression.name)) {
+//         const callName = workingNode.expression.name.escapedText.toString()
+//         if (callName === 'catch') {
+//           // pass along as they are
+//           catchCalls.push(workingNode)
+//         } else if (callName === 'then') {
+//           expects.push(...findExpects(workingNode.arguments[0]))
+//         }
+//
+//         workingNode = workingNode.expression.expression
+//       }
+//     }
+//   }
+//
+//   return {commandArr, expects, catchCalls}
+// }
 
 export const transformNode = <N extends ts.Node>(node: N, transform: (innerNode: ts.Node) => ts.Node) => {
   const visitor = (vNode: ts.Node): ts.Node => {

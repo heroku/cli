@@ -22,12 +22,6 @@ import {migrateTestFile} from './transforms/unit-tests/index.js'
 
 const require = createRequire(import.meta.url)
 
-const commonImports = `import color from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
-
-`
 abstract class MigrationFactoryBase {
   protected outputLocation: string;
   protected readonly program: ts.Program;
@@ -35,6 +29,7 @@ abstract class MigrationFactoryBase {
   protected readonly linter: ESLint
   protected readonly files: string[];
   protected allowOverwrite = false;
+  protected commonImports: string
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     this.files = files
@@ -97,6 +92,12 @@ abstract class MigrationFactoryBase {
 
 export class CommandMigrationFactory extends MigrationFactoryBase {
   protected readonly outputLocation: string = path.join('packages', 'cli', 'src')
+  commonImports = `import color from '@heroku-cli/color'
+import {Command, flags} from '@heroku-cli/command'
+import {Args, ux} from '@oclif/core'
+import * as Heroku from '@heroku-cli/schema'
+
+`
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     super(files, compilerOptions, outDir, allowOverwrite)
@@ -125,7 +126,7 @@ export class CommandMigrationFactory extends MigrationFactoryBase {
         ast = this.migrateHerokuCliUtilsExports(ast, file)
         ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        const sourceStr = this.commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
         lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
       } catch (error: any) {
@@ -238,8 +239,14 @@ export class CommandMigrationFactory extends MigrationFactoryBase {
   }
 }
 
+const REPLACE_IMPORT_PATH = '__IMPORT_PATH_TO_GET_CONFIG__'
 export class CommandTestMigrationFactory extends MigrationFactoryBase {
   protected readonly outputLocation: string = path.join('packages', 'cli', 'test', 'unit')
+  protected commonImports = `
+  import {stdout, stderr} from 'stdout-stderr'
+  import Cmd  from 'REPLACE_WITH_PATH_TO_COMMAND'
+  import runCommand from '${REPLACE_IMPORT_PATH}'
+  `
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
     super(files, compilerOptions, outDir, allowOverwrite)
@@ -259,16 +266,15 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
       let ast = this.program.getSourceFile(file)
 
       try {
-        // if (!isCommandMigrationCandidate(ast)) {
-        //   continue
-        // }
-
-        ast = migrateTestFile(ast, this.getCommandPath(file).finalPath)
-
+        ast = migrateTestFile(ast)
         ast = this.updateOrRemoveStatements(ast)
 
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = 'import {expect, test} from \'@oclif/test\'\n' + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        let sourceStr = this.commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+
+        // simple, reliable regex replace because it's so much easier than handling with TS
+        sourceStr = sourceStr.replace(/cli.stdout/g, 'stdout.output')
+          .replace(/cli.stderr/g, 'stderr.output')
 
         lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
       } catch (error: any) {
@@ -294,6 +300,9 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
 
   async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
     const {finalPath, finalDirPath} = this.getCommandPath(originalFilePath)
+    // replace import path in this.commonImports to be correct
+    content = content.replace(REPLACE_IMPORT_PATH, path.relative(finalDirPath, path.join('packages', 'cli', 'test', 'helpers', 'testInstances')))
+
     const exists = !this.allowOverwrite && await fs.stat(finalPath)
       .catch(() => false)
     if (exists) {

@@ -1,11 +1,12 @@
 import ts from 'typescript'
 import {getEndOfCallPropertyAccessChain} from './helpers.js'
 
-export type TestFunctionCall<Text extends string> = ts.CallExpression & {
-  expression: ts.Identifier & {
-    escapedText: Text
+// matches describe(), context(), it() calls
+export type TestFunctionCall = ts.ExpressionStatement & {
+  expression:  ts.CallExpression & {
+    expression: ts.Identifier
+    arguments: [ts.StringLiteral, ts.FunctionLikeDeclaration & {body: ts.Block}]
   }
-  arguments: [ts.StringLiteral, ts.FunctionLikeDeclaration & {body: ts.Block}]
 }
 
 export type BeforeEachCall = ts.ExpressionStatement & {
@@ -33,7 +34,7 @@ type NockExpressionInstantiation = ts.ExpressionStatement & {
  * @param node The node to evaluate
  * @returns boolean if the node matches
  */
-export const isTestItCall =  (node: ts.Node): node is TestFunctionCall<'it'> => (
+export const isTestItCall =  (node: ts.Node): node is TestFunctionCall => (
   ts.isCallExpression(node) &&
   ts.isIdentifier(node.expression) &&
   node.expression.escapedText === 'it' &&
@@ -42,13 +43,14 @@ export const isTestItCall =  (node: ts.Node): node is TestFunctionCall<'it'> => 
   ts.isBlock(node.arguments[1].body)
 )
 
-export const isTestDescribeOrContextCall = (node: ts.Node): node is TestFunctionCall<'describe' | 'context'> => (
-  ts.isCallExpression(node) &&
-  ts.isIdentifier(node.expression) &&
-  (node.expression.escapedText === 'describe' || node.expression.escapedText === 'context') &&
-  ts.isStringLiteral(node.arguments[0]) &&
-  ts.isFunctionLike(node.arguments[1]) &&
-  ts.isBlock(node.arguments[1].body)
+export const isTestDescribeOrContextCall = (node: ts.Node): node is TestFunctionCall => (
+  ts.isExpressionStatement(node) &&
+  ts.isCallExpression(node.expression) &&
+  ts.isIdentifier(node.expression.expression) &&
+  (node.expression.expression.escapedText === 'describe' || node.expression.expression.escapedText === 'context') &&
+  ts.isStringLiteral(node.expression.arguments[0]) &&
+  ts.isFunctionLike(node.expression.arguments[1]) &&
+  ts.isBlock(node.expression.arguments[1].body)
 )
 
 export const isBeforeEachBlock = (node: ts.Node): node is BeforeEachCall => (

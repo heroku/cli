@@ -67,6 +67,7 @@
     "semver": "5.6.0",
     "shell-escape": "^0.2.0",
     "shell-quote": "^1.6.1",
+    "stdout-stderr": "^0.1.13",
     "strftime": "^0.10.0",
     "strip-ansi": "^6",
     "tmp": "^0.0.33",
