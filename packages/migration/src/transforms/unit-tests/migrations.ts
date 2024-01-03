@@ -168,11 +168,18 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
           continue
         }
 
-        transformedCommand.push(factory.createStringLiteral(`--${flagProp.name.escapedText.toString()}`))
         if (ts.isShorthandPropertyAssignment(flagProp)) {
-          transformedCommand.push(flagProp.name)
+          transformedCommand.push(factory.createStringLiteral(`--${flagProp.name.escapedText.toString()}`), flagProp.name)
         } else if (ts.isPropertyAssignment(flagProp)) {
-          transformedCommand.push(flagProp.initializer)
+          if (flagProp.initializer.kind === ts.SyntaxKind.FalseKeyword) {
+            // filter out args when value false.
+            break
+          }
+
+          transformedCommand.push(factory.createStringLiteral(`--${flagProp.name.escapedText.toString()}`))
+          if (flagProp.initializer.kind !== ts.SyntaxKind.TrueKeyword) {
+            transformedCommand.push(flagProp.initializer)
+          }
         } else {
           console.error('deeply nested issue in migrateCommandRun')
         }

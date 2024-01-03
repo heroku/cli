@@ -242,8 +242,7 @@ import * as Heroku from '@heroku-cli/schema'
 const REPLACE_IMPORT_PATH = '__IMPORT_PATH_TO_GET_CONFIG__'
 export class CommandTestMigrationFactory extends MigrationFactoryBase {
   protected readonly outputLocation: string = path.join('packages', 'cli', 'test', 'unit')
-  protected commonImports = `
-  import {stdout, stderr} from 'stdout-stderr'
+  protected commonImports = `import {stdout, stderr} from 'stdout-stderr'
   import Cmd  from 'REPLACE_WITH_PATH_TO_COMMAND'
   import runCommand from '${REPLACE_IMPORT_PATH}'
   `
