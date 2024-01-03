@@ -3,7 +3,6 @@ import {nullTransformationContext} from '../../nullTransformationContext.js'
 import {
   BeforeEachCall,
   isBeforeEachBlock,
-  isTestDescribeOrContextCall,
   TestFunctionCall,
 } from './validators.js'
 
@@ -46,7 +45,7 @@ const createBeforeEachWithConsoleMock = (additionalStatements: ts.Statement[] = 
 
 const transformBeforeEach = (statement: BeforeEachCall): ts.ExpressionStatement => {
   let existingExpressions: ts.Statement[] = []
-  // if function has a block, add to it, if not, get the call, wrap it in ExpressionStatement and added need expressions
+  // if function has a block, add to it, if not, get the call, wrap it in ExpressionStatement and added needed expressions
   if (ts.isBlock(statement.expression.arguments[0].body)) {
     existingExpressions = [...statement.expression.arguments[0].body.statements]
   } else if (ts.isCallExpression(statement.expression.arguments[0].body)) {
@@ -58,7 +57,7 @@ const transformBeforeEach = (statement: BeforeEachCall): ts.ExpressionStatement 
   return createBeforeEachWithConsoleMock(existingExpressions)
 }
 
-const transformRuns = (node: ts.ExpressionStatement) => {
+export const transformRuns = (node: ts.ExpressionStatement) => {
   const visitor = (vNode: ts.Node): ts.Node => {
     if (
       ts.isCallExpression(vNode) &&
@@ -88,7 +87,7 @@ const transformRuns = (node: ts.ExpressionStatement) => {
   return ts.visitEachChild(node, visitor, nullTransformationContext)
 }
 
-const transformRootDescribe = (statement: TestFunctionCall): ts.ExpressionStatement  => {
+export const transformRootDescribe = (statement: TestFunctionCall): ts.ExpressionStatement  => {
   let beforeEachFound = false
   let transformedStatements = [...statement.expression.arguments[1].body.statements]
     .map(describeBodyStatement => {
@@ -159,7 +158,7 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
     case 'flags': {
       if (!isLongHand || !ts.isObjectLiteralExpression(prop.initializer)) {
         // todo: could spread and transform, but will be a nightmare to create via TS
-        console.error('can not transform command.run({flags})) short hand property assignment')
+        console.error('can not transform command.run({flags})) shorthand property assignment')
         break
       }
 
@@ -215,28 +214,4 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
       return [...transformedCommand, ...transformedArgs]
     }
   }
-}
-
-export const transformTest = (sourceFile: ts.SourceFile) => {
-  let describeFound = false
-  const updatedStatements = [...sourceFile.statements]
-    .map(statement => {
-      if (isTestDescribeOrContextCall(statement)) {
-        //   update source file with updated beforeEach, then run on everything else in the block
-        describeFound = true
-        return transformRootDescribe(statement)
-      }
-
-      return statement
-    })
-    .map(transformRuns)
-
-  if (!describeFound) {
-    throw new Error('no describe block found')
-  }
-
-  return factory.updateSourceFile(
-    sourceFile,
-    updatedStatements,
-  )
 }
