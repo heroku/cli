@@ -194,18 +194,27 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
         transformedArgs.push(...prop.initializer.elements)
       } else if (isShorthand) {
         transformedArgs.push(factory.createSpreadElement(prop.name))
-      } else {
-        // todo: could spread and transform, but will be a nightmare to create via TS
-        console.error('can not map command.run({args})) short hand property assignment')
-      }
+      }  else if (ts.isObjectLiteralExpression(prop.initializer)) {
+        for (const argProp of prop.initializer.properties) {
+          if (!ts.isIdentifier(argProp.name)) {
+            continue
+          }
 
-      break
+          if (ts.isShorthandPropertyAssignment(argProp)) {
+            transformedCommand.push(argProp.name)
+          } else if (ts.isPropertyAssignment(argProp)) {
+            transformedCommand.push(argProp.initializer)
+          }
+        }
+      } else {
+        console.error('can not map command.run({args}))')
+      }
     }
+
+      // args need to come last due to `static strict false` argv handling
+      return [...transformedCommand, ...transformedArgs]
     }
   }
-
-  // args need to come last due to `static strict false` argv handling
-  return [...transformedCommand, ...transformedArgs]
 }
 
 export const transformTest = (sourceFile: ts.SourceFile) => {
