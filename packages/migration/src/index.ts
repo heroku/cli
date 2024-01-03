@@ -49,7 +49,7 @@ abstract class MigrationFactoryBase {
 
   abstract writeSourceFile(content: string, originalFilePath: string): Promise<void>;
 
-  updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
+  updateOrRemoveStatements(node: ts.SourceFile, isTest = false) : ts.SourceFile {
     const visitor = (node: ts.Node): ts.Node => {
       // 'use strict'
       if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
@@ -58,7 +58,7 @@ abstract class MigrationFactoryBase {
 
       // module.exports
       const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
-      if (isModuleExports || isCommandDeclaration(node)) {
+      if (isModuleExports || (!isTest && isCommandDeclaration(node))) {
         return null
       }
 
@@ -266,7 +266,7 @@ export class CommandTestMigrationFactory extends MigrationFactoryBase {
 
       try {
         ast = migrateTestFile(ast)
-        ast = this.updateOrRemoveStatements(ast)
+        ast = this.updateOrRemoveStatements(ast, true)
 
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
         let sourceStr = this.commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)

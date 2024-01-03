@@ -64,6 +64,7 @@ export const transformRuns = (node: ts.ExpressionStatement) => {
       ts.isPropertyAccessExpression(vNode.expression) &&
       ts.isIdentifier(vNode.expression.name) &&
       vNode.expression.name.escapedText.toString() === 'run' &&
+      vNode.arguments[0] &&
       ts.isObjectLiteralExpression(vNode.arguments[0])
     ) {
       const runArr = migrateCommandRun(vNode.arguments[0])
