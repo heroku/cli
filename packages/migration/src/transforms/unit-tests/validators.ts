@@ -13,7 +13,7 @@ export type BeforeEachCall = ts.ExpressionStatement & {
     expression: ts.Identifier & {
       escapedText: 'beforeEach'
     }
-    arguments: [ts.FunctionLikeDeclaration & {body: ts.Block}]
+    arguments: [ts.FunctionLikeDeclaration]
   }
 }
 
@@ -32,7 +32,6 @@ export const isBeforeEachBlock = (node: ts.Node): node is BeforeEachCall => (
   ts.isCallExpression(node.expression) &&
   ts.isIdentifier(node.expression.expression) &&
   node.expression.expression.escapedText === 'beforeEach' &&
-  ts.isFunctionLike(node.expression.arguments[0]) &&
-  ts.isBlock(node.expression.arguments[0].body)
+  ts.isFunctionLike(node.expression.arguments[0])
 )
 
