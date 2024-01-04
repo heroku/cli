@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import Cmd  from '../../../../src/commands/addons/detach'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
-const {expect} = require('chai')
+import {expect} from 'chai'
 
 describe('addons:detach', () => {
   beforeEach(() => {
