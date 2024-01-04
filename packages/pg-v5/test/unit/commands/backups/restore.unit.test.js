@@ -13,7 +13,7 @@ let restoringText = () => {
   return process.stderr.isTTY ? 'Restoring... pending\nRestoring... done\n' : 'Restoring... done\n'
 }
 
-const shouldRestore = function (cmdRun) {
+const shouldRestore = function () {
   let pg
   let api
 
@@ -52,7 +52,7 @@ const shouldRestore = function (cmdRun) {
     })
 
     it('restores a db', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
+      return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -63,7 +63,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('restores a specific db', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'b005'}, flags: {confirm: 'myapp'}})
+      return cmd.run({app: 'myapp', args: {backup: 'b005'}, flags: {confirm: 'myapp'}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -74,7 +74,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('restores a specific app db', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'myapp::b005'}, flags: {confirm: 'myapp'}})
+      return cmd.run({app: 'myapp', args: {backup: 'myapp::b005'}, flags: {confirm: 'myapp'}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -103,7 +103,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('shows verbose output', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
+      return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -130,7 +130,7 @@ Restoring...
     })
 
     it('restores a db from a URL', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'https://www.dropbox.com'}, flags: {confirm: 'myapp'}})
+      return cmd.run({app: 'myapp', args: {backup: 'https://www.dropbox.com'}, flags: {confirm: 'myapp'}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -158,7 +158,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('restores a db with pre-installed extensions', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', extensions: 'uuid-ossp, Postgis'}})
+      return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp', extensions: 'uuid-ossp, Postgis'}})
         .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -175,5 +175,5 @@ describe('pg:backups:restore', () => {
 })
 
 describe('pg:backups restore', () => {
-  shouldRestore(require('./helpers.js').dup('restore', cmd))
+  shouldRestore()
 })
