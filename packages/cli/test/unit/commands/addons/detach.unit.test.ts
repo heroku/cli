@@ -23,9 +23,11 @@ describe('addons:detach', () => {
       'myapp',
       'redis-123',
     ])
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done\n'))
-      .then(() => expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting myapp... done, v10\n'))
+      .then(() => {
+        expect(stdout.output, 'to be empty')
+        expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done\n')
+        expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting myapp... done, v10\n')
+      })
       .then(() => api.done())
   })
 })
