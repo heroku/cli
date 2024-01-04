@@ -34,10 +34,6 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
     case 'styledJSON':
     case 'action': // cli.action() && cli.action.start() appear to be the same
     case 'error': // ???
-      if (callName === 'action') {
-        debugger
-      }
-
       return subWithUx(node, utilVarName)
     case 'exit':
       return transformExit(node, utilVarName)

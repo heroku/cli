@@ -13,7 +13,7 @@ export type BeforeEachCall = ts.ExpressionStatement & {
     expression: ts.Identifier & {
       escapedText: 'beforeEach'
     }
-    arguments: [ts.FunctionLikeDeclaration & {body: ts.Block}]
+    arguments: [ts.FunctionLikeDeclaration]
   }
 }
 
