@@ -110,6 +110,7 @@ export const transformColors = (args: SharedArgs) => {
 export const transformActionFuncs = (args: SharedArgs) => {
   const {callEx, propertyAccessChain, utilVarName, showWarning} = args
   const [, secondPropAccess] = propertyAccessChain
+
   if (propertyAccessChain.length === 2) {
     switch (secondPropAccess) {
     case 'status':
