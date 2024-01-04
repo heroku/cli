@@ -1,6 +1,5 @@
 import {getConfig} from './testInstances'
 import {Command} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
 
 type CmdConstructorParams = ConstructorParameters<typeof Command>
 type GenericCmd = new (...args: CmdConstructorParams) => Command
