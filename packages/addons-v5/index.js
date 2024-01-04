@@ -76,7 +76,6 @@ exports.commands = _.flatten([
   require('./commands/addons/attach'),
   require('./commands/addons/create'),
   require('./commands/addons/destroy'),
-  require('./commands/addons/detach'),
   require('./commands/addons/docs'),
   require('./commands/addons/info'),
   require('./commands/addons/open'),
