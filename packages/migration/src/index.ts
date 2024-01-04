@@ -76,11 +76,31 @@ abstract class MigrationFactoryBase {
         return ts.factory.createNumericLiteral(node.text)
       }
 
-      // some NoSubstitutionTemplateLiterals that are no longer aligned with
+      // some RegularExpressionLiteral that are no longer aligned with
       // the original source file do not print properly
       // recreating them seems to work around this issue.
+      if (ts.isRegularExpressionLiteral(node)) {
+        return ts.factory.createRegularExpressionLiteral(node.text)
+      }
+
+      // some Template strings that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      // replace all parts
       if (ts.isNoSubstitutionTemplateLiteral(node)) {
         return ts.factory.createNoSubstitutionTemplateLiteral(node.text)
+      }
+
+      if (ts.isTemplateHead(node)) {
+        return ts.factory.createTemplateHead(node.text)
+      }
+
+      if (ts.isTemplateMiddle(node)) {
+        return ts.factory.createTemplateMiddle(node.text)
+      }
+
+      if (ts.isTemplateTail(node)) {
+        return ts.factory.createTemplateTail(node.text)
       }
 
       return ts.visitEachChild(node, visitor, nullTransformationContext)
@@ -229,6 +249,7 @@ import * as Heroku from '@heroku-cli/schema'
     const finalPath = path.join(finalDirPath, `${commandName}.ts`)
     const exists = !this.allowOverwrite && await fs.stat(finalPath)
       .catch(() => false)
+
     if (exists) {
       console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
       return
