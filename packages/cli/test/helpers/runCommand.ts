@@ -1,10 +1,10 @@
 import {getConfig} from './testInstances'
 import {Command} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
 
-type CmdConstructor<T extends Command = Command> = new(args: string[], config: Config) => T
+type CmdConstructorParams = ConstructorParameters<typeof Command>
+type GenericCmd = new (...args: CmdConstructorParams) => Command
 
-const runCommand = (Cmd: CmdConstructor, args: string[]) => {
+const runCommand = (Cmd: GenericCmd, args: string[]) => {
   const instance = new Cmd(args, getConfig())
 
   return instance.run()
