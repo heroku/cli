@@ -18,11 +18,8 @@ describe('addons:detach', () => {
       .reply(200)
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
-    return runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'redis-123',
-    ])
+
+    return runCommand(Cmd, ['--app', 'myapp', 'redis-123'])
       .then(() => {
         expect(stdout.output, 'to be empty')
         expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done\n')
