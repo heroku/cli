@@ -6269,6 +6269,7 @@ __metadata:
     "@types/pascalcase": ^1.0.3
     eslint: 8.53.0
     glob: 10.3.10
+    lodash: ^4.17.11
     pascalcase: 2.0.0
     typescript: 5.2.2
     yargs: 17.7.2
@@ -9748,6 +9749,7 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.6.1
     sinon: ^7.2.4
+    stdout-stderr: ^0.1.13
     strftime: ^0.10.0
     strip-ansi: 6.0.1
     tmp: ^0.0.33
@@ -16116,6 +16118,16 @@ __metadata:
   dependencies:
     lodash: ^4.11.1
   checksum: b7b97a39c77e373ea243443e195030ca0e41e0f7e8ba7908993511c4346dfdee0fb0d6edc0a72d2ed4ad3a26a1a4434d7dbde65629172452f3462745a8c8433a
+  languageName: node
+  linkType: hard
+
+"stdout-stderr@npm:^0.1.13":
+  version: 0.1.13
+  resolution: "stdout-stderr@npm:0.1.13"
+  dependencies:
+    debug: ^4.1.1
+    strip-ansi: ^6.0.0
+  checksum: 3955a0afa9a483188929796fd9fa9417f845c3bfcd92f132b3ae7d2a862f91a846312e4244f07eb4dd4c5bd2fe95035db5db01679e7d3795d3ea0b772fc7a6f7
   languageName: node
   linkType: hard
 

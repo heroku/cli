@@ -11,36 +11,116 @@ import {createCommandClass} from './createCommandClass.js'
 import {isModuleExportsObject} from './node-validators/isModuleExportsObject.js'
 import {isRunFunctionDecl} from './node-validators/isRunFunctionDecl.js'
 import {nullTransformationContext} from './nullTransformationContext.js'
-import {isMigrationCandidate} from './node-validators/isMigrationCandidate.js'
+import {isCommandMigrationCandidate} from './node-validators/isCommandMigrationCandidate.js'
 import {isExtendedCommandClassDeclaration} from './node-validators/isExtendedCommandClassDeclaration.js'
 import {isModuleExportsArray} from './node-validators/isModuleExportsArray.js'
 import {getCommandDeclaration} from './getCommandDeclaration.js'
 import {isCommandDeclaration} from './node-validators/isCommandDeclaration.js'
 import transformCliUtils from './transforms/heroku-cli-utils/transformCliUtils.js'
 import {findRequiredPackageVarNameIfExits} from './findRequiredPackageVarNameIfExits.js'
+import {migrateTestFile} from './transforms/unit-tests/index.js'
 
 const require = createRequire(import.meta.url)
 
-const commonImports = `import color from '@heroku-cli/color'
+abstract class MigrationFactoryBase {
+  protected outputLocation: string;
+  protected readonly program: ts.Program;
+  protected readonly printer: ts.Printer;
+  protected readonly linter: ESLint
+  protected readonly files: string[];
+  protected allowOverwrite = false;
+  protected commonImports: string
+
+  constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
+    this.files = files
+    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions, true)})
+    this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
+    this.linter = new ESLint({fix: true, overrideConfigFile: './packages/migration/.eslintrc'})
+    if (outDir) {
+      this.outputLocation = outDir
+    }
+
+    if (allowOverwrite) {
+      this.allowOverwrite = true
+    }
+  }
+
+  abstract migrate(): Promise<void>;
+
+  abstract writeSourceFile(content: string, originalFilePath: string): Promise<void>;
+
+  updateOrRemoveStatements(node: ts.SourceFile, isTest = false) : ts.SourceFile {
+    const visitor = (node: ts.Node): ts.Node => {
+      // 'use strict'
+      if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
+        return null
+      }
+
+      // module.exports
+      const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
+      if (isModuleExports || (!isTest && isCommandDeclaration(node))) {
+        return null
+      }
+
+      // some string literals that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isStringLiteral(node)) {
+        return ts.factory.createStringLiteral(node.text)
+      }
+
+      // some number literals that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isNumericLiteral(node)) {
+        return ts.factory.createNumericLiteral(node.text)
+      }
+
+      // some RegularExpressionLiteral that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      if (ts.isRegularExpressionLiteral(node)) {
+        return ts.factory.createRegularExpressionLiteral(node.text)
+      }
+
+      // some Template strings that are no longer aligned with
+      // the original source file do not print properly
+      // recreating them seems to work around this issue.
+      // replace all parts
+      if (ts.isNoSubstitutionTemplateLiteral(node)) {
+        return ts.factory.createNoSubstitutionTemplateLiteral(node.text)
+      }
+
+      if (ts.isTemplateHead(node)) {
+        return ts.factory.createTemplateHead(node.text)
+      }
+
+      if (ts.isTemplateMiddle(node)) {
+        return ts.factory.createTemplateMiddle(node.text)
+      }
+
+      if (ts.isTemplateTail(node)) {
+        return ts.factory.createTemplateTail(node.text)
+      }
+
+      return ts.visitEachChild(node, visitor, nullTransformationContext)
+    }
+
+    return ts.visitEachChild(node, visitor, nullTransformationContext)
+  }
+}
+
+export class CommandMigrationFactory extends MigrationFactoryBase {
+  protected readonly outputLocation: string = path.join('packages', 'cli', 'src')
+  commonImports = `import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 `
-export class CommandMigrationFactory {
-  private readonly outputLocation: string = path.join('packages', 'cli', 'src')
-
-  protected readonly program: ts.Program;
-  protected readonly printer: ts.Printer;
-  protected readonly linter: ESLint
-  private readonly files: string[];
-  private readonly allowOverwrite: boolean = false;
 
   constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
-    this.files = files
-    this.program = ts.createProgram({rootNames: files, options: compilerOptions, host: ts.createCompilerHost(compilerOptions)})
-    this.printer = ts.createPrinter({newLine: ts.NewLineKind.CarriageReturnLineFeed})
-    this.linter = new ESLint({fix: true, useEslintrc: true})
+    super(files, compilerOptions, outDir, allowOverwrite)
     if (outDir) {
       this.outputLocation = outDir
     }
@@ -57,7 +137,7 @@ export class CommandMigrationFactory {
       let ast = this.program.getSourceFile(file)
 
       try {
-        if (!isMigrationCandidate(ast)) {
+        if (!isCommandMigrationCandidate(ast)) {
           continue
         }
 
@@ -66,7 +146,7 @@ export class CommandMigrationFactory {
         ast = this.migrateHerokuCliUtilsExports(ast, file)
         ast = this.updateOrRemoveStatements(ast)
         const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
-        const sourceStr = commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+        const sourceStr = this.commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
 
         lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
       } catch (error: any) {
@@ -140,33 +220,7 @@ export class CommandMigrationFactory {
     return ts.visitEachChild(sourceFile, visitor, nullTransformationContext)
   }
 
-  private updateOrRemoveStatements(node: ts.SourceFile) : ts.SourceFile {
-    const visitor = (node: ts.Node): ts.Node => {
-      // 'use strict'
-      if (ts.isExpressionStatement(node) && ts.isStringLiteral(node.expression) && node.expression.text === 'use strict') {
-        return null
-      }
-
-      // module.exports
-      const isModuleExports = ts.isExpressionStatement(node) && (isModuleExportsObject(node.expression) || isModuleExportsArray(node.expression))
-      if (isModuleExports || isCommandDeclaration(node)) {
-        return null
-      }
-
-      // some string literals that are no longer aligned with
-      // the original source file do not print properly
-      // recreating them seems to work around this issue.
-      if (ts.isStringLiteral(node)) {
-        return ts.factory.createStringLiteral(node.text)
-      }
-
-      return ts.visitEachChild(node, visitor, nullTransformationContext)
-    }
-
-    return ts.visitEachChild(node, visitor, nullTransformationContext)
-  }
-
-  private async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
+  async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
     const {dir, name} = path.parse(originalFilePath)
 
     const exported = require(`../../${originalFilePath.split('/packages/')[1]}`)
@@ -193,7 +247,84 @@ export class CommandMigrationFactory {
     }
 
     const finalPath = path.join(finalDirPath, `${commandName}.ts`)
-    const exists = !this.allowOverwrite && await fs.stat(finalPath).catch(() => false)
+    const exists = !this.allowOverwrite && await fs.stat(finalPath)
+      .catch(() => false)
+
+    if (exists) {
+      console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
+      return
+    }
+
+    await fs.mkdir(finalDirPath, {recursive: true})
+    await fs.writeFile(finalPath, content)
+  }
+}
+
+const REPLACE_IMPORT_PATH = '__IMPORT_PATH_TO_GET_CONFIG__'
+export class CommandTestMigrationFactory extends MigrationFactoryBase {
+  protected readonly outputLocation: string = path.join('packages', 'cli', 'test', 'unit')
+  protected commonImports = `import {stdout, stderr} from 'stdout-stderr'
+  import Cmd  from 'REPLACE_WITH_PATH_TO_COMMAND'
+  import runCommand from '${REPLACE_IMPORT_PATH}'
+  `
+
+  constructor(files: string[], compilerOptions: ts.CompilerOptions, outDir?: string, allowOverwrite?: boolean) {
+    super(files, compilerOptions, outDir, allowOverwrite)
+    if (outDir) {
+      this.outputLocation = outDir
+    }
+
+    if (allowOverwrite) {
+      this.allowOverwrite = true
+    }
+  }
+
+  public async migrate(): Promise<void> {
+    const lintOperations: Promise<ESLint.LintResult[]>[] = []
+    for (let i = 0; i < this.files.length; i++) {
+      const file = this.files[i]
+      let ast = this.program.getSourceFile(file)
+
+      try {
+        ast = migrateTestFile(ast)
+        ast = this.updateOrRemoveStatements(ast, true)
+
+        const sourceFile = ts.createSourceFile(path.basename(file), '', ts.ScriptTarget.Latest, false, ts.ScriptKind.TS)
+        let sourceStr = this.commonImports + this.printer.printList(ts.ListFormat.MultiLine, ast.statements, sourceFile)
+
+        // simple, reliable regex replace because it's so much easier than handling with TS
+        sourceStr = sourceStr.replace(/cli.stdout/g, 'stdout.output')
+          .replace(/cli.stderr/g, 'stderr.output')
+
+        lintOperations.push(this.linter.lintText(sourceStr, {filePath: file}))
+      } catch (error: any) {
+        console.error(`error file: ${file}`)
+        throw error
+      }
+    }
+
+    const lintResults = await Promise.all(lintOperations)
+    await Promise.all(lintResults.map(res => this.writeSourceFile(res[0].output, res[0].filePath)))
+    stdout.write(`Migrated ${lintResults.length} tests.\n`)
+  }
+
+  getCommandPath(originalFilePath: string): {finalDirPath: string, finalPath: string} {
+    const {dir, name} = path.parse(originalFilePath)
+
+    const pathFromCommands = dir.split('/commands/')[1] || ''
+
+    const finalDirPath = path.join(path.resolve(this.outputLocation), 'commands', ...pathFromCommands.split('/'))
+
+    return {finalDirPath, finalPath: path.join(finalDirPath, `${name}.ts`)}
+  }
+
+  async writeSourceFile(content: string, originalFilePath: string): Promise<void> {
+    const {finalPath, finalDirPath} = this.getCommandPath(originalFilePath)
+    // replace import path in this.commonImports to be correct
+    content = content.replace(REPLACE_IMPORT_PATH, path.relative(finalDirPath, path.join('packages', 'cli', 'test', 'helpers', 'runCommand')))
+
+    const exists = !this.allowOverwrite && await fs.stat(finalPath)
+      .catch(() => false)
     if (exists) {
       console.error(`Overwrite during migration of ${originalFilePath} to ${finalPath}`)
       return

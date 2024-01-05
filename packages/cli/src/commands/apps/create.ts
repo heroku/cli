@@ -195,7 +195,7 @@ $ heroku apps:create --region eu`,
   ]
 
   static args = {
-    apps: Args.string({description: 'name of app to create', required: false}),
+    app: Args.string({description: 'name of app to create', required: false}),
   }
 
   static flags = {
