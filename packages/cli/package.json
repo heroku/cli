@@ -170,6 +170,9 @@
       "sign": "Developer ID Installer: Heroku INC",
       "identifier": "com.heroku.cli"
     },
+    "windows": {
+      "name": "Heroku CLI"
+    },
     "topics": {
       "2fa": {
         "description": "two-factor authentication",
