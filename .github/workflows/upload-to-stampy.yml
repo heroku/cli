@@ -10,7 +10,7 @@ on:
 jobs:
   get-signed-from-stampy:
     runs-on: ubuntu-latest
-    environment: stampy
+    environment: Stampy
     steps:
       - uses: actions/checkout@3
       - name: get version sha

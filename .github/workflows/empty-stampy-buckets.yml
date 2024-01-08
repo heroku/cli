@@ -5,7 +5,7 @@ on:
 jobs:
   copy-to-stable:
     runs-on: ubuntu-latest
-    environment: stampy
+    environment: Stampy
     steps:
       - name: Empty Stampy signed and unsigned buckets
         env:
