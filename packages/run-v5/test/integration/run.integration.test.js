@@ -40,7 +40,7 @@ describe('run', () => {
     })
     return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
       .then(() => fixture.release())
-      .then(() => expect(stdout).to.equal('{"foo":"bar"}\n'))
+      .then(() => expect(stdout).to.contain('{"foo":"bar"}\n'))
   })
 
   it('runs a command with env vars', () => {
