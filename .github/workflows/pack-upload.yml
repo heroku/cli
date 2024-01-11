@@ -124,6 +124,6 @@ jobs:
       - name: yarn install
         run: yarn --immutable --network-timeout 1000000
       - name: pack windows installer
-        run: oclif pack win --defender-exclusion hidden --root="./packages/cli"
+        run: yarn oclif pack win --defender-exclusion hidden --root="./packages/cli"
       - name: upload windows installer
-        run: oclif upload win --root="./packages/cli"
+        run: yarn oclif upload win --root="./packages/cli"
