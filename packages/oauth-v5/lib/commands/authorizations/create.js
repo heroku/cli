@@ -14,6 +14,18 @@ async function run(context, heroku) {
     },
   })
 
+  try {
+    let access_token_feature = await heroku.get('/account/features/access-token-v2')
+    if (access_token_feature && access_token_feature.enabled) {
+      cli.warn('This token will only be visible while this terminal session is open. ' +
+        'After that, you will not be able to retrieve it, so save it in a safe place.')
+    }
+  } catch (error) {
+    if (error.statusCode === 404) {
+      // No-Op - Feature is not enabled
+    }
+  }
+
   if (!context.flags.short && !context.flags.json) {
     promise = cli.action('Creating OAuth Authorization', promise)
   }
