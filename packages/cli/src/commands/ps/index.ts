@@ -1,13 +1,13 @@
 import color from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Command, flags, APIClient} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
-let cli = require('heroku-cli-util')
-let time = require('../../time')
+const cli = require('heroku-cli-util')
+const time = require('../../time')
 const {truncate, sortBy, reduce, forEach} = require('lodash')
-let getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
-function printExtended(dynos) {
+const getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
+function printExtended(dynos: Heroku.Dyno) {
   const trunc = s => truncate(s, {length: 35, omission: '\u2026'})
   dynos = sortBy(dynos, ['type'], a => getProcessNum(a.name))
   cli.table(dynos, {
@@ -17,17 +17,17 @@ function printExtended(dynos) {
   })
 }
 
-async function printAccountQuota(context, heroku, app, account) {
+async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: Heroku.Account) {
   if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
 
-  if (app.owner.id !== account.id) {
+  if (app.owner!.id !== account.id) {
     return
   }
 
-  let quota = await heroku.request({
-    path: `/accounts/${account.id}/actions/get-quota`, headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
+  const quota = await heroku.get<Heroku.Account>(`/accounts/${account.id}/actions/get-quota`, {
+    headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
   })
     .then(function (data) {
       if (data.id === 'not_found') {
@@ -41,18 +41,18 @@ async function printAccountQuota(context, heroku, app, account) {
     })
   if (!quota)
     return
-  let remaining = (quota.account_quota === 0) ? 0 : quota.account_quota - quota.quota_used
-  let percentage = (quota.account_quota === 0) ? 0 : Math.floor(remaining / quota.account_quota * 100)
-  let remainingMinutes = remaining / 60
-  let hours = Math.floor(remainingMinutes / 60)
-  let minutes = Math.floor(remainingMinutes % 60)
-  let appQuota = quota.apps.find(appQuota => {
+  const remaining = (quota.account_quota === 0) ? 0 : quota.account_quota - quota.quota_used
+  const percentage = (quota.account_quota === 0) ? 0 : Math.floor(remaining / quota.account_quota * 100)
+  const remainingMinutes = remaining / 60
+  const hours = Math.floor(remainingMinutes / 60)
+  const minutes = Math.floor(remainingMinutes % 60)
+  const appQuota = quota.apps.find(appQuota => {
     return appQuota.app_uuid === app.id
   })
-  let appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
-  let appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
-  let appHours = Math.floor(appQuotaUsed / 60)
-  let appMinutes = Math.floor(appQuotaUsed % 60)
+  const appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
+  const appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
+  const appHours = Math.floor(appQuotaUsed / 60)
+  const appMinutes = Math.floor(appQuotaUsed % 60)
   if (app.process_tier === 'eco') {
     ux.log(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
     ux.log(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
@@ -70,22 +70,22 @@ async function printAccountQuota(context, heroku, app, account) {
   }
 }
 
-function printDynos(dynos) {
-  let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
-    let since = time.ago(new Date(dyno.updated_at))
-    let size = dyno.size || '1X'
+function printDynos(dynos: Heroku.Dyno) {
+  const dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
+    const since = time.ago(new Date(dyno.updated_at))
+    const size = dyno.size || '1X'
     if (dyno.type === 'run') {
-      let key = `${color.green('run')}: one-off processes`
+      const key = `${color.green('run')}: one-off processes`
       if (dynosByCommand[key] === undefined)
         dynosByCommand[key] = []
-      let state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
+      const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
       dynosByCommand[key].push(`${dyno.name} (${color.cyan(size)}): ${state} ${color.dim(since)}: ${dyno.command}`)
     } else {
-      let key = `${color.green(dyno.type)} (${color.cyan(size)}): ${dyno.command}`
+      const key = `${color.green(dyno.type)} (${color.cyan(size)}): ${dyno.command}`
       if (dynosByCommand[key] === undefined)
         dynosByCommand[key] = []
-      let state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
-      let item = `${dyno.name}: ${color.green(state)} ${color.dim(since)}`
+      const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
+      const item = `${dyno.name}: ${color.green(state)} ${color.dim(since)}`
       dynosByCommand[key].push(item)
     }
 
@@ -94,7 +94,7 @@ function printDynos(dynos) {
   forEach(dynosByCommand, function (dynos, key) {
     ux.styledHeader(`${key} (${color.yellow(dynos.length)})`)
     dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
-    for (let dyno of dynos)
+    for (const dyno of dynos)
       ux.log(dyno)
     ux.log()
   })
@@ -104,45 +104,60 @@ export default class Index extends Command {
     static topic = 'ps';
     static description = 'list dynos for an app';
     static strict = false;
+
     static flags = {
       json: flags.boolean({description: 'display as json'}),
       extended: flags.boolean({char: 'x', hidden: true}),
       app: flags.app({required: true}),
     };
 
+    static examples = [
+      '$ heroku ps',
+      '$ heroku ps run # specifying types',
+    ]
+
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(Index)
-      const {app, flags, args} = context
-      const types = args
+      const {flags, argv: _argv} = await this.parse(Index)
+      const argv = _argv as string[]
+      const app = flags.app
+      const types = argv || []
       const {json, extended} = flags
       const suffix = extended ? '?extended=true' : ''
-      let promises = {
-        dynos: this.heroku.request({path: `/apps/${app}/dynos${suffix}`}),
+
+      interface StackedPromises {
+        dynos: Heroku.Dyno,
+        appInfo?: Heroku.App,
+        accountInfo?: Heroku.Account
       }
-      promises.appInfo = this.heroku.request({
-        path: `/apps/${app}`, headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'},
+
+      const promises: StackedPromises = {
+        dynos: this.heroku.get<Heroku.Dyno>(`/apps/${app}/dynos${suffix}`),
+      }
+      promises.appInfo = this.heroku.get<Heroku.App>(`/apps/${app}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'},
       })
-      promises.accountInfo = this.heroku.request({path: '/account'})
-      let [dynos, appInfo, accountInfo] = await Promise.all([
-        promises.dynos, promises.appInfo, promises.accountInfo,
+      promises.accountInfo = this.heroku.get<Heroku.Account>('/account')
+      let dynos = await Promise.resolve(promises.dynos)
+      const [appInfo, accountInfo] = await Promise.resolve([
+        promises.appInfo, promises.accountInfo,
       ])
       const shielded = appInfo.space && appInfo.space.shield
       if (shielded) {
-        dynos.forEach(d => {
+        dynos.forEach((d: Record<string, string>) => {
           d.size = d.size.replace('Private-', 'Shield-')
         })
       }
 
       if (types.length > 0) {
-        dynos = dynos.filter(dyno => types.find(t => dyno.type === t))
-        types.forEach(t => {
-          if (!dynos.find(d => d.type === t)) {
+        dynos = dynos.filter((dyno: Record<string, string>) => types.find((t: string) => dyno.type === t))
+        types.forEach((t: string) => {
+          if (!dynos.find((d: Record<string, string>) => d.type === t)) {
             throw new Error(`No ${color.cyan(t)} dynos on ${color.magenta(app)}`)
           }
         })
       }
 
-      let compare = function (a, b) {
+      const compare = function (a: string, b: string) {
         let comparison = 0
         if (a > b) {
           comparison = 1
@@ -153,13 +168,13 @@ export default class Index extends Command {
         return comparison
       }
 
-      dynos = dynos.sort((a, b) => compare(a.name, b.name))
+      dynos = dynos.sort((a: Record<string, string>, b: Record<string, string>) => compare(a.name, b.name))
       if (json)
         ux.styledJSON(dynos)
       else if (extended)
         printExtended(dynos)
       else {
-        await printAccountQuota(context, heroku, appInfo, accountInfo)
+        await printAccountQuota(this.heroku, appInfo, accountInfo)
         if (dynos.length === 0)
           ux.log(`No dynos on ${color.magenta(app)}`)
         else
