@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.7.2-beta.0](https://github.com/heroku/cli/compare/v8.7.1...v8.7.2-beta.0) (2024-01-11)
+
+
+### Bug Fixes
+
+* remove unneeded pricing language for teams ([#2575](https://github.com/heroku/cli/issues/2575)) ([ea64be5](https://github.com/heroku/cli/commit/ea64be53267a7bc4663e08524324a27e47cac070))
+
+
+
+
+
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
