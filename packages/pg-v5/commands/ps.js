@@ -6,9 +6,9 @@ async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  const { app, args, flags } = context
-  const { database } = args
-  const { verbose } = flags
+  const {app, args, flags} = context
+  const {database} = args
+  const {verbose} = flags
 
   let db = await fetcher.database(app, database)
 
@@ -23,9 +23,9 @@ SELECT '${num}' || '${num}' WHERE EXISTS (
 )
 `
   let waitingOutput = await psql.exec(db, waitingQuery)
-  let waiting = waitingOutput.includes(waitingMarker)
-    ? 'waiting'
-    : 'wait_event IS NOT NULL AS waiting'
+  let waiting = waitingOutput.includes(waitingMarker) ?
+    'waiting' :
+    'wait_event IS NOT NULL AS waiting'
   let query = `
 SELECT
   pid,
@@ -54,7 +54,7 @@ module.exports = {
   description: 'view active queries with execution time',
   needsApp: true,
   needsAuth: true,
-  flags: [{ name: 'verbose', char: 'v' }],
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  flags: [{name: 'verbose', char: 'v'}],
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }

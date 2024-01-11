@@ -1,7 +1,7 @@
 `heroku git`
 ============
 
-manage local git repository for app
+set git remote and clone Heroku repository
 
 * [`heroku git:clone [DIRECTORY]`](#heroku-gitclone-directory)
 * [`heroku git:remote`](#heroku-gitremote)
@@ -31,6 +31,8 @@ EXAMPLES
   ...
 ```
 
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/git/clone.ts)_
+
 ## `heroku git:remote`
 
 adds a git remote to an app repo
@@ -54,3 +56,5 @@ EXAMPLES
       # set git remote heroku-staging to https://git.heroku.com/example.git
       $ heroku git:remote --remote heroku-staging -a example
 ```
+
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/git/remote.ts)_

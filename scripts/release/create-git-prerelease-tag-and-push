@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+
+PRERELEASE_PREFIX="prerelease/"
+PRERELEASE_TAG_MARKER="beta"
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+TAG_NAME="v${PACKAGE_VERSION}"
+EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
+
+if [[ "${CURRENT_BRANCH}" != "${PRERELEASE_PREFIX}"* ]]; then
+  echo "script must be run on a branch with the pattern: '${PRERELEASE_PREFIX}' in the name."
+  exit 1
+fi
+
+if [ -n "${EXISTING_REMOTE_TAG}" ]; then
+  echo "The tag ${TAG_NAME} already exists on github.com"
+  echo "This likely means this version has already been published."
+  echo "Please examine the tag ${TAG_NAME} on github.com/heroku/cli to see the contents of the ${TAG_NAME} release"
+  echo "You may need to run scripts/create-release-pr to create a new release before running this script"
+  exit 1
+fi
+
+if [[ "${TAG_NAME}" != *"${PRERELEASE_TAG_MARKER}"* ]]; then
+  echo "script must be run on a branch with a beta tag."
+  echo "to create a beta tag, see the Heroku CLI release instructions on creating a prerelease"
+  exit 1
+fi
+
+git tag "${TAG_NAME}" -m "${TAG_NAME}"
+git push origin "${TAG_NAME}"
+

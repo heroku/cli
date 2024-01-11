@@ -3,11 +3,11 @@
 const cli = require('heroku-cli-util')
 const parsers = require('../../lib/parsers')()
 
-function check (val, message) {
+function check(val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space example-space`)
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let lib = require('../../lib/vpn-connections')(heroku)
 
   let space = context.flags.space
@@ -40,13 +40,13 @@ The connection is established over the public Internet but all traffic is encryp
   needsApp: false,
   needsAuth: true,
   args: [
-    { name: 'name', optional: true, hidden: true }
+    {name: 'name', optional: true, hidden: true},
   ],
   flags: [
-    { name: 'name', char: 'n', hasValue: true, description: 'VPN name' },
-    { name: 'ip', char: 'i', hasValue: true, description: 'public IP of customer gateway' },
-    { name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas' },
-    { name: 'space', char: 's', hasValue: true, description: 'space name' }
+    {name: 'name', char: 'n', hasValue: true, description: 'VPN name'},
+    {name: 'ip', char: 'i', hasValue: true, description: 'public IP of customer gateway'},
+    {name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas'},
+    {name: 'space', char: 's', hasValue: true, description: 'space name'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

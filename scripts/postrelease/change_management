@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
-if (!(process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME.startsWith('v'))) {
+const isStableRelease = require('../utils/isStableRelease')
+const {GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
+
+if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release, skipping change management trigger')
   process.exit(0)
 }
@@ -43,6 +46,7 @@ async function sendDeployNotification () {
     release: {
       actor_email: actorEmail,
       app_id: appId,
+      component_name: 'cli',
       description: `Deploy ${sha} of heroku/cli in ${stage}`,
       sha,
       stage

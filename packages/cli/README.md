@@ -4,7 +4,7 @@ Heroku CLI
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
 [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
+[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
@@ -48,7 +48,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
-* [`heroku git`](docs/git.md) - manage local git repository for app
+* [`heroku git`](docs/git.md) - set git remote and clone Heroku repository
 * [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features

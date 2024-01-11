@@ -5,7 +5,7 @@ module.exports = function () {
   Splits strings separated by commas into an array
   If the string is empty or null, an empty array is returned.
    */
-  function splitCsv (string) {
+  function splitCsv(string) {
     return (string || '')
       .split(',')
       .map(s => s.trim())
@@ -13,6 +13,6 @@ module.exports = function () {
   }
 
   return {
-    splitCsv
+    splitCsv,
   }
 }

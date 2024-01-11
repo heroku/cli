@@ -13,7 +13,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (--version)
-@heroku-cli/plugin-apps-v5/8.0.5 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-apps-v5/8.6.0 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -296,7 +296,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
 ```
 

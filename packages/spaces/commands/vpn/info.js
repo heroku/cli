@@ -3,32 +3,37 @@
 const cli = require('heroku-cli-util')
 const format = require('../../lib/format')()
 
-function displayVPNInfo (space, name, info) {
+function displayVPNInfo(space, name, info) {
   cli.styledHeader(`${name} VPN Info`)
   cli.styledObject({
     Name: name,
     ID: info.id,
     'Public IP': info.public_ip,
+    // eslint-disable-next-line new-cap
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    'Status': `${format.VPNStatus(info.status)}`,
-    'Status Message': info.status_message
+    // eslint-disable-next-line new-cap
+    Status: `${format.VPNStatus(info.status)}`,
+    'Status Message': info.status_message,
   }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
 
   // make up tunnel IDs
-  info.tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
+  info.tunnels.forEach((val, i) => {
+    val.tunnel_id = 'Tunnel ' + (i + 1)
+  })
   cli.styledHeader(`${name} VPN Tunnel Info`)
   cli.table(info.tunnels, {
     columns: [
-      { key: 'tunnel_id', label: 'VPN Tunnel' },
-      { key: 'ip', label: 'IP Address' },
-      { key: 'status', label: 'Status', format: status => format.VPNStatus(status) },
-      { key: 'last_status_change', label: 'Status Last Changed' },
-      { key: 'status_message', label: 'Details' }
-    ]
+      {key: 'tunnel_id', label: 'VPN Tunnel'},
+      {key: 'ip', label: 'IP Address'},
+      // eslint-disable-next-line new-cap
+      {key: 'status', label: 'Status', format: status => format.VPNStatus(status)},
+      {key: 'last_status_change', label: 'Status Last Changed'},
+      {key: 'status_message', label: 'Details'},
+    ],
   })
 }
 
-function render (space, name, info, flags) {
+function render(space, name, info, flags) {
   if (flags.json) {
     cli.styledJSON(info)
   } else {
@@ -36,11 +41,11 @@ function render (space, name, info, flags) {
   }
 }
 
-function check (val, message) {
+function check(val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space my-space vpn-connection-name`)
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let space = context.flags.space || context.args.space
   check(space, 'Space name required')
 
@@ -53,6 +58,7 @@ async function run (context, heroku) {
   if (info.name) {
     name = info.name
   }
+
   render(space, name, info, context.flags)
 }
 
@@ -77,12 +83,12 @@ module.exports = {
     Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message`,
   needsApp: false,
   needsAuth: true,
-  args: [{ name: 'name', optional: true, hidden: true }],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to' },
-    { name: 'json', description: 'output in json format' },
-    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from' }
+    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
+    {name: 'json', description: 'output in json format'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from'},
   ],
   run: cli.command(run),
-  render: render
+  render: render,
 }

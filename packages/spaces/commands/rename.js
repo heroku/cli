@@ -2,13 +2,13 @@
 
 let cli = require('heroku-cli-util')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let to = context.flags.to
   let from = context.flags.from
   let request = heroku.request({
     method: 'PATCH',
     path: `/spaces/${from}`,
-    body: { name: to }
+    body: {name: to},
   })
   await cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request)
 }
@@ -25,8 +25,8 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   flags: [
-    { name: 'from', hasValue: true, required: true, description: 'current name of space' },
-    { name: 'to', hasValue: true, required: true, description: 'desired name of space' }
+    {name: 'from', hasValue: true, required: true, description: 'current name of space'},
+    {name: 'to', hasValue: true, required: true, description: 'desired name of space'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

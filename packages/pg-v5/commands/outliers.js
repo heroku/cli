@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const psql = require('../lib/psql')
 
-async function ensurePGStatStatement (db) {
+async function ensurePGStatStatement(db) {
   let query = `
 SELECT exists(
   SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
@@ -17,10 +17,10 @@ You can install it by running: CREATE EXTENSION pg_stat_statements WITH SCHEMA h
   }
 }
 
-function outliersQuery (version, limit, truncate) {
-  let truncatedQueryString = truncate
-    ? 'CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || \'…\' END'
-    : 'query'
+function outliersQuery(version, limit, truncate) {
+  let truncatedQueryString = truncate ?
+    'CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || \'…\' END' :
+    'query'
 
   if (version >= 13) {
     return `
@@ -35,8 +35,9 @@ WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 
 ORDER BY total_exec_time DESC
 LIMIT ${limit}
 `
-  } else {
-    return `
+  }
+
+  return `
 SELECT
   interval '1 millisecond' * total_time AS total_exec_time,
   to_char((total_time/sum(total_time) OVER()) * 100, 'FM90D0') || '%'  AS prop_exec_time,
@@ -48,14 +49,13 @@ WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 
 ORDER BY total_time DESC
 LIMIT ${limit}
 `
-  }
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const fetcher = require('../lib/fetcher')
 
-  const { app, args, flags } = context
-  const { database } = args
+  const {app, args, flags} = context
+  const {database} = args
 
   let db = await fetcher(heroku).database(app, database)
   let version = await psql.fetchVersion(db)
@@ -68,9 +68,9 @@ async function run (context, heroku) {
   }
 
   let limit = 10
-  if (context.flags.num) {
+  if (flags.num) {
     if (/^(\d+)$/.exec(flags.num)) {
-      limit = parseInt(flags.num)
+      limit = Number.parseInt(flags.num)
     } else {
       throw new Error(`Cannot parse num param value "${flags.num}" to a number`)
     }
@@ -87,11 +87,11 @@ module.exports = {
   description: 'show 10 queries that have longest execution time in aggregate',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
+  args: [{name: 'database', optional: true}],
   flags: [
-    { name: 'reset', description: 'resets statistics gathered by pg_stat_statements' },
-    { name: 'truncate', char: 't', description: 'truncate queries to 40 characters' },
-    { name: 'num', char: 'n', description: 'the number of queries to display (default: 10)', hasValue: true }
+    {name: 'reset', description: 'resets statistics gathered by pg_stat_statements'},
+    {name: 'truncate', char: 't', description: 'truncate queries to 40 characters'},
+    {name: 'num', char: 'n', description: 'the number of queries to display (default: 10)', hasValue: true},
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({preauth: true}, run),
 }

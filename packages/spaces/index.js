@@ -1,8 +1,8 @@
 'use strict'
 
 exports.topics = [
-  { name: 'spaces', description: 'manage heroku private spaces' },
-  { name: 'trusted-ips', hidden: true }
+  {name: 'spaces', description: 'manage heroku private spaces'},
+  {name: 'trusted-ips', hidden: true},
 ]
 
 exports.commands = [
@@ -34,5 +34,5 @@ exports.commands = [
   require('./commands/outbound-rules'),
   require('./commands/outbound-rules/add'),
   require('./commands/outbound-rules/remove'),
-  require('./commands/hosts')
+  require('./commands/hosts'),
 ]

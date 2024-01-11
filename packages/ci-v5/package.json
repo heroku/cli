@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci-v5",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "8.1.0",
+  "version": "8.6.0",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
-    "@heroku-cli/plugin-run-v5": "^8.0.5",
+    "@heroku-cli/plugin-run-v5": "^8.6.0",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
     "github-url-to-object": "^4.0.4",
@@ -33,7 +33,8 @@
     "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
-    "oclif": "3.8.1",
+    "nyc": "^15.1.0",
+    "oclif": "3.11.3",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
   },
@@ -46,7 +47,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/ci-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/ci-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -56,9 +57,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "mocha -R tap",
+    "test": "nyc mocha --forbid-only  && yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }

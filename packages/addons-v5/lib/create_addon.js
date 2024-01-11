@@ -8,14 +8,14 @@ function formatConfigVarsMessage(addon) {
   if (configVars.length > 0) {
     configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
     return `Created ${cli.color.addon(addon.name)} as ${configVars}`
-  } else {
-    return `Created ${cli.color.addon(addon.name)}`
   }
+
+  return `Created ${cli.color.addon(addon.name)}`
 }
 
 module.exports = async function (heroku, app, plan, confirm, wait, options) {
   const util = require('./util')
-  const waitForAddonProvisioning = require('./addons_wait')
+  const {waitForAddonProvisioning} = require('./addons_wait')
 
   function createAddonRequest(confirm) {
     let body = {
@@ -34,7 +34,7 @@ module.exports = async function (heroku, app, plan, confirm, wait, options) {
           'x-heroku-legacy-provider-messages': 'true',
         },
       }).then(function (addon) {
-        cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
+        cli.action.done(cli.color.green(util.formatPriceText(addon.plan.price)))
         return addon
       }),
     )

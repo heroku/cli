@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+if [[ "${CURRENT_BRANCH}" != "main" ]]; then
+  echo "script must be run on branch 'main'. On $CURRENT_BRANCH"
+  exit 1
+fi
+
+if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
+  echo "package not on stable version. Skipping tagging."
+  exit 1
+fi
+
+TAG_NAME="v${PACKAGE_VERSION}"
+EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
+
+if [ -n "${EXISTING_REMOTE_TAG}" ]; then
+  echo "The tag ${TAG_NAME} already exists on github.com"
+  echo "This likely means this version has already been published."
+  echo "Please examine the tag ${TAG_NAME} on github.com/heroku/cli to see the contents of the ${TAG_NAME} release"
+  echo "You may need to run scripts/create-release-pr to create a new release before running this script"
+  exit 1
+fi
+
+git tag "${TAG_NAME}" -m "${TAG_NAME}"
+git push origin "${TAG_NAME}"

@@ -3,14 +3,16 @@
 const cli = require('heroku-cli-util')
 const settings = require('../../lib/setter')
 
-function explain (setting) {
+function explain(setting) {
   if (setting.value === -1) {
-    return `Execution plan logging has been disabled.`
-  } else if (setting.value === 0) {
-    return `All queries will have their execution plans logged.`
-  } else {
-    return `All execution plans will be logged for queries taking up to ${setting.value} milliseconds or more.`
+    return 'Execution plan logging has been disabled.'
   }
+
+  if (setting.value === 0) {
+    return 'All queries will have their execution plans logged.'
+  }
+
+  return `All execution plans will be logged for queries taking up to ${setting.value} milliseconds or more.`
 }
 
 module.exports = {
@@ -22,6 +24,6 @@ module.exports = {
 WARNING: Setting a low value may have performance impacts on your database as well as generate a large volume of logs.`,
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, settings.generate('auto_explain.log_min_duration', settings.numeric, explain))
+  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
+  run: cli.command({preauth: true}, settings.generate('auto_explain.log_min_duration', settings.numeric, explain)),
 }

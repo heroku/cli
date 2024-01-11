@@ -49,26 +49,6 @@ let addMemberToTeam = async function (email, role, groupName, heroku, method = '
   await cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
 }
 
-let warnIfAtTeamMemberLimit = async function (teamInfo, groupName, context, heroku) {
-  // Users receive `You'll be billed monthly for teams over 5 members.`
-  const FREE_TEAM_LIMIT = 6
-
-  if (teamInfo.type === 'team') {
-    let membersAndInvites = {
-      invites: await heroku.request({
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.team-invitations',
-        },
-        method: 'GET',
-        path: `/teams/${groupName}/invitations`,
-      }),
-      members: await heroku.get(`/teams/${groupName}/members`),
-    }
-    const membersCount = membersAndInvites.invites.length + membersAndInvites.members.length
-    if (membersCount === FREE_TEAM_LIMIT) cli.warn("You'll be billed monthly for teams over 5 members.")
-  }
-}
-
 module.exports = {
   addMemberToTeam,
   getOwner,
@@ -77,5 +57,4 @@ module.exports = {
   teamInfo,
   printGroups,
   printGroupsJSON,
-  warnIfAtTeamMemberLimit,
 }

@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const path = require('path')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const debug = require('debug')('heroku-pg')
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
@@ -12,8 +12,8 @@ async function run (context, heroku) {
   const db = context.args.database
   const notify = require('../lib/notify')(context)
 
-  let waitFor = async function waitFor (db) {
-    let interval = parseInt(context.flags['wait-interval'])
+  let waitFor = async function waitFor(db) {
+    let interval = Number.parseInt(context.flags['wait-interval'])
     if (!interval || interval < 0) interval = 5
 
     let status
@@ -25,23 +25,23 @@ async function run (context, heroku) {
       try {
         status = await heroku.request({
           host: host(db),
-          path: `/client/v11/databases/${db.id}/wait_status`
+          path: `/client/v11/databases/${db.id}/wait_status`,
         })
-      } catch (err) {
-        debug(err)
-        if (!retries || err.statusCode !== 404) throw err
+      } catch (error) {
+        debug(error)
+        if (!retries || error.statusCode !== 404) throw error
         retries--
-        status = { 'waiting?': true }
+        status = {'waiting?': true}
       }
 
       if (status['error?']) {
         notify({
           sound: true,
           subtitle: 'error',
-          message: `${name} ${status['message']}`,
-          contentImage: path.join(__dirname, '../assets/error.png')
+          message: `${name} ${status.message}`,
+          contentImage: path.join(__dirname, '../assets/error.png'),
         })
-        cli.error(status['message'])
+        cli.error(status.message)
         cli.exit(1)
       }
 
@@ -49,11 +49,12 @@ async function run (context, heroku) {
         if (waiting) {
           notify({
             sound: true,
-            message: `${name} is ${status['message']}`,
-            contentImage: path.join(__dirname, '../assets/success.png')
+            message: `${name} is ${status.message}`,
+            contentImage: path.join(__dirname, '../assets/success.png'),
           })
           cli.action.done(status.message)
         }
+
         return
       }
 
@@ -71,7 +72,7 @@ async function run (context, heroku) {
 
   let dbs = []
   if (db) {
-    dbs = [ await fetcher.addon(app, db) ]
+    dbs = [await fetcher.addon(app, db)]
   } else {
     dbs = await fetcher.all(app)
   }
@@ -85,10 +86,10 @@ module.exports = {
   description: 'blocks until database is available',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
+  args: [{name: 'database', optional: true}],
   flags: [
-    { name: 'wait-interval', description: 'how frequently to poll in seconds (to avoid rate limiting)', hasValue: true },
-    { name: 'no-notify', description: 'do not show OS notification' }
+    {name: 'wait-interval', description: 'how frequently to poll in seconds (to avoid rate limiting)', hasValue: true},
+    {name: 'no-notify', description: 'do not show OS notification'},
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({preauth: true}, run),
 }

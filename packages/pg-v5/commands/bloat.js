@@ -80,10 +80,10 @@ const cmd = {
   description: 'show table and index bloat in your database ordered by most wasteful',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }
 
 module.exports = [
-  Object.assign({ command: 'bloat' }, cmd)
+  Object.assign({command: 'bloat'}, cmd),
 ]

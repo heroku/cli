@@ -35,3 +35,5 @@ EXAMPLES
 
   $ heroku logs --app=my-app --tail
 ```
+
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/logs.ts)_

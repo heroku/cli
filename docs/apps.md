@@ -296,7 +296,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
 ```
 

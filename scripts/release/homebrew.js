@@ -1,63 +1,24 @@
-#!/usr/bin/env node
-
 const fs = require('fs')
 const execa = require('execa')
-const https = require('https')
 const path = require('path')
 const rm = require('rimraf')
 const mkdirp = require('mkdirp')
-const { promisify } = require('util')
-const { pipeline } = require('stream')
+const {promisify} = require('util')
+const {pipeline} = require('stream')
 const crypto = require('crypto')
+const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
+const isStableRelease = require('../utils/isStableRelease')
 
-const NODE_JS_BASE = 'https://nodejs.org/download/release'
-const CLI_DIR = path.join(__dirname, '..', '..', 'packages', 'cli')
-const DIST_DIR = path.join(CLI_DIR, 'dist')
-const PJSON = require(path.join(CLI_DIR, 'package.json'))
-const NODE_VERSION = PJSON.oclif.update.node.version
-const SHORT_VERSION = PJSON.version
+const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
+const HEROKU_S3_BUCKET = getHerokuS3Bucket()
+const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
 
-async function getText (url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let buffer = []
-
-      res.on('data', (buf) => {
-        buffer.push(buf)
-      })
-
-      res.on('close', () => {
-        resolve(Buffer.concat(buffer).toString('utf-8'))
-      })
-    }).on('error', reject)
-  })
-}
-
-async function getDownloadInfoForNodeVersion (version) {
-  // https://nodejs.org/download/release/v12.21.0/SHASUMS256.txt
-  const url = `${NODE_JS_BASE}/v${version}/SHASUMS256.txt`
-  const shasums = await getText(url)
-  const shasumLine = shasums.split('\n').find((line) => {
-    return line.includes(`node-v${version}-darwin-x64.tar.xz`)
-  })
-
-  if (!shasumLine) {
-    throw new Error(`could not find matching shasum for ${version}`)
-  }
-
-  const [shasum, filename] = shasumLine.trim().split(/\s+/)
-  return {
-    url: `${NODE_JS_BASE}/v${version}/${filename}`,
-    sha256: shasum
-  }
-}
-
-if (!(process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME.startsWith('v'))) {
+if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }
 
-async function calculateSHA256 (fileName) {
+async function calculateSHA256(fileName) {
   const hash = crypto.createHash('sha256')
   hash.setEncoding('hex')
   await promisify(pipeline)(fs.createReadStream(fileName), hash)
@@ -66,56 +27,70 @@ async function calculateSHA256 (fileName) {
 
 const ROOT = path.join(__dirname, 'homebrew')
 const TEMPLATES = path.join(ROOT, 'templates')
+const fileSuffix = '.tar.xz'
+const ARCH_INTEL = 'x64'
+const ARCH_ARM = 'arm64'
 
-const CLI_ASSETS_URL = process.env.CLI_ASSETS_URL || 'https://cli-assets.heroku.com'
+function downloadFileFromS3(s3Path, fileName, downloadPath) {
+  const downloadTo = path.join(downloadPath, fileName)
+  const commandStr = `aws s3 cp s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName} ${downloadTo}`
+  return execa.command(commandStr)
+}
 
-async function updateHerokuFormula (brewDir) {
+async function updateHerokuFormula(brewDir) {
   const templatePath = path.join(TEMPLATES, 'heroku.rb')
   const template = fs.readFileSync(templatePath).toString('utf-8')
+  const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
-  const pathToDist = path.join(DIST_DIR, `heroku-v${SHORT_VERSION}`, `heroku-v${SHORT_VERSION}.tar.xz`)
-  const sha256 = await calculateSHA256(pathToDist)
-  const url = `${CLI_ASSETS_URL}/heroku-v${SHORT_VERSION}/heroku-v${SHORT_VERSION}.tar.xz`
+  const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}`
+  const s3KeyPrefix = `versions/${VERSION}/${GITHUB_SHA_SHORT}`
+  const urlPrefix = `https://cli-assets.heroku.com/${s3KeyPrefix}`
 
-  const templateReplaced =
-    template
-      .replace('__CLI_DOWNLOAD_URL__', url)
-      .replace('__CLI_SHA256__', sha256)
-      .replace('__NODE_VERSION__', NODE_VERSION)
+  const fileNameMacIntel = `${fileNamePrefix}-darwin-${ARCH_INTEL}${fileSuffix}`
+  const fileNameMacArm = `${fileNamePrefix}-darwin-${ARCH_ARM}${fileSuffix}`
+  const fileNameLinuxIntel = `${fileNamePrefix}-linux-${ARCH_INTEL}${fileSuffix}`
+  const fileNameLinuxArm = `${fileNamePrefix}-linux-arm${fileSuffix}`
 
-  fs.writeFileSync(path.join(brewDir, 'Formula', 'heroku.rb'), templateReplaced)
-}
+  // download files from S3 for SHA calc
+  await Promise.all([
+    downloadFileFromS3(s3KeyPrefix, fileNameMacIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm, __dirname),
+  ])
 
-async function updateHerokuNodeFormula (brewDir) {
-  const formulaPath = path.join(brewDir, 'Formula', 'heroku-node.rb')
-
-  console.log(`updating heroku-node Formula in ${formulaPath}`)
-  console.log(`getting SHA and URL for Node.js version ${NODE_VERSION}`)
-
-  const { url, sha256 } = await getDownloadInfoForNodeVersion(NODE_VERSION)
-
-  console.log(`done getting SHA for Node.js version ${NODE_VERSION}: ${sha256}`)
-  console.log(`done getting URL for Node.js version ${NODE_VERSION}: ${url}`)
-
-  const templatePath = path.join(TEMPLATES, 'heroku-node.rb')
-  const template = fs.readFileSync(templatePath).toString('utf-8')
+  const sha256MacIntel = await calculateSHA256(path.join(__dirname, fileNameMacIntel))
+  const sha256MacArm = await calculateSHA256(path.join(__dirname, fileNameMacArm))
+  const sha256LinuxIntel = await calculateSHA256(path.join(__dirname, fileNameLinuxIntel))
+  const sha256LinuxArm = await calculateSHA256(path.join(__dirname, fileNameLinuxArm))
 
   const templateReplaced =
     template
-      .replace('__NODE_BIN_URL__', url)
-      .replace('__NODE_SHA256__', sha256)
-      .replace('__NODE_VERSION__', NODE_VERSION)
+      .replace('__CLI_VERSION__', VERSION)
+
+      .replace('__CLI_MAC_INTEL_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacIntel}`)
+      .replace('__CLI_MAC_INTEL_SHA256__', sha256MacIntel)
+
+      .replace('__CLI_MAC_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacArm}`)
+      .replace('__CLI_MAC_ARM_SHA256__', sha256MacArm)
+
+      .replace('__CLI_LINUX_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxIntel}`)
+      .replace('__CLI_LINUX_SHA256__', sha256LinuxIntel)
+
+      .replace('__CLI_LINUX_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxArm}`)
+      .replace('__CLI_LINUX_ARM_SHA256__', sha256LinuxArm)
 
   fs.writeFileSync(formulaPath, templateReplaced)
-  console.log(`done updating heroku-node Formula in ${formulaPath}`)
+
+  console.log(`done updating heroku Formula in ${formulaPath}`)
 }
 
-async function setupGit () {
+async function setupGit() {
   const githubSetupPath = path.join(__dirname, '..', 'utils', '_github_setup')
   await execa(githubSetupPath)
 }
 
-async function updateHomebrew () {
+async function updateHomebrew() {
   const tmp = path.join(__dirname, 'tmp')
   const homebrewDir = path.join(tmp, 'homebrew-brew')
   mkdirp.sync(tmp)
@@ -128,13 +103,11 @@ async function updateHomebrew () {
     [
       'clone',
       'git@github.com:heroku/homebrew-brew.git',
-      homebrewDir
-    ]
+      homebrewDir,
+    ],
   )
   console.log(`done cloning heroku/homebrew-brew to ${homebrewDir}`)
 
-  console.log('updating local git...')
-  await updateHerokuNodeFormula(homebrewDir)
   await updateHerokuFormula(homebrewDir)
 
   // run in git in cloned heroku/homebrew-brew git directory
@@ -142,16 +115,17 @@ async function updateHomebrew () {
     await execa('git', ['-C', homebrewDir, ...args], opts)
   }
 
+  console.log('updating local git...')
   await git(['add', 'Formula'])
   await git(['config', '--local', 'core.pager', 'cat'])
-  await git(['diff', '--cached'], { stdio: 'inherit' })
-  await git(['commit', '-m', `heroku v${SHORT_VERSION}`])
+  await git(['diff', '--cached'], {stdio: 'inherit'})
+  await git(['commit', '-m', `heroku v${VERSION}`])
   if (process.env.SKIP_GIT_PUSH === undefined) {
-    await git(['push', 'origin', 'master'])
+    await git(['push', 'origin', 'main'])
   }
 }
 
-updateHomebrew().catch((err) => {
-  console.error(`error running scripts/release/homebrew.js`, err)
+updateHomebrew().catch(error => {
+  console.error('error running scripts/release/homebrew.js', error)
   process.exit(1)
 })

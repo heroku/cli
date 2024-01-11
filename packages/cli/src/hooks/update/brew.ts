@@ -17,7 +17,7 @@ interface InstallReceipt {
   };
 }
 
-export const brewHook: Hook<'update'> = async function () {
+const brewHook: Hook<'update'> = async function () {
   if (this.config.platform !== 'darwin') return
 
   const brewRoot = path.join(process.env.HOMEBREW_PREFIX || '/usr/local')
@@ -52,3 +52,5 @@ export const brewHook: Hook<'update'> = async function () {
   brew(['uninstall', 'heroku'])
   brew(['install', 'heroku/brew/heroku'])
 }
+
+export default brewHook

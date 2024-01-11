@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-redis-v5",
   "description": "Heroku plugin to manage Heroku Redis",
-  "version": "8.0.5",
+  "version": "8.6.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -26,7 +26,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.8.1",
+    "oclif": "3.11.3",
     "proxyquire": "^2.1.0",
     "sinon": "^7.2.3"
   },
@@ -36,7 +36,7 @@
     "lib",
     "commands"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/redis-v5",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/redis-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -44,9 +44,10 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "nyc mocha",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }

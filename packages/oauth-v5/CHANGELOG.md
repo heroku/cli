@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
+
+
+### Bug Fixes
+
+* run lint after every test. ([#2490](https://github.com/heroku/cli/issues/2490)) ([d4db466](https://github.com/heroku/cli/commit/d4db46648baef355f9e362679fca827591f037c1))
+
+
+
+
+
+## [8.1.9](https://github.com/heroku/cli/compare/v8.1.8...v8.1.9) (2023-06-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [8.1.8](https://github.com/heroku/cli/compare/v8.1.7...v8.1.8) (2023-06-14)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
+## [8.1.4](https://github.com/heroku/cli/compare/v8.1.3...v8.1.4) (2023-05-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
 # [8.1.0](https://github.com/heroku/cli/compare/v8.0.6...v8.1.0) (2023-04-27)
 
 **Note:** Version bump only for package @heroku-cli/plugin-oauth-v5

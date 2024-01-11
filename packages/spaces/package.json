@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-spaces",
   "description": "Heroku plugin to manage Heroku Private Spaces",
-  "version": "8.1.0",
+  "version": "8.7.1",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -30,7 +30,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
-    "oclif": "3.8.1",
+    "oclif": "3.11.3",
     "sinon": "^7.2.3"
   },
   "files": [
@@ -39,7 +39,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli/tree/master/packages/spaces",
+  "homepage": "https://github.com/heroku/cli/tree/main/packages/spaces",
   "keywords": [
     "heroku-plugin"
   ],
@@ -47,10 +47,10 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "nyc mocha",
-    "posttest": "standard",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
     "version": "oclif readme && git add README.md"
   }
 }

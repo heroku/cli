@@ -1,9 +1,9 @@
 'use strict'
 
-const { flatten } = require('lodash')
+const {flatten} = require('lodash')
 
 exports.topics = [
-  { name: 'pg', description: 'manage postgresql databases' }
+  {name: 'pg', description: 'manage postgresql databases'},
 ]
 
 exports.commands = flatten([
@@ -61,7 +61,7 @@ exports.commands = flatten([
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
-  require('./commands/wait')
+  require('./commands/wait'),
 ])
 
 exports.host = require('./lib/host')

@@ -34,8 +34,6 @@ async function run(context, heroku) {
   } else {
     await Utils.addMemberToTeam(email, role, groupName, heroku)
   }
-
-  await Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)
 }
 
 let add = {

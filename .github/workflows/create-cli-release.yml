@@ -1,0 +1,57 @@
+name: Create CLI Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      isStableCandidate:
+        type: boolean
+        description: Is this a stable/prod candidate?
+        required: true
+        default: false
+  workflow_call:
+    inputs:
+      isStableCandidate:
+        type: boolean
+        description: Is this a stable/prod candidate?
+        required: true
+        default: false
+
+jobs:
+  get-version-channel:
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.getVersion.outputs.channel }}
+      version: ${{ steps.getVersion.outputs.version }}
+      # final check to ensure package.json doesn't have a dist tag, ex: '-beta'
+      isStableRelease: ${{ fromJSON(inputs.isStableCandidate) && !steps.getVersion.outputs.channel }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: getVersion
+        uses: ./.github/actions/get-version-and-channel/
+        with:
+          path: './packages/cli/package.json'
+
+  publish-npm:
+    needs: [get-version-channel]
+    # if NOT isStableCandidate confirm dist tag is in package.json version
+    if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
+    uses: ./.github/workflows/publish-npm.yml
+    with:
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      channel: ${{ needs.get-version-channel.outputs.channel }}
+    secrets: inherit
+
+  pack-upload:
+    needs: [ publish-npm ]
+    uses: ./.github/workflows/pack-upload.yml
+    secrets: inherit
+
+  promote:
+    needs: [get-version-channel, pack-upload]
+    if: needs.pack-upload.result == 'success'
+    uses: ./.github/workflows/promote-release.yml
+    with:
+      version: ${{ needs.get-version-channel.outputs.version }}
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      channel: ${{ needs.get-version-channel.outputs.channel }}
+    secrets: inherit

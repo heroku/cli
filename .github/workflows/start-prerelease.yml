@@ -1,0 +1,75 @@
+name: Watch and start pre release
+
+on:
+  push:
+    branches:
+      - prerelease/*
+
+jobs:
+  get-version-channel:
+    # get the version number and release channel name from the package.json
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.getVersion.outputs.channel }}
+      version: ${{ steps.getVersion.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: getVersion
+        uses: ./.github/actions/get-version-and-channel/
+        with:
+          path: './packages/cli/package.json'
+
+  validate-prerelease:
+    # validate that the release is on a pre-release branch, that it is a beta or alpha release, and check if it is already on github
+    needs: [ get-version-channel ]
+    runs-on: ubuntu-latest
+    env:
+        CHANNEL: ${{ needs.get-version-channel.outputs.channel }}
+        VERSION: ${{ needs.get-version-channel.outputs.version }}
+        CURRENT_BRANCH_NAME: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: yarn --immutable --network-timeout 1000000
+      - run: ./scripts/release/validate-prerelease
+
+  publish-github-tag:
+    needs: [ get-version-channel, validate-prerelease ]
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TAG_NAME: ${{ format('v{0}', needs.get-version-channel.outputs.version) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: set git user
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "heroku-front-end+npm-releases@salesforce.com"
+      - name: publish tag to Github
+        run: |
+          git tag "${{ env.TAG_NAME }}" -m "${{ env.TAG_NAME }}"
+          git push origin "${{ env.TAG_NAME }}"
+
+  create-prerelease:
+    needs: [ get-version-channel, validate-prerelease ]
+    uses: ./.github/workflows/create-cli-release.yml
+    secrets: inherit
+    with:
+      isStableCandidate: ${{ false }}
+
+  prerelease-smoke-tests:
+    needs: [ get-version-channel, create-prerelease ]
+    uses: ./.github/workflows/test-installed-cli.yml
+    secrets: inherit
+    with:
+      version: ${{ needs.get-version-channel.outputs.version }}
+
+  prerelease-direwolf-tests:
+    needs: [ get-version-channel, create-prerelease ]
+    uses: ./.github/workflows/direwolf.yml
+    secrets: inherit
+    with:
+      releaseChannel: ${{ needs.get-version-channel.outputs.channel }}

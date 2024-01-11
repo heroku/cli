@@ -1,6 +1,7 @@
 *-debug.log
 *-error.log
 .oclif.manifest.json
+/packages/**/oclif.manifest.json
 /cli
 /coverage
 /dist
@@ -13,5 +14,12 @@ node_modules
 **/.DS_Store
 ./idea
 .vscode
+**/.nyc_output
 
-
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

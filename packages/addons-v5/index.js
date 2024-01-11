@@ -89,3 +89,4 @@ exports.commands = _.flatten([
 
 exports.resolve = require('./lib/resolve')
 exports.createAddon = require('./lib/create_addon')
+exports.destroyAddon = require('./lib/destroy_addon')

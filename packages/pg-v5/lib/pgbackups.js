@@ -2,19 +2,22 @@
 
 const cli = require('heroku-cli-util')
 
-function prefix (transfer) {
+function prefix(transfer) {
   if (transfer.from_type === 'pg_dump') {
     if (transfer.to_type === 'pg_restore') {
       return 'c'
-    } else {
-      return transfer.schedule ? 'a' : 'b'
     }
+
+    return transfer.schedule ? 'a' : 'b'
+
+  // eslint-disable-next-line no-else-return
   } else {
+    // eslint-disable-next-line no-lonely-if
     if (transfer.to_type === 'pg_restore') {
       return 'r'
-    } else {
-      return 'b'
     }
+
+    return 'b'
   }
 }
 
@@ -22,7 +25,7 @@ module.exports = (context, heroku) => ({
   filesize: (size, opts = {}) => {
     Object.assign(opts, {
       decimalPlaces: 2,
-      fixedDecimals: true
+      fixedDecimals: true,
     })
     const bytes = require('bytes')
     return bytes(size, opts)
@@ -30,11 +33,11 @@ module.exports = (context, heroku) => ({
   transfer: {
     num: async function (name) {
       let m = name.match(/^[abcr](\d+)$/)
-      if (m) return parseInt(m[1])
+      if (m) return Number.parseInt(m[1])
       m = name.match(/^o[ab]\d+$/)
       if (m) {
         const host = require('./host')()
-        let transfers = await heroku.get(`/client/v11/apps/${context.app}/transfers`, { host })
+        let transfers = await heroku.get(`/client/v11/apps/${context.app}/transfers`, {host})
         let transfer = transfers.find(t => module.exports(context, heroku).transfer.name(t) === name)
         if (transfer) return transfer.num
       }
@@ -49,22 +52,27 @@ module.exports = (context, heroku) => ({
         let warnings = transfer.warnings
         if (warnings > 0) {
           return `Finished with ${warnings} warnings`
-        } else {
-          return `Completed ${transfer.finished_at}`
         }
-      } else if (transfer.finished_at) {
-        return `Failed ${transfer.finished_at}`
-      } else if (transfer.started_at) {
-        return `Running (processed ${module.exports(context, heroku).filesize(transfer.processed_bytes)})`
-      } else {
-        return 'Pending'
+
+        return `Completed ${transfer.finished_at}`
       }
-    }
+
+      if (transfer.finished_at) {
+        return `Failed ${transfer.finished_at}`
+      }
+
+      if (transfer.started_at) {
+        return `Running (processed ${module.exports(context, heroku).filesize(transfer.processed_bytes)})`
+      }
+
+      return 'Pending'
+    },
   },
   wait: (action, transferID, interval, verbose, app) => {
     if (app === undefined) {
       app = context.app
     }
+
     const host = require('./host')()
     const pgbackups = module.exports(context, heroku)
 
@@ -89,10 +97,11 @@ module.exports = (context, heroku) => ({
 
       while (true) {
         try {
-          backup = await heroku.get(url, { host })
-        } catch (err) {
-          if (failures++ > 20) throw err
+          backup = await heroku.get(url, {host})
+        } catch (error) {
+          if (failures++ > 20) throw error
         }
+
         if (verbose) {
           displayLogs(backup.logs)
         } else if (tty) {
@@ -104,28 +113,29 @@ module.exports = (context, heroku) => ({
             cli.action.status(msg)
           }
         }
+
         if (backup && backup.finished_at) {
           if (backup.succeeded) return
-          else {
-            // logs is undefined unless verbose=true is passed
-            backup = await heroku.get(verboseUrl, { host })
 
-            throw new Error(`An error occurred and the backup did not finish.
+          // logs is undefined unless verbose=true is passed
+          backup = await heroku.get(verboseUrl, {host})
+
+          throw new Error(`An error occurred and the backup did not finish.
 
 ${backup.logs.slice(-5).map(l => l.message).join('\n')}
 
 Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))} for more details.`)
-          }
         }
-        await new Promise((resolve) => setTimeout(resolve, interval * 1000))
+
+        await new Promise(resolve => setTimeout(resolve, interval * 1000))
       }
     }
 
     if (verbose) {
       cli.log(`${action}...`)
       return poll()
-    } else {
-      return cli.action(action, poll())
     }
-  }
+
+    return cli.action(action, poll())
+  },
 })
