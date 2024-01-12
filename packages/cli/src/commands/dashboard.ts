@@ -5,17 +5,24 @@ import * as Heroku from '@heroku-cli/schema'
 import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodash'
 import img = require('term-img')
 import path = require('path')
-import time = require('../time')
+import {ago} from '../lib/time'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import sparkline = require('sparkline')
-import {execSync} from 'child_process'
 import {AppErrors} from '../lib/types/metrics_api_responses.js'
-import {HTTP} from 'http-call'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
   pipeline: Heroku.PipelineCoupling
   formation: Heroku.Formation
 }
+
+type FetchMetricsResponse =  {
+  routerLatency?: AppErrors
+  routerErrors?: AppErrors
+  routerStatus?: AppErrors
+  dynoErrors: (AppErrors | undefined)[]
+}[]
 
 const empty = (o: Record<string, any>) => Object.keys(o).length === 0
 
@@ -35,7 +42,7 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
   if (metrics.dynoErrors) {
     metrics.dynoErrors.filter(d => d)
       .forEach(dynoErrors => {
-        errors = errors.concat(Object.entries(dynoErrors.data)
+        errors = errors.concat(Object.entries(dynoErrors?.data || {})
           .map(e => color.red(`${sum(e[1])} ${e[0]}`)))
       })
   }
@@ -49,7 +56,7 @@ function displayMetrics(metrics: FetchMetricsResponse[0]) {
     if (['win32', 'windows'].includes(process.platform))
       return ''
     const points: number[] = []
-    Object.values(metrics.routerStatus.data)
+    Object.values(metrics.routerStatus?.data || {})
       .forEach(cur => {
         for (const [i, element] of cur.entries()) {
           const j = Math.floor(i / 3)
@@ -96,29 +103,27 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
 
   const metricsData = await Promise.all(apps.map(app => {
     const types = app.formation.map((p: Heroku.Formation) => p.type)
-    const dynoErrorsPromise: Promise<AppErrors[]> = Promise.all(
-      types.map((type: string) => (
-        heroku.request<AppErrors>(
-          `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
-          {host: 'api.metrics.herokai.com', headers: {Range: ''}},
-        )
-      )),
+    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(
+      types.map((type: string) => heroku.get<AppErrors>(
+        `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
+        {hostname: 'api.metrics.herokai.com'},
+      ).catch(() => {}),
+      ),
     )
     return Promise.all([
       dynoErrorsPromise,
-      heroku.request<AppErrors>(`/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, {host: 'api.metrics.herokai.com', headers: {Range: ''}}),
-      heroku.request<AppErrors>(`/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, {host: 'api.metrics.herokai.com', headers: {Range: ''}}),
-      heroku.request<AppErrors>(`/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, {host: 'api.metrics.herokai.com', headers: {Range: ''}}),
+      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
+      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
+      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
     ])
   }))
 
-  return metricsData.map(([dynoErrors, {body: routerLatency}, {body: routerErrors}, {body: routerStatus}]) => ({
-    dynoErrors, routerLatency, routerErrors, routerStatus,
+  return metricsData.map(([dynoErrors, routerLatency, routerErrors, routerStatus]) => ({
+    dynoErrors, routerLatency: routerLatency?.body, routerErrors: routerErrors?.body, routerStatus: routerStatus?.body,
   }))
 }
 
 // lazy way to get TS to do typing for us
-type FetchMetricsResponse =  {routerLatency: AppErrors, routerErrors: AppErrors, routerStatus: AppErrors, dynoErrors: AppErrors[]}[]
 
 function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
   const owner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
@@ -133,7 +138,7 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
     }
 
     displayFormation(app.formation)
-    ux.log(`  ${label('Last release:')} ${time.ago(new Date(app.app.released_at || ''))}`)
+    ux.log(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
     ux.log()
@@ -145,16 +150,11 @@ export default class Dashboard extends Command {
     static description = 'display information about favorite apps';
     static hidden = true;
     public async run(): Promise<void> {
-      if (!cli.raiseErrors) {
-        execSync('heroku help', {stdio: 'inherit'})
-        return
-      }
-
-      const favoriteApps = () => {
-        return this.heroku.request<Heroku.App[]>('/favorites?type=app', {
-          host: 'particleboard.heroku.com', headers: {Range: ''},
+      const favoriteApps = async () => {
+        const {body: apps} = await this.heroku.get<Heroku.App[]>('/favorites?type=app', {
+          hostname: 'particleboard.heroku.com',
         })
-          .then(({body: apps}) => apps.map(app => app.resource_name))
+        return apps.map(app => app.resource_name)
       }
 
       try {
@@ -165,7 +165,7 @@ export default class Dashboard extends Command {
       const apps = await favoriteApps()
       const [{body: teams}, {body: notifications}, appsWithMoreInfo] = await Promise.all([
         this.heroku.get<Heroku.Team[]>('/teams'),
-        this.heroku.get<{ read: boolean }[]>('/user/notifications', {host: 'telex.heroku.com'}),
+        this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'}),
         Promise.all(apps.map(async appID => {
           const [{body: app}, {body: formation}, {body: pipeline}] = await Promise.all([
             this.heroku.get<Heroku.App>(`/apps/${appID}`),
