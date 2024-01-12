@@ -4,16 +4,51 @@ import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import * as time from '../../lib/utils/time'
 
-const cli = require('heroku-cli-util')
 const {truncate, sortBy, reduce, forEach} = require('lodash')
 const getProcessNum = (s: string) => Number.parseInt(s.split('.', 2)[1])
 function printExtended(dynos: Heroku.Dyno) {
   const trunc = (s: string) => truncate(s, {length: 35, omission: '\u2026'})
   dynos = sortBy(dynos, ['type'], (a: Record<string, string>) => getProcessNum(a.name))
-  cli.table(dynos, {
-    columns: [
-      {key: 'id', label: 'ID'}, {key: 'name', label: 'Process'}, {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`}, {key: 'extended.region', label: 'Region'}, {key: 'extended.execution_plane', label: 'Execution Plane'}, {key: 'extended.fleet', label: 'Fleet'}, {key: 'extended.instance', label: 'Instance'}, {key: 'extended.ip', label: 'IP'}, {key: 'extended.port', label: 'Port'}, {key: 'extended.az', label: 'AZ'}, {key: 'release.version', label: 'Release'}, {key: 'command', label: 'Command', format: trunc}, {key: 'extended.route', label: 'Route'}, {key: 'size', label: 'Size'},
-    ],
+  ux.table(dynos as any[], {
+    id: {header: 'ID'},
+    name: {header: 'Process'},
+    state: {
+      header: 'State',
+      get: ({state, row}: any) => `${state} ${time.ago(new Date(row.updated_at))}`,
+    },
+    'extended.region': {
+      header: 'Region',
+    },
+    'extended.execution_plane': {
+      header: 'Execution Plane',
+    },
+    'extended.fleet': {
+      header: 'Fleet',
+    },
+    'extended.instance': {
+      header: 'Instance',
+    },
+    'extended.ip': {
+      header: 'IP',
+    },
+    'extended.port': {
+      header: 'Port',
+    },
+    'extended.az': {
+      header: 'AZ',
+    },
+    'release.version': {
+      header: 'Release',
+    },
+    command: {
+      header: 'Command', get: trunc,
+    },
+    'extended.route': {
+      header: 'Route',
+    },
+    size: {
+      header: 'Size',
+    },
   })
 }
 
