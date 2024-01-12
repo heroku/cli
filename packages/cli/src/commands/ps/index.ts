@@ -172,7 +172,7 @@ export default class Index extends Command {
         headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'},
       })
       promises.accountInfo = this.heroku.get<Heroku.Account>('/account')
-      let dynos = await Promise.resolve(promises.dynos)
+      let {body: dynos} = await Promise.resolve(promises.dynos)
       const [appInfo, accountInfo] = await Promise.resolve([
         promises.appInfo, promises.accountInfo,
       ])
