@@ -65,7 +65,7 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                output in json format
+      --json            output in json format
 
 DESCRIPTION
   list who has access to an app
@@ -198,7 +198,7 @@ FLAGS
   -a, --app=<value>     app to run command against
   -l, --locked          lock the app upon transfer
   -r, --remote=<value>  git remote of app to use
-  --bulk                transfer applications in bulk
+      --bulk            transfer applications in bulk
 
 DESCRIPTION
   transfer applications to another user or team
@@ -288,8 +288,8 @@ USAGE
 FLAGS
   -r, --role=<value>  filter by role
   -t, --team=<value>  team to use
-  --json              output in json format
-  --pending           filter by pending team invitations
+      --json          output in json format
+      --pending       filter by pending team invitations
 
 DESCRIPTION
   list members of a team
