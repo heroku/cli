@@ -2,9 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags, APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import * as time from '../../lib/utils/time'
 
 const cli = require('heroku-cli-util')
-const time = require('../../time')
 const {truncate, sortBy, reduce, forEach} = require('lodash')
 const getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
 function printExtended(dynos: Heroku.Dyno) {
