@@ -6,10 +6,10 @@ import * as time from '../../lib/utils/time'
 
 const cli = require('heroku-cli-util')
 const {truncate, sortBy, reduce, forEach} = require('lodash')
-const getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
+const getProcessNum = (s: string) => Number.parseInt(s.split('.', 2)[1])
 function printExtended(dynos: Heroku.Dyno) {
-  const trunc = s => truncate(s, {length: 35, omission: '\u2026'})
-  dynos = sortBy(dynos, ['type'], a => getProcessNum(a.name))
+  const trunc = (s: string) => truncate(s, {length: 35, omission: '\u2026'})
+  dynos = sortBy(dynos, ['type'], (a: Record<string, string>) => getProcessNum(a.name))
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'}, {key: 'name', label: 'Process'}, {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`}, {key: 'extended.region', label: 'Region'}, {key: 'extended.execution_plane', label: 'Execution Plane'}, {key: 'extended.fleet', label: 'Fleet'}, {key: 'extended.instance', label: 'Instance'}, {key: 'extended.ip', label: 'IP'}, {key: 'extended.port', label: 'Port'}, {key: 'extended.az', label: 'AZ'}, {key: 'release.version', label: 'Release'}, {key: 'command', label: 'Command', format: trunc}, {key: 'extended.route', label: 'Route'}, {key: 'size', label: 'Size'},
@@ -29,7 +29,7 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
   const quota = await heroku.get<Heroku.Account>(`/accounts/${account.id}/actions/get-quota`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
   })
-    .then(function (data) {
+    .then(function (data: Heroku.Account) {
       if (data.id === 'not_found') {
         return null
       }
