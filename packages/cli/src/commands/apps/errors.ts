@@ -5,7 +5,7 @@ import {HTTP} from 'http-call'
 import {sum} from 'lodash'
 import errorInfo from '../../lib/apps/error_info'
 import * as Heroku from '@heroku-cli/schema'
-import {AppErrors} from '../../lib/types/app_errors'
+import {AppErrors} from '../../lib/types/metrics_api_responses.js'
 
 type ErrorSummary = Record<string, number>
 

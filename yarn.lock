@@ -9749,9 +9749,11 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.6.1
     sinon: ^7.2.4
+    sparkline: ^0.2.0
     stdout-stderr: ^0.1.13
     strftime: ^0.10.0
     strip-ansi: 6.0.1
+    term-img: ^4.1.0
     tmp: ^0.0.33
     true-myth: 2.2.3
     ts-node: ^10.9.1

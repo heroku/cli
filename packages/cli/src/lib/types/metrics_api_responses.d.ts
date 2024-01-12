@@ -4,3 +4,4 @@ export type AppErrors = {
   step: string
   data: Record<string, number[]>
 }
+
