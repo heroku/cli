@@ -46,7 +46,7 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
   const remainingMinutes = remaining / 60
   const hours = Math.floor(remainingMinutes / 60)
   const minutes = Math.floor(remainingMinutes % 60)
-  const appQuota = quota.apps.find(appQuota => {
+  const appQuota = quota.apps.find((appQuota: Record<string, string>) => {
     return appQuota.app_uuid === app.id
   })
   const appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
@@ -71,9 +71,9 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
 }
 
 function printDynos(dynos: Heroku.Dyno) {
-  const dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
+  const dynosByCommand = reduce(dynos, function (dynosByCommand: Record<string, string[]>, dyno: Record<string, string>) {
     const since = time.ago(new Date(dyno.updated_at))
-    const size = dyno.size || '1X'
+    const size = dyno?.size || '1X'
     if (dyno.type === 'run') {
       const key = `${color.green('run')}: one-off processes`
       if (dynosByCommand[key] === undefined)
@@ -91,11 +91,11 @@ function printDynos(dynos: Heroku.Dyno) {
 
     return dynosByCommand
   }, {})
-  forEach(dynosByCommand, function (dynos, key) {
+  forEach(dynosByCommand, function (dynos: Heroku.Dyno, key: string) {
     ux.styledHeader(`${key} (${color.yellow(dynos.length)})`)
-    dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
-    for (const dyno of dynos)
-      ux.log(dyno)
+    dynos = dynos.sort((a: string, b: string) => getProcessNum(a) - getProcessNum(b))
+    for (const dyno of dynos as Heroku.Dyno[])
+      ux.log(dyno as unknown as string)
     ux.log()
   })
 }
