@@ -1,32 +1,30 @@
 import {expect, test} from '@oclif/test'
-import Cmd  from '../../../../src/commands/ps'
-import runCommand from '../../../helpers/runCommand'
-const nock = require('nock')
-const strftime = require('strftime')
-const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
-const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 
-function stubAccountQuota(code: number, body: Record<string, string | number | [] | [Record<string, string | number>]>) {
-  nock('https://api.heroku.com:443')
-    .get('/account/features/free-2016')
-    .reply(200, {enabled: true})
-  nock('https://api.heroku.com:443')
-    .get('/apps/myapp/dynos')
-    .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
-  nock('https://api.heroku.com:443', {
-    reqHeaders: {Accept: 'application/vnd.heroku+json; version=3.process_tier'},
-  })
-    .get('/apps/myapp')
-    .reply(200, {process_tier: 'eco', owner: {id: '1234'}, id: '6789'})
-  nock('https://api.heroku.com:443')
-    .get('/account')
-    .reply(200, {id: '1234'})
-  nock('https://api.heroku.com:443', {
-    reqHeaders: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
-  })
-    .get('/accounts/1234/actions/get-quota')
-    .reply(code, body)
-}
+// const strftime = require('strftime')
+const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
+// const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
+
+// function stubAccountQuota(code: number, body: Record<string, string | number | [] | [Record<string, string | number>]>) {
+//   nock('https://api.heroku.com:443')
+//     .get('/account/features/free-2016')
+//     .reply(200, {enabled: true})
+//   nock('https://api.heroku.com:443')
+//     .get('/apps/myapp/dynos')
+//     .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+//   nock('https://api.heroku.com:443', {
+//     reqHeaders: {Accept: 'application/vnd.heroku+json; version=3.process_tier'},
+//   })
+//     .get('/apps/myapp')
+//     .reply(200, {process_tier: 'eco', owner: {id: '1234'}, id: '6789'})
+//   nock('https://api.heroku.com:443')
+//     .get('/account')
+//     .reply(200, {id: '1234'})
+//   nock('https://api.heroku.com:443', {
+//     reqHeaders: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
+//   })
+//     .get('/accounts/1234/actions/get-quota')
+//     .reply(code, body)
+// }
 
 function stubAppAndAccount() {
   return test
