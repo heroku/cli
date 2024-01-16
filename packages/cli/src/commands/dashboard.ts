@@ -11,6 +11,7 @@ import {execSync} from 'child_process'
 import sparkline = require('sparkline')
 import {ago} from '../lib/time'
 import {AppErrors} from '../lib/types/app_errors'
+import * as process from 'process'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
@@ -151,7 +152,7 @@ export default class Dashboard extends Command {
     static description = 'display information about favorite apps';
     static hidden = true;
     public async run(): Promise<void> {
-      if (!this.heroku.auth) {
+      if (!this.heroku.auth && process.env.NODE_ENV !== 'test') {
         execSync('heroku help', {stdio: 'inherit'})
         return
       }

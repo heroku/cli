@@ -8,7 +8,6 @@ import {unwrap} from '../../helpers/utils/unwrap'
 import os = require('os')
 
 describe('dashboard', function () {
-  console.log(os.platform())
   if (os.platform() === 'win32') {
     it('does not run on Windows', () => expect(true))
     return
@@ -19,7 +18,6 @@ describe('dashboard', function () {
     stderr.start()
   })
 
-  const yesterday = new Date(Date.now() - (24 * 60 * 60 * 1000))
   const now = new Date()
   const pipeline = {pipeline: {name: 'foobar'}}
   const formation = [
@@ -51,6 +49,7 @@ describe('dashboard', function () {
       const telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, [])
+
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
         .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
@@ -70,6 +69,7 @@ describe('dashboard', function () {
       const telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(401, [])
+
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
         .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
