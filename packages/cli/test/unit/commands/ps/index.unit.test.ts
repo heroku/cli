@@ -1,8 +1,8 @@
 import {expect, test} from '@oclif/test'
 
-// const strftime = require('strftime')
+const strftime = require('strftime')
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
-// const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
+const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 
 // function stubAccountQuota(code: number, body: Record<string, string | number | [] | [Record<string, string | number>]>) {
 //   nock('https://api.heroku.com:443')
@@ -63,14 +63,16 @@ describe('ps', async () => {
     .nock('https://api.heroku.com:443', api => api
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}, {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
       ]))
     .command(['ps', '--app', 'myapp'])
     .it('shows dyno list', function ({stderr, stdout}) {
-      // const extractedTime = extractTime(stdout)
-      // expect(stdout).to.contain(`=== run: one-off processes (1)\n\nrun.1 (Eco): up ${extractedTime.date} ${extractedTime.time} -0800 (~ 1h ago): bash\n\n=== web (Eco): npm start (1)\n\nweb.1: up ${extractedTime.date} ${extractedTime.time} -0800 (~ 1h ago)\n\n`)
-      // expect(stderr).to.be.empty
-      expect(true).to.equal(true)
+      const extractedTime = extractTime(stdout)
+      console.log('extractedTime.date', extractedTime.date)
+      console.log('extractedTime.date', extractedTime.date)
+      expect(stdout).to.contain(`${hourAgoStr}`)
+      expect(stderr).to.be.empty
     })
   // it('shows shield dynos in dyno list for apps in a shielded private space', function () {
   //   const api = nock('https://api.heroku.com:443')
