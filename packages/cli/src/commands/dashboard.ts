@@ -3,12 +3,12 @@ import {APIClient, Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodash'
-import img = require('term-img')
-import path = require('path')
+import * as img from 'term-img'
+import * as path from 'path'
 import {execSync} from 'child_process'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import sparkline = require('sparkline')
+import sparkline from 'sparkline'
 import {ago} from '../lib/time'
 import {AppErrors} from '../lib/types/app_errors'
 import * as process from 'process'

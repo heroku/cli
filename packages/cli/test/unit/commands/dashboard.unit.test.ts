@@ -5,7 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import {ago} from '../../../src/lib/time'
 import {unwrap} from '../../helpers/utils/unwrap'
-import os = require('os')
+import * as os from 'os'
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
