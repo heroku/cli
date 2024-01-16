@@ -9,7 +9,11 @@ describe('addons:detach', () => {
     stdout.start()
     stderr.start()
   })
-  afterEach(() => nock.cleanAll())
+  afterEach(() => {
+    nock.cleanAll()
+    stdout.stop()
+    stderr.stop()
+  })
   it('detaches an add-on', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/addon-attachments/redis-123')

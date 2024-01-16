@@ -18,6 +18,11 @@ describe('dashboard', function () {
     stderr.start()
   })
 
+  afterEach(() => {
+    stdout.stop()
+    stderr.stop()
+  })
+
   const now = new Date()
   const pipeline = {pipeline: {name: 'foobar'}}
   const formation = [
