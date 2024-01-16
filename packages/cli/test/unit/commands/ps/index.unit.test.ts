@@ -36,30 +36,10 @@ function stubAppAndAccount() {
     )
 }
 
-function extractTime(inputString: string) {
-  const timeExtractions = {
-    date: '',
-    time: '',
-  }
-
-  const dateExtraction = inputString.match(/\d{4}\/\d{2}\/\d{2}/)
-  const timeExtraction = inputString.match(/\d{2}:\d{2}:\d{2}/)
-
-  if (timeExtraction && dateExtraction) {
-    timeExtractions.date = dateExtraction[0]
-    timeExtractions.time = timeExtraction[0]
-  }
-
-  return timeExtractions
-}
-
 describe('ps', async () => {
   test
     .stderr()
     .stdout()
-    // .do(() => {
-    //   stubAppAndAccount()
-    // })
     .nock('https://api.heroku.com:443', api => api
       .get('/apps/myapp/dynos')
       .reply(200, [
@@ -68,10 +48,7 @@ describe('ps', async () => {
       ]))
     .command(['ps', '--app', 'myapp'])
     .it('shows dyno list', function ({stderr, stdout}) {
-      const extractedTime = extractTime(stdout)
-      console.log('extractedTime.date', extractedTime.date)
-      console.log('extractedTime.date', extractedTime.date)
-      expect(stdout).to.contain(`${hourAgoStr}`)
+      expect(stdout).to.contain(`=== run: one-off processes (1)\n\nrun.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash\n\n=== web (Eco): npm start (1)\n\nweb.1: up ${hourAgoStr} (~ 1h ago)\n\n`)
       expect(stderr).to.be.empty
     })
   // it('shows shield dynos in dyno list for apps in a shielded private space', function () {
