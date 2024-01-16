@@ -6,14 +6,14 @@ import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodas
 import img = require('term-img')
 import path = require('path')
 import {ago} from '../lib/time'
+import {AppErrors} from '../lib/types/metrics_api_responses.js'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import sparkline = require('sparkline')
-import {AppErrors} from '../lib/types/metrics_api_responses.js'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
-  pipeline: Heroku.PipelineCoupling
+  pipeline?: Heroku.PipelineCoupling
   formation: Heroku.Formation
 }
 
@@ -83,7 +83,7 @@ function displayMetrics(metrics: FetchMetricsResponse[0]) {
     ux.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
-function displayNotifications(notifications: {read: boolean}[]) {
+function displayNotifications(notifications?: {read: boolean}[]) {
   if (!notifications)
     return
   notifications = notifications.filter(n => !n.read)
@@ -163,17 +163,19 @@ export default class Dashboard extends Command {
 
       ux.action.start('Loading')
       const apps = await favoriteApps()
-      const [{body: teams}, {body: notifications}, appsWithMoreInfo] = await Promise.all([
+      const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
         this.heroku.get<Heroku.Team[]>('/teams'),
-        this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'}),
+        this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'})
+          .catch(() => null),
         Promise.all(apps.map(async appID => {
-          const [{body: app}, {body: formation}, {body: pipeline}] = await Promise.all([
+          const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([
             this.heroku.get<Heroku.App>(`/apps/${appID}`),
             this.heroku.get<Heroku.Formation>(`/apps/${appID}/formation`),
-            this.heroku.get<Heroku.PipelineCoupling>(`/apps/${appID}/pipeline-couplings`),
+            this.heroku.get<Heroku.PipelineCoupling>(`/apps/${appID}/pipeline-couplings`)
+              .catch(() => null),
           ])
           return {
-            app, formation, pipeline,
+            app, formation, pipeline: pipelineResponse?.body,
           }
         })),
       ])
@@ -189,7 +191,7 @@ export default class Dashboard extends Command {
       if (sampleTeam)
         ux.log(`See all apps in ${color.yellow.dim(sampleTeam.name || '')} with ${color.cyan.bold('heroku apps --team ' + sampleTeam.name)}`)
       ux.log(`See all apps with ${color.cyan.bold('heroku apps --all')}`)
-      displayNotifications(notifications)
+      displayNotifications(notificationsResponse?.body)
       ux.log(`\nSee other CLI commands with ${color.cyan.bold('heroku help')}\n`)
     }
 }

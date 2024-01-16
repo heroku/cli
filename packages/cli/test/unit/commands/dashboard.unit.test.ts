@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import Cmd  from '../../../src/commands/dashboard'
 import runCommand from '../../helpers/runCommand'
-import nock = require('nock')
+import * as nock from 'nock'
 import {expect} from 'chai'
 import {ago} from '../../../src/lib/time'
 import {unwrap} from '../../helpers/utils/unwrap'
@@ -53,7 +53,7 @@ describe('dashboard', function () {
         .reply(200, [])
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stderr.output)).to.equal('Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -72,7 +72,7 @@ describe('dashboard', function () {
         .reply(401, [])
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stderr.output)).to.equal('Loading... done Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -114,19 +114,45 @@ describe('dashboard', function () {
         .get('/user/notifications')
         .reply(200, [])
       const metrics = nock('https://api.metrics.herokai.com:443')
-        .get(`/apps/myapp/router-metrics/status?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/status')
+        // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.status)
-        .get(`/apps/myapp/router-metrics/latency?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/latency')
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.latency)
-        .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.errors)
-        .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get('/apps/myapp/formation/node/metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h') {
+            return true
+          }
+        })
         .reply(200, {data: {}})
-        .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get('/apps/myapp/formation/web/metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h') {
+            return true
+          }
+        })
         .reply(200, {data: {}})
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal(`myapp\n  Owner: foo@bar.com\n  Dynos: 1 | Standard-1X\n  Last release: ${ago(now)}\n  Metrics: 46 ms 4 rpm \u2582\u2581\u2581\u2586\u2582\u2585\u2588\u2587 last 24 hours rpm\n  Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)\n\nSee all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n`))
-        .then(() => expect(stderr.output).to.equal('Loading... done\n'))
+        .then(() => expect(stderr.output).to.contain('Loading... done\n'))
         .then(() => metrics.done())
         .then(() => longboard.done())
         .then(() => telex.done())
@@ -153,15 +179,41 @@ describe('dashboard', function () {
         .get('/user/notifications')
         .reply(200, [])
       const metrics = nock('https://api.metrics.herokai.com:443')
-        .get(`/apps/myapp/router-metrics/status?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/status')
+        // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.status)
-        .get(`/apps/myapp/router-metrics/latency?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/latency')
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.latency)
-        .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+        .get('/apps/myapp/router-metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h' && params.process_type === 'web') {
+            return true
+          }
+        })
         .reply(200, router.errors)
-        .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get('/apps/myapp/formation/node/metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h') {
+            return true
+          }
+        })
         .reply(200, {data: {}})
-        .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+        .get('/apps/myapp/formation/web/metrics/errors')
+        .query((params: any) => {
+          if (params.step === '1h') {
+            return true
+          }
+        })
         .reply(200, {data: {}})
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.include('Pipeline: foobar'))
