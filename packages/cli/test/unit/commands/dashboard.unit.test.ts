@@ -116,39 +116,19 @@ describe('dashboard', function () {
       const metrics = nock('https://api.metrics.herokai.com:443')
         .get('/apps/myapp/router-metrics/status')
         // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.status)
         .get('/apps/myapp/router-metrics/latency')
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.latency)
         .get('/apps/myapp/router-metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.errors)
         .get('/apps/myapp/formation/node/metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
         .get('/apps/myapp/formation/web/metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal(`myapp\n  Owner: foo@bar.com\n  Dynos: 1 | Standard-1X\n  Last release: ${ago(now)}\n  Metrics: 46 ms 4 rpm \u2582\u2581\u2581\u2586\u2582\u2585\u2588\u2587 last 24 hours rpm\n  Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)\n\nSee all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n`))
@@ -181,39 +161,19 @@ describe('dashboard', function () {
       const metrics = nock('https://api.metrics.herokai.com:443')
         .get('/apps/myapp/router-metrics/status')
         // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.status)
         .get('/apps/myapp/router-metrics/latency')
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.latency)
         .get('/apps/myapp/router-metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h' && params.process_type === 'web') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h' && params.process_type === 'web')
         .reply(200, router.errors)
         .get('/apps/myapp/formation/node/metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
         .get('/apps/myapp/formation/web/metrics/errors')
-        .query((params: any) => {
-          if (params.step === '1h') {
-            return true
-          }
-        })
+        .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.include('Pipeline: foobar'))
