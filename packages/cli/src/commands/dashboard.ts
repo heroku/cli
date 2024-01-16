@@ -5,11 +5,12 @@ import * as Heroku from '@heroku-cli/schema'
 import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodash'
 import img = require('term-img')
 import path = require('path')
-import {ago} from '../lib/time'
-import {AppErrors} from '../lib/types/metrics_api_responses.js'
+import {execSync} from 'child_process'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import sparkline = require('sparkline')
+import {ago} from '../lib/time'
+import {AppErrors} from '../lib/types/app_errors'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
@@ -150,6 +151,11 @@ export default class Dashboard extends Command {
     static description = 'display information about favorite apps';
     static hidden = true;
     public async run(): Promise<void> {
+      if (!this.heroku.auth) {
+        execSync('heroku help', {stdio: 'inherit'})
+        return
+      }
+
       const favoriteApps = async () => {
         const {body: apps} = await this.heroku.get<Heroku.App[]>('/favorites?type=app', {
           hostname: 'particleboard.heroku.com',
