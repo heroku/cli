@@ -8,7 +8,7 @@ import * as path from 'path'
 import {execSync} from 'child_process'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import sparkline from 'sparkline'
+import * as sparkline from 'sparkline'
 import {ago} from '../lib/time'
 import {AppErrors} from '../lib/types/app_errors'
 import * as process from 'process'
