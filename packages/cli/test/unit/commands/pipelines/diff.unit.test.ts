@@ -118,6 +118,8 @@ describe('pipelines:diff', function () {
       const t = mockPipelineCoupling(mockApps(testInstance))
 
       return t
+        .stdout()
+        .stderr()
         .nock(kolkrabbiApi, api => {
           api
             .get(`/apps/${downstreamApp1.id}/github`)
