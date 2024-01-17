@@ -16,6 +16,8 @@ describe('dashboard', function () {
   beforeEach(() => {
     stdout.start()
     stderr.start()
+    stdout.print = true
+    stderr.print = true
   })
 
   afterEach(() => {
