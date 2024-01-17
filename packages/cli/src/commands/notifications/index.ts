@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Notifications} from '../../lib/types/notifications'
-import * as time from '../../lib/notifications/time'
+import * as time from '../../lib/utils/time'
 import * as wrap from 'word-wrap'
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
