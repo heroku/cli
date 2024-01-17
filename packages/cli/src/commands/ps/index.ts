@@ -173,7 +173,7 @@ export default class Index extends Command {
       })
       promises.accountInfo = this.heroku.get<Heroku.Account>('/account')
       let {body: dynos} = await Promise.resolve(promises.dynos)
-      const [appInfo, accountInfo] = await Promise.resolve([
+      const [{body: appInfo}, {body: accountInfo}] = await Promise.all([
         promises.appInfo, promises.accountInfo,
       ])
       const shielded = appInfo.space && appInfo.space.shield

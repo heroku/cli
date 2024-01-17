@@ -26,21 +26,25 @@ const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 //     .reply(code, body)
 // }
 
-function stubAppAndAccount() {
-  return test
-    .nock('https://api.heroku.com:443', api => api
-      .get('/apps/myapp')
-      .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
-      .get('/account')
-      .reply(200, {id: '1234'}),
-    )
-}
+// function stubAppAndAccount() {
+//   return test
+//     .nock('https://api.heroku.com:443', api => api
+//       .get('/apps/myapp')
+//       .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
+//       .get('/account')
+//       .reply(200, {id: '1234'}),
+//     )
+// }
 
 describe('ps', async () => {
   test
     .stderr()
     .stdout()
     .nock('https://api.heroku.com:443', api => api
+      .get('/apps/myapp')
+      .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
+      .get('/account')
+      .reply(200, {id: '1234'})
       .get('/apps/myapp/dynos')
       .reply(200, [
         {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
@@ -51,13 +55,33 @@ describe('ps', async () => {
       expect(stdout).to.contain(`=== run: one-off processes (1)\n\nrun.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash\n\n=== web (Eco): npm start (1)\n\nweb.1: up ${hourAgoStr} (~ 1h ago)\n\n`)
       expect(stderr).to.be.empty
     })
+
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com:443', api => api
+      .get('/apps/myapp')
+      .reply(200, {space: {shield: true}, process_tier: 'basic', owner: {id: '1234'}})
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/apps/myapp/dynos')
+      .reply(200, [
+        {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+      ]))
+    .command(['ps', '--app', 'myapp'])
+    .it('shows shield dynos in dyno list for apps in a shielded private space', function ({stderr, stdout}) {
+      expect(stdout).to.contain(`=== run: one-off processes (1)\n\nrun.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash\n\n=== web (Shield-M): npm start (1)\n\nweb.1: up ${hourAgoStr} (~ 1h ago)\n\n`)
+      expect(stderr).to.be.empty
+    })
   // it('shows shield dynos in dyno list for apps in a shielded private space', function () {
   //   const api = nock('https://api.heroku.com:443')
   //     .get('/apps/myapp')
   //     .reply(200, {space: {shield: true}})
   //     .get('/apps/myapp/dynos')
   //     .reply(200, [
-  //       {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}, {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+  //       {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+  //       {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
   //     ])
   //   stubAppAndAccount()
   //   return runCommand(Cmd, [
