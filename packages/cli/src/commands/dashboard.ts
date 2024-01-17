@@ -6,9 +6,7 @@ import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodas
 import * as img from 'term-img'
 import * as path from 'path'
 import {execSync} from 'child_process'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import * as sparkline from 'sparkline'
+const sparkline = require('sparkline')
 import {ago} from '../lib/time'
 import {AppErrors} from '../lib/types/app_errors'
 import * as process from 'process'
@@ -152,7 +150,7 @@ export default class Dashboard extends Command {
     static description = 'display information about favorite apps';
     static hidden = true;
     public async run(): Promise<void> {
-      if (!this.heroku.auth && process.env.NODE_ENV !== 'test') {
+      if (!this.heroku.auth && process.env.IS_TEST_ENVIRONMENT !== 'true') {
         execSync('heroku help', {stdio: 'inherit'})
         return
       }
