@@ -1,0 +1,30 @@
+name: Pack and Upload Windows Installers
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  pack-and-upload-windows:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@41775cf0c82ef066f1eb39cea1bd74697ca5b735
+      - name: Install NSIS
+        run: brew install nsis
+      - name: yarn install
+        run: yarn --immutable --network-timeout 1000000
+      - name: yarn pack windows installer
+        run: yarn oclif pack win --defender-exclusion hidden --root="./packages/cli"
+      - name: upload windows installer
+        run: yarn oclif upload win --root="./packages/cli"
