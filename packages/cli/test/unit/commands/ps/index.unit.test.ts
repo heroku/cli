@@ -80,7 +80,7 @@ describe('ps', async () => {
     .stdout()
     .nock('https://api.heroku.com:443', api => api
       .get('/apps/myapp')
-      .reply(200, {space: {shield: true}, process_tier: 'basic', owner: {id: '1234'}})
+      .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
       .get('/account')
       .reply(200, {id: '1234'})
       .get('/apps/myapp/dynos')
@@ -93,24 +93,44 @@ describe('ps', async () => {
       expect(error.message).to.equal('No \u001B[36mfoo\u001B[39m dynos on \u001B[35mmyapp\u001B[39m')
     })
     .it('errors when no dynos found')
-  // it('shows dyno list as json', function () {
-  //   const api = nock('https://api.heroku.com:443')
+
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com:443', api => api
+      .get('/apps/myapp')
+      .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/apps/myapp/dynos')
+      .reply(200, [
+        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+      ]))
+    .command(['ps', '--app', 'myapp', '--json'])
+    .it('shows dyno list as json', function ({stderr, stdout}) {
+      expect(stdout).to.contain('"command": "npm start"')
+      expect(stderr).to.be.empty
+    })
+
+  // test
+  //   .stderr()
+  //   .stdout()
+  //   .nock('https://api.heroku.com:443', api => api
+  //     .get('/apps/myapp')
+  //     .reply(200, {process_tier: 'basic', owner: {id: '1234'}})
   //     .get('/account')
   //     .reply(200, {id: '1234'})
-  //     .get('/apps/myapp')
-  //     .reply(200, {name: 'myapp'})
-  //     .get('/apps/myapp/dynos')
+  //     .get('/apps/myapp/dynos?extended=true')
   //     .reply(200, [
-  //       {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-  //     ])
-  //   return runCommand(Cmd, [
-  //     '--app',
-  //     'myapp',
-  //   ])
-  //     .then(() => expect(JSON.parse(stdout.output)[0], 'to satisfy', {command: 'npm start'}))
-  //     .then(() => expect(stderr.output, 'to be empty'))
-  //     .then(() => api.done())
-  // })
+  //       {id: 100, command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'}},
+  //       {id: 101, command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'}},
+  //     ]))
+  //   .command(['ps', '--app', 'myapp', '--extended'])
+  //   .it('shows extended info', function ({stderr, stdout}) {
+  //     expect(stdout).to.equal('')
+  //     expect(stderr).to.be.empty
+  //   })
+
   // it('shows extended info', function () {
   //   const api = nock('https://api.heroku.com:443')
   //     .get('/account')
@@ -147,16 +167,26 @@ describe('ps', async () => {
   //     .then(() => expect(stderr.output, 'to be empty'))
   //     .then(() => api.done())
   // })
-  // it('shows eco quota remaining', function () {
-  //   stubAccountQuota(200, {account_quota: 1000, quota_used: 1, apps: []})
-  //   const ecoExpression = `Eco dyno hours quota remaining this month: 0h 16m (99%)\nEco dyno usage for this app: 0h 0m (0%)\nFor more information on Eco dyno hours, see:\nhttps://devcenter.heroku.com/articles/eco-dyno-hours\n\n=== run: one-off processes (1)\nrun.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash\n\n`
-  //   return runCommand(Cmd, [
-  //     '--app',
-  //     'myapp',
-  //   ])
-  //     .then(() => expect(stdout.output).to.equal(ecoExpression))
-  //     .then(() => expect(stderr.output, 'to be empty'))
-  // })
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com:443', api => api
+      .get('/apps/myapp/dynos')
+      .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+      .get('/apps/myapp')
+      .reply(200, {process_tier: 'eco', owner: {id: '1234'}, id: '6789'})
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/accounts/1234/actions/get-quota')
+      .reply(200, {account_quota: 1000, quota_used: 1, apps: []}),
+    )
+    .command(['ps', '--app', 'myapp'])
+    .it('shows eco quota remaining', function ({stderr, stdout}) {
+      const ecoExpression = `Eco dyno hours quota remaining this month: 0h 16m (99%)\nEco dyno usage for this app: 0h 0m (0%)\nFor more information on Eco dyno hours, see:\nhttps://devcenter.heroku.com/articles/eco-dyno-hours\n\n=== run: one-off processes (1)\n\nrun.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash\n\n`
+      expect(stdout).to.contain(ecoExpression)
+      expect(stderr).to.be.empty
+    })
+
   // it('shows eco quota remaining in hours and minutes', function () {
   //   stubAccountQuota(200, {account_quota: 3600000, quota_used: 178200, apps: []})
   //   const ecoExpression = `Eco dyno hours quota remaining this month: 950h 30m (95%)\nEco dyno usage for this app: 0h 0m (0%)\nFor more information on Eco dyno hours, see:\nhttps://devcenter.heroku.com/articles/eco-dyno-hours\n\n=== run: one-off processes (1)\nrun.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash\n\n`

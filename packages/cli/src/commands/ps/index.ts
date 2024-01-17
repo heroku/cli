@@ -61,7 +61,7 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
     return
   }
 
-  const quota = await heroku.get<Heroku.Account>(`/accounts/${account.id}/actions/get-quota`, {
+  const quotaResponse = await heroku.get<Heroku.Account>(`/accounts/${account.id}/actions/get-quota`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
   })
     .then(function (data: Heroku.Account) {
@@ -74,6 +74,7 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
     .catch(function () {
       return null
     })
+  const quota = quotaResponse?.body
   if (!quota)
     return
   const remaining = (quota.account_quota === 0) ? 0 : quota.account_quota - quota.quota_used
@@ -108,7 +109,7 @@ async function printAccountQuota(heroku: APIClient, app: Heroku.App, account: He
 function printDynos(dynos: Heroku.Dyno) {
   const dynosByCommand = reduce(dynos, function (dynosByCommand: Record<string, string[]>, dyno: Record<string, string>) {
     const since = time.ago(new Date(dyno.updated_at))
-    const size = dyno?.size || '1X'
+    const size = dyno.size! || '1X'
     if (dyno.type === 'run') {
       const key = `${color.green('run')}: one-off processes`
       if (dynosByCommand[key] === undefined)
