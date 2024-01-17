@@ -74,37 +74,25 @@ describe('ps', async () => {
       expect(stdout).to.contain(`=== run: one-off processes (1)\n\nrun.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash\n\n=== web (Shield-M): npm start (1)\n\nweb.1: up ${hourAgoStr} (~ 1h ago)\n\n`)
       expect(stderr).to.be.empty
     })
-  // it('shows shield dynos in dyno list for apps in a shielded private space', function () {
-  //   const api = nock('https://api.heroku.com:443')
-  //     .get('/apps/myapp')
-  //     .reply(200, {space: {shield: true}})
-  //     .get('/apps/myapp/dynos')
-  //     .reply(200, [
-  //       {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-  //       {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
-  //     ])
-  //   stubAppAndAccount()
-  //   return runCommand(Cmd, [
-  //     '--app',
-  //     'myapp',
-  //   ])
-  //     .then(() => expect(stdout.output).to.equal(`=== run: one-off processes (1)\nrun.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash\n\n=== web (Shield-M): npm start (1)\nweb.1: up ${hourAgoStr} (~ 1h ago)\n\n`))
-  //     .then(() => expect(stderr.output, 'to be empty'))
-  //     .then(() => api.done())
-  // })
-  // it('errors when no dynos found', function () {
-  //   nock('https://api.heroku.com:443')
-  //     .get('/apps/myapp/dynos')
-  //     .reply(200, [
-  //       {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}, {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
-  //     ])
-  //   stubAppAndAccount()
-  //   return expect(runCommand(Cmd, [
-  //     '--app',
-  //     'myapp',
-  //     'foo',
-  //   ])).to.be.rejectedWith('No foo dynos on myapp')
-  // })
+
+  test
+    .stderr()
+    .stdout()
+    .nock('https://api.heroku.com:443', api => api
+      .get('/apps/myapp')
+      .reply(200, {space: {shield: true}, process_tier: 'basic', owner: {id: '1234'}})
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/apps/myapp/dynos')
+      .reply(200, [
+        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+      ]))
+    .command(['ps', '--app', 'myapp', 'foo'])
+    .catch((error: any) => {
+      expect(error.message).to.equal('No \u001B[36mfoo\u001B[39m dynos on \u001B[35mmyapp\u001B[39m')
+    })
+    .it('errors when no dynos found')
   // it('shows dyno list as json', function () {
   //   const api = nock('https://api.heroku.com:443')
   //     .get('/account')
