@@ -63,6 +63,8 @@ describe('pipelines:diff', function () {
 
   function mockPipelineCoupling(testInstance: typeof test) {
     return testInstance
+      .stderr()
+      .stdout()
       .nock(apiUrl, api => {
         api
           .get(`/apps/${targetApp.name}/pipeline-couplings`)
@@ -72,6 +74,8 @@ describe('pipelines:diff', function () {
 
   function mockApps(testInstance: typeof test) {
     return testInstance
+      .stderr()
+      .stdout()
       .nock(apiUrl, api => {
         api
           .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -179,6 +183,8 @@ describe('pipelines:diff', function () {
       const t = mockPipelineCoupling(mockApps(testInstance))
 
       return t
+        .stderr()
+        .stdout()
         .nock(kolkrabbiApi, api => {
           api
             .get(`/apps/${targetApp.id}/github`)
