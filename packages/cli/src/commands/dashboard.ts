@@ -150,7 +150,7 @@ export default class Dashboard extends Command {
     static description = 'display information about favorite apps';
     static hidden = true;
     public async run(): Promise<void> {
-      if (!this.heroku.auth && process.env.IS_TEST_ENVIRONMENT !== 'true') {
+      if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
         execSync('heroku help', {stdio: 'inherit'})
         return
       }
