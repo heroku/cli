@@ -1,13 +1,34 @@
 import {getConfig} from './testInstances'
 import {Command} from '@heroku-cli/command'
+import {stdout, stderr} from 'stdout-stderr'
 
 type CmdConstructorParams = ConstructorParameters<typeof Command>
 type GenericCmd = new (...args: CmdConstructorParams) => Command
 
-const runCommand = (Cmd: GenericCmd, args: string[]) => {
-  const instance = new Cmd(args, getConfig())
+const stopMock = () => {
+  stdout.stop()
+  stderr.stop()
+}
 
-  return instance.run()
+const runCommand = (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
+  const instance = new Cmd(args, getConfig())
+  stdout.start()
+  stderr.start()
+  if (printStd) {
+    stdout.print = true
+    stderr.print = true
+  }
+
+  return instance
+    .run()
+    .then(args => {
+      stopMock()
+      return args
+    })
+    .catch((error: Error) => {
+      stopMock()
+      throw error
+    })
 }
 
 export default runCommand
