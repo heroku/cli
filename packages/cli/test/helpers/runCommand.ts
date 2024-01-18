@@ -12,12 +12,13 @@ const stopMock = () => {
 
 const runCommand = (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
   const instance = new Cmd(args, getConfig())
-  stdout.start()
-  stderr.start()
   if (printStd) {
     stdout.print = true
     stderr.print = true
   }
+
+  stdout.start()
+  stderr.start()
 
   return instance
     .run()
