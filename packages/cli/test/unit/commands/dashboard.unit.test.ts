@@ -48,7 +48,7 @@ describe('dashboard', function () {
 
       return runCommand(Cmd)
         .then(() => expect(stripAnsi(stdout.output)).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stripAnsi(stderr.output))).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+        .then(() => expect(unwrap(stripAnsi(stderr.output))).to.contain('Loading... donaeWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
