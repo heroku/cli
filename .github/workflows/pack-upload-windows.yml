@@ -24,7 +24,7 @@ jobs:
         run: brew install nsis
       - name: yarn install
         run: yarn --immutable --network-timeout 1000000
-      - name: yarn pack windows installer
+      - name: pack windows installer
         run: yarn oclif pack win --defender-exclusion hidden --root="./packages/cli"
       - name: upload windows installer
         run: yarn oclif upload win --root="./packages/cli"
