@@ -6,22 +6,13 @@ import {expect} from 'chai'
 import {ago} from '../../../src/lib/time'
 import {unwrap} from '../../helpers/utils/unwrap'
 import * as os from 'os'
+import stripAnsi = require('strip-ansi')
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
     it('does not run on Windows', () => expect(true))
     return
   }
-
-  beforeEach(() => {
-    stdout.start()
-    stderr.start()
-  })
-
-  afterEach(() => {
-    stdout.stop()
-    stderr.stop()
-  })
 
   const now = new Date()
   const pipeline = {pipeline: {name: 'foobar'}}
@@ -55,9 +46,9 @@ describe('dashboard', function () {
         .get('/user/notifications')
         .reply(200, [])
 
-      return runCommand(Cmd, [])
-        .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+      return runCommand(Cmd)
+        .then(() => expect(stripAnsi(stdout.output)).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
+        .then(() => expect(unwrap(stripAnsi(stderr.output))).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())

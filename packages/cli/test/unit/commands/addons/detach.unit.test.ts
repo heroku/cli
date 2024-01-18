@@ -5,15 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 
 describe('addons:detach', () => {
-  beforeEach(() => {
-    stdout.start()
-    stderr.start()
-  })
-  afterEach(() => {
-    nock.cleanAll()
-    stdout.stop()
-    stderr.stop()
-  })
+  afterEach(nock.cleanAll)
   it('detaches an add-on', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/addon-attachments/redis-123')
