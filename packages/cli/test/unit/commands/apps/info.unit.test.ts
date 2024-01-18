@@ -283,8 +283,8 @@ stack=cedar-14
     })
 
   test
-    .stdout({print: true})
-    .stderr({print: true})
+    .stdout()
+    .stderr()
     .nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     }, api =>
@@ -309,8 +309,8 @@ stack=cedar-14
     })
 
   test
-    .stdout({print: true})
-    .stderr({print: true})
+    .stdout()
+    .stderr()
     .nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     }, api =>
@@ -338,8 +338,8 @@ stack=cedar-14
     })
 
   test
-    .stdout({print: true})
-    .stderr({print: true})
+    .stdout()
+    .stderr()
     .nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     }, api =>
