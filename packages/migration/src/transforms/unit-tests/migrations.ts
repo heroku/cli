@@ -1,61 +1,7 @@
 import ts from 'typescript'
 import {nullTransformationContext} from '../../nullTransformationContext.js'
-import {
-  BeforeEachCall,
-  isBeforeEachBlock,
-  TestFunctionCall,
-} from './validators.js'
 
 const {factory} = ts
-
-const createConsoleMockStart = (std: 'stdout' | 'stderr') => factory.createExpressionStatement(
-  factory.createCallExpression(
-    factory.createPropertyAccessExpression(
-      factory.createIdentifier(std),
-      factory.createIdentifier('start'),
-    ),
-    undefined,
-    [],
-  ),
-)
-
-const createBeforeEachWithConsoleMock = (additionalStatements: ts.Statement[] = []) => factory.createExpressionStatement(
-  factory.createCallExpression(
-    factory.createIdentifier('beforeEach'),
-    undefined,
-    [
-      factory.createArrowFunction(
-        undefined,
-        undefined,
-        [],
-        undefined,
-        factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-        factory.createBlock(
-          [
-            ...additionalStatements,
-            createConsoleMockStart('stdout'),
-            createConsoleMockStart('stderr'),
-          ],
-          true,
-        ),
-      ),
-    ],
-  ),
-)
-
-const transformBeforeEach = (statement: BeforeEachCall): ts.ExpressionStatement => {
-  let existingExpressions: ts.Statement[] = []
-  // if function has a block, add to it, if not, get the call, wrap it in ExpressionStatement and added needed expressions
-  if (ts.isBlock(statement.expression.arguments[0].body)) {
-    existingExpressions = [...statement.expression.arguments[0].body.statements]
-  } else if (ts.isCallExpression(statement.expression.arguments[0].body)) {
-    existingExpressions = [factory.createExpressionStatement(statement.expression.arguments[0].body)]
-  } else {
-    throw new Error('transformBeforeEach: unexpected pattern')
-  }
-
-  return createBeforeEachWithConsoleMock(existingExpressions)
-}
 
 export const transformRuns = (node: ts.ExpressionStatement) => {
   const visitor = (vNode: ts.Node): ts.Node => {
@@ -86,45 +32,6 @@ export const transformRuns = (node: ts.ExpressionStatement) => {
   }
 
   return ts.visitEachChild(node, visitor, nullTransformationContext)
-}
-
-export const transformRootDescribe = (statement: TestFunctionCall): ts.ExpressionStatement  => {
-  let beforeEachFound = false
-  let transformedStatements = [...statement.expression.arguments[1].body.statements]
-    .map(describeBodyStatement => {
-      if (isBeforeEachBlock(describeBodyStatement)) {
-        beforeEachFound = true
-        return transformBeforeEach(describeBodyStatement)
-      }
-
-      return describeBodyStatement
-    })
-
-  if (!beforeEachFound) {
-    // add the beforeEach as first statement of describe
-    transformedStatements = [createBeforeEachWithConsoleMock(), ...transformedStatements]
-  }
-
-  return factory.createExpressionStatement(
-    factory.createCallExpression(
-      factory.createIdentifier('describe'),
-      undefined,
-      [
-        statement.expression.arguments[0],
-        factory.createArrowFunction(
-          undefined,
-          undefined,
-          [],
-          undefined,
-          factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-          factory.createBlock(
-            transformedStatements,
-            true,
-          ),
-        ),
-      ],
-    ),
-  )
 }
 
 export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expression[] => {
