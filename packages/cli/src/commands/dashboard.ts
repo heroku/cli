@@ -123,16 +123,14 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
   }))
 }
 
-// lazy way to get TS to do typing for us
-
 function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
-  const owner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
+  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
   const zipped = zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
   for (const a of zipped) {
     const app = a[0]
     const metrics = a[1]
     ux.log(color.magenta(app.app.name || ''))
-    ux.log(`  ${label('Owner:')} ${owner(app.app.owner)}`)
+    ux.log(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
     if (app.pipeline) {
       ux.log(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
     }

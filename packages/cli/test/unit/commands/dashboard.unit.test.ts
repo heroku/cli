@@ -6,7 +6,6 @@ import {expect} from 'chai'
 import {ago} from '../../../src/lib/time'
 import {unwrap} from '../../helpers/utils/unwrap'
 import * as os from 'os'
-import stripAnsi = require('strip-ansi')
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
@@ -47,8 +46,8 @@ describe('dashboard', function () {
         .reply(200, [])
 
       return runCommand(Cmd)
-        .then(() => expect(stripAnsi(stdout.output)).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stripAnsi(stderr.output))).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
+        .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
+        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -126,6 +125,7 @@ describe('dashboard', function () {
         .get('/apps/myapp/formation/web/metrics/errors')
         .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
+
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.equal(`myapp\n  Owner: foo@bar.com\n  Dynos: 1 | Standard-1X\n  Last release: ${ago(now)}\n  Metrics: 46 ms 4 rpm \u2582\u2581\u2581\u2586\u2582\u2585\u2588\u2587 last 24 hours rpm\n  Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)\n\nSee all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n`))
         .then(() => expect(stderr.output).to.contain('Loading... done\n'))
@@ -171,6 +171,7 @@ describe('dashboard', function () {
         .get('/apps/myapp/formation/web/metrics/errors')
         .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
+
       return runCommand(Cmd, [])
         .then(() => expect(stdout.output).to.include('Pipeline: foobar'))
         .then(() => expect(metrics.isDone()).to.be.true)
