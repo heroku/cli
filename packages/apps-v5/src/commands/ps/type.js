@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const {sortBy, compact} = require('lodash')
 
-const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576, 'Performance-Memory-L': 500, 'Performance-Memory-XL': 750, 'Performance-Memory-2XL': 1500}
+const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576, 'Performance-L-Ram': 500, 'Performance-XL': 750, 'Performance-2XL': 1500}
 
 let emptyFormationErr = app => {
   return new Error(`No process types on ${app}.
@@ -55,18 +55,6 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
 
       if (shielded) {
         d.size = d.size.replace('Private-', 'Shield-')
-
-        // add logic to check if size is Shield-Memory-L | XL | 2XL
-        // then add $100 if L, $150 if XL and $300 if 2XL
-
-        // eslint-disable-next-line unicorn/prefer-switch
-        if (d.size === 'Shield-Memory-L') {
-          costMonthly[d.size] += 100
-        } else if (d.size === 'Shield-Memory-XL') {
-          costMonthly[d.size] += 150
-        } else if (d.size === 'Shield-Memory-2XL') {
-          costMonthly[d.size] += 300
-        }
       }
 
       if (d.size in dynoTotals) {
