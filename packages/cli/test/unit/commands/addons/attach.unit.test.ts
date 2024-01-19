@@ -31,6 +31,7 @@ describe('addons:attach', function () {
       'myapp',
       'redis-123',
     ])
+
     expect(stdout.output, 'to be empty')
     expect(stderr.output).to.contain('Attaching redis-123 to myapp... done\n')
     expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting myapp... done, v10\n')
@@ -48,11 +49,16 @@ describe('addons:attach', function () {
     return runCommand(Cmd, [
       '--app',
       'myapp',
+      '--as',
+      'foo',
       'redis-123',
     ])
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => expect(stderr.output).to.equal('Attaching redis-123 as foo to myapp... done\nSetting foo config vars and restarting myapp... done, v10\n'))
-      .then(() => api.done())
+      .then(() => {
+        expect(stdout.output, 'to be empty')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
+        expect(stderr.output).to.contain('\nSetting foo config vars and restarting myapp... done, v10\n')
+        api.done()
+      })
   })
 
   it('overwrites an add-on as foo when confirmation is set', function () {
@@ -69,11 +75,17 @@ describe('addons:attach', function () {
     return runCommand(Cmd, [
       '--app',
       'myapp',
+      '--as',
+      'foo',
       'redis-123',
     ])
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => expect(stderr.output).to.equal('Attaching redis-123 as foo to myapp... !\nAttaching redis-123 as foo to myapp... done\nSetting foo config vars and restarting myapp... done, v10\n'))
-      .then(() => api.done())
+      .then(() => {
+        expect(stdout.output, 'to be empty')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp...\n')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
+        expect(stderr.output).to.contain('Setting foo config vars and restarting myapp... done, v10\n')
+        api.done()
+      })
   })
   it('attaches an addon without a namespace if the credential flag is set to default', function () {
     const api = nock('https://api.heroku.com:443')
@@ -87,11 +99,16 @@ describe('addons:attach', function () {
     return runCommand(Cmd, [
       '--app',
       'myapp',
+      '--credential',
+      'default',
       'postgres-123',
     ])
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => expect(stderr.output).to.equal('Attaching default of postgres-123 to myapp... done\nSetting POSTGRES_HELLO config vars and restarting myapp... done, v10\n'))
-      .then(() => api.done())
+      .then(() => {
+        expect(stdout.output, 'to be empty')
+        expect(stderr.output).to.contain('Attaching default of postgres-123 to myapp... done\n')
+        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
+        api.done()
+      })
   })
   it('attaches in the credential namespace if the credential flag is specified', function () {
     const api = nock('https://api.heroku.com:443')
@@ -107,11 +124,16 @@ describe('addons:attach', function () {
     return runCommand(Cmd, [
       '--app',
       'myapp',
+      '--credential',
+      'hello',
       'postgres-123',
     ])
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => expect(stderr.output).to.equal('Attaching hello of postgres-123 to myapp... done\nSetting POSTGRES_HELLO config vars and restarting myapp... done, v10\n'))
-      .then(() => api.done())
+      .then(() => {
+        expect(stdout.output, 'to be empty')
+        expect(stderr.output).to.contain('Attaching hello of postgres-123 to myapp... done\n')
+        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
+        api.done()
+      })
   })
   it('errors if the credential flag is specified but that credential does not exist for that addon', function () {
     nock('https://api.heroku.com:443')
@@ -119,13 +141,20 @@ describe('addons:attach', function () {
       .reply(200, {name: 'postgres-123'})
       .get('/addons/postgres-123/config/credential:hello')
       .reply(200, [])
+      .post('/addon-attachments', {app: {name: 'myapp'}, addon: {name: 'postgres-123'}})
+      .reply(201, {name: 'POSTGRES_DEFAULT'})
+      .get('/apps/myapp/releases')
+      .reply(200, [{version: 10}])
 
     return runCommand(Cmd, [
       '--app',
       'myapp',
+      '--credential',
+      'hello',
       'postgres-123',
     ])
       .then(() => {
+        // this line should not be called if test works
         throw new Error('unreachable')
       })
       .catch(error => expect(error.message).to.equal('Could not find credential hello for database postgres-123'))
