@@ -51,8 +51,8 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
       continue
     }
 
-    // check ShorthandPropertyAssignment vs PropertyAssignment
-    switch (prop.name.escapedText.toString()) {
+    const keyName = prop.name.escapedText.toString()
+    switch (keyName) {
     case 'app': {
       if (isShorthand) {
         transformedCommand.push(factory.createStringLiteral('--app'), prop.name)
@@ -108,18 +108,23 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
           }
 
           if (ts.isShorthandPropertyAssignment(argProp)) {
-            transformedCommand.push(argProp.name)
+            transformedArgs.push(argProp.name)
           } else if (ts.isPropertyAssignment(argProp)) {
-            transformedCommand.push(argProp.initializer)
+            transformedArgs.push(argProp.initializer)
           }
         }
       } else {
         console.error('can not map command.run({args}))')
       }
+
+      break
     }
 
-      // args need to come last due to `static strict false` argv handling
-      return [...transformedCommand, ...transformedArgs]
+    default:
+      break
     }
   }
+
+  // args need to come last due to `static strict false` argv handling
+  return [...transformedCommand, ...transformedArgs]
 }
