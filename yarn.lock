@@ -14573,9 +14573,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oclif@npm:^4.0.0":
-  version: 4.3.4
-  resolution: "oclif@npm:4.3.4"
+"oclif@npm:4.3.6":
+  version: 4.3.6
+  resolution: "oclif@npm:4.3.6"
   dependencies:
     "@aws-sdk/client-cloudfront": ^3.468.0
     "@aws-sdk/client-s3": ^3.490.0
@@ -14598,7 +14598,7 @@ __metadata:
     yeoman-generator: ^5.8.0
   bin:
     oclif: bin/run.js
-  checksum: 5f8e1ca507e3d8a4d59eb4745e1cf631ff641d75a48265ccc0462ea577d4d3ef2683ba933cf4daf0682a0d2fc76dd352a183d1dba2e0cd25b72de9e4d8b5cf16
+  checksum: a04e0b806dd9efea151f09e594d6417f1adfa4153b5e3d538209a2fbb76fafeb966ceeb9bcc18cc47d083c2277b75dc640dec03c7d5dd9284681dec57c9ffd7f
   languageName: node
   linkType: hard
 
@@ -16577,7 +16577,7 @@ __metadata:
     execa: 5.1.1
     lerna: ^6.4.1
     mkdirp: ^0.5.2
-    oclif: ^4.0.0
+    oclif: 4.3.6
     promise-request-retry: ^1.0.2
     qqjs: 0.3.11
     standard: 12.0.1
