@@ -29,7 +29,7 @@ describe('ps:type', function () {
         {type: 'web', quantity: 1, size: 'Standard-2X'},
         {type: 'web', quantity: 1, size: 'Performance-M'},
         {type: 'web', quantity: 1, size: 'Performance-L'},
-        {type: 'web', quantity: 1, size: 'Performance-L-Ram'},
+        {type: 'web', quantity: 1, size: 'Performance-L-RAM'},
         {type: 'web', quantity: 1, size: 'Performance-XL'},
         {type: 'web', quantity: 1, size: 'Performance-2XL'},
       ])
@@ -45,7 +45,7 @@ web   Standard-1X        1    ~$0.035    $25
 web   Standard-2X        1    ~$0.069    $50
 web   Performance-M      1    ~$0.347    $250
 web   Performance-L      1    ~$0.694    $500
-web   Performance-L-Ram  1    ~$0.694    $500
+web   Performance-L-RAM  1    ~$0.694    $500
 web   Performance-XL     1    ~$1.042    $750
 web   Performance-2XL    1    ~$2.083    $1500
 === Dyno Totals
@@ -57,7 +57,7 @@ Standard-1X        1
 Standard-2X        1
 Performance-M      1
 Performance-L      1
-Performance-L-Ram  1
+Performance-L-RAM  1
 Performance-XL     1
 Performance-2XL    1
 
