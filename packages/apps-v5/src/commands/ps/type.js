@@ -58,6 +58,15 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
 
         // add logic to check if size is Shield-Memory-L | XL | 2XL
         // then add $100 if L, $150 if XL and $300 if 2XL
+
+        // eslint-disable-next-line unicorn/prefer-switch
+        if (d.size === 'Shield-Memory-L') {
+          costMonthly[d.size] += 100
+        } else if (d.size === 'Shield-Memory-XL') {
+          costMonthly[d.size] += 150
+        } else if (d.size === 'Shield-Memory-2XL') {
+          costMonthly[d.size] += 300
+        }
       }
 
       if (d.size in dynoTotals) {
