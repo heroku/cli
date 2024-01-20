@@ -1,14 +1,13 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 import notify from '../../lib/notify'
-const createAddon = require('../../lib/create_addon')
+import createAddon from '../../lib/addons/create_addon'
 
-function parseConfig(args) {
-  const config = {}
+function parseConfig(args: string[]) {
+  const config: Record<string, string | boolean> = {}
   while (args.length > 0) {
-    let key = args.shift()
+    let key = args.shift() as string
     if (!key.startsWith('--'))
       throw new Error(`Unexpected argument ${key}`)
     key = key.replace(/^--/, '')
@@ -49,34 +48,33 @@ export default class Create extends Command {
       app: flags.app({required: true}),
     };
 
-    static args = {
-      'service:plan': Args.string({required: true}),
-    };
-
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(Create)
-      let {app, flags, args} = context
-      if (args.length === 0) {
+      const {flags, ...restParse} = await this.parse(Create)
+      const {app, name, as, wait, confirm} = flags
+      const argv = restParse.argv as string[]
+      const [servicePlan, ...restArgs] = argv
+
+      if (!servicePlan) {
         throw new Error('Usage: heroku addons:create SERVICE:PLAN')
       }
 
-      const {name, as, wait, confirm} = flags
-      const config = parseConfig(args.slice(1))
+      const config = parseConfig(restArgs)
       let addon
       try {
-        addon = await createAddon(heroku, app, args[0], confirm, wait, {config, name, as})
+        addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
         if (wait) {
           notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
         }
       } catch (error) {
         if (wait) {
-          notify(`heroku addons:create ${args[0]}`, 'Add-on failed to provision', false)
+          notify(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
         }
 
         throw error
       }
 
-      await config.runHook('recache', {type: 'addon', app, addon})
-      ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)
+      await this.config.runHook('recache', {type: 'addon', app, addon})
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
     }
 }
