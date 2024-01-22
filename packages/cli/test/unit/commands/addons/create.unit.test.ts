@@ -39,17 +39,17 @@ describe('addons:create', () => {
   })
   context('calling addons:create without a plan', () => {
     it('errors out with usage', async () => {
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'myapp',
-          '--name',
-          'foobar',
-        ])
-        throw new Error('unreachable')
-      } catch (error: any) {
-        return expect(error.message).to.equal('Usage: heroku addons:create SERVICE:PLAN')
-      }
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--name',
+        'foobar',
+      ])
+        .catch((error: any) => {
+          expect(error.message).to.equal('Missing 1 required arg:\n' +
+            'service:plan\n' +
+            'See more help with --help')
+        })
     })
   })
   context('creating a db', () => {
@@ -66,13 +66,16 @@ describe('addons:create', () => {
         '--as',
         'mydb',
         'heroku-postgresql:standard-0',
+        '--',
         '--rollback',
         '--follow',
         'otherdb',
         '--foo',
       ])
-        .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
-        .then(() => expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n'))
+        .then(() => {
+          expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
+          expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
+        })
     })
     it('creates an addon with = args', () => {
       return runCommand(Cmd, [
@@ -81,6 +84,7 @@ describe('addons:create', () => {
         '--as',
         'mydb',
         'heroku-postgresql:standard-0',
+        '--',
         '--rollback',
         '--follow=otherdb',
         '--foo',
@@ -93,6 +97,7 @@ describe('addons:create', () => {
         '--as',
         'mydb',
         'heroku-postgresql:standard-0',
+        '--',
         '--rollback',
         '--follow=otherdb',
         '--foo=true',
@@ -117,8 +122,10 @@ describe('addons:create', () => {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-          .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
-          .then(() => expect(stdout.output).to.equal('provision message\ndb3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n'))
+          .then(() => {
+            expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
+            expect(stdout.output).to.equal('provision message\ndb3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n')
+          })
       })
     })
     context('and no provision message supplied', () => {
@@ -137,7 +144,7 @@ describe('addons:create', () => {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-          .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+          .then(() => expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n'))
           .then(() => expect(stdout.output).to.equal('db3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n'))
       })
     })
@@ -157,7 +164,7 @@ describe('addons:create', () => {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-          .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+          .then(() => expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n'))
           .then(() => expect(stdout.output).to.equal('provision message\ndb3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n'))
       })
     })
@@ -194,6 +201,7 @@ describe('addons:create', () => {
           'mydb',
           '--wait',
           'heroku-postgresql:standard-0',
+          '--',
           '--wait',
         ])
           .then(() => post.done())
@@ -201,7 +209,7 @@ describe('addons:create', () => {
           .then(() => provisionedResponse.done())
           .then(() => expect(notifySpy.called).to.equal(true))
           .then(() => expect(notifySpy.calledOnce).to.equal(true))
-          .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\nCreating db3-swiftly-123... done\n'))
+          .then(() => expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\nCreating db3-swiftly-123... done\n'))
           .then(() => expect(stdout.output).to.equal('provision message\nWaiting for db3-swiftly-123...\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n'))
       })
       it('notifies when provisioning failure occurs', () => {
@@ -225,6 +233,7 @@ describe('addons:create', () => {
           'mydb',
           '--wait',
           'heroku-postgresql:standard-0',
+          '--',
           '--wait',
         ])
           .catch(() => {
@@ -296,12 +305,13 @@ describe('addons:create', () => {
         '--confirm',
         'myapp',
         'heroku-postgresql:standard-0',
+        '--',
         '--rollback',
         '--follow',
         'otherdb',
         '--foo',
       ])
-        .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+        .then(() => expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... !\nCreating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n'))
         .then(() => expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n'))
     })
   })
@@ -319,6 +329,7 @@ describe('addons:create', () => {
         '--as',
         'mydb',
         'heroku-postgresql:standard-0',
+        '--',
         '--rollback',
         '--follow=--otherdb',
         '--foo',
@@ -342,7 +353,7 @@ describe('addons:create', () => {
         'mydb',
         'heroku-postgresql:standard-0',
       ])
-        .then(() => expect(stderr.output).to.equal('Creating heroku-postgresql:standard-0 on myapp... ~$0.139/hour (max $100/month)\n'))
+        .then(() => expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n'))
         .then(() => expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123\nUse heroku addons:docs heroku-db3 to view documentation\n'))
     })
   })

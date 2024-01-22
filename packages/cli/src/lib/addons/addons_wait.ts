@@ -1,10 +1,8 @@
 /* eslint-disable no-await-in-loop */
-
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
-import * as util from './util'
 
 export const waitForAddonProvisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''

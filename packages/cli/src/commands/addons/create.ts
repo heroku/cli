@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import notify from '../../lib/notify'
 import createAddon from '../../lib/addons/create_addon'
 
@@ -37,28 +37,30 @@ function parseConfig(args: string[]) {
 }
 
 export default class Create extends Command {
-    static topic = 'addons';
-    static description = 'create a new add-on resource';
-    static strict = false;
+    static topic = 'addons'
+    static description = 'create a new add-on resource'
+    static strict = false
     static flags = {
       name: flags.string({description: 'name for the add-on resource'}),
       as: flags.string({description: 'name for the initial add-on attachment'}),
       confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
       wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
       app: flags.app({required: true}),
-    };
+    }
+
+    static args = {
+      'service:plan': Args.string({required: true}),
+    }
 
     public async run(): Promise<void> {
       const {flags, ...restParse} = await this.parse(Create)
       const {app, name, as, wait, confirm} = flags
-      const argv = restParse.argv as string[]
-      const [servicePlan, ...restArgs] = argv
+      const servicePlan = restParse.args['service:plan']
+      const argv = (restParse.argv as string[])
+        // oclif apparently duplicates specified args in argv
+        .filter(arg => arg !== servicePlan)
 
-      if (!servicePlan) {
-        throw new Error('Usage: heroku addons:create SERVICE:PLAN')
-      }
-
-      const config = parseConfig(restArgs)
+      const config = parseConfig(argv)
       let addon
       try {
         addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})

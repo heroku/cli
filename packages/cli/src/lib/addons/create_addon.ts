@@ -34,18 +34,17 @@ export default async function (
     }
 
     ux.action.start(`Creating ${plan} on ${color.app(app)}`)
-    const response = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
+    const {body: addon} = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
       body,
       headers: {
         'accept-expansion': 'plan',
         'x-heroku-legacy-provider-messages': 'true',
       },
-    }).then(function ({body: addon}) {
-      ux.action.stop(color.green(util.formatPriceText(addon.plan?.price || '')))
-      return addon
     })
 
-    return response?.body
+    ux.action.stop(color.green(util.formatPriceText(addon.plan?.price || '')))
+
+    return addon
   }
 
   let addon = await util.trapConfirmationRequired<Heroku.AddOn>(app, confirm, confirm => (createAddonRequest(confirm)))
