@@ -37,46 +37,47 @@ function parseConfig(args: string[]) {
 }
 
 export default class Create extends Command {
-    static topic = 'addons'
-    static description = 'create a new add-on resource'
-    static strict = false
-    static flags = {
-      name: flags.string({description: 'name for the add-on resource'}),
-      as: flags.string({description: 'name for the initial add-on attachment'}),
-      confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
-      wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
-      app: flags.app({required: true}),
-    }
+  static topic = 'addons'
+  static description = 'create a new add-on resource'
+  static strict = false
+  static aliases = ['addons:add']
+  static flags = {
+    name: flags.string({description: 'name for the add-on resource'}),
+    as: flags.string({description: 'name for the initial add-on attachment'}),
+    confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
+    wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
+    app: flags.app({required: true}),
+  }
 
-    static args = {
-      'service:plan': Args.string({required: true}),
-    }
+  static args = {
+    'service:plan': Args.string({required: true}),
+  }
 
-    public async run(): Promise<void> {
-      const {flags, ...restParse} = await this.parse(Create)
-      const {app, name, as, wait, confirm} = flags
-      const servicePlan = restParse.args['service:plan']
-      const argv = (restParse.argv as string[])
-        // oclif apparently duplicates specified args in argv
-        .filter(arg => arg !== servicePlan)
+  public async run(): Promise<void> {
+    const {flags, args, ...restParse} = await this.parse(Create)
+    const {app, name, as, wait, confirm} = flags
+    const servicePlan = args['service:plan']
+    const argv = (restParse.argv as string[])
+    // oclif duplicates specified args in argv
+      .filter(arg => arg !== servicePlan)
 
-      const config = parseConfig(argv)
-      let addon
-      try {
-        addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
-        if (wait) {
-          notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
-        }
-      } catch (error) {
-        if (wait) {
-          notify(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
-        }
-
-        throw error
+    const config = parseConfig(argv)
+    let addon
+    try {
+      addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
+      if (wait) {
+        notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
+      }
+    } catch (error) {
+      if (wait) {
+        notify(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
       }
 
-      await this.config.runHook('recache', {type: 'addon', app, addon})
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
+      throw error
     }
+
+    await this.config.runHook('recache', {type: 'addon', app, addon})
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
+  }
 }

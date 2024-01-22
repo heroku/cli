@@ -24,9 +24,9 @@ export default async function (
   wait: boolean,
   options: {name?: string, config: Record<string, string | boolean>, as?: string},
 ) {
-  async function createAddonRequest(confirm?: string) {
+  async function createAddonRequest(confirmed?: string) {
     const body = {
-      confirm,
+      confirm: confirmed,
       name: options.name,
       config: options.config,
       plan: {name: plan},
