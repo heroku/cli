@@ -27,6 +27,7 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force: bo
       ux.action.stop(color.yellow('pending'))
     }
 
+    ux.action.stop()
     return addonDelete
   }
 

@@ -49,7 +49,7 @@ export const waitForAddonDeprovisioning = async function (api: APIClient, addon:
       addonResponse = response?.body
     }).catch(function (error) {
       // Not ideal, but API deletes the record returning a 404 when deprovisioned.
-      if (error.statusCode === 404) {
+      if (error.http.statusCode === 404) {
         addonResponse.state = 'deprovisioned'
       } else {
         throw error
