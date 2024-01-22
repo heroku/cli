@@ -7,25 +7,27 @@ import {APIClient} from '@heroku-cli/command'
 export const waitForAddonProvisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''
   const addonName = addon.name
-  let addonResponse = {...addon}
+  let addonBody = {...addon}
 
-  ux.action.start(`Creating ${color.addon(addonName || '')})`)
+  ux.action.start(`Creating ${color.addon(addonName || '')}`)
 
-  while (addonResponse.state === 'provisioning') {
+  while (addonBody.state === 'provisioning') {
     // eslint-disable-next-line no-promise-executor-return
     await new Promise(resolve => setTimeout(resolve, interval * 1000))
 
-    addonResponse = await api.get(`/apps/${app}/addons/${addonName}`, {
+    const addonResponse = await api.get<Heroku.AddOn>(`/apps/${app}/addons/${addonName}`, {
       headers: {'Accept-Expansion': 'addon_service,plan'},
     })
+
+    addonBody = addonResponse?.body
   }
 
-  if (addonResponse.state === 'deprovisioned') {
-    throw new Error(`The add-on was unable to be created, with status ${addonResponse.state}`)
+  if (addonBody.state === 'deprovisioned') {
+    throw new Error(`The add-on was unable to be created, with status ${addonBody.state}`)
   }
 
   ux.action.stop()
-  return addonResponse
+  return addonBody
 }
 
 export const waitForAddonDeprovisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
