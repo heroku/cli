@@ -9,9 +9,7 @@ export const trapConfirmationRequired = async function<T> (app: string, confirm:
       if (!error.body || error.body.id !== 'confirmation_required')
         throw error
       return confirmApp(app, confirm, error.body.message)
-        .then(() => {
-          return fn(app)
-        })
+        .then(() => fn(app))
     })
 }
 
