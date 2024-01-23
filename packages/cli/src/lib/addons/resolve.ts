@@ -34,7 +34,7 @@ const handleNotFound = function (err: HTTPError, resource: string) {
   throw err
 }
 
-const addonResolver = function (heroku: APIClient, app: string, id: string, options?: {addon_service: string, namespace: string}) {
+const addonResolver = function (heroku: APIClient, app: string, id: string, options?: Heroku.AddOnAttachment) {
   const headers = addonHeaders()
 
   const getAddon = function (addonId: string) {
@@ -42,7 +42,7 @@ const addonResolver = function (heroku: APIClient, app: string, id: string, opti
       headers: headers,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
-      .then(response => singularize('addon', options?.namespace)(response?.body))
+      .then(response => singularize('addon', options?.namespace || '')(response?.body))
   }
 
   if (!app || id.includes('::')) return getAddon(id)
