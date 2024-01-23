@@ -10,20 +10,16 @@ const addonHeaders = function () {
   }
 }
 
-// const attachmentHeaders = function () {
-//   return {
-//     Accept: 'application/vnd.heroku+json; version=3.actions',
-//     'Accept-Inclusion': 'addon:plan,config_vars',
-//   }
-// }
-
-export const appAddon = function (heroku: APIClient, app: string, id: string, options: Heroku.AddOnAttachment = {}) {
+export const appAddon = async function (heroku: APIClient, app: string, id: string, options: Heroku.AddOnAttachment = {}) {
   const headers = addonHeaders()
-  return heroku.post<Heroku.AddOnAttachment[]>('/actions/addons/resolve', {
+  const response = await heroku.post<Heroku.AddOnAttachment[]>('/actions/addons/resolve', {
     headers: headers,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
-    .then(response => singularize('addon', options.namespace || '')(response?.body))
+
+  debugger
+
+  return singularize('addon', options.namespace || '')(response?.body)
 }
 
 const handleNotFound = function (err: HTTPError, resource: string) {
@@ -129,84 +125,3 @@ const singularize = function (type: string, namespace?: string) {
   }
 }
 
-// export const attachment = function (heroku: APIClient, app: string, id: string, options: Heroku.AddOnAttachment = {}) {
-//   const headers = attachmentHeaders()
-//
-//   function getAttachment(id) {
-//     return heroku.post('/actions/addon-attachments/resolve', {
-//       headers: headers, body: {app: null, addon_attachment: id, addon_service: options.addon_service},
-//     }).then(singularize('addon_attachment', options.namespace))
-//       .catch(function (error) {
-//         handleNotFound(error, 'add_on attachment')
-//       })
-//   }
-//
-//   function getAppAddonAttachment(addon, app) {
-//     return heroku.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`, {headers})
-//       .then(filter(app, options.addon_service))
-//       .then(singularize('addon_attachment', options.namespace))
-//   }
-//
-//   let promise
-//   if (!app || id.includes('::')) {
-//     promise = getAttachment(id)
-//   } else {
-//     promise = appAttachment(heroku, app, id, options)
-//       .catch(function (error) {
-//         handleNotFound(error, 'add_on attachment')
-//       })
-//   }
-//
-//   // first check to see if there is an attachment matching this app/id combo
-//   return promise
-//     .then(function (attachment) {
-//       return {attachment}
-//     })
-//     .catch(function (error) {
-//       return {error}
-//     })
-//   // if no attachment, look up an add-on that matches the id
-//     .then(attachOrError => {
-//       const {attachment, error} = attachOrError
-//
-//       if (attachment) return attachment
-//
-//       // If we were passed an add-on slug, there still could be an attachment
-//       // to the context app. Try to find and use it so `context_app` is set
-//       // correctly in the SSO payload.
-//       if (app) {
-//         return exports.addon(heroku, app, id, options)
-//           .then(addon => getAppAddonAttachment(addon, app))
-//           .catch(addonError => {
-//             if (error) throw error
-//             throw addonError
-//           })
-//       }
-//
-//       if (error) throw error
-//       throw new NotFound()
-//     })
-// }
-
-// export const appAttachment = function (heroku, app, id, options = {}) {
-//   const headers = attachmentHeaders()
-//   return heroku.post('/actions/addon-attachments/resolve', {
-//     headers: headers, body: {app: app, addon_attachment: id, addon_service: options.addon_service},
-//   }).then(singularize('addon_attachment', options.namespace))
-// }
-
-// const filter = function (app, addonService) {
-//   return attachments => {
-//     return attachments.filter(attachment => {
-//       if (attachment.app.name !== app) {
-//         return false
-//       }
-//
-//       if (addonService && attachment.addon_service.name !== addonService) {
-//         return false
-//       }
-//
-//       return true
-//     })
-//   }
-// }
