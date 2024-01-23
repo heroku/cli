@@ -8,11 +8,11 @@ on:
         required: true
 
 jobs:
-  get-signed-from-stampy:
+  upload-to-stampy-unsigned:
     runs-on: ubuntu-latest
     environment: Stampy
     steps:
-      - uses: actions/checkout@3
+      - uses: actions/checkout@v3
       - name: get version sha
         id: versionSha
         run: echo SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]') >> "$GITHUB_ENV"
