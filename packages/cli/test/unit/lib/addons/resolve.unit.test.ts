@@ -5,10 +5,6 @@ import {getHerokuAPI} from '../../../helpers/testInstances'
 const {expect} = require('chai')
 import * as nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
-import * as sinon from 'sinon'
-import * as proxyquire from 'proxyquire'
-import * as yaml from 'js-yaml'
-import {ux} from '@oclif/core'
 
 describe('resolve', () => {
   beforeEach(function () {
@@ -237,23 +233,16 @@ describe('resolve', () => {
       })
 
       it('does not memoize errors', () => {
-        const promptStub = sinon.stub(ux, 'prompt').returns(Promise.resolve('eh?'))
-
-        // proxyquire('../../../../src/commands/apps/create', {
-        //   'prompt': promptStub,
-        // })
         const api = nock('https://api.heroku.com:443')
-          .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-8'}).reply(403, {id: 'two_factor'})
-          // api-client automatically retries 403 two_factor calls
-          .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-8'}).reply(200, [{name: 'myaddon-8'}])
+          .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-8'}).reply(500, {id: 'internal server error'})
 
         return resolveAddon(getHerokuAPI(), 'myapp', 'myaddon-8')
-          // .then(() => {
-          //   throw new Error('unreachable')
-          // })
-          // .catch((error: any) => {
-          //   expect(error.body).to.have.nested.include({id: 'two_factor'})
-          // })
+          .then(() => {
+            throw new Error('unreachable')
+          })
+          .catch((error: any) => {
+            expect(error.body).to.have.nested.include({id: 'internal server error'})
+          })
           .then(() => api.done())
           .then(function () {
             nock.cleanAll()
