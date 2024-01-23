@@ -15,10 +15,14 @@ jobs:
       - uses: actions/checkout@v3
       - name: get version sha
         id: versionSha
-        run: echo SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]') >> "$GITHUB_ENV"
+        run: |
+          echo SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]') >> "$GITHUB_ENV"
+          echo $SHA
       - name: save filename (without arch/extension) for reuse
         id: filename
-        run: echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> "$GITHUB_ENV"
+        run: |
+          echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> "$GITHUB_ENV"
+          echo $FILEBASE
       - name: download Windows installers from s3
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
