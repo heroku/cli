@@ -4,10 +4,10 @@ import {ux} from '@oclif/core'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-export default async function (heroku: APIClient, addon: Heroku.AddOn, force: boolean, wait?: boolean) {
+export default async function (heroku: APIClient, addon: Heroku.AddOn, force = false, wait = false) {
   const addonName = addon.name || ''
 
-  async function destroyAddonRequest(force: boolean) {
+  async function destroyAddonRequest() {
     ux.action.start(`Destroying ${color.addon(addonName)} on ${color.app(addon.app?.name || '')}`)
 
     const {body: addonDelete} = await heroku.delete<Heroku.AddOn>(`/apps/${addon.app?.id}/addons/${addon.id}`, {
@@ -31,7 +31,7 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force: bo
     return addonDelete
   }
 
-  let addonResponse = await destroyAddonRequest(force)
+  let addonResponse = await destroyAddonRequest()
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   if (addonResponse.state === 'deprovisioning') {
