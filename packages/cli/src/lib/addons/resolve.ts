@@ -17,8 +17,6 @@ export const appAddon = async function (heroku: APIClient, app: string, id: stri
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
 
-  debugger
-
   return singularize('addon', options.namespace || '')(response?.body)
 }
 
