@@ -73,7 +73,6 @@ exports.topic = {
 
 exports.commands = _.flatten([
   require('./commands/addons'),
-  require('./commands/addons/destroy'),
   require('./commands/addons/docs'),
   require('./commands/addons/info'),
   require('./commands/addons/open'),
@@ -85,4 +84,3 @@ exports.commands = _.flatten([
 ])
 
 exports.resolve = require('./lib/resolve')
-exports.destroyAddon = require('./lib/destroy_addon')
