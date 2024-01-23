@@ -17,12 +17,12 @@ jobs:
         id: versionSha
         run: |
           echo SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]') >> "$GITHUB_ENV"
-          echo "sha = $SHA"
+          echo "sha = $env.SHA"
       - name: save filename (without arch/extension) for reuse
         id: filename
         run: |
           echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> "$GITHUB_ENV"
-          echo "filebase = $FILEBASE"
+          echo "filebase = $env.FILEBASE"
       - name: download Windows installers from s3
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
