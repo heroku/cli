@@ -1,10 +1,14 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/addons/docs'
 import runCommand from '../../../helpers/runCommand'
 import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
+
+const {default: Cmd} =  proxyquire(
+  '../../../../src/commands/addons/docs',
+  {open: sinon.stub()},
+)
 
 describe('addons:docs', function () {
   it('opens an addon by name', async function () {
@@ -24,11 +28,7 @@ describe('addons:docs', function () {
       .get('/addon-services/slowdb')
       .reply(200, {name: 'slowdb'})
 
-    const DocsStubbed =  proxyquire('../../../../src/commands/addons/docs', {
-      open: sinon.stub(),
-    })
-
-    await runCommand(DocsStubbed.default, ['slowdb'])
+    await runCommand(Cmd, ['slowdb'])
 
     expect(stdout.output).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
     api.done()
