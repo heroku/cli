@@ -73,7 +73,6 @@ exports.topic = {
 
 exports.commands = _.flatten([
   require('./commands/addons'),
-  require('./commands/addons/docs'),
   require('./commands/addons/info'),
   require('./commands/addons/open'),
   require('./commands/addons/plans'),
