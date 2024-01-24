@@ -13,10 +13,6 @@ jobs:
     environment: Stampy
     steps:
       - uses: actions/checkout@v3
-      - name: save filename (without arch/extension) for reuse
-        id: filename
-        run: |
-          echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> $GITHUB_ENV
       - name: download Windows installers from s3
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
@@ -24,6 +20,7 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          FILEBASE=heroku-v${{inputs.version}}-$SHA
           aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x86.exe .
           aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x64.exe .
       - name: upload unsigned Windows installers to Stampy
@@ -35,10 +32,12 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true
         # switch AWS identity to the one that can access stampy
         run: |
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          FILEBASE=heroku-v${{inputs.version}}-$SHA
           ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
           TEMP_ROLE=$(aws sts assume-role --role-arn $STAMPY_ARN --role-session-name artifact-signing)
           export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
           export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SecretAccessKey')
           export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SessionToken')
-          aws s3 cp ${{steps.filename.outputs.FILEBASE}}-x86.exe $STAMPY_UNSIGNED_BUCKET/${{steps.filename.outputs.FILEBASE}}-x86.exe
-          aws s3 cp ${{steps.filename.outputs.FILEBASE}}-x64.exe $STAMPY_UNSIGNED_BUCKET/${{steps.filename.outputs.FILEBASE}}-x64.exe
+          aws s3 cp $FILEBASE-x86.exe $STAMPY_UNSIGNED_BUCKET/$FILEBASE-x86.exe
+          aws s3 cp $FILEBASE-x64.exe $STAMPY_UNSIGNED_BUCKET/$FILEBASE-x64.exe
