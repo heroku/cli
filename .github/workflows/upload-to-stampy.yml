@@ -13,25 +13,19 @@ jobs:
     environment: Stampy
     steps:
       - uses: actions/checkout@v3
-      - name: get version sha
-        id: versionSha
-        run: |
-          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          echo "$SHA" >> $GITHUB_ENV
-          echo "sha = $SHA"
       - name: save filename (without arch/extension) for reuse
         id: filename
         run: |
-          echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> "$GITHUB_ENV"
-          echo "filebase = $env.FILEBASE"
+          echo "FILEBASE=heroku-v${{inputs.version}}-${{steps.versionSha.outputs.SHA}}" >> $GITHUB_ENV
       - name: download Windows installers from s3
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_EC2_METADATA_DISABLED: true
         run: |
-          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/${{steps.versionSha.outputs.SHA}}/${{steps.filename.outputs.FILEBASE}}-x86.exe .
-          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/${{steps.versionSha.outputs.SHA}}/${{steps.filename.outputs.FILEBASE}}-x64.exe .
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x86.exe .
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x64.exe .
       - name: upload unsigned Windows installers to Stampy
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
