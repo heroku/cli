@@ -21,8 +21,8 @@ jobs:
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           FILEBASE=heroku-v${{inputs.version}}-$SHA
-          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x86.exe .
-          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/${{steps.filename.outputs.FILEBASE}}-x64.exe .
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/$FILEBASE-x86.exe .
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/$FILEBASE-x64.exe .
       - name: upload unsigned Windows installers to Stampy
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
