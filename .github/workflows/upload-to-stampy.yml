@@ -17,7 +17,7 @@ jobs:
         id: versionSha
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          echo $SHA >> $GITHUB_ENV
+          echo "$SHA" >> $GITHUB_ENV
           echo "sha = $SHA"
       - name: save filename (without arch/extension) for reuse
         id: filename
