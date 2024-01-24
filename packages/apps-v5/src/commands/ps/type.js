@@ -13,6 +13,9 @@ https://devcenter.heroku.com/articles/procfile`)
 
 async function run(context, heroku) {
   let app = context.app
+  const {body: feature} = await heroku.get('/account/features/frontend-larger-dynos')
+  console.log('frontend-larger-dynos:', feature)
+  console.log('HELLO')
 
   let parse = async function (args) {
     if (!args || args.length === 0) return []
