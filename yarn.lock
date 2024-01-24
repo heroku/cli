@@ -9732,6 +9732,7 @@ __metadata:
     inquirer: ^7.3.0
     js-yaml: ^4.0.8
     lodash: ^4.17.11
+    lolex: ^3.1.0
     mocha: ^5.2.0
     netrc-parser: 3.1.6
     nock: ^10.0.6
@@ -9740,6 +9741,7 @@ __metadata:
     oclif: 3.11.3
     open: ^8.4.2
     phoenix: ^1.6.14
+    printf: 0.6.1
     proxyquire: ^2.1.0
     qqjs: 0.3.11
     read-pkg: ^4.0.1

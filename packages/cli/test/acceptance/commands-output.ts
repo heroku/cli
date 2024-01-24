@@ -8,6 +8,7 @@ export default `\u001B[1m Command                                        Summary
  access:remove                                  remove users from a team app
  access:update                                  update existing collaborators on an team app
  addons                                         lists your add-ons and attachments
+ addons:add                                     create a new add-on resource
  addons:attach                                  attach an existing add-on resource to an app
  addons:create                                  create a new add-on resource
  addons:destroy                                 permanently destroy an add-on resource
