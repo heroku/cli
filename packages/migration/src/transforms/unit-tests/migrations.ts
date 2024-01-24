@@ -71,7 +71,7 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
       }
 
       for (const flagProp of prop.initializer.properties) {
-        if (!ts.isIdentifier(flagProp.name)) {
+        if (!ts.isIdentifier(flagProp.name) && !ts.isStringLiteral(flagProp.name)) {
           continue
         }
 
@@ -83,7 +83,9 @@ export const migrateCommandRun = (runArgs: ts.ObjectLiteralExpression): ts.Expre
             break
           }
 
-          transformedCommand.push(factory.createStringLiteral(`--${flagProp.name.escapedText.toString()}`))
+          const propName = ts.isIdentifier(flagProp.name) ? flagProp.name.escapedText.toString() : flagProp.name.text
+
+          transformedCommand.push(factory.createStringLiteral(`--${propName}`))
           if (flagProp.initializer.kind !== ts.SyntaxKind.TrueKeyword) {
             transformedCommand.push(flagProp.initializer)
           }
