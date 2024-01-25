@@ -46,5 +46,5 @@ jobs:
           prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          yarn oclif promote --win --root="./packages/cli" --sha="$SHA" --indexes --version='beta'
+          yarn oclif promote --win --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel="beta"
         shell: bash
