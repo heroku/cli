@@ -68,46 +68,58 @@ function displayAll(addons: Heroku.AddOn[]) {
     return
   }
 
-  ux.table(addons, {
-    printLine: ux.log,
-    headerAnsi: color.bold, columns: [{
-      key: 'app.name', label: 'Owning App', format: color.cyan,
-    }, {
-      key: 'name', label: 'Add-on', format: color.magenta,
-    }, {
-      key: 'plan.name', label: 'Plan', format: function (plan) {
-        if (typeof plan === 'undefined')
-          return color.dim('?')
-        return plan
+  ux.table(
+    addons,
+    {
+      'Owning App': {
+        get: ({app}) => color.cyan(app?.name || ''),
       },
-    }, {
-      key: 'plan.price', label: 'Price', format: function (price) {
-        if (typeof price === 'undefined')
-          return color.dim('?')
-        return formatPrice({price, hourly: true})
+      name: {
+        header: 'Add-on', get: ({name}) => color.magenta(name || ''),
       },
-    }, {
-      key: 'plan.price', label: 'Max Price', format: function (price) {
-        if (typeof price === 'undefined')
-          return color.dim('?')
-        return formatPrice({price, hourly: false})
+      Plan: {
+        get: function ({plan}) {
+          if (typeof plan === 'undefined')
+            return color.dim('?')
+          return plan.name
+        },
       },
-    }, {
-      key: 'state', label: 'State', format: function (state) {
-        switch (state) {
-        case 'provisioned':
-          state = 'created'
-          break
-        case 'provisioning':
-          state = 'creating'
-          break
-        case 'deprovisioned': state = 'errored'
-        }
+      Price: {
+        get: function ({plan}) {
+          if (typeof plan?.price === 'undefined')
+            return color.dim('?')
+          return formatPrice({price: plan?.price, hourly: true})
+        },
+      },
+      'Max Price': {
+        get: function ({plan}) {
+          if (typeof plan?.price === 'undefined')
+            return color.dim('?')
+          return formatPrice({price: plan?.price, hourly: false})
+        },
+      },
+      State: {
+        get: function ({state}) {
+          let result: string = state || ''
+          switch (state) {
+          case 'provisioned':
+            result = 'created'
+            break
+          case 'provisioning':
+            result = 'creating'
+            break
+          case 'deprovisioned':
+            result = 'errored'
+          }
 
-        return state
+          return result
+        },
       },
-    }],
-  })
+    },
+    {
+      printLine: ux.log,
+      headerAnsi: color.bold,
+    })
 }
 
 function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
@@ -153,36 +165,43 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
   addons = sortBy(addons, isForeignApp, 'plan.name', 'name')
   ux.log()
-  ux.table(addons, {
-    printLine: ux.log,
-    headerAnsi: color.bold, columns: [{
-      label: 'Add-on', format: presentAddon,
-    }, {
-      label: 'Plan', key: 'plan.name', format: function (name) {
-        if (name === undefined)
-          return color.dim('?')
-        return name.replace(/^[^:]+:/, '')
+  ux.table(
+    addons,
+    {
+      'Add-on': {get: presentAddon},
+      Plan: {
+        get: ({plan}) => plan && plan.name !== undefined ?
+          plan.name.replace(/^[^:]+:/, '') :
+          color.dim('?'),
       },
-    }, {
-      label: 'Price', format: function (addon) {
-        if (addon.app.name === app) {
-          return formatPrice({price: addon.plan.price, hourly: true})
-        }
+      Price: {
+        get: function (addon) {
+          if (addon.app?.name === app) {
+            return formatPrice({price: addon.plan?.price, hourly: true})
+          }
 
-        return color.dim(printf('(billed to %s app)', color.cyan(addon.app.name)))
+          return color.dim(printf('(billed to %s app)', color.cyan(addon.app?.name || '')))
+        },
       },
-    }, {
-      label: 'Max Price', format: function (addon) {
-        if (addon.app.name === app) {
-          return formatPrice({price: addon.plan.price, hourly: false})
-        }
+      'Max Price': {
+        get: function (addon) {
+          if (addon.app?.name === app) {
+            return formatPrice({price: addon.plan?.price, hourly: false})
+          }
 
-        return color.dim(printf('(billed to %s app)', color.cyan(addon.app.name)))
+          return color.dim(printf('(billed to %s app)', color.cyan(addon.app?.name || '')))
+        },
       },
-    }, {
-      label: 'State', key: 'state', format: formatState,
-    }], after: () => ux.log(''),
-  })
+      State: {
+        get: ({state}) => formatState(state || ''),
+      },
+    },
+    {
+      after: () => ux.log(''),
+      printLine: ux.log,
+      headerAnsi: color.bold,
+    },
+  )
   ux.log(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
 }
 
