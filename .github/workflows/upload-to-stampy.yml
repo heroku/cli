@@ -35,6 +35,7 @@ jobs:
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
           echo $SHA
           FILEBASE=heroku-v${{inputs.version}}-$SHA
+          echo $FILEBASE
           ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
           TEMP_ROLE=$(aws sts assume-role --role-arn $STAMPY_ARN --role-session-name artifact-signing)
           export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
