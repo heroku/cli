@@ -126,8 +126,10 @@ Add-on                     Plan      Price        Max price State
  ────────────────────────── ───────── ──────────── ───────── ────────
  heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created
   └─ as DATABASE
+
  heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
   └─ as REDIS
+
 The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
         })
       })
@@ -142,6 +144,7 @@ Add-on                            Plan Price        Max price State
  heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created
   ├─ as DATABASE
   └─ as WWW_DB on acme-inc-dwh app
+
 The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
 `)
         })
@@ -157,6 +160,7 @@ Add-on                              Plan Price                        Max price 
  heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created
   ├─ as WWW_DB
   └─ as DATABASE on acme-inc-www app
+
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
@@ -281,6 +285,7 @@ Add-on                     Plan       Price        Max price  State
  ────────────────────────── ────────── ──────────── ────────── ───────
  heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created
   └─ as DATABASE
+
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
@@ -302,6 +307,7 @@ Add-on                     Plan       Price    Max price State
  ────────────────────────── ────────── ──────── ───────── ───────
  heroku-postgresql (dwh-db) standard-2 contract contract  created
   └─ as DATABASE
+
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
@@ -314,6 +320,7 @@ Add-on        Plan Price                        Max price                    Sta
  ───────────── ──── ──────────────────────────── ──────────────────────────── ─────
  ? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)
   └─ as WWW_DB
+
 The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.
 `)
       })

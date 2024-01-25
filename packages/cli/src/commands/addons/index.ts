@@ -11,7 +11,7 @@ const topic = 'addons'
 async function addonGetter(api: APIClient, app?: string) {
   let attachmentsResponse: ReturnType<typeof api.get<Heroku.AddOnAttachment>> | null = null
   let addonsResponse: ReturnType<typeof api.get<Heroku.AddOn[]>>
-  if (app) {
+  if (app) { // don't display attachments globally
     addonsResponse = api.get<Heroku.AddOn[]>(`/apps/${app}/addons`, {
       headers: {
         'Accept-Expansion': 'addon_service,plan',
@@ -19,8 +19,13 @@ async function addonGetter(api: APIClient, app?: string) {
     })
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
+      // because the root /addon-attachments endpoint won't include relevant
+      // attachments when sudo-ing for another app, we will use the more
+      // specific API call and sacrifice listing foreign attachments.
       attachmentsResponse = api.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments`)
     } else {
+      // In order to display all foreign attachments, we'll get out entire
+      // attachment list
       attachmentsResponse = api.get<Heroku.AddOnAttachment>('/addon-attachments')
     }
   } else {
@@ -31,14 +36,15 @@ async function addonGetter(api: APIClient, app?: string) {
     })
   }
 
-  const data = await Promise.all([addonsResponse, attachmentsResponse])
+  // Get addons and attachments in parallel
+  const [{body: addonsRaw}, potentialAttachments] = await Promise.all([addonsResponse, attachmentsResponse])
   function isRelevantToApp(addon: Heroku.AddOn) {
     return !app || addon.app?.name === app || some(addon.attachments, att => att.app.name === app)
   }
 
-  const groupedAttachments = groupBy<Heroku.AddOnAttachment>(data[1]?.body, 'addon.id')
+  const groupedAttachments = groupBy<Heroku.AddOnAttachment>(potentialAttachments?.body, 'addon.id')
   const addons: Heroku.AddOn[] = []
-  data[0].body.forEach(function (addon: Heroku.AddOn) {
+  addonsRaw.forEach(function (addon: Heroku.AddOn) {
     addon.attachments = groupedAttachments[addon.id as string]  || []
     delete groupedAttachments[addon.id as string]
     if (isRelevantToApp(addon)) {
@@ -49,6 +55,11 @@ async function addonGetter(api: APIClient, app?: string) {
       addon.plan.price = grandfatheredPrice(addon)
     }
   })
+
+  // Any attachments left didn't have a corresponding add-on record in API.
+  // This is probably normal (because we are asking API for all attachments)
+  // but it could also be due to certain types of permissions issues, so check
+  // if the attachment looks relevant to the app, and then render whatever
   values(groupedAttachments)
     .forEach(function (atts) {
       const inaccessibleAddon = {
@@ -152,12 +163,13 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
     const addonLine = `${service} (${name})`
     const atts = sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
+    // render each attachment under the add-on
     const attLines = atts.map(function (attachment, idx) {
       const isFirst = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isFirst)
     })
     return [addonLine].concat(attLines)
-      .join('\n')
+      .join('\n') + '\n' // Separate each add-on row by a blank line
   }
 
   addons = sortBy(addons, isForeignApp, 'plan.name', 'name')
@@ -192,6 +204,13 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       State: {
         get: ({state}) => formatState(state || ''),
       },
+    },
+    {
+      // Separate each add-on row by a blank line
+      // printLine: (s: string) => {
+      //   ux.log(s)
+      //   ux.log('\n')
+      // },
     },
   )
   ux.log(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
