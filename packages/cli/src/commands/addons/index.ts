@@ -37,7 +37,7 @@ async function addonGetter(api: APIClient, app?: string) {
   }
 
   const groupedAttachments = groupBy<Heroku.AddOnAttachment>(data[1]?.body, 'addon.id')
-  const addons = []
+  const addons: Heroku.AddOn[] = []
   data[0].body.forEach(function (addon: Heroku.AddOn) {
     addon.attachments = groupedAttachments[addon.id as string]  || []
     delete groupedAttachments[addon.id as string]
@@ -58,7 +58,8 @@ async function addonGetter(api: APIClient, app?: string) {
         addons.push(inaccessibleAddon)
       }
     })
-  return addonsResponse
+
+  return addons
 }
 
 function displayAll(addons: Heroku.AddOn[]) {
@@ -115,10 +116,6 @@ function displayAll(addons: Heroku.AddOn[]) {
           return result
         },
       },
-    },
-    {
-      printLine: ux.log,
-      headerAnsi: color.bold,
     })
 }
 
@@ -196,11 +193,6 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
         get: ({state}) => formatState(state || ''),
       },
     },
-    {
-      after: () => ux.log(''),
-      printLine: ux.log,
-      headerAnsi: color.bold,
-    },
   )
   ux.log(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
 }
@@ -233,13 +225,13 @@ export default class Addons extends Command {
     const {app, all, json} = flags
 
     if (!all && app) {
-      const {body: addons} = await addonGetter(this.heroku, app)
+      const addons = await addonGetter(this.heroku, app)
       if (json)
         displayJSON(addons)
       else
         displayForApp(app, addons)
     } else {
-      const {body: addons} = await addonGetter(this.heroku)
+      const addons = await addonGetter(this.heroku)
       if (json)
         displayJSON(addons)
       else

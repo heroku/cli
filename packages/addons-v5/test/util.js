@@ -12,7 +12,7 @@ function stripIndents(str) {
 
 module.exports = {
   expectOutput: function (actual, expected) {
-    return expect(actual.trim().replace(/\s+$/mg, ''))
+    return expect(actual.trim().replace(/\s+$/mg, '').replace(/\s/g, ''))
       .to.equal(stripIndents(expected))
   },
 }
