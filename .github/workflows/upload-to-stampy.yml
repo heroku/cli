@@ -33,6 +33,7 @@ jobs:
         # switch AWS identity to the one that can access stampy
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          echo $SHA
           FILEBASE=heroku-v${{inputs.version}}-$SHA
           ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
           TEMP_ROLE=$(aws sts assume-role --role-arn $STAMPY_ARN --role-session-name artifact-signing)
