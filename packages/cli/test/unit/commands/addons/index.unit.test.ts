@@ -20,12 +20,12 @@ describe('addons', () => {
       })
       it('prints add-ons in a table', async function () {
         await runCommand(Cmd, [])
-        expectOutput(stdout.output, `Owning app   Add-on    Plan                   Price        Max price State
-─────────── ──────── ───────────────────── ─────────── ───────── ───────
-acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
-acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
-acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating
-`)
+        expectOutput(stdout.output, `
+ Owning app   Add-on    Plan                   Price        Max price State
+ ──────────── ───────── ────────────────────── ──────────── ───────── ────────
+ acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
+ acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
+ acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating`)
       })
       it('orders by app, then by add-on name', async function () {
         await runCommand(Cmd, [])
@@ -53,9 +53,10 @@ acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating
       })
       it('prints add-ons in a table with the grandfathered price', async function () {
         await runCommand(Cmd, [])
-        expectOutput(stdout.output, `Owning app    Add-on  Plan                          Price         Max price   State
-────────────  ──────  ────────────────────────────  ────────────  ──────────  ───────
-acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  ~$0.139/hour  $100/month  created`)
+        expectOutput(stdout.output, `
+ Owning app   Add-on Plan                         Price        Max price  State
+ ──────────── ────── ──────────────────────────── ──────────── ────────── ───────
+ acme-inc-dwh dwh-db heroku-postgresql:standard-2 ~$0.139/hour $100/month created`)
       })
     })
     context('with a contract add-on', function () {
@@ -70,9 +71,10 @@ acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  ~$0.139/hour  $100/month  cr
       })
       it('prints add-ons in a table with contract', async function () {
         await runCommand(Cmd, [])
-        expectOutput(stdout.output, `Owning app    Add-on  Plan                          Price     Max price  State
-────────────  ──────  ────────────────────────────  ────────  ─────────  ───────
-acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  contract  contract   created`)
+        expectOutput(stdout.output, `
+ Owning app   Add-on Plan                         Price    Max price State
+ ──────────── ────── ──────────────────────────── ──────── ───────── ───────
+ acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
       })
     })
     it('prints message when there are no add-ons', async function () {
@@ -120,16 +122,13 @@ acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  contract  contract   created
         ])
         return run('acme-inc-www', function () {
           expectOutput(stdout.output, `
-Add-on                      Plan       Price         Max price  State
-──────────────────────────  ─────────  ────────────  ─────────  ────────
-heroku-postgresql (www-db)  mini       ~$0.007/hour  $5/month   created
- └─ as DATABASE
-
-heroku-redis (www-redis)    premium-2  ~$0.083/hour  $60/month  creating
- └─ as REDIS
-
-The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
-                `)
+Add-on                     Plan      Price        Max price State
+ ────────────────────────── ───────── ──────────── ───────── ────────
+ heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created
+  └─ as DATABASE
+ heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
+  └─ as REDIS
+The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
         })
       })
       it('shows attachments to foreign apps for owned add-ons', function () {
@@ -138,12 +137,11 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
         ])
         return run('acme-inc-www', function () {
           expectOutput(stdout.output, `
-Add-on                             Plan  Price         Max price  State
-─────────────────────────────────  ────  ────────────  ─────────  ───────
-heroku-postgresql (www-db)         mini  ~$0.007/hour  $5/month   created
- ├─ as DATABASE
- └─ as WWW_DB on acme-inc-dwh app
-
+Add-on                            Plan Price        Max price State
+ ───────────────────────────────── ──── ──────────── ───────── ───────
+ heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created
+  ├─ as DATABASE
+  └─ as WWW_DB on acme-inc-dwh app
 The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
 `)
         })
@@ -154,14 +152,12 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
         ])
         return run('acme-inc-dwh', function () {
           expectOutput(stdout.output, `
-Add-on                               Plan  Price                         Max price                     State
-───────────────────────────────────  ────  ────────────────────────────  ────────────────────────────  ───────
-heroku-postgresql (www-db)           mini  (billed to acme-inc-www app)  (billed to acme-inc-www app)  created
- ├─ as WWW_DB
- └─ as DATABASE on acme-inc-www app
-
-The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.
-                `)
+Add-on                              Plan Price                        Max price                    State
+ ─────────────────────────────────── ──── ──────────────────────────── ──────────────────────────── ───────
+ heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created
+  ├─ as WWW_DB
+  └─ as DATABASE on acme-inc-www app
+The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
@@ -280,10 +276,11 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
       })
       it('prints add-ons in a table with the grandfathered price', function () {
         return run('acme-inc-dwh', function () {
-          expectOutput(stdout.output, `Add-on                      Plan        Price         Max price   State
-──────────────────────────  ──────────  ────────────  ──────────  ───────
-heroku-postgresql (dwh-db)  standard-2  ~$0.139/hour  $100/month  created
- └─ as DATABASE
+          expectOutput(stdout.output, `
+Add-on                     Plan       Price        Max price  State
+ ────────────────────────── ────────── ──────────── ────────── ───────
+ heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created
+  └─ as DATABASE
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
@@ -301,10 +298,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
       it('prints add-ons in a table with contract', function () {
         return run('acme-inc-dwh', function () {
           expectOutput(stdout.output, `
-Add-on                      Plan        Price     Max price  State
-──────────────────────────  ──────────  ────────  ─────────  ───────
-heroku-postgresql (dwh-db)  standard-2  contract  contract   created
- └─ as DATABASE
+Add-on                     Plan       Price    Max price State
+ ────────────────────────── ────────── ──────── ───────── ───────
+ heroku-postgresql (dwh-db) standard-2 contract contract  created
+  └─ as DATABASE
 The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
@@ -313,11 +310,10 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function () {
         expectOutput(stdout.output, `
-Add-on         Plan  Price                         Max price                     State
-─────────────  ────  ────────────────────────────  ────────────────────────────  ─────
-? (www-db)     ?     (billed to acme-inc-www app)  (billed to acme-inc-www app)
- └─ as WWW_DB
-
+Add-on        Plan Price                        Max price                    State
+ ───────────── ──── ──────────────────────────── ──────────────────────────── ─────
+ ? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)
+  └─ as WWW_DB
 The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.
 `)
       })

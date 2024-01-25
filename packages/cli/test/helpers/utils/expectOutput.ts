@@ -9,8 +9,10 @@ function stripIndents(str: string) {
 }
 
 const expectOutput = function (actual: string, expected: string) {
-  return expect(actual.trim().replace(/\s+$/mg, '').replace(/[\s─]/g, ''))
-    .to.equal(stripIndents(expected).replace(/[\s─]/g, ''))
+  // it can be helpful to strip all hyphens & spaces when migrating tests before perfecting
+  // use `.replace(/[\s─]/g, '')` on both actual & expected
+  return expect(actual.trim().replace(/\s+$/mg, ''))
+    .to.equal(stripIndents(expected))
 }
 
 export default expectOutput
