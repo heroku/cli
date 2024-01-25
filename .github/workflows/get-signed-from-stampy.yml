@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Stampy
     steps:
-      - uses: actions/checkout@3
+      - uses: actions/checkout@v3
       - name: download signed Windows installer from from Stampy
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
