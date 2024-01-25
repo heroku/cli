@@ -74,8 +74,8 @@ function displayAll(addons: Heroku.AddOn[]) {
       'Owning App': {
         get: ({app}) => color.cyan(app?.name || ''),
       },
-      name: {
-        header: 'Add-on', get: ({name}) => color.magenta(name || ''),
+      'Add-on': {
+        get: ({name}) => color.magenta(name || ''),
       },
       Plan: {
         get: function ({plan}) {
