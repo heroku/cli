@@ -27,4 +27,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_EC2_METADATA_DISABLED: true
-        run: node ./scripts/upload-stampy-signed.js
+        run: node ./scripts/stampy/upload-stampy-signed.js
