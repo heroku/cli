@@ -10937,7 +10937,7 @@ __metadata:
     rollbar: ^2.26.2
     semver: 5.6.0
     shell-escape: ^0.2.0
-    shell-quote: ^1.6.1
+    shell-quote: ^1.8.1
     sinon: ^7.2.4
     tmp: ^0.0.33
     true-myth: 2.2.3
@@ -16934,6 +16934,13 @@ __metadata:
   version: 1.7.4
   resolution: "shell-quote@npm:1.7.4"
   checksum: 2874ea9c1a7c3ebfc9ec5734a897e16533d0d06f2e4cddc22ba3d1cab5cdc07d0f825364c1b1e39abe61236f44d8e60e933c7ad7349ce44de4f5dddc7b4354e9
+  languageName: node
+  linkType: hard
+
+"shell-quote@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "shell-quote@npm:1.8.1"
+  checksum: 5f01201f4ef504d4c6a9d0d283fa17075f6770bfbe4c5850b074974c68062f37929ca61700d95ad2ac8822e14e8c4b990ca0e6e9272e64befd74ce5e19f0736b
   languageName: node
   linkType: hard
 
