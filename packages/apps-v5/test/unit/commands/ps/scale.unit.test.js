@@ -34,6 +34,21 @@ describe('ps:scale', () => {
       .then(() => api.done())
   })
 
+  it('scales up a new large dyno size if feature flag is enabled', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload(true))
+      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1', size: 'Performance-L-RAM'}]})
+      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+
+    return cmd.run({app: 'myapp', args: ['web=1:Performance-L-RAM']})
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 1:Performance-L-RAM\n'))
+      .then(() => api.done())
+  })
+
   it('shows formation with shield dynos for apps in a shielded private space', () => {
     let api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
@@ -109,4 +124,14 @@ describe('ps:scale', () => {
       .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 2:Free\n'))
       .then(() => api.done())
   })
+})
+
+it('errors if user attempts to scale up using new larger dyno size and feature flag is NOT enabled', function () {
+  let api = nock('https://api.heroku.com')
+    .get('/account/features/frontend-larger-dynos')
+    .reply(200, featureFlagPayload())
+
+  return cmd.run({app: 'myapp', args: ['web=1:Performance-L-RAM']})
+    .catch(error => expect(error.message).to.eq('No such size as Performance-L-RAM.'))
+    .then(() => api.done())
 })
