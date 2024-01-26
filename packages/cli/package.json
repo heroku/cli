@@ -46,6 +46,7 @@
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
     "chalk": "^2.4.2",
+    "copy-paste": "^1.5.3",
     "date-fns": "^2.30.0",
     "debug": "4.1.1",
     "edit-string": "^1.1.6",
