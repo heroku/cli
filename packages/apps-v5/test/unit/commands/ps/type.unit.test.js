@@ -28,7 +28,7 @@ describe('ps:type', function () {
   it('displays cost/hour and max cost/month for all individually-priced dyno sizes', function () {
     let api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload())
+      .reply(200, featureFlagPayload(true))
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -74,6 +74,33 @@ Performance-2XL    1
 $5 (flat monthly fee, shared across all Eco dynos)
 `)
       })
+      .then(() => api.done())
+  })
+
+  it('switches to performance-l-ram dyno when feature flag is enabled', function () {
+    let api = nock('https://api.heroku.com')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload(true))
+      .get('/apps/myapp')
+      .reply(200, app())
+      .get('/apps/myapp/formation')
+      .reply(200, [{type: 'web', quantity: 1, size: 'Eco'}])
+      .patch('/apps/myapp/formation', {updates: [{type: 'web', size: 'performance-l-ram'}]})
+      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
+      .get('/apps/myapp/formation')
+      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
+
+    return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
+      .then(() => expect(cli.stdout).to.eq(`=== Dyno Types
+type  size               qty  cost/hour  max cost/month
+────  ─────────────────  ───  ─────────  ──────────────
+web   Performance-L-RAM  1    ~$0.694    $500
+=== Dyno Totals
+type               total
+─────────────────  ─────
+Performance-L-RAM  1
+`))
+      .then(() => expect(cli.stderr).to.eq('Scaling dynos on myapp... done\n'))
       .then(() => api.done())
   })
 
@@ -157,4 +184,14 @@ Shield-L  0
 `))
       .then(() => api.done())
   })
+})
+
+it('errors when user requests larger dynos and feature flag is NOT enabled', function () {
+  let api = nock('https://api.heroku.com')
+    .get('/account/features/frontend-larger-dynos')
+    .reply(200, featureFlagPayload())
+
+  return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
+    .catch(error => expect(error.message).to.eq('No such size as performance-l-ram.'))
+    .then(() => api.done())
 })
