@@ -12,7 +12,37 @@ https://devcenter.heroku.com/articles/procfile`)
 async function run(context, heroku) {
   let app = context.app
 
+  // will remove this flag once we have
+  // successfully launched larger dyno sizes
+  let isLargerDyno = false
+  const feature = await heroku.get('/account/features/frontend-larger-dynos')
+
   function parse(args) {
+    // will remove this flag once we have
+    // successfully launched larger dyno sizes
+    const featureNotEnabled = !feature.enabled
+
+    // checks for larger dyno sizes
+    // if the feature is not enabled
+    if (featureNotEnabled) {
+      if (args.find(a => a.match(/=/))) {
+        compact(args.map(arg => {
+          let match = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
+          let size = match[3]
+
+          const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+          isLargerDyno = largerDynoNames.test(size)
+
+          if (isLargerDyno) {
+            throw new Error(`No such size as ${size}.`)
+          }
+
+          // eslint-disable-next-line no-useless-return
+          return
+        }))
+      }
+    }
+
     return compact(args.map(arg => {
       let change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
