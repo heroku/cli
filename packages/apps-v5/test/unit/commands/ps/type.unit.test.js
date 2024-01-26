@@ -6,6 +6,14 @@ const cmd = commands.find(c => c.topic === 'ps' && c.command === 'type')
 const nock = require('nock')
 const expect = require('chai').expect
 
+// will remove this flag once we have
+// successfully launched larger dyno sizes
+function featureFlagPayload(isEnabled = false) {
+  return {
+    enabled: isEnabled,
+  }
+}
+
 function app(args = {}) {
   let base = {name: 'myapp'}
   return Object.assign(base, args)
@@ -19,6 +27,8 @@ describe('ps:type', function () {
 
   it('displays cost/hour and max cost/month for all individually-priced dyno sizes', function () {
     let api = nock('https://api.heroku.com')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload())
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -69,6 +79,8 @@ $5 (flat monthly fee, shared across all Eco dynos)
 
   it('switches to hobby dynos', function () {
     let api = nock('https://api.heroku.com')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload())
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -95,6 +107,8 @@ Basic  3
 
   it('switches to standard-1x and standard-2x dynos', function () {
     let api = nock('https://api.heroku.com')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload())
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -122,6 +136,8 @@ Standard-2X  2
 
   it('displays Shield dynos for apps in shielded spaces', function () {
     let api = nock('https://api.heroku.com')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload())
       .get('/apps/myapp')
       .reply(200, app({space: {shield: true}}))
       .get('/apps/myapp/formation')

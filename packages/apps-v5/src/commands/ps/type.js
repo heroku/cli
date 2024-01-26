@@ -13,12 +13,40 @@ https://devcenter.heroku.com/articles/procfile`)
 
 async function run(context, heroku) {
   let app = context.app
-  const {body: feature} = await heroku.get('/account/features/frontend-larger-dynos')
-  console.log('frontend-larger-dynos:', feature)
-  console.log('HELLO')
+
+  // will remove this flag once we have
+  // successfully launched larger dyno sizes
+  let isLargerDyno = false
+  const feature = await heroku.get('/account/features/frontend-larger-dynos')
 
   let parse = async function (args) {
     if (!args || args.length === 0) return []
+
+    // will remove this flag once we have
+    // successfully launched larger dyno sizes
+    const featureNotEnabled = !feature.enabled
+
+    // checks for larger dyno sizes
+    // if the feature is not enabled
+    if (featureNotEnabled) {
+      if (args.find(a => a.match(/=/))) {
+        compact(args.map(arg => {
+          let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
+          let size = match[2]
+
+          const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+          isLargerDyno = largerDynoNames.test(size)
+
+          if (isLargerDyno) {
+            throw new Error(`No such size as ${size}.`)
+          }
+
+          // eslint-disable-next-line no-useless-return
+          return
+        }))
+      }
+    }
+
     let formation = await heroku.get(`/apps/${app}/formation`)
     if (args.find(a => a.match(/=/))) {
       return compact(args.map(arg => {
