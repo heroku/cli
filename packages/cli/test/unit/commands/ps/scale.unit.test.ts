@@ -19,8 +19,10 @@ describe('ps:scale', () => {
       '--app',
       'myapp',
     ])
+
     expect(stdout.output).to.equal('web=1:Free worker=2:Free\n')
-    expect(stderr.output, 'to be empty')
+    // this fails due to a node deprecation warning coming from nock v10
+    // expect(stderr.output).to.equal('')
     api.done()
   })
 
@@ -35,8 +37,9 @@ describe('ps:scale', () => {
       '--app',
       'myapp',
     ])
+
     expect(stdout.output).to.equal('web=1:Shield-L worker=2:Shield-M\n')
-    expect(stderr.output, 'to be empty')
+    expect(stderr.output).to.equal('')
     api.done()
   })
 
@@ -56,8 +59,8 @@ describe('ps:scale', () => {
       expect(stripAnsi(error.message)).to.include('No process types on myapp.')
     }
 
-    expect(stdout.output, 'to be empty')
-    expect(stderr.output, 'to be empty')
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.equal('')
     api.done()
   })
 
@@ -74,7 +77,8 @@ describe('ps:scale', () => {
       'web=1',
       'worker=2',
     ])
-    expect(stdout.output, 'to be empty')
+
+    expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
     api.done()
   })
@@ -91,7 +95,8 @@ describe('ps:scale', () => {
       'myapp',
       'web=1:Shield-L',
     ])
-    expect(stdout.output, 'to be empty')
+
+    expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Shield-L\n')
     api.done()
   })
@@ -108,7 +113,8 @@ describe('ps:scale', () => {
       'myapp',
       'web+1',
     ])
-    expect(stdout.output, 'to be empty')
+
+    expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 2:Free\n')
     api.done()
   })

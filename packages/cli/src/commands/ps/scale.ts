@@ -16,11 +16,12 @@ export default class Scale extends Command {
 
 Omitting any arguments will display the app's current dyno formation, in a
 format suitable for passing back into ps:scale.`
+
   static examples = [
-    `$ heroku ps:scale web=3:Standard-2X worker+1
+    `$ heroku ps:scale web=3:Standard-2X worker+1 --app APP
 Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
 
-$ heroku ps:scale
+$ heroku ps:scale --app APP
 web=3:Standard-2X worker=1:Standard-1X`,
   ]
 
