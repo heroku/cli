@@ -1,7 +1,9 @@
 import confirmApp from '../apps/confirm-app'
 import color from '@heroku-cli/color'
-const printf = require('printf')
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import {merge} from 'lodash'
+const printf = require('printf')
 
 export const trapConfirmationRequired = async function<T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) {
   return await fn(confirm)
@@ -37,3 +39,31 @@ export const formatPriceText = function (price: Heroku.AddOn['price']) {
   return `${color.green(priceHourly)} (max ${priceMonthly})`
 }
 
+export const grandfatheredPrice = function (addon: Heroku.AddOn) {
+  const price = addon.plan?.price
+  return Object.assign({}, price, {
+    cents: addon.billed_price?.cents,
+    contract: addon.billed_price?.contract,
+  })
+}
+
+export const formatState = function (state: string) {
+  switch (state) {
+  case 'provisioned':
+    state = 'created'
+    break
+  case 'provisioning':
+    state = 'creating'
+    break
+  case 'deprovisioning':
+    state = 'destroying'
+    break
+  case 'deprovisioned':
+    state = 'errored'
+    break
+  default:
+    state = ''
+  }
+
+  return state
+}
