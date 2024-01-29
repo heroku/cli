@@ -17,10 +17,15 @@ async function run(context, heroku) {
   let isLargerDyno = false
   const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
 
-  function parse(args) {
+  async function parse(args) {
     // checks for larger dyno sizes
     // if the feature is not enabled
     if (!largerDynoFeatureFlag.enabled) {
+      let availableDynoSizes = await heroku.get('/dyno-sizes')
+      availableDynoSizes = availableDynoSizes.map(dyno => {
+        return ' ' + dyno.name
+      })
+
       if (args.find(a => a.match(/=/))) {
         compact(args.map(arg => {
           let match = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
@@ -30,7 +35,7 @@ async function run(context, heroku) {
           isLargerDyno = largerDynoNames.test(size)
 
           if (isLargerDyno) {
-            throw new Error(`No such size as ${size}.`)
+            throw new Error(`No such size as ${size}. Use${availableDynoSizes}`)
           }
 
           // eslint-disable-next-line no-useless-return
@@ -48,7 +53,7 @@ async function run(context, heroku) {
     }))
   }
 
-  let changes = parse(context.args)
+  let changes = await parse(context.args)
   if (changes.length === 0) {
     let formation = await heroku.get(`/apps/${app}/formation`)
 
