@@ -26,6 +26,7 @@ async function run(context, heroku) {
     // if the feature is not enabled
     if (!largerDynoFeatureFlag.enabled) {
       if (args.find(a => a.match(/=/))) {
+        // eslint-disable-next-line array-callback-return
         compact(args.map(arg => {
           let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
           let size = match[2]
@@ -37,9 +38,6 @@ async function run(context, heroku) {
             const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
             throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
           }
-
-          // eslint-disable-next-line no-useless-return
-          return
         }))
       }
     }
