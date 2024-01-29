@@ -27,10 +27,8 @@ async function run(context, heroku) {
     if (!largerDynoFeatureFlag.enabled) {
       let availableDynoSizes = await heroku.get('/dyno-sizes')
       availableDynoSizes = availableDynoSizes.map(dyno => {
-        return dyno.name
+        return ' ' + dyno.name
       })
-
-      console.log('availableDynoSizes', availableDynoSizes)
 
       if (args.find(a => a.match(/=/))) {
         compact(args.map(arg => {
@@ -41,7 +39,7 @@ async function run(context, heroku) {
           isLargerDyno = largerDynoNames.test(size)
 
           if (isLargerDyno) {
-            throw new Error(`No such size as ${size}.`)
+            throw new Error(`No such size as ${size}. Use${availableDynoSizes}`)
           }
 
           // eslint-disable-next-line no-useless-return

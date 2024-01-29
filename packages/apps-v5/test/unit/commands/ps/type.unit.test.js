@@ -369,6 +369,6 @@ it('errors when user requests larger dynos and feature flag is NOT enabled', fun
     .reply(200, availableDynoSizes)
 
   return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
-    .catch(error => expect(error.message).to.eq('No such size as performance-l-ram.'))
+    .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use Standard-1X, Standard-2X, Performance-M, Performance-L, Private-S, Private-M, Private-L, Shield-M, Shield-L, Shield-S, Eco, Basic'))
     .then(() => api.done())
 })
