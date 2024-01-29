@@ -17,18 +17,14 @@ async function run(context, heroku) {
   // will remove this flag once we have
   // successfully launched larger dyno sizes
   let isLargerDyno = false
-  const feature = await heroku.get('/account/features/frontend-larger-dynos')
+  const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
 
   let parse = async function (args) {
     if (!args || args.length === 0) return []
 
-    // will remove this flag once we have
-    // successfully launched larger dyno sizes
-    const featureNotEnabled = !feature.enabled
-
     // checks for larger dyno sizes
     // if the feature is not enabled
-    if (featureNotEnabled) {
+    if (!largerDynoFeatureFlag.enabled) {
       if (args.find(a => a.match(/=/))) {
         compact(args.map(arg => {
           let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
