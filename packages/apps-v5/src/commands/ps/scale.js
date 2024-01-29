@@ -21,11 +21,6 @@ async function run(context, heroku) {
     // checks for larger dyno sizes
     // if the feature is not enabled
     if (!largerDynoFeatureFlag.enabled) {
-      let availableDynoSizes = await heroku.get('/dyno-sizes')
-      availableDynoSizes = availableDynoSizes.map(dyno => {
-        return ' ' + dyno.name
-      })
-
       if (args.find(a => a.match(/=/))) {
         compact(args.map(arg => {
           let match = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
@@ -35,7 +30,8 @@ async function run(context, heroku) {
           isLargerDyno = largerDynoNames.test(size)
 
           if (isLargerDyno) {
-            throw new Error(`No such size as ${size}. Use${availableDynoSizes}`)
+            const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+            throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
           }
 
           // eslint-disable-next-line no-useless-return
