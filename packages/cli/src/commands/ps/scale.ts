@@ -35,8 +35,8 @@ web=3:Standard-2X worker=1:Standard-1X`,
     const {flags, ...restParse} = await this.parse(Scale)
     const argv = restParse.argv as string[]
     const {app} = flags
-    function parse(argv: string[]) {
-      return compact(argv.map(arg => {
+    function parse(args: string[]) {
+      return compact(args.map(arg => {
         const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
         if (!change)
           return
@@ -50,8 +50,8 @@ web=3:Standard-2X worker=1:Standard-1X`,
     const changes = parse(argv)
 
     if (changes.length === 0) {
-      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
+      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
         formation.forEach(d => {
@@ -61,8 +61,10 @@ web=3:Standard-2X worker=1:Standard-1X`,
         })
       }
 
-      if (formation.length === 0)
+      if (formation.length === 0) {
         throw emptyFormationErr(app)
+      }
+
       ux.log(formation.map(d => `${d.type}=${d.quantity}:${d.size}`)
         .sort()
         .join(' '))
