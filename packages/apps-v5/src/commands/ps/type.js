@@ -25,6 +25,13 @@ async function run(context, heroku) {
     // checks for larger dyno sizes
     // if the feature is not enabled
     if (!largerDynoFeatureFlag.enabled) {
+      let availableDynoSizes = await heroku.get('/dyno-sizes')
+      availableDynoSizes = availableDynoSizes.map(dyno => {
+        return dyno.name
+      })
+
+      console.log('availableDynoSizes', availableDynoSizes)
+
       if (args.find(a => a.match(/=/))) {
         compact(args.map(arg => {
           let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)

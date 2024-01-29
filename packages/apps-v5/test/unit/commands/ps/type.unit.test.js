@@ -6,6 +6,177 @@ const cmd = commands.find(c => c.topic === 'ps' && c.command === 'type')
 const nock = require('nock')
 const expect = require('chai').expect
 
+const availableDynoSizes = [
+  {
+    id: '03307558-da97-4417-b1b3-e7f23b565422',
+    compute: 1,
+    dedicated: false,
+    memory: 0.5,
+    name: 'Standard-1X',
+    cost: {
+      cents: 2500,
+      unit: 'monthly',
+    },
+    dyno_units: 1,
+    precise_dyno_units: 1,
+    private_space_only: false,
+  },
+  {
+    id: '28c44219-0905-4318-8bb7-c2dda860e472',
+    compute: 2,
+    dedicated: false,
+    memory: 1,
+    name: 'Standard-2X',
+    cost: {
+      cents: 5000,
+      unit: 'monthly',
+    },
+    dyno_units: 2,
+    precise_dyno_units: 2,
+    private_space_only: false,
+  },
+  {
+    id: '808d31e7-300c-4313-9af3-bc7b69639ef3',
+    compute: 11,
+    dedicated: true,
+    memory: 2.5,
+    name: 'Performance-M',
+    cost: {
+      cents: 25000,
+      unit: 'monthly',
+    },
+    dyno_units: 8,
+    precise_dyno_units: 8,
+    private_space_only: false,
+  },
+  {
+    id: 'b711833f-ffa6-478f-82a3-30e071c32485',
+    compute: 46,
+    dedicated: true,
+    memory: 14,
+    name: 'Performance-L',
+    cost: {
+      cents: 50000,
+      unit: 'monthly',
+    },
+    dyno_units: 16,
+    precise_dyno_units: 16,
+    private_space_only: false,
+  },
+  {
+    id: 'c5ccc7a9-16ae-4bca-9247-7630c8d00a82',
+    compute: 2,
+    dedicated: true,
+    memory: 1,
+    name: 'Private-S',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 5,
+    precise_dyno_units: 5,
+    private_space_only: true,
+  },
+  {
+    id: '5d6efb3e-ad8b-4518-ae8d-88540116d92c',
+    compute: 14,
+    dedicated: true,
+    memory: 2.5,
+    name: 'Private-M',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 10,
+    precise_dyno_units: 10,
+    private_space_only: true,
+  },
+  {
+    id: 'e29ee54f-6988-4810-aaac-d17d55d8a022',
+    compute: 52,
+    dedicated: true,
+    memory: 14,
+    name: 'Private-L',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 20,
+    precise_dyno_units: 20,
+    private_space_only: true,
+  },
+  {
+    id: 'fabceacc-cdb4-4e3c-ab42-5dd861ea4926',
+    compute: 14,
+    dedicated: true,
+    memory: 2.5,
+    name: 'Shield-M',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 12,
+    precise_dyno_units: 12,
+    private_space_only: true,
+  },
+  {
+    id: 'a0c5f2c9-6a29-478d-80bd-52f785a9499d',
+    compute: 52,
+    dedicated: true,
+    memory: 14,
+    name: 'Shield-L',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 24,
+    precise_dyno_units: 24,
+    private_space_only: true,
+  },
+  {
+    id: '7481b4f2-ca73-4faf-9c6d-33cab08ad6e2',
+    compute: 2,
+    dedicated: true,
+    memory: 1,
+    name: 'Shield-S',
+    cost: {
+      cents: null,
+      unit: null,
+    },
+    dyno_units: 6,
+    precise_dyno_units: 6,
+    private_space_only: true,
+  },
+  {
+    id: '0f5ec139-ee6b-4de6-a3fe-48d9c3d3e663',
+    compute: 1,
+    dedicated: false,
+    memory: 0.5,
+    name: 'Eco',
+    cost: {
+      cents: 0,
+      unit: 'monthly',
+    },
+    dyno_units: 0,
+    precise_dyno_units: 0,
+    private_space_only: false,
+  },
+  {
+    id: '5c93cdee-2bbd-4fc0-9f04-d369d1dbb962',
+    compute: 1,
+    dedicated: false,
+    memory: 0.5,
+    name: 'Basic',
+    cost: {
+      cents: 700,
+      unit: 'monthly',
+    },
+    dyno_units: 0,
+    precise_dyno_units: 0.28,
+    private_space_only: false,
+  },
+]
+
 // will remove this flag once we have
 // successfully launched larger dyno sizes
 function featureFlagPayload(isEnabled = false) {
@@ -108,6 +279,8 @@ Performance-L-RAM  1
     let api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload())
+      .get('/dyno-sizes')
+      .reply(200, availableDynoSizes)
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -136,6 +309,8 @@ Basic  3
     let api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload())
+      .get('/dyno-sizes')
+      .reply(200, availableDynoSizes)
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -190,6 +365,8 @@ it('errors when user requests larger dynos and feature flag is NOT enabled', fun
   let api = nock('https://api.heroku.com')
     .get('/account/features/frontend-larger-dynos')
     .reply(200, featureFlagPayload())
+    .get('/dyno-sizes')
+    .reply(200, availableDynoSizes)
 
   return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
     .catch(error => expect(error.message).to.eq('No such size as performance-l-ram.'))
