@@ -97,9 +97,9 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 }
 
 export default class Type extends Command {
-    static strict = false;
-    static description = 'manage dyno sizes';
-    static help = `
+  static strict = false
+  static description = 'manage dyno sizes'
+  static help = `
 Called with no arguments shows the current dyno size.
 
 Called with one argument sets the size.
@@ -107,42 +107,43 @@ Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
 Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 `
-    static flags = {
-      app: flags.app({required: true}),
-    };
+  static aliases = ['ps:resize', 'resize', 'dyno:type', 'dyno:resize']
+  static flags = {
+    app: flags.app({required: true}),
+  }
 
-    public async run(): Promise<void> {
-      const {flags, ...restParse} = await this.parse(Type)
-      const argv = restParse.argv as string[]
-      const {app} = flags
-      const parse = async () => {
-        if (!argv || argv.length === 0)
-          return []
-        const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-        if (argv.find(a => a.match(/=/))) {
-          return compact(argv.map(arg => {
-            const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
-            const type = match && match[1]
-            const size = match && match[2]
-            if (!type || !size || !formation.find(p => p.type === type)) {
-              throw new Error(`Type ${color.red(type || '')} not found in process formation.\nTypes: ${color.yellow(formation.map(f => f.type)
-                .join(', '))}`)
-            }
+  public async run(): Promise<void> {
+    const {flags, ...restParse} = await this.parse(Type)
+    const argv = restParse.argv as string[]
+    const {app} = flags
+    const parse = async () => {
+      if (!argv || argv.length === 0)
+        return []
+      const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
+      if (argv.find(a => a.match(/=/))) {
+        return compact(argv.map(arg => {
+          const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
+          const type = match && match[1]
+          const size = match && match[2]
+          if (!type || !size || !formation.find(p => p.type === type)) {
+            throw new Error(`Type ${color.red(type || '')} not found in process formation.\nTypes: ${color.yellow(formation.map(f => f.type)
+              .join(', '))}`)
+          }
 
-            return {type, size}
-          }))
-        }
-
-        return formation.map(p => ({type: p.type, size: argv[0]}))
+          return {type, size}
+        }))
       }
 
-      const changes = await parse()
-      if (changes.length > 0) {
-        ux.action.start(`Scaling dynos on ${color.magenta(app)}`)
-        await this.heroku.patch(`/apps/${app}/formation`, {body: {updates: changes}})
-        ux.action.stop()
-      }
-
-      await displayFormation(this.heroku, app)
+      return formation.map(p => ({type: p.type, size: argv[0]}))
     }
+
+    const changes = await parse()
+    if (changes.length > 0) {
+      ux.action.start(`Scaling dynos on ${color.magenta(app)}`)
+      await this.heroku.patch(`/apps/${app}/formation`, {body: {updates: changes}})
+      ux.action.stop()
+    }
+
+    await displayFormation(this.heroku, app)
+  }
 }

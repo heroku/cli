@@ -127,6 +127,7 @@ export default `\u001B[1m Command                                        Summary
  dyno:restart                                   restart app dynos
  dyno:scale                                     scale dyno quantity up or down
  dyno:stop                                      stop app dyno
+ dyno:type                                      manage dyno sizes
  features                                       list available app features
  features:disable                               disables an app feature
  features:enable                                enables an app feature
@@ -278,6 +279,7 @@ export default `\u001B[1m Command                                        Summary
  releases:output                                View the release command output
  releases:rollback                              rollback to a previous release
  rename                                         rename an app
+ resize                                         manage dyno sizes
  restart                                        restart app dynos
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline
