@@ -32,7 +32,8 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   const dynoTotals: Record<string, number> = {}
   let isShowingEcoCostMessage = false
 
-  const formationColumns = sortBy(formation, 'type')
+  const formationTableData = sortBy(formation, 'type')
+    // this filter shouldn't be necessary, but it makes TS happy
     .filter((f): f is Heroku.Formation & {size: string, quantity: number} => typeof f.size === 'string' && typeof f.quantity === 'number')
     .map((d => {
       if (d.size === 'Eco') {
@@ -67,7 +68,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
       }
     }))
 
-  const dynoTotalsColumns = Object.keys(dynoTotals)
+  const dynoTotalsTableData = Object.keys(dynoTotals)
     .map(k => ({
       type: color.green(k), total: color.yellow((dynoTotals[k]).toString()),
     }))
@@ -77,7 +78,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   }
 
   ux.styledHeader('Dyno Types')
-  ux.table(formationColumns, {
+  ux.table(formationTableData, {
     type: {},
     size: {},
     qty: {},
@@ -86,7 +87,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   })
 
   ux.styledHeader('Dyno Totals')
-  ux.table(dynoTotalsColumns, {
+  ux.table(dynoTotalsTableData, {
     type: {},
     total: {},
   })
