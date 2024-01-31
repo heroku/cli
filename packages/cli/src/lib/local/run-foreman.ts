@@ -10,7 +10,7 @@ import * as path from 'path'
 import * as events from 'events'
 import * as fs from 'fs'
 import {quote} from 'shell-quote'
-import program from 'commander'
+import * as program from 'commander'
 
 const nf = require('./package.json')
 

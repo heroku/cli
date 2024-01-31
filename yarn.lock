@@ -10910,6 +10910,7 @@ __metadata:
     bats: ^1.1.0
     chai: ^4.2.0
     chalk: ^2.4.2
+    commander: ^2.15.1
     date-fns: ^2.30.0
     debug: 4.1.1
     edit-string: ^1.1.6
