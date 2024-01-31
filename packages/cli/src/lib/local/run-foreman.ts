@@ -49,7 +49,7 @@ type C = {
   processes?: Array<any>,
   process?: any,
   command?: any,
-  numbers?: Array<number>
+  numbers?: Array<any>
 }
 
 type Conf = C & {
