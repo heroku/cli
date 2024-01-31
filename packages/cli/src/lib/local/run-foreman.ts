@@ -66,7 +66,7 @@ program
   .option('-t, --trim      <N>', 'trim logs to N characters', 0)
   .option('-w, --wrap', 'wrap logs (negates trim)')
   .description('Start the jobs in the Procfile')
-  .action(function (args) {
+  .action(function (this: any, args) {
     const envs = loadEnvs(program.env)
 
     const proc = loadProc(program.procfile)
@@ -112,10 +112,10 @@ program
   .usage('[Options]')
   .option('-s, --showenvs', 'show ENV variables on start', false)
   .description('Run a one off process using the ENV variables')
-  .action(function (args) {
+  .action(function (this: any, args) {
     const envs = loadEnvs(program.env)
 
-    const callback = function (code) {
+    const callback = function (code: any) {
       process.exit(code)
     };
 
@@ -149,7 +149,7 @@ program
   .option('-t, --type <TYPE>', 'export file to TYPE (default upstart)', 'upstart')
   .option('-m, --template <DIR>', 'use template folder')
   .description('Export to an upstart job independent of foreman')
-  .action(function (procArgs) {
+  .action(function (this: any, procArgs) {
     const envs = loadEnvs(program.env)
 
     const procs = loadProc(program.procfile)
