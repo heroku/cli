@@ -100,7 +100,7 @@ program
     display.raw = this.raw
 
     if (this.wrap) {
-      display.wrapline = process.stdout.columns - display.padding - 7
+      display.wrapline = process.stdout.columns ? process.stdout.columns - display.padding - 7 : 0
       display.trimline = 0
       display.Alert('Wrapping display Output to %d Columns', display.wrapline)
     } else {
@@ -129,7 +129,7 @@ program
 
     const callback = function (code: any) {
       process.exit(code)
-    };
+    }
 
     if (!args || args.length === 0) {
       return
@@ -147,8 +147,6 @@ program
 
     once(input, envs, callback)
   })
-
-
 
 program
   .command('export [PROCS]')
@@ -180,7 +178,7 @@ program
       logs: this.log,
       envs: envs,
       group: this.gid || this.user,
-      template: this.template
+      template: this.template,
     }
 
     config.envfile = path.resolve(program.env)
@@ -232,7 +230,7 @@ program
       c.process = key
       c.command = cmd
 
-      for (let _ in config) {
+      for (const _ in config) {
         c[_] = config[_]
       }
 
