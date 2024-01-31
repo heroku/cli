@@ -114,12 +114,13 @@ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`
     }
 
     const columns: Columns<Heroku.Formation> = {
-      version: {get: release => color[statusHelper.color(release.status)]('v' + release.version)},
+      // column name "v" as ux.table will make it's width at least "version" even though 'no-header': true
+      v: {get: release => color[statusHelper.color(release.status)]('v' + release.version)},
       description: {get: descriptionWithStatus},
       user: {get: ({user}) => color.magenta(user?.email || '')},
       created_at: {get: ({created_at}) => time.ago(new Date(created_at || ''))},
-      'extended.slug_id': {extended: true},
-      'extended.slug_uuid': {extended: true},
+      slug_id: {extended: true, get: ({extended}) => extended?.slug_id},
+      slug_uuid: {extended: true, get: ({extended}) => extended?.slug_uuid},
     }
 
     // `getDescriptionTruncation` is dependent on `columns` being defined and thus `descriptionWithStatus`.
