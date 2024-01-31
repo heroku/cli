@@ -34,6 +34,27 @@ type Config = {
   template: any,
   envfile?: string,
   processes?: Array<any>,
+
+}
+
+type C = {
+  application?: any,
+  cwd?: string,
+  user?: any,
+  logs?: any,
+  envs?: any,
+  group?: any,
+  template?: any,
+  envfile?: string,
+  processes?: Array<any>,
+  process?: any,
+  command?: any,
+  numbers?: Array<number>
+}
+
+type Conf = C & {
+  number?: number,
+  port?: number,
 }
 
 program.version(nf.version)
@@ -216,7 +237,7 @@ program
     // This is ugly because of shitty support for array copying
     // Cleanup is definitely required
     for (let key in req) {
-      const c = {}
+      const c: C = {}
       const cmd = procs[key]
 
       if (!cmd) {
@@ -231,16 +252,16 @@ program
       c.command = cmd
 
       for (const _ in config) {
-        c[_] = config[_]
+        c[_ as keyof Config] = config[_ as keyof Config]
       }
 
       c.numbers = []
       for (let i = 1; i <= n; i++) {
-        const conf = {}
+        const conf: Conf = {}
         conf.number = i
 
-        for (_ in c) {
-          conf[_] = c[_]
+        for (const _ in c) {
+          conf[_ as keyof C] = c[_ as keyof C]
         }
 
         conf.port = (baseport + baseport_i + baseport_j) * 100
