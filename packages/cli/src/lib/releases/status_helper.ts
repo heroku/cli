@@ -5,6 +5,7 @@ export const description = function (release: {status?: string, [k: string]: any
   case 'failed':
     return 'release command failed'
   default:
+    return ''
   }
 }
 
