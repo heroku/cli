@@ -143,7 +143,7 @@ program
       }
     }
 
-    display.trimline = process.stdout.columns - 5
+    display.trimline = process.stdout.columns ? process.stdout.columns - 5 : 0
 
     once(input, envs, callback)
   })
@@ -198,7 +198,8 @@ program
     let userExists = false
     fs.readFileSync('/etc/passwd')
       .toString().split(/\n/).forEach(function (line) {
-        if (line.match(/^[^:]*/)[0] == config.user) {
+        const userLine = line.match(/^[^:]*/)
+        if (userLine && userLine[0] === config.user) {
           userExists = true
         }
       })
@@ -244,7 +245,7 @@ program
           conf[_] = c[_]
         }
 
-        conf.port = baseport + baseport_i + baseport_j * 100
+        conf.port = (baseport + baseport_i + baseport_j) * 100
 
         envl = []
         for (key in envs) {
