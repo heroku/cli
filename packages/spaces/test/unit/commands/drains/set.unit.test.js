@@ -25,7 +25,7 @@ cmds.forEach(cmd => {
         })
       return cmd.run({args: {url: 'https://example.com'}, flags: {space: 'my-space'}})
         .then(() => expect(cli.stdout).to.equal(
-          `Successfully set drain https://example.com for my-space.\n`,
+          'Successfully set drain https://example.com for my-space.\n',
         )).then(() => api.done())
     })
   })

@@ -25,5 +25,5 @@ const cmd = {
 
 module.exports = [
   Object.assign({topic: 'spaces', command: 'drains:set', hidden: false}, cmd),
-  Object.assign({topic: 'drains', command: 'set', hidden: true}, cmd)
+  Object.assign({topic: 'drains', command: 'set', hidden: true}, cmd),
 ]

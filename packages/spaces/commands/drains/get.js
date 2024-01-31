@@ -18,13 +18,13 @@ const cmd = {
   needsApp: false,
   needsAuth: true,
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true },
-    { name: 'json', description: 'output in json format' },
+    {name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true},
+    {name: 'json', description: 'output in json format'},
   ],
   run: cli.command(run),
 }
 
 module.exports = [
   Object.assign({topic: 'spaces', command: 'drains:get', hidden: false}, cmd),
-  Object.assign({topic: 'drains', command: 'get', hidden: true}, cmd)
+  Object.assign({topic: 'drains', command: 'get', hidden: true}, cmd),
 ]

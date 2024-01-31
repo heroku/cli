@@ -23,7 +23,7 @@ cmds.forEach(cmd => {
         })
       return cmd.run({flags: {space: 'my-space'}})
         .then(() => expect(cli.stdout).to.equal(
-          `https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)\n`,
+          'https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)\n',
         )).then(() => api.done())
     })
 
