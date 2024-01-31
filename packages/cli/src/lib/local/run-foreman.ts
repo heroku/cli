@@ -24,6 +24,18 @@ const startProxies = require('foreman/lib/proxy').startProxies
 const startForward = require('foreman/lib/forward').startForward
 const exporters = require('foreman/lib/exporters')
 
+type Config = {
+  application: any,
+  cwd: string,
+  user: any,
+  logs: any,
+  envs: any,
+  group: any,
+  template: any,
+  envfile?: string,
+  processes?: Array<any>,
+}
+
 program.version(nf.version)
 program.option('-j, --procfile <FILE>', 'load procfile FILE', 'Procfile')
 program.option('-e, --env      <FILE>', 'load environment from FILE, a comma-separated list', '.env')
@@ -161,7 +173,7 @@ program
     const req  = getreqs(procArgs, procs)
 
     // Variables for Upstart Template
-    const config = {
+    const config: Config = {
       application: this.app,
       cwd: path.resolve(process.cwd(), this.cwd || ''),
       user: this.user,
