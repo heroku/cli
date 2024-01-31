@@ -12,7 +12,7 @@ import * as fs from 'fs'
 import {quote} from 'shell-quote'
 import * as program from 'commander'
 
-const nf = require('./package.json')
+const nf = require('../../../package.json')
 
 const colors = require('foreman/lib/colors')
 const display = require('foreman/lib/console').Console
