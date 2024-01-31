@@ -30,6 +30,8 @@ EXAMPLES
   $ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy
 ```
 
+_See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/reviewapps/disable.ts)_
+
 ## `heroku reviewapps:enable`
 
 enable review apps and/or settings on an existing pipeline
@@ -52,3 +54,5 @@ DESCRIPTION
 EXAMPLES
   $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
+
+_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/reviewapps/enable.ts)_

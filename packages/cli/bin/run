@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-require('dotenv').config()
-
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
 const now = new Date()
@@ -10,6 +8,11 @@ const globalTelemetry = require('../lib/global_telemetry')
 
 process.once('beforeExit', async code => {
   // capture as successful exit
+  if (global.cliTelemetry.isVersionOrHelp) {
+    const cmdStartTime = global.cliTelemetry.commandRunDuration
+    global.cliTelemetry.commandRunDuration = globalTelemetry.computeDuration(cmdStartTime)
+  }
+
   global.cliTelemetry.exitCode = code
   global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   const telemetryData = global.cliTelemetry
@@ -18,25 +21,30 @@ process.once('beforeExit', async code => {
 
 process.on('SIGINT', async () => {
   // capture as unsuccessful exit
-  let error = new Error('Received SIGINT')
+  const error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error)
+  process.exit(1)
 })
 
 process.on('SIGTERM', async () => {
   // capture as unsuccessful exit
-  let error = new Error('Received SIGTERM')
+  const error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(error)
+  process.exit(1)
 })
+
+globalTelemetry.initializeInstrumentation()
 
 const oclif = require('@oclif/core')
 
 oclif.run().then(require('@oclif/core/flush')).catch(async error => {
   // capture any errors raised by oclif
-  let cliError = error
+  const cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(cliError)
-  console.log(`Error: ${error.message}`)
+
+  return require('@oclif/core/handle')(error)
 })
 

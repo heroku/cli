@@ -39,16 +39,22 @@ echo "Installing dependencies with yarn..."
 yarn
 echo "Done installing dependencies with yarn"
 
+# remove any oclif manifests. They interfere with doc generation
+rm -rf ./packages/*/oclif.manifest.json
+
 echo "Creating new CLI package(s) versions with yarn lerna version..."
 yarn lerna version \
   --allow-branch ${BRANCH_NAME} \
   --no-push \
   --no-git-tag-version \
   --yes
-git add . -u
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 echo "Done creating new CLI package(s) versions"
 
+echo "Updating yarn.lock with new package versions"
+yarn
+
+git add . -u
 echo "Creating git commit and pushing to GitHub..."
 git commit -m "v${PACKAGE_VERSION}"
 git push origin "${BRANCH_NAME}"

@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-orgs-v5",
   "description": "CLI to manage Heroku Organizations",
-  "version": "8.1.4",
+  "version": "8.6.0",
   "author": "Raul Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -70,9 +70,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "yarn lint",
     "prepack": "oclif manifest",
-    "test": "nyc mocha ./test/**/*.unit.test.js",
+    "test": "nyc mocha ./test/**/*.unit.test.js && yarn lint",
     "test:integration": "mocha './test/**/*.integration.test.js'",
     "version": "oclif readme && git add README.md"
   }

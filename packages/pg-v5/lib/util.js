@@ -131,7 +131,15 @@ exports.getConnectionDetails = function (attachment, config) {
 }
 
 // eslint-disable-next-line no-implicit-coercion
-exports.essentialPlan = a => !!a.plan.name.match(/(dev|basic|mini)$/)
+exports.essentialNumPlan = a => !!a.plan.name.split(':')[1].match(/^essential/)
+
+// eslint-disable-next-line no-implicit-coercion
+exports.legacyEssentialPlan = a => !!a.plan.name.split(':')[1].match(/(dev|basic|mini)$/)
+
+// eslint-disable-next-line no-implicit-coercion
+exports.essentialPlan = a => {
+  return this.essentialNumPlan(a) || this.legacyEssentialPlan(a)
+}
 
 // eslint-disable-next-line no-implicit-coercion
 exports.bastionKeyPlan = a => !!a.plan.name.match(/private/)

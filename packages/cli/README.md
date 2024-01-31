@@ -48,7 +48,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
-* [`heroku git`](docs/git.md) - manage local git repository for app
+* [`heroku git`](docs/git.md) - set git remote and clone Heroku repository
 * [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features

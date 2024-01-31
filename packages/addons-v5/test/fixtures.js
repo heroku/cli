@@ -105,6 +105,17 @@ fixtures.addons = {
       cents: 500,
     },
   },
+  'www-db-2': {
+    app: fixtures.apps.api,
+    id: 'b68d8f51-6577-4a46-a617-c5f36f1bb032',
+    name: 'www-db-2',
+    addon_service: fixtures.services['heroku-postgresql'],
+    plan: fixtures.plans['heroku-postgresql:mini'],
+    state: 'deprovisioned',
+    billed_price: {
+      cents: 500,
+    },
+  },
   'www-redis': {
     app: fixtures.apps.www,
     id: '8a836ecc-4c88-11e5-ba7e-2cf0ee2c94de',
@@ -112,6 +123,17 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-redis'],
     plan: fixtures.plans['heroku-redis:premium-2'],
     state: 'provisioning',
+    billed_price: {
+      cents: 6000,
+    },
+  },
+  'www-redis-2': {
+    app: fixtures.apps.www,
+    id: 'bc28b002-44da-4b8b-9dba-f0ef236a5759',
+    name: 'www-redis-2',
+    addon_service: fixtures.services['heroku-redis'],
+    plan: fixtures.plans['heroku-redis:premium-2'],
+    state: 'deprovisioning',
     billed_price: {
       cents: 6000,
     },

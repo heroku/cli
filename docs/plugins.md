@@ -31,6 +31,8 @@ EXAMPLES
   $ heroku plugins
 ```
 
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/index.ts)_
+
 ## `heroku plugins:install PLUGIN...`
 
 Installs a plugin into the CLI.
@@ -94,6 +96,8 @@ EXAMPLES
   $ heroku plugins:inspect myplugin
 ```
 
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/inspect.ts)_
+
 ## `heroku plugins:install PLUGIN...`
 
 Installs a plugin into the CLI.
@@ -132,6 +136,8 @@ EXAMPLES
   $ heroku plugins:install someuser/someplugin
 ```
 
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/install.ts)_
+
 ## `heroku plugins:link PLUGIN`
 
 Links a plugin into the CLI for development.
@@ -159,28 +165,7 @@ EXAMPLES
   $ heroku plugins:link myplugin
 ```
 
-## `heroku plugins:uninstall PLUGIN...`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ heroku plugins:uninstall PLUGIN...
-
-ARGUMENTS
-  PLUGIN  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ heroku plugins:unlink
-  $ heroku plugins:remove
-```
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/link.ts)_
 
 ## `heroku plugins:uninstall PLUGIN...`
 
@@ -204,6 +189,31 @@ ALIASES
   $ heroku plugins:unlink
   $ heroku plugins:remove
 ```
+
+## `heroku plugins:uninstall PLUGIN...`
+
+Removes a plugin from the CLI.
+
+```
+USAGE
+  $ heroku plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+FLAGS
+  -h, --help     Show CLI help.
+  -v, --verbose
+
+DESCRIPTION
+  Removes a plugin from the CLI.
+
+ALIASES
+  $ heroku plugins:unlink
+  $ heroku plugins:remove
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/uninstall.ts)_
 
 ## `heroku plugins:uninstall PLUGIN...`
 
@@ -243,3 +253,5 @@ FLAGS
 DESCRIPTION
   Update installed plugins.
 ```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.4.3/src/commands/plugins/update.ts)_

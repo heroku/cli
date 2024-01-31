@@ -105,10 +105,10 @@ describe('pg:credentials:rotate', () => {
     return expect(cmd.run({app: 'myapp', args: {}, flags: {all: true, name: 'my_role', confirm: 'myapp'}})).to.be.rejectedWith(Error, err)
   })
 
-  it('throws an error when the db is starter plan but the name is specified', () => {
+  it('throws an error when the db is essential plan but the name is specified', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'},
+      plan: {name: 'heroku-postgresql:mini'},
     }
 
     const fetcher = () => {
@@ -122,7 +122,28 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher,
     })
 
-    const err = 'Essential-tier databases support only one default credential.'
+    const err = "You can't rotate credentials on Essential-tier databases."
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+  })
+
+  it('throws an error when the db is numbered essential plan', () => {
+    const essentialAddon = {
+      name: 'postgres-1',
+      plan: {name: 'heroku-postgresql:essential-0'},
+    }
+
+    const fetcher = () => {
+      return {
+        database: () => db,
+        addon: () => essentialAddon,
+      }
+    }
+
+    const cmd = proxyquire('../../../../commands/credentials/rotate', {
+      '../../lib/fetcher': fetcher,
+    })
+
+    const err = "You can't rotate credentials on Essential-tier databases."
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 

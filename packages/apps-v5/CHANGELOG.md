@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
+
+
+### Bug Fixes
+
+* run lint after every test. ([#2490](https://github.com/heroku/cli/issues/2490)) ([d4db466](https://github.com/heroku/cli/commit/d4db46648baef355f9e362679fca827591f037c1))
+
+
+
+
+
+# [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
+
+
+### Features
+
+* **apps-v5:** Use colors when showing run dynos in the ps output ([#2480](https://github.com/heroku/cli/issues/2480)) ([711feef](https://github.com/heroku/cli/commit/711feef617a889166b7cd07f76f6d99c4ef29d35))
+
+
+
+
+
+# [8.4.0](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0) (2023-08-23)
+
+
+### Reverts
+
+* Revert "Revert "refactor: add per hour and max price per month to pricing displays"" (#2448) ([dd535a5](https://github.com/heroku/cli/commit/dd535a506e781e24b48208dcb666947a201460ba)), closes [#2448](https://github.com/heroku/cli/issues/2448) [#2439](https://github.com/heroku/cli/issues/2439) [#2447](https://github.com/heroku/cli/issues/2447)
+
+
+
+
+
+# [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
+
+
+### Bug Fixes
+
+* monorepo dependency issues - upgrade to yarn 3 ([#2429](https://github.com/heroku/cli/issues/2429)) ([0d7e5ca](https://github.com/heroku/cli/commit/0d7e5ca519799af4352ec973f51b45748699f3a1))
+
+
+
+
+
 ## [8.1.8](https://github.com/heroku/cli/compare/v8.1.7...v8.1.8) (2023-06-14)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5

@@ -8,7 +8,7 @@ custom domains for apps
 * [`heroku domains:clear`](#heroku-domainsclear)
 * [`heroku domains:info HOSTNAME`](#heroku-domainsinfo-hostname)
 * [`heroku domains:remove HOSTNAME`](#heroku-domainsremove-hostname)
-* [`heroku domains:update [HOSTNAME]`](#heroku-domainsupdate-hostname)
+* [`heroku domains:update HOSTNAME`](#heroku-domainsupdate-hostname)
 * [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 
 ## `heroku domains`
@@ -40,13 +40,15 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains
   === example Heroku Domain
-  example.herokuapp.com
+  example-xxxxxxxxxxxx.herokuapp.com
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
 
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
+
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -71,6 +73,8 @@ EXAMPLES
   $ heroku domains:add www.example.com
 ```
 
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/add.ts)_
+
 ## `heroku domains:clear`
 
 remove all domains from an app
@@ -90,6 +94,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains:clear
 ```
+
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -111,6 +117,8 @@ EXAMPLES
   $ heroku domains:info www.example.com
 ```
 
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/info.ts)_
+
 ## `heroku domains:remove HOSTNAME`
 
 remove a domain from an app
@@ -131,13 +139,15 @@ EXAMPLES
   $ heroku domains:remove www.example.com
 ```
 
-## `heroku domains:update [HOSTNAME]`
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/remove.ts)_
+
+## `heroku domains:update HOSTNAME`
 
 update a domain to use a different SSL certificate on an app
 
 ```
 USAGE
-  $ heroku domains:update [HOSTNAME] -a <value> --cert <value> [-h] [-r <value>]
+  $ heroku domains:update HOSTNAME -a <value> --cert <value> [-h] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -151,6 +161,8 @@ DESCRIPTION
 EXAMPLES
   $ heroku domains:update www.example.com --cert mycert
 ```
+
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -168,3 +180,5 @@ FLAGS
 DESCRIPTION
   wait for domain to be active for an app
 ```
+
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v8.7.1/src/commands/domains/wait.ts)_
