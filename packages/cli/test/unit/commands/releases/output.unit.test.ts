@@ -79,7 +79,6 @@ describe('releases:output', function () {
     api.done()
     busl.done()
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain(` ›   Warning: Release command not started yet. Please try again in a few 
- ›   seconds.`)
+    expect(stderr.output).to.contain('Warning: Release command not started yet. Please try again in a few')
   })
 })
