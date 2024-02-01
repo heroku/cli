@@ -11199,6 +11199,7 @@ __metadata:
     shell-quote: ^1.6.1
     sinon: ^7.2.4
     sparkline: ^0.2.0
+    std-mocks: 1.0.1
     stdout-stderr: ^0.1.13
     strftime: ^0.10.0
     strip-ansi: 6.0.1
