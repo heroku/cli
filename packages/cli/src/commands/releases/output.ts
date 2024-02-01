@@ -20,6 +20,7 @@ export default class Output extends Command {
       const {app} = flags
       const release = await findByLatestOrId(this.heroku, app, args.release)
       const streamUrl = release.output_stream_url
+
       if (!streamUrl) {
         ux.warn(`Release v${release.version} has no release output available.`)
         return

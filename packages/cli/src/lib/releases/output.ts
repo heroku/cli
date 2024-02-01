@@ -1,8 +1,8 @@
-import * as net from 'net'
+import * as got from 'got'
 
 export const stream = function (url: string) {
   return new Promise(function (resolve, reject) {
-    const stream = net.createConnection(url)
+    const stream = got.stream(url)
     stream.on('error', reject)
     stream.on('end', resolve)
     const piped = stream.pipe(process.stdout)
