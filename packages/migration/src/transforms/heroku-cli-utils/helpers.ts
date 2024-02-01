@@ -41,7 +41,7 @@ export const MISSING_FUNC_REPLACEMENT_MAP = new Map([
   ['heroku', (callEx: ts.CallExpression) => subColorAccessOneToOne(callEx, 'magenta')],
 ])
 
-export const subWithUx = (callEx: ts.CallExpression, utilVarName: string) => {
+export const subWithUx = (callEx: ts.CallExpression, utilVarName: string, methodSub?: string) => {
   const visitor = (node: ts.Node): ts.Node => {
     if (!ts.isPropertyAccessExpression(node)) {
       return node
@@ -51,7 +51,7 @@ export const subWithUx = (callEx: ts.CallExpression, utilVarName: string) => {
       return factory.updatePropertyAccessExpression(
         node,
         factory.createIdentifier('ux'),
-        node.name,
+        methodSub ? factory.createIdentifier(methodSub) : node.name,
       )
     }
 

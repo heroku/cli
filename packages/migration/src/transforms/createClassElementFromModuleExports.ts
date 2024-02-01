@@ -31,6 +31,8 @@ const createSpecialFlagGenerator = (type: string, required?: boolean) => () => c
 
 const KEY_TO_TRANSFORM = new Map([
   ['topic', createStaticPropertyDeclarationGenerator('topic')],
+  ['usage', createStaticPropertyDeclarationGenerator('usage')],
+  ['help', createStaticPropertyDeclarationGenerator('help')],
   ['description', createStaticPropertyDeclarationGenerator('description')],
   ['hidden', createStaticPropertyDeclarationGenerator('hidden')],
   ['variableArgs', (node: (ts.PropertyAssignment)) => {

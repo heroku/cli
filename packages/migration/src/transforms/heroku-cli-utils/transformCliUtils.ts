@@ -35,6 +35,8 @@ const transformCliUtils = (node: ts.Node, utilVarName: string, file: string) => 
     case 'action': // cli.action() && cli.action.start() appear to be the same
     case 'error': // ???
       return subWithUx(node, utilVarName)
+    case 'styledHash':
+      return subWithUx(node, utilVarName, 'styledObject')
     case 'exit':
       return transformExit(node, utilVarName)
     case 'command':
