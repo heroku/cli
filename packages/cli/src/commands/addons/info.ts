@@ -2,8 +2,8 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {grandfatheredPrice, formatPrice, formatState} from '../../../src/lib/addons/util'
-import {resolveAddon} from '../../../src/lib/addons/resolve'
+import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/util'
+import {resolveAddon} from '../../lib/addons/resolve'
 
 const topic = 'addons'
 
