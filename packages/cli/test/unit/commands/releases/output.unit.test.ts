@@ -4,13 +4,13 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import {unwrap} from '../../../helpers/utils/unwrap'
-const stdMocks = require('std-mocks')
 
 describe('releases:output', function () {
   it('warns if there is no output available', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
       .reply(200, {version: 40})
+
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -40,15 +40,13 @@ describe('releases:output', function () {
     api.done()
     expect(stdout.output).to.equal('Release Output Content')
     expect(stderr.output).to.equal('')
-    stdMocks.restore()
   })
 
   it('shows the output from the latest release', async function () {
-    stdMocks.use()
-
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
       .reply(200, 'Release Output Content')
+
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [{version: 40, output_stream_url: 'https://busl.test/streams/release.log'}])
@@ -60,15 +58,15 @@ describe('releases:output', function () {
 
     busl.done()
     api.done()
-    expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content')
+    expect(stdout.output).to.equal('Release Output Content')
     expect(stderr.output).to.equal('')
-    stdMocks.restore()
   })
 
   it('has a missing output', async function () {
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
       .reply(404, '')
+
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [{version: 40, output_stream_url: 'https://busl.test/streams/release.log'}])
@@ -81,6 +79,7 @@ describe('releases:output', function () {
     api.done()
     busl.done()
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Release command not started yet. Please try again in a few seconds.\n')
+    expect(stderr.output).to.contain(` ›   Warning: Release command not started yet. Please try again in a few 
+ ›   seconds.`)
   })
 })
