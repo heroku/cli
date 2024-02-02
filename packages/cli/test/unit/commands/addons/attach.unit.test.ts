@@ -32,7 +32,7 @@ describe('addons:attach', function () {
       'redis-123',
     ])
 
-    expect(stdout.output, 'to be empty')
+    expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Attaching redis-123 to myapp... done\n')
     expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting myapp... done, v10\n')
     return api.done()
@@ -54,7 +54,7 @@ describe('addons:attach', function () {
       'redis-123',
     ])
       .then(() => {
-        expect(stdout.output, 'to be empty')
+        expect(stdout.output).to.equal('')
         expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
         expect(stderr.output).to.contain('\nSetting foo config vars and restarting myapp... done, v10\n')
         api.done()
@@ -80,7 +80,7 @@ describe('addons:attach', function () {
       'redis-123',
     ])
       .then(() => {
-        expect(stdout.output, 'to be empty')
+        expect(stdout.output).to.equal('')
         expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp...\n')
         expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
         expect(stderr.output).to.contain('Setting foo config vars and restarting myapp... done, v10\n')
@@ -104,7 +104,7 @@ describe('addons:attach', function () {
       'postgres-123',
     ])
       .then(() => {
-        expect(stdout.output, 'to be empty')
+        expect(stdout.output).to.equal('')
         expect(stderr.output).to.contain('Attaching default of postgres-123 to myapp... done\n')
         expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
         api.done()
@@ -129,7 +129,7 @@ describe('addons:attach', function () {
       'postgres-123',
     ])
       .then(() => {
-        expect(stdout.output, 'to be empty')
+        expect(stdout.output).to.equal('')
         expect(stderr.output).to.contain('Attaching hello of postgres-123 to myapp... done\n')
         expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
         api.done()
