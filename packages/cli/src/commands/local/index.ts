@@ -38,7 +38,6 @@ $ heroku local web=1,worker=2`,
     port: Flags.string({
       char: 'p',
       description: 'port to listen on',
-      default: '5001',
     }),
     restart: Flags.boolean({
       char: 'r',

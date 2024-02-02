@@ -19,7 +19,6 @@ export default class Run extends Command {
     }),
     port: Flags.string({
       char: 'p',
-      default: '5001',
     }),
   }
 
