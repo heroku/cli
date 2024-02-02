@@ -351,7 +351,7 @@
     "test:integration": "yarn pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
     "test:smoke": "yarn pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
     "test:unit:justTest": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
-    "test": "yarn pretest && test:noBuild && yarn posttest",
+    "test": "yarn pretest && yarn test:unit:justTest && yarn posttest",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
