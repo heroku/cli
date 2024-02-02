@@ -1,8 +1,6 @@
 import confirmApp from '../apps/confirm-app'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-import {merge} from 'lodash'
 const printf = require('printf')
 
 export const trapConfirmationRequired = async function<T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) {
