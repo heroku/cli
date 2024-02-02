@@ -11172,7 +11172,7 @@ __metadata:
     lolex: ^3.1.0
     mocha: ^5.2.0
     netrc-parser: 3.1.6
-    nock: ^11
+    nock: ^13.5.1
     node-fetch: ^2.6.7
     nyc: ^15.1.0
     oclif: 3.11.3
@@ -14050,19 +14050,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:^11":
-  version: 11.9.1
-  resolution: "nock@npm:11.9.1"
-  dependencies:
-    debug: ^4.1.0
-    json-stringify-safe: ^5.0.1
-    lodash: ^4.17.13
-    mkdirp: ^0.5.0
-    propagate: ^2.0.0
-  checksum: e9a66b1e4889284ca5ee5a9e9e69cb0aaa8a1be362c3f8c309ec31e0ec0865a537afdc5625a76de1f37ddbcd3bf6bc655c9df3838fed158ae5537cf5cb578a8f
-  languageName: node
-  linkType: hard
-
 "nock@npm:^13.3.1":
   version: 13.3.1
   resolution: "nock@npm:13.3.1"
@@ -14072,6 +14059,17 @@ __metadata:
     lodash: ^4.17.21
     propagate: ^2.0.0
   checksum: 0f2a73e8432f6b5650656c53eef99f9e5bbde3df538dc2f07057edc4438cfc61a394c9d06dd82e60f6e86d42433f20f3c04364a1f088beee7bf03a24e3f0fdd0
+  languageName: node
+  linkType: hard
+
+"nock@npm:^13.5.1":
+  version: 13.5.1
+  resolution: "nock@npm:13.5.1"
+  dependencies:
+    debug: ^4.1.0
+    json-stringify-safe: ^5.0.1
+    propagate: ^2.0.0
+  checksum: d7e33e92ef1af2c2302af411e4f9c98d53aefb3b6729de487e051281d1547e910ccd1aeb6d251fa1af70046cc28aa6f3a43c1964eff94cb75fb470bd84ffe081
   languageName: node
   linkType: hard
 
