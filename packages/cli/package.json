@@ -96,7 +96,6 @@
     "@types/js-yaml": "^4.0.8",
     "@types/lodash": "^4.14.123",
     "@types/mocha": "^5.2.6",
-    "@types/nock": "^9.3.1",
     "@types/node-fetch": "^2.1.6",
     "@types/phoenix": "^1.4.0",
     "@types/proxyquire": "^1.3.28",
@@ -114,7 +113,7 @@
     "lodash": "^4.17.11",
     "lolex": "^3.1.0",
     "mocha": "^5.2.0",
-    "nock": "^10.0.6",
+    "nock": "^13.5.1",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
     "open": "^8.4.2",
@@ -351,7 +350,8 @@
     "test:acceptance": "yarn pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
     "test:integration": "yarn pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
     "test:smoke": "yarn pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
-    "test": "yarn pretest && nyc mocha --forbid-only \"test/**/*.unit.test.ts\" && yarn posttest",
+    "test:unit:justTest": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
+    "test": "yarn pretest && yarn test:unit:justTest && yarn posttest",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"

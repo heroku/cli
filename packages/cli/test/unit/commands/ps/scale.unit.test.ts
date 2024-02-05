@@ -21,8 +21,7 @@ describe('ps:scale', () => {
     ])
 
     expect(stdout.output).to.equal('web=1:Free worker=2:Free\n')
-    // this fails due to a node deprecation warning coming from nock v10
-    // expect(stderr.output).to.equal('')
+    expect(stderr.output).to.equal('')
     api.done()
   })
 

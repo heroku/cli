@@ -19,7 +19,7 @@ describe('addons:docs', function () {
     await runCommand(Cmd, ['--show-url', 'slowdb'])
 
     expect(stdout.output).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
-    // expect(stderr.output).to.equal('')
+    expect(stderr.output).to.equal('')
     api.done()
   })
 

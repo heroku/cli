@@ -27,8 +27,8 @@ function createBackboardMock(expectedGetter: (data: AnalyticsInterface) => any, 
     },
   })
     .get('/hamurai')
-    .query(({data: analyticsData}: { data: string }) => {
-      const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData, 'base64').toString())
+    .query(({data: analyticsData}) => {
+      const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData as string, 'base64').toString())
       const expected = expectedGetter(data)
       expect(expected).to.eq(actual)
       return true
