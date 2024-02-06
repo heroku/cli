@@ -25,10 +25,9 @@ const _requirements    = require('foreman/lib/requirements')
 const startProxies = require('foreman/lib/proxy').startProxies
 const startForward = require('foreman/lib/forward').startForward
 const exporters = require('foreman/lib/exporters')
+const foremanPjson = require('foreman/package.json')
 
-const pjson = require('../../../package.json')
-
-program.version(pjson.version)
+program.version(foremanPjson.version)
 program.option('-j, --procfile <FILE>', 'load procfile FILE', 'Procfile')
 program.option('-e, --env      <FILE>', 'load environment from FILE, a comma-separated list', '.env')
 program.option('-p, --port     <PORT>', 'start indexing ports at number PORT', 0)
