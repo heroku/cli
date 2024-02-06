@@ -105,9 +105,10 @@ program
       startForward(this.forward, this.intercept, emitter)
     }
 
-    startProxies(reqs, proc, this, emitter, program.port || envs.PORT || process.env.PORT || 5001)
+    // using port 5006 because it is not known to be used by other common software
+    startProxies(reqs, proc, this, emitter, program.port || envs.PORT || process.env.PORT || 5006)
 
-    start(proc, reqs, envs, program.port || envs.PORT || process.env.PORT || 5001, emitter)
+    start(proc, reqs, envs, program.port || envs.PORT || process.env.PORT || 5006, emitter)
   })
 
 program
@@ -196,7 +197,8 @@ program
       display.Warn(display.fmt('User %s Does Not Exist on System', config.user))
     }
 
-    var baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5001)
+    // using port 5006 because it is not known to be used by other common software
+    var baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5006)
     var baseport_i = 0
     var baseport_j = 0
     var envl = []
