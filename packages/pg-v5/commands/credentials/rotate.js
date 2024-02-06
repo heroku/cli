@@ -17,7 +17,7 @@ async function run(context, heroku) {
   }
 
   if (util.legacyEssentialPlan(db) && cred !== 'default') {
-    throw new Error('You can only rotate default credentials on legacy Essential-tier databases.')
+    throw new Error('Legacy Essential-tier databases do not support named credentials.')
   }
 
   if (all && flags.force) {

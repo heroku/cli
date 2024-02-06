@@ -95,7 +95,7 @@ Connection URL:
       '../../lib/fetcher': fetcher,
     })
 
-    const err = 'You can only view default credentials on legacy Essential-tier databases.'
+    const err = 'Legacy Essential-tier databases do not support named credentials.'
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
