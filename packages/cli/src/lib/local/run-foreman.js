@@ -2,6 +2,11 @@
 // Node module: foreman
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
+
+// This file is copied from the Node Foreman package. It was copied in order to fix
+// a bug related to the use of port 5000 as a default. It is not meant to be a
+// long-term solution, we plan to eventually remove our dependency on Node Foreman.
+
 // These rules are disabled in order to prevent the need for refactoring
 /* eslint-disable guard-for-in */
 /* eslint-disable new-cap */
