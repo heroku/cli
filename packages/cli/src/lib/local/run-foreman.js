@@ -1,12 +1,10 @@
-/* eslint-disable block-scoped-var */
-/* eslint-disable unicorn/no-array-push-push */
-/* eslint-disable guard-for-in */
-/* eslint-disable new-cap */
-
 // Copyright IBM Corp. 2012,2015. All Rights Reserved.
 // Node module: foreman
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
+// These rules are disabled in order to prevent the need for refactoring
+/* eslint-disable guard-for-in */
+/* eslint-disable new-cap */
 
 const path = require('path')
 const events = require('events')
@@ -227,7 +225,9 @@ program
         var conf = {}
         conf.number = i
 
+        // eslint-disable-next-line block-scoped-var
         for (_ in c) {
+          // eslint-disable-next-line block-scoped-var
           conf[_] = c[_]
         }
 
@@ -242,6 +242,7 @@ program
         }
 
         envl.push({key: 'PORT', value: conf.port})
+        // eslint-disable-next-line unicorn/no-array-push-push
         envl.push({key: 'FOREMAN_WORKER_NAME', value: conf.process + '.' + conf.number})
 
         conf.envs = envl
