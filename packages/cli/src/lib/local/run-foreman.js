@@ -34,21 +34,21 @@ program.option('-p, --port     <PORT>', 'start indexing ports at number PORT', 0
 
 // Foreman Event Bus/Emitter //
 
-const emitter = new events.EventEmitter()
-emitter.once('killall', function (signal: any) {
+var emitter = new events.EventEmitter()
+emitter.once('killall', function (signal) {
   display.Done('Killing all processes with signal ', signal)
 })
 emitter.setMaxListeners(50)
 
-const start = _proc.start
-const once  = _proc.once
+var start = _proc.start
+var once  = _proc.once
 
-const loadProc  = _procfile.loadProc
+var loadProc  = _procfile.loadProc
 
-const loadEnvs = _envs.loadEnvs
+var loadEnvs = _envs.loadEnvs
 
-const getreqs          = _requirements.getreqs
-const calculatePadding = _requirements.calculatePadding
+var getreqs          = _requirements.getreqs
+var calculatePadding = _requirements.calculatePadding
 
 // Kill All Child Processes on SIGINT
 process.once('SIGINT', function () {
@@ -69,29 +69,29 @@ program
   .option('-t, --trim      <N>', 'trim logs to N characters', 0)
   .option('-w, --wrap', 'wrap logs (negates trim)')
   .description('Start the jobs in the Procfile')
-  .action(function (this:any, args: any) {
-    const envs = loadEnvs(program.env)
+  .action(function (args) {
+    var envs = loadEnvs(program.env)
 
-    const proc = loadProc(program.procfile)
+    var proc = loadProc(program.procfile)
 
     if (!proc) {
       return
     }
 
     if (this.showenvs) {
-      for (const key in envs) {
+      for (var key in envs) {
         display.Alert('env %s=%s', key, envs[key])
       }
     }
 
-    const reqs = getreqs(args, proc)
+    var reqs = getreqs(args, proc)
 
     display.padding  = calculatePadding(reqs)
 
     display.raw = this.raw
 
     if (this.wrap) {
-      display.wrapline = process.stdout.columns ? process.stdout.columns - display.padding - 7 : 0
+      display.wrapline = process.stdout.columns - display.padding - 7
       display.trimline = 0
       display.Alert('Wrapping display Output to %d Columns', display.wrapline)
     } else {
@@ -116,10 +116,10 @@ program
   .usage('[Options]')
   .option('-s, --showenvs', 'show ENV variables on start', false)
   .description('Run a one off process using the ENV variables')
-  .action(function (this: any, args: string | any[]) {
-    const envs = loadEnvs(program.env)
+  .action(function (args) {
+    var envs = loadEnvs(program.env)
 
-    const callback = function (code: number | undefined) {
+    var callback = function (code) {
       process.exit(code)
     }
 
@@ -127,15 +127,15 @@ program
       return
     }
 
-    const input = quote(args)
+    var input = quote(args)
 
     if (this.showenvs) {
-      for (const key in envs) {
+      for (var key in envs) {
         display.Alert('env %s=%s', key, envs[key])
       }
     }
 
-    display.trimline = process.stdout.columns ? process.stdout.columns - 5 : 0
+    display.trimline = process.stdout.columns - 5
 
     once(input, envs, callback)
   })
@@ -151,19 +151,19 @@ program
   .option('-t, --type <TYPE>', 'export file to TYPE (default upstart)', 'upstart')
   .option('-m, --template <DIR>', 'use template folder')
   .description('Export to an upstart job independent of foreman')
-  .action(function (this: any, procArgs: any) {
-    const envs = loadEnvs(program.env)
+  .action(function (procArgs) {
+    var envs = loadEnvs(program.env)
 
-    const procs = loadProc(program.procfile)
+    var procs = loadProc(program.procfile)
 
     if (!procs) {
       return
     }
 
-    const req  = getreqs(procArgs, procs)
+    var req  = getreqs(procArgs, procs)
 
     // Variables for Upstart Template
-    const config = {
+    var config = {
       application: this.app,
       cwd: path.resolve(process.cwd(), this.cwd || ''),
       user: this.user,
@@ -171,11 +171,11 @@ program
       envs: envs,
       group: this.gid || this.user,
       template: this.template,
-      processes: [{}],
-      envfile: path.resolve(program.env),
     }
 
-    let writeout
+    config.envfile = path.resolve(program.env)
+
+    var writeout
     if (exporters[this.type]) {
       writeout = exporters[this.type]
     } else {
@@ -185,9 +185,9 @@ program
 
     // Check for Upstart User
     // friendly warning - does not stop export
-    let userExists = false
+    var userExists = false
     fs.readFileSync('/etc/passwd')
-      .toString().split(/\n/).forEach(function (line: { match: (arg0: RegExp) => any[] }) {
+      .toString().split(/\n/).forEach(function (line) {
         if (line.match(/^[^:]*/)[0] === config.user) {
           userExists = true
         }
@@ -198,39 +198,39 @@ program
     }
 
     // using port 5006 because it is not known to be used by other common software
-    const baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5006)
-    let baseport_i = 0
-    let baseport_j = 0
-    let envl = []
+    var baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5006)
+    var baseport_i = 0
+    var baseport_j = 0
+    var envl = []
+
+    config.processes = []
 
     // This is ugly because of shitty support for array copying
     // Cleanup is definitely required
-    for (let key in req) {
-      const cmd = procs[key]
+    for (var key in req) {
+      var c = {}
+      var cmd = procs[key]
 
       if (!cmd) {
         display.Warn("Required Key '%s' Does Not Exist in Procfile Definition", key)
         continue
       }
 
-      const n = req[key]
+      var n = req[key]
 
       config.processes.push({process: key, n: n})
-      const c = {
-        ...config,
-        process: key,
-        command: cmd,
-        numbers: [{}],
+      c.process = key
+      c.command = cmd
+
+      for (var _ in config) {
+        c[_] = config[_]
       }
 
-      for (let i = 1; i <= n; i++) {
-        const conf = {
-          ...c,
-          number: i,
-          port: (baseport + baseport_i + baseport_j) * 100,
-        }
+      c.numbers = []
+      for (var i = 1; i <= n; i++) {
+        const port = (baseport + baseport_i + baseport_j) * 100
 
-        envl = []
+        const envl = []
         for (key in envs) {
           envl.push({
             key: key,
@@ -243,6 +243,13 @@ program
         envl.push({key: 'FOREMAN_WORKER_NAME', value: conf.process + '.' + conf.number})
 
         conf.envs = envl
+
+        const conf = {
+          ...c,
+          number: i,
+          port,
+          envs: envl,
+        }
 
         // Write the APP-PROCESS-N.conf File
         writeout.foreman_app_n(conf, this.out)
