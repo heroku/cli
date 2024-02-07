@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
+
+
+### Features
+
+* **ps:** add larger dyno information to ps:type and ps:scale ([#2598](https://github.com/heroku/cli/issues/2598)) ([23f8e2d](https://github.com/heroku/cli/commit/23f8e2dae8ecef0b3945c67e84a5d93ab53ed9c0))
+
+
+
+
+
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
