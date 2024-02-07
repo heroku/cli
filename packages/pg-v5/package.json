@@ -33,7 +33,7 @@
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
     "heroku-client": "^3.0.7",
-    "mocha": "^5.1.1",
+    "mocha": "6.0.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
