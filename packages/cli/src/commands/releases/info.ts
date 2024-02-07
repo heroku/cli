@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import shellescape = require('shell-escape')
+import shellescape from 'shell-escape'
 const {forEach} = require('lodash')
 
 import {findByLatestOrId} from '../../lib/releases/releases'
