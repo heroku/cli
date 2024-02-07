@@ -16,7 +16,6 @@ describe('host', () => {
       process.env.HEROKU_DATA_HOST = 'data-host.herokuapp.com'
     })
     afterEach(() => delete process.env.HEROKU_DATA_HOST)
-    afterEach(() => delete process.env.HEROKU_POSTGRESQL_HOST)
 
     it('shows data-host.herokuapp.com host', () => {
       expect(host({plan: {name: 'heroku-postgresql:mini'}})).to.equal('https://data-host.herokuapp.com')
