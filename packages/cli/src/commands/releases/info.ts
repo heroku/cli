@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-const shellescape = require('shell-escape')
+
+import shellescape = require('shell-escape')
 const {forEach} = require('lodash')
-import * as Heroku from '@heroku-cli/schema'
 
 import {findByLatestOrId} from '../../lib/releases/releases'
 import {description, color as getStatusColor} from '../../lib/releases/status_helper'
@@ -32,18 +32,22 @@ export default class Info extends Command {
         let releaseChange = release.description
         const status = description(release)
         const statusColor = getStatusColor(release.status)
+        const user = release.user ? release.user : {}
+        const userEmail = user.email ? user.email : ''
         if (status !== undefined) {
           releaseChange += ' (' + color[statusColor](status) + ')'
         }
 
         ux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
         ux.styledObject({
-          'Add-ons': release.addon_plan_names, Change: releaseChange, By: release.user.email, When: release.created_at,
+          'Add-ons': release.addon_plan_names, Change: releaseChange, By: userEmail, When: release.created_at,
         })
         ux.log()
         ux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
         if (shell) {
-          forEach(config, (v, k) => ux.log(`${k}=${shellescape([v])}`))
+          forEach(config, (v: string, k: string) => {
+            ux.log(`${k}=${shellescape([v])}`)
+          })
         } else {
           ux.styledObject(config)
         }
