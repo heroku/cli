@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.7.2-beta.4](https://github.com/heroku/cli/compare/v8.7.2-beta.3...v8.7.2-beta.4) (2024-02-07)
+
+
+### Bug Fixes
+
+* set default port for heroku:local to 5006 ([#2618](https://github.com/heroku/cli/issues/2618)) ([9687e82](https://github.com/heroku/cli/commit/9687e82c152548ea593778b2caf2d0413ec7c75a))
+
+
+
+
+
 ## [8.7.2-beta.3](https://github.com/heroku/cli/compare/v8.7.1...v8.7.2-beta.3) (2024-01-22)
 
 

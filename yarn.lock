@@ -1345,7 +1345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.6.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.7.2-beta.4, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -10951,7 +10951,7 @@ __metadata:
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
     "@heroku-cli/plugin-addons-v5": ^8.6.0
-    "@heroku-cli/plugin-apps-v5": ^8.6.0
+    "@heroku-cli/plugin-apps-v5": ^8.7.2-beta.4
     "@heroku-cli/plugin-certs-v5": ^8.6.0
     "@heroku-cli/plugin-ci-v5": ^8.7.2-beta.3
     "@heroku-cli/plugin-container-registry-v5": ^8.6.0
