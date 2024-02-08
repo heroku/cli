@@ -195,3 +195,13 @@ it('errors when user requests larger dynos and feature flag is NOT enabled', fun
     .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
     .then(() => api.done())
 })
+
+it("errors when user requests larger dynos and feature flag doesn't exist", function () {
+  let api = nock('https://api.heroku.com')
+    .get('/account/features/frontend-larger-dynos')
+    .reply(404, {})
+
+  return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
+    .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
+    .then(() => api.done())
+})

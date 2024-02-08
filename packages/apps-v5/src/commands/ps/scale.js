@@ -16,6 +16,13 @@ async function run(context, heroku) {
   // successfully launched larger dyno sizes
   let isLargerDyno = false
   const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
+    .catch(error => {
+      if (error.statusCode === 404) {
+        return {enabled: false}
+      }
+
+      throw error
+    })
 
   async function parse(args) {
     // checks for larger dyno sizes
