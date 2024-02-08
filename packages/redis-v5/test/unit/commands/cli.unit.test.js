@@ -77,7 +77,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {FOO: 'BAR'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'hobby',
@@ -109,7 +109,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {REDIS_TLS_URL: 'rediss://foobar:password@example.com:8649'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'hobby',
@@ -142,7 +142,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {FOO: 'BAR'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'premium-0',
@@ -175,7 +175,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {FOO: 'BAR'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'shield-9',
@@ -213,7 +213,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {REDIS_BASTIONS: 'example.com'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'premium-0',
@@ -244,7 +244,7 @@ describe('heroku redis:cli', function () {
     let configVars = nock('https://api.heroku.com:443')
       .get('/apps/example/config-vars').reply(200, {REDIS_BASTIONS: 'example.com'})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'private-7',
@@ -292,7 +292,7 @@ describe('heroku redis:cli', function () {
         REDIS_6_BASTION_KEY: 'key2',
       })
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-sonnet').reply(200, {
         resource_url: 'redis://foobar:password@redis-6.example.com:8649',
         plan: 'private-7',
