@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.9.0-beta.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0-beta.0) (2024-02-08)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
 # [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
 
 
