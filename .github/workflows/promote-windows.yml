@@ -7,6 +7,18 @@ on:
         description: version to promote to stable (this should be the latest release version)
         type: string
         required: true
+      isStableRelease:
+        type: boolean
+        description: Is this a stable/prod release?
+        required: true
+        default: false
+      channel:
+        type: choice
+        description: Release channel for prereleases
+        required: false
+        options:
+          - beta
+          - alpha
 
 jobs:
   promote:
@@ -34,5 +46,5 @@ jobs:
           prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          yarn oclif promote --win --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel="stable"
+          yarn oclif promote --win --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
