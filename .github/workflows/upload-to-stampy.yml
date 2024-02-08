@@ -1,0 +1,43 @@
+name: Upload unsigned Windows installers to Stampy
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: version to upload (this should be the latest release version)
+        type: string
+        required: true
+
+jobs:
+  upload-to-stampy-unsigned:
+    runs-on: ubuntu-latest
+    environment: Stampy
+    steps:
+      - uses: actions/checkout@v3
+      - name: download Windows installers from s3
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_EC2_METADATA_DISABLED: true
+        run: |
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          FILEBASE=heroku-v${{inputs.version}}-$SHA
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/$FILEBASE-x86.exe .
+          aws s3 cp s3://heroku-cli-assets/versions/${{inputs.version}}/$SHA/$FILEBASE-x64.exe .
+      - name: upload unsigned Windows installers to Stampy
+        env:
+          STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
+          STAMPY_UNSIGNED_BUCKET: ${{ secrets.STAMPY_UNSIGNED_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_EC2_METADATA_DISABLED: true
+        # switch AWS identity to the one that can access stampy
+        run: |
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          FILEBASE=heroku-v${{inputs.version}}-$SHA
+          ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
+          TEMP_ROLE=$(aws sts assume-role --role-arn $STAMPY_ARN --role-session-name artifact-signing)
+          export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
+          export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SecretAccessKey')
+          export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SessionToken')
+          aws s3 cp $FILEBASE-x86.exe s3://$STAMPY_UNSIGNED_BUCKET/$FILEBASE-x86.exe
+          aws s3 cp $FILEBASE-x64.exe s3://$STAMPY_UNSIGNED_BUCKET/$FILEBASE-x64.exe

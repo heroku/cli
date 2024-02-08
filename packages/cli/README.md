@@ -56,13 +56,16 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members
+* [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
+* [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
+* [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
@@ -82,15 +85,14 @@ This project is built with [lerna](https://lerna.js.org/). The core plugins are 
 
 After cloning the repo
 1. Run `yarn` to install dependencies
-2. Run `yarn lerna bootstrap` set up Lerna and link the packages together
-    - This repo currently uses an older version of Lerna. We recommend using the version specified in the package.json instead of a newer version that you may have installed globally.
+2. Run `yarn build` to build the CLI. This will need to be re-run any time you make changes and want to test them locally.
 
 To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
 
 Testing
 =======
 
-Run all tests with `yarn lerna run test`.
+Run all tests with `yarn test`.
 
 Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku-cli/plugin-certs-v5 test`.
 
