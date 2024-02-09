@@ -27,7 +27,7 @@ describe('pg:promote when argument is database', () => {
   }
 
   const host = () => {
-    return 'https://postgres-api.heroku.com'
+    return 'https://api.data.heroku.com'
   }
 
   const cmd = proxyquire('../../../commands/promote', {
@@ -38,7 +38,7 @@ describe('pg:promote when argument is database', () => {
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, {message: 'available', 'waiting?': false})
     pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, {following: null})
     api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
@@ -201,7 +201,7 @@ describe('pg:promote when argument is a credential attachment', () => {
   }
 
   const host = () => {
-    return 'https://postgres-api.heroku.com'
+    return 'https://api.data.heroku.com'
   }
 
   const cmd = proxyquire('../../../commands/promote', {
@@ -215,7 +215,7 @@ describe('pg:promote when argument is a credential attachment', () => {
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get(`/client/v11/databases/${credentialAttachment.addon.id}/wait_status`).reply(200, {message: 'available', 'waiting?': false})
     pg.get(`/client/v11/databases/${credentialAttachment.addon.id}`).reply(200, {following: null})
     cli.mockConsole()
@@ -348,7 +348,7 @@ describe('pg:promote when release phase is present', () => {
 
   const addonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
   const host = () => {
-    return 'https://postgres-api.heroku.com'
+    return 'https://api.data.heroku.com'
   }
 
   const cmd = proxyquire('../../../commands/promote', {
@@ -387,7 +387,7 @@ describe('pg:promote when release phase is present', () => {
       namespace: 'credential:hello',
     }])
 
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get(`/client/v11/databases/${addonID}/wait_status`).reply(200, {message: 'available', 'waiting?': false})
     pg.get(`/client/v11/databases/${addonID}`).reply(200, {following: null})
 
@@ -469,7 +469,7 @@ describe('pg:promote when database is not available or force flag is present', (
   }
 
   const host = () => {
-    return 'https://postgres-api.heroku.com'
+    return 'https://api.data.heroku.com'
   }
 
   const cmd = proxyquire('../../../commands/promote', {
@@ -480,7 +480,7 @@ describe('pg:promote when database is not available or force flag is present', (
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}`).reply(200, {following: null})
     cli.mockConsole()
   })
@@ -567,7 +567,7 @@ describe('pg:promote when promoted database is a follower', () => {
   }
 
   const host = () => {
-    return 'https://postgres-api.heroku.com'
+    return 'https://api.data.heroku.com'
   }
 
   const cmd = proxyquire('../../../commands/promote', {
@@ -578,7 +578,7 @@ describe('pg:promote when promoted database is a follower', () => {
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, {'waiting?': false, message: 'available'})
 
     cli.mockConsole()
