@@ -1345,7 +1345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.8.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.9.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -1503,7 +1503,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.7.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^8.9.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -1560,7 +1560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-redis-v5@^8.6.0, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
+"@heroku-cli/plugin-redis-v5@^8.9.0, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
@@ -10951,15 +10951,15 @@ __metadata:
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
     "@heroku-cli/plugin-addons-v5": ^8.6.0
-    "@heroku-cli/plugin-apps-v5": ^8.8.0
+    "@heroku-cli/plugin-apps-v5": ^8.9.0
     "@heroku-cli/plugin-certs-v5": ^8.6.0
     "@heroku-cli/plugin-ci-v5": ^8.8.0
     "@heroku-cli/plugin-container-registry-v5": ^8.6.0
     "@heroku-cli/plugin-orgs-v5": ^8.8.0
-    "@heroku-cli/plugin-pg-v5": ^8.7.0
+    "@heroku-cli/plugin-pg-v5": ^8.9.0
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
-    "@heroku-cli/plugin-redis-v5": ^8.6.0
+    "@heroku-cli/plugin-redis-v5": ^8.9.0
     "@heroku-cli/plugin-run": 8.1.4
     "@heroku-cli/plugin-spaces": ^8.7.1
     "@heroku-cli/schema": ^1.0.25

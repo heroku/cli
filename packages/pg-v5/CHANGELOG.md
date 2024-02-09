@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+
+### Features
+
+* **pg:** enable credentials url/rotation command for essential tier dbs ([#2621](https://github.com/heroku/cli/issues/2621)) ([79b8eca](https://github.com/heroku/cli/commit/79b8eca64d505f94fc86601f1c76cd0643369922))
+
+
+
+
+
 # [8.7.0](https://github.com/heroku/cli/compare/v8.6.0...v8.7.0) (2023-10-24)
 
 
