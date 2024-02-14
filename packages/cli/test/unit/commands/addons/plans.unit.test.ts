@@ -19,7 +19,8 @@ describe('addons:plans', function () {
   })
   it('shows add-on plans', async function () {
     await runCommand(Cmd, ['daservice'])
-    expectOutput(stdout.output, `sslug                         name       price        max price
+    expectOutput(stdout.output, `
+        Slug                         Name       Price        Max price
  ─────── ──────────────────────────── ────────── ──────────── ───────────
  default heroku-postgresql:mini       Mini       ~$0.007/hour $5/month
          heroku-postgresql:standard-2 Standard 2 ~$0.278/hour $200/month

@@ -28,17 +28,17 @@ export default class Plans extends Command {
             get: (plan: any) => plan.default ? 'default' : '',
           },
           name: {
-            header: 'slug',
+            header: 'Slug',
           },
           human_name: {
-            header: 'name',
+            header: 'Name',
           },
           price: {
-            header: 'price',
+            header: 'Price',
             get: (plan: any) => formatPrice({price: plan.price, hourly: true}),
           },
           max_price: {
-            header: 'max price',
+            header: 'Max price',
             get: (plan: any) => formatPrice({price: plan.price, hourly: false}),
           },
         })
