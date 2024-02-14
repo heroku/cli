@@ -17,7 +17,7 @@ export default `\u001B[1m Command                                        Summary
  addons:downgrade                               change add-on plan
  addons:info                                    show detailed add-on resource and attachment information
  addons:open                                    open an add-on\'s dashboard in your browser
- addons:plans                                   list all available plans for an add-on services
+ addons:plans                                   list all available plans for an add-on service
  addons:remove                                  permanently destroy an add-on resource
  addons:rename                                  rename an add-on
  addons:services                                list all available add-on services
