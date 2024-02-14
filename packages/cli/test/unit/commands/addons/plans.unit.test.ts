@@ -1,8 +1,7 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/addons/plans'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
-import {expect} from 'chai'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
@@ -27,6 +26,5 @@ default  heroku-postgresql:mini         Mini         ~$0.007/hour   $5/month
          heroku-postgresql:standard-2   Standard 2   ~$0.278/hour   $200/month
          heroku-postgresql:premium-3    Premium 3    ~$1.042/hour   $750/month
          heroku-postgresql:private-4    Private 4    ~$2.083/hour   $1500/month`)
-         })
   })
 })
