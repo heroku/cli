@@ -8,8 +8,8 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 describe('addons:services', function () {
   beforeEach(function () {
     const services = [
-      fixtures.plans['heroku-postgresql'],
-      fixtures.plans['heroku-redis'],
+      fixtures.services['heroku-postgresql'],
+      fixtures.services['heroku-redis'],
     ]
     nock('https://api.heroku.com')
       .get('/addon-services')
@@ -21,6 +21,9 @@ describe('addons:services', function () {
 Slug              Name         State
  ───────────────── ──────────── ─────
  heroku-postgresql Hobby Dev    ga
- heroku-redis      Heroku Redis ga`)
+ heroku-redis      Heroku Redis ga
+
+See plans with heroku addons:plans SERVICE
+ `)
   })
 })
