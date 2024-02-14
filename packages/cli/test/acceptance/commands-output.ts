@@ -283,6 +283,7 @@ export default `\u001B[1m Command                                        Summary
  restart                                        restart app dynos
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline
+ rollback                                       rollback to a previous release
  run                                            run a one-off process inside a heroku dyno
  run:detached                                   run a detached dyno, where output is sent to your logs
  scale                                          scale dyno quantity up or down
