@@ -201,7 +201,7 @@ DESCRIPTION
 
 ## `heroku addons:plans SERVICE`
 
-list all available plans for an add-on services
+list all available plans for an add-on service
 
 ```
 USAGE
@@ -211,7 +211,7 @@ FLAGS
   --json  output in json format
 
 DESCRIPTION
-  list all available plans for an add-on services
+  list all available plans for an add-on service
 ```
 
 ## `heroku addons:rename ADDON NEW_NAME`
