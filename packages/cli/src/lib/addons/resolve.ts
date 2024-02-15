@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {HTTPError} from 'http-call'
+import {HTTP, HTTPError} from 'http-call'
 import * as _ from 'lodash'
+import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 
 const addonHeaders = function () {
   return {
@@ -10,14 +10,14 @@ const addonHeaders = function () {
   }
 }
 
-export const appAddon = async function (heroku: APIClient, app: string, id: string, options: Heroku.AddOnAttachment = {}) {
+export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}) {
   const headers = addonHeaders()
-  const response = await heroku.post<Heroku.AddOnAttachment[]>('/actions/addons/resolve', {
+  const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
     headers: headers,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
 
-  return singularize('addon', options.namespace || '')(response?.body)
+  return singularize('addon', options.namespace)(response?.body)
 }
 
 const handleNotFound = function (err: HTTPError, resource: string) {
@@ -28,11 +28,11 @@ const handleNotFound = function (err: HTTPError, resource: string) {
   throw err
 }
 
-const addonResolver = function (heroku: APIClient, app: string, id: string, options?: Heroku.AddOnAttachment) {
+const addonResolver = function (heroku: APIClient, app: string, id: string, options?: AddOnAttachment) {
   const headers = addonHeaders()
 
   const getAddon = function (addonId: string) {
-    return heroku.post<Heroku.AddOnAttachment[]>('/actions/addons/resolve', {
+    return heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
       headers: headers,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
@@ -46,6 +46,94 @@ const addonResolver = function (heroku: APIClient, app: string, id: string, opti
       if (handleNotFound(error, 'add_on')) return getAddon(id)
     })
 }
+
+// -----------------------------------------------------
+// Attachment resolver functions
+// originating from `packages/addons-v5/lib/resolve.js`
+// -----------------------------------------------------
+const filter = function (app: string | undefined, addonService: AddOnAttachment['addon_service']) {
+  return (attachments: AddOn[]) => {
+    return attachments.filter(attachment => {
+      if (attachment?.app?.name !== app) {
+        return false
+      }
+
+      return !(addonService && attachment?.addon_service?.name !== addonService)
+    })
+  }
+}
+
+const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }> = {
+  Accept: 'application/vnd.heroku+json; version=3.actions',
+  'Accept-Inclusion': 'addon:plan,config_vars',
+}
+
+const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
+  addon_service?: string,
+  namespace?: string
+} = {}) => {
+  const result: HTTP<AddOnAttachment[]> = await heroku.post('/actions/addon-attachments/resolve', {
+    headers: attachmentHeaders, body: {app: app, addon_attachment: id, addon_service: options.addon_service},
+  })
+  return singularize('addon_attachment', options.namespace)(result.body)
+}
+
+export const attachmentResolver = async (heroku: APIClient, app: string | undefined, id: string, options: {
+  addon_service?: string,
+  namespace?: string
+} = {}) => {
+  async function getAttachment(id: string | undefined): Promise<AddOnAttachment | void> {
+    try {
+      const result: HTTP<AddOnAttachment[]> = await heroku.post('/actions/addon-attachments/resolve', {
+        headers: attachmentHeaders, body: {app: null, addon_attachment: id, addon_service: options.addon_service},
+      })
+      return singularize('addon_attachment', options.namespace || '')(result.body)
+    } catch (error) {
+      if (error instanceof HTTPError) {
+        handleNotFound(error, 'add_on attachment')
+      }
+    }
+  }
+
+  async function getAppAddonAttachment(addon: AddOnAttachment, app: string | undefined): Promise<AddOnAttachment | void> {
+    try {
+      const result: HTTP<AddOn[]> = await heroku.get(`/addons/${encodeURIComponent(addon.id ?? '')}/addon-attachments`, {headers: attachmentHeaders})
+      const matches = filter(app, options.addon_service)(result.body)
+      return singularize('addon_attachment', options.namespace)(matches)
+    } catch (error) {
+      if (error instanceof HTTPError) {
+        handleNotFound(error, 'add_on attachment')
+      }
+    }
+  }
+
+  // first check to see if there is an attachment matching this app/id combo
+  try {
+    const attachment = await (!app || id.includes('::') ? getAttachment(id) : appAttachment(heroku, app, id, options))
+    if (attachment) {
+      return attachment
+    }
+  } catch {}
+
+  // if no attachment, look up an add-on that matches the id
+  // If we were passed an add-on slug, there still could be an attachment
+  // to the context app. Try to find and use it so `context_app` is set
+  // correctly in the SSO payload.
+
+  if (app) {
+    try {
+      const addon = await resolveAddon(heroku, app, id, options)
+      return await getAppAddonAttachment(addon, app)
+    } catch (error) {
+      if (error instanceof HTTPError) {
+        handleNotFound(error, 'add_on attachment')
+      }
+    }
+  }
+}
+// -----------------------------------------------------
+// END
+// -----------------------------------------------------
 
 /**
  * Replacing memoize with our own memoization function that works with promises
@@ -87,7 +175,7 @@ function NotFound(this: any) {
   this.message = 'Couldn\'t find that addon.'
 }
 
-function AmbiguousError(this: any, matches: {name: string}[], type: string) {
+function AmbiguousError(this: any, matches: { name: string }[], type: string) {
   Error.call(this)
   Error.captureStackTrace(this, this.constructor)
   this.name = this.constructor.name
@@ -99,8 +187,8 @@ function AmbiguousError(this: any, matches: {name: string}[], type: string) {
   this.type = type
 }
 
-const singularize = function (type: string, namespace?: string) {
-  return (matches: Heroku.AddOnAttachment[]) => {
+const singularize = function (type?: string | null, namespace?: string | null) {
+  return (matches: AddOnAttachment[]) => {
     if (namespace) {
       matches = matches.filter(m => m.namespace === namespace)
     } else if (matches.length > 1) {
@@ -118,7 +206,7 @@ const singularize = function (type: string, namespace?: string) {
     default:
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      throw new AmbiguousError(matches, type)
+      throw new AmbiguousError(matches, type ?? '')
     }
   }
 }

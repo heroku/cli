@@ -428,7 +428,7 @@ export default class Dyno extends Duplex {
       stdin.pipe(c)
       let sigints: any[] = []
       stdin.on('data', function (c) {
-        if (c === '\u0003') {
+        if (c.toString() === '\u0003') {
           sigints.push(Date.now())
         }
 
