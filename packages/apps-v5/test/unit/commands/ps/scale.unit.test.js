@@ -95,6 +95,21 @@ describe('ps:scale', () => {
       .then(() => api.done())
   })
 
+  it('scales web=1 worker=2 when the extra arg --exit-code is added', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/account/features/frontend-larger-dynos')
+      .reply(200, featureFlagPayload())
+      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1'}, {type: 'worker', quantity: '2'}]})
+      .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+
+    return cmd.run({app: 'myapp', args: ['web=1', 'worker=2', 'exit-code']})
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n'))
+      .then(() => api.done())
+  })
+
   it('scales up a shield dyno if the app is in a shielded private space', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/account/features/frontend-larger-dynos')
