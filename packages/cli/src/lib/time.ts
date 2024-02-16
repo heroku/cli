@@ -1,4 +1,4 @@
-const strftime = require('strftime')
+import * as strftime from 'strftime'
 
 export function ago(since: any) {
   const elapsed = Math.floor((Date.now() - since) / 1000)
@@ -10,8 +10,7 @@ export function ago(since: any) {
 }
 
 export function remaining(from: number, to: number) {
-  // eslint-disable-next-line no-mixed-operators
-  const secs = Math.floor(to / 1000 - from / 1000)
+  const secs = Math.floor((to / 1000) - (from / 1000))
   const mins = Math.floor(secs / 60)
   const hours = Math.floor(mins / 60)
   if (hours > 0) return `${hours}h ${mins % 60}m`
