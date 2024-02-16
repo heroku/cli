@@ -34,12 +34,12 @@ describe('addons:wait', () => {
           .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
           .reply(200, [fixtures.addons['www-db']])
       })
-      it('prints output indicating that it is done', () => {
-        return runCommand(Cmd, [
+      it('prints output indicating that it is done', async () => {
+        await runCommand(Cmd, [
           'www-db',
         ])
-          .then(() => expect(stdout.output).to.equal(''))
-          .then(() => expect(stderr.output).to.equal(''))
+        expectOutput(stdout.output, '')
+        expectOutput(stderr.output, '')
       })
     })
     context('for an add-on that is still provisioning', () => {
@@ -61,7 +61,8 @@ describe('addons:wait', () => {
           '1',
           'www-redis',
         ])
-        expectOutput(stdout.output, 'Creating www-redis... done\nCreated www-redis as REDIS_URL\n')
+        expectOutput(stderr.output, 'Creating www-redis...\nCreating www-redis... done\n')
+        expectOutput(stdout.output, 'Created www-redis as REDIS_URL\n')
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
@@ -149,48 +150,46 @@ describe('addons:wait', () => {
   })
   context('waiting for an individual add-on to deprovision', () => {
     context('for an add-on that is still deprovisioning', () => {
-      it('waits until the add-on is deprovisioned', () => {
-        const api = nock('https://api.heroku.com')
+      it('waits until the add-on is deprovisioned', async () => {
+        nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis-2'})
           .reply(200, [fixtures.addons['www-redis-2']])
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(200, fixtures.addons['www-redis-2'])
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        return runCommand(Cmd, [
+        await runCommand(Cmd, [
           '--wait-interval',
           '1',
           'www-redis-2',
         ])
-          .then(() => api.done())
-          .then(() => expect(stderr.output).to.equal('Destroying www-redis-2... done\n'))
-          .then(() => expect(stdout.output).to.equal(''))
+        expectOutput(stderr.output, 'Destroying www-redis-2... done\n')
+        expectOutput(stdout.output, '')
       })
-      it('does NOT notify the user when deprovisioning takes less than 5 seconds', () => {
+      it('does NOT notify the user when deprovisioning takes less than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '37f27548-db4a-4ae0-bb48-57125df0ddc2'
         deprovisioningAddon.name = 'www-redis-3'
-        const api = nock('https://api.heroku.com')
+        nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis-3'})
           .reply(200, [deprovisioningAddon])
           .get('/apps/acme-inc-www/addons/www-redis-3')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        return runCommand(Cmd, [
+        await runCommand(Cmd, [
           '--wait-interval',
           '1',
           'www-redis-3',
         ])
-          .then(() => api.done())
-          .then(() => expect(notifySpy.called).to.be.false)
-          .then(() => expect(notifySpy.calledOnce).to.be.false)
+        expect(notifySpy.called).to.be.false
+        expect(notifySpy.calledOnce).to.be.false
       })
-      it('notifies the user when provisioning takes longer than 5 seconds', () => {
+      it('notifies the user when provisioning takes longer than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '967dff74-99b4-4fd2-a0f0-79b523d5c0e1'
         deprovisioningAddon.name = 'www-redis-4'
-        const api = nock('https://api.heroku.com')
+        nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis-4'})
           .reply(200, [deprovisioningAddon])
           .get('/apps/acme-inc-www/addons/www-redis-4')
@@ -200,14 +199,13 @@ describe('addons:wait', () => {
           })
           .get('/apps/acme-inc-www/addons/www-redis-4')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        return runCommand(Cmd, [
+        await runCommand(Cmd, [
           '--wait-interval',
           '1',
           'www-redis-4',
         ])
-          .then(() => api.done())
-          .then(() => expect(notifySpy.called).to.be.true)
-          .then(() => expect(notifySpy.calledOnce).to.be.true)
+        expect(notifySpy.called).to.be.true
+        expect(notifySpy.calledOnce).to.be.true
       })
     })
   })
@@ -221,7 +219,9 @@ describe('addons:wait', () => {
         const redisAddon = _.clone(fixtures.addons['www-redis'])
         redisAddon.state = 'provisioning'
         const redis2Addon = _.clone(fixtures.addons['www-redis-2'])
-        // redis2Addon.state = 'deprovisioning'
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        redis2Addon.state = 'deprovisioning'
         nock('https://api.heroku.com')
           .get('/apps/acme-inc-www/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon, redis2Addon])
@@ -255,7 +255,18 @@ describe('addons:wait', () => {
           '--app',
           'acme-inc-www',
         ])
-        expectOutput(stderr.output, '\n            Creating www-db... done\n            Creating www-redis... done\n            Destroying www-redis-2... done\n\n          Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n')
+        expectOutput(stderr.output, `
+Creating www-db...
+Creating www-db... done
+Creating www-redis...
+Creating www-redis... done
+Destroying www-redis-2...
+Destroying www-redis-2... done
+`)
+        expectOutput(stdout.output, `
+Created www-db as WWW_URL
+Created www-redis as REDIS_URL
+`)
       })
     })
     context('for all', () => {
@@ -267,7 +278,9 @@ describe('addons:wait', () => {
         const redisAddon = _.clone(fixtures.addons['www-redis'])
         redisAddon.state = 'provisioning'
         const redis2Addon = _.clone(fixtures.addons['www-redis-2'])
-        // redis2Addon.state = 'deprovisioning'
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        redis2Addon.state = 'deprovisioning'
         nock('https://api.heroku.com')
           .get('/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon, redis2Addon])
@@ -298,9 +311,19 @@ describe('addons:wait', () => {
         await runCommand(Cmd, [
           '--wait-interval',
           '1',
-          '--app',
         ])
-        expectOutput(stderr.output, '\n            Creating www-db... done\n            Creating www-redis... done\n            Destroying www-redis-2... done\n\n          Created www-db as WWW_URL\nCreated www-redis as REDIS_URL\n')
+        expectOutput(stderr.output, `
+Creating www-db...
+Creating www-db... done
+Creating www-redis...
+Creating www-redis... done
+Destroying www-redis-2...
+Destroying www-redis-2... done
+`)
+        expectOutput(stdout.output, `
+Created www-db as WWW_URL
+Created www-redis as REDIS_URL
+`)
       })
     })
   })
