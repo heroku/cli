@@ -61,8 +61,13 @@ describe('addons:wait', () => {
           '1',
           'www-redis',
         ])
-        expectOutput(stderr.output, 'Creating www-redis...\nCreating www-redis... done\n')
-        expectOutput(stdout.output, 'Created www-redis as REDIS_URL\n')
+        expectOutput(stderr.output, `
+Creating www-redis...
+Creating www-redis... done
+`)
+        expectOutput(stdout.output, `
+Created www-redis as REDIS_URL
+`)
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
@@ -163,7 +168,10 @@ describe('addons:wait', () => {
           '1',
           'www-redis-2',
         ])
-        expectOutput(stderr.output, 'Destroying www-redis-2... done\n')
+        expectOutput(stderr.output, `
+Destroying www-redis-2...
+Destroying www-redis-2... done
+`)
         expectOutput(stdout.output, '')
       })
       it('does NOT notify the user when deprovisioning takes less than 5 seconds', async () => {
