@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+
+### Features
+
+* **pg-v5:** Updating Data's hostname to api.data.heroku.com ([#2529](https://github.com/heroku/cli/issues/2529)) ([387bf55](https://github.com/heroku/cli/commit/387bf55d5fdcda3e7b539be9510cce92fab0eab7))
+
+
+
+
+
 # [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
 
 
