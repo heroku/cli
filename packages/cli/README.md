@@ -56,6 +56,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members
+* [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
@@ -63,6 +64,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
+* [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
