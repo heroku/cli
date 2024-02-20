@@ -14,10 +14,7 @@ describe('container:login', () => {
   afterEach(() => sandbox.restore())
 
   it('logs to the docker registry', async function () {
-    const version = sandbox.stub(DockerHelper, 'version').returns(new Promise(function (resolve, _) {
-      resolve([19, 12])
-    }))
-
+    const version = sandbox.stub(DockerHelper, 'version').resolves([19, 12])
     const login = sandbox.stub(DockerHelper, 'cmd')
       .withArgs('docker', ['login', '--username=_', '--password-stdin', 'registry.heroku.com'], {input: 'heroku_token'})
 
