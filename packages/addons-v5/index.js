@@ -1,8 +1,6 @@
 /* eslint-disable unicorn/prefer-array-flat */
 'use strict'
 
-const _ = require('lodash')
-
 exports.topic = {
   name: 'addons',
   description: 'tools and services for developing, extending, and operating your app',
@@ -70,9 +68,3 @@ exports.topic = {
 
   For more information, read https://devcenter.heroku.com/articles/add-ons`,
 }
-
-exports.commands = _.flatten([
-  require('./commands/addons/upgrade'),
-])
-
-exports.resolve = require('./lib/resolve')

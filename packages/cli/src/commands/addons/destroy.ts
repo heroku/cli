@@ -32,12 +32,12 @@ export default class Destroy extends Command {
     const {app, wait, confirm} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
 
-    const addons = await Promise.all(argv.map(name => resolveAddon(this.heroku, app, name)))
+    const addons = await Promise.all(argv.map(name => resolveAddon(this.heroku, app, name as string)))
     for (const addon of addons) {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
-      const addonApp = addon.app.name
+      const addonApp = addon.app?.name
       if (app && addonApp !== app) {
-        throw new Error(`${color.yellow(addon.name)} is on ${color.magenta(addonApp)} not ${color.magenta(app)}`)
+        throw new Error(`${color.yellow(addon.name ?? '')} is on ${color.magenta(addonApp ?? '')} not ${color.magenta(app)}`)
       }
     }
 

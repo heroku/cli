@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve'
+import {addonResolver, attachmentResolver, resolveAddon} from '../../lib/addons/resolve'
 import * as fs from 'node:fs/promises'
 import * as os from 'node:os'
 import * as path from 'node:path'
@@ -106,12 +106,12 @@ export default class Open extends Command {
       }
     }
 
-    let webUrl
+    let webUrl: string
     if (attachment) {
-      webUrl = attachment.web_url
+      webUrl = attachment.web_url as string
     } else {
       const resolvedAddon = await resolveAddon(this.heroku, app, addon)
-      webUrl = resolvedAddon.web_url
+      webUrl = resolvedAddon.web_url as string
     }
 
     if (ctx.flags['show-url']) {

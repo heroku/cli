@@ -20,7 +20,7 @@ describe('resolve', () => {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-1'}).reply(200, [{name: 'myaddon-1'}])
 
-      return resolveAddon(getHerokuAPI(), null, 'myaddon-1')
+      return resolveAddon(getHerokuAPI(), undefined, 'myaddon-1')
         .then((addon: Heroku.AddOn) => expect(addon).to.deep.equal({name: 'myaddon-1'}))
         .then(() => api.done())
     })
