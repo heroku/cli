@@ -142,7 +142,7 @@ describe('@acceptance smoke tests', () => {
     })
 
     it('heroku run', async () => {
-      const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
+      const {stdout} = await run(['run', '--size=private-s', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
       expect(stdout).to.contain('it works!')
     })
 
