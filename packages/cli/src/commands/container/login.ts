@@ -56,7 +56,7 @@ export default class Login extends Command {
     try {
       await dockerLogin(registry, password)
     } catch (error: any) {
-      ux.error(`Login failed${error.hasProperty('message') ? ` with: ${error.message}` : ''}.`, {exit: 1})
+      ux.error(`Login failed${error.message ? ` with: ${error.message}` : ''}.`, {exit: 1})
     }
   }
 }

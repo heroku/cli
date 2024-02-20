@@ -51,7 +51,6 @@ export const cmd = async function (cmd: string, args: string[], options: cmdOpti
 
 export const version = async function () {
   const version = await cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-
   const [major, minor] = version.split(/\./)
 
   return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
