@@ -28,23 +28,28 @@ const handleNotFound = function (err: HTTPError, resource: string) {
   throw err
 }
 
-const addonResolver = function (heroku: APIClient, app: string, id: string, options?: AddOnAttachment) {
+export const addonResolver = async (heroku: APIClient, app: string | undefined, id: string, options?: AddOnAttachment) => {
   const headers = addonHeaders()
 
-  const getAddon = function (addonId: string) {
-    return heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
+  const getAddon = async (addonId: string) => {
+    const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
       headers: headers,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
-      .then(response => singularize('addon', options?.namespace || '')(response?.body))
+    return singularize('addon', options?.namespace || '')(response?.body)
   }
 
-  if (!app || id.includes('::')) return getAddon(id)
+  if (!app || id.includes('::')) {
+    return getAddon(id)
+  }
 
-  return appAddon(heroku, app, id, options)
-    .catch(function (error: HTTPError) {
-      if (handleNotFound(error, 'add_on')) return getAddon(id)
-    })
+  try {
+    return await appAddon(heroku, app, id, options)
+  } catch (error) {
+    if (error instanceof HTTPError && handleNotFound(error, 'add_on')) {
+      return getAddon(id)
+    }
+  }
 }
 
 // -----------------------------------------------------

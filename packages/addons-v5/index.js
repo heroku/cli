@@ -72,7 +72,6 @@ exports.topic = {
 }
 
 exports.commands = _.flatten([
-  require('./commands/addons/upgrade'),
   require('./commands/addons/wait'),
 ])
 
