@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-container-registry-v5",
   "description": "Use containers to build and deploy Heroku apps",
-  "version": "8.6.0",
+  "version": "8.10.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
