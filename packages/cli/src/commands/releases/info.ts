@@ -1,8 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-
-import shellescape from 'shell-escape'
+import * as Heroku from '@heroku-cli/schema'
+import * as shellescape from 'shell-escape'
 const {forEach} = require('lodash')
 
 import {findByLatestOrId} from '../../lib/releases/releases'
@@ -25,7 +25,10 @@ export default class Info extends Command {
       const {flags, args} = await this.parse(Info)
       const {json, shell, app} = flags
       const release = await findByLatestOrId(this.heroku, app, args.release)
-      const config = await this.heroku.get(`/apps/${app}/releases/${release.version}/config-vars`)
+      const url = `/apps/${app}/releases/${release.version}/config-vars`
+
+      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(url)
+
       if (json) {
         ux.styledJSON(release)
       } else {
