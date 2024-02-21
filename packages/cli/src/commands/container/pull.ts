@@ -12,6 +12,8 @@ export default class Pull extends Command {
   ${color.cmd('heroku container:pull web worker')} # Pulls both the web and worker images from the app
   ${color.cmd('heroku container:pull web:latest')} # Pulls the latest tag from the web image`
 
+  static strict = false
+
   static flags = {
     app: flags.app({required: true}),
     verbose: flags.boolean({char: 'v'}),
