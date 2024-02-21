@@ -8,9 +8,11 @@ import {HTTP} from 'http-call'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 
 export default class Upgrade extends Command {
+  static aliases = ['addons:downgrade'];
   static topic = 'addons'
   static description = 'change add-on plan'
   static help = 'See available plans with `heroku addons:plans SERVICE`.\n\nNote that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.\nEither one can be used to change an add-on plan up or down.\n\nhttps://devcenter.heroku.com/articles/managing-add-ons'
+  static examples = ['Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2']
   static flags = {
     app: flags.app(),
   }
@@ -48,7 +50,7 @@ export default class Upgrade extends Command {
     try {
       const patchResult: HTTP<Required<AddOn & {
         provision_message: string
-      }>> = await this.heroku.patch(`/apps/${app}/addons/${addonName}`,
+      }>> = await this.heroku.patch(`/apps/${appName}/addons/${addonName}`,
         {
           body: {plan: {name: updatedPlanName}},
           headers: {
@@ -70,6 +72,8 @@ ${plans.map(plan => plan.name).join('\n')}\n\nSee more plan information with ${c
 
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
         }
+
+        throw error
       }
     }
 
@@ -81,7 +85,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 
   protected getAddonPartsFromArgs(args: { addon: string, plan: string | undefined }): { plan: string, addon: string } {
     let {addon, plan} = args
-    // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
+
     if (!plan && addon.includes(':')) {
       ([addon, plan] = addon.split(':'))
     }

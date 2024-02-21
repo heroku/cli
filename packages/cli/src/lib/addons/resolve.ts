@@ -17,7 +17,7 @@ export const appAddon = async function (heroku: APIClient, app: string, id: stri
   return singularize('addon', options.namespace)(response?.body)
 }
 
-const handleNotFound = function (err: {statusCode: number, body?:{resource: string}}, resource: string) {
+const handleNotFound = function (err: { statusCode: number, body?: { resource: string } }, resource: string) {
   if (err.statusCode === 404 && err.body && err.body.resource === resource) {
     return true
   }
@@ -116,7 +116,7 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
     if (attachment) {
       return attachment
     }
-  } catch  {}
+  } catch {}
 
   // if no attachment, look up an add-on that matches the id
   // If we were passed an add-on slug, there still could be an attachment
@@ -138,10 +138,11 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
 // -----------------------------------------------------
 
 const addonResolverMap = new Map<string, ReturnType<typeof addonResolver>>()
+
 export async function resolveAddon(...args: Parameters<typeof addonResolver>): ReturnType<typeof addonResolver> {
   const [, app, id, options] = args
   const key = `${app}|${id}|${options?.addon_service ?? ''}`
-  const promise:ReturnType<typeof addonResolver> = addonResolverMap.get(key) || addonResolver(...args)
+  const promise: ReturnType<typeof addonResolver> = addonResolverMap.get(key) || addonResolver(...args)
   try {
     await promise
     addonResolverMap.has(key) || addonResolverMap.set(key, promise)
