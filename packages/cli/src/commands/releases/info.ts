@@ -25,9 +25,8 @@ export default class Info extends Command {
       const {flags, args} = await this.parse(Info)
       const {json, shell, app} = flags
       const release = await findByLatestOrId(this.heroku, app, args.release)
-      const url = `/apps/${app}/releases/${release.version}/config-vars`
 
-      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(url)
+      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/releases/${release.version}/config-vars`)
 
       if (json) {
         ux.styledJSON(release)
