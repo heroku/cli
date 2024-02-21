@@ -25,7 +25,7 @@ describe('heroku redis:timeout', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .patch('/redis/v0/databases/redis-haiku/config', {timeout: 5}).reply(200, {
         timeout: {value: 5},
       })
@@ -46,7 +46,7 @@ Connections to the Redis instance will be stopped after idling for 5 seconds.
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .patch('/redis/v0/databases/redis-haiku/config', {timeout: 0}).reply(200, {
         timeout: {value: 0},
       })

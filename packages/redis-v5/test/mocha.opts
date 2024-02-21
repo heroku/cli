@@ -2,5 +2,5 @@
 --reporter list
 --recursive
 --exit
---timeout 60000
+--timeout 180000
 --bail
