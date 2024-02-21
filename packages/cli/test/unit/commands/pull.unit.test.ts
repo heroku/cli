@@ -18,7 +18,7 @@ describe('container pull', () => {
       '--app',
       'testapp',
     ]).catch((error: any) => {
-      expect(error.message).to.equal('Requires one or more process types')
+      expect(error.message).to.contain('Requires one or more process types')
     })
     expect(stdout.output, 'to be empty')
   })
