@@ -36,7 +36,7 @@ export default class Info extends Command {
         const statusColor = getStatusColor(release.status)
         const user = release.user ? release.user : {}
         const userEmail = user.email ? user.email : ''
-        if (status !== undefined) {
+        if (status) {
           releaseChange += ' (' + color[statusColor](status) + ')'
         }
 
