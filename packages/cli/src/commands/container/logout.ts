@@ -31,8 +31,9 @@ export default class Logout extends Command {
 
     try {
       await dockerLogout(registry)
-    } catch (error: any) {
-      ux.error(`Error: docker logout exited${error.message ? ` with: ${error.message}` : ''}.`)
+    } catch (error) {
+      const {message} = error as {message: string}
+      ux.error(`Error: docker logout exited${message ? ` with: ${message}` : ''}.`)
     }
   }
 }
