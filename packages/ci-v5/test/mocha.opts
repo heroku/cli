@@ -1,5 +1,0 @@
-test
---recursive
---timeout 180000
--R dot
---require test/test-setup.js
