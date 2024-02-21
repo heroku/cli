@@ -17,8 +17,10 @@ const analytics: Hook<'prerun'> = async function (options) {
   const heroku = new APIClient(config)
 
   const {body: accountInfo} = await heroku.get<Heroku.Account>('/account')
+  const {body: teamInfo} = await heroku.get<Heroku.Account>('/teams')
 
   console.log('accountInfo', accountInfo)
+  console.log('teamInfo', teamInfo)
   global.cliTelemetry = telemetry.setupTelemetry(this.config, options)
   const analytics = new Analytics(this.config)
   await analytics.record(options)
