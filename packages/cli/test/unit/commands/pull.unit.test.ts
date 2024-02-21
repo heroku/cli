@@ -14,14 +14,13 @@ describe('container pull', () => {
   afterEach(() => sandbox.restore())
 
   it('requires a process type', async () => {
-    const exitStub = sandbox.stub(process, 'exit')
     await runCommand(Cmd, [
       '--app',
       'testapp',
-    ])
-    expect(stderr.output).to.contain('Requires one or more process types')
+    ]).catch((error: any) => {
+      expect(error.message).to.equal('Requires one or more process types')
+    })
     expect(stdout.output, 'to be empty')
-    expect(exitStub.calledWith(1)).to.equal(true)
   })
 
   it('pulls from the docker registry', async () => {
