@@ -11,7 +11,7 @@ describe('pg:backups', () => {
   let transfers
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get('/client/v11/apps/myapp/transfers').reply(200, transfers)
     cli.mockConsole()
   })

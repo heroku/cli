@@ -59,14 +59,12 @@ const confirmApp = async function (app, confirm, msg) {
 describe('pg:credentials:rotate', () => {
   let api
   let pg
-  let starter
   let confirm
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
-    pg = nock('https://postgres-api.heroku.com')
-    starter = nock('https://postgres-starter-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     confirm = cli.confirmApp
     cli.confirmApp = confirmApp
     cli.mockConsole()
@@ -122,11 +120,11 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher,
     })
 
-    const err = "You can't rotate credentials on Essential-tier databases."
+    const err = 'Legacy Essential-tier databases do not support named credentials.'
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
-  it('throws an error when the db is numbered essential plan', () => {
+  it('rotates credentials when the db is numbered essential plan', () => {
     const essentialAddon = {
       name: 'postgres-1',
       plan: {name: 'heroku-postgresql:essential-0'},
@@ -143,8 +141,11 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher,
     })
 
-    const err = "You can't rotate credentials on Essential-tier databases."
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+    pg.post('/postgres/v0/databases/postgres-1/credentials/lucy/credentials_rotation').reply(200)
+
+    return cmd.run({app: 'myapp', args: {}, flags: {name: 'lucy', confirm: 'myapp', force: true}})
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Rotating lucy on postgres-1... done\n'))
   })
 
   it('rotates credentials with no --name with starter plan', () => {
@@ -164,7 +165,7 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher,
     })
 
-    starter.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation').reply(200)
+    pg.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal('Rotating default on postgres-1... done\n'))
@@ -187,7 +188,7 @@ describe('pg:credentials:rotate', () => {
       '../../lib/fetcher': fetcher,
     })
 
-    starter.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
+    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal('Rotating all credentials on postgres-1... done\n'))

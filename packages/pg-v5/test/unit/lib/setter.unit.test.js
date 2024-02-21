@@ -28,7 +28,7 @@ describe('setter', () => {
 
     beforeEach(() => {
       api = nock('https://api.heroku.com:443')
-      pg = nock('https://postgres-api.heroku.com')
+      pg = nock('https://api.data.heroku.com')
       cli.mockConsole()
     })
 

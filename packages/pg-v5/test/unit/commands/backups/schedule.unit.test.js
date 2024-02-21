@@ -29,7 +29,7 @@ const shouldSchedule = function (cmdRun) {
         name: 'DATABASE',
       },
     ])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/databases/1/transfer-schedules', {
       hour: '06', timezone: 'America/New_York', schedule_name: 'DATABASE_URL',
     }).reply(201)

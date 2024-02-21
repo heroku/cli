@@ -17,6 +17,5 @@ jobs:
         with:
           node-version: 16.x
       - run: yarn --immutable --network-timeout 1000000
-      - run: yarn global add snyk
-      - run: snyk test --all-projects --fail-on=all
-      - run: snyk monitor --all-projects --org=hit
+      - run: yarn dlx -p snyk test --all-projects --fail-on=all
+      - run: yarn dlx -p snyk monitor --all-projects --org=hit

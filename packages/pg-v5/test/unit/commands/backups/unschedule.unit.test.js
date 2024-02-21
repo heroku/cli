@@ -27,7 +27,7 @@ const shouldUnschedule = function (cmdRun) {
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql',
     }).reply(200, [attachment])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{name: 'DATABASE_URL', uuid: '100-001'}])
     pg.delete('/client/v11/databases/1/transfer-schedules/100-001').reply(200)
     cli.mockConsole()
@@ -66,7 +66,7 @@ describe('pg:backups:unschedule error state', () => {
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql',
     }).reply(200, [attachment])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{name: 'DATABASE_URL', uuid: '100-001'}, {name: 'DATABASE_URL2', uuid: '100-002'}])
     cli.mockConsole()
   })

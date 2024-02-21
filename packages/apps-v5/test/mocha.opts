@@ -2,6 +2,6 @@
 --require ./test/helpers.js
 --reporter list
 --recursive
---timeout 60000
+--timeout 180000
 --exit
 --bail

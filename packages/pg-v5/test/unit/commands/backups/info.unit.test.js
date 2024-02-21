@@ -10,7 +10,7 @@ const shouldInfo = function (cmdRun) {
   let pg
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     cli.mockConsole()
   })
 
