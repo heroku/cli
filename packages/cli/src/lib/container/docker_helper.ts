@@ -55,3 +55,8 @@ export const version = async function () {
 
   return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
 }
+
+export const pullImage = function (resource: string) {
+  const args = ['pull', resource]
+  return cmd('docker', args)
+}
