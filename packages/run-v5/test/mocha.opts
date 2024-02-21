@@ -1,4 +1,0 @@
---require ./test/init.js
---recursive
---timeout 180000
---exit

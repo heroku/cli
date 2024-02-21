@@ -33,7 +33,7 @@
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
     "heroku-client": "^3.0.7",
-    "mocha": "^6.0.0",
+    "mocha": "^8.0.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
@@ -56,6 +56,11 @@
   ],
   "license": "ISC",
   "main": "index.js",
+  "mocha":{
+    "recursive": true,
+    "require": ["./test/init.js"],
+    "timeout": 180000
+  },
   "repository": "heroku/cli",
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
