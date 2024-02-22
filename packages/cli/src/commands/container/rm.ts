@@ -27,6 +27,9 @@ export default class Rm extends Command {
     for (const process of argv as string[]) {
       ux.action.start(`Removing container ${process} for ${color.app(app)}`)
       await this.heroku.patch(`/apps/${app}/formation/${process}`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.docker-releases',
+        },
         body: {docker_image: null},
       })
       ux.action.stop()

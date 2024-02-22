@@ -7,7 +7,7 @@ import {expect} from 'chai'
 
 describe('container removal', () => {
   it('removes one container', async () => {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'}})
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
     await runCommand(Cmd, [
@@ -22,7 +22,7 @@ Removing container web for ⬢ testapp... done
 `)
   })
   it('removes two containers', async () => {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'}})
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
       .patch('/apps/testapp/formation/worker')
