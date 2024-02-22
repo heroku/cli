@@ -29,7 +29,7 @@ export default class Rm extends Command {
       await this.heroku.patch(`/apps/${app}/formation/${process}`, {
         body: {docker_image: null},
       })
-      ux.action.stop
+      ux.action.stop()
     }
   }
 }
