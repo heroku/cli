@@ -20,20 +20,20 @@ export default class Wait extends Command {
 
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Wait)
-      let addonsToWaitFor: Heroku.AddOn[]
+      // TODO: remove this type once the schema is fixed
+      type AddonWithDeprovisioningState  = Heroku.AddOn & {state?: 'deprovisioning'}
+      let addonsToWaitFor: AddonWithDeprovisioningState[]
       if (args.addon) {
         addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
       } else if (flags.app) {
-        const {body: addons} = await this.heroku.get<Heroku.AddOn[]>(`/apps/${flags.app}/addons`)
+        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>(`/apps/${flags.app}/addons`)
         addonsToWaitFor = addons
       } else {
-        const {body: addons} = await this.heroku.get<Heroku.AddOn[]>('/addons')
+        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>('/addons')
         addonsToWaitFor = addons
       }
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      addonsToWaitFor = addonsToWaitFor.filter((addon: Heroku.AddOn) => addon.state === 'provisioning' || addon.state === 'deprovisioning')
+      addonsToWaitFor = addonsToWaitFor.filter((addon: AddonWithDeprovisioningState) => addon.state === 'provisioning' || addon.state === 'deprovisioning')
       let interval = Number.parseInt(flags['wait-interval'] || '', 10)
       if (!interval || interval < 0) {
         interval = 5
@@ -62,8 +62,6 @@ export default class Wait extends Command {
           if (Date.now() - startTime.valueOf() >= 1000 * 5) {
             notify(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
           }
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
         } else if (addon.state === 'deprovisioning') {
           // eslint-disable-next-line no-await-in-loop
           await waitForAddonDeprovisioning(this.heroku, addon, interval)
