@@ -20,7 +20,7 @@ export default class Wait extends Command {
 
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Wait)
-      let addonsToWaitFor
+      let addonsToWaitFor: Heroku.AddOn[]
       if (args.addon) {
         addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
       } else if (flags.app) {
@@ -41,7 +41,7 @@ export default class Wait extends Command {
 
       for (const addon of addonsToWaitFor) {
         const startTime = new Date()
-        const addonName = addon.name
+        const addonName: string = addon.name || ''
         if (addon.state === 'provisioning') {
           let addonResponse
           try {
@@ -62,6 +62,8 @@ export default class Wait extends Command {
           if (Date.now() - startTime.valueOf() >= 1000 * 5) {
             notify(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
           }
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
         } else if (addon.state === 'deprovisioning') {
           // eslint-disable-next-line no-await-in-loop
           await waitForAddonDeprovisioning(this.heroku, addon, interval)
