@@ -28,7 +28,7 @@ export default class Info extends Command {
 
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
-    ux.styledHeader(color.magenta(addon.name))
+    ux.styledHeader(color.magenta(addon.name ?? ''))
 
     ux.styledObject({
       Plan: addon.plan.name,
@@ -39,7 +39,7 @@ export default class Info extends Command {
           color.cyan(att.app?.name || ''), color.green(att.name || ''),
         ].join('::')
       })
-        .sort(), 'Owning app': color.cyan(addon.app.name), 'Installed at': (new Date(addon.created_at))
+        .sort(), 'Owning app': color.cyan(addon.app?.name ?? ''), 'Installed at': (new Date(addon.created_at ?? ''))
         .toString(), State: formatState(addon.state),
     })
   }

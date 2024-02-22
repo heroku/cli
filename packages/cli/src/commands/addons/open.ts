@@ -106,12 +106,12 @@ export default class Open extends Command {
       }
     }
 
-    let webUrl
+    let webUrl: string
     if (attachment) {
-      webUrl = attachment.web_url
+      webUrl = attachment.web_url as string
     } else {
       const resolvedAddon = await resolveAddon(this.heroku, app, addon)
-      webUrl = resolvedAddon.web_url
+      webUrl = resolvedAddon.web_url as string
     }
 
     if (ctx.flags['show-url']) {

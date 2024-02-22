@@ -1,26 +1,23 @@
 import {APIClient} from '@heroku-cli/command'
 import {HTTP, HTTPError} from 'http-call'
-import * as _ from 'lodash'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 
-const addonHeaders = function () {
-  return {
-    Accept: 'application/vnd.heroku+json; version=3.actions',
-    'Accept-Expansion': 'addon_service,plan',
-  }
+const addonHeaders = {
+  Accept: 'application/vnd.heroku+json; version=3.actions',
+  'Accept-Expansion': 'addon_service,plan',
 }
 
 export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}) {
-  const headers = addonHeaders()
   const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
-    headers: headers,
+    headers: addonHeaders,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
 
   return singularize('addon', options.namespace)(response?.body)
 }
 
-const handleNotFound = function (err: HTTPError, resource: string) {
+const handleNotFound = function (err: { statusCode: number, body?: { resource: string } }, resource: string) {
   if (err.statusCode === 404 && err.body && err.body.resource === resource) {
     return true
   }
@@ -28,23 +25,30 @@ const handleNotFound = function (err: HTTPError, resource: string) {
   throw err
 }
 
-const addonResolver = function (heroku: APIClient, app: string, id: string, options?: AddOnAttachment) {
-  const headers = addonHeaders()
+export const addonResolver = async (heroku: APIClient, app: string | undefined, id: string, options?: AddOnAttachment) => {
+  const headers = addonHeaders
 
-  const getAddon = function (addonId: string) {
-    return heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
+  const getAddon = async (addonId: string) => {
+    const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
       headers: headers,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
-      .then(response => singularize('addon', options?.namespace || '')(response?.body))
+    return singularize('addon', options?.namespace || '')(response?.body)
   }
 
-  if (!app || id.includes('::')) return getAddon(id)
+  if (!app || id.includes('::')) {
+    return getAddon(id)
+  }
 
-  return appAddon(heroku, app, id, options)
-    .catch(function (error: HTTPError) {
-      if (handleNotFound(error, 'add_on')) return getAddon(id)
-    })
+  try {
+    return await appAddon(heroku, app, id, options)
+  } catch (error) {
+    if (error instanceof HTTPError && handleNotFound(error, 'add_on')) {
+      return getAddon(id)
+    }
+
+    throw error
+  }
 }
 
 // -----------------------------------------------------
@@ -89,8 +93,8 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
       })
       return singularize('addon_attachment', options.namespace || '')(result.body)
     } catch (error) {
-      if (error instanceof HTTPError) {
-        handleNotFound(error, 'add_on attachment')
+      if (error instanceof HerokuAPIError) {
+        handleNotFound(error.http, 'add_on attachment')
       }
     }
   }
@@ -101,9 +105,8 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
       const matches = filter(app, options.addon_service)(result.body)
       return singularize('addon_attachment', options.namespace)(matches)
     } catch (error) {
-      if (error instanceof HTTPError) {
-        handleNotFound(error, 'add_on attachment')
-      }
+      const err = error instanceof HerokuAPIError ? error.http : error as NotFound
+      handleNotFound(err, 'add_on attachment')
     }
   }
 
@@ -125,9 +128,8 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
       const addon = await resolveAddon(heroku, app, id, options)
       return await getAppAddonAttachment(addon, app)
     } catch (error) {
-      if (error instanceof HTTPError) {
-        handleNotFound(error, 'add_on attachment')
-      }
+      const err = error instanceof HerokuAPIError ? error.http : error as NotFound
+      handleNotFound(err, 'add_on attachment')
     }
   }
 }
@@ -135,56 +137,38 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
 // END
 // -----------------------------------------------------
 
-/**
- * Replacing memoize with our own memoization function that works with promises
- * https://github.com/lodash/lodash/blob/da329eb776a15825c04ffea9fa75ae941ea524af/lodash.js#L10534
- */
-function memoizePromise(func: (...args: any[]) => any, resolver: (...args: any[]) => any) {
-  const memoized = function (...args: any[]) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const key = resolver.apply(this, args)
-    const cache = memoized.cache
+const addonResolverMap = new Map<string, ReturnType<typeof addonResolver>>()
 
-    if (cache.has(key)) {
-      return cache.get(key)
-    }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const result = func.apply(this, args)
-
-    return result.then(function () {
-      memoized.cache = cache.set(key, result) || cache
-      return result
-    })
+export async function resolveAddon(...args: Parameters<typeof addonResolver>): ReturnType<typeof addonResolver> {
+  const [, app, id, options] = args
+  const key = `${app}|${id}|${options?.addon_service ?? ''}`
+  const promise: ReturnType<typeof addonResolver> = addonResolverMap.get(key) || addonResolver(...args)
+  try {
+    await promise
+    addonResolverMap.has(key) || addonResolverMap.set(key, promise)
+  } catch {
+    addonResolverMap.delete(key)
   }
 
-  memoized.cache = new _.memoize.Cache()
-  return memoized
+  return promise
 }
 
-export const resolveAddon = memoizePromise(addonResolver, (_, app, id, options = {}) => `${app}|${id}|${options.addon_service}`)
+resolveAddon.cache = addonResolverMap
 
-function NotFound(this: any) {
-  Error.call(this)
-  Error.captureStackTrace(this, this.constructor)
-  this.name = this.constructor.name
-
-  this.statusCode = 404
-  this.message = 'Couldn\'t find that addon.'
+class NotFound extends Error {
+  public readonly statusCode = 404
+  public readonly message = 'Couldn\'t find that addon.'
 }
 
-function AmbiguousError(this: any, matches: { name: string }[], type: string) {
-  Error.call(this)
-  Error.captureStackTrace(this, this.constructor)
-  this.name = this.constructor.name
+class AmbiguousError extends Error {
+  public readonly statusCode = 422
+  public readonly message: string
+  public readonly body = {id: 'multiple_matches', message: this.message}
 
-  this.statusCode = 422
-  this.message = `Ambiguous identifier; multiple matching add-ons found: ${matches.map(match => match.name).join(', ')}.`
-  this.body = {id: 'multiple_matches', message: this.message}
-  this.matches = matches
-  this.type = type
+  constructor(public readonly matches: { name: string }[], public readonly type: string) {
+    super()
+    this.message = `Ambiguous identifier; multiple matching add-ons found: ${matches.map(match => match.name).join(', ')}.`
+  }
 }
 
 const singularize = function (type?: string | null, namespace?: string | null) {
@@ -193,7 +177,7 @@ const singularize = function (type?: string | null, namespace?: string | null) {
       matches = matches.filter(m => m.namespace === namespace)
     } else if (matches.length > 1) {
       // In cases that aren't specific enough, filter by namespace
-      matches = matches.filter(m => !m.hasOwnProperty('namespace') || m.namespace === null)
+      matches = matches.filter(m => !Reflect.has(m, 'namespace') || m.namespace === null)
     }
 
     switch (matches.length) {

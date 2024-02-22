@@ -6,7 +6,11 @@ describe('apps:open', () => {
   const app = {
     web_url: 'https://myapp.herokuapp.com',
   }
-  const spawnStub = sinon.stub().returns({unref: () => {}})
+  const spawnStub = sinon.stub().returns({on: (event: string, cb: CallableFunction) => {
+    if (event === 'exit') {
+      cb()
+    }
+  }, unref: () => {}})
 
   test
     .stdout()
@@ -26,7 +30,11 @@ describe('apps:open', () => {
     })
 
   describe('apps:open reset stub', () => {
-    const spawnStub = sinon.stub().returns({unref: () => {}})
+    const spawnStub = sinon.stub().returns({on: (event: string, cb: CallableFunction) => {
+      if (event === 'exit') {
+        cb()
+      }
+    }, unref: () => {}})
 
     test
       .stdout()

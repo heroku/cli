@@ -25,7 +25,7 @@ describe('The addons:open command', () => {
       .post('/actions/addon-attachments/resolve', {app: 'myApp', addon_attachment: 'db2'})
       .reply(404, {app: 'myApp', addon_attachment: 'db2', addon_service: undefined})
       .post('/actions/addons/resolve', {app: 'myApp', addon: 'db2'})
-      .reply(200, [{id: 'db2', web_url: 'http://db2'}])
+      .reply(200, [{id: 'db2', web_url: 'http://db2', addon_service: undefined}])
       .get('/addons/db2/addon-attachments')
       .reply(200, [])
 
