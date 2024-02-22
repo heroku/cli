@@ -31,7 +31,9 @@ export default class Wait extends Command {
         addonsToWaitFor = addons
       }
 
-      addonsToWaitFor = addonsToWaitFor.filter(addon => addon.state === 'provisioning' || addon.state === 'deprovisioning')
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      addonsToWaitFor = addonsToWaitFor.filter((addon: Heroku.AddOn) => addon.state === 'provisioning' || addon.state === 'deprovisioning')
       let interval = Number.parseInt(flags['wait-interval'] || '', 10)
       if (!interval || interval < 0) {
         interval = 5
