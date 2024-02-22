@@ -1,7 +1,0 @@
---require ./test/init.js
---require ./test/helpers.js
---reporter list
---recursive
---timeout 180000
---exit
---bail
