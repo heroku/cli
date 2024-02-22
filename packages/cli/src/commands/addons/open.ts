@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {addonResolver, attachmentResolver, resolveAddon} from '../../lib/addons/resolve'
+import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve'
 import * as fs from 'node:fs/promises'
 import * as os from 'node:os'
 import * as path from 'node:path'

@@ -59,13 +59,14 @@ export default class Upgrade extends Command {
         })
       resolvedAddon = patchResult.body
     } catch (error) {
+      let errorToThrow = error as Error
       if (error instanceof HerokuAPIError) {
         const {http} = error
         if (http.statusCode === 422 &&
           http.body.message &&
           http.body.message.startsWith('Couldn\'t find either the add-on')) {
           const plans = await this.getPlans(addonServiceName)
-          throw new Error(`${http.body.message}
+          errorToThrow = new Error(`${http.body.message}
 
 Here are the available plans for ${color.yellow(addonServiceName || '')}:
 ${plans.map(plan => plan.name).join('\n')}\n\nSee more plan information with ${color.blue('heroku addons:plans ' + addonServiceName)}
@@ -73,7 +74,8 @@ ${plans.map(plan => plan.name).join('\n')}\n\nSee more plan information with ${c
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
         }
 
-        throw error
+        ux.action.stop()
+        throw errorToThrow
       }
     }
 
