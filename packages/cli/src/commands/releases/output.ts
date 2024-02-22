@@ -8,6 +8,7 @@ export default class Output extends Command {
     static topic = 'releases';
     static description = 'View the release command output';
     static flags = {
+      remote: flags.remote(),
       app: flags.app({required: true}),
     };
 

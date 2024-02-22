@@ -14,6 +14,7 @@ export default class Info extends Command {
     static flags = {
       json: flags.boolean({description: 'output in json format'}),
       shell: flags.boolean({char: 's', description: 'output in shell format'}),
+      remote: flags.remote(),
       app: flags.app({required: true}),
     };
 

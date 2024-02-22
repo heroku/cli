@@ -11,6 +11,7 @@ export default class Rollback extends Command {
   static description = 'rollback to a previous release'
   static help = 'If RELEASE is not specified, it will rollback one release'
   static flags = {
+    remote: flags.remote(),
     app: flags.app({required: true}),
   }
 
