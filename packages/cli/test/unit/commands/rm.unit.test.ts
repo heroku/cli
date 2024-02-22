@@ -16,7 +16,10 @@ describe('container removal', () => {
       'web',
     ])
     expectOutput(stdout.output, '')
-    expectOutput(stderr.output, 'Removing container web for testapp... done')
+    expectOutput(stderr.output, `
+Removing container web for ⬢ testapp...
+Removing container web for ⬢ testapp... done
+`)
   })
   it('removes two containers', async () => {
     nock('https://api.heroku.com')
@@ -31,8 +34,12 @@ describe('container removal', () => {
       'worker',
     ])
     expectOutput(stdout.output, '')
-    expectOutput(stderr.output, 'Removing container web for testapp... done')
-    expectOutput(stderr.output, 'Removing container worker for testapp... done')
+    expectOutput(stderr.output, `
+Removing container web for ⬢ testapp...
+Removing container web for ⬢ testapp... done
+Removing container worker for ⬢ testapp...
+Removing container worker for ⬢ testapp... done
+`)
   })
 
   it('requires a container to be specified', async () => {
