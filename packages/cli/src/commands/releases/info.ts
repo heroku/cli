@@ -27,16 +27,15 @@ export default class Info extends Command {
       const {json, shell, app} = flags
       const release = await findByLatestOrId(this.heroku, app, args.release)
 
-      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/releases/${release.version}/config-vars`)
-
       if (json) {
         ux.styledJSON(release)
       } else {
         let releaseChange = release.description
         const status = description(release)
         const statusColor = getStatusColor(release.status)
-        const user = release.user ? release.user : {}
-        const userEmail = user.email ? user.email : ''
+        const userEmail = release?.user?.email ?? ''
+        const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/releases/${release.version}/config-vars`)
+
         if (status) {
           releaseChange += ' (' + color[statusColor](status) + ')'
         }

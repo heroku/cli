@@ -67,8 +67,6 @@ describe('releases:info', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
       .reply(200, release)
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
     return runCommand(Cmd, [
       '--app',
       'myapp',
