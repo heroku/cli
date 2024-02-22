@@ -20,18 +20,20 @@ export default class Wait extends Command {
 
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Wait)
-      let addonsToWaitFor
+      // TODO: remove this type once the schema is fixed
+      type AddonWithDeprovisioningState  = Heroku.AddOn & {state?: 'deprovisioning'}
+      let addonsToWaitFor: AddonWithDeprovisioningState[]
       if (args.addon) {
         addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
       } else if (flags.app) {
-        const {body: addons} = await this.heroku.get<Heroku.AddOn[]>(`/apps/${flags.app}/addons`)
+        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>(`/apps/${flags.app}/addons`)
         addonsToWaitFor = addons
       } else {
-        const {body: addons} = await this.heroku.get<Heroku.AddOn[]>('/addons')
+        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>('/addons')
         addonsToWaitFor = addons
       }
 
-      addonsToWaitFor = addonsToWaitFor.filter(addon => addon.state === 'provisioning' || addon.state === 'deprovisioning')
+      addonsToWaitFor = addonsToWaitFor.filter((addon: AddonWithDeprovisioningState) => addon.state === 'provisioning' || addon.state === 'deprovisioning')
       let interval = Number.parseInt(flags['wait-interval'] || '', 10)
       if (!interval || interval < 0) {
         interval = 5
@@ -39,7 +41,7 @@ export default class Wait extends Command {
 
       for (const addon of addonsToWaitFor) {
         const startTime = new Date()
-        const addonName = addon.name
+        const addonName: string = addon.name || ''
         if (addon.state === 'provisioning') {
           let addonResponse
           try {
