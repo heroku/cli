@@ -112,12 +112,12 @@ export const getJobs = function (resourceRoot: string, dockerfiles: string[]) {
     }, {})
 }
 
-export const runImage = function (resource: string, command: string[], port: number) {
+export const runImage = function (resource: string, command: string, port: number) {
   const args: string[] = ['run', '--user', os.userInfo().uid.toString(), '-e', `PORT=${port}`]
   if (command.length === 0) {
     args.push(resource)
   } else {
-    args.push('-it', resource, command.join(' '))
+    args.push('-it', resource, command)
   }
 
   return cmd('docker', args)

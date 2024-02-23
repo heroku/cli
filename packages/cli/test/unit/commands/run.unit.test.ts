@@ -28,7 +28,7 @@ describe('container run', () => {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     const run = sandbox.stub(DockerHelper, 'runImage')
-      .withArgs('registry.heroku.com/testapp/web', [], 5000)
+      .withArgs('registry.heroku.com/testapp/web', '', 5000)
     await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -43,7 +43,7 @@ describe('container run', () => {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     const run = sandbox.stub(DockerHelper, 'runImage')
-      .withArgs('registry.heroku.com/testapp/web', ['bash'], 5000)
+      .withArgs('registry.heroku.com/testapp/web', 'bash', 5000)
     await runCommand(Cmd, [
       '--app',
       'testapp',

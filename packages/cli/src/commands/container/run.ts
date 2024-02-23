@@ -17,7 +17,7 @@ export default class Run extends Command {
 
   static flags = {
     app: flags.app({required: true}),
-    port: flags.integer({char: 'p', description: 'port the app will run on'}),
+    port: flags.integer({char: 'p', description: 'port the app will run on', default: 5000}),
     verbose: flags.boolean({char: 'v'}),
   }
 
@@ -34,7 +34,7 @@ export default class Run extends Command {
     }
 
     const processType = argv.shift() as string
-    const command: string[] = argv as string[]
+    const command: string = argv.join(' ')
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`
@@ -63,7 +63,7 @@ export default class Run extends Command {
     }
 
     try {
-      await DockerHelper.runImage(job.resource, command, port || 5000)
+      await DockerHelper.runImage(job.resource, command, port)
     } catch (error) {
       ux.error(`docker run exited with ${error}`)
     }
