@@ -92,9 +92,9 @@ describe('DockerHelper', () => {
       const resourceRoot = 'rootfulroot'
       const results = DockerHelper.getJobs(resourceRoot, dockerfiles)
       expect(results).to.have.keys('worker', 'web', 'standard')
-      expect(results.worker.map(j => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile.worker')])
-      expect(results.web.map(j => j.dockerfile)).to.have.members([path.join('.', 'Dockerfile.web')])
-      expect(results.standard.map(j => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile')])
+      expect(results.worker.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile.worker')])
+      expect(results.web.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Dockerfile.web')])
+      expect(results.standard.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile')])
     })
   })
 
