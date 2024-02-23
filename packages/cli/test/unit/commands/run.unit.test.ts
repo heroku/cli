@@ -34,7 +34,7 @@ describe('container run', () => {
       'testapp',
       'web',
     ])
-    expectOutput(stdout.output, 'Running registry.heroku.com/testapp/web')
+    expectOutput(stdout.output, '=== Running registry.heroku.com/testapp/web')
     expectOutput(stderr.output, '')
     sandbox.assert.calledOnce(dockerfiles)
     sandbox.assert.calledOnce(run)
@@ -50,7 +50,7 @@ describe('container run', () => {
       'web',
       'bash',
     ])
-    expectOutput(stdout.output, 'Running \'bash\' on registry.heroku.com/testapp/web')
+    expectOutput(stdout.output, '=== Running \'bash\' on registry.heroku.com/testapp/web')
     expectOutput(stderr.output, '')
     sandbox.assert.calledOnce(dockerfiles)
     sandbox.assert.calledOnce(run)
