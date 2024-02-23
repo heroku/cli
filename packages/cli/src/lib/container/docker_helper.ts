@@ -1,5 +1,10 @@
 import * as Child from 'child_process'
+import {globSync} from 'glob'
 import {debug} from './debug'
+import * as path from 'path'
+import * as os from 'os'
+
+const DOCKERFILE_REGEX = /\bDockerfile(.\w*)?$/
 
 export type cmdOptions = {
   output?: boolean
@@ -58,5 +63,62 @@ export const version = async function () {
 
 export const pullImage = function (resource: string) {
   const args = ['pull', resource]
+  return cmd('docker', args)
+}
+
+export const getDockerfiles = function (rootdir: string, recursive: boolean) {
+  const match = recursive ? './**/Dockerfile?(.)*' : 'Dockerfile*'
+  let dockerfiles: string[] = globSync(match, {
+    cwd: rootdir,
+    nodir: true,
+  })
+  if (recursive) {
+    dockerfiles = dockerfiles.filter((df: string) => df.match(/Dockerfile\.[\w]+$/))
+  } else {
+    dockerfiles = dockerfiles.filter((df: string) => df.match(/Dockerfile$/))
+  }
+
+  return dockerfiles.map((file: string) => path.join(rootdir, file))
+}
+
+export const getJobs = function (resourceRoot: string, dockerfiles: string[]) {
+  return dockerfiles
+  // convert all Dockerfiles into job Objects
+    .map(dockerfile => {
+      const match = dockerfile.match(DOCKERFILE_REGEX)
+      if (!match) throw new Error(`Invalid Dockerfile: ${dockerfile}`)
+      const proc: string = (match[1] || '.standard').slice(1)
+      const dockerfileJobs: Record<string, any> = {
+        // return {
+        name: proc,
+        resource: `${resourceRoot}/${proc}`,
+        dockerfile: dockerfile,
+        postfix: path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
+        depth: path.normalize(dockerfile).split(path.sep).length,
+      }
+      return dockerfileJobs
+      // }
+    })
+  // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
+    .sort((a, b) => {
+      return a.depth - b.depth || a.postfix - b.postfix
+    })
+  // group all Dockerfiles for the same process type together
+    .reduce((jobs, job: Record<string, any>) => {
+      // if job.name === undefined) return
+      jobs[job.name] = jobs[job.name] || []
+      jobs[job.name].push(job)
+      return jobs
+    }, {})
+}
+
+export const runImage = function (resource: string, command: string[], port: number) {
+  const args: string[] = ['run', '--user', os.userInfo().uid.toString(), '-e', `PORT=${port}`]
+  if (command.length === 0) {
+    args.push(resource)
+  } else {
+    args.push('-it', resource, command.join(' '))
+  }
+
   return cmd('docker', args)
 }
