@@ -20,7 +20,7 @@ describe('container run', () => {
       '--app',
       'testapp',
     ]).catch((error: any) => {
-      expect(error.message).to.contain('Requires one process types')
+      expect(error.message).to.contain('Requires one process type')
       expect(stdout.output, 'to be empty')
     })
   })
