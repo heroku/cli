@@ -5473,6 +5473,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/std-mocks@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@types/std-mocks@npm:1.0.4"
+  checksum: 998fdfe925fc73e44837a151e3f0ed6dcf208564afef99d519f439e8b7468912a414d8479629082f75eaac5353661316639988acf1f9eb2ece5f1099ac0086df
+  languageName: node
+  linkType: hard
+
 "@types/strftime@npm:^0.9.8":
   version: 0.9.8
   resolution: "@types/strftime@npm:0.9.8"
@@ -11183,6 +11190,7 @@ __metadata:
     "@types/psl": ^1.1.3
     "@types/shell-escape": ^0.2.0
     "@types/shell-quote": ^1.7.5
+    "@types/std-mocks": ^1.0.4
     "@types/strftime": ^0.9.8
     "@types/supports-color": ^5.3.0
     "@types/urijs": ^1.19.4
@@ -11235,6 +11243,7 @@ __metadata:
     shell-quote: ^1.8.1
     sinon: ^7.2.4
     sparkline: ^0.2.0
+    std-mocks: ^2.0.0
     stdout-stderr: ^0.1.13
     strftime: ^0.10.0
     strip-ansi: 6.0.1
@@ -17839,6 +17848,13 @@ __metadata:
   dependencies:
     lodash: ^4.11.1
   checksum: b7b97a39c77e373ea243443e195030ca0e41e0f7e8ba7908993511c4346dfdee0fb0d6edc0a72d2ed4ad3a26a1a4434d7dbde65629172452f3462745a8c8433a
+  languageName: node
+  linkType: hard
+
+"std-mocks@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "std-mocks@npm:2.0.0"
+  checksum: 4eacd89aaf7886cf7adf77f4eb208399da81d851a7c6f6c1a86f144a3f38ce6109358449366bfa7cdde7ed6795b1f03e7db891ed3fc07beb60a08f5a2c92a9b4
   languageName: node
   linkType: hard
 
