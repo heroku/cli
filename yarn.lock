@@ -5139,6 +5139,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chai-as-promised@npm:^7.1.8":
+  version: 7.1.8
+  resolution: "@types/chai-as-promised@npm:7.1.8"
+  dependencies:
+    "@types/chai": "*"
+  checksum: f0e5eab451b91bc1e289ed89519faf6591932e8a28d2ec9bbe95826eb73d28fe43713633e0c18706f3baa560a7d97e7c7c20dc53ce639e5d75bac46b2a50bf21
+  languageName: node
+  linkType: hard
+
 "@types/chai@npm:*, @types/chai@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/chai@npm:4.1.7"
@@ -5171,7 +5180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.1.12":
+"@types/debug@npm:^4.1.2":
   version: 4.1.12
   resolution: "@types/debug@npm:4.1.12"
   dependencies:
@@ -5324,10 +5333,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^5.2.6":
-  version: 5.2.7
-  resolution: "@types/mocha@npm:5.2.7"
-  checksum: 446e64292f37f4eac9221161f4c1026dd4a0dbeea0f16c4617227fcf5a1286b53d97e36a32ff7cb3a0435ab78791dd43e9ac1006f92abedb47d7d1d7636cb55c
+"@types/mocha@npm:^10.0.6":
+  version: 10.0.6
+  resolution: "@types/mocha@npm:10.0.6"
+  checksum: f7c836cf6cf27dc0f5970d262591b56f2a3caeaec8cfdc612c12e1cfbb207f601f710ece207e935164d4e3343b93be5054d0db5544f31f453b3923775d82099f
   languageName: node
   linkType: hard
 
@@ -11158,14 +11167,15 @@ __metadata:
     "@opentelemetry/semantic-conventions": ^1.15.1
     "@types/ansi-styles": ^3.2.1
     "@types/chai": ^4.1.7
-    "@types/debug": ^4.1.12
+    "@types/chai-as-promised": ^7.1.8
+    "@types/debug": ^4.1.2
     "@types/fs-extra": ^7.0.0
     "@types/glob": ^7.1.1
     "@types/got": ^9.6.7
     "@types/inquirer": 7.3.0
     "@types/js-yaml": ^4.0.8
     "@types/lodash": ^4.14.123
-    "@types/mocha": ^5.2.6
+    "@types/mocha": ^10.0.6
     "@types/node": 16.11.7
     "@types/node-fetch": ^2.1.6
     "@types/phoenix": ^1.4.0
@@ -11185,6 +11195,7 @@ __metadata:
     aws-sdk: ^2.421.0
     bats: ^1.1.0
     chai: ^4.2.0
+    chai-as-promised: ^7.1.1
     chalk: ^2.4.2
     commander: ^2.15.1
     date-fns: ^2.30.0
