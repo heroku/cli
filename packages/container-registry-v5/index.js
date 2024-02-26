@@ -9,7 +9,6 @@ module.exports = {
   },
   commands: [
     require('./commands/rm')(pkg.topic),
-    require('./commands/logout')(pkg.topic),
     require('./commands/push')(pkg.topic),
     require('./commands/release')(pkg.topic),
     require('./commands/run')(pkg.topic),
