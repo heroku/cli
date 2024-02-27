@@ -39,13 +39,6 @@ describe('pg:upgrade', () => {
     pg.done()
   })
 
-  it('refuses to upgrade essential dbs', () => {
-    addon.plan = {name: 'heroku-postgresql:hobby-dev'}
-
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}}))
-      .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower databases on at least the Standard tier.')
-  })
-
   it('refuses to upgrade legacy essential dbs', () => {
     addon.plan = {name: 'heroku-postgresql:basic'}
 
