@@ -1250,28 +1250,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@npm:^9.0.0-alpha.0":
-  version: 9.0.0-dev.0
-  resolution: "@heroku-cli/plugin-apps-v5@npm:9.0.0-dev.0"
-  dependencies:
-    "@heroku-cli/command": ^9.0.2
-    "@oclif/core": ^1.26.2
-    filesize: ^4.0.0
-    fs-extra: ^7.0.1
-    heroku-cli-util: ^8.0.11
-    inquirer: ^6.2.2
-    js-yaml: ^3.12.1
-    lodash: ^4.17.11
-    shell-escape: ^0.2.0
-    sparkline: ^0.2.0
-    strftime: ^0.10.0
-    strip-ansi: 6.0.1
-    term-img: ^4.1.0
-    urijs: 1.19.11
-  checksum: e1b86634a569a32c7e1d46e5962d597066366b9792b9b1f531f586da280968270f4af459578ec3a76ab2e8a5281cfb7efe5d36e4c89d85314f5d4f2c3787c126
-  languageName: node
-  linkType: hard
-
 "@heroku-cli/plugin-certs-v5@^9.0.0-alpha.0, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
@@ -11213,7 +11191,6 @@ __metadata:
     "@heroku-cli/command": ^10.0.0
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.2
-    "@heroku-cli/plugin-apps-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-certs-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-ci-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-container-registry-v5": ^9.0.0-alpha.0
@@ -12652,7 +12629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.10.0, js-yaml@npm:^3.12.1, js-yaml@npm:^3.13.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0, js-yaml@npm:^3.14.1":
+"js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0, js-yaml@npm:^3.14.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
@@ -19329,7 +19306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"urijs@npm:1.19.11, urijs@npm:^1.19.11":
+"urijs@npm:^1.19.11":
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: f9b95004560754d30fd7dbee44b47414d662dc9863f1cf5632a7c7983648df11d23c0be73b9b4f9554463b61d5b0a520b70df9e1ee963ebb4af02e6da2cc80f3
