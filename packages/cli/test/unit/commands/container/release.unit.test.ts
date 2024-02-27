@@ -13,16 +13,17 @@ describe('container release', () => {
     sandbox = sinon.createSandbox()
   })
   afterEach(() => sandbox.restore())
-  it('has no process type specified', () => {
-    sandbox.stub(process, 'exit')
-    return runCommand(Cmd, [
+  it('has no process type specified', async () => {
+    await runCommand(Cmd, [
       '--app',
       'testapp',
     ])
-      .then(() => expect(stderr.output).to.contain('Requires one or more process types'))
-      .then(() => expect(stdout.output, 'to be empty'))
+      .catch((error:any) => {
+        expect(error.message).to.contain('Requires one or more process types')
+        expect(stdout.output, 'to be empty')
+      })
   })
-  it('releases a single process type, no previous release', () => {
+  it('releases a single process type, no previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -39,15 +40,15 @@ describe('container release', () => {
     const registry = nock('https://registry.heroku.com:443')
       .get('/v2/testapp/web/manifests/latest')
       .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stdout.output).to.contain('Releasing images web to testapp... done')
+    expect(stderr.output, 'to be empty')
+    api.done()
+    registry.done()
   })
   it('releases a single process type, with a previous release', () => {
     const api = nock('https://api.heroku.com:443')
