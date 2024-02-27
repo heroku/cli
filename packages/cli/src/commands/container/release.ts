@@ -16,24 +16,27 @@ type ImageResponse = {
   }
 }
 
-const usage = `\n    ${color.bold.underline.magenta('Usage:')}\n    ${color.cyan.bold('heroku container:release web')}                       # Releases the previously pushed web process type\n    ${color.cyan.bold('heroku container:release web worker')}                # Releases the previously pushed web and worker process types`
-
 export default class Release extends Command {
+  static topic = 'container'
   static description = 'Releases previously pushed Docker images to your Heroku app'
+  static usage = 'heroku container:release'
+  static example = `
+  ${color.cmd('heroku container:release web')}        # Releases the previously pushed web process type
+  ${color.cmd('heroku container:release web worker')} # Releases the previously pushed web and worker process types`
+
+  static strict = false
 
   static flags = {
     app: flags.app({required: true}),
     verbose: flags.boolean({char: 'v'}),
   }
 
-  static strict = false
-
   async run() {
     const {flags, argv, args} = await this.parse(Release)
     const {app, verbose} = flags
 
     if (argv.length === 0) {
-      this.error(`Error: Requires one or more process types\n ${usage}`)
+      this.error(`Error: Requires one or more process types\n ${Release.example}`)
     }
 
     if (verbose) {
