@@ -104,7 +104,7 @@ describe('DockerHelper', () => {
       eventStub = sinon.stub(childProcess, 'spawn')
         .callsFake(eventMock)
     })
-    it('successfully runs image to execute with Sanbashi cmd', async () => {
+    it('successfully runs image to execute with and without shell command', async () => {
       await DockerHelper.runImage('registry.heroku.com/testapp/web', '', 1234)
       await DockerHelper.runImage('registry.heroku.com/testapp/web', 'not empty', 1234)
       expect(eventStub.calledTwice).to.equal(true)
