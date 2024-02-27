@@ -59,7 +59,7 @@ describe('DockerHelper', () => {
     })
 
     it('returns only regular Dockerfiles when not recursing', () => {
-      const searchpath = path.join(process.cwd(), './test/fixtures/container')
+      const searchpath = path.join(process.cwd(), './test/fixtures/container/Nested')
       const results = DockerHelper.getDockerfiles(searchpath, false)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile')])
     })
@@ -74,10 +74,10 @@ describe('DockerHelper', () => {
       const results = DockerHelper.getJobs(resourceRoot, dockerfiles)
       expect(results.web).to.have.property('length', 2)
       expect(results.web[0]).to.have.property('depth', 1, 'dockerfile')
-      expect(results.web[0]).to.have.property('dockerfile', './Dockerfile.web')
+      expect(results.web[0]).to.have.property('dockerfile', 'Dockerfile.web')
       expect(results.web[0]).to.have.property('postfix', 1)
       expect(results.web[1]).to.have.property('depth', 2, 'dockerfile')
-      expect(results.web[1]).to.have.property('dockerfile', './Nested/Dockerfile.web')
+      expect(results.web[1]).to.have.property('dockerfile', 'Nested/Dockerfile.web')
       expect(results.web[1]).to.have.property('postfix', 1)
     })
 
