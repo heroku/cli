@@ -46,8 +46,8 @@ describe('pg:upgrade', () => {
       .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower databases on at least the Standard tier.')
   })
 
-  it('refuses to upgrade non-follower dbs', () => {
-    pg.get('/client/v11/databases/1').reply(200, {forked_from: 'postgres://db1'})
+  it('refuses to upgrade legacy essential dbs', () => {
+    addon.plan = {name: 'heroku-postgresql:basic'}
 
     return expect(cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}}))
       .to.be.rejectedWith(Error, 'pg:upgrade is only available for follower databases on at least the Standard tier.')
