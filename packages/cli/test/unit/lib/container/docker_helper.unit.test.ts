@@ -24,7 +24,7 @@ describe('DockerHelper', () => {
 
     it('returns a the major and minor version', async function () {
       sandbox.stub(DockerHelper, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('18.02.0-ce-rc2')
 
       const version = await DockerHelper.version()
@@ -34,7 +34,7 @@ describe('DockerHelper', () => {
 
     it('has an error', async () => {
       sandbox.stub(DockerHelper, 'cmd')
-        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], { output: true })
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('an error occured')
 
       const version = await DockerHelper.version()
