@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "8.9.0",
+  "version": "8.10.0",
   "author": "Jeff Dickey @jdxcode",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -10,18 +10,18 @@
     "@heroku-cli/command": "^10.0.0",
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2",
     "@heroku-cli/notifications": "^1.2.2",
-    "@heroku-cli/plugin-addons-v5": "^8.6.0",
-    "@heroku-cli/plugin-apps-v5": "^8.9.0",
-    "@heroku-cli/plugin-certs-v5": "^8.6.0",
-    "@heroku-cli/plugin-ci-v5": "^8.8.0",
-    "@heroku-cli/plugin-container-registry-v5": "^8.6.0",
-    "@heroku-cli/plugin-orgs-v5": "^8.8.0",
-    "@heroku-cli/plugin-pg-v5": "^8.9.0",
+    "@heroku-cli/plugin-addons-v5": "^8.10.0",
+    "@heroku-cli/plugin-apps-v5": "^8.10.0",
+    "@heroku-cli/plugin-certs-v5": "^8.10.0",
+    "@heroku-cli/plugin-ci-v5": "^8.10.0",
+    "@heroku-cli/plugin-container-registry-v5": "^8.10.0",
+    "@heroku-cli/plugin-orgs-v5": "^8.10.0",
+    "@heroku-cli/plugin-pg-v5": "^8.10.0",
     "@heroku-cli/plugin-ps": "^8.1.7",
     "@heroku-cli/plugin-ps-exec": "^2.4.0",
-    "@heroku-cli/plugin-redis-v5": "^8.9.0",
+    "@heroku-cli/plugin-redis-v5": "^8.10.0",
     "@heroku-cli/plugin-run": "8.1.4",
-    "@heroku-cli/plugin-spaces": "^8.7.1",
+    "@heroku-cli/plugin-spaces": "^8.10.0",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
@@ -104,7 +104,7 @@
     "chai": "^4.2.0",
     "globby": "^10.0.2",
     "lodash": "^4.17.11",
-    "mocha": "^6.0.0",
+    "mocha": "^8.0.0",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
@@ -134,6 +134,17 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
+  "mocha": {
+    "require": [
+      "test/helpers/init.js",
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "watch-extensions": "ts",
+    "recursive": true,
+    "reporter": "spec",
+    "timeout": 180000
+  },
   "oclif": {
     "additionalHelpFlags": [
       "-h"

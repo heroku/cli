@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+
+### Bug Fixes
+
+* allow ps:scale to handle extra args ([#2643](https://github.com/heroku/cli/issues/2643)) ([a618081](https://github.com/heroku/cli/commit/a618081af80effe96d1a422c4b7fc6e1d2ff6fd0))
+
+
+
+
+
 # [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
