@@ -47,19 +47,19 @@ describe('DockerHelper', () => {
 
   describe('.getDockerfiles', () => {
     it('can recurse the directory', () => {
-      const searchpath = path.join(process.cwd(), '../../../fixtures/container')
+      const searchpath = path.join(process.cwd(), './test/fixtures/container')
       const results = DockerHelper.getDockerfiles(searchpath, true)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile.web'), path.join(`${searchpath}`, 'Nested', 'Dockerfile.web')])
     })
 
     it('when recursing, rejects dockerfiles that have no postfix in the name', () => {
-      const searchpath = path.join(process.cwd(), '../../../fixtures/container')
+      const searchpath = path.join(process.cwd(), './test/fixtures/container')
       const results = DockerHelper.getDockerfiles(searchpath, true)
       expect(results).to.not.have.members([`${searchpath}/Dockerfile`])
     })
 
     it('returns only regular Dockerfiles when not recursing', () => {
-      const searchpath = path.join(process.cwd(), '../../../fixtures/container')
+      const searchpath = path.join(process.cwd(), './test/fixtures/container')
       const results = DockerHelper.getDockerfiles(searchpath, false)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile')])
     })
