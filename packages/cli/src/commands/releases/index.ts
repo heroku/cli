@@ -76,6 +76,7 @@ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`
     num: flags.string({char: 'n', description: 'number of releases to show'}),
     json: flags.boolean({description: 'output releases in json format'}),
     extended: flags.boolean({char: 'x', hidden: true}),
+    remote: flags.remote(),
     app: flags.app({required: true}),
   }
 
