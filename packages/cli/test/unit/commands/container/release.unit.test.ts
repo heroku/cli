@@ -45,12 +45,12 @@ describe('container release', () => {
       'testapp',
       'web',
     ])
-    expect(stdout.output).to.contain('Releasing images web to testapp... done')
-    expect(stderr.output, 'to be empty')
+    expect(stderr.output).to.contain('Releasing images web to testapp... done')
+    expect(stdout.output, 'to be empty')
     api.done()
     registry.done()
   })
-  it('releases a single process type, with a previous release', () => {
+  it('releases a single process type, with a previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -67,17 +67,17 @@ describe('container release', () => {
     const registry = nock('https://registry.heroku.com:443')
       .get('/v2/testapp/web/manifests/latest')
       .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.contain('Releasing images web to testapp... done')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
-  it('retrieves data from a v1 schema version, no previous release', () => {
+  it('retrieves data from a v1 schema version, no previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -94,17 +94,17 @@ describe('container release', () => {
     const registry = nock('https://registry.heroku.com:443')
       .get('/v2/testapp/web/manifests/latest')
       .reply(200, {schemaVersion: 1, history: [{v1Compatibility: '{"id":"image_id"}'}]})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.contain('Releasing images web to testapp... done')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
-  it('retrieves data from a v1 schema version, with a previous release', () => {
+  it('retrieves data from a v1 schema version, with a previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -121,17 +121,17 @@ describe('container release', () => {
     const registry = nock('https://registry.heroku.com:443')
       .get('/v2/testapp/web/manifests/latest')
       .reply(200, {schemaVersion: 1, history: [{v1Compatibility: '{"id":"image_id"}'}]})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.contain('Releasing images web to testapp... done')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
-  it('releases multiple process types, no previous release', () => {
+  it('releases multiple process types, no previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -150,18 +150,18 @@ describe('container release', () => {
       .reply(200, {schemaVersion: 2, config: {digest: 'web_image_id'}})
       .get('/v2/testapp/worker/manifests/latest')
       .reply(200, {schemaVersion: 2, config: {digest: 'worker_image_id'}})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
       'worker',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web,worker to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.contain('Releasing images web,worker to testapp... done')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
-  it('releases multiple process types, with a previous release', () => {
+  it('releases multiple process types, with a previous release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -180,16 +180,16 @@ describe('container release', () => {
       .reply(200, {schemaVersion: 2, config: {digest: 'web_image_id'}})
       .get('/v2/testapp/worker/manifests/latest')
       .reply(200, {schemaVersion: 2, config: {digest: 'worker_image_id'}})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
       'worker',
     ])
-      .then(() => expect(stderr.output).to.contain('Releasing images web,worker to testapp... done'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.contain('Releasing images web,worker to testapp... done')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
   it('releases with previous release and immediately successful release phase', () => {
     stdMocks.use()
@@ -469,7 +469,7 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('has release phase but no new release', () => {
+  it('has release phase but no new release', async () => {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -486,14 +486,14 @@ describe('container release', () => {
     const registry = nock('https://registry.heroku.com:443')
       .get('/v2/testapp/web/manifests/latest')
       .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
     ])
-      .then(() => expect(stderr.output).to.not.contain('Running release command...'))
-      .then(() => expect(stdout.output, 'to be empty'))
-      .then(() => api.done())
-      .then(() => registry.done())
+    expect(stderr.output).to.not.contain('Running release command...')
+    expect(stdout.output, 'to be empty')
+    api.done()
+    registry.done()
   })
 })

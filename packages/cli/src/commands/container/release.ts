@@ -26,6 +26,8 @@ export default class Release extends Command {
     verbose: flags.boolean({char: 'v'}),
   }
 
+  static strict = false
+
   async run() {
     const {flags, argv, args} = await this.parse(Release)
     const {app, verbose} = flags
@@ -45,12 +47,13 @@ export default class Release extends Command {
     for (const process of argv) {
       const image = `${app}/${process}`
       const tag = 'latest'
-      const {body: imageResp} = await this.heroku.request<ImageResponse>(
+      const {body: imageResp} = await this.heroku.get<ImageResponse>(
         `/v2/${image}/manifests/${tag}`,
-        {headers: {
-          Accept: 'application/vnd.docker.distribution.manifest.v2+json',
-          host: `registry.${herokuHost}`,
-        }},
+        {
+          hostname: `registry.${herokuHost}`,
+          headers: {
+            Accept: 'application/vnd.docker.distribution.manifest.v2+json',
+          }},
       )
       let imageID
       let v1Comp
