@@ -8,6 +8,5 @@ module.exports = {
     help: pkg.description,
   },
   commands: [
-    require('./commands/release')(pkg.topic),
   ],
 }
