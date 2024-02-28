@@ -9,7 +9,7 @@ async function run(context, heroku) {
   let {app, args, flags} = context
   let db = await fetcher.addon(app, args.database)
 
-  if (util.legacyEssentialPlan(db)) throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
+  if (util.legacyEssentialPlan(db)) throw new Error('pg:upgrade is only available for Essential-* databases and follower databases on Standard-tier and higher plans.')
 
   let [replica] = await Promise.all([
     heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)}),
@@ -40,7 +40,7 @@ ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
 module.exports = {
   topic: 'pg',
   command: 'upgrade',
-  description: 'unfollow a database and upgrade it to the latest stable PostgreSQL version',
+  description: 'For an Essential-* plan, this command upgrades the database to the latest stable PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the parent database before upgrading to the latest stable PostgreSQL version.',
   help: 'to upgrade to another PostgreSQL version, use pg:copy instead',
   needsApp: true,
   needsAuth: true,
