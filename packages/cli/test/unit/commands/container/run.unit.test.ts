@@ -19,8 +19,9 @@ describe('container run', () => {
     await runCommand(Cmd, [
       '--app',
       'testapp',
-    ]).catch((error: any) => {
-      expect(error.message).to.contain('Requires one process type')
+    ]).catch((error) => {
+      const {message} = error as {message: string}
+      expect(message).to.contain('Requires one process type')
       expect(stdout.output, 'to be empty')
     })
   })
