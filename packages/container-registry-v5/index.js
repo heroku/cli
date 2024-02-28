@@ -10,6 +10,5 @@ module.exports = {
   commands: [
     require('./commands/push')(pkg.topic),
     require('./commands/release')(pkg.topic),
-    require('./commands/run')(pkg.topic),
   ],
 }
