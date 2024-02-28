@@ -2,7 +2,6 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import HTTP from 'http-call'
 import * as _ from 'lodash'
 import {isTeamApp, getOwner} from '../../lib/access/access-utils'
 
@@ -10,6 +9,10 @@ type MemberData = {
   email: string,
   role: string,
   permissions?: Heroku.TeamAppPermission[]
+}
+
+type AdminWithPermissions = Heroku.TeamMember & {
+  permissions?: Heroku.TeamAppPermission[],
 }
 
 function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
@@ -83,9 +86,9 @@ export default class AccessIndex extends Command {
       const teamName = getOwner(app.owner?.email)
       try {
         const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
-        let admins = members.filter((member: { role: string }) => member.role === 'admin')
-        const adminPermissions = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
-        admins = _.forEach(admins, function (admin: { user: { email: any }; email: any; permissions: HTTP<Heroku.TeamAppPermission> }) {
+        let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')
+        const {body: adminPermissions} = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
+        admins = _.forEach(admins, function (admin) {
           admin.user = {email: admin.email}
           admin.permissions = adminPermissions
           return admin
