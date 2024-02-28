@@ -1,11 +1,10 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import HTTP from 'http-call'
 import * as _ from 'lodash'
 import {isTeamApp, getOwner} from '../../lib/access/access-utils'
-import {table} from '@oclif/core/lib/cli-ux/styled/table'
 
 type MemberData = {
   email: string,
@@ -13,7 +12,7 @@ type MemberData = {
   permissions?: Heroku.TeamAppPermission[]
 }
 
-function printJSON(collaborators: HTTP<unknown>) {
+function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
   ux.log(JSON.stringify(collaborators, null, 2))
 }
 
@@ -37,7 +36,7 @@ function buildTableColumns(showPermissions: boolean) {
   return baseColumns
 }
 
-function printAccess(app: Heroku.App, collaborators) {
+function printAccess(app: Heroku.App, collaborators: any[]) {
   const showPermissions = isTeamApp(app.owner?.email)
   collaborators = _.chain(collaborators)
     .sortBy(c => c.email || c.user.email)
@@ -59,6 +58,11 @@ function printAccess(app: Heroku.App, collaborators) {
     collaborators,
     tableColumns,
   )
+}
+
+function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[]) {
+  const collaboratorsNoAdmins = _.reject(collaboratorsRaw, {role: 'admin'})
+  return _.union(collaboratorsNoAdmins, admins)
 }
 
 export default class AccessIndex extends Command {
@@ -86,8 +90,7 @@ export default class AccessIndex extends Command {
           admin.permissions = adminPermissions
           return admin
         })
-        collaborators = _.reject(collaborators, {role: 'admin'})
-        collaborators = _.union(collaborators, admins)
+        collaborators = buildCollaboratorsArray(collaborators, admins)
       } catch (error: any) {
         if (error.statusCode !== 403)
           throw error
