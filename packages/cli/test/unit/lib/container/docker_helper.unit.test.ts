@@ -77,7 +77,7 @@ describe('DockerHelper', () => {
       expect(results.web[0]).to.have.property('dockerfile', 'Dockerfile.web')
       expect(results.web[0]).to.have.property('postfix', 1)
       expect(results.web[1]).to.have.property('depth', 2, 'dockerfile')
-      expect(results.web[1]).to.have.property('dockerfile', 'Nested/Dockerfile.web')
+      expect(results.web[1]).to.have.property('dockerfile', path.join('.', 'Nested', 'Dockerfile.web'))
       expect(results.web[1]).to.have.property('postfix', 1)
     })
 
