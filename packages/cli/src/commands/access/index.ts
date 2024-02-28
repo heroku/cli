@@ -8,7 +8,7 @@ import {isTeamApp, getOwner} from '../../lib/access/access-utils'
 type MemberData = {
   email: string,
   role: string,
-  permissions?: Heroku.TeamAppPermission[]
+  permissions?: string
 }
 
 type AdminWithPermissions = Heroku.TeamMember & {
@@ -21,10 +21,10 @@ function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
 
 function buildTableColumns(showPermissions: boolean) {
   const baseColumns = {
-    Email: {
+    email: {
       get: ({email}: any): string => color.cyan(email),
     },
-    Role: {
+    role: {
       get: ({role}: any) => color.green(role),
     },
   }
@@ -32,7 +32,7 @@ function buildTableColumns(showPermissions: boolean) {
   if (showPermissions) {
     return {
       ...baseColumns,
-      Permissions: {},
+      permissions: {},
     }
   }
 
@@ -49,7 +49,7 @@ function printAccess(app: Heroku.App, collaborators: any[]) {
       const role = collab.role
       const data: MemberData = {email: email, role: role || 'collaborator'}
       if (showPermissions) {
-        data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name')
+        data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name').join(', ')
       }
 
       return data
