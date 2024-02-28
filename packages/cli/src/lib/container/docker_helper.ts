@@ -89,7 +89,6 @@ export const getJobs = function (resourceRoot: string, dockerfiles: string[]) {
       if (!match) throw new Error(`Invalid Dockerfile: ${dockerfile}`)
       const proc: string = (match[1] || '.standard').slice(1)
       const dockerfileJobs: Record<string, any> = {
-        // return {
         name: proc,
         resource: `${resourceRoot}/${proc}`,
         dockerfile: dockerfile,
@@ -97,7 +96,6 @@ export const getJobs = function (resourceRoot: string, dockerfiles: string[]) {
         depth: path.normalize(dockerfile).split(path.sep).length,
       }
       return dockerfileJobs
-      // }
     })
   // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
     .sort((a, b) => {

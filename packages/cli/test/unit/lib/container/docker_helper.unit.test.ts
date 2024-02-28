@@ -45,6 +45,23 @@ describe('DockerHelper', () => {
     })
   })
 
+  describe('.pullImage', () => {
+    let eventStub: sinon.SinonStub
+    beforeEach(() => {
+      eventStub = sinon.stub(childProcess, 'spawn')
+        .callsFake(eventMock)
+    })
+
+    afterEach(() => {
+      eventStub.restore()
+    })
+
+    it('successfully pulls image to execute with DockerHelper cmd', async () => {
+      await DockerHelper.pullImage('registry.heroku.com/testapp/web')
+      expect(eventStub.calledOnce).to.equal(true)
+    })
+  })
+
   describe('.getDockerfiles', () => {
     it('can recurse the directory', () => {
       const searchpath = path.join(process.cwd(), './test/fixtures/container')
