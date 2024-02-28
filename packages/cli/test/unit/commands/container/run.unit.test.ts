@@ -19,12 +19,13 @@ describe('container run', () => {
     await runCommand(Cmd, [
       '--app',
       'testapp',
-    ]).catch((error) => {
+    ]).catch(error => {
       const {message} = error as {message: string}
       expect(message).to.contain('Requires one process type')
       expect(stdout.output, 'to be empty')
     })
   })
+
   it('runs a container', async () => {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
@@ -40,6 +41,7 @@ describe('container run', () => {
     sandbox.assert.calledOnce(dockerfiles)
     sandbox.assert.calledOnce(run)
   })
+
   it('runs a container with a command', async () => {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
@@ -56,6 +58,7 @@ describe('container run', () => {
     sandbox.assert.calledOnce(dockerfiles)
     sandbox.assert.calledOnce(run)
   })
+
   it('requires a known dockerfile', async () => {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns([])
