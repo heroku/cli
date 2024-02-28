@@ -4,8 +4,7 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import HTTP from 'http-call'
 import * as _ from 'lodash'
-
-let Utils = require('../../lib/utils')
+import {isTeamApp, getOwner} from '../../lib/access/access-utils'
 
 type MemberData = {
   email: string,
@@ -18,7 +17,7 @@ function printJSON(collaborators: HTTP<unknown>) {
 }
 
 function printAccess(app: Heroku.App, collaborators) {
-  const showPermissions = Utils.isteamApp(app.owner?.email)
+  const showPermissions = isTeamApp(app.owner?.email)
   collaborators = _.chain(collaborators)
     .sortBy(c => c.email || c.user.email)
     .reject(c => /herokumanager\.com$/.test(c.user.email))
@@ -55,15 +54,14 @@ export default class AccessIndex extends Command {
   }
 
   public async run(): Promise<void> {
-    const {flags, argv, args} = await this.parse(Index)
+    const {flags, argv, args} = await this.parse(AccessIndex)
     const {app: appName, json} = flags
-    const app = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const isTeamApp = Utils.isteamApp(app.owner.email)
-    let collaborators: HTTP<unknown> = await this.heroku.get(`/apps/${appName}/collaborators`)
-    if (isTeamApp) {
-      const teamName = Utils.getOwner(app.owner.email)
+    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
+    let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
+    if (isTeamApp(app.owner?.email)) {
+      const teamName = getOwner(app.owner?.email)
       try {
-        const members = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
+        const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
         let admins = members.filter((member: { role: string }) => member.role === 'admin')
         const adminPermissions = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
         admins = _.forEach(admins, function (admin: { user: { email: any }; email: any; permissions: HTTP<Heroku.TeamAppPermission> }) {
