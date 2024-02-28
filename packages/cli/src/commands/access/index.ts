@@ -5,6 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 import HTTP from 'http-call'
 import * as _ from 'lodash'
 import {isTeamApp, getOwner} from '../../lib/access/access-utils'
+import {table} from '@oclif/core/lib/cli-ux/styled/table'
 
 type MemberData = {
   email: string,
@@ -14,6 +15,26 @@ type MemberData = {
 
 function printJSON(collaborators: HTTP<unknown>) {
   ux.log(JSON.stringify(collaborators, null, 2))
+}
+
+function buildTableColumns(showPermissions: boolean) {
+  const baseColumns = {
+    Email: {
+      get: ({email}: any): string => color.cyan(email),
+    },
+    Role: {
+      get: ({role}: any) => color.green(role),
+    },
+  }
+
+  if (showPermissions) {
+    return {
+      ...baseColumns,
+      Permissions: {},
+    }
+  }
+
+  return baseColumns
 }
 
 function printAccess(app: Heroku.App, collaborators) {
@@ -32,16 +53,12 @@ function printAccess(app: Heroku.App, collaborators) {
       return data
     })
     .value()
-  const columns = [
-    {key: 'email', label: 'Email', format: (e: string) => color.cyan(e)}, {
-      key: 'role',
-      label: 'Role',
-      format: (r: string) => color.green(r),
-    },
-  ]
-  if (showPermissions)
-    columns.push({key: 'permissions', label: 'Permissions'})
-  cli.table(collaborators, {printHeader: false, columns})
+
+  const tableColumns = buildTableColumns(showPermissions)
+  ux.table(
+    collaborators,
+    tableColumns,
+  )
 }
 
 export default class AccessIndex extends Command {
