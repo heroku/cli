@@ -3,9 +3,9 @@ import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {getTeamInfo} from '../../lib/members/utils'
 
 const _ = require('lodash')
-const Utils = require('../../lib/utils')
 export default class MembersIndex extends Command {
     static topic = 'members';
     static description = 'list members of a team';
@@ -18,14 +18,14 @@ export default class MembersIndex extends Command {
 
     public async run(): Promise<void> {
       const {flags, argv, args} = await this.parse(MembersIndex)
-      const teamInfo = await teamInfo(context, this.heroku)
-      const groupName = flags.team
+      const {role, pending, json, team} = flags
+      const teamInfo = await getTeamInfo(team, this.heroku)
       let teamInvites: Heroku.TeamInvitation[] = []
       if (teamInfo.type === 'team') {
-        const orgFeatures = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${groupName}/features`)
-        if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
+        const orgFeatures = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
+        if (orgFeatures.find((feature: { name: string; enabled: any }) => feature.name === 'team-invite-acceptance' && feature.enabled)) {
           const invitesResponse = await this.heroku.get<Heroku.TeamInvitation[]>(
-            `/teams/${groupName}/invitations`,
+            `/teams/${team}/invitations`,
             {headers: {
               Accept: 'application/vnd.heroku+json; version=3.team-invitations',
             },
@@ -36,21 +36,21 @@ export default class MembersIndex extends Command {
         }
       }
 
-      let {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${groupName}/members`)
+      let {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${team}/members`)
       _.map(members, (member: { status: string }) => {
         member.status = ''
       })
       members = _.sortBy(_.union(members, teamInvites), 'email')
-      if (flags.role)
-        members = members.filter(m => m.role === flags.role)
-      if (flags.pending)
+      if (role)
+        members = members.filter(m => m.role === role)
+      if (pending)
         members = members.filter(m => m.status === 'pending')
-      if (flags.json) {
+      if (json) {
         ux.log(JSON.stringify(members, null, 3))
       } else if (members.length === 0) {
-        let msg = `No members in ${color.magenta(groupName)}`
-        if (flags.role)
-          msg += ` with role ${color.green(flags.role)}`
+        let msg = `No members in ${color.magenta(team)}`
+        if (role)
+          msg += ` with role ${color.green(role)}`
         ux.log(msg)
       } else {
         cli.table(members, {
