@@ -166,7 +166,7 @@ export const chooseJobs = async function (jobs: groupedDockerJobs) {
 
 export const buildImage = async function (dockerfile: string, resource: string, buildArgs: string[], path?: string) {
   const cwd = path || Path.dirname(dockerfile)
-  const args = ['build', '-f', dockerfile, '-t', resource]
+  const args = ['build', '-f', dockerfile, '-t', resource, '--platform', 'linux/amd64']
 
   for (const element of buildArgs) {
     if (element.length > 0) {
