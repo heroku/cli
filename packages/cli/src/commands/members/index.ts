@@ -3,7 +3,6 @@ import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {getTeamInfo} from '../../lib/members/utils'
 
 const _ = require('lodash')
 
@@ -15,13 +14,13 @@ export default class MembersIndex extends Command {
       role: flags.string({char: 'r', description: 'filter by role', completion: RoleCompletion}),
       pending: flags.boolean({description: 'filter by pending team invitations'}),
       json: flags.boolean({description: 'output in json format'}),
-      team: flags.team(),
+      team: flags.team({required: true}),
     };
 
     public async run(): Promise<void> {
       const {flags} = await this.parse(MembersIndex)
       const {role, pending, json, team} = flags
-      const {body: teamInfo} = await getTeamInfo(team, this.heroku)
+      const {body: teamInfo} = await this.heroku.get<Heroku.Team>(`/teams/${team}`)
       let teamInvites: Heroku.TeamInvitation[] = []
       if (teamInfo.type === 'team') {
         const {body: orgFeatures} = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
