@@ -11,9 +11,7 @@ async function run(context, heroku) {
 
   if (util.legacyEssentialPlan(db)) throw new Error('pg:upgrade is only available for Essential-* databases and follower databases on Standard-tier and higher plans.')
 
-  let [replica] = await Promise.all([
-    heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)}),
-  ])
+  const replica = await heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)})
 
   if (replica.following) {
     let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
