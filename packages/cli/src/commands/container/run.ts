@@ -41,7 +41,7 @@ export default class Run extends Command {
     const dockerfiles = DockerHelper.getDockerfiles(process.cwd(), false)
     const possibleJobs = DockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
 
-    let jobs = []
+    let jobs: DockerHelper.dockerJob[] = []
 
     if (possibleJobs.standard) {
       possibleJobs.standard.forEach((pj: { resource: string }) => {
