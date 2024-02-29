@@ -5,7 +5,7 @@ import {teams} from '../../../helpers/stubs/get'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
-describe.only('heroku teams', () => {
+describe('heroku teams', () => {
   afterEach(() => nock.cleanAll())
 
   it('shows the teams you are a member of', async () => {
