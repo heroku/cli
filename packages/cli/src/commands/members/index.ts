@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {getTeamInfo} from '../../lib/members/utils'
 
@@ -19,7 +19,7 @@ export default class MembersIndex extends Command {
     };
 
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(MembersIndex)
+      const {flags} = await this.parse(MembersIndex)
       const {role, pending, json, team} = flags
       const {body: teamInfo} = await getTeamInfo(team, this.heroku)
       let teamInvites: Heroku.TeamInvitation[] = []
@@ -56,11 +56,19 @@ export default class MembersIndex extends Command {
           msg += ` with role ${color.green(role)}`
         ux.log(msg)
       } else {
-        cli.table(members, {
-          printHeader: false, columns: [
-            {key: 'email', label: 'Email', format: e => color.cyan(e)}, {key: 'role', label: 'Role', format: r => color.green(r)}, {key: 'status', label: 'Status', format: r => color.green(r)},
-          ],
-        })
+        ux.table(
+          members,
+          {
+            email: {
+              get: ({email}: any):string => color.cyan(email),
+            },
+            role: {
+              get: ({role}: any):string => color.green(role),
+            },
+            status: {
+              get: ({status}: any):string => color.green(status),
+            },
+          })
       }
     }
 }
