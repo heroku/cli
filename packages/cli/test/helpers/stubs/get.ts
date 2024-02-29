@@ -170,7 +170,7 @@ export function variableSizeTeamMembers(teamSize: number) {
     teamMembers.push({
       email: `test${i}@heroku.com`,
       role: 'admin',
-      user: { email: `test${i}@heroku.com` }
+      user: {email: `test${i}@heroku.com`},
     })
   }
 
