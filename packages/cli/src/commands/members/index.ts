@@ -6,6 +6,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {getTeamInfo} from '../../lib/members/utils'
 
 const _ = require('lodash')
+
+type MemberWithStatus = Heroku.TeamMember & { status?: string }
 export default class MembersIndex extends Command {
     static topic = 'members';
     static description = 'list members of a team';
@@ -19,11 +21,11 @@ export default class MembersIndex extends Command {
     public async run(): Promise<void> {
       const {flags, argv, args} = await this.parse(MembersIndex)
       const {role, pending, json, team} = flags
-      const teamInfo = await getTeamInfo(team, this.heroku)
+      const {body: teamInfo} = await getTeamInfo(team, this.heroku)
       let teamInvites: Heroku.TeamInvitation[] = []
       if (teamInfo.type === 'team') {
-        const orgFeatures = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
-        if (orgFeatures.find((feature: { name: string; enabled: any }) => feature.name === 'team-invite-acceptance' && feature.enabled)) {
+        const {body: orgFeatures} = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
+        if (orgFeatures.find((feature => feature.name === 'team-invite-acceptance' && feature.enabled))) {
           const invitesResponse = await this.heroku.get<Heroku.TeamInvitation[]>(
             `/teams/${team}/invitations`,
             {headers: {
@@ -36,8 +38,9 @@ export default class MembersIndex extends Command {
         }
       }
 
-      let {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${team}/members`)
-      _.map(members, (member: { status: string }) => {
+      let {body: members} = await this.heroku.get<MemberWithStatus[]>(`/teams/${team}/members`)
+      // Set status '' to all existing members
+      _.map(members, (member: MemberWithStatus) => {
         member.status = ''
       })
       members = _.sortBy(_.union(members, teamInvites), 'email')
@@ -48,7 +51,7 @@ export default class MembersIndex extends Command {
       if (json) {
         ux.log(JSON.stringify(members, null, 3))
       } else if (members.length === 0) {
-        let msg = `No members in ${color.magenta(team)}`
+        let msg = `No members in ${color.magenta(team || '')}`
         if (role)
           msg += ` with role ${color.green(role)}`
         ux.log(msg)
