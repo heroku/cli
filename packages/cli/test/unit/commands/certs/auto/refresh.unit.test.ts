@@ -14,7 +14,7 @@ describe('heroku certs:auto:enable', function () {
     nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
     })
-      .patch('/apps/example/acm', { acm_refresh: true })
+      .patch('/apps/example/acm', {acm_refresh: true})
       .reply(200, {acm: true, acm_refresh: true})
     await runCommand(Cmd, [
       '--app',
