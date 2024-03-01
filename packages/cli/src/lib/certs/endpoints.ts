@@ -21,7 +21,7 @@ function tagAndSort(appName: string, sniCerts: Heroku.SniEndpoint[]) {
     cert._meta = meta(appName, 'sni', cert.name)
   })
 
-  return sniCerts.sort(function (a, b) {
+  return sniCerts.sort(function (a: Heroku.SniEndpoint, b: Heroku.SniEndpoint) {
     const aName = a?.name || ''
     const bName = b?.name || ''
     return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)
