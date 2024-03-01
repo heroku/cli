@@ -5,11 +5,13 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import stripAnsi = require('strip-ansi')
 import {expect} from 'chai'
+import heredoc from 'tsheredoc'
 
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
     nock.cleanAll()
   })
+
   it('disables acm', async function () {
     nock('https://api.heroku.com', {
       reqheaders: {
@@ -24,9 +26,13 @@ describe('heroku certs:auto:disable', function () {
       '--confirm',
       'example',
     ])
-    expectOutput(stderr.output, 'Disabling Automatic Certificate Management... done')
+    expectOutput(stderr.output, heredoc(`
+      Disabling Automatic Certificate Management...
+      Disabling Automatic Certificate Management... done
+    `))
     expectOutput(stdout.output, '')
   })
+
   it('confirms that they want to disable', async function () {
     await runCommand(Cmd, [
       '--app',
