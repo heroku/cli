@@ -1,0 +1,32 @@
+name: Publish to fig autocomplete
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  push-to-fig-autocomplete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - run: yarn --immutable --network-timeout 1000000
+      - name: Install Fig Oclif Plugin
+        run: ./bin/run plugins:install @fig/oclif-complete@2
+      - name: Generate Fig Spec
+        run: ./bin/run generate-fig-spec > spec.ts
+      - name: Get heroku version
+        id: cli-version
+        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
+      - name: Create Fig Autocomplete PR
+        uses: withfig/push-to-fig-autocomplete-action@v1
+        with:
+          token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
+          autocomplete-spec-name: 'heroku'
+          spec-path: spec.ts
+          integration: oclif
+          diff-based-versioning: true
+          new-spec-version: ${{ steps.cli-version.outputs.version }}

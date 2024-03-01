@@ -58,6 +58,8 @@ jobs:
           sudo apt-get install -y awscli
           aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
+      ## Calls publish-to-fig-autocomplete workflow during post release jobs
+      - uses: ./.github/workflows/publish-to-fig-autocomplete.yml
 
   release-homebrew:
     needs: [ invalidate-cdn-cache ]
