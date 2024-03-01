@@ -11,8 +11,6 @@ export default class Update extends Command {
       permissions: flags.string({
         char: 'p',
         description: 'comma-delimited list of permissions to update (deploy,manage,operate)',
-        aliases: ['privileges'],
-        deprecateAliases: true,
         required: true,
       }),
       app: flags.app({required: true}),

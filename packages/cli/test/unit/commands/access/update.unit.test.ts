@@ -6,6 +6,7 @@ import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch'
 import expectOutput from '../../../helpers/utils/expectOutput'
+import stripAnsi = require('strip-ansi')
 
 describe('heroku access:update', () => {
   context('with a team app with permissions', () => {
@@ -58,7 +59,7 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         'gandalf@heroku.com',
       ]).catch(error => {
         const {message} = error as {message: string}
-        expect(message).to.contain('Error: cannot update permissions. The app \u001B[36mmyapp\u001B[39m is not owned by a team')
+        expect(stripAnsi(message)).to.contain('Error: cannot update permissions. The app myapp is not owned by a team')
       })
     })
   })
