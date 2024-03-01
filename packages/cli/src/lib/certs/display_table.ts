@@ -44,18 +44,18 @@ export default function (certs: Heroku.SniEndpoint[]) {
   if (mapped.some(row => row.cname)) {
     columns.cname = {
       header: 'Endpoint',
-      get: ({cname}: any) => cname || '(Not applicable for SNI)',
+      get: ({cname}: {cname: string | undefined}) => cname || '(Not applicable for SNI)',
     }
   }
 
   columns.common_names = {header: 'Common Name(s)'}
   columns.expires_at = {
     header: 'Expires',
-    get: ({expires_at}: any) => expires_at ? formatDate(expires_at) : '',
+    get: ({expires_at}: {expires_at: string | undefined}) => expires_at === undefined ? '' : formatDate(expires_at),
   }
   columns.ca_signed = {
     header: 'Trusted',
-    get: ({ca_signed}: any) => ca_signed === undefined ? '' : (ca_signed ? 'True' : 'False'),
+    get: ({ca_signed}: {ca_signed: string | undefined}) => ca_signed === undefined ? '' : (ca_signed ? 'True' : 'False'),
   }
   columns.type = {header: 'Type'}
 
