@@ -7,6 +7,7 @@ import * as qq from 'qqjs'
 
 import commandsOutput from './commands-output'
 
+// this is a custom function that strips both ansi characters and several additional characters
 const stripAnsi = (input: string) => {
   // eslint-disable-next-line no-control-regex, unicorn/escape-case
   const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]|\s|─/g
