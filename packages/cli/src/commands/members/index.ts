@@ -7,6 +7,29 @@ import * as Heroku from '@heroku-cli/schema'
 const _ = require('lodash')
 
 type MemberWithStatus = Heroku.TeamMember & { status?: string }
+
+const buildTableColumns = (teamInvites: Heroku.TeamInvitation[]) => {
+  const baseColumns = {
+    email: {
+      get: ({email}: any):string => color.cyan(email),
+    },
+    role: {
+      get: ({role}: any):string => color.green(role),
+    },
+  }
+
+  if (teamInvites.length > 0) {
+    return {
+      ...baseColumns,
+      status: {
+        get: ({status}: any):string => color.green(status),
+      },
+    }
+  }
+
+  return baseColumns
+}
+
 export default class MembersIndex extends Command {
     static topic = 'members';
     static description = 'list members of a team';
@@ -55,19 +78,11 @@ export default class MembersIndex extends Command {
           msg += ` with role ${color.green(role)}`
         ux.log(msg)
       } else {
+        const tableColumns = buildTableColumns(teamInvites)
         ux.table(
           members,
-          {
-            email: {
-              get: ({email}: any):string => color.cyan(email),
-            },
-            role: {
-              get: ({role}: any):string => color.green(role),
-            },
-            status: {
-              get: ({status}: any):string => color.green(status),
-            },
-          })
+          tableColumns,
+        )
       }
     }
 }

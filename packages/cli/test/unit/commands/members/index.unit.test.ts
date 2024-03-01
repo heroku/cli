@@ -36,7 +36,7 @@ describe('heroku members', () => {
         '--team',
         'myteam',
       ])
-        .then(() => expect(stdout.output).to.contain('admin@heroku.com  admin               \n collab@heroku.com collaborator'))
+        .then(() => expect(stdout.output).to.contain('admin@heroku.com  admin        \n collab@heroku.com collaborator'))
         .then(() => expect('').to.eq(stderr.output))
         .then(() => apiGetOrgMembers.done())
     })
@@ -85,6 +85,15 @@ describe('heroku members', () => {
       beforeEach(() => {
         teamFeatures([])
       })
+      it('does not show the status column', () => {
+        apiGetOrgMembers = teamMembers([adminTeamMember, memberTeamMember])
+        return runCommand(Cmd, [
+          '--team',
+          'myteam',
+        ])
+          .then(() => expect(stdout.output).to.not.contain('Status'))
+          .then(() => apiGetOrgMembers.done())
+      })
     })
     context('with the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
@@ -101,6 +110,17 @@ describe('heroku members', () => {
           .then(() => expect('').to.eq(stderr.output))
           .then(() => apiGetTeamInvites.done())
           .then(() => apiGetOrgMembers.done())
+      })
+      it('does not show the Status column when there are no pending invites', () => {
+        const apiGetTeamInvites = teamInvites([])
+        apiGetOrgMembers = teamMembers([adminTeamMember, collaboratorTeamMember])
+        return runCommand(Cmd, [
+          '--team',
+          'myteam',
+        ])
+          .then(() => expect(stdout.output).to.not.contain('Status'))
+          .then(() => apiGetOrgMembers.done())
+          .then(() => apiGetTeamInvites.done())
       })
       it('filters members by pending invites', () => {
         const apiGetTeamInvites = teamInvites()
