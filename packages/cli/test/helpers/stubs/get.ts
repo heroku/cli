@@ -167,9 +167,11 @@ export function variableSizeTeamMembers(teamSize: number) {
   teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
   const teamMembers = []
   for (let i = 0; i < teamSize; i++) {
-    teamMembers.push({email: `test${i}@heroku.com`,
+    teamMembers.push({
+      email: `test${i}@heroku.com`,
       role: 'admin',
-      user: {email: `test${i}@heroku.com`}})
+      user: {email: `test${i}@heroku.com`},
+    })
   }
 
   return nock('https://api.heroku.com:443')
