@@ -18,11 +18,12 @@ export default class Index extends Command {
     if (certs.length === 0) {
       ux.log(`${color.magenta(flags.app)} has no SSL certificates.\nUse ${color.cyan.bold('heroku certs:add CRT KEY')} to add one.`)
     } else {
-      displayTable(certs.sort((a: any, b: any) => {
+      const sortedCerts = certs.sort((a: any, b: any) => {
         const aName = a?.name || ''
         const bName = b?.name || ''
         return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)
-      }))
+      })
+      displayTable(sortedCerts)
     }
   }
 }

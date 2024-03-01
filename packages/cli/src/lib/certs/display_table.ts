@@ -1,5 +1,4 @@
 import * as Heroku from '@heroku-cli/schema'
-import * as _ from 'lodash'
 import {ux} from '@oclif/core'
 import formatDate from './format_date'
 
@@ -15,11 +14,9 @@ export default function (certs: Heroku.SniEndpoint[]) {
   const mapped = certs.filter(function (f) {
     return f.ssl_cert
   }).map(function (f) {
-    const name = f.name
-    const cname = f.name
     const tableContents: Record<string, string | undefined> = {
-      name: name,
-      cname: cname,
+      name: f.name,
+      cname: f.cname,
       expires_at: f.ssl_cert.expires_at,
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
@@ -44,7 +41,7 @@ export default function (certs: Heroku.SniEndpoint[]) {
     columns.display_name = {header: 'Display Name'}
   }
 
-  if (_.find(mapped, row => row.cname)) {
+  if (mapped.some(row => row.cname)) {
     columns.cname = {
       header: 'Endpoint',
       get: ({cname}: any) => cname || '(Not applicable for SNI)',
@@ -54,11 +51,11 @@ export default function (certs: Heroku.SniEndpoint[]) {
   columns.common_names = {header: 'Common Name(s)'}
   columns.expires_at = {
     header: 'Expires',
-    get: (f: any) => f ? formatDate(f) : '',
+    get: ({expires_at}: any) => expires_at ? formatDate(expires_at) : '',
   }
   columns.ca_signed = {
     header: 'Trusted',
-    get: (f: any) => f === undefined ? '' : (f ? 'True' : 'False'),
+    get: ({ca_signed}: any) => ca_signed === undefined ? '' : (ca_signed ? 'True' : 'False'),
   }
   columns.type = {header: 'Type'}
 
@@ -66,5 +63,5 @@ export default function (certs: Heroku.SniEndpoint[]) {
     columns.associated_domains = {header: 'Domains'}
   }
 
-  ux.table(mapped, {columns})
+  ux.table(mapped, columns)
 }

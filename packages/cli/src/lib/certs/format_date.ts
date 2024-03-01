@@ -14,5 +14,5 @@ function getUTCDate(dateString: string | number = Date.now()) {
 }
 
 export default function (date: string) {
-  return format(getUTCDate(date), 'YYYY-MM-DD HH:mm UTC')
+  return `${format(getUTCDate(date), 'yyyy-MM-dd HH:mm')} UTC`
 }

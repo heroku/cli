@@ -10,7 +10,7 @@ export function meta(appName: string, t: string, certName: string | undefined) {
   }
 
   if (certName) {
-    path = `${path}/${name}`
+    path = `${path}/${certName}`
   }
 
   return {path, flag: t}
