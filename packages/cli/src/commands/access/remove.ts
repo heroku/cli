@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Remove extends Command {
@@ -11,11 +11,16 @@ export default class Remove extends Command {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
   }
+
+  static strict = false
+
   public async run(): Promise<void> {
-    const {flags, argv, args} = await this.parse(Remove)
+    const {flags, argv} = await this.parse(Remove)
     const {app} = flags
-    let appName = app
-    let request = this.heroku.delete(`/apps/${appName}/collaborators/${args.email}`)
-    await ux.action(`Removing ${color.cyan(args.email)} access from the app ${color.magenta(appName)}`, request)
+    const email = argv[0] as string
+    const appName = app
+    ux.action.start(`Removing ${color.cyan(email)} access from the app ${color.magenta(appName)}`)
+    await this.heroku.delete<Heroku.Collaborator>(`/apps/${appName}/collaborators/${email}`)
+    ux.action.stop()
   }
 }
