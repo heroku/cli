@@ -18,7 +18,7 @@ describe('heroku access:remove', () => {
         'raulb@heroku.com',
       ])
         .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Removing raulb@heroku.com access from the app myapp... done\n').to.eq(stderr.output))
+        .then(() => expect('Removing raulb@heroku.com access from the app myapp...\nRemoving raulb@heroku.com access from the app myapp... done\n').to.eq(stderr.output))
         .then(() => apiDelete.done())
     })
   })
