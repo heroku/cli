@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {printGroups, printGroupsJSON} from '../../lib/orgs/utils'
 
-export default class Index extends Command {
+export default class OrgsIndex extends Command {
     static topic = 'orgs';
     static description = 'list the teams that you are a member of';
     static flags = {
@@ -12,7 +12,7 @@ export default class Index extends Command {
     };
 
     public async run(): Promise<void> {
-      const {flags} = await this.parse(Index)
+      const {flags} = await this.parse(OrgsIndex)
       let {body: orgs} = await this.heroku.get<Heroku.Team[]>('/teams')
       if (flags.enterprise) {
         orgs = orgs.filter(o => o.type === 'enterprise')
