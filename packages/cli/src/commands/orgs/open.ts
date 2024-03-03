@@ -4,7 +4,7 @@ import * as open from 'open'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 
-export default class Open extends Command {
+export default class OrgsOpen extends Command {
     static topic = 'orgs';
     static description = 'open the team interface in a browser window';
     static flags = {
@@ -17,9 +17,9 @@ export default class Open extends Command {
     }
 
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(Open)
+      const {flags, argv, args} = await this.parse(OrgsOpen)
       const team = flags.team
       const {body: org} = await this.heroku.get<Heroku.Team>(`/teams/${team}`)
-      await Open.openUrl(`https://dashboard.heroku.com/teams/${org.name}`)
+      await OrgsOpen.openUrl(`https://dashboard.heroku.com/teams/${org.name}`)
     }
 }
