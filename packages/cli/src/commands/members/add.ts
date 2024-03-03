@@ -3,7 +3,7 @@ import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 const {RoleCompletion} = require('@heroku-cli/command/lib/completions')
 import {addMemberToTeam, inviteMemberToTeam} from '../../lib/members/util'
-export default class Add extends Command {
+export default class MembersAdd extends Command {
     static topic = 'members';
     static description = 'adds a user to a team';
     static flags = {
@@ -16,7 +16,7 @@ export default class Add extends Command {
     };
 
     public async run(): Promise<void> {
-      const {flags, args} = await this.parse(Add)
+      const {flags, args} = await this.parse(MembersAdd)
       const {team, role} = flags
       const {body: teamInfo} = await this.heroku.get<Heroku.Team>(`/teams/${team}`)
       const email = args.email
