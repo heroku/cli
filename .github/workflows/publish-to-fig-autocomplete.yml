@@ -19,9 +19,9 @@ jobs:
         run: yarn build && ./bin/run
       - name: Generate Fig Spec
         run: ./bin/run generate-fig-spec > spec.ts
-      # - name: Get heroku version
-      #   id: cli-version
-      #   run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
+      - name: Get heroku version
+        id: cli-version
+        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
       # - name: Create Fig Autocomplete PR
       #   uses: withfig/push-to-fig-autocomplete-action@v1
       #   with:
