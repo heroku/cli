@@ -5,7 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 
 const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
   ux.action.start(`Revoking invite for ${color.cyan(email)} in ${color.magenta(team)}`)
-  await heroku.request<Heroku.TeamInvitation[]>(
+  await heroku.delete<Heroku.TeamInvitation[]>(
     `/teams/${team}/invitations/${email}`,
     {
       headers: {
