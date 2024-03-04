@@ -31,4 +31,4 @@ jobs:
           integration: oclif
           diff-based-versioning: true
           new-spec-version: ${{ steps.cli-version.outputs.version }}
-          pr-body: Automated PR for latest Heroku CLI Release (test)
+          pr-body: Automated PR for latest Heroku CLI release
