@@ -16,7 +16,7 @@ jobs:
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
       - name: Install Fig Oclif Plugin
-        run: yarn build && ./bin/run plugins:install @fig/oclif-complete
+        run: yarn build && ./bin/run
       # - name: Generate Fig Spec
       #   run: ./bin/run generate-fig-spec > spec.ts
       # - name: Get heroku version
