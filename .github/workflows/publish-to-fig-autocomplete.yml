@@ -6,19 +6,20 @@ on:
 
 jobs:
   push-to-fig-autocomplete:
-    runs-on: ubuntu-latest
+    runs-on: pub-hk-ubuntu-22.04-small
     steps:
+      - uses: actions/checkout@v3
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - name: Install Fig Oclif Plugin
-        run: ./bin/run plugins:install @fig/oclif-complete@2
+      - name: Build Heroku CLI
+        run: yarn build
       - name: Generate Fig Spec
         run: ./bin/run generate-fig-spec > spec.ts
-      - name: Get heroku version
+      - name: Get Heroku Version
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
       - name: Create Fig Autocomplete PR
@@ -30,3 +31,4 @@ jobs:
           integration: oclif
           diff-based-versioning: true
           new-spec-version: ${{ steps.cli-version.outputs.version }}
+          pr-body: Automated PR for latest Heroku CLI release

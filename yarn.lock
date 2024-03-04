@@ -1099,6 +1099,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fig/complete-oclif@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@fig/complete-oclif@npm:2.0.0"
+  dependencies:
+    "@oclif/core": ^2.8.11
+    prettier: ^3.1.1
+  checksum: c7b148073456723cd85baaab5179a667c8078fb317ea03e184523ac9164ac4ff8f80452006c527e9c4340b08467fe480a2046554a5e6ca75b2e3aa1f27cac8da
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1, @gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -10886,6 +10896,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "heroku@workspace:packages/cli"
   dependencies:
+    "@fig/complete-oclif": ^2.0.0
     "@heroku-cli/color": 1.1.14
     "@heroku-cli/command": ^10.0.0
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
@@ -15544,6 +15555,15 @@ __metadata:
   version: 2.0.0
   resolution: "prepend-http@npm:2.0.0"
   checksum: 7694a9525405447662c1ffd352fcb41b6410c705b739b6f4e3a3e21cf5fdede8377890088e8934436b8b17ba55365a615f153960f30877bf0d0392f9e93503ea
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^3.1.1":
+  version: 3.2.5
+  resolution: "prettier@npm:3.2.5"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 2ee4e1417572372afb7a13bb446b34f20f1bf1747db77cf6ccaf57a9be005f2f15c40f903d41a6b79eec3f57fff14d32a20fb6dee1f126da48908926fe43c311
   languageName: node
   linkType: hard
 

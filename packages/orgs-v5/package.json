@@ -67,7 +67,9 @@
   "license": "ISC",
   "main": "index.js",
   "mocha": {
-    "require": ["./test/helpers.js"],
+    "require": [
+      "./test/helpers.js"
+    ],
     "recursive": true,
     "timeout": 180000
   },
