@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-const {RoleCompletion} = require('@heroku-cli/command/lib/completions')
+import {RoleCompletion} from '@heroku-cli/command/lib/completions'
 import {addMemberToTeam, inviteMemberToTeam} from '../../lib/members/util'
 export default class MembersAdd extends Command {
     static topic = 'members';
@@ -22,7 +22,7 @@ export default class MembersAdd extends Command {
       const email = args.email
       const {body: groupFeatures} = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
 
-      if (teamInfo.type === 'team' && groupFeatures.find(feature => {
+      if (teamInfo.type === 'team' && groupFeatures.some(feature => {
         return feature.name === 'team-invite-acceptance' && feature.enabled
       })) {
         await inviteMemberToTeam(email, role, team, this.heroku)
