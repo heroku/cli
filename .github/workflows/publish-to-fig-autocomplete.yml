@@ -22,12 +22,12 @@ jobs:
       - name: Get heroku version
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
-      # - name: Create Fig Autocomplete PR
-      #   uses: withfig/push-to-fig-autocomplete-action@v1
-      #   with:
-      #     token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
-      #     autocomplete-spec-name: 'heroku'
-      #     spec-path: spec.ts
-      #     integration: oclif
-      #     diff-based-versioning: true
-      #     new-spec-version: ${{ steps.cli-version.outputs.version }}
+      - name: Create Fig Autocomplete PR
+        uses: withfig/push-to-fig-autocomplete-action@v1
+        with:
+          token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
+          autocomplete-spec-name: 'heroku'
+          spec-path: spec.ts
+          integration: oclif
+          diff-based-versioning: true
+          new-spec-version: ${{ steps.cli-version.outputs.version }}
