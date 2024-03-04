@@ -26,6 +26,5 @@ exports.commands = flatten([
   require('./commands/members/set'),
   require('./commands/members/remove'),
   require('./commands/orgs'),
-  require('./commands/orgs/default'),
   require('./commands/orgs/open'),
 ])
