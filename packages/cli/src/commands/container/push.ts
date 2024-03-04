@@ -58,11 +58,11 @@ export default class Push extends Command {
     }
 
     if (processTypes.length === 0 && !recursive) {
-      ux.error('Error: Requires either --recursive or one or more process types', {exit: 1})
+      ux.error('Requires either --recursive or one or more process types', {exit: 1})
     }
 
     if (processTypes.length > 1 && !recursive) {
-      ux.error('Error: Requires exactly one target process type, or --recursive option', {exit: 1})
+      ux.error('Requires exactly one target process type, or --recursive option', {exit: 1})
     }
 
     await this.heroku.get(`/apps/${app}`)
@@ -91,7 +91,7 @@ export default class Push extends Command {
         await DockerHelper.buildImage(job.dockerfile, job.resource, buildArgs, contextPath)
       }
     } catch (error) {
-      ux.error(`Error: docker build exited with ${error}`, {exit: 1})
+      ux.error(`docker build exited with ${error}`, {exit: 1})
     }
 
     try {
@@ -109,7 +109,7 @@ export default class Push extends Command {
       const plural = jobs.length !== 1
       ux.log(`Your image${plural ? 's have' : ' has'} been successfully pushed. You can now release ${plural ? 'them' : 'it'} with the 'container:release' command.`)
     } catch (error) {
-      ux.error(`Error: docker push exited with ${error}`, {exit: 1})
+      ux.error(`docker push exited with ${error}`, {exit: 1})
     }
   }
 }
