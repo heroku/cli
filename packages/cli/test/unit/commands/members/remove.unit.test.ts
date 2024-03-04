@@ -73,19 +73,6 @@ describe('heroku members:remove', () => {
         })
       })
       context('with pending invites', () => {
-        // beforeEach(() => {
-        //   apiGetTeamInvites = teamInvites([
-        //     {
-        //       invited_by: {
-        //         email: 'invite@foo.com',
-        //       },
-        //       role: 'member',
-        //       user: {
-        //         email: 'foo@foo.com',
-        //       },
-        //     },
-        //   ])
-        // })
         it('revokes the invite', () => {
           apiGetTeamInvites = teamInvites([
             {
