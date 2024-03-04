@@ -5,12 +5,14 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import * as nock from 'nock'
 import {
+  Endpoint,
   endpoint,
   endpointWithDomains,
   endpointUntrusted,
   endpointTrusted,
   certificateDetails,
 } from '../../../helpers/stubs/sni-endpoints'
+const sharedSni = require('./shared_sni.unit.test.ts')
 
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
@@ -37,15 +39,15 @@ describe('heroku certs:info', function () {
   it('returns domains when show-domains flag is passed', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWithDomains()])
+      .reply(200, [endpointWithDomains])
     nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
       .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointWithDomains())
+      .reply(200, endpointWithDomains)
     nock('https://api.heroku.com')
       .get('/apps/example/domains/example.heroku.com')
-      .reply(200, [endpointWithDomains()])
+      .reply(200, [endpointWithDomains])
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -60,12 +62,12 @@ describe('heroku certs:info', function () {
   it('shows certificate details when not trusted', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint()])
+      .reply(200, [endpoint])
     nock('https://api.heroku.com', {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
       .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointUntrusted())
+      .reply(200, endpointUntrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
       Fetching SSL certificate tokyo-1050 info for example...
@@ -89,14 +91,14 @@ describe('heroku certs:info', function () {
   it('shows certificate details when trusted', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint()])
+      .reply(200, [endpoint])
     nock('https://api.heroku.com', {
       reqheaders: {
         Accept: 'application/vnd.heroku+json; version=3',
       },
     })
       .get('/apps/example/sni-endpoints/tokyo-1050')
-      .reply(200, endpointTrusted())
+      .reply(200, endpointTrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
       Fetching SSL certificate tokyo-1050 info for example...
@@ -114,24 +116,24 @@ describe('heroku certs:info', function () {
   })
 })
 
-// describe('heroku shared', function () {
-// let callback = function (err, path, endpoint) {
-//   if (err)
-//     throw err
-//   return nock('https://api.heroku.com', {
-//     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
-//   })
-//     .get(path)
-//     .reply(200, endpoint)
-// }
+describe('heroku shared', function () {
+  const callback = function (err: Error, path: string, endpoint: Endpoint) {
+    if (err)
+      throw err
+    return nock('https://api.heroku.com', {
+      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
+    })
+      .get(path)
+      .reply(200, endpoint)
+  }
 
-// let stderr = function (endpoint) {
-//   return `Fetching SSL certificate ${endpoint.name} info for example... done\n`
-// }
+  const stderr = function (endpoint: Endpoint) {
+    return `Fetching SSL certificate ${endpoint.name} info for example... done\n`
+  }
 
-// let stdout = function (certificateDetails) {
-//   return `Certificate details:\n${certificateDetails}\n`
-// }
+  const stdout = function (certificateDetails: string) {
+    return `Certificate details:\n${certificateDetails}\n`
+  }
 
-// sharedSni.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, {stderr, stdout})
-// })
+  sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
+})

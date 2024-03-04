@@ -27,7 +27,7 @@ describe('heroku certs', function () {
   it('# shows ACM for the type when acm true', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointAcm()])
+      .reply(200, [endpointAcm])
     await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr.output, '')
@@ -41,7 +41,7 @@ describe('heroku certs', function () {
   it('# shows certs with common names stacked and stable matches', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointStables()])
+      .reply(200, [endpointStables])
     await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr.output, '')
@@ -57,7 +57,7 @@ describe('heroku certs', function () {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWildcardBug()])
+      .reply(200, [endpointWildcardBug])
     await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr.output, '')
@@ -73,7 +73,7 @@ describe('heroku certs', function () {
       reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
     })
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWildcard()])
+      .reply(200, [endpointWildcard])
     await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr.output, '')
@@ -86,7 +86,7 @@ describe('heroku certs', function () {
   it('# shows certs with common names stacked and just stable cname matches', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointStables()])
+      .reply(200, [endpointStables])
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, '')
     expectOutput(heredoc(stdout.output), heredoc(`
