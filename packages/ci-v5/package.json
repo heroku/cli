@@ -54,7 +54,9 @@
   "license": "MIT",
   "main": "index.js",
   "mocha": {
-    "require": ["test/test-setup.js"],
+    "require": [
+      "test/test-setup.js"
+    ],
     "recursive": true,
     "reporter": "dot",
     "timeout": 180000

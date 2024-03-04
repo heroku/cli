@@ -43,7 +43,9 @@
   "license": "ISC",
   "main": "index.js",
   "mocha": {
-    "require": ["./test/init.js"],
+    "require": [
+      "./test/init.js"
+    ],
     "reporter": "list",
     "recursive": true,
     "exit": true,

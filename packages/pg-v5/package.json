@@ -56,9 +56,11 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "mocha":{
+  "mocha": {
     "recursive": true,
-    "require": ["./test/init.js"],
+    "require": [
+      "./test/init.js"
+    ],
     "timeout": 180000
   },
   "repository": "heroku/cli",
