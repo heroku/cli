@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../src/commands/container/pull'
-import runCommand from '../../helpers/runCommand'
+import Cmd from '../../../../src/commands/container/pull'
+import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
-import * as DockerHelper from '../../../src/lib/container/docker_helper'
+import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 
 describe('container pull', () => {
   let sandbox: sinon.SinonSandbox
