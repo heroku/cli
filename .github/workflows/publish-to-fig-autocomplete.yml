@@ -15,11 +15,11 @@ jobs:
           node-version: 16.x
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - name: Install Fig Oclif Plugin
-        run: yarn build && ./bin/run
+      - name: Build Heroku CLI
+        run: yarn build
       - name: Generate Fig Spec
         run: ./bin/run generate-fig-spec > spec.ts
-      - name: Get heroku version
+      - name: Get Heroku Version
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
       - name: Create Fig Autocomplete PR
