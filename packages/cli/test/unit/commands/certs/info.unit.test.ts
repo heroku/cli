@@ -11,6 +11,7 @@ import {
   endpointUntrusted,
   endpointTrusted,
   certificateDetails,
+  certificateDetailsWithDomains,
 } from '../../../helpers/stubs/sni-endpoints'
 const sharedSni = require('./shared_sni.unit.test.ts')
 
@@ -25,14 +26,13 @@ describe('heroku certs:info', function () {
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
     await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stdout.output, '')
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for example...
-      Fetching SSL certificate tokyo-1050 info for example... done
+      Fetching SSL certificate tokyo-1050 info for ⬢ example...
+      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
-      Certificate details:
-      ${certificateDetails()}
+Certificate details:
+${certificateDetails()}
     `))
   })
 
@@ -47,15 +47,20 @@ describe('heroku certs:info', function () {
       .reply(200, endpointWithDomains)
     nock('https://api.heroku.com')
       .get('/apps/example/domains/example.heroku.com')
-      .reply(200, [endpointWithDomains])
+      .reply(200, {
+        cname: 'example.herokudns.com',
+        hostname: 'subdomain.example.com',
+        kind: 'custom',
+        status: 'pending',
+      })
     await runCommand(Cmd, [
       '--app',
       'example',
       '--show-domains',
     ])
     expectOutput(stdout.output, heredoc(`
-      Certificate details:
-      ${certificateDetails()}
+Certificate details:
+${certificateDetailsWithDomains()}
     `))
   })
 
@@ -70,22 +75,18 @@ describe('heroku certs:info', function () {
       .reply(200, endpointUntrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for example...
-      Fetching SSL certificate tokyo-1050 info for example... done
+      Fetching SSL certificate tokyo-1050 info for ⬢ example...
+      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(heredoc(stdout.output), heredoc(`
       Certificate details:
       Common Name(s): example.org
       Expires At:     2013-08-01 21:34 UTC
-      Issuer: /C=US/ST = California / L=San Francisco / O=Heroku by Salesforce / CN=secure.example.org
-      Starts At: 2012 -08-01 21: 34 UTC
-      Subject: /C=US/ST = California / L=San Francisco / O=Untrusted / CN=untrusted.example.org
+      Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+      Starts At:      2012-08-01 21:34 UTC
+      Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
       SSL certificate is not trusted.
     `))
-    // expect(stderr.output).to.equal('Fetching SSL certificate tokyo-1050 info for example... done\n')
-    // expect(stdout.output).to.equal('Certificate details:\nCommon Name(s): example.org\nExpires At:     2013-08-01 21:34 UTC\n
-    // Issuer: /C=US/ST = California / L=San Francisco / O=Heroku by Salesforce / CN=secure.example.org\nStarts At: 2012 -08-01 21: 34 UTC\n
-    // Subje/ct: /C=US/ST = California / L=San Francisco / O=Untrusted / CN=untrusted.example.org\nSSL certificate is not trusted.\n'))
   })
 
   it('shows certificate details when trusted', async function () {
@@ -101,17 +102,17 @@ describe('heroku certs:info', function () {
       .reply(200, endpointTrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for example...
-      Fetching SSL certificate tokyo-1050 info for example... done
+      Fetching SSL certificate tokyo-1050 info for ⬢ example...
+      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
       Certificate details:
       Common Name(s): example.org
       Expires At:     2013-08-01 21:34 UTC
-      Issuer: /C=US/ST = California / L=San Francisco / O=Heroku by Salesforce / CN=secure.example.org
-      Starts At: 2012 -08-01 21: 34 UTC
-      Subject: /C=US/ST = California / L=San Francisco / O=Untrusted / CN=untrusted.example.org
-      SSL certificate is not trusted.
+      Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+      Starts At:      2012-08-01 21:34 UTC
+      Subject:        /C=US/ST=California/L=San Francisco/O=Trusted/CN=trusted.example.org
+      SSL certificate is verified by a root authority.
     `))
   })
 })

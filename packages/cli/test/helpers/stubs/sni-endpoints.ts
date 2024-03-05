@@ -121,6 +121,18 @@ export function certificateDetails() {
   `)
 }
 
+export function certificateDetailsWithDomains() {
+  return heredoc(`
+    Common Name(s): example.org
+    Domain(s):      subdomain.example.com
+    Expires At:     2013-08-01 21:34 UTC
+    Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+    Starts At:      2012-08-01 21:34 UTC
+    Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+    SSL certificate is self signed.
+  `)
+}
+
 export const endpoint: Endpoint = {
   name: 'tokyo-1050',
   cname: 'tokyo-1050.herokussl.com',
