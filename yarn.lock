@@ -5127,10 +5127,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "@types/debug@npm:4.1.2"
-  checksum: 9db950acfc350868206fe27c80e2c53805b147c9b2a7dab2f151384a123b66b8b1767906e618928f8095ec15954c1a65dd5080385515258ce736f7d89c6b0765
+"@types/debug@npm:^4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
+  dependencies:
+    "@types/ms": "*"
+  checksum: 47876a852de8240bfdaf7481357af2b88cb660d30c72e73789abf00c499d6bc7cd5e52f41c915d1b9cd8ec9fef5b05688d7b7aef17f7f272c2d04679508d1053
   languageName: node
   linkType: hard
 
@@ -5251,6 +5253,13 @@ __metadata:
   version: 5.2.7
   resolution: "@types/mocha@npm:5.2.7"
   checksum: 446e64292f37f4eac9221161f4c1026dd4a0dbeea0f16c4617227fcf5a1286b53d97e36a32ff7cb3a0435ab78791dd43e9ac1006f92abedb47d7d1d7636cb55c
+  languageName: node
+  linkType: hard
+
+"@types/ms@npm:*":
+  version: 0.7.34
+  resolution: "@types/ms@npm:0.7.34"
+  checksum: f38d36e7b6edecd9badc9cf50474159e9da5fa6965a75186cceaf883278611b9df6669dc3a3cc122b7938d317b68a9e3d573d316fcb35d1be47ec9e468c6bd8a
   languageName: node
   linkType: hard
 
@@ -7968,7 +7977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.0.1, debug@npm:^4.2.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.0.1, debug@npm:^4.2.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -10937,7 +10946,7 @@ __metadata:
     "@opentelemetry/semantic-conventions": ^1.15.1
     "@types/ansi-styles": ^3.2.1
     "@types/chai": ^4.1.7
-    "@types/debug": ^4.1.2
+    "@types/debug": ^4.1.12
     "@types/fs-extra": ^5.0.5
     "@types/glob": ^7.1.1
     "@types/got": ^9.6.7
@@ -10964,7 +10973,7 @@ __metadata:
     chalk: ^2.4.2
     commander: ^2.15.1
     date-fns: ^2.30.0
-    debug: 4.3.1
+    debug: 4.3.4
     edit-string: ^1.1.6
     execa: 5.1.1
     foreman: ^3.0.1
