@@ -16,7 +16,7 @@ type ImageResponse = {
   }
 }
 
-export default class Release extends Command {
+export default class ContainerRelease extends Command {
   static topic = 'container'
   static description = 'Releases previously pushed Docker images to your Heroku app'
   static usage = 'heroku container:release'
@@ -32,11 +32,11 @@ export default class Release extends Command {
   }
 
   async run() {
-    const {flags, argv, args} = await this.parse(Release)
+    const {flags, argv} = await this.parse(ContainerRelease)
     const {app, verbose} = flags
 
     if (argv.length === 0) {
-      this.error(`Error: Requires one or more process types\n ${Release.example}`)
+      this.error(`Error: Requires one or more process types\n ${ContainerRelease.example}`)
     }
 
     if (verbose) {
@@ -56,6 +56,7 @@ export default class Release extends Command {
           hostname: `registry.${herokuHost}`,
           headers: {
             Accept: 'application/vnd.docker.distribution.manifest.v2+json',
+            Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
           }},
       )
       let imageID
