@@ -1,4 +1,3 @@
-'use strict'
 import * as nock from 'nock'
 
 export function collaboratorsTeamApp(app: string, email: string) {
