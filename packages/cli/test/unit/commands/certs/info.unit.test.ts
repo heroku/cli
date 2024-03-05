@@ -129,11 +129,17 @@ describe('heroku shared', function () {
   }
 
   const stderr = function (endpoint: Endpoint) {
-    return `Fetching SSL certificate ${endpoint.name} info for example... done\n`
+    return heredoc(`
+      Fetching SSL certificate ${endpoint.name} info for ⬢ example...
+      Fetching SSL certificate ${endpoint.name} info for ⬢ example... done
+    `)
   }
 
   const stdout = function (certificateDetails: string) {
-    return `Certificate details:\n${certificateDetails}\n`
+    return heredoc(`
+      Certificate details:
+      ${certificateDetails}
+    `)
   }
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
