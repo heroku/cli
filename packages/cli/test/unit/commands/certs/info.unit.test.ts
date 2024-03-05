@@ -137,8 +137,8 @@ describe('heroku shared', function () {
 
   const stdout = function (certificateDetails: string) {
     return heredoc(`
-      Certificate details:
-      ${certificateDetails}
+Certificate details:
+${certificateDetails}
     `)
   }
 

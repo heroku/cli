@@ -39,7 +39,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'tokyo-1050',
       ])
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expectOutput(stdout.output, stdoutOutput(certificateDetails(), endpoint))
     })
 
     it('# errors out for --endpoint when there are multiple ', async function () {
@@ -51,8 +51,6 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-        '--confirm',
-        'example',
       ]).catch(function (error: Error) {
         expect(error.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
       })
@@ -70,7 +68,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'tokyo-1050.herokussl.com',
       ])
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expectOutput(stdout.output, stdoutOutput(certificateDetails(), endpoint))
     })
 
     it('# --endpoint errors out if there is no match', async function () {
@@ -80,6 +78,8 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
       await runCommand(command, [
         '--app',
         'example',
+        '--endpoint',
+        'tokyo-1050.herokussl.com',
       ]).catch(function (error: Error) {
         expect(error.message).to.equal('Record not found.')
       })
@@ -94,8 +94,6 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--name',
         'tokyo-1050',
-        '--confirm',
-        'example',
       ]).catch(function (error: Error) {
         expect(error.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
       })
