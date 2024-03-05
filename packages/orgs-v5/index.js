@@ -22,5 +22,4 @@ exports.commands = flatten([
   require('./commands/apps/transfer'),
   require('./commands/apps/unlock'),
   require('./commands/members/add'),
-  require('./commands/members/remove'),
 ])
