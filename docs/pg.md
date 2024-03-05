@@ -1046,7 +1046,7 @@ DESCRIPTION
 
 ## `heroku pg:upgrade [DATABASE]`
 
-unfollow a database and upgrade it to the latest stable PostgreSQL version
+For an Essential-* plan, this command upgrades the database to the latest stable PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the parent database before upgrading to the latest stable PostgreSQL version.
 
 ```
 USAGE
@@ -1059,7 +1059,9 @@ FLAGS
   -v, --version=<value>  PostgreSQL version to upgrade to
 
 DESCRIPTION
-  unfollow a database and upgrade it to the latest stable PostgreSQL version
+  For an Essential-* plan, this command upgrades the database to the latest stable PostgreSQL version. For a
+  Standard-tier and higher plan, this command unfollows the parent database before upgrading to the latest stable
+  PostgreSQL version.
   to upgrade to another PostgreSQL version, use pg:copy instead
 ```
 

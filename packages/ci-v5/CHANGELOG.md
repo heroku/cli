@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-05)
+
+
+### Bug Fixes
+
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
+
+
+
+
+
 # [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci-v5
