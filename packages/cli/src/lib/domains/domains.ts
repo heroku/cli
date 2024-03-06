@@ -60,22 +60,24 @@ export async function waitForDomains(heroku: APIClient, app: string) {
 
 export function printDomains(domains: Required<Heroku.Domain>[], message: string) {
   domains = domains.filter(domain => domain.kind === 'custom')
-  const domains_with_type: Required<Heroku.Domain & { type: string }>[] = domains.map(domain => Object.assign({}, domain, {type: type(domain)}))
+  const domains_with_type: (Required<Heroku.Domain> & { type: string })[] = domains.map(domain => Object.assign({}, domain, {type: type(domain)}))
 
   if (domains_with_type.length === 0) {
-    ux.styledHeader(`${message}  Add a custom domain to your app by running ${color.app('heroku domains:add <yourdomain.com>')}`)
+    ux.styledHeader(`${message}  Add a custom domain to your app by running ${color.cmd('heroku domains:add <yourdomain.com>')}`)
   } else {
     ux.styledHeader(`${message}  Update your application's DNS settings as follows`)
 
     ux.table(domains_with_type,
       {
-        Domain: {
+        domain: {
           get: ({hostname}) => hostname,
         },
-        'Record Type': {
+        recordType: {
+          header: 'Record Type',
           get: ({type}) => type,
         },
-        'DNS Target': {
+        dnsTarget: {
+          header: 'DNS Target',
           get: ({cname}) => cname,
         },
       },
@@ -115,7 +117,10 @@ export async function waitForCertIssuedOnDomains(heroku: APIClient, app: string)
     }
 
     if (someFailed(domains)) {
+      ux.action.stop(color.red('!'))
       throw new Error('ACM not enabled for some domains')
     }
+
+    ux.action.stop()
   }
 }

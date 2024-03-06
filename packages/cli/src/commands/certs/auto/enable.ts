@@ -32,11 +32,11 @@ export default class Enable extends Command {
           notify('heroku certs:auto:enable', 'Certificate issued to all domains')
         } catch (error) {
           notify('heroku certs:auto:enable', 'An error occurred', false)
-          ux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cyan.bold('heroku certs:auto')}.`)
+          ux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
           throw error
         }
       } else {
-        ux.action.stop(`${color.yellow('starting')}. See status with ${color.cyan.bold('heroku certs:auto')} or wait until active with ${color.cyan.bold('heroku certs:auto --wait')}`)
+        ux.action.stop(`${color.yellow('starting')}. See status with ${color.cmd('heroku certs:auto')} or wait until active with ${color.cmd('heroku certs:auto --wait')}`)
       }
 
       const domains = await waitForDomains(this.heroku, app)
@@ -44,7 +44,7 @@ export default class Enable extends Command {
         const domainBeforeEnable = domainsBeforeEnable.find(domainBefore => domain.hostname === domainBefore.hostname)
         return domainBeforeEnable && domain.cname !== domainBeforeEnable.cname
       })
-      const message = `Your certificate will now be managed by Heroku. Check the status by running ${color.cyan.bold('heroku certs:auto')}.`
+      const message = `Your certificate will now be managed by Heroku. Check the status by running ${color.cmd('heroku certs:auto')}.`
 
       if (domains.length === 0 || changedCnames.length > 0) {
         printDomains(changedCnames, message)
