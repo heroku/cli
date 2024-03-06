@@ -3,10 +3,11 @@ on:
   workflow_dispatch
 
 jobs:
-  copy-to-stable:
+  empty-stampy-buckets:
     runs-on: ubuntu-latest
     environment: Stampy
     steps:
+      - uses: actions/checkout@v3
       - name: Empty Stampy signed and unsigned buckets
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
@@ -21,4 +22,4 @@ jobs:
           export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.AccessKeyId')
           export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SecretAccessKey')
           export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r '.Credentials.SessionToken')
-          node scripts/stampy/empty-stampy-buckets.js
+          node ./scripts/stampy/empty-stampy-buckets.js

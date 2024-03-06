@@ -1,5 +1,0 @@
---require ./test/helpers.js
---recursive
---timeout 180000
---exit
---bail
