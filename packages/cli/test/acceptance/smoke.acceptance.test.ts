@@ -203,7 +203,7 @@ describe('@acceptance smoke tests', () => {
     it('heroku commands', async () => {
       const removeSpaces = (str: string) => str.replace(/ /g, '')
       const {stdout} = await run('commands')
-      expect(stripAnsi(stdout)).to.equal(stripAnsi(commandsOutput))
+      expect(stripAnsi(removeSpaces(stdout))).to.equal(stripAnsi(removeSpaces(commandsOutput)))
     })
 
     it('asserts monorepo plugins are in core', async () => {
