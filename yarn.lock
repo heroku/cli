@@ -5248,6 +5248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lolex@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "@types/lolex@npm:5.1.6"
+  checksum: 5d6277bb092543189b78d136400f81a0d28bde346c471497c50d153c7cb1450ab5d6abe21f13dae7e724a34e07d4664cc9cb0d931065a92287fdecf24ccf3dcf
+  languageName: node
+  linkType: hard
+
 "@types/minimatch@npm:*":
   version: 3.0.3
   resolution: "@types/minimatch@npm:3.0.3"
@@ -5348,6 +5355,13 @@ __metadata:
   version: 1.3.28
   resolution: "@types/proxyquire@npm:1.3.28"
   checksum: 9f0267b4516c2686a2e99a6d4dbd2ed660133180aad775a4000f3e103d8b2fe6b1bfe5b36003edf7adfb02542aed6c2fa6049fc217daea73ebced2942a762f27
+  languageName: node
+  linkType: hard
+
+"@types/psl@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "@types/psl@npm:1.1.3"
+  checksum: adc24b5f0a2569563367437cbdcbb63c780e798360a4c21470043acda2adad56e510c9f357be36f297974d68534821febc38652709e5d712ac2cdd62f9a6777a
   languageName: node
   linkType: hard
 
@@ -11237,6 +11251,7 @@ __metadata:
     "@types/node-fetch": ^2.1.6
     "@types/phoenix": ^1.4.0
     "@types/proxyquire": ^1.3.28
+    "@types/psl": ^1.1.3
     "@types/shell-escape": ^0.2.0
     "@types/shell-quote": ^1.7.5
     "@types/strftime": ^0.9.8
@@ -11280,6 +11295,7 @@ __metadata:
     phoenix: ^1.6.14
     printf: 0.6.1
     proxyquire: ^2.1.0
+    psl: ^1.9.0
     qqjs: 0.3.11
     read-pkg: ^4.0.1
     rimraf: 5.0.5
@@ -16179,6 +16195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"psl@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "psl@npm:1.9.0"
+  checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
+  languageName: node
+  linkType: hard
+
 "pump@npm:^3.0.0":
   version: 3.0.0
   resolution: "pump@npm:3.0.0"
@@ -17045,6 +17068,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@actions/core": ^1.10.0
+    "@types/lolex": ^5.1.6
     "@typescript-eslint/eslint-plugin": 4.18.0
     "@typescript-eslint/parser": 4.18.0
     eslint: ^7.32.0
