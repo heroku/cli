@@ -3,7 +3,7 @@ import {Command} from '@heroku-cli/command'
 import {stdout, stderr} from 'stdout-stderr'
 
 type CmdConstructorParams = ConstructorParameters<typeof Command>
-type GenericCmd = new (...args: CmdConstructorParams) => Command
+export type GenericCmd = new (...args: CmdConstructorParams) => Command
 
 const stopMock = () => {
   stdout.stop()
