@@ -124,7 +124,6 @@ export default `\u001B[1m Command                                        Summary
  features:disable                               disables an app feature                                                                                                                                 
  features:enable                                enables an app feature                                                                                                                                  
  features:info                                  display information about a feature                                                                                                                     
- generate-fig-spec                              Generate a Fig completion spec
  git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)                                                                           
  git:remote                                     adds a git remote to an app repo                                                                                                                        
  help                                           Display help for heroku.                                                                                                                                
