@@ -3,6 +3,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import Cmd  from '../../../../src/commands/apps/join'
 import runCommand from '../../../helpers/runCommand'
+import expectOutput from '../../../helpers/utils/expectOutput'
 import {userAccount} from '../../../helpers/stubs/get'
 import {teamAppCollaborators} from '../../../helpers/stubs/post'
 
@@ -13,35 +14,33 @@ describe('heroku apps:join', () => {
     apiGetUserAccount = userAccount('raulb@heroku.com')
   })
   afterEach(() => nock.cleanAll())
-  it('joins the app', () => {
+  it('joins the app', async () => {
     apiPostCollaborators = teamAppCollaborators('raulb@heroku.com')
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-      .then(() => expect('').to.eq(stdout.output))
-      .then(() => expect('Joining myapp...\nJoining myapp... done\n').to.eq(stderr.output))
-      .then(() => apiGetUserAccount.done())
-      .then(() => apiPostCollaborators.done())
+    expectOutput(stdout.output, '')
+    expectOutput(stderr.output, 'Joining myapp...\nJoining myapp... done\n')
+    apiGetUserAccount.done()
+    apiPostCollaborators.done()
   })
-  it('is forbidden from joining the app', () => {
+  it('is forbidden from joining the app', async () => {
     const response = {
       code: 403, description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
     }
     apiPostCollaborators = teamAppCollaborators('raulb@heroku.com', [], response)
     let thrown = false
-    return runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-      .then(() => apiGetUserAccount.done())
       .catch(function (error) {
         thrown = true
         expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
       })
-      .then(function () {
-        expect(thrown).to.eq(true)
-      })
-      .then(() => apiPostCollaborators.done())
+    expect(thrown).to.eq(true)
+    apiGetUserAccount.done()
+    apiPostCollaborators.done()
   })
 })
