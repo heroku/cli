@@ -31,8 +31,8 @@ describe('heroku certs:info', function () {
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
-Certificate details:
-${certificateDetails()}
+      Certificate details:
+      ${certificateDetails()}
     `))
   })
 
@@ -59,8 +59,8 @@ ${certificateDetails()}
       '--show-domains',
     ])
     expectOutput(stdout.output, heredoc(`
-Certificate details:
-${certificateDetailsWithDomains()}
+      Certificate details:
+      ${certificateDetailsWithDomains()}
     `))
   })
 
