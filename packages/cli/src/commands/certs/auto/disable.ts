@@ -8,7 +8,7 @@ export default class Disable extends Command {
   static topic = 'certs';
   static description = 'disable ACM for an app';
   static flags = {
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
   };
 
