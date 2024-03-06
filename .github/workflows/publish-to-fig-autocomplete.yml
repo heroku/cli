@@ -6,7 +6,7 @@ on:
 
 jobs:
   push-to-fig-autocomplete:
-    runs-on: pub-hk-ubuntu-22.04-small
+    runs-on: pub-hk-macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
@@ -14,21 +14,25 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
+      - name: Install jq
+        run: brew install jq
+      - name: Install Fig Oclif Plugin
+        run: yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
       - run: yarn --immutable --network-timeout 1000000
       - name: Build Heroku CLI
         run: yarn build
-      - name: Generate Fig Spec
-        run: ./bin/run generate-fig-spec > spec.ts
-      - name: Get Heroku Version
-        id: cli-version
-        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
-      - name: Create Fig Autocomplete PR
-        uses: withfig/push-to-fig-autocomplete-action@v1
-        with:
-          token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
-          autocomplete-spec-name: 'heroku'
-          spec-path: spec.ts
-          integration: oclif
-          diff-based-versioning: true
-          new-spec-version: ${{ steps.cli-version.outputs.version }}
-          pr-body: Automated PR for latest Heroku CLI release
+      # - name: Generate Fig Spec
+      #   run: ./bin/run generate-fig-spec > spec.ts
+      # - name: Get Heroku Version
+      #   id: cli-version
+      #   run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
+      # - name: Create Fig Autocomplete PR
+      #   uses: withfig/push-to-fig-autocomplete-action@v1
+      #   with:
+      #     token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
+      #     autocomplete-spec-name: 'heroku'
+      #     spec-path: spec.ts
+      #     integration: oclif
+      #     diff-based-versioning: true
+      #     new-spec-version: ${{ steps.cli-version.outputs.version }}
+      #     pr-body: Automated PR for latest Heroku CLI release
