@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-export function meta(appName: string, t: string, certName: string | undefined) {
+export function meta(appName: string, t: 'sni', certName?: string | undefined) {
   let path
   if (t === 'sni') {
     path = `/apps/${appName}/sni-endpoints`
