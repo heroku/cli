@@ -25,7 +25,7 @@ jobs:
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
       - name: Create Fig Autocomplete PR
-        uses: withfig/push-to-fig-autocomplete-action@v1
+        uses: withfig/push-to-fig-autocomplete-action@v2
         with:
           token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
           autocomplete-spec-name: 'heroku'
