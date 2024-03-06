@@ -1,6 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand, {GenericCmd} from '../../../helpers/runCommand'
-
 import * as nock from 'nock'
 import {expect} from 'chai'
 import {
@@ -39,7 +38,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'tokyo-1050',
       ])
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails(), endpoint))
+      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
     })
 
     it('# errors out for --endpoint when there are multiple ', async function () {
@@ -68,7 +67,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'tokyo-1050.herokussl.com',
       ])
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails(), endpoint))
+      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
     })
 
     it('# --endpoint errors out if there is no match', async function () {

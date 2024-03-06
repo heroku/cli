@@ -12,6 +12,7 @@ import {
   endpointTrusted,
   certificateDetails,
   certificateDetailsWithDomains,
+  untrustedCertificateDetails,
 } from '../../../helpers/stubs/sni-endpoints'
 const sharedSni = require('./shared_sni.unit.test.ts')
 
@@ -32,7 +33,7 @@ describe('heroku certs:info', function () {
     `))
     expectOutput(stdout.output, heredoc(`
       Certificate details:
-      ${certificateDetails()}
+      ${certificateDetails}
     `))
   })
 
@@ -60,7 +61,7 @@ describe('heroku certs:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       Certificate details:
-      ${certificateDetailsWithDomains()}
+      ${certificateDetailsWithDomains}
     `))
   })
 
@@ -80,12 +81,7 @@ describe('heroku certs:info', function () {
     `))
     expectOutput(heredoc(stdout.output), heredoc(`
       Certificate details:
-      Common Name(s): example.org
-      Expires At:     2013-08-01 21:34 UTC
-      Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-      Starts At:      2012-08-01 21:34 UTC
-      Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
-      SSL certificate is not trusted.
+      ${untrustedCertificateDetails}
     `))
   })
 
@@ -135,10 +131,10 @@ describe('heroku shared', function () {
     `)
   }
 
-  const stdout = function (certificateDetails: string) {
+  const stdout = function (certDetails: string) {
     return heredoc(`
-Certificate details:
-${certificateDetails}
+      Certificate details:
+      ${certDetails}
     `)
   }
 

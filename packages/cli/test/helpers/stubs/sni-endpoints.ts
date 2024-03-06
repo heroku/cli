@@ -1,5 +1,3 @@
-import heredoc from 'tsheredoc'
-
 export type Endpoint = {
   name: string
   cname: string | null
@@ -110,29 +108,32 @@ export const endpointWithDomains: Endpoint = {
   },
 }
 
-export function certificateDetails() {
-  return `
-    Common Name(s): example.org
-    Expires At:     2013-08-01 21:34 UTC
-    Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-    Starts At:      2012-08-01 21:34 UTC
-    Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-    SSL certificate is self signed.
-  `
-}
+export const certificateDetails = `
+  Common Name(s): example.org
+  Expires At:     2013-08-01 21:34 UTC
+  Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  Starts At:      2012-08-01 21:34 UTC
+  Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  SSL certificate is self signed.
+`
 
-export function certificateDetailsWithDomains() {
-  return `
-    Common Name(s): example.org
-    Domain(s):      subdomain.example.com
-    Expires At:     2013-08-01 21:34 UTC
-    Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-    Starts At:      2012-08-01 21:34 UTC
-    Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-    SSL certificate is self signed.
-  `
-}
-
+export const certificateDetailsWithDomains = `
+  Common Name(s): example.org
+  Domain(s):      subdomain.example.com
+  Expires At:     2013-08-01 21:34 UTC
+  Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  Starts At:      2012-08-01 21:34 UTC
+  Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  SSL certificate is self signed.
+`
+export const untrustedCertificateDetails = `
+  Common Name(s): example.org
+  Expires At:     2013-08-01 21:34 UTC
+  Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  Starts At:      2012-08-01 21:34 UTC
+  Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
+  SSL certificate is not trusted.
+`
 export const endpoint: Endpoint = {
   name: 'tokyo-1050',
   cname: 'tokyo-1050.herokussl.com',
