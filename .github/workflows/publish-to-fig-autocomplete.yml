@@ -14,15 +14,13 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
-      # - name: Install jq
-      #   run: brew install jq
       - name: Install Fig Oclif Plugin
         run: yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
       - run: yarn --immutable --network-timeout 1000000
       - name: Build Heroku CLI
         run: yarn build
-      # - name: Generate Fig Spec
-      #   run: ./bin/run generate-fig-spec > spec.ts
+      - name: Generate Fig Spec
+        run: ./bin/run generate-fig-spec > spec.ts
       # - name: Get Heroku Version
       #   id: cli-version
       #   run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
