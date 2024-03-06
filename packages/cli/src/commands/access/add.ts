@@ -19,7 +19,7 @@ export default class AccessAdd extends Command {
 
   static args = {
     email: Args.string({required: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(AccessAdd)
