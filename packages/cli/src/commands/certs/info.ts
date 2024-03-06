@@ -34,6 +34,6 @@ export default class Info extends Command {
       delete cert.domains
     }
 
-    CertificateDetails.getCertificateDetials(cert)
+    CertificateDetails.getCertificateDetails(cert)
   }
 }

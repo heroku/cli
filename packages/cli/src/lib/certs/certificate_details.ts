@@ -24,7 +24,7 @@ export type cert = {
   }
 }
 
-export const getCertificateDetials = function (cert: cert, message = 'Certificate details:') {
+export const getCertificateDetails = function (cert: cert, message = 'Certificate details:') {
   const now = new Date()
   const autoRenewsAt = new Date(cert.ssl_cert.expires_at)
   autoRenewsAt.setMonth(autoRenewsAt.getMonth() - 1)
