@@ -6,7 +6,7 @@ on:
 
 jobs:
   push-to-fig-autocomplete:
-    runs-on: pub-hk-macos-latest
+    runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
