@@ -29,7 +29,7 @@ export default class Options extends AutocompleteBase {
   // Klass: (class) Command class
   // completion: (object) object with data/methods to build/retrive options from cache
   // curPosition*: the current argv position the shell is trying to complete
-  // options: (string) white-space seperated list of values for the shell to use for completion
+  // options: (string) white-space separated list of values for the shell to use for completion
 
   async run() {
     this.errorIfWindows()
@@ -192,7 +192,7 @@ export default class Options extends AutocompleteBase {
           }
         }
 
-        // --app=my-app is consided a flag & not a flag value
+        // --app=my-app is considered a flag & not a flag value
         // the shell's autocomplete handles partial value matching
 
         // add parsedFlag

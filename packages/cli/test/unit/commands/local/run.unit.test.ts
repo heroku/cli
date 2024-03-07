@@ -30,7 +30,7 @@ describe('local:run', () => {
       .it('can handle multiple argument passed to foreman after the `--` argument separator')
   })
 
-  describe('when the environemnt flag is given', function () {
+  describe('when the environment flag is given', function () {
     test
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params

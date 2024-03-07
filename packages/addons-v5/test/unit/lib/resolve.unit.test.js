@@ -334,7 +334,7 @@ describe('resolve', () => {
         .then(() => appAttachment.done())
     })
 
-    it('falls back to searching by addon and addon_service when ambigious', () => {
+    it('falls back to searching by addon and addon_service when ambiguous', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'myattachment-3', addon_service: 'slowdb'}).reply(200, [
           {app: {name: 'myapp'}, name: 'some-random-name-1'},
@@ -354,7 +354,7 @@ describe('resolve', () => {
         .then(() => appAttachment.done())
     })
 
-    it('throws original error when ambigious and searching by addon and addon_service is ambigious', () => {
+    it('throws original error when ambiguous and searching by addon and addon_service is ambiguous', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'myattachment-3', addon_service: 'slowdb'}).reply(200, [
           {app: {name: 'myapp'}, name: 'some-random-name-1'},

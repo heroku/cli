@@ -142,8 +142,8 @@ module.exports = heroku => {
 
   async function arbitraryAppDB(app) {
     // Since Postgres backups are tied to the app and not the add-on, but
-    // we require *an* add-on to interact with, make sure that that add-on
-    // is attached to the right app.
+    // we require *an* add-on to interact with, make sure that add-on is
+    // attached to the right app.
 
     debug(`fetching arbitrary app db on ${app}`)
     let addons = await heroku.get(`/apps/${app}/addons`)
