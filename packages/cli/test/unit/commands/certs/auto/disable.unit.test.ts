@@ -13,11 +13,7 @@ describe('heroku certs:auto:disable', function () {
   })
 
   it('disables acm', async function () {
-    nock('https://api.heroku.com', {
-      reqheaders: {
-        Accept: 'application/vnd.heroku+json; version=3.cedar-acm',
-      },
-    })
+    nock('https://api.heroku.com')
       .delete('/apps/example/acm')
       .reply(200, {acm: true})
     await runCommand(Cmd, [
