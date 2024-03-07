@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-addons-v5",
   "description": "`heroku addons:*` commands",
-  "version": "8.6.0",
+  "version": "8.10.0",
   "author": "Bo Jeanes @bjeanes",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -26,7 +26,7 @@
     "chai-as-promised": "^7.1.1",
     "heroku-client": "^3.0.7",
     "lolex": "^3.1.0",
-    "mocha": "^6.0.0",
+    "mocha": "^8.0.0",
     "nock": "9.0.13",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
@@ -46,6 +46,15 @@
   ],
   "license": "ISC",
   "main": "index.js",
+  "mocha": {
+    "reporter": "list",
+    "recursive": true,
+    "check-leaks": true,
+    "require": [
+      "./test/init.js"
+    ],
+    "timeout": 180000
+  },
   "repository": "heroku/cli",
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",

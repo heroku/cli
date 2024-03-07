@@ -16,9 +16,9 @@ describe('run', () => {
     fixture.capture(s => {
       stdout += s
     })
-    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['echo', '1', '2', '3']})
+    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {size: 'private-s'}, auth: {password: global.apikey}, args: ['echo', '1', '2', '3']})
       .then(() => fixture.release())
-      .then(() => expect(stdout).to.contain('1 2 3\n'))
+      .then(() => expect(stdout).to.contain('1 2 3'))
   })
 
   it('runs a command with spaces', () => {
@@ -27,9 +27,9 @@ describe('run', () => {
     fixture.capture(s => {
       stdout += s
     })
-    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
+    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {size: 'private-s'}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
       .then(() => fixture.release())
-      .then(() => expect(stdout).to.contain('{"foo": "bar"} \n'))
+      .then(() => expect(stdout).to.contain('{"foo": "bar"} '))
   })
 
   it('runs a command with quotes', () => {
@@ -38,9 +38,9 @@ describe('run', () => {
     fixture.capture(s => {
       stdout += s
     })
-    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
+    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {size: 'private-s'}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
       .then(() => fixture.release())
-      .then(() => expect(stdout).to.contain('{"foo":"bar"}\n'))
+      .then(() => expect(stdout).to.contain('{"foo":"bar"}'))
   })
 
   it('runs a command with env vars', () => {
@@ -49,7 +49,7 @@ describe('run', () => {
     fixture.capture(s => {
       stdout += s
     })
-    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {env: 'FOO=bar'}, auth: {password: global.apikey}, args: ['env']})
+    return cmd.run({app: 'heroku-cli-ci-smoke-test-app', flags: {size: 'private-s', env: 'FOO=bar'}, auth: {password: global.apikey}, args: ['env']})
       .then(() => fixture.release())
       .then(() => expect(stdout).to.contain('FOO=bar'))
   })

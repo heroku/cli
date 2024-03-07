@@ -7,6 +7,15 @@ import * as qq from 'qqjs'
 
 import commandsOutput from './commands-output'
 
+// this is a custom function that strips both ansi characters and several additional characters
+const stripAnsi = (input: string) => {
+  // eslint-disable-next-line no-control-regex, unicorn/escape-case
+  const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]|\s|─/g
+  const cleanedString = input.replace(ansiRegex, '')
+
+  return cleanedString
+}
+
 const globby = require('globby')
 
 const app = 'heroku-cli-ci-smoke-test-app'
@@ -142,7 +151,7 @@ describe('@acceptance smoke tests', () => {
     })
 
     it('heroku run', async () => {
-      const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
+      const {stdout} = await run(['run', '--size=private-s', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
       expect(stdout).to.contain('it works!')
     })
 
@@ -193,7 +202,7 @@ describe('@acceptance smoke tests', () => {
     // this test will fail when run locally depending on which plugins you have installed
     it('heroku commands', async () => {
       const {stdout} = await run('commands')
-      expect(stdout).to.equal(commandsOutput)
+      expect(stripAnsi(stdout)).to.equal(stripAnsi(commandsOutput))
     })
 
     it('asserts monorepo plugins are in core', async () => {

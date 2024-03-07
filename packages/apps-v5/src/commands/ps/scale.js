@@ -32,6 +32,7 @@ async function run(context, heroku) {
         // eslint-disable-next-line array-callback-return
         compact(args.map(arg => {
           let match = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
+          if (match === null) return
           let size = match[3]
 
           const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
