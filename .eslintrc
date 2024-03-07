@@ -46,7 +46,7 @@
     "unicorn/prefer-ternary": "off" // TODO: fix issues and turn this back on
   },
 
-  // Typescript settings
+  // TypeScript settings
   "overrides": [
     {
       "files": ["**/*{.ts,tsx}"],
