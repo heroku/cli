@@ -6,6 +6,7 @@ import {resolveAddon} from '../../lib/addons/resolve'
 import * as open from 'open'
 
 export default class Docs extends Command {
+    public static urlOpener: (url: string) => Promise<unknown> = open
     static topic = 'addons';
     static description = "open an add-on's Dev Center documentation in your browser";
     static flags = {
@@ -31,7 +32,7 @@ export default class Docs extends Command {
         ux.log(url)
       } else {
         ux.log(`Opening ${color.cyan(url)}...`)
-        await open(url)
+        await Docs.urlOpener(url)
       }
     }
 }

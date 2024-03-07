@@ -4,16 +4,23 @@ import * as sinon from 'sinon'
 import * as path from 'path'
 import * as childProcess from 'child_process'
 import * as inquirer from 'inquirer'
-
-const EventEmitter = require('events').EventEmitter
+import {ChildProcess} from 'node:child_process'
 
 describe('DockerHelper', () => {
   const eventMock = () => {
-    const eventEmitter = new EventEmitter()
-    process.nextTick(function () {
-      eventEmitter.emit('exit', 0)
-    })
-    return eventEmitter
+    return {
+      once: (event: string, cb: CallableFunction) => {
+        if (event === 'exit') {
+          cb()
+        }
+      },
+      on: (event: string, cb: CallableFunction) => {
+        if (event === 'exit') {
+          cb()
+        }
+      },
+      unref: () => {},
+    } as unknown as ChildProcess
   }
 
   describe('.version', () => {

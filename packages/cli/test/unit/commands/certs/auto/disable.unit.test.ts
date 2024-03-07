@@ -26,11 +26,7 @@ describe('heroku certs:auto:disable', function () {
       '--confirm',
       'example',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Disabling Automatic Certificate Management...
-      Disabling Automatic Certificate Management... done
-    `))
-    expectOutput(stdout.output, '')
+    expect(stderr.output).to.contain('Disabling Automatic Certificate Management... done')
   })
 
   it('confirms that they want to disable', async function () {

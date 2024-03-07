@@ -4,6 +4,7 @@ import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
+import {resolveAddon} from '../../../../src/lib/addons/resolve'
 
 const {default: Cmd} =  proxyquire(
   '../../../../src/commands/addons/docs',
@@ -34,6 +35,7 @@ describe('addons:docs', function () {
     api.done()
   })
   it('opens an addon by attachment name', async function () {
+    resolveAddon.cache.clear()
     const api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
@@ -47,7 +49,7 @@ describe('addons:docs', function () {
     api.done()
   })
   it('opens an addon by app/attachment name', async function () {
-    const api = nock('https://api.heroku.com:443')
+    const api = nock('https://api.heroku.com')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
       .post('/actions/addons/resolve', {app: 'myapp', addon: 'my-attachment-1111'})

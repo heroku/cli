@@ -1,17 +1,15 @@
 import {expect, test} from '@oclif/test'
-import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
+import Cmd from '../../../../src/commands/apps/open'
 
+const urlOpenerStub = sinon.stub()
 describe('apps:open', () => {
+  beforeEach(() => {
+    urlOpenerStub.resetHistory()
+  })
   const app = {
     web_url: 'https://myapp.herokuapp.com',
   }
-  const spawnStub = sinon.stub().returns({on: (event: string, cb: CallableFunction) => {
-    if (event === 'exit') {
-      cb()
-    }
-  }, unref: () => {}})
-
   test
     .stdout()
     .nock('https://api.heroku.com', api =>
@@ -19,10 +17,10 @@ describe('apps:open', () => {
         .get('/apps/myapp')
         .reply(200, app),
     )
-    .stub(childProcess, 'spawn', spawnStub)
+    .stub(Cmd, 'urlOpener', urlOpenerStub)
     .command(['apps:open', '-a', 'myapp'])
     .it('opens the url', () => {
-      const urlArgArray = spawnStub.getCall(0).args[1]
+      const urlArgArray = urlOpenerStub.getCall(0).args[0]
       // For darwin-based platforms this arg is an array that contains the site url.
       // For windows-based platforms this arg is an array that contains an encoded command that includes the url
       const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
@@ -30,12 +28,9 @@ describe('apps:open', () => {
     })
 
   describe('apps:open reset stub', () => {
-    const spawnStub = sinon.stub().returns({on: (event: string, cb: CallableFunction) => {
-      if (event === 'exit') {
-        cb()
-      }
-    }, unref: () => {}})
-
+    beforeEach(() => {
+      urlOpenerStub.resetHistory()
+    })
     test
       .stdout()
       .nock('https://api.heroku.com', api =>
@@ -43,10 +38,10 @@ describe('apps:open', () => {
           .get('/apps/myapp')
           .reply(200, app),
       )
-      .stub(childProcess, 'spawn', spawnStub)
+      .stub(Cmd, 'urlOpener', urlOpenerStub)
       .command(['apps:open', '-a', 'myapp', '/mypath'])
       .it('opens the url with path', () => {
-        const urlArgArray = spawnStub.getCall(0).args[1]
+        const urlArgArray = urlOpenerStub.getCall(0).args[0]
         // For darwin-based platforms this arg is an array that contains the site url.
         // For windows-based platforms this arg is an array that contains an encoded command that includes the url
         const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/mypath') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvAG0AeQBwAGEAdABoACIA')

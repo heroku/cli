@@ -114,8 +114,7 @@ export const certificateDetails = `
   Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
   Starts At:      2012-08-01 21:34 UTC
   Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
-  SSL certificate is self signed.
-`
+  SSL certificate is self signed.`
 
 export const certificateDetailsWithDomains = `
   Common Name(s): example.org

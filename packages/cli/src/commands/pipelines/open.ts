@@ -5,6 +5,7 @@ import * as open from 'open'
 import disambiguate from '../../lib/pipelines/disambiguate'
 
 export default class Open extends Command {
+  public static urlOpener: (url: string) => Promise<unknown> = open
   static description = 'open a pipeline in dashboard'
 
   static examples = ['$ heroku pipelines:open my-pipeline']
@@ -17,6 +18,6 @@ export default class Open extends Command {
     const {args} = await this.parse(Open)
 
     const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+    await Open.urlOpener(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }

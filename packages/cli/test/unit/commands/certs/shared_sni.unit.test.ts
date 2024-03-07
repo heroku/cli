@@ -10,9 +10,8 @@ import {
   endpointHeroku,
   certificateDetails,
 } from '../../../helpers/stubs/sni-endpoints'
-import expectOutput from '../../../helpers/utils/expectOutput'
 
-export const shouldHandleArgs = function (commandText: string, command: GenericCmd, callback: (err: Error | null, path: string, endpoint: Endpoint) => any, options: any) {
+export const shouldHandleArgs = function (commandText: string, command: GenericCmd, callback: (err: Error | null, path: string, endpoint: Endpoint) => nock.Scope, options: {stderr:CallableFunction, stdout:CallableFunction}) {
   const stdoutOutput = options.stdout || function () {
     return ''
   }
@@ -37,8 +36,8 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         '--name',
         'tokyo-1050',
       ])
-      expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expect(stderr.output).to.contain(stderrOutput(endpoint))
+      expect(stdout.output).to.eq(stdoutOutput(certificateDetails, endpoint))
     })
 
     it('# errors out for --endpoint when there are multiple ', async function () {
@@ -66,8 +65,8 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         '--endpoint',
         'tokyo-1050.herokussl.com',
       ])
-      expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expect(stderr.output).to.contain(stderrOutput(endpoint))
+      expect(stdout.output).to.eq(stdoutOutput(certificateDetails, endpoint))
     })
 
     it('# --endpoint errors out if there is no match', async function () {

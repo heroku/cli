@@ -14,7 +14,8 @@ import {
   certificateDetailsWithDomains,
   untrustedCertificateDetails,
 } from '../../../helpers/stubs/sni-endpoints'
-const sharedSni = require('./shared_sni.unit.test.ts')
+import * as sharedSni from './shared_sni.unit.test'
+import {expect} from '@oclif/test'
 
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
@@ -27,14 +28,8 @@ describe('heroku certs:info', function () {
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
     await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
-    `))
-    expectOutput(stdout.output, heredoc(`
-      Certificate details:
-      ${certificateDetails}
-    `))
+    expect(stderr.output).to.contain('Fetching SSL certificate tokyo-1050 info for ⬢ example... done')
+    expect(stdout.output.trim()).to.eq(heredoc(`Certificate details:\n${heredoc(certificateDetails)}`))
   })
 
   it('returns domains when show-domains flag is passed', async function () {
@@ -59,10 +54,7 @@ describe('heroku certs:info', function () {
       'example',
       '--show-domains',
     ])
-    expectOutput(stdout.output, heredoc(`
-      Certificate details:
-      ${certificateDetailsWithDomains}
-    `))
+    expectOutput(stdout.output, heredoc(`Certificate details:\n${heredoc(certificateDetailsWithDomains)}`))
   })
 
   it('shows certificate details when not trusted', async function () {
@@ -75,14 +67,8 @@ describe('heroku certs:info', function () {
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpointUntrusted)
     await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
-    `))
-    expectOutput(heredoc(stdout.output), heredoc(`
-      Certificate details:
-      ${untrustedCertificateDetails}
-    `))
+    expect(stderr.output).to.contain(heredoc('Fetching SSL certificate tokyo-1050 info for ⬢ example... done'))
+    expect(stdout.output).to.eq(heredoc(stdout.output), heredoc(`Certificate details:\n${heredoc(untrustedCertificateDetails)}`))
   })
 
   it('shows certificate details when trusted', async function () {
@@ -97,11 +83,8 @@ describe('heroku certs:info', function () {
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpointTrusted)
     await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
-      Fetching SSL certificate tokyo-1050 info for ⬢ example... done
-    `))
-    expectOutput(stdout.output, heredoc(`
+    expect(stderr.output).to.contain(heredoc('Fetching SSL certificate tokyo-1050 info for ⬢ example... done'))
+    expect(stdout.output).to.eq(stdout.output, heredoc(`
       Certificate details:
       Common Name(s): example.org
       Expires At:     2013-08-01 21:34 UTC
@@ -114,7 +97,7 @@ describe('heroku certs:info', function () {
 })
 
 describe('heroku shared', function () {
-  const callback = function (err: Error, path: string, endpoint: Endpoint) {
+  const callback = function (err: Error | null, path: string, endpoint: Endpoint) {
     if (err)
       throw err
     return nock('https://api.heroku.com', {
@@ -125,17 +108,11 @@ describe('heroku shared', function () {
   }
 
   const stderr = function (endpoint: Endpoint) {
-    return heredoc(`
-      Fetching SSL certificate ${endpoint.name} info for ⬢ example...
-      Fetching SSL certificate ${endpoint.name} info for ⬢ example... done
-    `)
+    return `Fetching SSL certificate ${endpoint.name} info for ⬢ example... done`
   }
 
   const stdout = function (certDetails: string) {
-    return heredoc(`
-      Certificate details:
-      ${certDetails}
-    `)
+    return `Certificate details:\n${heredoc(certDetails)}\n`
   }
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})

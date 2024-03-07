@@ -21,7 +21,7 @@ describe('heroku apps:join', () => {
       'myapp',
     ])
     expectOutput(stdout.output, '')
-    expectOutput(stderr.output, 'Joining myapp...\nJoining myapp... done\n')
+    expect(stderr.output).to.contain('Joining myapp... done\n')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })

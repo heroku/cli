@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as open from 'open'
 
 export default class AppsOpen extends Command {
+  public static urlOpener: (url: string) => Promise<unknown> = open
   static description = 'open the app in a web browser'
   static topic = 'apps'
   static aliases = ['open']
@@ -28,6 +29,6 @@ export default class AppsOpen extends Command {
     const path = args.path || ''
     const url = new URL(path, app.web_url)
 
-    await open(url.toString())
+    await AppsOpen.urlOpener(url.toString())
   }
 }

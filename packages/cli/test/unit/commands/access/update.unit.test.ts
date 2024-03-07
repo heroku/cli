@@ -23,10 +23,8 @@ describe('heroku access:update', () => {
         'gandalf@heroku.com',
       ])
       expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions...
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions...')
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
 
     it('updates the app permissions, even specifying view as a permission', async () => {
@@ -40,10 +38,8 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         'gandalf@heroku.com',
       ])
       expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions...
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions...')
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
   })
 

@@ -1,9 +1,9 @@
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
-import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
+import Cmd from '../../../../src/commands/pipelines/setup'
 
 describe('pipelines:setup', () => {
   test
@@ -19,7 +19,8 @@ describe('pipelines:setup', () => {
     const kolkrabbiAccount = {github: {token: '123-abc'}}
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
-    const spawnStub = sinon.stub().returns({unref: () => {}})
+
+    const openStub = sinon.stub()
 
     function setupApiNock(api: any) {
       api
@@ -97,7 +98,7 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', promptStub)
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .command(['pipelines:setup'])
           .it('creates apps in the personal account with CI enabled')
 
@@ -121,7 +122,7 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', promptStub)
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .command(['pipelines:setup', pipeline.name.toUpperCase()])
           .it('downcases capitalised pipeline names')
 
@@ -143,7 +144,7 @@ describe('pipelines:setup', () => {
               .reply(200)
           })
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
           .it('does not prompt for options with the -y flag', () => {
           // Since we're passing the `yes` flag here, we should always return default settings and
@@ -199,7 +200,7 @@ describe('pipelines:setup', () => {
           })
           .stub(ux, 'prompt', promptStub)
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .command(['pipelines:setup', '--team', team])
           .it('creates apps in a team with CI enabled')
       })
@@ -247,7 +248,7 @@ describe('pipelines:setup', () => {
               .reply(201, {})
           })
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
           .catch(error => {
             expect(error.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
@@ -299,7 +300,7 @@ describe('pipelines:setup', () => {
               .reply(201, {})
           })
           .stub(ux, 'confirm', confirmStub)
-          .stub(childProcess, 'spawn', spawnStub)
+          .stub(Cmd, 'urlOpener', openStub)
           .stub(pollAppSetups, 'wait', () => {
             pollAppSetups('foo', 'bar')
           })

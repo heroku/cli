@@ -20,12 +20,6 @@ import {SinonStub} from 'sinon'
 import {PathLike} from 'node:fs'
 
 let stubbedPromptReturnValue: unknown = {}
-let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
-const stubbedPrompt = sinon.stub(inquirer, 'prompt')
-  .callsFake((questions: QuestionCollection<inquirer.Answers>) => {
-    questionsReceived = questions as ReadonlyArray<inquirer.Answers>
-    return Promise.resolve(stubbedPromptReturnValue) as ReturnType<typeof inquirer.prompt>
-  })
 
 function mockDomains() {
   nock('https://api.heroku.com')
@@ -42,8 +36,14 @@ function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
 
 describe('heroku certs:add', async () => {
   let stubbedReadFile: SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
-
+  let stubbedPrompt: SinonStub
+  let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
   beforeEach(async () => {
+    stubbedPrompt = sinon.stub(inquirer, 'prompt')
+    stubbedPrompt.callsFake((questions: QuestionCollection<inquirer.Answers>) => {
+      questionsReceived = questions as ReadonlyArray<inquirer.Answers>
+      return Promise.resolve(stubbedPromptReturnValue) as ReturnType<typeof inquirer.prompt>
+    })
     stubbedReadFile = sinon.stub(fs, 'readFile')
     questionsReceived = undefined
     nock.cleanAll()
@@ -51,9 +51,6 @@ describe('heroku certs:add', async () => {
 
   afterEach(function () {
     stubbedReadFile.restore()
-  })
-
-  after(() => {
     stubbedPrompt.restore()
   })
 
@@ -77,7 +74,7 @@ describe('heroku certs:add', async () => {
     ])
     mockSni.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.equal(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}`)
+    expect(stdout.output).to.equal(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}\n`)
   })
 
   it('# displays warnings', async () => {
@@ -122,7 +119,7 @@ describe('heroku certs:add', async () => {
     ])
     mock.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}`)
+    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}\n`)
   })
 
   it('# shows the configure prompt', async () => {
@@ -148,7 +145,7 @@ describe('heroku certs:add', async () => {
     ])
     mockSni.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
+    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}\n=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
   describe('stable cnames', async () => {

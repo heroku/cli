@@ -21,6 +21,7 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/vali
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
+  public static urlOpener: (url: string) => Promise<unknown> = open
   static description =
     'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
@@ -103,7 +104,7 @@ export default class Setup extends Command {
     ux.action.start('Configuring pipeline')
     try {
       await setup
-      await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+      await Setup.urlOpener(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       debug(error)
       ux.error(error)

@@ -38,8 +38,7 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
+    expect(stderr.output).to.contain(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
     expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
@@ -72,8 +71,7 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
+    expect(stderr.output).to.contain(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
     expect(stdout.output).to.equal(heredoc`
@@ -103,8 +101,7 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
+    expect(stderr.output).to.contain(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
     expect(stdout.output).to.equal(

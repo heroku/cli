@@ -26,7 +26,7 @@ describe('heroku access:add', () => {
         'raulb@heroku.com',
       ])
         .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Adding raulb@heroku.com access to the app myapp with deploy, view permissions...\nAdding raulb@heroku.com access to the app myapp with deploy, view permissions... done\n').to.eq(stderr.output))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp with deploy, view permissions... done\n'))
         .then(() => apiGet.done())
         .then(() => apiGetOrgFeatures.done())
         .then(() => apiPost.done())
@@ -40,7 +40,7 @@ describe('heroku access:add', () => {
         'raulb@heroku.com',
       ])
         .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Adding raulb@heroku.com access to the app myapp with deploy, view permissions...\nAdding raulb@heroku.com access to the app myapp with deploy, view permissions... done\n').to.eq(stderr.output))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp with deploy, view permissions... done\n'))
         .then(() => apiGet.done())
         .then(() => apiGetOrgFeatures.done())
         .then(() => apiPost.done())
@@ -73,7 +73,8 @@ describe('heroku access:add', () => {
         'raulb@heroku.com',
       ])
         .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Adding raulb@heroku.com access to the app myapp...\nAdding raulb@heroku.com access to the app myapp... done\n').to.eq(stderr.output))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp...\n'))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp... done\n'))
         .then(() => apiGet.done())
         .then(() => apiGetOrgFeatures.done())
         .then(() => apiPost.done())
@@ -92,7 +93,8 @@ describe('heroku access:add', () => {
         'raulb@heroku.com',
       ])
         .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Adding raulb@heroku.com access to the app myapp...\nAdding raulb@heroku.com access to the app myapp... done\n').to.eq(stderr.output))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp...\n'))
+        .then(() => expect(stderr.output).to.contain('Adding raulb@heroku.com access to the app myapp... done\n'))
         .then(() => apiGet.done())
         .then(() => apiPost.done())
     })

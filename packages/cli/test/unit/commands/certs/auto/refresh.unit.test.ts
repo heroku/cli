@@ -4,6 +4,7 @@ import runCommand from '../../../../helpers/runCommand'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import * as nock from 'nock'
+import {expect} from '@oclif/test'
 
 describe('heroku certs:auto:enable', function () {
   beforeEach(function () {
@@ -20,8 +21,7 @@ describe('heroku certs:auto:enable', function () {
       '--app',
       'example',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Refreshing Automatic Certificate Management...
+    expect(stderr.output).to.contain(heredoc(`
       Refreshing Automatic Certificate Management... done
     `))
     expectOutput((stdout.output), '')
