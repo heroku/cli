@@ -186,3 +186,16 @@ export const endpointHeroku: Endpoint = {
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com',
   },
 }
+
+export const endpointWarning: Endpoint = {
+  name: 'warning-7777',
+  cname: 'warning-7777.herokussl.com',
+  ssl_cert: {
+    'ca_signed?': true,
+    cert_domains: ['warning.com'],
+    starts_at: '2012-08-01T21:34:23Z',
+    expires_at: '2013-08-01T21:34:23Z',
+    issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
+    subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
+  },
+}
