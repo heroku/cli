@@ -1,9 +1,10 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
 import getEndpoint from '../../lib/certs/flags'
-import * as CertificateDetails from '../../lib/certs/certificate_details'
+import {displayCertificateDetails} from '../../lib/certs/certificate_details'
+import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import {Domain} from '../../lib/types/domain'
 
 export default class Info extends Command {
   static topic = 'certs';
@@ -17,23 +18,27 @@ export default class Info extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Info)
+    const {app} = flags
     const endpoint = await getEndpoint(flags, this.heroku)
-    ux.action.start(`Fetching SSL certificate ${endpoint.name} info for ${color.app(flags.app)}`)
-    const {body: cert}: {body: CertificateDetails.cert} = await this.heroku.get(endpoint._meta.path, {headers: {Accept: 'application/vnd.heroku+json; version=3'}})
+    ux.action.start(`Fetching SSL certificate ${endpoint.name} info for ${color.app(app)}`)
+    // This is silly, we just fetched all SNI Endpoints and filtered to get the one we want just
+    // to use the name on the start action message, but then we re-fetch the exact same SNI Endpoint we
+    // already have.
+    const {body: cert} = await this.heroku.get<SniEndpoint>(`/apps/${app}/sni-endpoints/${endpoint.name}`)
     ux.action.stop()
 
     if (flags['show-domains']) {
       ux.action.start(`Fetching domains for ${endpoint.name}`)
-      const domains = await Promise.all(endpoint.domains.map((domain: string) => {
-        return this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${domain}`)
-          .then(({body: response}) => response.hostname)
+      const domains = await Promise.all(endpoint.domains.map(async domain => {
+        const {body: response} = await this.heroku.get<Domain>(`/apps/${app}/domains/${domain}`)
+        return response.hostname
       }))
       ux.action.stop()
       cert.domains = domains
     } else {
-      delete cert.domains
+      cert.domains = []
     }
 
-    CertificateDetails.getCertificateDetails(cert)
+    displayCertificateDetails(cert)
   }
 }
