@@ -15,12 +15,12 @@ jobs:
           node-version: 16.x
           cache: yarn
       - name: Install Fig Oclif Plugin
-        run: yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
+        run: cd packages/cli && yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
       - run: yarn --immutable --network-timeout 1000000
       - name: Build Heroku CLI
         run: yarn build
       - name: Generate Fig Spec
-        run: ./bin/run generate-fig-spec > spec.ts
+        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts && cat spec.ts
       - name: Get Heroku Version
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
@@ -29,7 +29,7 @@ jobs:
         with:
           token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
           autocomplete-spec-name: 'heroku'
-          spec-path: spec.ts
+          spec-path: ./packages/cli/spec.ts
           integration: oclif
           diff-based-versioning: true
           new-spec-version: ${{ steps.cli-version.outputs.version }}
