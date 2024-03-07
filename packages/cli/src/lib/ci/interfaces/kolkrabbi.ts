@@ -187,7 +187,7 @@ export interface HerokuPlatformApiOrganization {
   [k: string]: any;
 }
 /**
- * Pipeline repositories link a pipeline to a Github repository.
+ * Pipeline repositories link a pipeline to a GitHub repository.
  */
 export interface KolkrabbiApiPipelineRepositories {
   /**

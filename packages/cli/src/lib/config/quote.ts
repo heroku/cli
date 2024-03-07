@@ -1,7 +1,7 @@
 
 const shell = require('shell-quote')
 
-// slightly modifed form of shell-quote to default to using single-quotes over backslashes
+// slightly modified form of shell-quote to default to using single-quotes over backslashes
 export function quote(s: string): string {
   // eslint-disable-next-line no-useless-escape
   if (/["\s#!$&'()*,:;<=>?@\[\\\]^`{|}]/.test(s)) {

@@ -203,7 +203,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => api.done())
       .then(() => registry.done())
@@ -237,7 +237,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => api.done())
       .then(() => registry.done())
@@ -269,7 +269,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stderr).to.contain('Error: release command failed'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.exit.calledWith(1)).to.equal(true))
@@ -307,7 +307,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stderr).to.contain('Error: release command failed'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(process.exit.calledWith(1)).to.equal(true))
@@ -337,7 +337,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => api.done())
       .then(() => registry.done())
@@ -371,7 +371,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => api.done())
       .then(() => registry.done())
@@ -403,7 +403,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stderr).to.contain('Error: release command failed'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.exit.calledWith(1)).to.equal(true))
@@ -441,7 +441,7 @@ describe('container release', () => {
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
-      .then(() => expect(cli.stderr).to.contain('Runnning release command...'))
+      .then(() => expect(cli.stderr).to.contain('Running release command...'))
       .then(() => expect(cli.stderr).to.contain('Error: release command failed'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(process.exit.calledWith(1)).to.equal(true))
@@ -471,7 +471,7 @@ describe('container release', () => {
       .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
-      .then(() => expect(cli.stderr, 'not to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stderr, 'not to contain', 'Running release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => api.done())
       .then(() => registry.done())
