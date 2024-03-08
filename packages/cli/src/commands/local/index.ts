@@ -1,6 +1,7 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, Command, Flags} from '@oclif/core'
-
+import * as fs from 'fs'
+import color from '@heroku-cli/color'
 import {fork as foreman} from '../../lib/local/fork-foreman'
 
 // eslint-disable-next-line node/no-missing-require
@@ -63,8 +64,15 @@ $ heroku local web=1,worker=2`,
       this.error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
 
+    let envFile = flags.env || '.env'
+    envFile = fs.existsSync(envFile) ? envFile : '.env'
+    const envFileInfo = fs.statSync(envFile)
+    if (!envFileInfo.isFile()) {
+      throw new Error(`The specified location for the env file, ${color.bold(envFile)}, is not a file. Please specify a valid file location with the --env flag.`)
+    }
+
     if (flags.procfile) execArgv.push('--procfile', flags.procfile)
-    if (flags.env) execArgv.push('--env', flags.env)
+    if (flags.env) execArgv.push('--env', envFile)
     if (flags.port) execArgv.push('--port', flags.port)
 
     if (args.processname) {
