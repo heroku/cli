@@ -1,12 +1,12 @@
 /* eslint-env mocha */
-const {expect} = require('chai')
-const nock = require('nock')
-const stream = require('stream')
-let lolex = require('lolex')
+import {expect} from 'chai'
+import * as nock from 'nock'
+import * as stream from 'stream'
+const lolex = require('lolex')
 
-const streamer = require('../lib/streamer')
+import {streamer} from '../../../../src/lib/container/streamer'
 
-function MockOut() {
+function MockOut(this: any) {
   // Inherit properties
   stream.Writable.call(this)
 
@@ -17,16 +17,16 @@ function MockOut() {
 MockOut.prototype = Object.create(stream.Writable.prototype)
 MockOut.prototype.constructor = stream.Writable
 
-MockOut.prototype._write = function (d) {
+MockOut.prototype._write = function (d: any) {
   this.data.push(d)
 }
 
 describe('streaming', () => {
-  let clock
+  let clock: ReturnType<typeof lolex.install>
 
   beforeEach(function () {
     clock = lolex.install()
-    clock.setTimeout = function (fn) {
+    clock.setTimeout = function (fn: any) {
       fn()
     }
   })
@@ -36,7 +36,7 @@ describe('streaming', () => {
   })
 
   it('streams data', () => {
-    const ws = new MockOut()
+    const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .reply(200, 'My data')
@@ -47,7 +47,7 @@ describe('streaming', () => {
   })
 
   it('retries a missing stream', () => {
-    const ws = new MockOut()
+    const ws = new (MockOut as any)()
     let attempts = 0
 
     const api = nock('https://streamer.test:443')
@@ -69,23 +69,23 @@ describe('streaming', () => {
   })
 
   it('errors on too many retries', async () => {
-    const ws = new MockOut()
+    const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .times(30)
       .reply(404, '')
 
     await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
-    await api.done()
+    api.done()
   })
 
   it('does not retry on non-404 errors', async () => {
-    const ws = new MockOut()
+    const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .reply(504, '')
 
     await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
-    await api.done()
+    api.done()
   })
 })
