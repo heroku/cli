@@ -6,7 +6,7 @@ fs.readdirSync('.')
   .flatMap(f =>
     [process.env.STAMPY_UNSIGNED_BUCKET, process.env.STAMPY_SIGNED_BUCKET].map(b => `aws s3 rm ${b}/${f}`),
   )
-  .map(c => {
+  .forEach(c => {
     exec(c, (error, stdout) => {
       if (error) {
         console.error(`exec error: ${error}`)

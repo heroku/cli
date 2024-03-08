@@ -6,6 +6,7 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "@fig/complete-oclif": "^2.0.0",
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^10.0.0",
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2",
@@ -46,7 +47,7 @@
     "chalk": "^2.4.2",
     "commander": "^2.15.1",
     "date-fns": "^2.30.0",
-    "debug": "4.1.1",
+    "debug": "4.3.4",
     "edit-string": "^1.1.6",
     "execa": "5.1.1",
     "filesize": "^4.0.0",
@@ -89,7 +90,7 @@
     "@oclif/test": "^2.3.25",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
-    "@types/debug": "^4.1.2",
+    "@types/debug": "^4.1.12",
     "@types/fs-extra": "^7.0.0",
     "@types/glob": "^7.1.1",
     "@types/got": "^9.6.7",
@@ -116,7 +117,7 @@
     "globby": "^10.0.2",
     "lodash": "^4.17.11",
     "lolex": "^3.1.0",
-    "mocha": "^6.0.0",
+    "mocha": "^8.0.0",
     "nock": "^13.5.1",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
@@ -148,6 +149,17 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
+  "mocha": {
+    "require": [
+      "test/helpers/init.js",
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "watch-extensions": "ts",
+    "recursive": true,
+    "reporter": "spec",
+    "timeout": 180000
+  },
   "oclif": {
     "additionalHelpFlags": [
       "-h"
@@ -158,6 +170,7 @@
     ],
     "commands": "./lib/commands",
     "plugins": [
+      "@fig/complete-oclif",
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-certs-v5",
       "@heroku-cli/plugin-container-registry-v5",

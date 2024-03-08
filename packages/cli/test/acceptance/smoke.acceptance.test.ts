@@ -7,6 +7,15 @@ import * as qq from 'qqjs'
 
 import commandsOutput from './commands-output'
 
+// this is a custom function that strips both ansi characters and several additional characters
+const stripAnsi = (input: string) => {
+  // eslint-disable-next-line no-control-regex, unicorn/escape-case
+  const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]|\s|─/g
+  const cleanedString = input.replace(ansiRegex, '')
+
+  return cleanedString
+}
+
 const globby = require('globby')
 
 const app = 'heroku-cli-ci-smoke-test-app'
@@ -194,7 +203,7 @@ describe('@acceptance smoke tests', () => {
     it('heroku commands', async () => {
       const removeSpaces = (str: string) => str.replace(/ /g, '')
       const {stdout} = await run('commands')
-      expect(removeSpaces(stdout)).to.equal(removeSpaces(commandsOutput))
+      expect(stripAnsi(removeSpaces(stdout))).to.equal(stripAnsi(removeSpaces(commandsOutput)))
     })
 
     it('asserts monorepo plugins are in core', async () => {
