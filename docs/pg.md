@@ -587,7 +587,7 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  -t, --truncate        truncates queries to 40 charaters
+  -t, --truncate        truncates queries to 40 characters
 
 DESCRIPTION
   display queries with active locks

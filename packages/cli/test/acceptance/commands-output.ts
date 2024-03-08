@@ -213,7 +213,7 @@ export default `\u001B[1m Command                                        Summary
  pg:wait                                        blocks until database is available                                                                                                                      
  pipelines                                      list pipelines you have access to                                                                                                                       
  pipelines:add                                  add this app to a pipeline                                                                                                                              
- pipelines:connect                              connect a github repo to an existing pipeline                                                                                                           
+ pipelines:connect                              connect a GitHub repo to an existing pipeline                                                                                                           
  pipelines:create                               create a new pipeline                                                                                                                                   
  pipelines:destroy                              destroy a pipeline                                                                                                                                      
  pipelines:diff                                 compares the latest release of this app to its downstream app(s)                                                                                        

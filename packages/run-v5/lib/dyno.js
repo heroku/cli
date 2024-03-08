@@ -244,7 +244,7 @@ class Dyno extends Duplex {
       sshProc.stderr.on('data', data => {
         lastErr = data
 
-        // supress host key and permission denied messages
+        // suppress host key and permission denied messages
         if (this._isDebug() || (data.includes("Warning: Permanently added '[127.0.0.1]") && data.includes('Permission denied (publickey).'))) {
           process.stderr.write(data)
         }
