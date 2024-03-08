@@ -20,9 +20,7 @@ export default class Enable extends Command {
 
       const domainsBeforeEnable = await getDomains(this.heroku, app)
 
-      await this.heroku.post(`/apps/${app}/acm`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}, body: {},
-      })
+      await this.heroku.post(`/apps/${app}/acm`, {body: {}})
 
       if (wait) {
         ux.action.stop(`${color.yellow('starting')}.`)
