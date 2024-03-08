@@ -124,7 +124,6 @@ export default `\u001B[1m Command                                        Summary
  features:disable                               disables an app feature                                                                                                                                 
  features:enable                                enables an app feature                                                                                                                                  
  features:info                                  display information about a feature                                                                                                                     
- generate-fig-spec                              Generate a Fig completion spec
  git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)                                                                           
  git:remote                                     adds a git remote to an app repo                                                                                                                        
  help                                           Display help for heroku.                                                                                                                                
@@ -214,7 +213,7 @@ export default `\u001B[1m Command                                        Summary
  pg:wait                                        blocks until database is available                                                                                                                      
  pipelines                                      list pipelines you have access to                                                                                                                       
  pipelines:add                                  add this app to a pipeline                                                                                                                              
- pipelines:connect                              connect a github repo to an existing pipeline                                                                                                           
+ pipelines:connect                              connect a GitHub repo to an existing pipeline                                                                                                           
  pipelines:create                               create a new pipeline                                                                                                                                   
  pipelines:destroy                              destroy a pipeline                                                                                                                                      
  pipelines:diff                                 compares the latest release of this app to its downstream app(s)                                                                                        

@@ -60,7 +60,7 @@ Show the status of the most recent test run
 
 `heroku ci:run`
 
-Run this from within your repo directory to trigger a test agains the current branch and commit.
+Run this from within your repo directory to trigger a test against the current branch and commit.
 
 `heroku ci:rerun NUMBER`
 
