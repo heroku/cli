@@ -65,14 +65,13 @@ $ heroku local web=1,worker=2`,
     }
 
     let envFile = flags.env || '.env'
-    envFile = fs.existsSync(envFile) ? envFile : '.env'
-    const envFileInfo = fs.statSync(envFile)
-    if (!envFileInfo.isFile()) {
-      throw new Error(`The specified location for the env file, ${color.bold(envFile)}, is not a file. Please specify a valid file location with the --env flag.`)
+    if (fs.existsSync(envFile) && !fs.statSync(envFile).isFile()) {
+      this.warn(`The specified location for the env file, ${color.bold(envFile)}, is not a file, ignoring.`)
+      envFile = ''
     }
 
     if (flags.procfile) execArgv.push('--procfile', flags.procfile)
-    if (flags.env) execArgv.push('--env', envFile)
+    execArgv.push('--env', envFile)
     if (flags.port) execArgv.push('--port', flags.port)
 
     if (args.processname) {

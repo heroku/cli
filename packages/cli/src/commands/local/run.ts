@@ -33,13 +33,12 @@ export default class Run extends Command {
     }
 
     let envFile = flags.env || '.env'
-    envFile = fs.existsSync(envFile) ? envFile : '.env'
-    const envFileInfo = fs.statSync(envFile)
-    if (!envFileInfo.isFile()) {
-      throw new Error(`The specified location for the env file, ${color.bold(envFile)}, is not a file. Please specify a valid file location with the --env flag.`)
+    if (fs.existsSync(envFile) && !fs.statSync(envFile).isFile()) {
+      this.warn(`The specified location for the env file, ${color.bold(envFile)}, is not a file, ignoring.`)
+      envFile = ''
     }
 
-    if (flags.env) execArgv.push('--env', envFile)
+    execArgv.push('--env', envFile)
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
