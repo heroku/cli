@@ -6,6 +6,7 @@ import * as Heroku from '@heroku-cli/schema'
 export default class AppsLock extends Command {
     static topic = 'apps'
     static description = 'prevent team members from joining an app';
+    static aliases = ['lock']
     static flags = {
       app: flags.app({required: true}),
       remote: flags.remote(),
