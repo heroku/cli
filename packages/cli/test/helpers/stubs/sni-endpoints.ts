@@ -1,7 +1,7 @@
 import {SniEndpoint} from '../../../src/lib/types/sni_endpoint'
 import {Domain} from '../../../src/lib/types/domain'
 
-export const endpointStables: Partial<SniEndpoint> = {
+export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -17,7 +17,7 @@ export const endpointStables: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointWildcard: Partial<SniEndpoint> = {
+export const endpointWildcard: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -33,7 +33,7 @@ export const endpointWildcard: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointWildcardBug: Partial<SniEndpoint> = {
+export const endpointWildcardBug: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -49,7 +49,7 @@ export const endpointWildcardBug: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointAcm: Partial<SniEndpoint> = {
+export const endpointAcm: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -65,7 +65,7 @@ export const endpointAcm: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointUntrusted: Partial<SniEndpoint> = {
+export const endpointUntrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -81,7 +81,7 @@ export const endpointUntrusted: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointTrusted: Partial<SniEndpoint> = {
+export const endpointTrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
@@ -97,7 +97,7 @@ export const endpointTrusted: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointWithDomains: Partial<SniEndpoint> = {
+export const endpointWithDomains: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: ['tokyo-1050.herokussl.com'],
   display_name: 'my-tokyo-1050',
@@ -140,7 +140,7 @@ export const untrustedCertificateDetails = `
   Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
   SSL certificate is not trusted.
 `
-export const endpoint: Partial<SniEndpoint> = {
+export const endpoint: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: ['456789ab-cdef-0123-4567-89abcdef0123'],
   display_name: 'my-tokyo-1050',
@@ -157,7 +157,7 @@ export const endpoint: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointDomain: Partial<Domain> = {
+export const endpointDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
   id: '456789ab-cdef-0123-4567-89abcdef0123',
   hostname: 'tokyo-1050.herokussl.com',
   sni_endpoint: {
@@ -166,7 +166,7 @@ export const endpointDomain: Partial<Domain> = {
   },
 }
 
-export const endpoint2: Partial<SniEndpoint> = {
+export const endpoint2: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'akita-7777',
   domains: ['89abcdef-0123-4567-89ab-cdef01234567'],
   ssl_cert: {
@@ -182,7 +182,7 @@ export const endpoint2: Partial<SniEndpoint> = {
   },
 }
 
-export const endpoint2Domain: Partial<Domain> = {
+export const endpoint2Domain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
   id: '89abcdef-0123-4567-89ab-cdef01234567',
   hostname: 'akita-7777.herokussl.com',
   sni_endpoint: {
@@ -191,7 +191,7 @@ export const endpoint2Domain: Partial<Domain> = {
   },
 }
 
-export const endpointCname: Partial<SniEndpoint> = {
+export const endpointCname: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1051',
   domains: ['01234567-89ab-cdef-0123-456789abcdef'],
   ssl_cert: {
@@ -207,7 +207,7 @@ export const endpointCname: Partial<SniEndpoint> = {
   },
 }
 
-export const endpointCnameDomain: Partial<Domain> = {
+export const endpointCnameDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
   id: '01234567-89ab-cdef-0123-456789abcdef',
   hostname: 'tokyo-1050.herokussl.com',
   sni_endpoint: {
@@ -216,7 +216,7 @@ export const endpointCnameDomain: Partial<Domain> = {
   },
 }
 
-export const endpointHeroku: Partial<SniEndpoint> = {
+export const endpointHeroku: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: [],
   ssl_cert: {
