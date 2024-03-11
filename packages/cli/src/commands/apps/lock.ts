@@ -16,7 +16,7 @@ export default class AppsLock extends Command {
       const {body: appResponse} = await this.heroku.get<Heroku.TeamApp>(`/teams/apps/${app}`)
       const appName = appResponse.name ?? app
       if (appResponse.locked) {
-        throw new Error(`Error: cannot lock ${color.cyan(appName)}\nThis app is already locked.`)
+        throw new Error(`Error: cannot lock ${color.cyan(appName)}.\nThis app is already locked.`)
       }
 
       ux.action.start(`Locking ${color.cyan(appName)}`)
