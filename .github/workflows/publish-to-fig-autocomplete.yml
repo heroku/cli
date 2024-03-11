@@ -15,7 +15,7 @@ jobs:
           node-version: 16.x
           cache: yarn
       - name: Install Fig Oclif Plugin
-        run: cd packages/cli && yarn add @fig/complete-oclif@2.0.1 && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
+        run: cd packages/cli && yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
       - run: yarn --immutable --network-timeout 1000000
       - name: Build Heroku CLI
         run: yarn build
