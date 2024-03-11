@@ -13,11 +13,11 @@ export default class AppsJoin extends Command {
     };
 
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(AppsJoin)
+      const {flags} = await this.parse(AppsJoin)
       const {app} = flags
       ux.action.start(`Joining ${color.cyan(app)}`)
       const {body: user} = await this.heroku.get<Heroku.Account>('/account')
-      await this.heroku.post<Heroku.TeamAppCollaborator[]>(`/teams/apps/${app}/collaborators`, {
+      await this.heroku.post<Heroku.TeamAppCollaborator>(`/teams/apps/${app}/collaborators`, {
         body: {user: user.email},
       })
       ux.action.stop()
