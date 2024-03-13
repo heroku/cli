@@ -1107,7 +1107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-utils@npm:^4.4.0":
+"@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
   dependencies:
@@ -1266,7 +1266,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.10.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-addons-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/notifications": ^1.2.2
+    heroku-cli-util: ^8.0.11
+    lodash: ^4.17.11
+    printf: 0.6.1
+  checksum: 1e5ef52148c5ff616cda9e971c77cee76c6af452d35a88fe344eba71b2379808b55fdd57837642173d8c24558e62353ae8d1e9042aa80f1670206373ea70e859
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -1303,7 +1315,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.10.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-apps-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/command": ^9.0.2
+    "@oclif/core": ^1.26.2
+    filesize: ^4.0.0
+    fs-extra: ^7.0.1
+    heroku-cli-util: ^8.0.11
+    inquirer: ^6.2.2
+    js-yaml: ^3.12.1
+    lodash: ^4.17.11
+    shell-escape: ^0.2.0
+    sparkline: ^0.2.0
+    strftime: ^0.10.0
+    strip-ansi: 6.0.1
+    term-img: ^4.1.0
+    urijs: 1.19.11
+  checksum: 5361c2620b1279c178e065b6211a555753b186bf349c83c5ad9af9f87f8e6f02344eca2df4953025b70263133241b7713e67c4e99abea7b04ceeaa5b014f2c9a
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -1341,7 +1375,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs-v5@^8.10.0, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
+"@heroku-cli/plugin-certs-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-certs-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/notifications": ^1.2.2
+    date-fns: ^1.29.0
+    heroku-cli-util: ^8.0.11
+    inquirer: ^6.2.2
+    lodash: ^4.17.13
+    psl: ^1.1.29
+  checksum: 97913d6bcff8a2df9d01ac51d4a363720dca31b7dd4eeda624fc4239366080beb8b830310e7878dbe147b3309f7b667ca8b0ea157b4dc5d60fdc13c6a7db6b96
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
   dependencies:
@@ -1367,13 +1416,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^8.10.0, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
-  version: 0.0.0-use.local
-  resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
+"@heroku-cli/plugin-ci-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-ci-v5@npm:8.10.0"
   dependencies:
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/plugin-run-v5": ^8.10.0
-    "@oclif/plugin-legacy": ^1.3.0
     ansi-escapes: 3.2.0
     bluebird: ^3.5.3
     github-url-to-object: ^4.0.4
@@ -1381,18 +1429,28 @@ __metadata:
     heroku-cli-util: ^8.0.11
     inquirer: ^7.0.0
     lodash.flatten: ^4.4.0
-    mocha: ^8.0.0
-    nock: ^10.0.6
-    nyc: ^15.1.0
-    oclif: 3.11.3
     shell-escape: ^0.2.0
     temp: ^0.9.4
     validator: ^13.7.0
-  checksum: 937338f0373858edd98b54a0b38e57bb2a06f7290bc91b63fe672f26413e192c9a5f37125eb98fc863b105b82abcfe6ce5bc797d5dfb8bbef945314ef5399b24
+  checksum: 5a01f05a0f13d50b7d8e363f67033c47b78b0577cf632926b42d2545f17e5c35a1e7e3e7d5fa2089bf452b128bb50000e4f2f7c7d1f2635afd2136bf979f5106
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-container-registry-v5@^8.10.0, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
+"@heroku-cli/plugin-container-registry-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-container-registry-v5@npm:8.10.0"
+  dependencies:
+    debug: ^4.3.4
+    glob: ^7.1.3
+    heroku-cli-util: ^8.0.11
+    heroku-container-registry: ^4.99.0
+    http-call: ^5.2.3
+    inquirer: ^6.2.2
+  checksum: bb76cb96d7f47221de01148454a20700920de644736a8b142bc77062adbe12c889a11bb11e27c5a93d04231871795b59f59b65fcba77c58ce79c81e799316c36
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
@@ -1437,7 +1495,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^8.10.0, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
+"@heroku-cli/plugin-orgs-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-orgs-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/command": ^9.0.2
+    heroku-cli-util: ^8.0.11
+    inquirer: ^6.2.2
+    lodash: ^4.17.11
+    lodash.flatten: ^4.4.0
+  checksum: fc53013922e5385f4873967737355c3327e49b99586e3f16b31f22f73869aedb87ea69dded1065f0f72c0eb55f415d6e04de50dc8606a2868e647571835b62e8
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
@@ -1457,7 +1528,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.10.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-pg-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/plugin-addons": ^1.2.29
+    bytes: ^3.1.0
+    debug: ^4.1.1
+    filesize: ^4.0.0
+    heroku-cli-util: ^8.0.11
+    lodash: ^4.17.11
+    mkdirp: ^0.5.2
+    node-notifier: ^10.0.0
+    printf: 0.6.1
+    smooth-progress: ^1.1.0
+    strip-eof: ^2.0.0
+    tunnel-ssh: ^4.1.6
+    uuid: ^8.3.1
+  checksum: 9d46dfef52046dfff53e47ac4d3a0451a029a5985e4c914e96a1aa7e7bb32c1c081ad469c588357ada07def506778add29ab5abb7502172f5e310ff6248d43b5
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -1534,7 +1626,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run-v5@^8.10.0, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
+"@heroku-cli/plugin-run-v5@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-run-v5@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/command": ^9.0.2
+    "@heroku-cli/notifications": ^1.2.2
+    "@heroku/eventsource": ^1.0.7
+    "@oclif/core": ^1.26.2
+    debug: ^4.1.1
+    fs-extra: ^7.0.1
+    heroku-cli-util: ^8.0.11
+    http-call: 5.3.0
+    shellwords: ^0.1.1
+  checksum: bbc803a9620ab63414f39d0485e09462f2b918a7b8266fffc80ba1d345aaac60c6d3565baa6fffbb23bf20362fd8b4b387edf60b3b9905c037d50136e6286a04
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-run-v5@workspace:packages/run-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
@@ -1576,7 +1686,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-spaces@^8.10.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
+"@heroku-cli/plugin-spaces@npm:^8.10.0":
+  version: 8.10.0
+  resolution: "@heroku-cli/plugin-spaces@npm:8.10.0"
+  dependencies:
+    "@heroku-cli/command": ^9.0.2
+    "@heroku-cli/notifications": ^1.2.2
+    heroku-cli-util: ^8.0.11
+    lodash: ^4.17.11
+    strftime: ^0.10.0
+  checksum: a32e9d92f4474715b6447af70022c94fb274d44d0c0253ef71ce0200be6aecb3cd9e3bce4b4d126aba20539823b377eb88eb91ef59bb517e9f9f1e87129f6c86
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
   dependencies:
@@ -5279,12 +5402,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fs-extra@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@types/fs-extra@npm:7.0.0"
+"@types/fs-extra@npm:^5.0.5":
+  version: 5.1.0
+  resolution: "@types/fs-extra@npm:5.1.0"
   dependencies:
     "@types/node": "*"
-  checksum: f757338fc740eb736ee48c9c32c95f651420f252202a70f831412c220d2db0be9d1c15936699b35400cbb16d4350e1ca0c19d784ef58de92c9b3f38331c8d349
+  checksum: 9b4abc891ad0dc3baa77b0ebcf91dff8e7a5936aa037de0bd6ded399ab38b5896be1ee02b5c0a18c0915cfc40ab590a915709e6f2beef8f6f7e16fd3759e469a
   languageName: node
   linkType: hard
 
@@ -5327,31 +5450,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "@types/js-yaml@npm:^4.0.8":
-  version: 4.0.8
-  resolution: "@types/js-yaml@npm:4.0.8"
-  checksum: a5a77a5a1eac7e7fb667156c251c2b947ca4ddfdda570726369dd50bd5b2b1d0da2d0fb4273d1b10aa1782406d7b3da8923d957df4fb89dbfa1db06f43297de2
+  version: 4.0.9
+  resolution: "@types/js-yaml@npm:4.0.9"
+  checksum: e5e5e49b5789a29fdb1f7d204f82de11cb9e8f6cb24ab064c616da5d6e1b3ccfbf95aa5d1498a9fbd3b9e745564e69b4a20b6c530b5a8bbb2d4eb830cda9bc69
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:*":
+"@types/json-schema@npm:*, @types/json-schema@npm:^7.0.12, @types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.7":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 97ed0cb44d4070aecea772b7b2e2ed971e10c81ec87dd4ecc160322ffa55ff330dace1793489540e3e318d90942064bb697cc0f8989391797792d919737b3b98
-  languageName: node
-  linkType: hard
-
-"@types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.7":
-  version: 7.0.11
-  resolution: "@types/json-schema@npm:7.0.11"
-  checksum: 527bddfe62db9012fccd7627794bd4c71beb77601861055d87e3ee464f2217c85fca7a4b56ae677478367bbd248dbde13553312b7d4dbc702a2f2bbf60c4018d
-=======
-"@types/json-schema@npm:^7.0.12, @types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.7":
-  version: 7.0.15
-  resolution: "@types/json-schema@npm:7.0.15"
-  checksum: 97ed0cb44d4070aecea772b7b2e2ed971e10c81ec87dd4ecc160322ffa55ff330dace1793489540e3e318d90942064bb697cc0f8989391797792d919737b3b98
->>>>>>> main
   languageName: node
   linkType: hard
 
@@ -5874,6 +5983,13 @@ __metadata:
   version: 1.1.2
   resolution: "@ungap/promise-all-settled@npm:1.1.2"
   checksum: 08d37fdfa23a6fe8139f1305313562ebad973f3fac01bcce2773b2bda5bcb0146dfdcf3cb6a722cf0a5f2ca0bc56a827eac8f1e7b3beddc548f654addf1fc34c
+  languageName: node
+  linkType: hard
+
+"@ungap/structured-clone@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@ungap/structured-clone@npm:1.2.0"
+  checksum: 4f656b7b4672f2ce6e272f2427d8b0824ed11546a601d8d5412b9d7704e83db38a8d9f402ecdf2b9063fc164af842ad0ec4a55819f621ed7e7ea4d1efcc74524
   languageName: node
   linkType: hard
 
@@ -7060,7 +7176,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^6.0.0, camelcase@npm:^6.3.0":
+"camelcase@npm:^6.0.0, camelcase@npm:^6.2.1, camelcase@npm:^6.3.0":
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
@@ -7704,13 +7820,6 @@ __metadata:
     yargs: 17.7.2
   languageName: unknown
   linkType: soft
-
-"commander@npm:2.15.1":
-  version: 2.15.1
-  resolution: "commander@npm:2.15.1"
-  checksum: a1b6b66a98cd1862084fcb230d11f56d3af0e5a42c307158d987464d65112fd9f8de2a682895247d2e475f925895e70e5bda21379b1286b21c55dd5c17f0d5fa
-  languageName: node
-  linkType: hard
 
 "commander@npm:7.1.0":
   version: 7.1.0
@@ -9324,7 +9433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-visitor-keys@npm:^3.3.0, eslint-visitor-keys@npm:^3.4.1":
+"eslint-visitor-keys@npm:^3.3.0, eslint-visitor-keys@npm:^3.4.1, eslint-visitor-keys@npm:^3.4.3":
   version: 3.4.3
   resolution: "eslint-visitor-keys@npm:3.4.3"
   checksum: 36e9ef87fca698b6fd7ca5ca35d7b2b6eeaaf106572e2f7fd31c12d3bfdaccdb587bba6d3621067e5aece31c8c3a348b93922ab8f7b2cbc6aaab5e1d89040c60
@@ -10652,20 +10761,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:7.1.2":
-  version: 7.1.2
-  resolution: "glob@npm:7.1.2"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^3.0.4
-    once: ^1.3.0
-    path-is-absolute: ^1.0.0
-  checksum: 821460a6cbd4e1f7feff8c24fb3eaecc2014569bd7dfd80c411fe15a5ec6f23cfdb7181574220fb52f8164cb8e9c558b68a36def4aa2a6b971641e838b8b7675
-  languageName: node
-  linkType: hard
-
 "glob@npm:7.1.4":
   version: 7.1.4
   resolution: "glob@npm:7.1.4"
@@ -11261,11 +11356,7 @@ __metadata:
     "@heroku-cli/plugin-pg-v5": ^8.10.0
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
-<<<<<<< HEAD
     "@heroku-cli/plugin-redis-v5": ^9.0.0-alpha.0
-=======
-    "@heroku-cli/plugin-redis-v5": ^8.10.0
->>>>>>> main
     "@heroku-cli/plugin-run": 8.1.4
     "@heroku-cli/plugin-spaces": ^8.10.0
     "@heroku-cli/schema": ^1.0.25
@@ -11292,8 +11383,8 @@ __metadata:
     "@opentelemetry/semantic-conventions": ^1.15.1
     "@types/ansi-styles": ^3.2.1
     "@types/chai": ^4.1.7
-    "@types/fs-extra": ^7.0.0
     "@types/debug": ^4.1.12
+    "@types/fs-extra": ^5.0.5
     "@types/glob": ^7.1.1
     "@types/got": ^9.6.7
     "@types/inquirer": 7.3.0
@@ -12647,7 +12738,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.0.8, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -13728,7 +13819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
+"minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -15609,6 +15700,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pascalcase@npm:2.0.0":
+  version: 2.0.0
+  resolution: "pascalcase@npm:2.0.0"
+  dependencies:
+    camelcase: ^6.2.1
+  checksum: 8c91259ecee8c7bd7138021ca08fc09c52beecd994954fcd82fb25c788106ee5400cb76e551e13487b576c64148f00c771e07791e4b2ee9a6fe1b98279d31548
+  languageName: node
+  linkType: hard
+
 "password-prompt@npm:^1.0.7, password-prompt@npm:^1.1.2":
   version: 1.1.2
   resolution: "password-prompt@npm:1.1.2"
@@ -17214,13 +17314,6 @@ __metadata:
   version: 1.3.0
   resolution: "samsam@npm:1.3.0"
   checksum: 084914f7707538b735a41e0edba86abd8f9dd2a47a79511b56b55e8032801db767d9eb31899246179295fbb9ab7ab4d12ebc3410ad4265d897cbf0056c3db63d
-  languageName: node
-  linkType: hard
-
-"samsam@npm:~1.1":
-  version: 1.1.3
-  resolution: "samsam@npm:1.1.3"
-  checksum: 5332ddb59f54f5b66ad8f7c5458ef8732101da4a3bd7d75f3439b58f32a800255df416b04fea899bd04566ffdc3c8f18d107e3522f271894130dbe89ac3fe75a
   languageName: node
   linkType: hard
 
@@ -19943,6 +20036,21 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^20.2.2
   checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
+  languageName: node
+  linkType: hard
+
+"yargs@npm:17.7.2":
+  version: 17.7.2
+  resolution: "yargs@npm:17.7.2"
+  dependencies:
+    cliui: ^8.0.1
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.3
+    y18n: ^5.0.5
+    yargs-parser: ^21.1.1
+  checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
   languageName: node
   linkType: hard
 
