@@ -2,10 +2,10 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {APIClient} from '@heroku-cli/command'
 
-const HOST = process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
-const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
-
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
+  const HOST = process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
+  const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
+
   return {
     request(path: string, method = 'get', body = {}) {
       const headers = {Accept: 'application/json'}
@@ -78,7 +78,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       if (json) {
         const redii = []
         for (const db of databases) {
-          const {body: redis} = <Heroku.AddOn> await db.redis
+          const {body: redis} = <Heroku.AddOn> await db.redis || {}
           // eslint-disable-next-line no-eq-null, eqeqeq
           if (redis == null) {
             continue
@@ -96,8 +96,9 @@ export default (app: string, database: string | undefined, json: boolean, heroku
 
       // print out the info of the addon and redis db info
       for (const db of databases) {
-        const {body: redis} = <Heroku.AddOn> await db.redis
-        if (redis === null) {
+        const {body: redis} = <Heroku.AddOn> await db.redis || {}
+        // eslint-disable-next-line no-eq-null, eqeqeq
+        if (redis == null) {
           continue
         }
 
