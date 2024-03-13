@@ -1,5 +1,4 @@
 exports.commands = [
-  require('./commands/index'),
   require('./commands/cli'),
   require('./commands/wait'),
   require('./commands/credentials'),
