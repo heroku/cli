@@ -199,11 +199,16 @@ describe('@acceptance smoke tests', () => {
       expect(cmd.stdout).to.contain('@oclif/plugin-which')
     })
 
-    // this test will fail when run locally depending on which plugins you have installed
     it('heroku commands', async () => {
       const removeSpaces = (str: string) => str.replace(/ /g, '')
       const {stdout} = await run('commands')
-      expect(stripAnsi(removeSpaces(stdout))).to.equal(stripAnsi(removeSpaces(commandsOutput)))
+      const commandsByline = stdout.split('\n')
+      const commandsOutputByLine = commandsOutput.split('\n')
+      const commandOutputSet = new Set(commandsByline.map((line:string) => stripAnsi(removeSpaces(line))))
+      commandsOutputByLine.forEach((line: string) => {
+        const strippedLine = stripAnsi(removeSpaces(line))
+        expect(commandOutputSet.has(strippedLine), `'${strippedLine}' was expected but wasn't found`).to.be.true
+      })
     })
 
     it('asserts monorepo plugins are in core', async () => {
