@@ -17,7 +17,7 @@ const CacheBuildFlagsTest = {
   id: 'autocomplete:create',
   flags:
   {app: {name: 'app', type: 'option', description: 'app to use'},
-    visable: {name: 'visable', type: 'boolean', description: 'visable flag'},
+    visible: {name: 'visible', type: 'boolean', description: 'visible flag'},
     hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
   },
   args: [],
@@ -60,7 +60,7 @@ runtest('Create', () => {
     })
 
     it('#genCmdPublicFlags', () => {
-      expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.eq('--app --visable')
+      expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.eq('--app --visible')
       expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.not.match(/--hidden/)
       expect(cmd.genCmdPublicFlags(Create)).to.eq('')
     })
@@ -168,7 +168,7 @@ _all_commands_list=(
       expect(cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
 _flags=(
 "--app=-[(autocomplete) app to use]: :_compadd_flag_options"
-"--visable[(switch) visable flag]"
+"--visible[(switch) visible flag]"
 )
 }
 `)

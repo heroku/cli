@@ -1,7 +1,0 @@
---reporter list
---recursive
---check-leaks
---require ./test/init.js
---timeout 60000
---exit
---bail

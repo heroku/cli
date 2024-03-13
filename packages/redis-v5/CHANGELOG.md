@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 # [9.0.0-alpha.0](https://github.com/heroku/cli/compare/v8.5.0...v9.0.0-alpha.0) (2023-10-04)
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-redis-v5
+
+
+
+
+
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+
+### Features
+
+* **redis-v5:** Updating redis-v5 to use api.data.heroku.com ([#2554](https://github.com/heroku/cli/issues/2554)) ([5ad733e](https://github.com/heroku/cli/commit/5ad733edf12bf097933c7d9a2fca1962374fe452))
+
+
+
+
+
+# [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
 ### Bug Fixes

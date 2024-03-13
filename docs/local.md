@@ -19,7 +19,7 @@ USAGE
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
-  -p, --port=<value>      [default: 5001] port to listen on
+  -p, --port=<value>      port to listen on
 
 DESCRIPTION
   run heroku app locally
@@ -47,7 +47,7 @@ USAGE
 
 FLAGS
   -e, --env=<value>
-  -p, --port=<value>  [default: 5001]
+  -p, --port=<value>
 
 DESCRIPTION
   run a one-off command
@@ -69,7 +69,7 @@ USAGE
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
-  -p, --port=<value>      [default: 5001] port to listen on
+  -p, --port=<value>      port to listen on
 
 DESCRIPTION
   run heroku app locally

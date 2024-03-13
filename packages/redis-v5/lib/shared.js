@@ -1,7 +1,7 @@
 'use strict'
 const cli = require('heroku-cli-util')
 
-const HOST = process.env.HEROKU_REDIS_HOST || 'redis-api.heroku.com'
+const HOST = process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
 const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
 module.exports = (context, heroku) => {

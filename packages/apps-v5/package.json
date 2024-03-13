@@ -35,7 +35,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
-    "mocha": "^5.2.0",
+    "mocha": "^8.0.0",
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.6",
     "nock": "^10.0.6",
@@ -60,6 +60,15 @@
   ],
   "license": "ISC",
   "main": "src/index.js",
+  "mocha": {
+    "require": [
+      "./test/init.js",
+      "./test/helpers.js"
+    ],
+    "reporter": "list",
+    "recursive": true,
+    "timeout": 180000
+  },
   "publishConfig": {
     "access": "public"
   },

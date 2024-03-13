@@ -10,7 +10,7 @@ const shouldUrl = function (cmdRun) {
   let pg
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/apps/myapp/transfers/3/actions/public-url').reply(200, {
       url: 'https://dburl',
     })

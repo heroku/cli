@@ -25,9 +25,9 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
-    "depcheck": "^1.4.3",
+    "depcheck": "^1.4.7",
     "lolex": "^3.1.0",
-    "mocha": "^5.0.4",
+    "mocha": "^8.0.0",
     "mockdate": "^2.0.2",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",
@@ -50,6 +50,14 @@
   ],
   "license": "ISC",
   "main": "index.js",
+  "mocha": {
+    "require": [
+      "./test/helpers.js"
+    ],
+    "reporter": "list",
+    "recursive": true,
+    "timeout": 180000
+  },
   "repository": "heroku/cli",
   "scripts": {
     "depcheck": "depcheck || true",

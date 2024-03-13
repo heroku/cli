@@ -58,7 +58,7 @@ describe('pg:settings', () => {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
       addon_attachment: 'test-database',
       addon_service: 'heroku-postgresql',

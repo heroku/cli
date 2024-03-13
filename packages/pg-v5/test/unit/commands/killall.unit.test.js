@@ -23,7 +23,7 @@ describe('pg:killall', () => {
   beforeEach(() => {
     cli.mockConsole()
     cli.exit.mock()
-    pg = nock('https://postgres-starter-api.heroku.com:443')
+    pg = nock('https://api.data.heroku.com:443')
   })
 
   afterEach(() => {

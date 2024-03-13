@@ -11,9 +11,9 @@ describe('pg:backups:download', () => {
   let pg
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/apps/myapp/transfers/3/actions/public-url').reply(200, {
-      url: 'https://postgres-api.heroku.com/db',
+      url: 'https://api.data.heroku.com/db',
     })
     pg.get('/db').reply(200, {})
     cli.mockConsole()
