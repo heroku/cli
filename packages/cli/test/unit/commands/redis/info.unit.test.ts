@@ -6,7 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import runCommand from '../../../helpers/runCommand'
 import heredoc from 'tsheredoc'
 
-describe.only('heroku redis:info', function () {
+describe('heroku redis:info', function () {
   beforeEach(function () {
     nock.cleanAll()
   })
