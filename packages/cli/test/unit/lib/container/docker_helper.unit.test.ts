@@ -38,7 +38,7 @@ describe('DockerHelper', () => {
     it('has an error', async () => {
       sandbox.stub(DockerHelper, 'cmd')
         .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-        .resolves('an error occured')
+        .resolves('an error occurred')
 
       const version = await DockerHelper.version()
 
