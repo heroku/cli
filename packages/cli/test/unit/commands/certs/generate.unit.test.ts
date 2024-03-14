@@ -30,7 +30,6 @@ describe('heroku certs:generate', function () {
   })
 
   before(function () {
-    // sinon.restore()
     childProcessStub = sinon.stub(childProcess, 'spawn')
     childProcessStub.callsFake(() => {
       return {
