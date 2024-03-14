@@ -19,21 +19,6 @@ import {expect} from '@oclif/test'
 import {SinonStub} from 'sinon'
 import {PathLike} from 'node:fs'
 
-let stubbedPromptReturnValue: unknown = {}
-let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
-const stubbedPrompt = sinon.stub(inquirer, 'prompt')
-  .callsFake((questions: QuestionCollection<inquirer.Answers>) => {
-    questionsReceived = questions as ReadonlyArray<inquirer.Answers>
-    return Promise.resolve(stubbedPromptReturnValue) as ReturnType<typeof inquirer.prompt>
-  })
-
-function mockDomains() {
-  nock('https://api.heroku.com')
-    .get('/apps/example/domains')
-    .reply(200, [])
-  stubbedPromptReturnValue = {domains: []}
-}
-
 type ReadFileStub = SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
 
 function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
@@ -41,7 +26,26 @@ function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
 }
 
 describe('heroku certs:add', async () => {
+  let stubbedPromptReturnValue: unknown = {}
+  let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
+  let stubbedPrompt: SinonStub
+
   let stubbedReadFile: SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
+
+  function mockDomains() {
+    nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [])
+    stubbedPromptReturnValue = {domains: []}
+  }
+
+  before(() => {
+    stubbedPrompt = sinon.stub(inquirer, 'prompt')
+      .callsFake((questions: QuestionCollection<inquirer.Answers>) => {
+        questionsReceived = questions as ReadonlyArray<inquirer.Answers>
+        return Promise.resolve(stubbedPromptReturnValue) as ReturnType<typeof inquirer.prompt>
+      })
+  })
 
   beforeEach(async () => {
     stubbedReadFile = sinon.stub(fs, 'readFile')
@@ -406,11 +410,13 @@ describe('heroku certs:add', async () => {
           .patch('/apps/example/domains/biz.example.com')
           .reply(200)
 
-        stubbedPromptReturnValue = {domains: [
-          'foo.example.org',
-          'bar.example.org',
-          'biz.example.com',
-        ]}
+        stubbedPromptReturnValue = {
+          domains: [
+            'foo.example.org',
+            'bar.example.org',
+            'biz.example.com',
+          ],
+        }
         await runCommand(Cmd, [
           '--app',
           'example',
@@ -464,7 +470,7 @@ describe('heroku certs:add', async () => {
             'key_file',
           ])
         } catch (error) {
-          const {message} = error as {message:string}
+          const {message} = error as { message: string }
           expect(message).to.contain('Timed out while waiting for stable domains to be created')
         }
 
