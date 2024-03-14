@@ -1,7 +1,7 @@
 `heroku status`
 ===============
 
-status of the Heroku platform
+display current status of the Heroku platform
 
 * [`heroku status`](#heroku-status)
 
@@ -11,10 +11,13 @@ display current status of the Heroku platform
 
 ```
 USAGE
-  $ heroku status
+  $ heroku status [--json]
 
-OPTIONS
+FLAGS
   --json  output in json format
+
+DESCRIPTION
+  display current status of the Heroku platform
 ```
 
-_See code: [@heroku-cli/plugin-status](https://github.com/heroku/cli/blob/v7.66.3/packages/status/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/status.ts)_

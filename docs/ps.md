@@ -26,19 +26,21 @@ list dynos for an app
 USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --json               display as json
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --json                display as json
+
+DESCRIPTION
+  list dynos for an app
+
 
 EXAMPLES
   $ heroku ps
   === run: one-off dyno
   run.1: up for 5m: bash
-
   === web: bundle exec thin start -p $PORT
   web.1: created for 30s
-
   $ heroku ps run # specifying types
   === run: one-off dyno
   run.1: up for 5m: bash
@@ -50,14 +52,17 @@ disable web dyno autoscaling
 
 ```
 USAGE
-  $ heroku ps:autoscale:disable
+  $ heroku ps:autoscale:disable -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  disable web dyno autoscaling
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.66.3/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -65,18 +70,21 @@ enable web dyno autoscaling
 
 ```
 USAGE
-  $ heroku ps:autoscale:enable
+  $ heroku ps:autoscale:enable -a <value> --min <value> --max <value> [-r <value>] [--p95 <value>] [--notifications]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --max=max            (required) maximum number of dynos
-  --min=min            (required) minimum number of dynos
-  --notifications      receive email notifications when the max dyno limit is reached
-  --p95=p95            desired p95 response time
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --max=<value>         (required) maximum number of dynos
+  --min=<value>         (required) minimum number of dynos
+  --notifications       receive email notifications when the max dyno limit is reached
+  --p95=<value>         desired p95 response time
+
+DESCRIPTION
+  enable web dyno autoscaling
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.66.3/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -84,18 +92,19 @@ Copy a file from a dyno to the local filesystem
 
 ```
 USAGE
-  $ heroku ps:copy FILE
+  $ heroku ps:copy FILE -a <value> [-d <value>] [-o <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      specify the dyno to connect to
-  -o, --output=output  the name of the output file
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -d, --dyno=<value>    specify the dyno to connect to
+  -o, --output=<value>  the name of the output file
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  Copy a file from a dyno to the local filesystem
   Example:
 
-      $ heroku ps:copy FILENAME --app murmuring-headland-14719
+  $ heroku ps:copy FILENAME --app murmuring-headland-14719
 ```
 
 ## `heroku ps:exec`
@@ -104,19 +113,20 @@ Create an SSH session to a dyno
 
 ```
 USAGE
-  $ heroku ps:exec
+  $ heroku ps:exec -a <value> [-d <value>] [--ssh] [--status] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      specify the dyno to connect to
-  -r, --remote=remote  git remote of app to use
-  --ssh                use native ssh
-  --status             lists the status of the SSH server in the dyno
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -d, --dyno=<value>    specify the dyno to connect to
+  -r, --remote=<value>  git remote of app to use
+  --ssh                 use native ssh
+  --status              lists the status of the SSH server in the dyno
 
 DESCRIPTION
+  Create an SSH session to a dyno
   Example:
 
-      $ heroku ps:exec 'node -i' --app murmuring-headland-14719
+  $ heroku ps:exec 'node -i' --app murmuring-headland-14719
 ```
 
 ## `heroku ps:forward PORT`
@@ -125,22 +135,23 @@ Forward traffic on a local port to a dyno
 
 ```
 USAGE
-  $ heroku ps:forward PORT
+  $ heroku ps:forward PORT -a <value> [-d <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      specify the dyno to connect to
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -d, --dyno=<value>    specify the dyno to connect to
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  Forward traffic on a local port to a dyno
   Provide a port or comma-separated list of ports to forward.
 
-      For example, "4000,9000:9001" will forward port 4000 to port 4000 and
-      port 9000 to port 9001.
+  For example, "4000,9000:9001" will forward port 4000 to port 4000 and
+  port 9000 to port 9001.
 
-      Example:
+  Example:
 
-      $ heroku ps:forward 8080 --app murmuring-headland-14719
+  $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
 ## `heroku ps:kill DYNO`
@@ -149,19 +160,20 @@ stop app dyno
 
 ```
 USAGE
-  $ heroku ps:kill DYNO
+  $ heroku ps:kill DYNO -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  stop app dyno
+
   stop app dyno or dyno type
 
 EXAMPLES
   $ heroku ps:stop run.1828
   Stopping run.1828 dyno... done
-
   $ heroku ps:stop run
   Stopping run dynos... done
 ```
@@ -172,13 +184,15 @@ manage dyno sizes
 
 ```
 USAGE
-  $ heroku ps:resize
+  $ heroku ps:resize -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  manage dyno sizes
+
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
@@ -193,22 +207,21 @@ restart app dynos
 
 ```
 USAGE
-  $ heroku ps:restart [DYNO]
+  $ heroku ps:restart [DYNO] -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  restart app dynos
   if DYNO is not specified, restarts all dynos on app
 
 EXAMPLES
   $ heroku ps:restart web.1
   Restarting web.1 dyno... done
-
   $ heroku ps:restart web
   Restarting web dynos... done
-
   $ heroku ps:restart
   Restarting dynos... done
 ```
@@ -219,13 +232,14 @@ scale dyno quantity up or down
 
 ```
 USAGE
-  $ heroku ps:scale
+  $ heroku ps:scale -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  scale dyno quantity up or down
   Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
 
   Omitting any arguments will display the app's current dyno formation, in a
@@ -234,7 +248,6 @@ DESCRIPTION
 EXAMPLES
   $ heroku ps:scale web=3:Standard-2X worker+1
   Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
-
   $ heroku ps:scale
   web=3:Standard-2X worker=1:Standard-1X
 ```
@@ -245,20 +258,21 @@ Launch a SOCKS proxy into a dyno
 
 ```
 USAGE
-  $ heroku ps:socks
+  $ heroku ps:socks -a <value> [-d <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      specify the dyno to connect to
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -d, --dyno=<value>    specify the dyno to connect to
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  Launch a SOCKS proxy into a dyno
   Example:
 
-      $ heroku ps:socks --app murmuring-headland-14719
-      Establishing credentials... done
-      SOCKSv5 proxy server started on port 1080
-      Use CTRL+C to stop the proxy
+  $ heroku ps:socks --app murmuring-headland-14719
+  Establishing credentials... done
+  SOCKSv5 proxy server started on port 1080
+  Use CTRL+C to stop the proxy
 ```
 
 ## `heroku ps:stop DYNO`
@@ -267,19 +281,20 @@ stop app dyno
 
 ```
 USAGE
-  $ heroku ps:stop DYNO
+  $ heroku ps:stop DYNO -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  stop app dyno
+
   stop app dyno or dyno type
 
 EXAMPLES
   $ heroku ps:stop run.1828
   Stopping run.1828 dyno... done
-
   $ heroku ps:stop run
   Stopping run dynos... done
 ```
@@ -290,13 +305,15 @@ manage dyno sizes
 
 ```
 USAGE
-  $ heroku ps:type
+  $ heroku ps:type -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  manage dyno sizes
+
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
@@ -311,16 +328,17 @@ wait for all dynos to be running latest version after a release
 
 ```
 USAGE
-  $ heroku ps:wait
+  $ heroku ps:wait -a <value> [-r <value>] [-w <value>] [-R | -t <value>]
 
-OPTIONS
-  -R, --with-run                     whether to wait for one-off run dynos
-  -a, --app=app                      (required) app to run command against
-  -r, --remote=remote                git remote of app to use
-  -t, --type=type                    wait for one specific dyno type
+FLAGS
+  -R, --with-run               whether to wait for one-off run dynos
+  -a, --app=<value>            (required) app to run command against
+  -r, --remote=<value>         git remote of app to use
+  -t, --type=<value>           wait for one specific dyno type
+  -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)
 
-  -w, --wait-interval=wait-interval  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate
-                                     limits)
+DESCRIPTION
+  wait for all dynos to be running latest version after a release
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.66.3/packages/ps/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ps/wait.ts)_

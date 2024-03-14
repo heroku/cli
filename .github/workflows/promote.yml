@@ -1,0 +1,65 @@
+name: Promote in S3
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: version to promote to latest
+        type: string
+        required: true
+      isStableRelease:
+        type: boolean
+        description: Is this a stable/prod release?
+        required: true
+        default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: version to promote to latest
+        type: string
+        required: true
+      isStableRelease:
+        type: boolean
+        description: Is this a stable/prod release?
+        required: true
+        default: false
+      channel:
+        type: string
+        description: Release channel for prereleases
+        required: false
+
+jobs:
+  promote:
+    name: Promote ${{ inputs.version }} to ${{ fromJSON(inputs.isStableRelease) && 'stable' || inputs.channel }}
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - run: yarn --immutable --network-timeout 1000000
+      - name: install apt-get dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli jq
+      - name: promote
+        env:
+          prerelease-channel: ${{ inputs.channel || 'beta'}}
+        run: |
+          SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
+          yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
+        shell: bash
+      - name: promote Linux install scripts
+        run: node ./scripts/postrelease/install_scripts.js

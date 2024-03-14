@@ -4,29 +4,30 @@ const cli = require('heroku-cli-util')
 const strftime = require('strftime')
 const _ = require('lodash')
 
-const getProcessNum = (s) => parseInt(s.split('.', 2)[1])
+const getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
 
-function timeAgo (since) {
-  let elapsed = Math.floor((new Date() - since) / 1000)
+function timeAgo(since) {
+  let elapsed = Math.floor((Date.now() - since) / 1000)
   let message = strftime('%Y/%m/%d %H:%M:%S %z', since)
   if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`
-  else if (elapsed < 60 * 60) return `${message} (~ ${Math.floor(elapsed / 60)}m ago)`
-  else if (elapsed < 60 * 60 * 25) return `${message} (~ ${Math.floor(elapsed / 60 / 60)}h ago)`
-  else return message
+  if (elapsed < 60 * 60) return `${message} (~ ${Math.floor(elapsed / 60)}m ago)`
+  if (elapsed < 60 * 60 * 25) return `${message} (~ ${Math.floor(elapsed / 60 / 60)}h ago)`
+  return message
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   const spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:ps my-space')
 
   const [spaceDynos, space] = await Promise.all([
     heroku.get(`/spaces/${spaceName}/dynos`),
-    heroku.get(`/spaces/${spaceName}`)
+    heroku.get(`/spaces/${spaceName}`),
   ])
 
   if (space.shield) {
     spaceDynos.forEach(spaceDyno => {
       spaceDyno.dynos.forEach(d => {
+        // eslint-disable-next-line unicorn/explicit-length-check
         if (d.size) {
           d.size = d.size.replace('Private-', 'Shield-')
         }
@@ -41,15 +42,16 @@ async function run (context, heroku) {
   }
 }
 
-function render (spaceDynos) {
-  _.forEach(spaceDynos, (spaceDyno) => {
+function render(spaceDynos) {
+  _.forEach(spaceDynos, spaceDyno => {
     printDynos(spaceDyno.app_name, spaceDyno.dynos)
   })
 }
 
-function printDynos (appName, dynos) {
+function printDynos(appName, dynos) {
   let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
     let since = timeAgo(new Date(dyno.updated_at))
+    // eslint-disable-next-line unicorn/explicit-length-check
     let size = dyno.size || '1X'
 
     if (dyno.type === 'run') {
@@ -63,6 +65,7 @@ function printDynos (appName, dynos) {
       let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.dim(since)}`
       dynosByCommand[key].push(item)
     }
+
     return dynosByCommand
   }, {})
   _.forEach(dynosByCommand, function (dynos, key) {
@@ -78,10 +81,10 @@ module.exports = {
   command: 'ps',
   description: 'list dynos for a space',
   needsAuth: true,
-  args: [{ name: 'space', optional: true, hidden: true }],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space to get dynos of' },
-    { name: 'json', description: 'output in json format' }
+    {name: 'space', char: 's', hasValue: true, description: 'space to get dynos of'},
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

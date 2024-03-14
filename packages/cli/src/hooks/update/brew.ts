@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/config'
+import {Hook} from '@oclif/core'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
 import * as path from 'path'
 
@@ -17,17 +17,18 @@ interface InstallReceipt {
   };
 }
 
-export const brewHook: Hook<'update'> = async function () {
+const brewHook: Hook<'update'> = async function () {
   if (this.config.platform !== 'darwin') return
 
   const brewRoot = path.join(process.env.HOMEBREW_PREFIX || '/usr/local')
   let binPath
   try {
     binPath = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 'ENOENT') return
     throw error
   }
+
   let cellarPath: string
   if (binPath && binPath.startsWith(path.join(brewRoot, 'Cellar'))) {
     cellarPath = path.resolve(binPath, path.dirname(path.relative(binPath, path.join(brewRoot, 'Cellar/heroku'))))
@@ -51,3 +52,5 @@ export const brewHook: Hook<'update'> = async function () {
   brew(['uninstall', 'heroku'])
   brew(['install', 'heroku/brew/heroku'])
 }
+
+export default brewHook

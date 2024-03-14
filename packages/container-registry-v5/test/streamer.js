@@ -1,16 +1,18 @@
-const { expect } = require('chai')
+/* eslint-env mocha */
+const {expect} = require('chai')
 const nock = require('nock')
 const stream = require('stream')
 let lolex = require('lolex')
 
 const streamer = require('../lib/streamer')
 
-function MockOut () {
+function MockOut() {
   // Inherit properties
   stream.Writable.call(this)
 
   this.data = []
 }
+
 // Inherit prototype
 MockOut.prototype = Object.create(stream.Writable.prototype)
 MockOut.prototype.constructor = stream.Writable
@@ -20,11 +22,13 @@ MockOut.prototype._write = function (d) {
 }
 
 describe('streaming', () => {
-  let clock;
+  let clock
 
   beforeEach(function () {
     clock = lolex.install()
-    clock.setTimeout = function (fn, timeout) { fn() }
+    clock.setTimeout = function (fn) {
+      fn()
+    }
   })
 
   afterEach(function () {
@@ -55,6 +59,7 @@ describe('streaming', () => {
         if (attempts < 5) {
           return [404, '']
         }
+
         return [200, 'My retried data']
       })
 

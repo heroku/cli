@@ -4,7 +4,7 @@ Heroku CLI
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
 [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
+[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
@@ -48,8 +48,8 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
-* [`heroku git`](docs/git.md) - manage local git repository for app
-* [`heroku help`](docs/help.md) - display help for heroku
+* [`heroku git`](docs/git.md) - set git remote and clone Heroku repository
+* [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
 * [`heroku local`](docs/local.md) - run Heroku app locally
@@ -60,7 +60,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku orgs`](docs/orgs.md) - manage organizations
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
-* [`heroku plugins`](docs/plugins.md) - list installed plugins
+* [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
 * [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
@@ -70,9 +70,10 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
-* [`heroku status`](docs/status.md) - status of the Heroku platform
+* [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
+* [`heroku version`](docs/version.md)
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
@@ -84,15 +85,14 @@ This project is built with [lerna](https://lerna.js.org/). The core plugins are 
 
 After cloning the repo
 1. Run `yarn` to install dependencies
-2. Run `yarn lerna bootstrap` set up Lerna and link the packages together
-    - This repo currently uses an older version of Lerna. We recommend using the version specified in the package.json instead of a newer version that you may have installed globally.
+2. Run `yarn build` to build the CLI. This will need to be re-run any time you make changes and want to test them locally.
 
 To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
 
 Testing
 =======
 
-Run all tests with `yarn lerna run test`.
+Run all tests with `yarn test`.
 
 Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku-cli/plugin-certs-v5 test`.
 

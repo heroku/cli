@@ -10,10 +10,10 @@ async function run(context, heroku) {
   } else {
     cli.table(services, {
       columns: [
-        { key: 'name', label: 'slug' },
-        { key: 'human_name', label: 'name' },
-        { key: 'state', label: 'state' }
-      ]
+        {key: 'name', label: 'slug'},
+        {key: 'human_name', label: 'name'},
+        {key: 'state', label: 'state'},
+      ],
     })
     cli.log(`
 See plans with ${cli.color.blue('heroku addons:plans SERVICE')}`)
@@ -25,7 +25,7 @@ module.exports = {
   command: 'services',
   description: 'list all available add-on services',
   flags: [
-    { name: 'json', description: 'output in json format' }
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

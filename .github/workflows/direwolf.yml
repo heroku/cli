@@ -1,0 +1,40 @@
+name: Run CLI Direwolf Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseChannel:
+        type: choice
+        description: Channel to run the Direwolf tests against
+        required: true
+        options:
+        - stable
+        - beta
+        - alpha
+
+  workflow_call:
+    inputs:
+      releaseChannel:
+        type: string
+        description: Channel to run the Direwolf tests against
+        required: true
+        default: stable
+
+jobs:
+  run-direwolf-tests:
+    name: Run Direwolf CLI tests
+    runs-on: pub-hk-ubuntu-22.04-small
+    timeout-minutes: 20
+    environment: direwolf
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y awscli jq
+    - name: run direwolf suite
+      run: ./scripts/direwolf-test-run
+      env:
+        HEROKU_CLI_VERSION: ${{ inputs.releaseChannel }}
+        DIREWOLF_TOKEN: ${{ secrets.DEV_TOOLING_DIREWOLF_TOKEN }}
+        DIREWOLF_CLOUD_UUID: ${{ secrets.DIREWOLF_CLOUD_UUID_PRODUCTION }}

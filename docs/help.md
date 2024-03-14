@@ -1,23 +1,26 @@
 `heroku help`
 =============
 
-display help for heroku
+Display help for heroku.
 
-* [`heroku help [COMMAND]`](#heroku-help-command)
+* [`heroku help [COMMANDS]`](#heroku-help-commands)
 
-## `heroku help [COMMAND]`
+## `heroku help [COMMANDS]`
 
-display help for heroku
+Display help for heroku.
 
 ```
 USAGE
-  $ heroku help [COMMAND]
+  $ heroku help [COMMANDS] [-n]
 
 ARGUMENTS
-  COMMAND  command to show help for
+  COMMANDS  Command to show help for.
 
-OPTIONS
-  --all  see all commands in CLI
+FLAGS
+  -n, --nested-commands  Include all nested commands in the output.
+
+DESCRIPTION
+  Display help for heroku.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.4/src/commands/help.ts)_

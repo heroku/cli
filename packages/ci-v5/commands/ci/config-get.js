@@ -28,21 +28,21 @@ module.exports = {
     test
 `,
   args: [{
-    name: 'key'
+    name: 'key',
   }],
   flags: [
     {
       name: 'shell',
       char: 's',
-      description: 'output config var in shell format'
+      description: 'output config var in shell format',
     },
     {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
       description: 'pipeline',
-      completion: PipelineCompletion
-    }
+      completion: PipelineCompletion,
+    },
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

@@ -2,35 +2,36 @@
 
 let cli = require('heroku-cli-util')
 let time = require('../../time')
-const { truncate, sortBy, reduce, forEach } = require('lodash')
+const {truncate, sortBy, reduce, forEach} = require('lodash')
 
 // gets the process number from a string like web.19 => 19
-let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
+let getProcessNum = s => Number.parseInt(s.split('.', 2)[1])
 
-function printExtended (dynos) {
-  const trunc = (s) => truncate(s, { length: 35, omission: '…' })
+function printExtended(dynos) {
+  const trunc = s => truncate(s, {length: 35, omission: '…'})
 
-  dynos = sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
+  dynos = sortBy(dynos, ['type'], a => getProcessNum(a.name))
   cli.table(dynos, {
     columns: [
-      { key: 'id', label: 'ID' },
-      { key: 'name', label: 'Process' },
-      { key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}` },
-      { key: 'extended.region', label: 'Region' },
-      { key: 'extended.execution_plane', label: 'Execution Plane' },
-      { key: 'extended.instance', label: 'Instance' },
-      { key: 'extended.ip', label: 'IP' },
-      { key: 'extended.port', label: 'Port' },
-      { key: 'extended.az', label: 'AZ' },
-      { key: 'release.version', label: 'Release' },
-      { key: 'command', label: 'Command', format: trunc },
-      { key: 'extended.route', label: 'Route' },
-      { key: 'size', label: 'Size' }
-    ]
+      {key: 'id', label: 'ID'},
+      {key: 'name', label: 'Process'},
+      {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`},
+      {key: 'extended.region', label: 'Region'},
+      {key: 'extended.execution_plane', label: 'Execution Plane'},
+      {key: 'extended.fleet', label: 'Fleet'},
+      {key: 'extended.instance', label: 'Instance'},
+      {key: 'extended.ip', label: 'IP'},
+      {key: 'extended.port', label: 'Port'},
+      {key: 'extended.az', label: 'AZ'},
+      {key: 'release.version', label: 'Release'},
+      {key: 'command', label: 'Command', format: trunc},
+      {key: 'extended.route', label: 'Route'},
+      {key: 'size', label: 'Size'},
+    ],
   })
 }
 
-async function printAccountQuota (context, heroku, app, account) {
+async function printAccountQuota(context, heroku, app, account) {
   if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
@@ -41,13 +42,14 @@ async function printAccountQuota (context, heroku, app, account) {
 
   let quota = await heroku.request({
     path: `/accounts/${account.id}/actions/get-quota`,
-    headers: { Accept: 'application/vnd.heroku+json; version=3.account-quotas' }
+    headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'},
   })
     .then(function (data) {
     // very temporary fix, the person who can fix this is on vacation
       if (data.id === 'not_found') {
         return null
       }
+
       return data
     })
     .catch(function () {
@@ -62,7 +64,9 @@ async function printAccountQuota (context, heroku, app, account) {
   let hours = Math.floor(remainingMinutes / 60)
   let minutes = Math.floor(remainingMinutes % 60)
 
-  let appQuota = quota.apps.find((appQuota) => { return appQuota.app_uuid === app.id })
+  let appQuota = quota.apps.find(appQuota => {
+    return appQuota.app_uuid === app.id
+  })
   let appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
   let appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
   let appHours = Math.floor(appQuotaUsed / 60)
@@ -85,15 +89,17 @@ async function printAccountQuota (context, heroku, app, account) {
   }
 }
 
-function printDynos (dynos) {
+function printDynos(dynos) {
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
+    // eslint-disable-next-line unicorn/explicit-length-check
     let size = dyno.size || '1X'
 
     if (dyno.type === 'run') {
-      let key = 'run: one-off processes'
+      let key = `${cli.color.green('run')}: one-off processes`
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
-      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`)
+      let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state)
+      dynosByCommand[key].push(`${dyno.name} (${cli.color.cyan(size)}): ${state} ${cli.color.dim(since)}: ${dyno.command}`)
     } else {
       let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
@@ -101,6 +107,7 @@ function printDynos (dynos) {
       let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.dim(since)}`
       dynosByCommand[key].push(item)
     }
+
     return dynosByCommand
   }, {})
   forEach(dynosByCommand, function (dynos, key) {
@@ -111,26 +118,26 @@ function printDynos (dynos) {
   })
 }
 
-async function run (context, heroku) {
-  const { app, flags, args } = context
+async function run(context, heroku) {
+  const {app, flags, args} = context
   const types = args
-  const { json, extended } = flags
+  const {json, extended} = flags
   const suffix = extended ? '?extended=true' : ''
 
   let promises = {
-    dynos: heroku.request({ path: `/apps/${app}/dynos${suffix}` })
+    dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`}),
   }
 
   promises.appInfo = heroku.request({
-    path: `/apps/${context.app}`,
-    headers: { Accept: 'application/vnd.heroku+json; version=3.process-tier' }
+    path: `/apps/${app}`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'},
   })
-  promises.accountInfo = heroku.request({ path: '/account' })
+  promises.accountInfo = heroku.request({path: '/account'})
 
-  let [ dynos, appInfo, accountInfo ] = await Promise.all([
+  let [dynos, appInfo, accountInfo] = await Promise.all([
     promises.dynos,
     promises.appInfo,
-    promises.accountInfo
+    promises.accountInfo,
   ])
   const shielded = appInfo.space && appInfo.space.shield
 
@@ -156,6 +163,7 @@ async function run (context, heroku) {
     } else if (b > a) {
       comparison = -1
     }
+
     return comparison
   }
 
@@ -175,8 +183,8 @@ module.exports = {
   variableArgs: true,
   usage: 'ps [TYPE [TYPE ...]]',
   flags: [
-    { name: 'json', description: 'display as json' },
-    { name: 'extended', char: 'x', hidden: true }
+    {name: 'json', description: 'display as json'},
+    {name: 'extended', char: 'x', hidden: true},
   ],
   examples: `$ heroku ps
 === run: one-off dyno
@@ -190,5 +198,5 @@ $ heroku ps run # specifying types
 run.1: up for 5m: bash`,
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

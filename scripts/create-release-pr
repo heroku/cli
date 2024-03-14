@@ -3,10 +3,10 @@
 set -e -o pipefail
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-MAIN_BRANCH="master"
+MAIN_BRANCH="main"
 
 if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
-  echo "scripts/publish-release must be run on the ${MAIN_BRANCH}."
+  echo "scripts must be run on the ${MAIN_BRANCH}."
   echo "Please checkout the ${MAIN_BRANCH} branch with:"
   echo "git checkout ${MAIN_BRANCH}"
   exit 1
@@ -27,7 +27,7 @@ if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
   exit 1
 fi
 
-git pull --rebase origin "${MAIN_BRANCH}"
+git pull --ff-only origin "${MAIN_BRANCH}"
 
 # Create a branch with the unix timestamp of the current second
 BRANCH_NAME="release-$(date +%s)"
@@ -39,16 +39,22 @@ echo "Installing dependencies with yarn..."
 yarn
 echo "Done installing dependencies with yarn"
 
+# remove any oclif manifests. They interfere with doc generation
+rm -rf ./packages/*/oclif.manifest.json
+
 echo "Creating new CLI package(s) versions with yarn lerna version..."
 yarn lerna version \
   --allow-branch ${BRANCH_NAME} \
   --no-push \
   --no-git-tag-version \
   --yes
-git add . -u
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 echo "Done creating new CLI package(s) versions"
 
+echo "Updating yarn.lock with new package versions"
+yarn
+
+git add . -u
 echo "Creating git commit and pushing to GitHub..."
 git commit -m "v${PACKAGE_VERSION}"
 git push origin "${BRANCH_NAME}"

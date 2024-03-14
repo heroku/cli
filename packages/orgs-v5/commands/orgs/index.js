@@ -13,7 +13,7 @@ async function run(context, heroku) {
   if (context.flags.json) {
     Utils.printGroupsJSON(orgs)
   } else {
-    Utils.printGroups(orgs, { label: 'Teams' })
+    Utils.printGroups(orgs, {label: 'Teams'})
   }
 }
 
@@ -22,9 +22,9 @@ module.exports = {
   description: 'list the teams that you are a member of',
   needsAuth: true,
   flags: [
-    { name: 'json', description: 'output in json format' },
-    { name: 'enterprise', hasValue: false, description: 'filter by enterprise teams' },
-    { name: 'teams', hasValue: false, description: 'filter by teams', hidden: true }
+    {name: 'json', description: 'output in json format'},
+    {name: 'enterprise', hasValue: false, description: 'filter by enterprise teams'},
+    {name: 'teams', hasValue: false, description: 'filter by teams', hidden: true},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

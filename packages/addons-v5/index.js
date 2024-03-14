@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-array-flat */
 'use strict'
 
 const _ = require('lodash')
@@ -67,7 +68,7 @@ exports.topic = {
     heroku-postgresql (postgresql-deep-6913)   mini  $5/month
     └─ as DATABASE
 
-  For more information, read https://devcenter.heroku.com/articles/add-ons`
+  For more information, read https://devcenter.heroku.com/articles/add-ons`,
 }
 
 exports.commands = _.flatten([
@@ -83,8 +84,9 @@ exports.commands = _.flatten([
   require('./commands/addons/rename'),
   require('./commands/addons/services'),
   require('./commands/addons/upgrade'),
-  require('./commands/addons/wait')
+  require('./commands/addons/wait'),
 ])
 
 exports.resolve = require('./lib/resolve')
 exports.createAddon = require('./lib/create_addon')
+exports.destroyAddon = require('./lib/destroy_addon')

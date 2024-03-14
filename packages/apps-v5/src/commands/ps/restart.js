@@ -8,12 +8,12 @@ async function run(context, heroku) {
 
   let msg = 'Restarting'
   if (dyno) msg += ` ${cli.color.cyan(dyno)}`
-  msg += (dyno && dyno.indexOf('.') !== -1) ? ' dyno' : ' dynos'
+  msg += (dyno && dyno.includes('.')) ? ' dyno' : ' dynos'
   msg += ` on ${cli.color.app(app)}`
 
-  await cli.action(msg, async function () {
+  await cli.action(msg, (async function () {
     await heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
-  }())
+  })())
 }
 
 let cmd = {
@@ -29,12 +29,12 @@ $ heroku ps:restart
 Restarting dynos... done`,
   needsAuth: true,
   needsApp: true,
-  args: [{ name: 'dyno', optional: true }],
-  run: cli.command(run)
+  args: [{name: 'dyno', optional: true}],
+  run: cli.command(run),
 }
 
 module.exports = [
-  Object.assign({ topic: 'ps', command: 'restart' }, cmd),
-  Object.assign({ topic: 'dyno', command: 'restart' }, cmd),
-  Object.assign({ topic: 'restart', hidden: true }, cmd)
+  Object.assign({topic: 'ps', command: 'restart'}, cmd),
+  Object.assign({topic: 'dyno', command: 'restart'}, cmd),
+  Object.assign({topic: 'restart', hidden: true}, cmd),
 ]

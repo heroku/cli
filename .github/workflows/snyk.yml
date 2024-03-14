@@ -1,0 +1,21 @@
+name: Snyk nightly CI check
+# runs nightly at midnight
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    environment: Snyk
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - run: yarn --immutable --network-timeout 1000000
+      - run: yarn dlx -p snyk test --all-projects --fail-on=all
+      - run: yarn dlx -p snyk monitor --all-projects --org=hit

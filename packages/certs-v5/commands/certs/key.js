@@ -2,17 +2,19 @@
 
 let cli = require('heroku-cli-util')
 
-let error = require('../../lib/error.js')
-let readFile = require('../../lib/read_file.js')
+// let error = require('../../lib/error.js')
+// let readFile = require('../../lib/read_file.js')
 
 async function run(context) {
-  if (context.args.length < 2) {
-    error.exit(1, 'Usage: heroku certs:key CRT KEY [KEY ...]\nMust specify one certificate file and at least one key file.')
-  }
+  // TODO: Fix key command
 
-  let res = await Promise.all(context.args.map(function (arg) { return readFile(arg) }))
+  // if (context.args.length < 2) {
+  //   error.exit(1, 'Usage: heroku certs:key CRT KEY [KEY ...]\nMust specify one certificate file and at least one key file.')
+  // }
 
-  cli.console.writeLog(body.key)
+  // let res = await Promise.all(context.args.map(function (arg) { return readFile(arg) }))
+
+  // cli.console.writeLog(body.key)
 }
 
 module.exports = {
@@ -24,5 +26,5 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   variableArgs: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }

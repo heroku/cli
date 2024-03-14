@@ -35,12 +35,13 @@ export async function removeEmptyDirs(dir: string): Promise<void> {
   let files
   try {
     files = await ls(dir)
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 'ENOENT') return
     throw error
   }
+
   const dirs = files.filter(f => f.stat.isDirectory()).map(f => f.path)
-  // eslint-disable-next-line no-await-in-loop
+  // eslint-disable-next-line unicorn/no-array-callback-reference
   for (const p of dirs.map(removeEmptyDirs)) await p
   files = await ls(dir)
   if (files.length === 0) await remove(dir)

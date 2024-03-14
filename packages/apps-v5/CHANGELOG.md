@@ -3,6 +3,163 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+
+### Bug Fixes
+
+* allow ps:scale to handle extra args ([#2643](https://github.com/heroku/cli/issues/2643)) ([a618081](https://github.com/heroku/cli/commit/a618081af80effe96d1a422c4b7fc6e1d2ff6fd0))
+
+
+
+
+
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
+
+
+### Features
+
+* **ps:** add larger dyno information to ps:type and ps:scale ([#2598](https://github.com/heroku/cli/issues/2598)) ([23f8e2d](https://github.com/heroku/cli/commit/23f8e2dae8ecef0b3945c67e84a5d93ab53ed9c0))
+
+
+
+
+
+# [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
+
+
+### Bug Fixes
+
+* run lint after every test. ([#2490](https://github.com/heroku/cli/issues/2490)) ([d4db466](https://github.com/heroku/cli/commit/d4db46648baef355f9e362679fca827591f037c1))
+
+
+
+
+
+# [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
+
+
+### Features
+
+* **apps-v5:** Use colors when showing run dynos in the ps output ([#2480](https://github.com/heroku/cli/issues/2480)) ([711feef](https://github.com/heroku/cli/commit/711feef617a889166b7cd07f76f6d99c4ef29d35))
+
+
+
+
+
+# [8.4.0](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0) (2023-08-23)
+
+
+### Reverts
+
+* Revert "Revert "refactor: add per hour and max price per month to pricing displays"" (#2448) ([dd535a5](https://github.com/heroku/cli/commit/dd535a506e781e24b48208dcb666947a201460ba)), closes [#2448](https://github.com/heroku/cli/issues/2448) [#2439](https://github.com/heroku/cli/issues/2439) [#2447](https://github.com/heroku/cli/issues/2447)
+
+
+
+
+
+# [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
+
+
+### Bug Fixes
+
+* monorepo dependency issues - upgrade to yarn 3 ([#2429](https://github.com/heroku/cli/issues/2429)) ([0d7e5ca](https://github.com/heroku/cli/commit/0d7e5ca519799af4352ec973f51b45748699f3a1))
+
+
+
+
+
+## [8.1.8](https://github.com/heroku/cli/compare/v8.1.7...v8.1.8) (2023-06-14)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [8.1.7](https://github.com/heroku/cli/compare/v8.1.4...v8.1.7) (2023-06-01)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [8.1.6](https://github.com/heroku/cli/compare/v8.1.4...v8.1.6) (2023-05-31)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [8.1.4](https://github.com/heroku/cli/compare/v8.1.3...v8.1.4) (2023-05-24)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [8.0.5](https://github.com/heroku/cli/compare/v8.0.4...v8.0.5) (2023-04-18)
+
+
+### Bug Fixes
+
+* oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
+
+
+
+
+
+## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.69.2](https://github.com/heroku/cli/compare/v7.69.1...v7.69.2) (2023-03-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.68.1](https://github.com/heroku/cli/compare/v7.68.0...v7.68.1) (2023-02-14)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
+
+
+### Bug Fixes
+
+* revert to v7.67.2 ([#2235](https://github.com/heroku/cli/issues/2235)) ([0955a24](https://github.com/heroku/cli/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/cli/issues/2231) [#2230](https://github.com/heroku/cli/issues/2230) [#2229](https://github.com/heroku/cli/issues/2229) [#2228](https://github.com/heroku/cli/issues/2228) [#2227](https://github.com/heroku/cli/issues/2227) [#2225](https://github.com/heroku/cli/issues/2225) [#2144](https://github.com/heroku/cli/issues/2144) [#2216](https://github.com/heroku/cli/issues/2216) [#2207](https://github.com/heroku/cli/issues/2207) [#2212](https://github.com/heroku/cli/issues/2212) [#2212](https://github.com/heroku/cli/issues/2212)
+
+
+### Features
+
+* **apps-v5:** add fleet to dyno list as extended attribute ([#2220](https://github.com/heroku/cli/issues/2220)) ([1affd19](https://github.com/heroku/cli/commit/1affd1914e1268bf7373240eb9d3a19c5c8132ec))
+
+
+
+
+
 # [7.67.0](https://github.com/heroku/cli/compare/v7.66.4...v7.67.0) (2022-11-29)
 
 

@@ -5,14 +5,14 @@ let time = require('../../time')
 
 async function run(context, heroku) {
   let app = context.app && !context.flags.all ? await heroku.get(`/apps/${context.app}`) : null
-  let notifications = await heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' })
-  if (app) notifications = notifications.filter((n) => n.target.id === app.id)
+  let notifications = await heroku.request({host: 'telex.heroku.com', path: '/user/notifications'})
+  if (app) notifications = notifications.filter(n => n.target.id === app.id)
   if (!context.flags.read) {
-    notifications = notifications.filter((n) => !n.read)
-    await Promise.all(notifications.map((n) => heroku.request({ host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: { read: true } })))
+    notifications = notifications.filter(n => !n.read)
+    await Promise.all(notifications.map(n => heroku.request({host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: {read: true}})))
   }
 
-  function displayNotifications (notifications) {
+  function displayNotifications(notifications) {
     let wrap = cli.linewrap(2, 80)
     let read = context.flags.read ? 'Read' : 'Unread'
     cli.styledHeader(app ? `${read} Notifications for ${cli.color.app(app.name)}` : `${read} Notifications`)
@@ -29,6 +29,7 @@ async function run(context, heroku) {
     cli.styledJSON(notifications)
     return
   }
+
   if (notifications.length === 0) {
     if (context.flags.read) {
       if (app) cli.warn(`You have no notifications on ${cli.color.green(app.name)}.\nRun heroku notifications --all to view notifications for all apps.`)
@@ -44,9 +45,9 @@ module.exports = {
   needsAuth: true,
   wantsApp: true,
   flags: [
-    { name: 'all', description: 'view all notifications (not just the ones for the current app)' },
-    { name: 'json', description: 'output in json format' },
-    { name: 'read', description: 'show notifications already read' }
+    {name: 'all', description: 'view all notifications (not just the ones for the current app)'},
+    {name: 'json', description: 'output in json format'},
+    {name: 'read', description: 'show notifications already read'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

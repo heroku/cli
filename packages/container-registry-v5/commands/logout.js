@@ -6,30 +6,30 @@ module.exports = function (topic) {
   return {
     topic: topic,
     command: 'logout',
-    flags: [{ name: 'verbose', char: 'v', hasValue: false }],
+    flags: [{name: 'verbose', char: 'v', hasValue: false}],
     description: 'log out from Heroku Container Registry',
     needsApp: false,
     needsAuth: false,
-    run: cli.command(logout)
+    run: cli.command(logout),
   }
 }
 
-async function logout (context, heroku) {
+async function logout(context) {
   if (context.flags.verbose) debug.enabled = true
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
 
   try {
     await dockerLogout(registry)
-  } catch (err) {
-    cli.error(`Error: docker logout exited with ${err}`)
+  } catch (error) {
+    cli.error(`Error: docker logout exited with ${error}`)
   }
 }
 
-function dockerLogout (registry) {
+function dockerLogout(registry) {
   let args = [
     'logout',
-    registry
+    registry,
   ]
   return Sanbashi.cmd('docker', args)
 }

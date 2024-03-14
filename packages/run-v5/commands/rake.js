@@ -14,17 +14,17 @@ async function run(context, heroku) {
     'exit-code': context.flags['exit-code'],
     env: context.flags.env,
     'no-tty': context.flags['no-tty'],
-    attach: true
+    attach: true,
   }
 
   let dyno = new Dyno(opts)
   try {
     await dyno.start()
-  } catch (err) {
-    if (err.exitCode) {
-      cli.error(err)
-      process.exit(err.exitCode)
-    } else throw err
+  } catch (error) {
+    if (error.exitCode) {
+      cli.error(error)
+      process.exit(error.exitCode)
+    } else throw error
   }
 }
 
@@ -35,10 +35,10 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    { name: 'size', char: 's', description: 'dyno size', hasValue: true },
-    { name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command' },
-    { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
-    { name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false }
+    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
+    {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
+    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
+    {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

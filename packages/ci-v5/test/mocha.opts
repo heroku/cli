@@ -1,4 +1,0 @@
-test
---recursive
---timeout 60000
--R dot

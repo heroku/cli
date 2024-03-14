@@ -2,21 +2,21 @@
 
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
-const { sortBy } = require('lodash')
+const {sortBy} = require('lodash')
 const printf = require('printf')
 const URL = require('url').URL
 const env = require('process').env
 
-function getConfigVarName (configVars) {
-  let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
+function getConfigVarName(configVars) {
+  let connstringVars = configVars.filter(cv => (cv.endsWith('_URL')))
   if (connstringVars.length === 0) throw new Error('Database URL not found for this addon')
   return connstringVars[0]
 }
 
 exports.getConfigVarName = getConfigVarName
 
-function getConfigVarNameFromAttachment (attachment, config) {
-  const configVars = attachment.config_vars.filter((cv) => {
+function getConfigVarNameFromAttachment(attachment, config) {
+  const configVars = attachment.config_vars.filter(cv => {
     return config[cv] && config[cv].startsWith('postgres://')
   })
   if (configVars.length === 0) {
@@ -27,12 +27,13 @@ function getConfigVarNameFromAttachment (attachment, config) {
   if (configVars.includes(configVarName) && configVarName in config) {
     return configVarName
   }
+
   return getConfigVarName(configVars)
 }
 
-exports.getConfigVarNameFromAttachment  = getConfigVarNameFromAttachment;
+exports.getConfigVarNameFromAttachment  = getConfigVarNameFromAttachment
 
-function formatAttachment (attachment) {
+function formatAttachment(attachment) {
   let attName = cli.color.addon(attachment.name)
 
   let output = [cli.color.dim('as'), attName]
@@ -42,18 +43,18 @@ function formatAttachment (attachment) {
   return output.join(' ')
 }
 
-function renderAttachment (attachment, app, isLast) {
+function renderAttachment(attachment, app, isLast) {
   let line = isLast ? '└─' : '├─'
   let attName = formatAttachment(attachment)
   return printf(' %s %s', cli.color.dim(line), attName)
 }
 
-function presentCredentialAttachments (app, credAttachments, credentials, cred) {
-  let isForeignApp = (attOrAddon) => attOrAddon.app.name !== app
+function presentCredentialAttachments(app, credAttachments, credentials, cred) {
+  let isForeignApp = attOrAddon => attOrAddon.app.name !== app
   let atts = sortBy(credAttachments,
     isForeignApp,
     'name',
-    'app.name'
+    'app.name',
   )
   // render each attachment under the credential
   let attLines = atts.map(function (attachment, idx) {
@@ -62,30 +63,35 @@ function presentCredentialAttachments (app, credAttachments, credentials, cred) 
   })
 
   let rotationLines = []
+  // eslint-disable-next-line unicorn/prefer-array-find
   let credentialStore = credentials.filter(a => a.name === cred)[0]
   if (credentialStore.state === 'rotating') {
     let formatted = credentialStore.credentials.map(function (credential, idx) {
       return {
-        'user': credential.user,
-        'state': credential.state,
-        'connections': credential.connections
+        user: credential.user,
+        state: credential.state,
+        connections: credential.connections,
       }
     })
-    let connectionInformationAvailable = formatted.some((c) => c.connections != null)
+    // eslint-disable-next-line no-eq-null, eqeqeq
+    let connectionInformationAvailable = formatted.some(c => c.connections != null)
     if (connectionInformationAvailable) {
       let prefix = '       '
       rotationLines.push(`${prefix}Usernames currently active for this credential:`)
       cli.table(formatted, {
         printHeader: false,
-        printLine: function (line) { rotationLines.push(line) },
+        printLine: function (line) {
+          rotationLines.push(line)
+        },
         columns: [
-          { key: 'user', format: (v, r) => `${prefix}${v}` },
-          { key: 'state', format: (v, r) => (v === 'revoking') ? 'waiting for no connections to be revoked' : v },
-          { key: 'connections', format: (v, r) => `${v} connections` }
-        ]
+          {key: 'user', format: (v, r) => `${prefix}${v}`},
+          {key: 'state', format: (v, r) => (v === 'revoking') ? 'waiting for no connections to be revoked' : v},
+          {key: 'connections', format: (v, r) => `${v} connections`},
+        ],
       })
     }
   }
+
   return [cred].concat(attLines).concat(rotationLines).join('\n')
 }
 
@@ -112,7 +118,7 @@ exports.getConnectionDetails = function (attachment, config) {
     host: conn.hostname,
     port: conn.port,
     attachment,
-    url: conn
+    url: conn,
   }
 
   // If bastion creds exist, graft it into the payload
@@ -124,8 +130,18 @@ exports.getConnectionDetails = function (attachment, config) {
   return payload
 }
 
-exports.essentialPlan = a => !!a.plan.name.match(/(dev|basic|mini)$/)
+// eslint-disable-next-line no-implicit-coercion
+exports.essentialNumPlan = a => !!a.plan.name.split(':')[1].match(/^essential/)
 
+// eslint-disable-next-line no-implicit-coercion
+exports.legacyEssentialPlan = a => !!a.plan.name.split(':')[1].match(/(dev|basic|mini)$/)
+
+// eslint-disable-next-line no-implicit-coercion
+exports.essentialPlan = a => {
+  return this.essentialNumPlan(a) || this.legacyEssentialPlan(a)
+}
+
+// eslint-disable-next-line no-implicit-coercion
 exports.bastionKeyPlan = a => !!a.plan.name.match(/private/)
 
 exports.configVarNamesFromValue = (config, value) => {
@@ -138,21 +154,20 @@ exports.configVarNamesFromValue = (config, value) => {
       try {
         let configURL = new URL(configVal)
         let ourURL = new URL(value)
-        let components = [ 'protocol', 'hostname', 'port', 'pathname' ]
-        if (components.every((component) => ourURL[component] === configURL[component])) {
+        let components = ['protocol', 'hostname', 'port', 'pathname']
+        if (components.every(component => ourURL[component] === configURL[component])) {
           keys.push(key)
         }
-      } catch (err) {
+      } catch {
         // ignore -- this is not a valid URL so not a matching URL
       }
     }
   }
+
   return sortBy(keys, k => k !== 'DATABASE_URL', 'name')
 }
 
 exports.databaseNameFromUrl = (uri, config) => {
-  const url = require('url')
-
   let names = exports.configVarNamesFromValue(config, uri)
   let name = names.pop()
   while (names.length > 0 && name === 'DATABASE_URL') name = names.pop()
@@ -161,7 +176,7 @@ exports.databaseNameFromUrl = (uri, config) => {
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
 
-exports.parsePostgresConnectionString = (db) => {
+exports.parsePostgresConnectionString = db => {
   const url = require('url')
 
   db = url.parse(db.match(/:\/\//) ? db : `postgres:///${db}`)
@@ -174,10 +189,12 @@ exports.parsePostgresConnectionString = (db) => {
   } else {
     db.database = databaseName
   }
+
   db.host = db.hostname
   db.port = db.port || env.PGPORT
   if (db.hostname) {
     db.port = db.port || 5432
   }
+
   return db
 }

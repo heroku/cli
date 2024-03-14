@@ -6,8 +6,9 @@ let releases = require('../../releases')
 async function run(context, heroku) {
   const shellescape = require('shell-escape')
   const statusHelper = require('../../status_helper')
-  const { forEach } = require('lodash')
+  const {forEach} = require('lodash')
 
+  // eslint-disable-next-line new-cap
   let release = await releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
   let config = await heroku.get(`/apps/${context.app}/releases/${release.version}/config-vars`)
@@ -27,7 +28,7 @@ async function run(context, heroku) {
       'Add-ons': release.addon_plan_names,
       Change: releaseChange,
       By: release.user.email,
-      When: release.created_at
+      When: release.created_at,
     })
 
     cli.log()
@@ -46,10 +47,10 @@ module.exports = {
   description: 'view detailed information for a release',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'release', optional: true }],
+  args: [{name: 'release', optional: true}],
   flags: [
-    { name: 'json', description: 'output in json format' },
-    { name: 'shell', char: 's', description: 'output in shell format' }
+    {name: 'json', description: 'output in json format'},
+    {name: 'shell', char: 's', description: 'output in shell format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

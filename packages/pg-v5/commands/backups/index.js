@@ -24,7 +24,7 @@ async function run(context, heroku) {
       }
     })
 
-    context = Object.assign(context, { args })
+    context = Object.assign(context, {args})
 
     await cmd.run(context, heroku)
   } else {
@@ -34,68 +34,71 @@ async function run(context, heroku) {
 
 async function list(context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
-  const { sortBy } = require('lodash')
+  const {sortBy} = require('lodash')
   const host = require('../../lib/host')()
   const app = context.app
 
-  function displayBackups (backups) {
+  function displayBackups(backups) {
     cli.styledHeader('Backups')
-    if (!backups.length) {
+    if (backups.length === 0) {
       cli.log(`No backups. Capture one with ${cli.color.cmd('heroku pg:backups:capture')}`)
     } else {
       cli.table(backups, {
         columns: [
-          { label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t)) },
-          { label: 'Created at', key: 'created_at' },
-          { label: 'Status', format: (_, t) => pgbackups.transfer.status(t) },
-          { label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b) },
-          { label: 'Database', key: 'from_name', format: d => cli.color.configVar(d) || 'UNKNOWN' }
-        ]
+          {label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t))},
+          {label: 'Created at', key: 'created_at'},
+          {label: 'Status', format: (_, t) => pgbackups.transfer.status(t)},
+          {label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b)},
+          {label: 'Database', key: 'from_name', format: d => cli.color.configVar(d) || 'UNKNOWN'},
+        ],
       })
     }
+
     cli.log()
   }
 
-  function displayRestores (restores) {
+  function displayRestores(restores) {
     cli.styledHeader('Restores')
     restores = restores.slice(0, 10)
-    if (!restores.length) {
+    if (restores.length === 0) {
       cli.log(`No restores found. Use ${cli.color.cmd('heroku pg:backups:restore')} to restore a backup`)
     } else {
       cli.table(restores, {
         columns: [
-          { label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t)) },
-          { label: 'Started at', key: 'created_at' },
-          { label: 'Status', format: (_, t) => pgbackups.transfer.status(t) },
-          { label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b) },
-          { label: 'Database', key: 'to_name', format: d => cli.color.configVar(d) || 'UNKNOWN' }
-        ]
+          {label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t))},
+          {label: 'Started at', key: 'created_at'},
+          {label: 'Status', format: (_, t) => pgbackups.transfer.status(t)},
+          {label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b)},
+          {label: 'Database', key: 'to_name', format: d => cli.color.configVar(d) || 'UNKNOWN'},
+        ],
       })
     }
+
     cli.log()
   }
 
-  function displayCopies (copies) {
+  function displayCopies(copies) {
     cli.styledHeader('Copies')
     copies = copies.slice(0, 10)
-    if (!copies.length) {
+    if (copies.length === 0) {
       cli.log(`No copies found. Use ${cli.color.cmd('heroku pg:copy')} to copy a database to another`)
     } else {
       cli.table(copies, {
         columns: [
-          { label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t)) },
-          { label: 'Started at', key: 'created_at' },
-          { label: 'Status', format: (_, t) => pgbackups.transfer.status(t) },
-          { label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b) },
-          { label: 'From', key: 'from_name', format: d => cli.color.configVar(d) || 'UNKNOWN' },
-          { label: 'To', key: 'to_name', format: d => cli.color.configVar(d) || 'UNKNOWN' }
-        ]
+          {label: 'ID', format: (_, t) => cli.color.cyan(pgbackups.transfer.name(t))},
+          {label: 'Started at', key: 'created_at'},
+          {label: 'Status', format: (_, t) => pgbackups.transfer.status(t)},
+          {label: 'Size', key: 'processed_bytes', format: b => pgbackups.filesize(b)},
+          {label: 'From', key: 'from_name', format: d => cli.color.configVar(d) || 'UNKNOWN'},
+          {label: 'To', key: 'to_name', format: d => cli.color.configVar(d) || 'UNKNOWN'},
+        ],
       })
     }
+
     cli.log()
   }
 
-  let transfers = await heroku.get(`/client/v11/apps/${app}/transfers`, { host })
+  let transfers = await heroku.get(`/client/v11/apps/${app}/transfers`, {host})
   transfers = sortBy(transfers, 'created_at').reverse()
 
   let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
@@ -116,12 +119,12 @@ module.exports = {
   variableArgs: true,
   flags: [
     // for backwards compatibility with `pg:backups command` invocation
-    { name: 'verbose', char: 'v', hidden: true },
-    { name: 'confirm', char: 'c', hasValue: true, hidden: true },
-    { name: 'output', char: 'o', hasValue: true, hidden: true },
-    { name: 'wait-interval', hasValue: true, hidden: true },
-    { name: 'at', hasValue: true, hidden: true },
-    { name: 'quiet', char: 'q', hidden: true }
+    {name: 'verbose', char: 'v', hidden: true},
+    {name: 'confirm', char: 'c', hasValue: true, hidden: true},
+    {name: 'output', char: 'o', hasValue: true, hidden: true},
+    {name: 'wait-interval', hasValue: true, hidden: true},
+    {name: 'at', hasValue: true, hidden: true},
+    {name: 'quiet', char: 'q', hidden: true},
   ],
-  run: cli.command({ preauth: true }, run)
+  run: cli.command({preauth: true}, run),
 }

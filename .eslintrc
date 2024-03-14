@@ -1,6 +1,65 @@
 {
-  "extends": "standard",
-  "env": {
-    "mocha": true
-  }
+  // Global settings
+  "plugins": ["import"],
+  "extends": [
+    "oclif",
+    "oclif-typescript"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-unused-vars": "warn", // TODO: fix issues and turn this back on
+    "camelcase":"off",
+    "import/no-unresolved": "error",
+    "indent": ["error", 2, {"MemberExpression": 1}],
+    "func-names":"warn", // TODO: fix issues and turn this back on
+    "no-await-in-loop": "warn", // TODO: fix issues and turn this back on
+    "no-constant-condition": ["error", {"checkLoops": false }],
+    "no-else-return": "warn", // TODO: fix issues and turn this back on
+    "no-negated-condition":"warn", // TODO: fix issues and turn this back on
+    "no-process-exit": "off",
+    "no-promise-executor-return": "warn", // TODO: fix issues and turn this back on
+    "no-prototype-builtins": "warn", // TODO: fix issues and turn this back on
+    "no-return-await":"warn", // TODO: fix issues and turn this back on
+    "node/no-deprecated-api": "warn", // TODO: fix issues and turn this back on
+    "node/no-missing-import": "off", // using import/no-unresolved instead
+    "radix":"warn", // TODO: fix issues and turn this back on
+    "wrap-iife": "warn", // TODO: fix issues and turn this back on
+    "unicorn/better-regex": "off", // TODO: fix issues and turn this back on
+    "unicorn/consistent-function-scoping": "off", // TODO: fix issues and turn this back on
+    "unicorn/filename-case": "off",
+    "unicorn/import-style": "off",
+    "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/no-array-for-each": "off",
+    "unicorn/no-array-reduce": "warn", // TODO: fix issues and turn this back on
+    "unicorn/no-lonely-if":"off",
+    "unicorn/no-process-exit": "off",
+    "unicorn/no-useless-undefined": "warn", // TODO: fix issues and turn this back on
+    "unicorn/numeric-separators-style":"off",
+    "unicorn/prefer-array-some": "warn", // TODO: fix issues and turn this back on
+    "unicorn/prefer-module": "off",
+    "unicorn/prefer-node-protocol": "off",
+    "unicorn/prefer-object-from-entries": "warn", // TODO: fix issues and turn this back on
+    "unicorn/prefer-regexp-test": "off",
+    "unicorn/prefer-spread": "off", // TODO: fix issues and turn this back on
+    "unicorn/prefer-string-slice": "warn", // TODO: fix issues and turn this back on
+    "unicorn/prefer-ternary": "off" // TODO: fix issues and turn this back on
+  },
+
+  // Typescript settings
+  "overrides": [
+    {
+      "files": ["**/*{.ts,tsx}"],
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "project": "packages/*/tsconfig.json"
+          }
+        }
+      }
+    }
+  ]
 }

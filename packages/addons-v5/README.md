@@ -30,13 +30,14 @@ lists your add-ons and attachments
 USAGE
   $ heroku addons [--all|--app APP]
 
-OPTIONS
-  -A, --all            show add-ons and attachments for all accessible apps
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  --json               return add-ons in json format
+FLAGS
+  -A, --all             show add-ons and attachments for all accessible apps
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --json                return add-ons in json format
 
 DESCRIPTION
+  lists your add-ons and attachments
   The default filter applied depends on whether you are in a Heroku app
   directory. If so, the --app flag is implied. If not, the default of --all
   is implied. Explicitly providing either flag overrides the default
@@ -44,6 +45,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku addons --all
+
   $ heroku addons --app acme-inc-www
 ```
 
@@ -53,14 +55,18 @@ attach an existing add-on resource to an app
 
 ```
 USAGE
-  $ heroku addons:attach ADDON_NAME
+  $ heroku addons:attach ADDON_NAME -a <value> [--as <value>] [--credential <value>] [--confirm <value>] [-r
+    <value>]
 
-OPTIONS
-  -a, --app=app            (required) app to run command against
-  -r, --remote=remote      git remote of app to use
-  --as=as                  name for add-on attachment
-  --confirm=confirm        overwrite existing add-on attachment with same name
-  --credential=credential  credential name for scoped access to Heroku Postgres
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --as=<value>          name for add-on attachment
+  --confirm=<value>     overwrite existing add-on attachment with same name
+  --credential=<value>  credential name for scoped access to Heroku Postgres
+
+DESCRIPTION
+  attach an existing add-on resource to an app
 ```
 
 ## `heroku addons:create SERVICE:PLAN`
@@ -69,15 +75,19 @@ create a new add-on resource
 
 ```
 USAGE
-  $ heroku addons:create SERVICE:PLAN
+  $ heroku addons:create SERVICE:PLAN -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait] [-r
+    <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --as=as              name for the initial add-on attachment
-  --confirm=confirm    overwrite existing config vars or existing add-on attachments
-  --name=name          name for the add-on resource
-  --wait               watch add-on creation status and exit when complete
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --as=<value>          name for the initial add-on attachment
+  --confirm=<value>     overwrite existing config vars or existing add-on attachments
+  --name=<value>        name for the add-on resource
+  --wait                watch add-on creation status and exit when complete
+
+DESCRIPTION
+  create a new add-on resource
 ```
 
 ## `heroku addons:destroy [ADDON]... [flags]`
@@ -88,11 +98,15 @@ permanently destroy an add-on resource
 USAGE
   $ heroku addons:destroy [ADDON]... [flags]
 
-OPTIONS
-  -a, --app=app          app to run command against
-  -c, --confirm=confirm
+FLAGS
+  -a, --app=<value>      app to run command against
+  -c, --confirm=<value>
   -f, --force            allow destruction even if connected to other apps
-  -r, --remote=remote    git remote of app to use
+  -r, --remote=<value>   git remote of app to use
+  --wait                 watch add-on destruction status and exit when complete
+
+DESCRIPTION
+  permanently destroy an add-on resource
 ```
 
 ## `heroku addons:detach ATTACHMENT_NAME`
@@ -101,11 +115,14 @@ detach an existing add-on resource from an app
 
 ```
 USAGE
-  $ heroku addons:detach ATTACHMENT_NAME
+  $ heroku addons:detach ATTACHMENT_NAME -a <value> [-r <value>]
 
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  detach an existing add-on resource from an app
 ```
 
 ## `heroku addons:docs ADDON`
@@ -114,12 +131,15 @@ open an add-on's Dev Center documentation in your browser
 
 ```
 USAGE
-  $ heroku addons:docs ADDON
+  $ heroku addons:docs ADDON [--show-url] [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  --show-url           show URL, do not open browser
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --show-url            show URL, do not open browser
+
+DESCRIPTION
+  open an add-on's Dev Center documentation in your browser
 ```
 
 ## `heroku addons:downgrade ADDON [PLAN]`
@@ -128,13 +148,14 @@ change add-on plan
 
 ```
 USAGE
-  $ heroku addons:downgrade ADDON [PLAN]
+  $ heroku addons:downgrade ADDON [PLAN] [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  change add-on plan
   See available plans with `heroku addons:plans SERVICE`.
 
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
@@ -142,10 +163,9 @@ DESCRIPTION
 
   https://devcenter.heroku.com/articles/managing-add-ons
 
-EXAMPLE
+EXAMPLES
   Upgrade an add-on by service name:
   $ heroku addons:upgrade heroku-redis:premium-2
-
   Upgrade a specific add-on:
   $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
@@ -158,9 +178,12 @@ show detailed add-on resource and attachment information
 USAGE
   $ heroku addons:info ADDON
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  show detailed add-on resource and attachment information
 ```
 
 ## `heroku addons:open ADDON`
@@ -169,12 +192,15 @@ open an add-on's dashboard in your browser
 
 ```
 USAGE
-  $ heroku addons:open ADDON
+  $ heroku addons:open ADDON [--show-url] [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  --show-url           show URL, do not open browser
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+  --show-url            show URL, do not open browser
+
+DESCRIPTION
+  open an add-on's dashboard in your browser
 ```
 
 ## `heroku addons:plans SERVICE`
@@ -183,10 +209,13 @@ list all available plans for an add-on services
 
 ```
 USAGE
-  $ heroku addons:plans SERVICE
+  $ heroku addons:plans SERVICE [--json]
 
-OPTIONS
+FLAGS
   --json  output in json format
+
+DESCRIPTION
+  list all available plans for an add-on services
 ```
 
 ## `heroku addons:rename ADDON NEW_NAME`
@@ -197,9 +226,12 @@ rename an add-on
 USAGE
   $ heroku addons:rename ADDON NEW_NAME
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  rename an add-on
 ```
 
 ## `heroku addons:services`
@@ -208,10 +240,13 @@ list all available add-on services
 
 ```
 USAGE
-  $ heroku addons:services
+  $ heroku addons:services [--json]
 
-OPTIONS
+FLAGS
   --json  output in json format
+
+DESCRIPTION
+  list all available add-on services
 ```
 
 ## `heroku addons:upgrade ADDON [PLAN]`
@@ -220,13 +255,14 @@ change add-on plan
 
 ```
 USAGE
-  $ heroku addons:upgrade ADDON [PLAN]
+  $ heroku addons:upgrade ADDON [PLAN] [-a <value>] [-r <value>]
 
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
+FLAGS
+  -a, --app=<value>     app to run command against
+  -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
+  change add-on plan
   See available plans with `heroku addons:plans SERVICE`.
 
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
@@ -234,10 +270,9 @@ DESCRIPTION
 
   https://devcenter.heroku.com/articles/managing-add-ons
 
-EXAMPLE
+EXAMPLES
   Upgrade an add-on by service name:
   $ heroku addons:upgrade heroku-redis:premium-2
-
   Upgrade a specific add-on:
   $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
@@ -250,9 +285,12 @@ show provisioning status of the add-ons on the app
 USAGE
   $ heroku addons:wait ADDON
 
-OPTIONS
-  -a, --app=app                  app to run command against
-  -r, --remote=remote            git remote of app to use
-  --wait-interval=wait-interval  how frequently to poll in seconds
+FLAGS
+  -a, --app=<value>        app to run command against
+  -r, --remote=<value>     git remote of app to use
+  --wait-interval=<value>  how frequently to poll in seconds
+
+DESCRIPTION
+  show provisioning status of the add-ons on the app
 ```
 <!-- commandsstop -->

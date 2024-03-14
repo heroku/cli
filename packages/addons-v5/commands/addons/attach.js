@@ -8,23 +8,24 @@ async function run(context, heroku) {
   let app = context.app
   let addon = await heroku.get(`/addons/${encodeURIComponent(context.args.addon_name)}`)
 
-  function createAttachment (app, as, confirm, credential) {
+  function createAttachment(app, as, confirm, credential) {
     let body = {
       name: as,
-      app: { name: app },
-      addon: { name: addon.name },
-      confirm
+      app: {name: app},
+      addon: {name: addon.name},
+      confirm,
     }
     if (credential && credential !== 'default') {
       body.namespace = 'credential:' + credential
     }
+
     return cli.action(
       `Attaching ${credential ? cli.color.addon(credential) + ' of ' : ''}${cli.color.addon(addon.name)}${as ? ' as ' + cli.color.attachment(as) : ''} to ${cli.color.app(app)}`,
       heroku.request({
         path: '/addon-attachments',
         method: 'POST',
-        body: body
-      })
+        body: body,
+      }),
     )
   }
 
@@ -35,18 +36,18 @@ async function run(context, heroku) {
     }
   }
 
-  let attachment = await util.trapConfirmationRequired(context.app, context.flags.confirm, (confirm) => createAttachment(app, context.flags.as, confirm, context.flags.credential))
+  let attachment = await util.trapConfirmationRequired(context.app, context.flags.confirm, confirm => createAttachment(app, context.flags.as, confirm, context.flags.credential))
 
   await cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
-    { success: false },
-    async function () {
+    {success: false},
+    (async function () {
       let releases = await heroku.get(`/apps/${app}/releases`, {
         partial: true,
-        headers: { 'Range': 'version ..; max=1, order=desc' }
+        headers: {Range: 'version ..; max=1, order=desc'},
       })
       cli.action.done(`done, v${releases[0].version}`)
-    }()
+    })(),
   )
 }
 
@@ -57,10 +58,10 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    { name: 'as', description: 'name for add-on attachment', hasValue: true },
-    { name: 'credential', description: 'credential name for scoped access to Heroku Postgres', hasValue: true },
-    { name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true }
+    {name: 'as', description: 'name for add-on attachment', hasValue: true},
+    {name: 'credential', description: 'credential name for scoped access to Heroku Postgres', hasValue: true},
+    {name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true},
   ],
-  args: [{ name: 'addon_name' }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'addon_name'}],
+  run: cli.command({preauth: true}, run),
 }

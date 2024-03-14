@@ -1,16 +1,18 @@
 'use strict'
 
+let cli = require('heroku-cli-util')
+
 let readFile = require('./read_file.js')
 let error = require('./error.js')
 
-function usageError () {
+function usageError() {
   error.exit(1, 'Usage: heroku certs:add CRT KEY')
 }
 
 async function getFiles(context) {
   return await Promise.all(
-    context.args.map((arg) => readFile(arg, 'utf-8'))
-  );
+    context.args.map(argument => readFile(argument, 'utf-8')),
+  )
 }
 
 async function getFilesBypass(context) {
@@ -25,5 +27,5 @@ module.exports = async function (context) {
     cli.warn('use of the --bypass flag is deprecated. The flag currently does not perform any additional behavior. Please remove --bypass')
   }
 
-  return await getFilesBypass(context);
+  return await getFilesBypass(context)
 }

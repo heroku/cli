@@ -14,11 +14,16 @@ async function run(context, heroku) {
   } else {
     cli.table(plans, {
       columns: [
-        { key: 'default', label: '', format: (d) => d ? 'default' : '' },
-        { key: 'name', label: 'slug' },
-        { key: 'human_name', label: 'name' },
-        { key: 'price', format: util.formatPrice }
-      ]
+        {key: 'default', label: '', format: d => d ? 'default' : ''},
+        {key: 'name', label: 'slug'},
+        {key: 'human_name', label: 'name'},
+        {key: 'price', format: function (price) {
+          return util.formatPrice({price, hourly: true})
+        }},
+        {key: 'price', label: 'max price', format: function (price) {
+          return util.formatPrice({price, hourly: false})
+        }},
+      ],
     })
   }
 }
@@ -27,9 +32,9 @@ module.exports = {
   topic: 'addons',
   command: 'plans',
   description: 'list all available plans for an add-on services',
-  args: [{ name: 'service' }],
+  args: [{name: 'service'}],
   flags: [
-    { name: 'json', description: 'output in json format' }
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

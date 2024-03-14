@@ -1,7 +1,6 @@
-import {Hook} from '@oclif/config'
+import {Hook, ux} from '@oclif/core'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import cli from 'cli-ux'
 
 export function checkTos(options: any) {
   const tosPath: string = path.join(options.config.cacheDir, 'terms-of-service')
@@ -9,7 +8,7 @@ export function checkTos(options: any) {
   const message = 'Our terms of service have changed: https://dashboard.heroku.com/terms-of-service'
 
   if (!viewedBanner) {
-    cli.warn(message)
+    ux.warn(message)
     fs.createFile(tosPath)
   }
 }

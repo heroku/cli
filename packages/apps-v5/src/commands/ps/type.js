@@ -1,36 +1,74 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-const { sortBy, compact } = require('lodash')
+const {sortBy, compact} = require('lodash')
 
-const costs = { 'Free': 0, 'Eco': 0, 'Hobby': 7, 'Basic': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
+const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576, 'Performance-L-RAM': 500, 'Performance-XL': 750, 'Performance-2XL': 1500}
 
-let emptyFormationErr = (app) => {
+let emptyFormationErr = app => {
   return new Error(`No process types on ${app}.
 Upload a Procfile to add process types.
 https://devcenter.heroku.com/articles/procfile`)
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let app = context.app
 
+  // will remove this flag once we have
+  // successfully launched larger dyno sizes
+  let isLargerDyno = false
+  const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
+    .catch(error => {
+      if (error.statusCode === 404) {
+        return {enabled: false}
+      }
+
+      throw error
+    })
+
   let parse = async function (args) {
-    if (args.length === 0) return []
+    if (!args || args.length === 0) return []
+
+    // checks for larger dyno sizes
+    // if the feature is not enabled
+    if (!largerDynoFeatureFlag.enabled) {
+      if (args.find(a => a.match(/=/))) {
+        // eslint-disable-next-line array-callback-return
+        compact(args.map(arg => {
+          let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
+          let size = match[2]
+
+          const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+          isLargerDyno = largerDynoNames.test(size)
+
+          if (isLargerDyno) {
+            const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+            throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
+          }
+        }))
+      }
+    }
+
     let formation = await heroku.get(`/apps/${app}/formation`)
-    if (args.find((a) => a.match(/=/))) {
-      return compact(args.map((arg) => {
+    if (args.find(a => a.match(/=/))) {
+      return compact(args.map(arg => {
         let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
         let type = match[1]
         let size = match[2]
-        if (!formation.find((p) => p.type === type)) {
+        if (!formation.find(p => p.type === type)) {
           throw new Error(`Type ${cli.color.red(type)} not found in process formation.
-Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
+Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
         }
-        return { type, size }
+
+        return {type, size}
       }))
-    } else {
-      return formation.map((p) => ({ type: p.type, size: args[0] }))
     }
+
+    return formation.map(p => ({type: p.type, size: args[0]}))
+  }
+
+  const calculateHourly = function (size) {
+    return costMonthly[size] / 720
   }
 
   let displayFormation = async function () {
@@ -43,7 +81,7 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     let dynoTotals = []
     let isShowingEcoCostMessage = false
 
-    formation.forEach((d) => {
+    formation.forEach(d => {
       if (d.size === 'Eco') {
         isShowingEcoCostMessage = true
       }
@@ -51,6 +89,7 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
       if (shielded) {
         d.size = d.size.replace('Private-', 'Shield-')
       }
+
       if (d.size in dynoTotals) {
         dynoTotals[d.size] += d.quantity
       } else {
@@ -58,16 +97,17 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
       }
     })
 
-    dynoTotals = Object.keys(dynoTotals).map((k) => ({
+    dynoTotals = Object.keys(dynoTotals).map(k => ({
       type: cli.color.green(k),
-      total: cli.color.yellow(dynoTotals[k])
+      total: cli.color.yellow(dynoTotals[k]),
     }))
 
-    formation = formation.map((d) => ({
+    formation = formation.map(d => ({
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),
       qty: cli.color.yellow(d.quantity.toString()),
-      'cost/mo': costs[d.size] ? '$' + (costs[d.size] * d.quantity).toString() : ''
+      'cost/hour': calculateHourly(d.size) ? '~$' + (calculateHourly(d.size) * d.quantity).toFixed(3).toString() : '',
+      'max cost/month': costMonthly[d.size] ? '$' + (costMonthly[d.size] * d.quantity).toString() : '',
     }))
 
     if (formation.length === 0) throw emptyFormationErr()
@@ -75,20 +115,21 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
     cli.styledHeader('Dyno Types')
     cli.table(formation, {
       columns: [
-        { key: 'type' },
-        { key: 'size' },
-        { key: 'qty' },
-        { key: 'cost/mo' }
-      ]
+        {key: 'type'},
+        {key: 'size'},
+        {key: 'qty'},
+        {key: 'cost/hour'},
+        {key: 'max cost/month'},
+      ],
     })
 
     cli.styledHeader('Dyno Totals')
 
     cli.table(dynoTotals, {
       columns: [
-        { key: 'type' },
-        { key: 'total' }
-      ]
+        {key: 'type'},
+        {key: 'total'},
+      ],
     })
 
     if (isShowingEcoCostMessage) cli.log('\n$5 (flat monthly fee, shared across all Eco dynos)')
@@ -97,9 +138,10 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
   let changes = await parse(context.args)
   if (changes.length > 0) {
     await cli.action(`Scaling dynos on ${cli.color.app(app)}`,
-      heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
+      heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}),
     )
   }
+
   await displayFormation()
 }
 
@@ -116,13 +158,13 @@ Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 `,
   needsAuth: true,
   needsApp: true,
-  run: cli.command(run)
+  run: cli.command(run),
 }
 
 module.exports = [
-  Object.assign({}, cmd, { topic: 'ps', command: 'type' }),
-  Object.assign({}, cmd, { topic: 'ps', command: 'resize' }),
-  Object.assign({}, cmd, { topic: 'resize', hidden: true }),
-  Object.assign({}, cmd, { topic: 'dyno', command: 'type', hidden: true }),
-  Object.assign({}, cmd, { topic: 'dyno', command: 'resize' })
+  Object.assign({}, cmd, {topic: 'ps', command: 'type'}),
+  Object.assign({}, cmd, {topic: 'ps', command: 'resize'}),
+  Object.assign({}, cmd, {topic: 'resize', hidden: true}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'type', hidden: true}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'resize'}),
 ]

@@ -58,11 +58,11 @@ const cmd = {
   description: 'show dead rows and whether an automatic vacuum is expected to be triggered',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  run: cli.command({ preauth: true }, run)
+  args: [{name: 'database', optional: true}],
+  run: cli.command({preauth: true}, run),
 }
 
 module.exports = [
-  Object.assign({ command: 'vacuum-stats' }, cmd),
-  Object.assign({ command: 'vacuum_stats', hidden: true }, cmd)
+  Object.assign({command: 'vacuum-stats'}, cmd),
+  Object.assign({command: 'vacuum_stats', hidden: true}, cmd),
 ]

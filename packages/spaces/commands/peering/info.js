@@ -2,11 +2,11 @@
 
 let cli = require('heroku-cli-util')
 
-function displayJSON (info) {
+function displayJSON(info) {
   cli.log(JSON.stringify(info, null, 2))
 }
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:peering:info --space my-space')
@@ -30,7 +30,7 @@ module.exports = {
     Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
     Unavailable CIDRs: 10.1.0.0/16
 
-You will use the information provied by this command to establish a peering connection request from your AWS VPC to your private space.
+You will use the information provided by this command to establish a peering connection request from your AWS VPC to your private space.
 
 To start the peering process, go into your AWS console for the VPC you would like peered with your Private Space,
 navigate to the VPC service, choose the "Peering Connections" option and click the "Create peering connection" button.
@@ -43,10 +43,10 @@ configure the peering connection for the space.
   `,
   needsApp: false,
   needsAuth: true,
-  args: [{ name: 'space', optional: true, hidden: true }],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
-    { name: 'json', description: 'output in json format' }
+    {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
+    {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(run)
+  run: cli.command(run),
 }

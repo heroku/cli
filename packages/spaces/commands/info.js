@@ -3,23 +3,29 @@
 const cli = require('heroku-cli-util')
 const lib = require('../lib/spaces')
 
-async function run (context, heroku) {
+async function run(context, heroku) {
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:info my-space')
 
   let headers = {}
   if (!context.flags.json) {
-    headers = { 'Accept-Expansion': 'region' }
+    headers = {'Accept-Expansion': 'region'}
   }
 
-  let space = await heroku.get(`/spaces/${spaceName}`, { headers })
+  let space = await heroku.get(`/spaces/${spaceName}`, {headers})
   if (space.state === 'allocated') {
-    space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+    try {
+      space.outbound_ips = await heroku.get(`/spaces/${spaceName}/nat`)
+    } catch (error) {
+      const debug = require('debug')('spaces:info') // eslint-disable-line node/no-extraneous-require
+      debug(`Retrieving NAT details for the space failed with ${error}`)
+    }
   }
+
   render(space, context.flags)
 }
 
-function render (space, flags) {
+function render(space, flags) {
   if (flags.json) {
     cli.log(JSON.stringify(space, null, 2))
   } else {
@@ -33,7 +39,7 @@ function render (space, flags) {
       State: space.state,
       Shield: lib.displayShieldState(space),
       'Outbound IPs': lib.displayNat(space.outbound_ips),
-      'Created at': space.created_at
+      'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Created at'])
   }
 }
@@ -43,11 +49,11 @@ module.exports = {
   command: 'info',
   description: 'show info about a space',
   needsAuth: true,
-  args: [{ name: 'space', optional: true, hidden: true }],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    { name: 'space', char: 's', hasValue: true, description: 'space to get info of' },
-    { name: 'json', description: 'output in json format' }
+    {name: 'space', char: 's', hasValue: true, description: 'space to get info of'},
+    {name: 'json', description: 'output in json format'},
   ],
   render: render,
-  run: cli.command(run)
+  run: cli.command(run),
 }

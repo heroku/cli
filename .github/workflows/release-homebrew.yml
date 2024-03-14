@@ -1,0 +1,37 @@
+name: Release Homebrew
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    input:
+      notUsed:
+        type: string
+        description: Run this workflow from a "release-*" branch. This input does nothing.
+        required: false
+
+jobs:
+  release-homebrew:
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    environment: ReleaseHomebrew
+    steps:
+      - uses: actions/checkout@v3
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: install AWS cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+      - name: yarn install
+        run: yarn --immutable --network-timeout 1000000
+      - run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
+      - name: release homebrew
+        run: node ./scripts/release/homebrew.js
+        env:
+          GITHUB_SHA_SHORT: ${{ env.GITHUB_SHA_SHORT }}
+          CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: true
+

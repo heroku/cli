@@ -6,7 +6,7 @@ async function run(context, heroku) {
   let id = context.args.id
   let request = heroku.request({
     method: 'DELETE',
-    path: `/oauth/clients/${id}`
+    path: `/oauth/clients/${id}`,
   })
   await cli.action(`Destroying ${cli.color.cyan(id)}`, request)
 }
@@ -17,5 +17,5 @@ module.exports = {
   description: 'delete client by ID',
   needsAuth: true,
   args: [{name: 'id'}],
-  run: cli.command(run)
+  run: cli.command(run),
 }

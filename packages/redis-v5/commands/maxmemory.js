@@ -7,8 +7,8 @@ module.exports = {
   command: 'maxmemory',
   needsApp: true,
   needsAuth: true,
-  args: [{ name: 'database', optional: true }],
-  flags: [{ name: 'policy', char: 'p', description: 'set policy name', hasValue: true, optional: false }],
+  args: [{name: 'database', optional: true}],
+  flags: [{name: 'policy', char: 'p', description: 'set policy name', hasValue: true, optional: false}],
   description: 'set the key eviction policy',
   help: `Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 
@@ -29,8 +29,8 @@ module.exports = {
 
     let addon = await api.getRedisAddon()
 
-    let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', { maxmemory_policy: context.flags.policy })
+    let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {maxmemory_policy: context.flags.policy})
     cli.log(`Maxmemory policy for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
     cli.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`)
-  })
+  }),
 }

@@ -1,0 +1,106 @@
+name: Pack and Upload
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  pack_deb:
+    # ubuntu started using a compression method after this version that debian currently does not support
+    # https://github.com/heroku/cli/pull/2245#issue-1590017122
+    runs-on: ubuntu-20.04
+    env:
+      HEROKU_AUTHOR: 'Heroku'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis p7zip-full
+      - run: sudo mkdir -p /build
+      - name: Install package deps
+        run: yarn --immutable --network-timeout 1000000
+      - name: Building deb
+        run: yarn oclif pack:deb --root="./packages/cli"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
+  pack_tarballs:
+    runs-on: pub-hk-ubuntu-22.04-2xlarge
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nsis p7zip-full
+      - run: sudo mkdir -p /build
+      - name: Install package deps
+        run: yarn --immutable --network-timeout 1000000
+      - name: Building tarballs
+        run: yarn oclif pack tarballs --root="./packages/cli"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packed-tarballs
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
+  sign_deb:
+    needs: [pack_deb]
+    runs-on: ubuntu-latest
+    environment: SignDebian
+    env:
+      HEROKU_DEB_SECRET_KEY: ${{ secrets.HEROKU_DEB_SECRET_KEY }}
+      HEROKU_DEB_SIGNING_PASSWORD: ${{ secrets.HEROKU_DEB_SIGNING_PASSWORD }}
+      HEROKU_DEB_KEY_ID: ${{ secrets.HEROKU_DEB_KEY_ID }}
+      HEROKU_DEB_PUBLIC_KEY: ${{ secrets.HEROKU_DEB_PUBLIC_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo mkdir -p /build
+      - uses: actions/download-artifact@v3
+        with:
+          name: packed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+      - run: |
+          cd /home/runner/work/cli/cli/packages/cli/dist/deb
+          /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
+      - uses: actions/upload-artifact@v3
+        with:
+          name: signed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
+
+  upload-deb-and-tarballs:
+    needs: [sign_deb, pack_tarballs]
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo mkdir -p /build
+      - uses: actions/download-artifact@v3
+        with:
+          name: signed-deb
+          path: /home/runner/work/cli/cli/packages/cli/dist
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: packed-tarballs
+          path: /home/runner/work/cli/cli/packages/cli/dist
+      - name: List all the downloaded files (for debugging)
+        run: ls -R
+        working-directory: /home/runner/work/cli/cli/packages/cli/dist
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+      - name: yarn install
+        run: yarn --immutable --network-timeout 1000000
+      - name: Upload production artifacts
+        run: |
+          cd packages/cli
+          pwd
+          yarn oclif upload tarballs
+          ./scripts/upload/deb

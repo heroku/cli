@@ -20,10 +20,10 @@ module.exports = function (topic) {
       {
         name: 'verbose',
         char: 'v',
-        hasValue: false
-      }
+        hasValue: false,
+      },
     ],
-    run: cli.command(release)
+    run: cli.command(release),
   }
 }
 
@@ -34,6 +34,7 @@ let release = async function (context, heroku) {
     cli.exit(1, `Error: Requires one or more process types\n ${usage}`)
     return
   }
+
   await heroku.get(`/apps/${context.app}`)
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
@@ -47,47 +48,48 @@ let release = async function (context, heroku) {
       host: `registry.${herokuHost}`,
       path: `/v2/${image}/manifests/${tag}`,
       headers: {
-        Accept: 'application/vnd.docker.distribution.manifest.v2+json'
-      }
+        Accept: 'application/vnd.docker.distribution.manifest.v2+json',
+      },
     })
 
     let imageID
     switch (imageResp.schemaVersion) {
-      case 1:
-        let v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
-        imageID = v1Comp.id
-        break
-      case 2:
-        imageID = imageResp.config.digest
-        break
+    case 1:
+      // eslint-disable-next-line no-case-declarations
+      let v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
+      imageID = v1Comp.id
+      break
+    case 2:
+      imageID = imageResp.config.digest
+      break
     }
 
     updateData.push({
       type: process,
-      docker_image: imageID
+      docker_image: imageID,
     })
   }
 
   let req = heroku.patch(`/apps/${context.app}/formation`, {
-    body: { updates: updateData },
+    body: {updates: updateData},
     headers: {
-      'Accept': 'application/vnd.heroku+json; version=3.docker-releases'
-    }
+      Accept: 'application/vnd.heroku+json; version=3.docker-releases',
+    },
   })
 
   let oldRelease = await heroku.request({
     path: `/apps/${context.app}/releases`,
     partial: true,
-    headers: { 'Range': 'version ..; max=2, order=desc' }
-  }).then((releases) => releases[0])
+    headers: {Range: 'version ..; max=2, order=desc'},
+  }).then(releases => releases[0])
 
   await cli.action(`Releasing images ${context.args.join(',')} to ${context.app}`, req)
 
   let release = await heroku.request({
     path: `/apps/${context.app}/releases`,
     partial: true,
-    headers: { 'Range': 'version ..; max=2, order=desc' }
-  }).then((releases) => releases[0])
+    headers: {Range: 'version ..; max=2, order=desc'},
+  }).then(releases => releases[0])
 
   if ((!oldRelease && !release) || (oldRelease && (oldRelease.id === release.id))) {
     return
@@ -100,7 +102,7 @@ let release = async function (context, heroku) {
     await streamer(release.output_stream_url, process.stdout)
 
     let finishedRelease = await heroku.request({
-      path: `/apps/${context.app}/releases/${release.id}`
+      path: `/apps/${context.app}/releases/${release.id}`,
     })
 
     if (finishedRelease.status === 'failed') {
