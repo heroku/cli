@@ -226,7 +226,7 @@ describe('Sanbashi', () => {
     it('has an error', async () => {
       Sinon.stub(Sanbashi, 'cmd')
         .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-        .resolves('an error occured')
+        .resolves('an error occurred')
 
       let version = await Sanbashi.version()
       expect(version).to.deep.equal([0, 0])

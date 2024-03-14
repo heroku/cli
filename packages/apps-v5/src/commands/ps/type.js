@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 const {sortBy, compact} = require('lodash')
 
-const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576}
+const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576, 'Performance-L-RAM': 500, 'Performance-XL': 750, 'Performance-2XL': 1500}
 
 let emptyFormationErr = app => {
   return new Error(`No process types on ${app}.
@@ -14,8 +14,41 @@ https://devcenter.heroku.com/articles/procfile`)
 async function run(context, heroku) {
   let app = context.app
 
+  // will remove this flag once we have
+  // successfully launched larger dyno sizes
+  let isLargerDyno = false
+  const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
+    .catch(error => {
+      if (error.statusCode === 404) {
+        return {enabled: false}
+      }
+
+      throw error
+    })
+
   let parse = async function (args) {
     if (!args || args.length === 0) return []
+
+    // checks for larger dyno sizes
+    // if the feature is not enabled
+    if (!largerDynoFeatureFlag.enabled) {
+      if (args.find(a => a.match(/=/))) {
+        // eslint-disable-next-line array-callback-return
+        compact(args.map(arg => {
+          let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
+          let size = match[2]
+
+          const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+          isLargerDyno = largerDynoNames.test(size)
+
+          if (isLargerDyno) {
+            const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+            throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
+          }
+        }))
+      }
+    }
+
     let formation = await heroku.get(`/apps/${app}/formation`)
     if (args.find(a => a.match(/=/))) {
       return compact(args.map(arg => {

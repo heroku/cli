@@ -22,7 +22,7 @@ describe('heroku redis:credentials', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku').reply(200, {
         info: [{name: 'Foo', values: ['Bar', 'Biz']}],
         resource_url: 'redis://foobar:password@hostname:8649',
@@ -41,7 +41,7 @@ describe('heroku redis:credentials', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .post('/redis/v0/databases/redis-haiku/credentials_rotation').reply(200, {})
 
     return command.run({app: 'example', flags: {reset: true}, args: {}, auth: {username: 'foobar', password: 'password'}})

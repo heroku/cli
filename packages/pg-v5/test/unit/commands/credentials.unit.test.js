@@ -37,7 +37,7 @@ describe('pg:credentials', () => {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     cli.mockConsole()
   })
 
@@ -103,8 +103,8 @@ describe('pg:credentials', () => {
         namespace: 'credential:ransom',
       },
     ]
-    api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
-    pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, credentials)
+    api.get('/addons/1/addon-attachments').reply(200, attachments)
+    pg.get('/postgres/v0/databases/1/credentials').reply(200, credentials)
 
     let displayed = `Credential                                                                     State
 ─────────────────────────────────────────────────────────────────────────────  ────────
@@ -179,8 +179,8 @@ ransom                                                                         a
         namespace: 'credential:ransom',
       },
     ]
-    api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
-    pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, credentials)
+    api.get('/addons/1/addon-attachments').reply(200, attachments)
+    pg.get('/postgres/v0/databases/1/credentials').reply(200, credentials)
 
     let displayed = `Credential                                            State
 ────────────────────────────────────────────────────  ────────

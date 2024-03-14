@@ -33,12 +33,10 @@ const cmd = proxyquire('../../../../commands/credentials/url', {
 describe('pg:credentials:url', () => {
   let api
   let pg
-  let starter
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
-    starter = nock('https://postgres-starter-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     cli.mockConsole()
   })
 
@@ -95,29 +93,40 @@ Connection URL:
       '../../lib/fetcher': fetcher,
     })
 
-    const err = "You can't view credentials on Essential-tier databases."
+    const err = 'Legacy Essential-tier databases do not support named credentials.'
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
   })
 
-  it('throws an error when the db is numbered essential plan', () => {
-    const essentialAddon = {
-      name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:essential-0'},
+  it('shows the credentials when the db is numbered essential plan', () => {
+    let roleInfo = {
+      uuid: 'bbbb',
+      name: 'lucy',
+      state: 'created',
+      database: 'd123',
+      host: 'localhost',
+      port: 5442,
+      credentials: [
+        {
+          user: 'lucy-rotating',
+          password: 'passw0rd',
+          state: 'revoking',
+        },
+        {
+          user: 'lucy',
+          password: 'hunter2',
+          state: 'active',
+        },
+      ],
     }
 
-    const fetcher = () => {
-      return {
-        database: () => db,
-        addon: () => essentialAddon,
-      }
-    }
+    pg.get('/postgres/v0/databases/postgres-1/credentials/lucy').reply(200, roleInfo)
 
-    const cmd = proxyquire('../../../../commands/credentials/url', {
-      '../../lib/fetcher': fetcher,
-    })
-
-    const err = "You can't view credentials on Essential-tier databases."
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})).to.be.rejectedWith(Error, err)
+    return cmd.run({app: 'myapp', args: {}, flags: {name: 'lucy'}})
+      .then(() => expect(cli.stdout).to.equal(`Connection information for lucy credential.\nConnection info string:
+   "dbname=d123 host=localhost port=5442 user=lucy password=hunter2 sslmode=require"
+Connection URL:
+   postgres://lucy:hunter2@localhost:5442/d123
+`))
   })
 
   it('shows the correct credentials with starter plan', () => {
@@ -152,7 +161,7 @@ Connection URL:
         },
       ],
     }
-    starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
+    pg.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout).to.equal(`Connection information for default credential.\nConnection info string:

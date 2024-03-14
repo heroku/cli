@@ -16,8 +16,8 @@ async function run(context, heroku) {
     throw new Error('cannot pass both --all and --name')
   }
 
-  if (util.essentialNumPlan(db) || (util.legacyEssentialPlan(db) && cred !== 'default')) {
-    throw new Error("You can't rotate credentials on Essential-tier databases.")
+  if (util.legacyEssentialPlan(db) && cred !== 'default') {
+    throw new Error('Legacy Essential-tier databases do not support named credentials.')
   }
 
   if (all && flags.force) {

@@ -82,7 +82,7 @@ describe('pg:copy', () => {
   let api
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     api = nock('https://api.heroku.com')
     cli.mockConsole()
   })

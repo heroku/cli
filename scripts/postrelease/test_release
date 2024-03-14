@@ -18,7 +18,7 @@ declare -a COMMANDS=(
   "$CMD_BIN"
   "$CMD_BIN whoami"
   "$CMD_BIN access --app particleboard-staging"
-  "$CMD_BIN addons --app status-ui"
+  "$CMD_BIN addons --app status-ui-staging"
   "$CMD_BIN apps -p"
   "$CMD_BIN apps -t heroku-front-end"
   "$CMD_BIN apps:info --app heroku-cli-test-staging"
@@ -29,14 +29,14 @@ declare -a COMMANDS=(
   "$CMD_BIN buildpacks:search ruby"
   "$CMD_BIN certs --app particleboard-staging"
   "$CMD_BIN ci --app particleboard-staging"
-  "$CMD_BIN ci --pipeline status-ui"
-  "$CMD_BIN ci:config --pipeline status-ui"
+  "$CMD_BIN ci --pipeline status-ui-staging"
+  "$CMD_BIN ci:config --pipeline status-ui-staging"
   "$CMD_BIN clients"
   "$CMD_BIN commands"
-  "$CMD_BIN domains --app status-ui"
+  "$CMD_BIN domains --app status-ui-staging"
   "$CMD_BIN drains --app heroku-cli-test-staging"
   "$CMD_BIN features --app heroku-cli-test-staging"
-  "rm -rf ~/status-ui && $CMD_BIN git:clone ~/status-ui --app status-ui && rm -rf ~/status-ui" # `rm` used so it will always run locally
+  "rm -rf ~/status-ui-staging && $CMD_BIN git:clone ~/status-ui-staging --app status-ui-staging && rm -rf ~/status-ui-staging" # `rm` used so it will always run locally
   "$CMD_BIN help"
   "$CMD_BIN --help"
   "$CMD_BIN -h"
@@ -71,9 +71,9 @@ declare -a COMMANDS=(
 #  "$CMD_BIN login"
 
 # todo: find a way to test commands that require 2fa
-#  "$CMD_BIN logs --app status-ui"
-#  "$CMD_BIN config --app status-ui"
-#  "$CMD_BIN webhooks --app status-ui"
+#  "$CMD_BIN logs --app status-ui-staging"
+#  "$CMD_BIN config --app status-ui-staging"
+#  "$CMD_BIN webhooks --app status-ui-staging"
 
 for cmd in "${COMMANDS[@]}"
 do

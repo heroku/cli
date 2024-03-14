@@ -25,7 +25,7 @@ describe('heroku redis:maintenance', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/maintenance').reply(200, {message: 'Message'})
 
     return command.run({app: 'example', args: {}, flags: {}, auth: {username: 'foobar', password: 'password'}})
@@ -41,7 +41,7 @@ describe('heroku redis:maintenance', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .put('/redis/v0/databases/redis-haiku/maintenance_window', {
         description: 'Mon 10:00',
       }).reply(200, {window: 'Mon 10:00'})
@@ -62,7 +62,7 @@ describe('heroku redis:maintenance', function () {
     let appInfo = nock('https://api.heroku.com:443')
       .get('/apps/example').reply(200, {maintenance: true})
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .post('/redis/v0/databases/redis-haiku/maintenance').reply(200, {message: 'Message'})
 
     return expect(command.run({app: 'example', args: {}, flags: {run: true}, auth: {username: 'foobar', password: 'password'}})).to.be.rejectedWith(exit.ErrorExit)

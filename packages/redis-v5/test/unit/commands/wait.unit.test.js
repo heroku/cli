@@ -20,7 +20,7 @@ describe('heroku redis:wait ', () => {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': false})
 
     return cmd.run({app: 'example', flags: {}, args: {}})
@@ -36,7 +36,7 @@ describe('heroku redis:wait ', () => {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
       ])
 
-    let redis = nock('https://redis-api.heroku.com:443')
+    let redis = nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': true, message: 'upgrading version'})
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': false, message: 'available'})
 
