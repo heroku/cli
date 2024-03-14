@@ -6,6 +6,7 @@ import * as Heroku from '@heroku-cli/schema'
 export default class Unlock extends Command {
     static topic = 'apps'
     static description = 'unlock an app so any team member can join'
+    static aliases = ['unlock']
     static flags = {
       app: flags.app({required: true}),
       remote: flags.remote(),
