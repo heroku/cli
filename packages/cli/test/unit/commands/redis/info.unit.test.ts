@@ -6,7 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import runCommand from '../../../helpers/runCommand'
 import heredoc from 'tsheredoc'
 
-describe('heroku redis:info', function () {
+describe.only('heroku redis:info', function () {
   beforeEach(function () {
     nock.cleanAll()
   })
@@ -40,7 +40,7 @@ describe('heroku redis:info', function () {
     expectOutput(stdout.output, heredoc(`
       === redis-haiku (REDIS_FOO, REDIS_BAR)
       Foo: Bar
-          Biz
+           Biz
     `))
   })
 
