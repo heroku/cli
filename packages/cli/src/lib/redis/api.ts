@@ -57,6 +57,27 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       return onResponse
     },
 
+    async getRedisAddon(addonsList?: Heroku.AddOn[]) {
+      if (addonsList === undefined) {
+        const {body: list} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
+        addonsList = list
+      }
+
+      const addonsFilter = this.makeAddonsFilter(database)
+      const addons = addonsFilter(addonsList)
+
+      if (addons.length === 0) {
+        throw new Error('No Redis instances found.')
+      } else if (addons.length > 1) {
+        const names = addons.map(function (addon) {
+          return addon.name
+        })
+        throw new Error(`Please specify a single instance. Found: ${names.join(', ')}`)
+      }
+
+      return addons[0]
+    },
+
     async info() {
       let {body: addons} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
       // filter out non-redis addons
