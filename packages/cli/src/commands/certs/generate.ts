@@ -29,6 +29,7 @@ export default class Generate extends Command {
     subject: flags.string({optional: true, description: 'specify entire certificate subject'}),
     now: flags.boolean({required: false, description: 'do not prompt for any owner information'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {
