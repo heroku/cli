@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
-export default `\u001B[1m Command                                        Summary                                                                                                                                                 \u001B[22m
-\u001B[1m ────────────────────────────────────────────── ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── \u001B[22m
+export default `Command                                        Summary                                                                                                                                                 
+ ────────────────────────────────────────────── ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
  2fa                                            check 2fa status                                                                                                                                        
  2fa:disable                                    disables 2fa on account                                                                                                                                 
  access                                         list who has access to an app                                                                                                                           
@@ -12,10 +12,10 @@ export default `\u001B[1m Command                                        Summary
  addons:create                                  create a new add-on resource                                                                                                                            
  addons:destroy                                 permanently destroy an add-on resource                                                                                                                  
  addons:detach                                  detach an existing add-on resource from an app                                                                                                          
- addons:docs                                    open an add-on\'s Dev Center documentation in your browser                                                                                               
+ addons:docs                                    open an add-on's Dev Center documentation in your browser                                                                                               
  addons:downgrade                               change add-on plan                                                                                                                                      
  addons:info                                    show detailed add-on resource and attachment information                                                                                                
- addons:open                                    open an add-on\'s dashboard in your browser                                                                                                              
+ addons:open                                    open an add-on's dashboard in your browser                                                                                                              
  addons:plans                                   list all available plans for an add-on services                                                                                                         
  addons:rename                                  rename an add-on                                                                                                                                        
  addons:services                                list all available add-on services                                                                                                                      
@@ -23,6 +23,7 @@ export default `\u001B[1m Command                                        Summary
  addons:wait                                    show provisioning status of the add-ons on the app                                                                                                      
  apps                                           list your apps                                                                                                                                          
  apps:create                                    creates a new app                                                                                                                                       
+ apps:delete                                    permanently destroy an app                                                                                                                              
  apps:destroy                                   permanently destroy an app                                                                                                                              
  apps:errors                                    view app errors                                                                                                                                         
  apps:favorites                                 list favorited apps                                                                                                                                     
@@ -31,6 +32,7 @@ export default `\u001B[1m Command                                        Summary
  apps:info                                      show detailed app information                                                                                                                           
  apps:join                                      add yourself to a team app                                                                                                                              
  apps:leave                                     remove yourself from a team app                                                                                                                         
+ apps:list                                      list your apps                                                                                                                                          
  apps:lock                                      prevent team members from joining an app                                                                                                                
  apps:open                                      open the app in a web browser                                                                                                                           
  apps:rename                                    rename an app                                                                                                                                           
@@ -92,6 +94,7 @@ export default `\u001B[1m Command                                        Summary
  clients:update                                 update OAuth client                                                                                                                                     
  commands                                       list all the commands                                                                                                                                   
  config                                         display the config vars for an app                                                                                                                      
+ config:add                                     set one or more config vars                                                                                                                             
  config:edit                                    interactively edit config vars                                                                                                                          
  config:get                                     display a single config value for an app                                                                                                                
  config:remove                                  unset one or more config vars                                                                                                                           
@@ -100,11 +103,13 @@ export default `\u001B[1m Command                                        Summary
  container                                      Use containers to build and deploy Heroku apps                                                                                                          
  container:login                                log in to Heroku Container Registry                                                                                                                     
  container:logout                               log out from Heroku Container Registry                                                                                                                  
- container:pull                                 pulls an image from an app\'s process type                                                                                                               
+ container:pull                                 pulls an image from an app's process type                                                                                                               
  container:push                                 builds, then pushes Docker images to deploy your Heroku app                                                                                             
  container:release                              Releases previously pushed Docker images to your Heroku app                                                                                             
  container:rm                                   remove the process type from your app                                                                                                                   
  container:run                                  builds, then runs the docker image locally                                                                                                              
+ create                                         creates a new app                                                                                                                                       
+ destroy                                        permanently destroy an app                                                                                                                              
  domains                                        list domains for an app                                                                                                                                 
  domains:add                                    add a domain to an app                                                                                                                                  
  domains:clear                                  remove all domains from an app                                                                                                                          
@@ -127,16 +132,19 @@ export default `\u001B[1m Command                                        Summary
  git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)                                                                           
  git:remote                                     adds a git remote to an app repo                                                                                                                        
  help                                           Display help for heroku.                                                                                                                                
+ info                                           show detailed app information                                                                                                                           
  join                                           add yourself to a team app                                                                                                                              
  keys                                           display your SSH keys                                                                                                                                   
  keys:add                                       add an SSH key for a user                                                                                                                               
  keys:clear                                     remove all SSH keys for current user                                                                                                                    
  keys:remove                                    remove an SSH key from the user                                                                                                                         
+ kill                                           stop app dyno                                                                                                                                           
  labs                                           list experimental features                                                                                                                              
  labs:disable                                   disables an experimental feature                                                                                                                        
  labs:enable                                    enables an experimental feature                                                                                                                         
  labs:info                                      show feature info                                                                                                                                       
  leave                                          remove yourself from a team app                                                                                                                         
+ list                                           list your apps                                                                                                                                          
  local                                          run heroku app locally                                                                                                                                  
  local:run                                      run a one-off command                                                                                                                                   
  local:start                                    run heroku app locally                                                                                                                                  
@@ -153,6 +161,7 @@ export default `\u001B[1m Command                                        Summary
  members:remove                                 removes a user from a team                                                                                                                              
  members:set                                    sets a members role in a team                                                                                                                           
  notifications                                  display notifications                                                                                                                                   
+ open                                           open the app in a web browser                                                                                                                           
  orgs                                           list the teams that you are a member of                                                                                                                 
  orgs:open                                      open the team interface in a browser window                                                                                                             
  pg                                             show database information                                                                                                                               
@@ -199,8 +208,8 @@ export default `\u001B[1m Command                                        Summary
  pg:settings:auto-explain                       Automatically log execution plans of queries without running EXPLAIN by hand.                                                                           
  pg:settings:auto-explain:log-analyze           Shows actual run times on the execution plan.                                                                                                           
  pg:settings:auto-explain:log-buffers           Includes buffer usage statistics when execution plans are logged.                                                                                       
- pg:settings:auto-explain:log-min-duration      Sets the minimum execution time in milliseconds for a statement\'s plan to be logged.                                                                    
- pg:settings:auto-explain:log-nested-statements Nested statements are included in the execution plan\'s log.                                                                                             
+ pg:settings:auto-explain:log-min-duration      Sets the minimum execution time in milliseconds for a statement's plan to be logged.                                                                    
+ pg:settings:auto-explain:log-nested-statements Nested statements are included in the execution plan's log.                                                                                             
  pg:settings:auto-explain:log-triggers          Includes trigger execution statistics in execution plan logs.                                                                                           
  pg:settings:auto-explain:log-verbose           Include verbose details in execution plans.                                                                                                             
  pg:settings:log-lock-waits                     Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second 
@@ -208,7 +217,7 @@ export default `\u001B[1m Command                                        Summary
  pg:settings:log-statement                      log_statement controls which SQL statements are logged.                                                                                                 
  pg:settings:track-functions                    track_functions controls tracking of function call counts and time used. Default is none.                                                               
  pg:unfollow                                    stop a replica from following and make it a writeable database                                                                                          
- pg:upgrade                                     For an Essential-* plan, this command upgrades the database to the latest stable PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the parent database before upgrading to the latest stable PostgreSQL version.
+ pg:upgrade                                     unfollow a database and upgrade it to the latest stable PostgreSQL version                                                                              
  pg:vacuum-stats                                show dead rows and whether an automatic vacuum is expected to be triggered                                                                              
  pg:wait                                        blocks until database is available                                                                                                                      
  pipelines                                      list pipelines you have access to                                                                                                                       
@@ -224,7 +233,7 @@ export default `\u001B[1m Command                                        Summary
  pipelines:rename                               rename a pipeline                                                                                                                                       
  pipelines:setup                                bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)                    
  pipelines:transfer                             transfer ownership of a pipeline                                                                                                                        
- pipelines:update                               update the app\'s stage in a pipeline                                                                                                                    
+ pipelines:update                               update the app's stage in a pipeline                                                                                                                    
  plugins                                        List installed plugins.                                                                                                                                 
  plugins:add                                    Installs a plugin into the CLI.                                                                                                                         
  plugins:inspect                                Displays installation properties of a plugin.                                                                                                           
@@ -266,6 +275,8 @@ export default `\u001B[1m Command                                        Summary
  releases:info                                  view detailed information for a release                                                                                                                 
  releases:output                                View the release command output                                                                                                                         
  releases:rollback                              rollback to a previous release                                                                                                                          
+ rename                                         rename an app                                                                                                                                           
+ restart                                        restart app dynos                                                                                                                                       
  reviewapps:disable                             disable review apps and/or settings on an existing pipeline                                                                                             
  reviewapps:enable                              enable review apps and/or settings on an existing pipeline                                                                                              
  run                                            run a one-off process inside a heroku dyno                                                                                                              
@@ -292,7 +303,10 @@ export default `\u001B[1m Command                                        Summary
  spaces:vpn:update                              update VPN                                                                                                                                              
  spaces:vpn:wait                                wait for VPN Connection to be created                                                                                                                   
  spaces:wait                                    wait for a space to be created                                                                                                                          
+ stack                                          show the list of available stacks                                                                                                                       
+ stack:set                                      set the stack of an app                                                                                                                                 
  status                                         display current status of the Heroku platform                                                                                                           
+ stop                                           stop app dyno                                                                                                                                           
  teams                                          list the teams that you are a member of                                                                                                                 
  trusted-ips                                    list trusted IP ranges for a space                                                                                                                      
  trusted-ips:add                                Add one range to the list of trusted IP ranges                                                                                                          
@@ -312,4 +326,4 @@ export default `\u001B[1m Command                                        Summary
  webhooks:remove                                removes a webhook from an app                                                                                                                           
  webhooks:update                                updates a webhook in an app                                                                                                                             
  which                                          Show which plugin a command is in.                                                                                                                      
- whoami                                         display the current logged in user                                                                                                                      `
+ whoami                                         display the current logged in user               `

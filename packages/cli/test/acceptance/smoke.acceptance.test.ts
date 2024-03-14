@@ -202,6 +202,7 @@ describe('@acceptance smoke tests', () => {
     // this test will fail when run locally depending on which plugins you have installed
     it('heroku commands', async () => {
       const {stdout} = await run('commands')
+      // console.log('STDOUT HERE', stdout)
       expect(stripAnsi(stdout)).to.equal(stripAnsi(commandsOutput))
     })
 
