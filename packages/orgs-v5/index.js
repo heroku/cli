@@ -16,5 +16,4 @@ exports.topics = [
 
 exports.commands = flatten([
   require('./commands/apps/transfer'),
-  require('./commands/apps/unlock'),
 ])
