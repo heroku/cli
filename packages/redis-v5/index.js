@@ -1,7 +1,6 @@
 exports.commands = [
   require('./commands/cli'),
   require('./commands/wait'),
-  require('./commands/credentials'),
   require('./commands/promote'),
   require('./commands/timeout'),
   require('./commands/maintenance'),

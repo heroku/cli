@@ -2,6 +2,27 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {APIClient} from '@heroku-cli/command'
 
+export type RedisFormationResponse = {
+  addon_id: string
+  name: string
+  plan: string
+  created_at: string
+  formation: {
+    id: string
+    primary: string | null
+  }
+  metaas_source: string
+  port: number,
+  resource_url: string,
+  info: {
+    name: string,
+    values: string[]
+  }[]
+  version: string
+  prefer_native_tls: boolean
+  customer_encryption_key?: string
+}
+
 type RedisEvictionPolicies = 'noeviction' | 'allkeys-lru' | 'volatile-lru' | 'allkeys-random' | 'volatile-random' | 'volatile-ttl' | 'allkeys-lfu' | 'volatile-lfu'
 
 export type RedisFormationConfigResponse = {
@@ -33,7 +54,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
   const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
   return {
-    request<T>(path: string, method = 'get', body = {}) {
+    request<T>(path: string, method: 'GET' | 'POST' = 'GET', body = {}) {
       const headers = {Accept: 'application/json'}
       if (process.env.HEROKU_HEADERS) {
         Object.assign(headers, JSON.parse(process.env.HEROKU_HEADERS))
@@ -84,22 +105,19 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       return onResponse
     },
 
-    async getRedisAddon(addonsList?: Heroku.AddOn[]) {
-      if (addonsList === undefined) {
-        const {body: list} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
-        addonsList = list
-      }
+    async getRedisAddon() {
+      const {body: addons} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
 
       const addonsFilter = this.makeAddonsFilter(database)
-      const addons = addonsFilter(addonsList)
+      const redisAddons = addonsFilter(addons)
 
-      if (addons.length === 0) {
-        throw new Error('No Redis instances found.')
+      if (redisAddons.length === 0) {
+        ux.error('No Redis instances found.', {exit: 1})
       } else if (addons.length > 1) {
-        const names = addons.map(function (addon) {
+        const names = redisAddons.map(function (addon) {
           return addon.name
         })
-        throw new Error(`Please specify a single instance. Found: ${names.join(', ')}`)
+        ux.error(`Please specify a single instance. Found: ${names.join(', ')}`, {exit: 1})
       }
 
       return addons[0]
@@ -113,7 +131,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       const databases = addons.map(addon => {
         return {
           addon: addon,
-          redis: this.request(`/redis/v0/databases/${addon.name}`).catch(function (error) {
+          redis: this.request<RedisFormationResponse>(`/redis/v0/databases/${addon.name}`).catch(function (error) {
             if (error.statusCode !== 404) {
               throw error
             }
@@ -127,15 +145,16 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         const redii = []
         for (const db of databases) {
           // eslint-disable-next-line no-await-in-loop
-          const {body: redis} = <Heroku.AddOn> await db.redis || {}
-          // eslint-disable-next-line no-eq-null, eqeqeq
-          if (redis == null) {
+          const {body: redis} = await db.redis || {}
+          if (!redis) {
             continue
           }
 
-          redis.app = db.addon.app
-          redis.config_vars = db.addon.config_vars
-          const {formation, metaas_source, port, ...filteredRedis} = redis
+          const json_data: RedisFormationResponse & {app?: Heroku.AddOn['app'], config_vars?: string[]} = redis
+          json_data.app = db.addon.app
+          json_data.config_vars = db.addon.config_vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const {formation, metaas_source, port, ...filteredRedis} = json_data
           redii.push(filteredRedis)
         }
 
@@ -146,9 +165,8 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       // print out the info of the addon and redis db info
       for (const db of databases) {
         // eslint-disable-next-line no-await-in-loop
-        const {body: redis} = <Heroku.AddOn> await db.redis || {}
-        // eslint-disable-next-line no-eq-null, eqeqeq
-        if (redis == null) {
+        const {body: redis} = await db.redis || {}
+        if (!redis) {
           continue
         }
 
@@ -160,13 +178,12 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         if (uxHeader) {
           ux.styledHeader(uxHeader)
           ux.styledObject(
+            // eslint-disable-next-line unicorn/no-array-reduce
             redis.info.reduce(function (memo: { [x: string]: any }, row: { name: string | number; values: any }) {
               memo[row.name] = row.values
               return memo
             }, {}),
-            redis.info.map(function (row: { name: any }) {
-              return row.name
-            }),
+            redis.info.map(row => row.name),
           )
         }
       }
