@@ -32,7 +32,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     return ux.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
   }
 
-  // Do the actual Github diff
+  // Do the actual GitHub diff
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
     const headers: { authorization: string; 'user-agent'?: string} = {authorization: 'token ' + githubToken}

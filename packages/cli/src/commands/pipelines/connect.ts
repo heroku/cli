@@ -10,7 +10,7 @@ import getRepo from '../../lib/pipelines/setup/get-repo'
 import {nameAndRepo} from '../../lib/pipelines/setup/validate'
 
 export default class Connect extends Command {
-  static description = 'connect a github repo to an existing pipeline'
+  static description = 'connect a GitHub repo to an existing pipeline'
 
   static examples = [
     '$ heroku pipelines:connect my-pipeline -r githuborg/reponame',

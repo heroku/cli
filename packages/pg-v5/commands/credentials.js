@@ -26,11 +26,11 @@ async function run(context, heroku) {
       return util.presentCredentialAttachments(app, credAttachments, credentials, cred)
     }
 
-    credentials = await heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
+    credentials = await heroku.get(`/postgres/v0/databases/${addon.id}/credentials`,
       {host: host(addon)})
     let isDefaultCredential = cred => cred.name !== 'default'
     credentials = sortBy(credentials, isDefaultCredential, 'name')
-    attachments = await heroku.get(`/addons/${addon.name}/addon-attachments`)
+    attachments = await heroku.get(`/addons/${addon.id}/addon-attachments`)
 
     cli.warn(`${cli.color.cmd('pg:credentials')} has recently changed. Please use ${cli.color.cmd('pg:credentials:url')} for the previous output.`)
     cli.table(credentials, {

@@ -39,8 +39,8 @@ export default class Doctor extends AutocompleteBase {
     const shellProfilePath = path.join(process.env.HOME || '', shell === 'zsh' ? '.zshrc' : '.bashrc')
     const shellProfile = fs.readFileSync(shellProfilePath)
     const regex = /AC_\w+_SETUP_PATH/
-    const shimVlaue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
-    data.push({name: `~/${shell === 'zsh' ? '.zshrc' : '.bashrc'} shimmed`, value: shimVlaue})
+    const shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+    data.push({name: `~/${shell === 'zsh' ? '.zshrc' : '.bashrc'} shimmed`, value: shimValue})
 
     // check shell shim
     const shellCompletion = path.join(this.autocompleteCacheDir, `${shell}_setup`)
