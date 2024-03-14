@@ -40,7 +40,7 @@ describe('heroku redis:info', function () {
     expectOutput(stdout.output, heredoc(`
       === redis-haiku (REDIS_FOO, REDIS_BAR)
       Foo: Bar
-            Biz
+           Biz
     `))
   })
 
