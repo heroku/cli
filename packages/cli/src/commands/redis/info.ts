@@ -5,6 +5,7 @@ import redisApi from '../../lib/redis/info'
 export default class Info extends Command {
   static topic = 'redis'
   static description = 'gets information about redis'
+  static aliases = ['redis']
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
