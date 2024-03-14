@@ -7,7 +7,7 @@ on:
 jobs:
   update-devcenter-command-docs:
     name: Update Devcenter command docs
-    runs-on: pub-hk-ubuntu-22.04-small
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install package deps
