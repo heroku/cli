@@ -1,9 +1,8 @@
-`heroku autocomplete`
-=====================
+# `heroku autocomplete`
 
 display autocomplete installation instructions
 
-* [`heroku autocomplete [SHELL]`](#heroku-autocomplete-shell)
+- [`heroku autocomplete [SHELL]`](#heroku-autocomplete-shell)
 
 ## `heroku autocomplete [SHELL]`
 
@@ -32,4 +31,4 @@ EXAMPLES
   $ heroku autocomplete --refresh-cache
 ```
 
-_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/autocomplete/index.ts)_
+_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.1/src/commands/autocomplete/index.ts)_
