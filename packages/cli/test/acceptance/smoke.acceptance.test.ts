@@ -202,7 +202,6 @@ describe('@acceptance smoke tests', () => {
     it('heroku commands', async () => {
       const removeSpaces = (str: string) => str.replace(/ /g, '')
       const {stdout} = await run('commands')
-      console.log('STDOUT HERE', stdout)
       const commandsByline = stdout.split('\n')
       const commandsOutputByLine = commandsOutput.split('\n')
       const commandOutputSet = new Set(commandsByline.map((line:string) => stripAnsi(removeSpaces(line))))
