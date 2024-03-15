@@ -18,7 +18,7 @@ export default class Unlock extends Command {
       const {body: appResponse} = await this.heroku.get<Heroku.TeamApp>(`/teams/apps/${app}`)
       const appName = appResponse.name ?? app
       if (!appResponse.locked) {
-        throw new Error(`Error: cannot unlock ${color.cyan(appName)}\nThis app is not locked.`)
+        ux.error(`cannot unlock ${color.cyan(appName)}\nThis app is not locked.`, {exit: 1})
       }
 
       ux.action.start(`Unlocking ${color.cyan(appName)}`)
