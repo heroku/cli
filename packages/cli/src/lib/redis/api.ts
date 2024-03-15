@@ -49,12 +49,14 @@ export type RedisFormationConfigResponse = {
   },
 }
 
+type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'DELETE'
+
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
   const HOST = process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
   const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
   return {
-    request<T>(path: string, method: 'GET' | 'POST' = 'GET', body = {}) {
+    request<T>(path: string, method: HttpVerb = 'GET', body = {}) {
       const headers = {Accept: 'application/json'}
       if (process.env.HEROKU_HEADERS) {
         Object.assign(headers, JSON.parse(process.env.HEROKU_HEADERS))
