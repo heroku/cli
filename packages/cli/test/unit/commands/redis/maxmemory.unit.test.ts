@@ -6,7 +6,7 @@ import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
-import {shouldHandleArgs} from '../../lib/redis/shared'
+import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
 describe('heroku redis:maxmemory', function () {
   shouldHandleArgs(Cmd, {policy: 'noeviction'})
