@@ -44,7 +44,7 @@ const cmd = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
-  flags: [{name: 'truncate', char: 't', description: 'truncates queries to 40 charaters'}],
+  flags: [{name: 'truncate', char: 't', description: 'truncates queries to 40 characters'}],
   run: cli.command({preauth: true}, run),
 }
 

@@ -19,7 +19,7 @@ describe('heroku redis:timeout', function () {
     exit.mock()
   })
 
-  it('# sets the timout', function () {
+  it('# sets the timeout', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -40,7 +40,7 @@ Connections to the Redis instance will be stopped after idling for 5 seconds.
       .then(() => expect(cli.stderr).to.equal(''))
   })
 
-  it('# sets the timout to zero', function () {
+  it('# sets the timeout to zero', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},

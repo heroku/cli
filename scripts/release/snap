@@ -40,7 +40,6 @@ function release_snap_channels () {
   LATEST_ARM_VERSION=$(echo $LATEST_ARM_LIST | awk '{print $5}')
   
   if [ "$LATEST_64_VERSION" == "$CIRCLE_TAG" ] && [ "$LATEST_ARM_VERSION" == "$CIRCLE_TAG" ]; then 
-    echo 'HERERE'
     LATEST_64=$(echo $LATEST_64_LIST | awk '{print $1}')
     snapcraft release heroku "$LATEST_64" beta
     snapcraft release heroku "$LATEST_64" candidate
