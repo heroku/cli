@@ -17,7 +17,6 @@ export default class MaxMemory extends Command {
   volatile-random # evicts random keys but only those that have an expiry set
   volatile-ttl    # only evicts keys with an expiry set and a short TTL
 `
-  static aliases = ['redis']
   static flags = {
     app: flags.app({required: true}),
     policy: flags.string({char: 'p', description: 'set policy name', required: true}),
