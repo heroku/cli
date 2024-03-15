@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.11.0-beta.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0-beta.0) (2024-03-15)
+
+
+### Bug Fixes
+
+* **cli:** use uuid rather than addon name for pg:credentials ([#2042](https://github.com/heroku/cli/issues/2042)) ([efec095](https://github.com/heroku/cli/commit/efec0951bb3a1f3c09a9b1acdc728a0066596637))
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
+
+
+### Features
+
+* **pg:upgrade:** support essential dbs ([#2637](https://github.com/heroku/cli/issues/2637)) ([c062c59](https://github.com/heroku/cli/commit/c062c590956afe38c60ea57982ccc28b51b2c5b5))
+
+
+
+
+
 # [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
 
 
