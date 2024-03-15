@@ -7,6 +7,7 @@ import * as inquirer from 'inquirer'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
 import lock from './lock'
 import {AppTransfer} from '../../lib/apps/appTransfer'
+import confirmApp from '../../lib/apps/confirm-app'
 
 function getAppsToTransfer(apps: Heroku.App[]) {
   return inquirer.prompt([{
@@ -30,6 +31,7 @@ export default class AppsTransfer extends Command {
       bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
       app: flags.app(),
       remote: flags.remote({char: 'r'}),
+      confirm: flags.string({char: 'c', hidden: true}),
     };
 
     static args = {
@@ -46,13 +48,13 @@ $ heroku apps:transfer --bulk acme-widgets
 ...`
 
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(AppsTransfer)
-      const {app, bulk, locked} = flags
+      const {flags, args} = await this.parse(AppsTransfer)
+      const {app, bulk, locked, confirm} = flags
       const recipient = args.recipient
       if (bulk) {
         const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
         const selectedApps = await getAppsToTransfer(sortBy(allApps, 'name'))
-        console.error(`Transferring applications to ${color.magenta(recipient)}...\n`)
+        ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
         for (const app of selectedApps.choices) {
           try {
             const appTransfer = new AppTransfer({
@@ -65,13 +67,14 @@ $ heroku apps:transfer --bulk acme-widgets
         }
       } else {
         const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+        const appName = appInfo.name ?? app ?? ''
         if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
-          await cli.confirmApp(app, confirm, 'All collaborators will be removed from this app')
+          await confirmApp(appName, confirm, 'All collaborators will be removed from this app')
         }
 
         const appTransfer = new AppTransfer({
           heroku: this.heroku,
-          appName: appInfo.name ?? app ?? '',
+          appName,
           recipient,
           personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
           bulk,
