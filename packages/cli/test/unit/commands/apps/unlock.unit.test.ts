@@ -1,6 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
+import {CLIError} from '@oclif/core/lib/errors'
 import Cmd  from '../../../../src/commands/apps/unlock'
 import runCommand from '../../../helpers/runCommand'
 
