@@ -1,48 +1,49 @@
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 import {SinonStub} from 'sinon'
+import {CLIError} from '@oclif/core/lib/errors'
 
-const nock = require('nock')
-const sinon = require('sinon')
-const proxyquire = require('proxyquire')
-  .noCallThru()
-const expect = require('chai').expect
-const Duplex = require('stream').Duplex
+import * as nock from 'nock'
+import * as sinon from 'sinon'
+import {noCallThru} from 'proxyquire'
+import {expect} from 'chai'
+import {Duplex} from 'node:stream'
+
 const EventEmitter = require('events').EventEmitter
 
-describe('heroku redis:cli', async () => {
-  const command = proxyquire('../../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
-  require('./shared.unit.test.ts')
-    .shouldHandleArgs(command)
-})
+class Client extends Duplex {
+  _write() {}
 
+  _read() {
+    this.emit('end')
+  }
+}
+
+class Tunnel extends EventEmitter {
+  forwardOut = sinon.stub().yields(null, new Client())
+  connect = sinon.stub().callsFake(() => this.emit('ready'))
+  end = sinon.stub()
+}
+const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
+const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
 describe('heroku redis:cli', async () => {
+  describe('heroku redis:cli', async () => {
+    const proxyquire = noCallThru()
+    const command = proxyquire('../../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
+    require('./shared.unit.test.ts').shouldHandleArgs(command)
+  })
+
   let command: GenericCmd
-  let net: { connect: SinonStub }
-  let tls: { connect: SinonStub }
-  let tunnel: { forwardOut: SinonStub, connect: SinonStub, end: SinonStub }
-  const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
-  const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
+  let net: {connect: SinonStub}
+  let tls: {connect: SinonStub}
+  let tunnel: {forwardOut: SinonStub, connect: SinonStub, end: SinonStub}
 
   beforeEach(function () {
-    class Client extends Duplex {
-      _write() {}
-      _read() {
-        this.emit('end')
-      }
-    }
-
     net = {
       connect: sinon.stub().returns(new Client()),
     }
     tls = {
       connect: sinon.stub().returns(new Client()),
-    }
-
-    class Tunnel extends EventEmitter {
-      forwardOut = sinon.stub().yields(null, new Client())
-      connect = sinon.stub().callsFake(() => this.emit('ready'))
-      end = sinon.stub()
     }
 
     const ssh2 = {
@@ -51,6 +52,7 @@ describe('heroku redis:cli', async () => {
         return tunnel
       },
     }
+    const proxyquire = noCallThru()
     const {default: Cmd} = proxyquire('../../../../src/commands/redis/cli', {net, tls, ssh2})
     command = Cmd
   })
@@ -73,7 +75,7 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {FOO: 'BAR'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'hobby',
       })
@@ -86,8 +88,10 @@ describe('heroku redis:cli', async () => {
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
     expect(net.connect.called).to.equal(true)
   })
 
@@ -109,7 +113,7 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {REDIS_TLS_URL: 'rediss://foobar:password@example.com:8649'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'hobby', prefer_native_tls: true,
       })
@@ -122,8 +126,10 @@ describe('heroku redis:cli', async () => {
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
     expect(tls.connect.called).to.equal(true)
   })
 
@@ -145,7 +151,7 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {FOO: 'BAR'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'premium-0',
       })
@@ -158,8 +164,10 @@ describe('heroku redis:cli', async () => {
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
     expect(tls.connect.called).to.equal(true)
   })
 
@@ -181,7 +189,7 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {FOO: 'BAR'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'shield-9',
       })
@@ -194,15 +202,18 @@ describe('heroku redis:cli', async () => {
       ])
       expect(true, 'cli command should fail!').to.equal(false)
     } catch (error) {
-      const {code} = error as { code: number }
-      expect(error).to.be.an.instanceof(Error)
-      expect(code).to.equal(1)
+      expect(error).to.be.an.instanceof(CLIError)
+
+      if (error instanceof CLIError) {
+        const {oclif: {exit}, message} = error
+        expect(exit).to.equal(1)
+        expect(message).to.contain('Using redis:cli on Heroku Redis shield plans is not supported.')
+      }
     }
 
-    await app.done()
-    await redis.done()
-    await configVars.done()
-    expect(stderr.output).to.contain('Using redis:cli on Heroku Redis shield plans is not supported.')
+    app.done()
+    redis.done()
+    configVars.done()
   })
 
   it('# for bastion it uses tunnel.connect', async () => {
@@ -223,21 +234,25 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {REDIS_BASTIONS: 'example.com'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'premium-0',
       })
+
     await runCommand(command, [
       '--app',
       'example',
       '--confirm',
       'example',
     ])
+
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-haiku (REDIS_URL):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_URL):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
   })
 
   it('# for private spaces bastion with prefer_native_tls, it uses tls.connect', async () => {
@@ -258,7 +273,7 @@ describe('heroku redis:cli', async () => {
       .get('/apps/example/config-vars')
       .reply(200, {REDIS_BASTIONS: 'example.com'})
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku')
+      .get(`/redis/v0/databases/${addonId}`)
       .reply(200, {
         resource_url: 'redis://foobar:password@example.com:8649', plan: 'private-7', prefer_native_tls: true,
       })
@@ -271,8 +286,10 @@ describe('heroku redis:cli', async () => {
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-haiku (REDIS_URL):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_URL):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
     expect(tls.connect.called).to.equal(true)
   })
 
@@ -306,7 +323,7 @@ describe('heroku redis:cli', async () => {
         REDIS_6_BASTION_KEY: 'key2',
       })
     const redis = nock('https://api.data.heroku.com:443')
-      .get('/redis/v0/databases/redis-sonnet')
+      .get('/redis/v0/databases/heroku-redis-addon-id-2')
       .reply(200, {
         resource_url: 'redis://foobar:password@redis-6.example.com:8649', plan: 'private-7', prefer_native_tls: true,
       })
@@ -320,8 +337,10 @@ describe('heroku redis:cli', async () => {
     app.done()
     configVars.done()
     redis.done()
-    expect(stdout.output).to.equal('Connecting to redis-sonnet (REDIS_6_URL):\n')
-    expect(stderr.output).to.equal('')
+    const outputParts = stdout.output.split('\n')
+    expect(outputParts[0]).to.equal('Connecting to redis-sonnet (REDIS_6_URL):')
+    expect(outputParts[1]).to.equal('')
+    expect(outputParts[2]).to.equal('Disconnected from instance.')
     const connectArgs = tunnel.connect.args[0]
     expect(connectArgs).to.have.length(1)
     expect(connectArgs[0]).to.deep.equal({
@@ -332,7 +351,7 @@ describe('heroku redis:cli', async () => {
     expect(localAddr).to.equal('localhost')
     expect(localPort).to.be.a('number')
     expect(remoteAddr).to.equal('redis-6.example.com')
-    expect(remotePort).to.equal('8649')
+    expect(remotePort).to.equal(8649)
     const tlsConnectArgs = tls.connect.args[0]
     expect(tlsConnectArgs).to.have.length(1)
     const tlsConnectOptions = {

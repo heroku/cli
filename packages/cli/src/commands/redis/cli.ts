@@ -108,8 +108,14 @@ async function redisCLI(uri: ClientRequestArgs, client: Writable): Promise<void>
 
 async function bastionConnect(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean) {
   const tunnel: Client = await new Promise(resolve => {
-    const tunnel = new Client()
-    tunnel.on('ready', () => resolve(tunnel))
+    const ssh2 = new Client()
+    resolve(ssh2)
+    ssh2.once('ready', () => resolve(ssh2))
+    ssh2.connect({
+      host: bastions.split(',')[0],
+      username: 'bastion',
+      privateKey: match(config, /_BASTION_KEY/) ?? '',
+    })
   })
   const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
   const stream: Duplex = await promisify(tunnel.forwardOut)('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
@@ -127,12 +133,6 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
   stream.on('close', () => tunnel.end())
   stream.on('end', () => client.end())
 
-  tunnel.connect({
-    host: bastions.split(',')[0],
-    username: 'bastion',
-    privateKey: match(config, /_BASTION_KEY/) ?? '',
-  })
-
   return redisCLI(urlToHttpOptions(uri), client)
 }
 
@@ -146,7 +146,7 @@ function match(config: Record<string, unknown>, lookup: RegExp): string | null {
   return null
 }
 
-function maybeTunnel(redis: RedisFormation, config: Record<string, unknown>) {
+async function maybeTunnel(redis: RedisFormation, config: Record<string, unknown>) {
   const bastions = match(config, /_BASTIONS/)
   const hobby = redis.plan.indexOf('hobby') === 0
   const preferNativeTls = redis.prefer_native_tls
@@ -184,11 +184,16 @@ export default class Cli extends Command {
     database: Args.string(),
   }
 
+  static examples = [
+    '$ heroku redis:cli --app=my-app my-database',
+    '$ heroku redis:cli --app=my-app --confirm my-database',
+  ]
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Cli)
     const addon = await getRedisAddon(flags.app, args.database, this.heroku)
     const configVars = await getRedisConfigVars(addon, this.heroku)
-    const {body: redis} = await getRedisFormation(this.heroku, addon.name)
+    const {body: redis} = await getRedisFormation(this.heroku, addon.id)
     if (redis.plan.startsWith('shield-')) {
       ux.error('\n      Using redis:cli on Heroku Redis shield plans is not supported.\n      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features\n      ', {exit: 1})
     }

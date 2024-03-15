@@ -25,7 +25,7 @@ export interface RedisFormation {
 }
 
 export function makeAddonsFilter(filter = '') {
-  const matcher = new RegExp(`/(${filter})/ig`)
+  const matcher = new RegExp(`(${filter})`, 'ig')
 
   function matches(addon: Required<AddOn>) {
     for (let i = 0; i < addon.config_vars.length; i++) {
@@ -39,9 +39,7 @@ export function makeAddonsFilter(filter = '') {
 
   function onResponse(addons: Required<AddOn>[]) {
     const redisAddons = []
-    // eslint-disable-next-line unicorn/no-for-loop
-    for (let i = 0; i < addons.length; i++) {
-      const addon = addons[i]
+    for (const addon of addons) {
       const service = addon.addon_service.name ?? ''
 
       if (service.indexOf(ADDON) === 0 && (!filter || matches(addon))) {
@@ -64,9 +62,7 @@ export async function getRedisAddon(appId: string, database: string | undefined,
   if (addons.length === 0) {
     ux.error('No Redis instances found.', {exit: 1})
   } else if (addons.length > 1) {
-    const names = addons.map(function (addon) {
-      return addon.name
-    })
+    const names = addons.map(addon => addon.name)
     ux.error(`Please specify a single instance. Found: ${names.join(', ')}`, {exit: 1})
   }
 
@@ -93,7 +89,7 @@ export async function info(heroku: APIClient, appId: string, database: string, j
           return promiseSettledResult.value.body
         }
 
-        const {message, statusCode} = promiseSettledResult.reason as {message: string, statusCode: number}
+        const {message, statusCode} = promiseSettledResult.reason as { message: string, statusCode: number }
         if (statusCode !== 404) {
           ux.error(message, {exit: 1})
         }

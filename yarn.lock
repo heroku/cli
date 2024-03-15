@@ -5297,6 +5297,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^18.11.18":
+  version: 18.19.24
+  resolution: "@types/node@npm:18.19.24"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 9b5d3ee4269c0934908dd8a0aa2adbc59467d90dcbad2967db4e63c4012b7142f1c7ea07a72e32e58f3b80f4d43ba10e9d355d2246fc1a028b25935e298dd501
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
@@ -5336,6 +5345,23 @@ __metadata:
   version: 1.1.3
   resolution: "@types/psl@npm:1.1.3"
   checksum: adc24b5f0a2569563367437cbdcbb63c780e798360a4c21470043acda2adad56e510c9f357be36f297974d68534821febc38652709e5d712ac2cdd62f9a6777a
+  languageName: node
+  linkType: hard
+
+"@types/redis-errors@npm:*":
+  version: 1.2.3
+  resolution: "@types/redis-errors@npm:1.2.3"
+  checksum: fe6b9abbfdc58967360349c3d92aad1f29314c64ff3e136d7f19edcdbd3be7efc1a0363396b2821da81eaa5d0b7e88878eb839ba1c36275ebb34ff2b2e26cd3a
+  languageName: node
+  linkType: hard
+
+"@types/redis-parser@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@types/redis-parser@npm:3.0.3"
+  dependencies:
+    "@types/node": "*"
+    "@types/redis-errors": "*"
+  checksum: 21bd046a32f593bc0bea106f76e91c4452860cb03db3bf6cf34089f03177fc86a34dc7bf57425ba3398ecd0ffae78f6c45cd5ed824f20403b9eb8a943207f0ac
   languageName: node
   linkType: hard
 
@@ -5380,6 +5406,15 @@ __metadata:
   version: 7.0.5
   resolution: "@types/sinon@npm:7.0.5"
   checksum: 4b3c102996635801ba1cac6d76b92dd9e66764f9583b8e73e6b517aa95211181edbf0f33d84860d05e1f7ab1ca441d414cc9053b06f500c458eef2c67e4fdb57
+  languageName: node
+  linkType: hard
+
+"@types/ssh2@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "@types/ssh2@npm:1.15.0"
+  dependencies:
+    "@types/node": ^18.11.18
+  checksum: d1c82b3fd1fee59d102fad44932c2f8bf6047506b9ca20856eed7484b1466a9901a9a3fbbfe41d7de71e8882b4cd5f634624773e69d63f0b8ab83a7a85731dce
   languageName: node
   linkType: hard
 
@@ -6254,7 +6289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1@npm:^0.2.4, asn1@npm:~0.2.3":
+"asn1@npm:^0.2.4, asn1@npm:^0.2.6, asn1@npm:~0.2.3":
   version: 0.2.6
   resolution: "asn1@npm:0.2.6"
   dependencies:
@@ -6315,6 +6350,15 @@ __metadata:
   dependencies:
     lodash: ^4.17.14
   checksum: 5e5561ff8fca807e88738533d620488ac03a5c43fce6c937451f7e35f943d33ad06c24af3f681a48cca3d2b0002b3118faff0a128dc89438a9bf0226f712c499
+  languageName: node
+  linkType: hard
+
+"async@npm:^2.6.4":
+  version: 2.6.4
+  resolution: "async@npm:2.6.4"
+  dependencies:
+    lodash: ^4.17.14
+  checksum: a52083fb32e1ebe1d63e5c5624038bb30be68ff07a6c8d7dfe35e47c93fc144bd8652cbec869e0ac07d57dde387aa5f1386be3559cdee799cb1f789678d88e19
   languageName: node
   linkType: hard
 
@@ -6615,6 +6659,13 @@ __metadata:
   version: 0.0.3
   resolution: "buildcheck@npm:0.0.3"
   checksum: baf30605c56e80c2ca0502e40e18f2ebc7075bb4a861c941c0b36cd468b27957ed11a62248003ce99b9e5f91a7dfa859b30aad4fa50f0090c77a6f596ba20e6d
+  languageName: node
+  linkType: hard
+
+"buildcheck@npm:~0.0.6":
+  version: 0.0.6
+  resolution: "buildcheck@npm:0.0.6"
+  checksum: ad61759dc98d62e931df2c9f54ccac7b522e600c6e13bdcfdc2c9a872a818648c87765ee209c850f022174da4dd7c6a450c00357c5391705d26b9c5807c2a076
   languageName: node
   linkType: hard
 
@@ -7784,6 +7835,17 @@ __metadata:
     nan: ^2.15.0
     node-gyp: latest
   checksum: a20d58e41e63182b34753dfe23bd1d967944ec13d84b70849b5d334fb4a558b7e71e7f955ed86c8e75dd65b5c5b882f1c494174d342cb6d8a062d77f79d39596
+  languageName: node
+  linkType: hard
+
+"cpu-features@npm:~0.0.9":
+  version: 0.0.9
+  resolution: "cpu-features@npm:0.0.9"
+  dependencies:
+    buildcheck: ~0.0.6
+    nan: ^2.17.0
+    node-gyp: latest
+  checksum: 1ff6045a16d32d9667d5dd69c7d485944494d3378ac9381c52bca772bd0c948812eaeda55a76ef09212b0c0e0c575e5d53221899ce51692b1196089452c5aef1
   languageName: node
   linkType: hard
 
@@ -10917,8 +10979,10 @@ __metadata:
     "@types/phoenix": ^1.4.0
     "@types/proxyquire": ^1.3.28
     "@types/psl": ^1.1.3
+    "@types/redis-parser": ^3.0.3
     "@types/shell-escape": ^0.2.0
     "@types/shell-quote": ^1.7.5
+    "@types/ssh2": ^1.15.0
     "@types/std-mocks": ^1.0.4
     "@types/strftime": ^0.9.8
     "@types/supports-color": ^5.3.0
@@ -10960,11 +11024,13 @@ __metadata:
     oclif: 3.11.3
     open: ^8.4.2
     phoenix: ^1.6.14
+    portfinder: ^1.0.32
     printf: 0.6.1
     proxyquire: ^2.1.0
     psl: ^1.9.0
     qqjs: 0.3.11
     read-pkg: ^4.0.1
+    redis-parser: ^3.0.0
     rimraf: 5.0.5
     rollbar: ^2.26.2
     semver: 5.6.0
@@ -10972,6 +11038,7 @@ __metadata:
     shell-quote: ^1.8.1
     sinon: ^7.2.4
     sparkline: ^0.2.0
+    ssh2: ^1.15.0
     std-mocks: ^2.0.0
     stdout-stderr: ^0.1.13
     strftime: ^0.10.0
@@ -13517,7 +13584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.0, mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.2, mkdirp@npm:~0.5.1":
+"mkdirp@npm:^0.5.0, mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.2, mkdirp@npm:^0.5.6, mkdirp@npm:~0.5.1":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -13694,6 +13761,15 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: cb16937273ea55b01ea47df244094c12297ce6b29b36e845d349f1f7c268b8d7c5abd126a102c5678a1e1afd0d36bba35ea0cc959e364928ce60561c9306064a
+  languageName: node
+  linkType: hard
+
+"nan@npm:^2.17.0, nan@npm:^2.18.0":
+  version: 2.19.0
+  resolution: "nan@npm:2.19.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 29a894a003c1954c250d690768c30e69cd91017e2e5eb21b294380f7cace425559508f5ffe3e329a751307140b0bd02f83af040740fa4def1a3869be6af39600
   languageName: node
   linkType: hard
 
@@ -15453,6 +15529,17 @@ __metadata:
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
   checksum: 08931d4a6a4a5561a7f94f67a31c17e6632cb21e459ab3ff4f6f629d9a822984cf8afef2311d2005fbea5d7ef26016ebb090db008e2d8bce39d0a9a9d218736e
+  languageName: node
+  linkType: hard
+
+"portfinder@npm:^1.0.32":
+  version: 1.0.32
+  resolution: "portfinder@npm:1.0.32"
+  dependencies:
+    async: ^2.6.4
+    debug: ^3.2.7
+    mkdirp: ^0.5.6
+  checksum: 116b4aed1b9e16f6d5503823d966d9ffd41b1c2339e27f54c06cd2f3015a9d8ef53e2a53b57bc0a25af0885977b692007353aa28f9a0a98a44335cb50487240d
   languageName: node
   linkType: hard
 
@@ -17296,6 +17383,23 @@ __metadata:
     nan:
       optional: true
   checksum: e40cb9f171741a807c170dc555078aa8c49dc93dd36fc9c8be026fce1cfd31f0d37078d9b60a0f2cfb11d0e007ed5407376b72f8a0ef9f2cb89574632bbfb824
+  languageName: node
+  linkType: hard
+
+"ssh2@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "ssh2@npm:1.15.0"
+  dependencies:
+    asn1: ^0.2.6
+    bcrypt-pbkdf: ^1.0.2
+    cpu-features: ~0.0.9
+    nan: ^2.18.0
+  dependenciesMeta:
+    cpu-features:
+      optional: true
+    nan:
+      optional: true
+  checksum: 56baa07dc0dd8d97aefa05033b8a95d220a34b2f203aa9116173d7adc5e9fd46be22d7cfed99cdd9f5548862ae44abd1ec136e20ea856d5c470a0df0e5aea9d1
   languageName: node
   linkType: hard
 
