@@ -8,11 +8,15 @@ import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
 import lock from './lock'
 import {AppTransfer} from '../../lib/apps/appTransfer'
 
-function getAppsToTransfer(apps) {
+function getAppsToTransfer(apps: Heroku.App[]) {
   return inquirer.prompt([{
-    type: 'checkbox', name: 'choices', pageSize: 20, message: 'Select applications you would like to transfer', choices: apps.map(function (app) {
+    type: 'checkbox',
+    name: 'choices',
+    pageSize: 20,
+    message: 'Select applications you would like to transfer',
+    choices: apps.map(function (app) {
       return {
-        name: `${app.name} (${getOwner(app.owner.email)})`, value: {name: app.name, owner: app.owner.email},
+        name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
       }
     }),
   }])
@@ -46,7 +50,7 @@ $ heroku apps:transfer --bulk acme-widgets
       const {app, bulk, locked} = flags
       const recipient = args.recipient
       if (bulk) {
-        const allApps = await this.heroku.get('/apps')
+        const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
         const selectedApps = await getAppsToTransfer(sortBy(allApps, 'name'))
         console.error(`Transferring applications to ${color.magenta(recipient)}...\n`)
         for (const app of selectedApps.choices) {
@@ -60,16 +64,16 @@ $ heroku apps:transfer --bulk acme-widgets
           }
         }
       } else {
-        const appInfo = await this.heroku.get(`/apps/${app}`)
-        if (isValidEmail(recipient) && isTeamApp(appInfo.owner.email)) {
+        const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+        if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
           await cli.confirmApp(app, confirm, 'All collaborators will be removed from this app')
         }
 
         const appTransfer = new AppTransfer({
           heroku: this.heroku,
-          appName: appInfo.name,
+          appName: appInfo.name ?? app ?? '',
           recipient,
-          personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner.email),
+          personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
           bulk,
         })
         await appTransfer.start()
