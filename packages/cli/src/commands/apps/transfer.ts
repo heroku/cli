@@ -62,7 +62,8 @@ $ heroku apps:transfer --bulk acme-widgets
             })
             await appTransfer.start()
           } catch (error) {
-            ux.error(error)
+            const {message} = error as {message: string}
+            ux.error(message)
           }
         }
       } else {
@@ -81,7 +82,7 @@ $ heroku apps:transfer --bulk acme-widgets
         })
         await appTransfer.start()
         if (locked) {
-          await lock.run(context)
+          await lock.run([], this.config)
         }
       }
     }
