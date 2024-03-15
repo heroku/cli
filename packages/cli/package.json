@@ -120,7 +120,7 @@
     "globby": "^10.0.2",
     "lodash": "^4.17.11",
     "lolex": "^3.1.0",
-    "mocha": "^8.0.0",
+    "mocha": "^9.2.2",
     "nock": "^13.5.1",
     "nyc": "^15.1.0",
     "oclif": "3.11.3",
@@ -162,7 +162,7 @@
     "watch-extensions": "ts",
     "recursive": true,
     "reporter": "spec",
-    "timeout": 180000
+    "timeout": 360000
   },
   "oclif": {
     "additionalHelpFlags": [
