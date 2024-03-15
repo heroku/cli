@@ -6,7 +6,6 @@ import * as sinon from 'sinon'
 import * as fs from 'node:fs/promises'
 import {AddOnAttachment} from '@heroku-cli/schema'
 import Cmd from '../../../../src/commands/addons/open'
-import {afterEach} from 'mocha'
 import * as path from 'node:path'
 
 describe('The addons:open command', () => {

@@ -4,7 +4,6 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
-import {afterEach} from 'mocha'
 import * as chalk from 'chalk'
 
 describe('addons:upgrade', () => {
