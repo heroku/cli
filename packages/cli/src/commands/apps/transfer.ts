@@ -6,8 +6,7 @@ import {sortBy} from 'lodash'
 import * as inquirer from 'inquirer'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
 import lock from './lock'
-
-const AppTransfer = require('../../lib/app_transfer')
+import {AppTransfer} from '../../lib/apps/appTransfer'
 
 function getAppsToTransfer(apps) {
   return inquirer.prompt([{
@@ -67,7 +66,11 @@ $ heroku apps:transfer --bulk acme-widgets
         }
 
         const appTransfer = new AppTransfer({
-          heroku: this.heroku, appName: appInfo.name, recipient: recipient, personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner.email),
+          heroku: this.heroku,
+          appName: appInfo.name,
+          recipient,
+          personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner.email),
+          bulk,
         })
         await appTransfer.start()
         if (locked) {
