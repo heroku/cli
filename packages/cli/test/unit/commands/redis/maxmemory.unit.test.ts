@@ -5,11 +5,13 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
+import stripAnsi = require('strip-ansi')
+import {shouldHandleArgs} from '../../lib/redis/shared'
 
-// describe('heroku redis:maxmemory', function () {
-//   require('../lib/shared.unit.test')
-//     .shouldHandleArgs(command, {policy: 'noeviction'})
-// })
+describe('heroku redis:maxmemory', function () {
+  shouldHandleArgs(Cmd, {policy: 'noeviction'})
+})
+
 describe('heroku redis:maxmemory', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -35,7 +37,7 @@ describe('heroku redis:maxmemory', function () {
     expectOutput(stderr.output, '')
     expectOutput(stdout.output, heredoc(`
       Maxmemory policy for redis-haiku (REDIS_FOO, REDIS_BAR) set to noeviction.
-      noeviction return errors when memory limit is reached
+      noeviction return errors when memory limit is reached.
     `))
   })
   it('# errors on missing eviction policy', async function () {
@@ -43,7 +45,10 @@ describe('heroku redis:maxmemory', function () {
       '--app',
       'example',
     ]).catch(function (error: Error) {
-      expect(error.message).to.equal('Missing required flag:\n -p, --policy POLICY  set policy name')
+      expect(stripAnsi(error.message)).to.equal(heredoc(`
+        The following error occurred:
+          Missing required flag policy
+        See more help with --help`))
     })
   })
 })
