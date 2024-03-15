@@ -33,13 +33,13 @@ export default (app: string, database: string | undefined, json: boolean, heroku
   const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
   return {
-    request(path: string, method = 'get', body = {}) {
+    request<T>(path: string, method = 'get', body = {}) {
       const headers = {Accept: 'application/json'}
       if (process.env.HEROKU_HEADERS) {
         Object.assign(headers, JSON.parse(process.env.HEROKU_HEADERS))
       }
 
-      return heroku.request(path, {
+      return heroku.request<T>(path, {
         hostname: HOST,
         method,
         headers,
