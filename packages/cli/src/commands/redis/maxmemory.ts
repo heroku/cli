@@ -1,11 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi from '../../lib/redis/api'
+import {RedisFormationConfigResponse} from '../../lib/redis/api'
 
 export default class MaxMemory extends Command {
   static topic = 'redis'
-  static description = 'set the key eviction policy'
-  static help = `Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
+  static description = `set the key eviction policy when instances reach their storage limit
+  Available policies for key eviction include:
 
   noeviction      # returns errors when memory limit is reached
   allkeys-lfu     # removes less frequently used keys first
@@ -33,7 +34,9 @@ export default class MaxMemory extends Command {
     const {database} = args
 
     const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
-    const {body: config}: {body: any} = await redisApi(app, database, false, this.heroku).request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {maxmemory_policy: policy})
+    const {body: config} = await this.heroku.patch<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.name}/config`, {
+      body: {maxmemory_policy: policy},
+    })
     const configVars = addon.config_vars || []
     ux.log(`Maxmemory policy for ${addon.name} (${configVars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
     ux.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`)
