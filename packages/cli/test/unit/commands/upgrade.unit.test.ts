@@ -11,6 +11,7 @@ describe('heroku redis:upgrade', () => {
   beforeEach(() => {
     nock.cleanAll()
   })
+
   it('# upgrades the redis version', async () => {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
@@ -30,7 +31,10 @@ describe('heroku redis:upgrade', () => {
       '--version',
       '6.2',
     ])
-    expectOutput(stderr.output, 'Requesting upgrade of redis-haiku to 6.2... Upgrading version now!')
+    expectOutput(stderr.output, heredoc(`
+      Requesting upgrade of redis-haiku to 6.2...
+      Requesting upgrade of redis-haiku to 6.2... Upgrading version now!
+    `))
   })
 
   it('# errors on missing version', async function () {
@@ -45,8 +49,5 @@ describe('heroku redis:upgrade', () => {
             Missing required flag version
           See more help with --help`))
       })
-    // .to.be.rejectedWith(exit.ErrorExit)
-      // .then(() => expect(stdout.output).to.equal(''))
-      // .then(() => expect(unwrap(stderr.output)).to.equal('Please specify a valid version.\n'))
   })
 })

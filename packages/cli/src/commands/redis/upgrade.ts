@@ -33,11 +33,10 @@ export default class Upgrade extends Command {
       Redis database will be upgraded to ${color.configVar(version)}. This cannot be undone.
     `)
     await confirmApp(app, confirm, warning)
+
     ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
-    // const {body: response} = await this.heroku.post<RedisUpgradeResponse>(`/redis/v0/databases/${addon.name}/upgrade`, {body: {version: version}})
     const {body: response} = await redisApi(app, database, false, this.heroku)
       .request<RedisUpgradeResponse>(`/redis/v0/databases/${addon.name}/upgrade`, 'POST', {version: version})
-    console.log('hi:', response.message)
     ux.action.stop(response.message)
   }
 }
