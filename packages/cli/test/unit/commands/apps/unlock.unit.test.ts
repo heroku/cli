@@ -28,9 +28,10 @@ describe('heroku apps:unlock', () => {
       '--app',
       'myapp',
     ])
-      .catch((error: any) => {
-        expect('').to.eq(stdout.output)
-        expect(error.message).to.eq('Error: cannot unlock \u001B[36mmyapp\u001B[39m\nThis app is not locked.')
+      .catch((error: unknown) => {
+        const {message, oclif} = error as CLIError
+        expect(message).to.eq('cannot unlock \u001B[36mmyapp\u001B[39m\nThis app is not locked.')
+        expect(oclif.exit).to.equal(1) // You can add testing for the correct exit status if you're using `ux.error` to throw.
       })
     api.done()
   })
