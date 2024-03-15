@@ -110,7 +110,7 @@ describe('heroku redis:info', function () {
       '--app',
       'example',
     ]).catch(function (error: Error) {
-      expect(error.message).to.equal('HTTP Error 503 for get https://api.heroku.com/redis/v0/databases/redis-haiku\n{}')
+      expect(error.message).to.equal('HTTP Error 503 for GET https://api.heroku.com/redis/v0/databases/redis-haiku\n{}')
     })
   })
 })

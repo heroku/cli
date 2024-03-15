@@ -35,7 +35,7 @@ export default class MaxMemory extends Command {
     const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
 
     const {body: config} = await redisApi(app, database, false, this.heroku)
-      .request<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.name}/config`, 'patch', {maxmemory_policy: policy})
+      .request<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {maxmemory_policy: policy})
     const configVars = addon.config_vars || []
     ux.log(`Maxmemory policy for ${addon.name} (${configVars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
     ux.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`)
