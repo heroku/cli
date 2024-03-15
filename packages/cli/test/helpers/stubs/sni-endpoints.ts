@@ -100,7 +100,6 @@ export const endpointTrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'>
 export const endpointWithDomains: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: ['tokyo-1050.herokussl.com'],
-  display_name: 'my-tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -143,7 +142,6 @@ export const untrustedCertificateDetails = `
 export const endpoint: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
   domains: ['456789ab-cdef-0123-4567-89abcdef0123'],
-  display_name: 'my-tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -229,18 +227,5 @@ export const endpointHeroku: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> 
     'self_signed?': false,
     starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com',
-  },
-}
-
-export const endpointWarning: Endpoint = {
-  name: 'warning-7777',
-  cname: 'warning-7777.herokussl.com',
-  ssl_cert: {
-    'ca_signed?': true,
-    cert_domains: ['warning.com'],
-    starts_at: '2012-08-01T21:34:23Z',
-    expires_at: '2013-08-01T21:34:23Z',
-    issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
-    subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
   },
 }

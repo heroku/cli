@@ -2,18 +2,14 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {meta} from '../../lib/certs/endpoints'
 import {waitForDomains} from '../../lib/certs/domains'
 import {prompt} from 'inquirer'
 import {getCertAndKey} from '../../lib/certs/get_cert_and_key'
-import {cert, getCertificateDetails} from '../../lib/certs/certificate_details'
 import heredoc from 'tsheredoc'
+import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import {displayCertificateDetails} from '../../lib/certs/certificate_details'
 
-async function getMeta(app: string) {
-  return meta(app, 'sni', undefined)
-}
-
-async function configureDomains(app: string, heroku: APIClient, cert: Heroku.SniEndpoint) {
+async function configureDomains(app: string, heroku: APIClient, cert: SniEndpoint) {
   const certDomains = cert.ssl_cert.cert_domains
   const apiDomains = await waitForDomains(app, heroku)
   const appDomains = apiDomains?.map((domain: Heroku.Domain) => domain.hostname as string)
@@ -58,26 +54,18 @@ export default class Add extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
     const {app} = flags
-    const meta = await getMeta(app)
     const files = await getCertAndKey(args)
     ux.action.start(`Adding SSL certificate to ${color.magenta(app)}`)
-    const {body: cert} = await this.heroku.post<Heroku.SniEndpoint & cert>(meta.path, {
+    const {body: sniEndpoint} = await this.heroku.post<SniEndpoint>(`/apps/${app}/sni-endpoints`, {
       body: {
         certificate_chain: files.crt.toString(),
         private_key: files.key.toString(),
       },
-      headers: {Accept: 'application/vnd.heroku+json; version=3'},
     })
     ux.action.stop()
 
-    cert._meta = meta
-
-    if (meta.flag !== 'sni' || cert.cname) {
-      ux.log(`${color.magenta(app)} now served by ${color.green(cert.cname as string)}`)
-    }
-
-    getCertificateDetails(cert)
-    await configureDomains(app, this.heroku, cert)
+    displayCertificateDetails(sniEndpoint)
+    await configureDomains(app, this.heroku, sniEndpoint)
   }
 }
 

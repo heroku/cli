@@ -21,7 +21,8 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
     Subject: sniEndpoint.ssl_cert.subject,
   }
 
-  if (sniEndpoint.domains.length > 0) {
+  // Only displays domains when the list of ids was replaced by the list of hostnames
+  if (sniEndpoint.domains.length > 0 && !sniEndpoint.domains.some(domain => domain.match('^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}'))) {
     tableObject['Domain(s)'] = sniEndpoint.domains
   }
 

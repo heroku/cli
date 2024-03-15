@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
-import {all} from '../../lib/certs/endpoints'
 import {spawn} from 'node:child_process'
 import * as inquirer from 'inquirer'
+import {SniEndpoint} from '../../lib/types/sni_endpoint'
 
-function getCommand(certs: Heroku.SniEndpoint[], domain: string): 'update' | 'add' {
+function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {
   const shouldUpdate = certs
     .map(cert => cert?.ssl_cert?.cert_domains)
     .filter(certDomains => certDomains?.length)
@@ -55,7 +54,7 @@ export default class Generate extends Command {
     const domain = args.domain
     const keysize = flags.keysize || 2048
     const keyfile = `${domain}.key`
-    const certs = await all(app, this.heroku)
+    const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${app}/sni-endpoints`)
     const command = getCommand(certs, domain)
     if (selfsigned) {
       const crtfile = `${domain}.crt`
