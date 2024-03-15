@@ -57,7 +57,7 @@ describe('pipelines:connect', () => {
       })
   })
 
-  describe('with an account connected to Github experiencing request failures', () => {
+  describe('with an account connected to GitHub experiencing request failures', () => {
     test
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         const kolkrabbiAccount = {
@@ -79,6 +79,6 @@ describe('pipelines:connect', () => {
       .catch(error => {
         expect(error.message).to.contain('Could not access the my-org/my-repo repo')
       })
-      .it('shows an error if github request fails')
+      .it('shows an error if GitHub request fails')
   })
 })

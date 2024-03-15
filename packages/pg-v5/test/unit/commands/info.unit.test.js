@@ -48,7 +48,7 @@ describe('pg', () => {
   })
 
   context('with 2 dbs', () => {
-    let plan = {name: 'heroku-postresql:hobby-dev'}
+    let plan = {name: 'heroku-postgresql:hobby-dev'}
     let config = {
       DATABASE_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx',
       HEROKU_POSTGRESQL_COBALT_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx',
