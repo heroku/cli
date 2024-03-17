@@ -275,6 +275,8 @@ export default `\u001B[1m Command                                        Summary
  spaces                                         list available spaces                                                                                                                                   
  spaces:create                                  create a new space                                                                                                                                      
  spaces:destroy                                 destroy a space                                                                                                                                         
+ spaces:drains:get                              display the log drain for a space                                                                                                                       
+ spaces:drains:set                              replaces the log drain for a space                                                                                                                      
  spaces:info                                    show info about a space                                                                                                                                 
  spaces:peering:info                            display the information necessary to initiate a peering connection                                                                                      
  spaces:peerings                                list peering connections for a space                                                                                                                    

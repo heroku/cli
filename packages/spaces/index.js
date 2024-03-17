@@ -1,3 +1,4 @@
+
 'use strict'
 
 exports.topics = [
@@ -35,4 +36,4 @@ exports.commands = [
   require('./commands/outbound-rules/add'),
   require('./commands/outbound-rules/remove'),
   require('./commands/hosts'),
-]
+].flat()
