@@ -51,7 +51,7 @@ class Dyno extends Duplex {
   }
 
   _doStart(retries = 2) {
-    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
+    let command = this.opts['exit-code'] ? `trap 'echo -n "\uFFFF heroku-command-exit-status: $? \uFFFF"' EXIT; ${this.opts.command}` : this.opts.command
     return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
         Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
@@ -312,10 +312,10 @@ class Dyno extends Duplex {
       // eslint-disable-next-line
       if (!process.stdout.isTTY) data = data.replace(new RegExp('\r\n', 'g'), '\n')
 
-      let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
+      let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+) \uFFFF/)
       if (exitCode) {
         debug('got exit code: %d', exitCode[1])
-        this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
+        this.push(data.replace(/\uFFFF heroku-command-exit-status: \d+ \uFFFF/, ''))
         let code = Number.parseInt(exitCode[1])
         if (code === 0) this.resolve()
         else {
