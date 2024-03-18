@@ -6,7 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
-describe.only('heroku redis:stats-reset', () => {
+describe('heroku redis:stats-reset', () => {
   beforeEach(() => {
     nock.cleanAll()
   })
