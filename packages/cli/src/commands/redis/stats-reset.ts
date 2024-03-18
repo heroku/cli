@@ -5,13 +5,12 @@ import confirmApp from '../../lib/apps/confirm-app'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
 
-export default class Upgrade extends Command {
+export default class StatsReset extends Command {
   static topic = 'redis'
-  static description = 'perform in-place version upgrade'
+  static description = 'reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-    version: flags.string({char: 'v', required: true}),
     confirm: flags.string({char: 'c'}),
   }
 
@@ -20,19 +19,19 @@ export default class Upgrade extends Command {
   }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Upgrade)
-    const {app, version, confirm} = flags
+    const {flags, args} = await this.parse(StatsReset)
+    const {app, confirm} = flags
     const {database} = args
     const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
     const warning = heredoc(`
       WARNING: Irreversible action.
-      Redis database will be upgraded to ${color.configVar(version)}. This cannot be undone.
+      All stats covered by RESETSTAT will be reset on ${color.addon(addon.name || '')}.
     `)
     await confirmApp(app, confirm, warning)
 
-    ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
+    ux.action.start(`Reseting stats on ${color.addon(addon.name || '')}`)
     const {body: response} = await redisApi(app, database, false, this.heroku)
-      .request<RedisApiResponse>(`/redis/v0/databases/${addon.id}/upgrade`, 'POST', {version: version})
+      .request<RedisApiResponse>(`/redis/v0/databases/${addon.id}/stats/reset`, 'POST')
     ux.action.stop(response.message)
   }
 }

@@ -25,6 +25,10 @@ export type RedisFormationResponse = {
 
 type RedisEvictionPolicies = 'noeviction' | 'allkeys-lru' | 'volatile-lru' | 'allkeys-random' | 'volatile-random' | 'volatile-ttl' | 'allkeys-lfu' | 'volatile-lfu'
 
+export type RedisApiResponse = {
+  message: string
+}
+
 export type RedisFormationConfigResponse = {
   maxmemory_policy: {
     desc: string,
