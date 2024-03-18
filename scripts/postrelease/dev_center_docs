@@ -4,7 +4,9 @@
 
 set +x
 
-if [[ -z "${CIRCLE_TAG}" ]]; then
+PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+
+if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
   echo "Not on stable release, skipping devcenter docs update"
   exit
 fi
@@ -36,4 +38,4 @@ EOF
 oclif readme
 grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" | sed "/_See\ code\:/d" > /tmp/heroku-cli-commands.md
 git checkout README.md
-devcenter push /tmp/heroku-cli-commands.md --trace
+# devcenter push /tmp/heroku-cli-commands.md --trace

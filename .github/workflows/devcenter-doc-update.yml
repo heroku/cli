@@ -8,6 +8,7 @@ jobs:
   update-devcenter-command-docs:
     name: Update Devcenter command docs
     runs-on: ubuntu-latest
+    environment: SignDebian
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
@@ -25,3 +26,6 @@ jobs:
         run: |
           gem install devcenter
           devcenter help
+        env:
+          HEROKU_DEB_SECRET_KEY: ${[ secrets.HEROKU_DEB_SECRET_KEY }}
+          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
