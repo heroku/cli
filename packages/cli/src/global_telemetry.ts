@@ -13,9 +13,12 @@ const {version} = require('../package.json')
 
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-const config = new Config({root})
-const heroku = new APIClient(config)
-const token = heroku.auth
+
+function getToken() {
+  const config = new Config({root})
+  const heroku = new APIClient(config)
+  return heroku.auth
+}
 
 const debug = require('debug')('global_telemetry')
 
@@ -44,7 +47,7 @@ const provider = new NodeTracerProvider({
   resource,
 })
 
-const headers = {Authorization: `Bearer ${token}`}
+const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
 
 const exporter = new OTLPTraceExporter({
   url: isDev ? 'https://backboard-staging.herokuapp.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces',
