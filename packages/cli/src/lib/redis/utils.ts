@@ -1,4 +1,3 @@
-'use strict'
 import {AddOn} from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
 import {HTTP} from 'http-call'

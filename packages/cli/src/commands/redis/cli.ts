@@ -6,8 +6,6 @@ import {Client} from 'ssh2'
 import Parser = require('redis-parser')
 import type {Writable} from 'node:stream'
 import portfinder = require('portfinder')
-import {ClientRequestArgs} from 'node:http'
-import {urlToHttpOptions} from 'url'
 import {getRedisAddon, getRedisFormation, RedisFormation} from '../../lib/redis/utils'
 import confirmApp from '../../lib/apps/confirm-app'
 import * as tls from 'tls'
@@ -18,7 +16,7 @@ import * as net from 'net'
 
 const REPLY_OK = 'OK'
 
-async function redisCLI(uri: ClientRequestArgs, client: Writable): Promise<void> {
+async function redisCLI(uri: URL, client: Writable): Promise<void> {
   const io = readline.createInterface(process.stdin, process.stdout)
   const reply = new Parser({
     returnReply(reply) {
@@ -74,7 +72,7 @@ async function redisCLI(uri: ClientRequestArgs, client: Writable): Promise<void>
     },
   })
   let state = 'connect'
-  client.write(`AUTH ${uri.auth?.split(':')[1]}\n`)
+  client.write(`AUTH ${uri.password}\n`)
   io.setPrompt(uri.host + '> ')
   io.on('line', function (line) {
     switch (line.split(' ')[0]) {
@@ -133,7 +131,7 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
   stream.on('close', () => tunnel.end())
   stream.on('end', () => client.end())
 
-  return redisCLI(urlToHttpOptions(uri), client)
+  return redisCLI(uri, client)
 }
 
 function match(config: Record<string, unknown>, lookup: RegExp): string | null {
