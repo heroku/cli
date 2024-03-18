@@ -6,6 +6,7 @@ import {expect} from 'chai'
 import expectOutput from '../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
+import * as fixtures from '../../fixtures/addons/fixtures'
 
 describe('heroku redis:upgrade', () => {
   beforeEach(() => {
@@ -13,13 +14,14 @@ describe('heroku redis:upgrade', () => {
   })
 
   it('# upgrades the redis version', async () => {
+    const redisAddon =  fixtures.addons['www-redis']
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
+        redisAddon,
       ])
     nock('https://api.data.heroku.com:443')
-      .post('/redis/v0/databases/redis-haiku/upgrade', {version: '6.2'})
+      .post(`/redis/v0/databases/${redisAddon.id}/upgrade`, {version: '6.2'})
       .reply(200, {
         message: 'Upgrading version now!',
       })
@@ -32,8 +34,8 @@ describe('heroku redis:upgrade', () => {
       '6.2',
     ])
     expectOutput(stderr.output, heredoc(`
-      Requesting upgrade of redis-haiku to 6.2...
-      Requesting upgrade of redis-haiku to 6.2... Upgrading version now!
+      Requesting upgrade of ${redisAddon.name} to 6.2...
+      Requesting upgrade of ${redisAddon.name} to 6.2... Upgrading version now!
     `))
   })
 

@@ -36,7 +36,7 @@ export default class Upgrade extends Command {
 
     ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
     const {body: response} = await redisApi(app, database, false, this.heroku)
-      .request<RedisUpgradeResponse>(`/redis/v0/databases/${addon.name}/upgrade`, 'POST', {version: version})
+      .request<RedisUpgradeResponse>(`/redis/v0/databases/${addon.id}/upgrade`, 'POST', {version: version})
     ux.action.stop(response.message)
   }
 }
