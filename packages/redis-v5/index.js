@@ -2,7 +2,6 @@ exports.commands = [
   require('./commands/wait'),
   require('./commands/promote'),
   require('./commands/timeout'),
-  require('./commands/maintenance'),
 ]
 
 exports.topic = {
