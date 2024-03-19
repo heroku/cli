@@ -58,6 +58,11 @@ export type RedisMaintenanceWindowResponse = {
   scheduled_at?: string
 }
 
+export type RedisFormationWaitResponse = {
+  message: string
+  'waiting?': boolean
+}
+
 type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
 
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
@@ -164,7 +169,6 @@ export default (app: string, database: string | undefined, json: boolean, heroku
           const json_data: RedisFormationResponse & {app?: Heroku.AddOn['app'], config_vars?: string[]} = redis
           json_data.app = db.addon.app
           json_data.config_vars = db.addon.config_vars
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const {formation, metaas_source, port, ...filteredRedis} = json_data
           redii.push(filteredRedis)
         }
