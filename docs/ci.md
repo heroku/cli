@@ -1,20 +1,19 @@
-`heroku ci`
-===========
+# `heroku ci`
 
 run an application test suite on Heroku
 
-* [`heroku ci`](#heroku-ci)
-* [`heroku ci:config`](#heroku-ciconfig)
-* [`heroku ci:config:get KEY`](#heroku-ciconfigget-key)
-* [`heroku ci:config:set`](#heroku-ciconfigset)
-* [`heroku ci:config:unset`](#heroku-ciconfigunset)
-* [`heroku ci:debug`](#heroku-cidebug)
-* [`heroku ci:info TEST-RUN`](#heroku-ciinfo-test-run)
-* [`heroku ci:last`](#heroku-cilast)
-* [`heroku ci:migrate-manifest`](#heroku-cimigrate-manifest)
-* [`heroku ci:open`](#heroku-ciopen)
-* [`heroku ci:rerun [NUMBER]`](#heroku-cirerun-number)
-* [`heroku ci:run`](#heroku-cirun)
+- [`heroku ci`](#heroku-ci)
+- [`heroku ci:config`](#heroku-ciconfig)
+- [`heroku ci:config:get KEY`](#heroku-ciconfigget-key)
+- [`heroku ci:config:set`](#heroku-ciconfigset)
+- [`heroku ci:config:unset`](#heroku-ciconfigunset)
+- [`heroku ci:debug`](#heroku-cidebug)
+- [`heroku ci:info TEST-RUN`](#heroku-ciinfo-test-run)
+- [`heroku ci:last`](#heroku-cilast)
+- [`heroku ci:migrate-manifest`](#heroku-cimigrate-manifest)
+- [`heroku ci:open`](#heroku-ciopen)
+- [`heroku ci:rerun [NUMBER]`](#heroku-cirerun-number)
+- [`heroku ci:run`](#heroku-cirun)
 
 ## `heroku ci`
 
@@ -37,7 +36,7 @@ EXAMPLES
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.3/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -174,7 +173,7 @@ EXAMPLES
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.3/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -196,7 +195,7 @@ EXAMPLES
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.3/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -258,7 +257,7 @@ EXAMPLES
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.3/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -279,4 +278,4 @@ EXAMPLES
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.10.0/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v8.11.0-beta.3/src/commands/ci/run.ts)_
