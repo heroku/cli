@@ -1,4 +1,4 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {stdout} from 'stdout-stderr'
 import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 import {SinonStub} from 'sinon'
 import {CLIError} from '@oclif/core/lib/errors'
@@ -30,7 +30,7 @@ describe('heroku redis:cli', async () => {
   describe('heroku redis:cli', async () => {
     const proxyquire = noCallThru()
     const command = proxyquire('../../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
-    require('./shared.unit.test.ts').shouldHandleArgs(command)
+    require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(command)
   })
 
   let command: GenericCmd

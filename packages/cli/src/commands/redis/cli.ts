@@ -6,13 +6,14 @@ import {Client} from 'ssh2'
 import Parser = require('redis-parser')
 import type {Writable} from 'node:stream'
 import portfinder = require('portfinder')
-import {getRedisAddon, getRedisFormation, RedisFormation} from '../../lib/redis/utils'
 import confirmApp from '../../lib/apps/confirm-app'
 import * as tls from 'tls'
 import type {Socket} from 'node:net'
 import type {Duplex} from 'stream'
 import {promisify} from 'node:util'
 import * as net from 'net'
+import type {RedisFormationResponse} from '../../lib/redis/api'
+import apiFactory from '../../lib/redis/api'
 
 const REPLY_OK = 'OK'
 
@@ -144,7 +145,7 @@ function match(config: Record<string, unknown>, lookup: RegExp): string | null {
   return null
 }
 
-async function maybeTunnel(redis: RedisFormation, config: Record<string, unknown>) {
+async function maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) {
   const bastions = match(config, /_BASTIONS/)
   const hobby = redis.plan.indexOf('hobby') === 0
   const preferNativeTls = redis.prefer_native_tls
@@ -189,9 +190,10 @@ export default class Cli extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Cli)
-    const addon = await getRedisAddon(flags.app, args.database, this.heroku)
+    const api = apiFactory(flags.app, args.database, false, this.heroku)
+    const addon = await api.getRedisAddon()
     const configVars = await getRedisConfigVars(addon, this.heroku)
-    const {body: redis} = await getRedisFormation(this.heroku, addon.id)
+    const {body: redis} = await api.request<RedisFormationResponse>(`/redis/v0/databases/${addon.id}`)
     if (redis.plan.startsWith('shield-')) {
       ux.error('\n      Using redis:cli on Heroku Redis shield plans is not supported.\n      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features\n      ', {exit: 1})
     }
