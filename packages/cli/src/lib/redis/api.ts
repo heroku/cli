@@ -53,7 +53,12 @@ export type RedisFormationConfigResponse = {
   },
 }
 
-type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'DELETE'
+export type RedisMaintenanceWindowResponse = {
+  window: string | null
+  scheduled_at?: string
+}
+
+type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
 
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
   const HOST = process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
@@ -79,7 +84,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         filter = filter.toUpperCase()
       }
 
-      function matches(addon: Heroku.AddOn) {
+      function matches(addon: Required<Heroku.AddOn>) {
         const configVars = addon.config_vars || []
         for (const configVar of configVars) {
           const cfgName = configVar.toUpperCase()
@@ -95,7 +100,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         return false
       }
 
-      function onResponse(addons: Heroku.AddOn[]) {
+      function onResponse(addons: Required<Heroku.AddOn>[]) {
         const redisAddons = []
         for (const addon of addons) {
           const service = addon?.addon_service?.name
@@ -126,11 +131,11 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         ux.error(`Please specify a single instance. Found: ${names.join(', ')}`, {exit: 1})
       }
 
-      return addons[0]
+      return redisAddons[0]
     },
 
     async info() {
-      let {body: addons} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
+      let {body: addons} = await heroku.get<Required<Heroku.AddOn>[]>(`/apps/${app}/addons`)
       // filter out non-redis addons
       addons = this.makeAddonsFilter(database)(addons)
       // get info for each db
