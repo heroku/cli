@@ -1,12 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../src/commands/redis/upgrade'
-import runCommand from '../../helpers/runCommand'
+import Cmd from '../../../../src/commands/redis/upgrade'
+import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../helpers/utils/expectOutput'
+import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
-import * as fixtures from '../../fixtures/addons/fixtures'
+import * as fixtures from '../../../fixtures/addons/fixtures'
 
 describe('heroku redis:upgrade', () => {
   beforeEach(() => {
