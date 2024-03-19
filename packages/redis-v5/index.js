@@ -3,7 +3,6 @@ exports.commands = [
   require('./commands/promote'),
   require('./commands/timeout'),
   require('./commands/maintenance'),
-  require('./commands/keyspace-notifications'),
   require('./commands/stats-reset'),
 ]
 
