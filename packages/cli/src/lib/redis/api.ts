@@ -116,7 +116,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       return onResponse
     },
 
-    async getRedisAddon() {
+    async getRedisAddon(): Promise<Required<Heroku.AddOn>> {
       const {body: addons} = await heroku.get<Required<Heroku.AddOn>[]>(`/apps/${app}/addons`)
 
       const addonsFilter = this.makeAddonsFilter(database)
@@ -131,7 +131,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
         ux.error(`Please specify a single instance. Found: ${names.join(', ')}`, {exit: 1})
       }
 
-      return redisAddons[0]
+      return redisAddons[0] as Required<Heroku.AddOn>
     },
 
     async info() {
