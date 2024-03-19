@@ -8,7 +8,7 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-unused-vars": "warn", // TODO: fix issues and turn this back on
+    "@typescript-eslint/no-unused-vars": ["warn", {"ignoreRestSiblings": true}], // TODO: fix issues and turn this back on
     "camelcase":"off",
     "import/no-unresolved": "error",
     "indent": ["error", 2, {"MemberExpression": 1}],
