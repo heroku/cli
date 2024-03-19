@@ -11,7 +11,7 @@ type RedisConfigResponse = {
 export default class Timeout extends Command {
   static topic = 'redis'
   static description = `
-    Set the number of seconds to wait before killing idle connections.
+    set the number of seconds to wait before killing idle connections
     A value of zero means that connections will not be closed.
   `
 
