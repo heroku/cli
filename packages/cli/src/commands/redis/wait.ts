@@ -55,10 +55,10 @@ export default class Wait extends Command {
 
         if (!waiting) {
           waiting = true
-          ux.action.start(`Waiting for database ${color.yellow(addon.name)}`)
+          ux.action.start(`Waiting for database ${color.yellow(addon.name)}`, status.message)
         }
 
-        ux.log(status.message)
+        ux.action.status = status.message
 
         // eslint-disable-next-line no-await-in-loop
         await wait(interval * 1000)
