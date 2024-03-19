@@ -1,6 +1,5 @@
 exports.commands = [
   require('./commands/wait'),
-  require('./commands/promote'),
 ]
 
 exports.topic = {
