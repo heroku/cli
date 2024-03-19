@@ -32,8 +32,8 @@ describe('heroku redis:stats-reset', () => {
     ])
     expectOutput(stdout.output, '')
     expectOutput(stderr.output, heredoc(`
-      Reseting stats on ${redisAddon.name}...
-      Reseting stats on ${redisAddon.name}... Stats reset successful.
+      Resetting stats on ${redisAddon.name}...
+      Resetting stats on ${redisAddon.name}... Stats reset successful.
     `))
   })
 })
