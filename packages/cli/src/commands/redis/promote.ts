@@ -16,8 +16,11 @@ export default class Promote extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Promote)
-    const api = apiFactory(flags.app, args.database || 'REDIS_URL', false, this.heroku)
-    const redis = await api.getRedisAddon()
+    const api = apiFactory(flags.app, args.database, false, this.heroku)
+    const {body: addonsList} = await this.heroku.get<Required<Heroku.AddOn>[]>(`/apps/${flags.app}/addons`)
+    const addon = await api.getRedisAddon(addonsList)
+    const redisFilter = api.makeAddonsFilter('REDIS_URL')
+    const redis = redisFilter(addonsList) as Required<Heroku.AddOn>[]
     if (redis.length === 1 && redis[0].config_vars.filter((c: string) => c.endsWith('_URL')).length === 1) {
       const attachment = redis[0]
       await this.heroku.post('/addon-attachments', {
@@ -27,10 +30,10 @@ export default class Promote extends Command {
       })
     }
 
-    ux.log(`Promoting ${redis.name} to REDIS_URL on ${flags.app}`)
+    ux.log(`Promoting ${addon.name} to REDIS_URL on ${flags.app}`)
     await this.heroku.post('/addon-attachments', {
       body: {
-        app: {name: flags.app}, addon: {name: redis.name}, confirm: flags.app, name: 'REDIS',
+        app: {name: flags.app}, addon: {name: addon.name}, confirm: flags.app, name: 'REDIS',
       },
     })
   }
