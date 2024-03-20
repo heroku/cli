@@ -3,22 +3,25 @@ import pgHost from './host'
 const bytes = require('bytes')
 
 export type BackupTransfer = {
-  num: number,
-  options: {
-    pgbackups_name: string,
-  },
+  canceled_at: string,
   finished_at: string,
-  succeeded: boolean,
-  warnings: number,
-  started_at: string,
-  processed_bytes: number,
+  from_name: string,
+  from_type: string,
   logs: Array<{
     created_at: string,
     message: string,
   }>,
-  from_type: string,
-  to_type: string,
+  num: number,
+  options: {
+    pgbackups_name: string,
+  },
+  processed_bytes: number,
   schedule: string,
+  started_at: string,
+  source_bytes: number,
+  succeeded: boolean,
+  to_type: string,
+  warnings: number,
 }
 
 function prefix(transfer: BackupTransfer) {
