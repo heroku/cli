@@ -43,8 +43,3 @@ const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
 describe('pg:backups:url', () => {
   shouldUrl((args: string[]) => runCommand(Cmd, args))
 })
-
-// describe('pg:backups url', () => {
-//   shouldUrl(require('./helpers.js')
-//     .dup('url', cmd))
-// })
