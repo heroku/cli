@@ -7,6 +7,7 @@ export default class Promote extends Command {
   static description = 'sets DATABASE as your REDIS_URL'
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {
