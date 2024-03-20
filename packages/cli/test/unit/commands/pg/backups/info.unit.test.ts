@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
+import stripAnsi = require('strip-ansi')
 
 const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
   afterEach(() => {
@@ -21,7 +22,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     it('shows error message', async () => {
       await cmdRun(['--app', 'myapp'])
         .catch((error: Error) => {
-          expect(error.message).to.equal('No backups. Capture one with heroku pg:backups:capture')
+          expect(stripAnsi(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
         })
     })
   })

@@ -57,8 +57,7 @@ export default (app: string, heroku: APIClient) => ({
       if (m) return Number.parseInt(m[1], 10)
       m = name.match(/^o[ab]\d+$/)
       if (m) {
-        const host = pgHost()
-        const {body: transfers} = await heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {host})
+        const {body: transfers} = await heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pgHost()})
         const transfer = transfers.find(t => this.name(t) === name)
         if (transfer) return transfer.num
       }

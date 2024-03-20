@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import host from '../../../lib/pg/host'
+import pgHost from '../../../lib/pg/host'
 import pgBackupsApi, {BackupTransfer} from '../../../lib/pg/backups'
 
 function status(backup: BackupTransfer) {
@@ -54,7 +54,7 @@ export default class Info extends Command {
           if (!backupID)
             throw new Error(`Invalid ID: ${id}`)
         } else {
-          let {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: host()})
+          let {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pgHost()})
           transfers = sortBy(transfers, 'created_at')
           const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
           const lastBackup = backups.pop()
@@ -63,7 +63,8 @@ export default class Info extends Command {
           backupID = lastBackup.num
         }
 
-        return await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {hostname: host()})
+        const {body: backup} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {hostname: pgHost()})
+        return backup
       }
 
       const displayBackup = (backup: BackupTransfer) => {
@@ -86,7 +87,7 @@ export default class Info extends Command {
         ux.log()
       }
 
-      const {body: backup} = await getBackup(backup_id)
+      const backup = await getBackup(backup_id)
       displayBackup(backup)
       displayLogs(backup)
     }
