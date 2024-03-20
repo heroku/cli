@@ -31,7 +31,7 @@ export default class Url extends Command {
         if (!num)
           throw new Error(`Invalid Backup: ${backup_id}`)
       } else {
-        const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {host: host()})
+        const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: host()})
         const lastBackup = sortBy(transfers.filter(t => t.succeeded && t.to_type === 'gof3r'), 'created_at')
           .pop()
         if (!lastBackup)
@@ -39,7 +39,7 @@ export default class Url extends Command {
         num = lastBackup.num
       }
 
-      const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {host: host()})
+      const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: host()})
       ux.log(info.url)
     }
 }
