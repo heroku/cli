@@ -15,7 +15,7 @@ describe('heroku certs:auto:enable', function () {
   })
 
   it('enables acm with domains', async () => {
-    const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+    const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
     const domainsApi = nock('https://api.heroku.com')
@@ -46,7 +46,7 @@ describe('heroku certs:auto:enable', function () {
   })
 
   it('enables acm with changed domains', async () => {
-    const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+    const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
     const domainsApi = nock('https://api.heroku.com')
@@ -86,7 +86,7 @@ describe('heroku certs:auto:enable', function () {
   })
 
   it('enables acm with no domains', async () => {
-    const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+    const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
     const domainsApi = nock('https://api.heroku.com')
@@ -131,7 +131,7 @@ describe('heroku certs:auto:enable', function () {
     it('waits until all certs are issued and notifies', async () => {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
-      const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+      const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
       const domainsApi = nock('https://api.heroku.com')
@@ -188,7 +188,7 @@ describe('heroku certs:auto:enable', function () {
     it('waits until all certs are issued or failed and notifies', async () => {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
-      const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+      const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
       const domainsApi = nock('https://api.heroku.com')
@@ -240,7 +240,7 @@ describe('heroku certs:auto:enable', function () {
     it('waits until all certs are failed and notifies', async () => {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
-      const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+      const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
       const domainsApi = nock('https://api.heroku.com')
@@ -292,7 +292,7 @@ describe('heroku certs:auto:enable', function () {
     it('does not wait if all certs are issued when first checked', async () => {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
-      const acmApi = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'}})
+      const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
       const domainsApi = nock('https://api.heroku.com')

@@ -12,10 +12,7 @@ export default class Refresh extends Command {
     const {flags} = await this.parse(Refresh)
 
     ux.action.start('Refreshing Automatic Certificate Management')
-    await this.heroku.patch(`/apps/${flags.app}/acm`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-      body: {acm_refresh: true},
-    })
+    await this.heroku.patch(`/apps/${flags.app}/acm`, {body: {acm_refresh: true}})
     ux.action.stop()
   }
 }

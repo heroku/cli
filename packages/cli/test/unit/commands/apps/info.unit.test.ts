@@ -66,9 +66,7 @@ describe('apps:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -91,9 +89,7 @@ describe('apps:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -124,9 +120,7 @@ describe('apps:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -152,9 +146,7 @@ describe('apps:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -174,9 +166,7 @@ describe('apps:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -215,9 +205,7 @@ Web URL:          https://myapp.herokuapp.com
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -249,9 +237,7 @@ stack=cedar-14
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -285,9 +271,7 @@ stack=cedar-14
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -311,9 +295,7 @@ stack=cedar-14
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appAcm),
@@ -340,9 +322,7 @@ stack=cedar-14
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }, api =>
+    .nock('https://api.heroku.com', api =>
       api
         .get('/apps/myapp')
         .reply(200, appStackChange),

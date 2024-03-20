@@ -28,9 +28,7 @@ export default class Disable extends Command {
     await confirmApp(app, confirm, warning)
 
     ux.action.start('Disabling Automatic Certificate Management')
-    await this.heroku.delete(`/apps/${app}/acm`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    })
+    await this.heroku.delete(`/apps/${app}/acm`)
     ux.action.stop()
   }
 }

@@ -1,109 +1,114 @@
-export type Endpoint = {
-  name: string
-  cname: string | null
-  display_name?: string
-  domains?: string[]
-  ssl_cert: {
-    'ca_signed?': boolean
-    cert_domains: string[]
-    starts_at: string
-    expires_at: string
-    issuer: string
-    subject: string
-    acm?: boolean
-  }
-}
+import {SniEndpoint} from '../../../src/lib/types/sni_endpoint'
+import {Domain} from '../../../src/lib/types/domain'
 
-export const endpointStables: Endpoint = {
+export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: null,
+  domains: [],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['foo.example.org', 'bar.example.org', 'biz.example.com'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
 
-export const endpointWildcard: Endpoint = {
+export const endpointWildcard: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: null,
+  domains: [],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['*.example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
 
-export const endpointWildcardBug: Endpoint = {
+export const endpointWildcardBug: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: null,
+  domains: [],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['fooexample.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
 
-export const endpointAcm: Endpoint = {
+export const endpointAcm: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: null,
+  domains: [],
   ssl_cert: {
+    acm: true,
     'ca_signed?': true,
     cert_domains: ['heroku.com'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=example-1.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=example-1.example.org',
-    acm: true,
   },
 }
 
-export const endpointUntrusted: Endpoint = {
+export const endpointUntrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: 'tokyo-1050.herokussl.com',
+  domains: [],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org',
   },
 }
 
-export const endpointTrusted: Endpoint = {
+export const endpointTrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: 'tokyo-1050.herokussl.com',
+  domains: [],
   ssl_cert: {
+    acm: false,
     'ca_signed?': true,
     cert_domains: ['example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Trusted/CN=trusted.example.org',
   },
 }
 
-export const endpointWithDomains: Endpoint = {
+export const endpointWithDomains: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: 'tokyo-1050.herokussl.com',
-  domains: ['example.heroku.com'],
-  display_name: 'my-tokyo-1050',
+  domains: ['tokyo-1050.herokussl.com'],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
@@ -134,68 +139,93 @@ export const untrustedCertificateDetails = `
   Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
   SSL certificate is not trusted.
 `
-export const endpoint: Endpoint = {
+export const endpoint: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
-  cname: 'tokyo-1050.herokussl.com',
-  display_name: 'my-tokyo-1050',
+  domains: ['456789ab-cdef-0123-4567-89abcdef0123'],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
 
-export const endpoint2: Endpoint = {
+export const endpointDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
+  id: '456789ab-cdef-0123-4567-89abcdef0123',
+  hostname: 'tokyo-1050.herokussl.com',
+  sni_endpoint: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'tokyo-1050',
+  },
+}
+
+export const endpoint2: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'akita-7777',
-  cname: 'akita-7777.herokussl.com',
+  domains: ['89abcdef-0123-4567-89ab-cdef01234567'],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['example.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
   },
 }
 
-export const endpointCname: Endpoint = {
+export const endpoint2Domain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
+  id: '89abcdef-0123-4567-89ab-cdef01234567',
+  hostname: 'akita-7777.herokussl.com',
+  sni_endpoint: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'akita-7777',
+  },
+}
+
+export const endpointCname: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1051',
-  cname: 'tokyo-1050.herokussl.com',
+  domains: ['01234567-89ab-cdef-0123-456789abcdef'],
   ssl_cert: {
+    acm: false,
     'ca_signed?': false,
     cert_domains: ['example-1.org'],
-    starts_at: '2012-08-01T21:34:23Z',
     expires_at: '2013-08-01T21:34:23Z',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
     issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=example-1.example.org',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
     subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=example-1.example.org',
   },
 }
 
-export const endpointHeroku: Endpoint = {
-  name: 'tokyo-1050',
-  cname: null,
-  ssl_cert: {
-    'ca_signed?': false,
-    cert_domains: ['tokyo-1050.herokuapp.com'],
-    starts_at: '2012-08-01T21:34:23Z',
-    expires_at: '2013-08-01T21:34:23Z',
-    issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com',
-    subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com',
+export const endpointCnameDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
+  id: '01234567-89ab-cdef-0123-456789abcdef',
+  hostname: 'tokyo-1050.herokussl.com',
+  sni_endpoint: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'tokyo-1051',
   },
 }
 
-export const endpointWarning: Endpoint = {
-  name: 'warning-7777',
-  cname: 'warning-7777.herokussl.com',
+export const endpointHeroku: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
+  name: 'tokyo-1050',
+  domains: [],
   ssl_cert: {
-    'ca_signed?': true,
-    cert_domains: ['warning.com'],
-    starts_at: '2012-08-01T21:34:23Z',
+    acm: false,
+    'ca_signed?': false,
+    cert_domains: ['tokyo-1050.herokuapp.com'],
     expires_at: '2013-08-01T21:34:23Z',
-    issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
-    subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.warning.org',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    issuer: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com',
+    'self_signed?': false,
+    starts_at: '2012-08-01T21:34:23Z',
+    subject: '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com',
   },
 }
