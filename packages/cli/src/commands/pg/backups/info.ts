@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
 import pgBackupsApi, {BackupTransfer} from '../../../lib/pg/backups'
+import {sortBy} from 'lodash'
 
 function status(backup: BackupTransfer) {
   if (backup.succeeded) {
@@ -46,7 +47,6 @@ export default class Info extends Command {
       const {app} = flags
       const {backup_id} = args
 
-      const {sortBy} = require('lodash')
       const getBackup = async (id: string | undefined) => {
         let backupID
         if (id) {
