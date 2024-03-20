@@ -13,9 +13,7 @@ function formatDate(date: Date) {
 async function getInfo(app: string, client: Command, extended: boolean) {
   const promises = [
     client.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
-    client.heroku.request<Heroku.App>(`/apps/${app}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.cedar-acm'},
-    }),
+    client.heroku.request<Heroku.App>(`/apps/${app}`),
     client.heroku.get<Heroku.Dyno[]>(`/apps/${app}/dynos`).catch(() => ({body: []})),
     client.heroku.get<Heroku.Collaborator[]>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
     client.heroku.get<Heroku.PipelineCoupling[]>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),

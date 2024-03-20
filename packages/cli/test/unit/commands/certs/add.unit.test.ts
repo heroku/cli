@@ -11,7 +11,6 @@ import {
   endpointStables,
   endpointWildcard,
   certificateDetails,
-  endpointWarning,
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints'
 import Cmd from '../../../../src/commands/certs/add'
@@ -81,29 +80,7 @@ describe('heroku certs:add', async () => {
     ])
     mockSni.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.equal(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}`)
-  })
-
-  it('# displays warnings', async () => {
-    nock('https://api.heroku.com')
-      .get('/apps/example')
-      .reply(200, {space: null})
-    mockDomains()
-    mockFile(stubbedReadFile, 'pem_file', 'pem content')
-    mockFile(stubbedReadFile, 'key_file', 'key content')
-    const mockSni = nock('https://api.heroku.com')
-      .post('/apps/example/sni-endpoints', {
-        certificate_chain: 'pem content', private_key: 'key content',
-      })
-      .reply(200, endpointWarning)
-    await runCommand(Cmd, [
-      '--app',
-      'example',
-      'pem_file',
-      'key_file',
-    ])
-    mockSni.done()
-    expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+    expect(stdout.output).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# creates an SNI endpoint', async () => {
@@ -126,7 +103,7 @@ describe('heroku certs:add', async () => {
     ])
     mock.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}`)
+    expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# shows the configure prompt', async () => {
@@ -152,7 +129,7 @@ describe('heroku certs:add', async () => {
     ])
     mockSni.done()
     expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-    expect(stdout.output).to.eq(`example now served by tokyo-1050.herokussl.com\nCertificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
+    expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
   describe('stable cnames', async () => {
