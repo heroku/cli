@@ -99,6 +99,7 @@ FLAGS
   -c, --confirm=<value>
   -f, --force            allow destruction even if connected to other apps
   -r, --remote=<value>   git remote of app to use
+  --wait                 watch add-on destruction status and exit when complete
 
 DESCRIPTION
   permanently destroy an add-on resource

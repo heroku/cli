@@ -13,7 +13,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (--version)
-@heroku-cli/plugin-apps-v5/8.11.0 darwin-x64 node-v16.19.0
+@heroku-cli/plugin-apps-v5/8.11.0 darwin-arm64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -296,7 +296,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
 ```
 
@@ -456,7 +456,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -859,7 +859,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -957,7 +957,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
+  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
