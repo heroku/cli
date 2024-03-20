@@ -116,10 +116,8 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       return onResponse
     },
 
-    async getRedisAddon(addons?: Required<Heroku.AddOn>[]): Promise<Required<Heroku.AddOn>> {
-      if (!addons) {
-        ({body: addons} = await heroku.get<Required<Heroku.AddOn>[]>(`/apps/${app}/addons`))
-      }
+    async getRedisAddon(): Promise<Required<Heroku.AddOn>> {
+      const {body: addons} = await heroku.get<Required<Heroku.AddOn>[]>(`/apps/${app}/addons`)
 
       const addonsFilter = this.makeAddonsFilter(database)
       const redisAddons = addonsFilter(addons)
