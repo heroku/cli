@@ -18,7 +18,8 @@
     "tmp": "^0.2.1"
   },
   "resolutions": {
-    "ansi-regex": "4.1.1"
+    "ansi-regex": "4.1.1",
+    "decode-uri-component": "0.2.2"
   },
   "standard": {
     "env": "mocha",
