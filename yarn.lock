@@ -11025,7 +11025,6 @@ __metadata:
     qqjs: 0.3.11
     read-pkg: ^4.0.1
     rollbar: ^2.26.2
-    semver: 5.6.0
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
     sinon: ^7.2.4
@@ -16922,15 +16921,6 @@ __metadata:
   bin:
     semver: ./bin/semver
   checksum: 57fd0acfd0bac382ee87cd52cd0aaa5af086a7dc8d60379dfe65fea491fb2489b6016400813930ecd61fd0952dae75c115287a1b16c234b1550887117744dfaf
-  languageName: node
-  linkType: hard
-
-"semver@npm:5.6.0":
-  version: 5.6.0
-  resolution: "semver@npm:5.6.0"
-  bin:
-    semver: ./bin/semver
-  checksum: 15409e2282f496e240cb2c3355f60e46b09df3820ed6cad359ae6d90e5395b5b75f38a46f91f478473ed65c8d1b086842cf1f7f1f6d26303003759ab8458e752
   languageName: node
   linkType: hard
 
