@@ -35,7 +35,7 @@ export default class Url extends Command {
         const lastBackup = sortBy(transfers.filter(t => t.succeeded && t.to_type === 'gof3r'), 'created_at')
           .pop()
         if (!lastBackup)
-          throw new Error(`No backups on ${color.magenta(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+          throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
         num = lastBackup.num
       }
 
