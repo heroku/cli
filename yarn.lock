@@ -6713,6 +6713,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bytes@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "bytes@npm:3.1.2"
+  checksum: e4bcd3948d289c5127591fbedf10c0b639ccbf00243504e4e127374a15c3bc8eed0d28d4aaab08ff6f1cf2abc0cce6ba3085ed32f4f90e82a5683ce0014e1b6e
+  languageName: node
+  linkType: hard
+
 "cacache@npm:^15.0.3, cacache@npm:^15.0.5, cacache@npm:^15.2.0":
   version: 15.3.0
   resolution: "cacache@npm:15.3.0"
@@ -10995,6 +11002,7 @@ __metadata:
     async-file: ^2.0.2
     aws-sdk: ^2.421.0
     bats: ^1.1.0
+    bytes: ^3.1.2
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     chalk: ^2.4.2

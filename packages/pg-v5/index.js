@@ -17,7 +17,6 @@ exports.commands = flatten([
   require('./commands/backups/schedule'),
   require('./commands/backups/schedules'),
   require('./commands/backups/unschedule'),
-  require('./commands/backups/url'),
   require('./commands/bloat'),
   require('./commands/blocking'),
   require('./commands/connection_pooling'),
