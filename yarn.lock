@@ -5037,6 +5037,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/bytes@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "@types/bytes@npm:3.1.4"
+  checksum: 645732b37404847df9db7ae2af8b4bbdc21c966e9bbf8a5494d7fa95cbaee8bd7b9d65c68bbc2ec4277856d874e2e011b3b2b9479d981cd57d5136b0f41526e9
+  languageName: node
+  linkType: hard
+
 "@types/cacheable-request@npm:^6.0.1":
   version: 6.0.3
   resolution: "@types/cacheable-request@npm:6.0.3"
@@ -10971,6 +10978,7 @@ __metadata:
     "@opentelemetry/sdk-trace-node": ^1.15.1
     "@opentelemetry/semantic-conventions": ^1.15.1
     "@types/ansi-styles": ^3.2.1
+    "@types/bytes": ^3.1.4
     "@types/chai": ^4.1.7
     "@types/chai-as-promised": ^7.1.8
     "@types/debug": ^4.1.2
