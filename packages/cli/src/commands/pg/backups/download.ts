@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
-import pgBackupsApi, {BackupTransfer} from '../../../lib/pg/backups'
+import pgBackupsApi, {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
 import download from '../../../lib/pg/download'
 import * as fs from 'fs-extra'
@@ -52,7 +52,8 @@ export default class Download extends Command {
 
     ux.action.stop()
     ux.action.start(`fetching url of #${num}`)
-    const info = await this.heroku.post(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pgHost()})
+    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pgHost()})
+
     ux.action.stop(`done, #${num}`)
     await download(info.url, output, {progress: true})
   }
