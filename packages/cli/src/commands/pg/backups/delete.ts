@@ -29,7 +29,7 @@ export default class Delete extends Command {
     const pgbackups = backupsFactory(app, this.heroku)
 
     await confirmApp(app, confirm)
-    ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.magenta(app)}`)
+    ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)
 
     const num = await pgbackups.transfer.num(backup_id)
     if (!num) {
