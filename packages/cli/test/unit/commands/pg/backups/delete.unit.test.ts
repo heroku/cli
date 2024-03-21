@@ -28,6 +28,6 @@ describe('pg:backups:delete', () => {
       'myapp',
       'b003',
     ])
-    expect(stderr.output).to.equal('Deleting backup b003 on myapp...\nDeleting backup b003 on myapp... done\n')
+    expect(stderr.output).to.equal('Deleting backup b003 on ⬢ myapp...\nDeleting backup b003 on ⬢ myapp... done\n')
   })
 })
