@@ -3,22 +3,25 @@ import pgHost from './host'
 const bytes = require('bytes')
 
 export type BackupTransfer = {
-  num: number,
-  options: {
-    pgbackups_name: string,
-  },
+  canceled_at: string,
   finished_at: string,
-  succeeded: boolean,
-  warnings: number,
-  started_at: string,
-  processed_bytes: number,
+  from_name: string,
+  from_type: string,
   logs: Array<{
     created_at: string,
     message: string,
   }>,
-  from_type: string,
-  to_type: string,
+  num: number,
+  options: {
+    pgbackups_name: string,
+  },
+  processed_bytes: number,
   schedule: string,
+  started_at: string,
+  source_bytes: number,
+  succeeded: boolean,
+  to_type: string,
+  warnings: number,
 }
 
 function prefix(transfer: BackupTransfer) {
@@ -54,8 +57,7 @@ export default (app: string, heroku: APIClient) => ({
       if (m) return Number.parseInt(m[1], 10)
       m = name.match(/^o[ab]\d+$/)
       if (m) {
-        const host = pgHost()
-        const {body: transfers} = await heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {host})
+        const {body: transfers} = await heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pgHost()})
         const transfer = transfers.find(t => this.name(t) === name)
         if (transfer) return transfer.num
       }
