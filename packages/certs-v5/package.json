@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/notifications": "^1.2.2",
+    "@heroku-cli/notifications": "^1.2.4",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
