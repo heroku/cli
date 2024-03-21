@@ -25,7 +25,7 @@ describe('disambiguate', function () {
       api.done()
     })
 
-    it('erros when no pipelines are returned', async function () {
+    it('errors when no pipelines are returned', async function () {
       const api = nock('https://api.heroku.com')
         .get('/pipelines?eq[name]=notUUID')
         .reply(200, [])

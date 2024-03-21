@@ -48,7 +48,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "heroku-front-end+npm-releases@salesforce.com"
-      - name: publish tag to Github
+      - name: publish tag to GitHub
         run: |
           git tag "${{ env.TAG_NAME }}" -m "${{ env.TAG_NAME }}"
           git push origin "${{ env.TAG_NAME }}"

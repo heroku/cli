@@ -67,7 +67,7 @@ describe('releases:rollback', function () {
       .then(() => stdMocks.restore())
   })
 
-  it('has a missing missing output', function () {
+  it('has a missing output', function () {
     stdMocks.use()
     process.stdout.columns = 80
     let busl = nock('https://busl.test:443')

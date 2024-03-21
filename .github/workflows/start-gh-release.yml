@@ -1,4 +1,4 @@
-name: Watch for and start Github Release
+name: Watch for and start GitHub Release
 
 on:
   pull_request_target:

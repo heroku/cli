@@ -27,7 +27,7 @@ export default class Options extends AutocompleteBase {
   // *args: refers to a Command's static args
   // *argv: refers to the current execution's command line positional input
   // Klass: (class) Command class
-  // completion: (object) object with data/methods to build/retrive options from cache
+  // completion: (object) object with data/methods to build/retrieve options from cache
   // curPosition*: the current argv position the shell is trying to complete
   // options: (string) white-space separated list of values for the shell to use for completion
 
