@@ -20,7 +20,8 @@
   "resolutions": {
     "ansi-regex": "4.1.1",
     "decode-uri-component": "0.2.2",
-    "semver": "5.7.2"
+    "semver": "5.7.2",
+    "ip": "2.0.1"
   },
   "standard": {
     "env": "mocha",
