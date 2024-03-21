@@ -1248,7 +1248,7 @@ __metadata:
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
     heroku-client: ^3.0.7
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     lolex: ^3.1.0
     mocha: ^8.0.0
     nock: 9.0.13
@@ -1288,7 +1288,7 @@ __metadata:
     heroku-cli-util: ^8.0.11
     inquirer: ^6.2.2
     js-yaml: ^3.12.1
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     lolex: ^3.1.0
     mocha: ^8.0.0
     mockdate: ^2.0.2
@@ -1324,7 +1324,7 @@ __metadata:
     date-fns: ^1.29.0
     heroku-cli-util: ^8.0.11
     inquirer: ^6.2.2
-    lodash: ^4.17.13
+    lodash: ^4.17.21
     lolex: ^3.1.0
     mocha: ^8.0.0
     nock: ^10.0.6
@@ -1403,7 +1403,7 @@ __metadata:
     cross-env: ^7.0.2
     date-fns: ^1.29.0
     heroku-cli-util: ^8.0.11
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     mocha: ^8.0.0
     mocha-junit-reporter: 1.18.0
     nock: 10.0.6
@@ -1421,7 +1421,7 @@ __metadata:
     chai: ^4.2.0
     heroku-cli-util: ^8.0.11
     inquirer: ^6.2.2
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     lodash.flatten: ^4.4.0
     mocha: ^8.0.0
     nock: ^10.0.6
@@ -1446,7 +1446,7 @@ __metadata:
     filesize: ^4.0.0
     heroku-cli-util: ^8.0.11
     heroku-client: ^3.0.7
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     mkdirp: ^0.5.2
     mocha: ^8.0.0
     nock: ^10.0.6
@@ -1561,7 +1561,7 @@ __metadata:
     chai: ^4.2.0
     chai-as-promised: ^7.1.1
     heroku-cli-util: ^8.0.11
-    lodash: ^4.17.11
+    lodash: ^4.17.21
     mocha: ^8.0.0
     nock: ^10.0.6
     nyc: ^15.1.0
@@ -6834,6 +6834,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"call-bind@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "call-bind@npm:1.0.7"
+  dependencies:
+    es-define-property: ^1.0.0
+    es-errors: ^1.3.0
+    function-bind: ^1.1.2
+    get-intrinsic: ^1.2.4
+    set-function-length: ^1.2.1
+  checksum: 295c0c62b90dd6522e6db3b0ab1ce26bdf9e7404215bda13cfee25b626b5ff1a7761324d58d38b1ef1607fc65aca2d06e44d2e18d0dfc6c14b465b00d8660029
+  languageName: node
+  linkType: hard
+
 "caller-path@npm:^0.1.0":
   version: 0.1.0
   resolution: "caller-path@npm:0.1.0"
@@ -8050,7 +8063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decode-uri-component@npm:0.2.2":
+"decode-uri-component@npm:^0.2.0":
   version: 0.2.2
   resolution: "decode-uri-component@npm:0.2.2"
   checksum: 95476a7d28f267292ce745eac3524a9079058bbb35767b76e3ee87d42e34cd0275d2eb19d9d08c3e167f97556e8a2872747f5e65cbebcac8b0c98d83e285f139
@@ -8157,6 +8170,17 @@ __metadata:
   version: 2.0.1
   resolution: "defer-to-connect@npm:2.0.1"
   checksum: 8a9b50d2f25446c0bfefb55a48e90afd58f85b21bcf78e9207cd7b804354f6409032a1705c2491686e202e64fc05f147aa5aa45f9aa82627563f045937f5791b
+  languageName: node
+  linkType: hard
+
+"define-data-property@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "define-data-property@npm:1.1.4"
+  dependencies:
+    es-define-property: ^1.0.0
+    es-errors: ^1.3.0
+    gopd: ^1.0.1
+  checksum: 8068ee6cab694d409ac25936eb861eea704b7763f7f342adbdfe337fc27c78d7ae0eff2364b2917b58c508d723c7a074326d068eef2e45c4edcd85cf94d0313b
   languageName: node
   linkType: hard
 
@@ -8619,6 +8643,22 @@ __metadata:
     is-callable: ^1.1.3
     is-regex: ^1.0.4
   checksum: d55ffa2670faaabafba93d4584295a61419417a840e945c3401f0b84d65da9008ef1060b768fc44d029b51cfbec6be783ba55d3183d4a3cbcf70ef847f1033ed
+  languageName: node
+  linkType: hard
+
+"es-define-property@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "es-define-property@npm:1.0.0"
+  dependencies:
+    get-intrinsic: ^1.2.4
+  checksum: f66ece0a887b6dca71848fa71f70461357c0e4e7249696f81bad0a1f347eed7b31262af4a29f5d726dc026426f085483b6b90301855e647aa8e21936f07293c6
+  languageName: node
+  linkType: hard
+
+"es-errors@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "es-errors@npm:1.3.0"
+  checksum: ec1414527a0ccacd7f15f4a3bc66e215f04f595ba23ca75cdae0927af099b5ec865f9f4d33e9d7e86f512f252876ac77d4281a7871531a50678132429b1271b5
   languageName: node
   linkType: hard
 
@@ -10178,6 +10218,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-intrinsic@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "get-intrinsic@npm:1.2.4"
+  dependencies:
+    es-errors: ^1.3.0
+    function-bind: ^1.1.2
+    has-proto: ^1.0.1
+    has-symbols: ^1.0.3
+    hasown: ^2.0.0
+  checksum: 414e3cdf2c203d1b9d7d33111df746a4512a1aa622770b361dadddf8ed0b5aeb26c560f49ca077e24bfafb0acb55ca908d1f709216ccba33ffc548ec8a79a951
+  languageName: node
+  linkType: hard
+
 "get-package-type@npm:^0.1.0":
   version: 0.1.0
   resolution: "get-package-type@npm:0.1.0"
@@ -10776,6 +10829,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"has-property-descriptors@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "has-property-descriptors@npm:1.0.2"
+  dependencies:
+    es-define-property: ^1.0.0
+  checksum: fcbb246ea2838058be39887935231c6d5788babed499d0e9d0cc5737494c48aba4fe17ba1449e0d0fbbb1e36175442faa37f9c427ae357d6ccb1d895fbcd3de3
+  languageName: node
+  linkType: hard
+
 "has-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "has-proto@npm:1.0.1"
@@ -10876,7 +10938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"heroku-cli-util@npm:^8.0.11, heroku-cli-util@npm:^8.0.12":
+"heroku-cli-util@npm:^8.0.11, heroku-cli-util@npm:^8.0.12, heroku-cli-util@npm:^8.0.9":
   version: 8.0.12
   resolution: "heroku-cli-util@npm:8.0.12"
   dependencies:
@@ -10899,7 +10961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"heroku-cli-util@npm:^8.0.8, heroku-cli-util@npm:^8.0.9":
+"heroku-cli-util@npm:^8.0.8":
   version: 8.0.11
   resolution: "heroku-cli-util@npm:8.0.11"
   dependencies:
@@ -11648,7 +11710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip@npm:2.0.1":
+"ip@npm:^2.0.0":
   version: 2.0.1
   resolution: "ip@npm:2.0.1"
   checksum: d765c9fd212b8a99023a4cde6a558a054c298d640fec1020567494d257afd78ca77e37126b1a3ef0e053646ced79a816bf50621d38d5e768cdde0431fa3b0d35
@@ -14631,6 +14693,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"object-inspect@npm:^1.13.1":
+  version: 1.13.1
+  resolution: "object-inspect@npm:1.13.1"
+  checksum: 7d9fa9221de3311dcb5c7c307ee5dc011cdd31dc43624b7c184b3840514e118e05ef0002be5388304c416c0eb592feb46e983db12577fc47e47d5752fbbfb61f
+  languageName: node
+  linkType: hard
+
 "object-keys@npm:^1.0.12, object-keys@npm:^1.1.1":
   version: 1.1.1
   resolution: "object-keys@npm:1.1.1"
@@ -15914,7 +15983,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.0.2, qs@npm:^6.5.1":
+"qs@npm:^6.0.2":
+  version: 6.12.0
+  resolution: "qs@npm:6.12.0"
+  dependencies:
+    side-channel: ^1.0.6
+  checksum: ba007fb2488880b9c6c3df356fe6888b9c1f4c5127552edac214486cfe83a332de09a5c40d490d79bb27bef977ba1085a8497512ff52eaac72e26564f77ce908
+  languageName: node
+  linkType: hard
+
+"qs@npm:^6.5.1":
   version: 6.6.0
   resolution: "qs@npm:6.6.0"
   checksum: 17166e879b75f93a13befa26ae32c4bf3104f4f32ce6467da168106a059eebc2904f2afb6dd1d9fe3ba2e3768dc8acb71bffd563639ab378b73e3953124ec482
@@ -16974,6 +17052,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"set-function-length@npm:^1.2.1":
+  version: 1.2.2
+  resolution: "set-function-length@npm:1.2.2"
+  dependencies:
+    define-data-property: ^1.1.4
+    es-errors: ^1.3.0
+    function-bind: ^1.1.2
+    get-intrinsic: ^1.2.4
+    gopd: ^1.0.1
+    has-property-descriptors: ^1.0.2
+  checksum: a8248bdacdf84cb0fab4637774d9fb3c7a8e6089866d04c817583ff48e14149c87044ce683d7f50759a8c50fb87c7a7e173535b06169c87ef76f5fb276dfff72
+  languageName: node
+  linkType: hard
+
 "set-tz@npm:^0.1.0":
   version: 0.1.0
   resolution: "set-tz@npm:0.1.0"
@@ -17085,6 +17177,18 @@ __metadata:
     get-intrinsic: ^1.0.2
     object-inspect: ^1.9.0
   checksum: 351e41b947079c10bd0858364f32bb3a7379514c399edb64ab3dce683933483fc63fb5e4efe0a15a2e8a7e3c436b6a91736ddb8d8c6591b0460a24bb4a1ee245
+  languageName: node
+  linkType: hard
+
+"side-channel@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "side-channel@npm:1.0.6"
+  dependencies:
+    call-bind: ^1.0.7
+    es-errors: ^1.3.0
+    get-intrinsic: ^1.2.4
+    object-inspect: ^1.13.1
+  checksum: bfc1afc1827d712271453e91b7cd3878ac0efd767495fd4e594c4c2afaa7963b7b510e249572bfd54b0527e66e4a12b61b80c061389e129755f34c493aad9b97
   languageName: node
   linkType: hard
 

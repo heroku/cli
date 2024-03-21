@@ -58,7 +58,7 @@
     "heroku-cli-util": "^8.0.12",
     "http-call": "5.3.0",
     "inquirer": "^7.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "netrc-parser": "3.1.6",
     "node-fetch": "^2.6.7",
     "phoenix": "^1.6.14",

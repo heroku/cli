@@ -22,7 +22,7 @@
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",
     "js-yaml": "^3.12.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
