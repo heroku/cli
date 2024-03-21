@@ -60,7 +60,6 @@
     "inquirer": "^7.3.0",
     "js-yaml": "^4.0.8",
     "lodash": "^4.17.11",
-    "mkdirp": "2.1.6",
     "netrc-parser": "3.1.6",
     "node-fetch": "^2.6.7",
     "open": "^8.4.2",

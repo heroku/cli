@@ -1,6 +1,6 @@
 
-import {mkdirp} from 'mkdirp'
 import * as fs from 'fs-extra'
+import * as Path from 'path'
 const https = require('https')
 const bytes = require('bytes')
 const progress = require('smooth-progress')
@@ -9,7 +9,7 @@ type downloadOptions = {
   progress: boolean
 }
 
-export default function download(url: string, path: fs.PathLike, opts: downloadOptions) {
+export default function download(url: string, path: string, opts: downloadOptions) {
   const tty = process.stderr.isTTY && process.env.TERM !== 'dumb'
 
   function showProgress(rsp: any) {
@@ -26,7 +26,7 @@ export default function download(url: string, path: fs.PathLike, opts: downloadO
   }
 
   return new Promise(function (resolve, reject) {
-    mkdirp.sync(require('path').dirname(path))
+    fs.mkdirSync(Path.dirname(path), {recursive: true})
     const file = fs.createWriteStream(path)
     https.get(url, function (rsp: any) {
       if (tty && opts.progress) showProgress(rsp)

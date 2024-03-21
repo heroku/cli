@@ -14,9 +14,11 @@ describe('pg:backups:download', () => {
       .get('/db')
       .reply(200, {})
   })
+
   afterEach(() => {
     nock.cleanAll()
   })
+
   context('with no id', () => {
     beforeEach(() => {
       nock('https://api.data.heroku.com')
@@ -25,6 +27,7 @@ describe('pg:backups:download', () => {
           {succeeded: true, to_type: 'gof3r', num: 3},
         ])
     })
+
     it('downloads to latest.dump', async () => {
       await runCommand(Cmd, [
         '--app',
@@ -35,6 +38,7 @@ describe('pg:backups:download', () => {
       expect(fs.readFileSync('./tmp/latest.dump', 'utf8')).to.equal('{}')
     })
   })
+
   context('with id', () => {
     it('downloads to latest.dump', async () => {
       await runCommand(Cmd, [
