@@ -24,6 +24,7 @@ export default class Download extends Command {
   static flags = {
     output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

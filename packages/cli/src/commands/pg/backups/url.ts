@@ -10,6 +10,7 @@ export default class Url extends Command {
     static description = 'get secret but publicly accessible URL of a backup';
     static flags = {
       app: flags.app({required: true}),
+      remote: flags.remote(),
     };
 
     static args = {
