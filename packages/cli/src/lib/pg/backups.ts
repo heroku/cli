@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import pgHost from './host'
-const bytes = require('bytes')
+import bytes = require('bytes')
 
 export type BackupTransfer = {
   num: number,
