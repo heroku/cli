@@ -24,7 +24,7 @@
     "printf": "0.6.1",
     "smooth-progress": "^1.1.0",
     "strip-eof": "^2.0.0",
-    "tunnel-ssh": "^4.1.6",
+    "tunnel-ssh": "^5.1.2",
     "uuid": "^8.3.1"
   },
   "devDependencies": {
