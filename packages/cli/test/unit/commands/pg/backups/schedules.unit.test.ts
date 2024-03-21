@@ -58,6 +58,6 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-describe.only('pg:backups:schedules', () => {
+describe('pg:backups:schedules', () => {
   shouldSchedules((args: string[]) => runCommand(Cmd, args))
 })
