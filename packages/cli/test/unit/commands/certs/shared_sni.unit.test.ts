@@ -15,7 +15,13 @@ import {
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
 
-export const shouldHandleArgs = function (commandText: string, command: GenericCmd, callback: (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) => any, options: any) {
+export const shouldHandleArgs = function (
+  commandText: string,
+  command: GenericCmd,
+  callback: (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) => any,
+  options: any,
+  flags: Record<string, unknown> = {},
+) {
   const stdoutOutput = options.stdout || function () {
     return ''
   }
@@ -23,6 +29,8 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
   const stderrOutput = options.stderr || function () {
     return ''
   }
+
+  const additionalFlags = Object.entries(flags).map(([k, v]) => `--${k}=${v}`)
 
   describe(`${commandText}`, function () {
     beforeEach(function () {
@@ -39,7 +47,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--name',
         'tokyo-1050',
-      ])
+      ].concat(additionalFlags))
       expectOutput(stderr.output, stderrOutput(endpoint))
       expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
     })
@@ -58,7 +66,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ]).catch(function (error: Error) {
+      ].concat(additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
       })
     })
@@ -75,7 +83,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ])
+      ].concat(additionalFlags))
       expectOutput(stderr.output, stderrOutput(endpoint))
       expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
     })
@@ -91,7 +99,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ]).catch(function (error: Error) {
+      ].concat(additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('Record not found.')
       })
     })
@@ -105,7 +113,7 @@ export const shouldHandleArgs = function (commandText: string, command: GenericC
         'example',
         '--name',
         'tokyo-1050',
-      ]).catch(function (error: Error) {
+      ].concat(additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
       })
     })
