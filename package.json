@@ -19,7 +19,8 @@
   },
   "resolutions": {
     "ansi-regex": "4.1.1",
-    "decode-uri-component": "0.2.2"
+    "decode-uri-component": "0.2.2",
+    "semver": "5.7.2"
   },
   "standard": {
     "env": "mocha",
