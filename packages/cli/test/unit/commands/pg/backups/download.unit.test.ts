@@ -4,7 +4,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
 
-describe.only('pg:backups:download', () => {
+describe('pg:backups:download', () => {
   beforeEach(() => {
     nock('https://api.data.heroku.com')
       .post('/client/v11/apps/myapp/transfers/3/actions/public-url')
