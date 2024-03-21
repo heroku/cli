@@ -11032,6 +11032,7 @@ __metadata:
     js-yaml: ^4.0.8
     lodash: ^4.17.11
     lolex: ^3.1.0
+    mkdirp: 2.1.6
     mocha: ^9.2.2
     netrc-parser: 3.1.6
     nock: ^13.5.1
@@ -11053,6 +11054,7 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
     sinon: ^7.2.4
+    smooth-progress: ^1.1.0
     sparkline: ^0.2.0
     ssh2: ^1.15.0
     std-mocks: ^2.0.0
@@ -13597,6 +13599,15 @@ __metadata:
     infer-owner: ^1.0.4
     mkdirp: ^1.0.3
   checksum: d8f4ecd32f6762459d6b5714eae6487c67ae9734ab14e26d14377ddd9b2a1bf868d8baa18c0f3e73d3d513f53ec7a698e0f81a9367102c870a55bef7833880f7
+  languageName: node
+  linkType: hard
+
+"mkdirp@npm:2.1.6":
+  version: 2.1.6
+  resolution: "mkdirp@npm:2.1.6"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 8a1d09ffac585e55f41c54f445051f5bc33a7de99b952bb04c576cafdf1a67bb4bae8cb93736f7da6838771fbf75bc630430a3a59e1252047d2278690bd150ee
   languageName: node
   linkType: hard
 
