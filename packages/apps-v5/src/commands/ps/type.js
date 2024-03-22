@@ -29,26 +29,6 @@ async function run(context, heroku) {
   let parse = async function (args) {
     if (!args || args.length === 0) return []
 
-    // checks for larger dyno sizes
-    // if the feature is not enabled
-    if (!largerDynoFeatureFlag.enabled) {
-      if (args.find(a => a.match(/=/))) {
-        // eslint-disable-next-line array-callback-return
-        compact(args.map(arg => {
-          let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
-          let size = match[2]
-
-          const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
-          isLargerDyno = largerDynoNames.test(size)
-
-          if (isLargerDyno) {
-            const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
-            throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
-          }
-        }))
-      }
-    }
-
     let formation = await heroku.get(`/apps/${app}/formation`)
     if (args.find(a => a.match(/=/))) {
       return compact(args.map(arg => {
@@ -136,6 +116,21 @@ Types: ${cli.color.yellow(formation.map(f => f.type).join(', '))}`)
   }
 
   let changes = await parse(context.args)
+
+  // checks for larger dyno sizes
+  // if the feature is not enabled
+  if (!largerDynoFeatureFlag.enabled) {
+    changes.forEach(({size}) => {
+      const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+      isLargerDyno = largerDynoNames.test(size)
+
+      if (isLargerDyno) {
+        const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+        throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
+      }
+    })
+  }
+
   if (changes.length > 0) {
     await cli.action(`Scaling dynos on ${cli.color.app(app)}`,
       heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}),
