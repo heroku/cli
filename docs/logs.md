@@ -1,9 +1,8 @@
-`heroku logs`
-=============
+# `heroku logs`
 
 display recent log output
 
-* [`heroku logs`](#heroku-logs)
+- [`heroku logs`](#heroku-logs)
 
 ## `heroku logs`
 
@@ -36,4 +35,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.11.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.2/src/commands/logs.ts)_
