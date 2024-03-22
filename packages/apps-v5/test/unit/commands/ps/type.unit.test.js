@@ -190,6 +190,8 @@ it('errors when user requests larger dynos and feature flag is NOT enabled', fun
   let api = nock('https://api.heroku.com')
     .get('/account/features/frontend-larger-dynos')
     .reply(200, featureFlagPayload())
+    .get('/apps/myapp/formation')
+    .reply(200, [{type: 'web', quantity: 1, size: 'performance-l-ram'}, {type: 'web', quantity: 2, size: 'performance-l-ram'}])
 
   return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
     .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
@@ -200,9 +202,11 @@ it('errors when user requests larger dynos and feature flag is NOT enabled when 
   let api = nock('https://api.heroku.com')
     .get('/account/features/frontend-larger-dynos')
     .reply(200, featureFlagPayload())
+    .get('/apps/myapp/formation')
+    .reply(200, [{type: 'web', quantity: 1, size: 'performance-2xl'}, {type: 'web', quantity: 2, size: 'performance-2xl'}])
 
-  return cmd.run({app: 'myapp', args: ['performance-l-ram']})
-    .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
+  return cmd.run({app: 'myapp', args: ['performance-2xl']})
+    .catch(error => expect(error.message).to.eq('No such size as performance-2xl. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
     .then(() => api.done())
 })
 
@@ -210,6 +214,8 @@ it("errors when user requests larger dynos and feature flag doesn't exist", func
   let api = nock('https://api.heroku.com')
     .get('/account/features/frontend-larger-dynos')
     .reply(404, {})
+    .get('/apps/myapp/formation')
+    .reply(200, [{type: 'web', quantity: 1, size: 'performance-2xl'}, {type: 'web', quantity: 2, size: 'performance-2xl'}])
 
   return cmd.run({app: 'myapp', args: ['web=performance-l-ram']})
     .catch(error => expect(error.message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.'))
