@@ -3,6 +3,7 @@ import pgHost from './host'
 import bytes = require('bytes')
 
 export type BackupTransfer = {
+  created_at: string,
   canceled_at: string,
   finished_at: string,
   from_name: string,
@@ -16,11 +17,13 @@ export type BackupTransfer = {
     pgbackups_name: string,
   },
   processed_bytes: number,
-  schedule: string,
+  schedule: {uuid: string},
   started_at: string,
   source_bytes: number,
   succeeded: boolean,
+  to_name: string,
   to_type: string,
+  updated_at: string,
   warnings: number,
 }
 
@@ -32,7 +35,7 @@ function prefix(transfer: BackupTransfer) {
 
     return transfer.schedule ? 'a' : 'b'
 
-  // eslint-disable-next-line no-else-return
+    // eslint-disable-next-line no-else-return
   } else {
     if (transfer.to_type === 'pg_restore') {
       return 'r'
@@ -42,17 +45,39 @@ function prefix(transfer: BackupTransfer) {
   }
 }
 
-export default (app: string, heroku: APIClient) => ({
-  filesize: (size: any, opts = {}) => {
-    Object.assign(opts, {
-      decimalPlaces: 2,
-      fixedDecimals: true,
-    })
-    return bytes(size, opts)
-  },
+function filesize(size: number, opts = {}): string {
+  Object.assign(opts, {
+    decimalPlaces: 2,
+    fixedDecimals: true,
+  })
+  return bytes(size, opts)
+}
 
+export default (app: string, heroku: APIClient) => ({
+  filesize,
   transfer: {
-    num: async function (name: string) {
+    status(transfer: BackupTransfer): string {
+      if (transfer.finished_at && transfer.succeeded) {
+        const warnings = transfer.warnings
+        if (warnings > 0) {
+          return `Finished with ${warnings} warnings`
+        }
+
+        return `Completed ${transfer.finished_at}`
+      }
+
+      if (transfer.finished_at) {
+        return `Failed ${transfer.finished_at}`
+      }
+
+      if (transfer.started_at) {
+        return `Running (processed ${filesize(transfer.processed_bytes)})`
+      }
+
+      return 'Pending'
+    },
+
+    async num(name: string) {
       let m = name.match(/^[abcr](\d+)$/)
       if (m) return Number.parseInt(m[1], 10)
       m = name.match(/^o[ab]\d+$/)
@@ -62,7 +87,8 @@ export default (app: string, heroku: APIClient) => ({
         if (transfer) return transfer.num
       }
     },
-    name: (transfer: BackupTransfer) => {
+
+    name(transfer: BackupTransfer) {
       const oldPGBName = transfer.options && transfer.options.pgbackups_name
       if (oldPGBName) return `o${oldPGBName}`
       return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
