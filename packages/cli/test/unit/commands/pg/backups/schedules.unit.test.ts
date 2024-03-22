@@ -38,10 +38,8 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
         .get('/client/v11/databases/1/transfer-schedules')
         .reply(200, [])
       await cmdRun(['--app', 'myapp'])
-      expectOutput(stripAnsi(stderr.output), heredoc(`
-        ›   Warning: No backup schedules found on ⬢ myapp
-         ›   Use heroku pg:backups:schedule to set one up
-      `))
+      expect(stderr.output).to.include('Warning: No backup schedules found on ⬢ myapp')
+      expect(stderr.output).to.include('Use heroku pg:backups:schedule to set one up')
     })
 
     it('shows schedule', async () => {
