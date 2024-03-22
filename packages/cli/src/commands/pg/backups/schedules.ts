@@ -17,7 +17,7 @@ export default class Schedules extends Command {
     const db = await arbitraryAppDB(this.heroku, app)
     const {body: schedules} = await this.heroku.get<TransferSchedule[]>(`/client/v11/databases/${db.id}/transfer-schedules`, {hostname: pgHost()})
     if (schedules.length === 0) {
-      ux.warn(`No backup schedules found on ${color.magenta(app)}\nUse ${color.cyan.bold('heroku pg:backups:schedule')} to set one up`)
+      ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.cyan.bold('heroku pg:backups:schedule')} to set one up`)
     } else {
       ux.styledHeader('Backup Schedules')
       for (const s of schedules) {
