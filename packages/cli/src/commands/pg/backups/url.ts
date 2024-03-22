@@ -2,18 +2,15 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import host from '../../../lib/pg/host'
-import pgBackupsApi, {BackupTransfer} from '../../../lib/pg/backups'
+import pgBackupsApi, {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
-
-type PublicUrlResponse = {
-  url: string,
-}
 
 export default class Url extends Command {
     static topic = 'pg';
     static description = 'get secret but publicly accessible URL of a backup';
     static flags = {
       app: flags.app({required: true}),
+      remote: flags.remote(),
     };
 
     static args = {
