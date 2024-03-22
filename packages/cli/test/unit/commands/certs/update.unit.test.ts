@@ -158,7 +158,7 @@ describe('shared', function () {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stdout = function (certificateDetails: string, _endpoint: Partial<SniEndpoint>) {
-    return `Updated certificate details:\n${certificateDetails}\n`
+    return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }
 
   sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {stdout, stderr, flags: {confirm: 'example'}, args: ['pem_file', 'key_file']})

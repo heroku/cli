@@ -115,10 +115,7 @@ describe('heroku shared', function () {
   }
 
   const stdout = function (certDetails: string) {
-    return heredoc(`
-      Certificate details:
-      ${certDetails}
-    `)
+    return `Certificate details:\n${heredoc(certDetails)}`
   }
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
