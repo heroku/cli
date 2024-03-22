@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.11.1-beta.0](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1-beta.0) (2024-03-22)
+
+
+### Bug Fixes
+
+* **ps:** update larger dyno checking ([#2741](https://github.com/heroku/cli/issues/2741)) ([853b94f](https://github.com/heroku/cli/commit/853b94f3f9b5f3a5c795286573b80c9245df02a0))
+
+
+
+
+
 # [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
 
 

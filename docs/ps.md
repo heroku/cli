@@ -62,7 +62,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.11.0/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -84,7 +84,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.11.0/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -196,7 +196,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -317,7 +317,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -341,4 +341,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.11.0/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/wait.ts)_
