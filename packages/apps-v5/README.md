@@ -8,66 +8,69 @@
 This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (--version)
-@heroku-cli/plugin-apps-v5/8.11.0 darwin-arm64 node-v16.19.0
+@heroku-cli/plugin-apps-v5/8.11.1-beta.3 darwin-x64 node-v16.19.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
 ...
 ```
+
 <!-- usagestop -->
 <!-- commands -->
-* [`heroku apps`](#heroku-apps)
-* [`heroku apps:create [APP]`](#heroku-appscreate-app)
-* [`heroku apps:destroy`](#heroku-appsdestroy)
-* [`heroku apps:errors`](#heroku-appserrors)
-* [`heroku apps:favorites`](#heroku-appsfavorites)
-* [`heroku apps:favorites:add`](#heroku-appsfavoritesadd)
-* [`heroku apps:favorites:remove`](#heroku-appsfavoritesremove)
-* [`heroku apps:info`](#heroku-appsinfo)
-* [`heroku apps:open [PATH]`](#heroku-appsopen-path)
-* [`heroku apps:rename NEWNAME`](#heroku-appsrename-newname)
-* [`heroku apps:stacks`](#heroku-appsstacks)
-* [`heroku apps:stacks:set STACK`](#heroku-appsstacksset-stack)
-* [`heroku config:set`](#heroku-configset)
-* [`heroku drains`](#heroku-drains)
-* [`heroku drains:add URL`](#heroku-drainsadd-url)
-* [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
-* [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
-* [`heroku dyno:resize`](#heroku-dynoresize)
-* [`heroku dyno:restart [DYNO]`](#heroku-dynorestart-dyno)
-* [`heroku dyno:scale`](#heroku-dynoscale)
-* [`heroku dyno:stop DYNO`](#heroku-dynostop-dyno)
-* [`heroku features`](#heroku-features)
-* [`heroku features:disable FEATURE`](#heroku-featuresdisable-feature)
-* [`heroku features:enable FEATURE`](#heroku-featuresenable-feature)
-* [`heroku features:info FEATURE`](#heroku-featuresinfo-feature)
-* [`heroku keys`](#heroku-keys)
-* [`heroku keys:add [KEY]`](#heroku-keysadd-key)
-* [`heroku keys:clear`](#heroku-keysclear)
-* [`heroku keys:remove KEY`](#heroku-keysremove-key)
-* [`heroku labs`](#heroku-labs)
-* [`heroku labs:enable FEATURE`](#heroku-labsenable-feature)
-* [`heroku labs:info FEATURE`](#heroku-labsinfo-feature)
-* [`heroku maintenance`](#heroku-maintenance)
-* [`heroku maintenance:off`](#heroku-maintenanceoff)
-* [`heroku maintenance:on`](#heroku-maintenanceon)
-* [`heroku notifications`](#heroku-notifications)
-* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
-* [`heroku ps:resize`](#heroku-psresize)
-* [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
-* [`heroku ps:scale`](#heroku-psscale)
-* [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
-* [`heroku ps:type`](#heroku-pstype)
-* [`heroku releases`](#heroku-releases)
-* [`heroku releases:info [RELEASE]`](#heroku-releasesinfo-release)
-* [`heroku releases:output [RELEASE]`](#heroku-releasesoutput-release)
-* [`heroku releases:rollback [RELEASE]`](#heroku-releasesrollback-release)
+
+- [`heroku apps`](#heroku-apps)
+- [`heroku apps:create [APP]`](#heroku-appscreate-app)
+- [`heroku apps:destroy`](#heroku-appsdestroy)
+- [`heroku apps:errors`](#heroku-appserrors)
+- [`heroku apps:favorites`](#heroku-appsfavorites)
+- [`heroku apps:favorites:add`](#heroku-appsfavoritesadd)
+- [`heroku apps:favorites:remove`](#heroku-appsfavoritesremove)
+- [`heroku apps:info`](#heroku-appsinfo)
+- [`heroku apps:open [PATH]`](#heroku-appsopen-path)
+- [`heroku apps:rename NEWNAME`](#heroku-appsrename-newname)
+- [`heroku apps:stacks`](#heroku-appsstacks)
+- [`heroku apps:stacks:set STACK`](#heroku-appsstacksset-stack)
+- [`heroku config:set`](#heroku-configset)
+- [`heroku drains`](#heroku-drains)
+- [`heroku drains:add URL`](#heroku-drainsadd-url)
+- [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
+- [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
+- [`heroku dyno:resize`](#heroku-dynoresize)
+- [`heroku dyno:restart [DYNO]`](#heroku-dynorestart-dyno)
+- [`heroku dyno:scale`](#heroku-dynoscale)
+- [`heroku dyno:stop DYNO`](#heroku-dynostop-dyno)
+- [`heroku features`](#heroku-features)
+- [`heroku features:disable FEATURE`](#heroku-featuresdisable-feature)
+- [`heroku features:enable FEATURE`](#heroku-featuresenable-feature)
+- [`heroku features:info FEATURE`](#heroku-featuresinfo-feature)
+- [`heroku keys`](#heroku-keys)
+- [`heroku keys:add [KEY]`](#heroku-keysadd-key)
+- [`heroku keys:clear`](#heroku-keysclear)
+- [`heroku keys:remove KEY`](#heroku-keysremove-key)
+- [`heroku labs`](#heroku-labs)
+- [`heroku labs:enable FEATURE`](#heroku-labsenable-feature)
+- [`heroku labs:info FEATURE`](#heroku-labsinfo-feature)
+- [`heroku maintenance`](#heroku-maintenance)
+- [`heroku maintenance:off`](#heroku-maintenanceoff)
+- [`heroku maintenance:on`](#heroku-maintenanceon)
+- [`heroku notifications`](#heroku-notifications)
+- [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
+- [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
+- [`heroku ps:resize`](#heroku-psresize)
+- [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
+- [`heroku ps:scale`](#heroku-psscale)
+- [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
+- [`heroku ps:type`](#heroku-pstype)
+- [`heroku releases`](#heroku-releases)
+- [`heroku releases:info [RELEASE]`](#heroku-releasesinfo-release)
+- [`heroku releases:output [RELEASE]`](#heroku-releasesoutput-release)
+- [`heroku releases:rollback [RELEASE]`](#heroku-releasesrollback-release)
 
 ## `heroku apps`
 
@@ -296,7 +299,7 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
+  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
   Git remote heroku updated
 ```
 
@@ -456,7 +459,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -859,7 +862,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -957,7 +960,7 @@ DESCRIPTION
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
-  Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+  Where SIZE is one of free|eco|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
@@ -1038,4 +1041,5 @@ DESCRIPTION
   rollback to a previous release
   If RELEASE is not specified, it will rollback one release
 ```
+
 <!-- commandsstop -->
