@@ -5,7 +5,6 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
 
 const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   afterEach(() => {
