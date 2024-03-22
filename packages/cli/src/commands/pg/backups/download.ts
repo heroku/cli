@@ -51,8 +51,7 @@ export default class Download extends Command {
       num = lastBackup.num
     }
 
-    ux.action.stop()
-    ux.action.start(`fetching url of #${num}`)
+    ux.action.status = `fetching url of #${num}`
     const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pgHost()})
 
     ux.action.stop(`done, #${num}`)
