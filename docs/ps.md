@@ -1,22 +1,21 @@
-`heroku ps`
-===========
+# `heroku ps`
 
 Client tools for Heroku Exec
 
-* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
-* [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
-* [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
-* [`heroku ps:copy FILE`](#heroku-pscopy-file)
-* [`heroku ps:exec`](#heroku-psexec)
-* [`heroku ps:forward PORT`](#heroku-psforward-port)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
-* [`heroku ps:resize`](#heroku-psresize)
-* [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
-* [`heroku ps:scale`](#heroku-psscale)
-* [`heroku ps:socks`](#heroku-pssocks)
-* [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
-* [`heroku ps:type`](#heroku-pstype)
-* [`heroku ps:wait`](#heroku-pswait)
+- [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
+- [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
+- [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
+- [`heroku ps:copy FILE`](#heroku-pscopy-file)
+- [`heroku ps:exec`](#heroku-psexec)
+- [`heroku ps:forward PORT`](#heroku-psforward-port)
+- [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
+- [`heroku ps:resize`](#heroku-psresize)
+- [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
+- [`heroku ps:scale`](#heroku-psscale)
+- [`heroku ps:socks`](#heroku-pssocks)
+- [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
+- [`heroku ps:type`](#heroku-pstype)
+- [`heroku ps:wait`](#heroku-pswait)
 
 ## `heroku ps [TYPE [TYPE ...]]`
 
@@ -62,7 +61,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.1/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -84,7 +83,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.1/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -341,4 +340,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.1/src/commands/ps/wait.ts)_

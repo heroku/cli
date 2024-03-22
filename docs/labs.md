@@ -1,12 +1,11 @@
-`heroku labs`
-=============
+# `heroku labs`
 
 add/remove experimental features
 
-* [`heroku labs`](#heroku-labs)
-* [`heroku labs:disable FEATURE`](#heroku-labsdisable-feature)
-* [`heroku labs:enable FEATURE`](#heroku-labsenable-feature)
-* [`heroku labs:info FEATURE`](#heroku-labsinfo-feature)
+- [`heroku labs`](#heroku-labs)
+- [`heroku labs:disable FEATURE`](#heroku-labsdisable-feature)
+- [`heroku labs:enable FEATURE`](#heroku-labsenable-feature)
+- [`heroku labs:info FEATURE`](#heroku-labsinfo-feature)
 
 ## `heroku labs`
 
@@ -42,7 +41,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.1/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 

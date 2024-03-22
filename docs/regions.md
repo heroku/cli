@@ -1,9 +1,8 @@
-`heroku regions`
-================
+# `heroku regions`
 
 list available regions for deployment
 
-* [`heroku regions`](#heroku-regions)
+- [`heroku regions`](#heroku-regions)
 
 ## `heroku regions`
 
@@ -22,4 +21,4 @@ DESCRIPTION
   list available regions for deployment
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.0/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v8.11.1-beta.1/src/commands/regions.ts)_
