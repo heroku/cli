@@ -18,8 +18,7 @@
     "tmp": "^0.2.1"
   },
   "resolutions": {
-    "ansi-regex": "4.1.1",
-    "semver": "5.7.2"
+    "ansi-regex": "4.1.1"
   },
   "standard": {
     "env": "mocha",
