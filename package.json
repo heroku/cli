@@ -21,6 +21,9 @@
     "ansi-regex": "4.1.1",
     "semver": "5.7.2"
   },
+  "dependencies": {
+    "semver": "5.7.2"
+  },
   "standard": {
     "env": "mocha",
     "ignore": [
