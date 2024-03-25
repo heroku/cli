@@ -11053,6 +11053,7 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
     sinon: ^7.2.4
+    smooth-progress: ^1.1.0
     sparkline: ^0.2.0
     ssh2: ^1.15.0
     std-mocks: ^2.0.0

@@ -27,6 +27,10 @@ export type BackupTransfer = {
   warnings: number,
 }
 
+export type PublicUrlResponse = {
+  url: string,
+}
+
 function prefix(transfer: BackupTransfer) {
   if (transfer.from_type === 'pg_dump') {
     if (transfer.to_type === 'pg_restore') {
