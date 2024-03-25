@@ -97,7 +97,7 @@ export default class Open extends Command {
       return this.sudo(ctx)
     }
 
-    let attachment: void | AddOnAttachment
+    let attachment: void | AddOnAttachment | null = null
     try {
       attachment = await attachmentResolver(this.heroku, app, addon)
     } catch (error) {
