@@ -6,6 +6,8 @@ import {expect} from 'chai'
 import {ago} from '../../../src/lib/time'
 import {unwrap} from '../../helpers/utils/unwrap'
 import * as os from 'os'
+import heredoc from 'tsheredoc'
+import * as sinon from 'sinon'
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
@@ -13,7 +15,21 @@ describe('dashboard', function () {
     return
   }
 
-  const now = new Date()
+  let clock: any
+  let now: Date
+  beforeEach(() => {
+    clock = sinon.useFakeTimers({
+      now: new Date(2024, 1, 1, 0, 0),
+      shouldAdvanceTime: true,
+      toFake: ['Date'],
+    })
+    now = new Date()
+  })
+
+  this.afterEach(() => {
+    clock.restore()
+  })
+
   const pipeline = {pipeline: {name: 'foobar'}}
   const formation = [
     {command: 'rails s -p $PORT', quantity: 1, size: 'Standard-1X', type: 'web'}, {command: 'npm start', quantity: 0, size: 'Standard-1X', type: 'node'},
@@ -33,70 +49,82 @@ describe('dashboard', function () {
       },
     },
   }
+
   describe('with no favorites', async () => {
     it('shows the dashboard', async () => {
-      const longboard = nock('https://particleboard.heroku.com:443')
+      nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
-      const heroku = nock('https://api.heroku.com:443')
+      nock('https://api.heroku.com:443')
         .get('/teams')
         .reply(200, [])
-      const telex = nock('https://telex.heroku.com:443')
+      nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, [])
 
-      return runCommand(Cmd)
-        .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
-        .then(() => longboard.done())
-        .then(() => telex.done())
-        .then(() => heroku.done())
+      await runCommand(Cmd)
+      expect(stdout.output).to.contain(heredoc(`
+        See all add-ons with heroku addons
+        See all apps with heroku apps --all
+        
+        See other CLI commands with heroku help
+      `))
+      expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
     })
   })
+
   describe('with no telex', () => {
-    it('shows the dashboard', () => {
-      const longboard = nock('https://particleboard.heroku.com:443')
+    it('shows the dashboard', async () => {
+      nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
-      const heroku = nock('https://api.heroku.com:443')
+      nock('https://api.heroku.com:443')
         .get('/teams')
         .reply(200, [])
-      const telex = nock('https://telex.heroku.com:443')
+      nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(401, [])
 
-      return runCommand(Cmd, [])
-        .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n'))
-        .then(() => longboard.done())
-        .then(() => telex.done())
-        .then(() => heroku.done())
+      await runCommand(Cmd, [])
+      expect(stdout.output).to.contain(heredoc(`
+        See all add-ons with heroku addons
+        See all apps with heroku apps --all
+        
+        See other CLI commands with heroku help
+      `))
+      expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
     })
   })
+
   describe('with notifications', () => {
-    it('shows the dashboard', () => {
-      const longboard = nock('https://particleboard.heroku.com:443')
+    it('shows the dashboard', async () => {
+      nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
-      const heroku = nock('https://api.heroku.com:443')
+      nock('https://api.heroku.com:443')
         .get('/teams')
         .reply(200, [])
-      const telex = nock('https://telex.heroku.com:443')
+      nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, [{read: false}])
-      return runCommand(Cmd, [])
-        .then(() => expect(stdout.output).to.equal('See all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nYou have 1 unread notifications. Read them with heroku notifications\n\nSee other CLI commands with heroku help\n\n'))
-        .then(() => longboard.done())
-        .then(() => telex.done())
-        .then(() => heroku.done())
+      await runCommand(Cmd, [])
+      expect(stdout.output).to.contain(heredoc(`
+        See all add-ons with heroku addons
+        See all apps with heroku apps --all
+
+        You have 1 unread notifications. Read them with heroku notifications
+
+        See other CLI commands with heroku help
+      `))
     })
   })
+
   describe('with a favorite app', () => {
-    it('shows the dashboard', () => {
-      const longboard = nock('https://particleboard.heroku.com:443')
+    it('shows the dashboard', async () => {
+      nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [{resource_name: 'myapp'}])
-      const heroku = nock('https://api.heroku.com:443')
+      nock('https://api.heroku.com:443')
         .get('/teams')
         .reply(200, [])
         .get('/apps/myapp')
@@ -105,10 +133,10 @@ describe('dashboard', function () {
         })
         .get('/apps/myapp/formation')
         .reply(200, formation)
-      const telex = nock('https://telex.heroku.com:443')
+      nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, [])
-      const metrics = nock('https://api.metrics.herokai.com:443')
+      nock('https://api.metrics.herokai.com:443')
         .get('/apps/myapp/router-metrics/status')
         // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
         .query((params: any) => params.step === '1h' && params.process_type === 'web')
@@ -126,21 +154,30 @@ describe('dashboard', function () {
         .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
 
-      return runCommand(Cmd, [])
-        .then(() => expect(stdout.output).to.equal(`myapp\n  Owner: foo@bar.com\n  Dynos: 1 | Standard-1X\n  Last release: ${ago(now)}\n  Metrics: 46 ms 4 rpm \u2582\u2581\u2581\u2586\u2582\u2585\u2588\u2587 last 24 hours rpm\n  Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)\n\nSee all add-ons with heroku addons\nSee all apps with heroku apps --all\n\nSee other CLI commands with heroku help\n\n`))
-        .then(() => expect(stderr.output).to.contain('Loading... done\n'))
-        .then(() => metrics.done())
-        .then(() => longboard.done())
-        .then(() => telex.done())
-        .then(() => heroku.done())
+      await runCommand(Cmd, [])
+      expect(stdout.output).to.contain(heredoc(`
+        myapp
+          Owner: foo@bar.com
+          Dynos: 1 | Standard-1X
+          Last release: ${ago(now)}
+          Metrics: 46 ms 4 rpm ▂▁▁▆▂▅█▇ last 24 hours rpm
+          Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)
+
+        See all add-ons with heroku addons
+        See all apps with heroku apps --all
+
+        See other CLI commands with heroku help
+      `))
+      expect(stderr.output).to.contain('Loading... done\n')
     })
   })
+
   describe('with a apps and metrics', () => {
-    it('shows the dashboard', () => {
-      const longboard = nock('https://particleboard.heroku.com:443')
+    it('shows the dashboard', async () => {
+      nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [{resource_name: 'myapp'}])
-      const heroku = nock('https://api.heroku.com:443')
+      nock('https://api.heroku.com:443')
         .get('/teams')
         .reply(200, [])
         .get('/apps/myapp')
@@ -151,10 +188,10 @@ describe('dashboard', function () {
         .reply(200, formation)
         .get('/apps/myapp/pipeline-couplings')
         .reply(200, pipeline)
-      const telex = nock('https://telex.heroku.com:443')
+      nock('https://telex.heroku.com:443')
         .get('/user/notifications')
         .reply(200, [])
-      const metrics = nock('https://api.metrics.herokai.com:443')
+      nock('https://api.metrics.herokai.com:443')
         .get('/apps/myapp/router-metrics/status')
         // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
         .query((params: any) => params.step === '1h' && params.process_type === 'web')
@@ -172,13 +209,8 @@ describe('dashboard', function () {
         .query((params: any) => params.step === '1h')
         .reply(200, {data: {}})
 
-      return runCommand(Cmd, [])
-        .then(() => expect(stdout.output).to.include('Pipeline: foobar'))
-        .then(() => expect(metrics.isDone()).to.be.true)
-        .then(() => metrics.done())
-        .then(() => longboard.done())
-        .then(() => telex.done())
-        .then(() => heroku.done())
+      await runCommand(Cmd, [])
+      expect(stdout.output).to.include('Pipeline: foobar')
     })
   })
 })
