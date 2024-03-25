@@ -37,7 +37,7 @@ const TZ:Timezone = {
   CEST: 'Europe/Paris',
 }
 
-type PostgresDatabase = {
+type PgDatabase = {
   id: string;
   name: string;
   info: {name: string; values: string[]}[];
@@ -57,10 +57,6 @@ export default class Schedule extends Command {
     app: flags.app({required: true}),
   };
 
-  // static TZ:Timezone = {
-  //   PST: 'America/Los_Angeles', PDT: 'America/Los_Angeles', MST: 'America/Boise', MDT: 'America/Boise', CST: 'America/Chicago', CDT: 'America/Chicago', EST: 'America/New_York', EDT: 'America/New_York', Z: 'UTC', GMT: 'Europe/London', BST: 'Europe/London', CET: 'Europe/Paris', CEST: 'Europe/Paris',
-  // };
-
   static args = {
     database: Args.string(),
   };
@@ -77,18 +73,21 @@ export default class Schedule extends Command {
     const {flags, args} = await this.parse(Schedule)
     const {app} = flags
     const {database} = args
+
     const schedule = this.parseDate(flags.at)
     const attachment = await getAttachment(this.heroku, app, database)
     const db = attachment.addon
     const at = color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
-    const {body: dbInfo} = await this.heroku.get<PostgresDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
+
+    const pgResponse = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
       .catch(error => {
         if (error.statusCode !== 404)
           throw error
         ux.error(`${color.yellow(db.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
       })
+    const {body: dbInfo} = pgResponse || {body: null}
     if (dbInfo) {
-      const dbProtected = /On/.test(dbInfo.info.find(attribute => attribute.name === 'Continuous Protection')?.values[0] || '')
+      const dbProtected = /On/.test(dbInfo.info.find((attribute: {name: string, values: string[]}) => attribute.name === 'Continuous Protection')?.values[0] || '')
       if (dbProtected) {
         ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
         ux.warn('See https://devcenter.heroku.com/articles/heroku-postgres-data-safety-and-continuous-protection#physical-backups-on-heroku-postgres.')
