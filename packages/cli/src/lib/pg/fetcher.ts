@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {appAttachment} from '../../lib/addons/resolve'
+import {appAttachment} from '../addons/resolve'
 import debug from 'debug'
 import {color} from '@heroku-cli/color'
 import {getConfigVarName} from './util'
