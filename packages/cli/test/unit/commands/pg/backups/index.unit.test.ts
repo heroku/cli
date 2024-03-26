@@ -28,7 +28,20 @@ describe('pg:backups', () => {
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== Backups\n\nNo backups. Capture one with heroku pg:backups:capture\n\n=== Restores\n\nNo restores found. Use heroku pg:backups:restore to restore a backup\n\n=== Copies\n\nNo copies found. Use heroku pg:copy to copy a database to another\n\n')
+      expect(stdout.output).to.equal(heredoc(`
+      === Backups
+      
+      No backups. Capture one with heroku pg:backups:capture
+      
+      === Restores
+      
+      No restores found. Use heroku pg:backups:restore to restore a backup
+      
+      === Copies
+      
+      No copies found. Use heroku pg:copy to copy a database to another
+      
+      `))
     })
   })
 
