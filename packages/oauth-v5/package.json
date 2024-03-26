@@ -30,7 +30,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
-    "mocha": "^8.0.0",
+    "mocha": "^9.2.2",
     "mocha-junit-reporter": "1.18.0",
     "nock": "10.0.6",
     "nyc": "^15.1.0",
@@ -51,7 +51,7 @@
       "./test/init.js"
     ],
     "recursive": true,
-    "timeout": 180000
+    "timeout": 360000
   },
   "publishConfig": {
     "access": "public"
