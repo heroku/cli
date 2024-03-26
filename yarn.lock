@@ -1237,7 +1237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.11.0, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@^8.11.1, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -1274,7 +1274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.11.0, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.11.1, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -1312,7 +1312,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs-v5@^8.11.0, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
+"@heroku-cli/plugin-certs-v5@^8.11.1, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
   dependencies:
@@ -1338,12 +1338,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^8.11.0, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
+"@heroku-cli/plugin-ci-v5@^8.11.1, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
   dependencies:
     "@heroku-cli/command": ^9.0.2
-    "@heroku-cli/plugin-run-v5": ^8.11.0
+    "@heroku-cli/plugin-run-v5": ^8.11.1
     "@oclif/plugin-legacy": ^1.3.0
     ansi-escapes: 3.2.0
     bluebird: ^3.5.3
@@ -1367,7 +1367,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-container-registry-v5@^8.11.0, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
+"@heroku-cli/plugin-container-registry-v5@^8.11.1, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
@@ -1412,7 +1412,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^8.11.0, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
+"@heroku-cli/plugin-orgs-v5@^8.11.1, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
@@ -1432,7 +1432,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.11.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^8.11.1, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -1489,7 +1489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-redis-v5@^8.11.0, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
+"@heroku-cli/plugin-redis-v5@^8.11.1, @heroku-cli/plugin-redis-v5@workspace:packages/redis-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-redis-v5@workspace:packages/redis-v5"
   dependencies:
@@ -1509,7 +1509,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-run-v5@^8.11.0, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
+"@heroku-cli/plugin-run-v5@^8.11.1, @heroku-cli/plugin-run-v5@workspace:packages/run-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
@@ -1551,7 +1551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-spaces@^8.11.0, @heroku-cli/plugin-spaces@workspace:packages/spaces":
+"@heroku-cli/plugin-spaces@^8.11.1, @heroku-cli/plugin-spaces@workspace:packages/spaces":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-spaces@workspace:packages/spaces"
   dependencies:
@@ -11009,18 +11009,18 @@ __metadata:
     "@heroku-cli/command": ^10.0.0
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-addons-v5": ^8.11.0
-    "@heroku-cli/plugin-apps-v5": ^8.11.0
-    "@heroku-cli/plugin-certs-v5": ^8.11.0
-    "@heroku-cli/plugin-ci-v5": ^8.11.0
-    "@heroku-cli/plugin-container-registry-v5": ^8.11.0
-    "@heroku-cli/plugin-orgs-v5": ^8.11.0
-    "@heroku-cli/plugin-pg-v5": ^8.11.0
+    "@heroku-cli/plugin-addons-v5": ^8.11.1
+    "@heroku-cli/plugin-apps-v5": ^8.11.1
+    "@heroku-cli/plugin-certs-v5": ^8.11.1
+    "@heroku-cli/plugin-ci-v5": ^8.11.1
+    "@heroku-cli/plugin-container-registry-v5": ^8.11.1
+    "@heroku-cli/plugin-orgs-v5": ^8.11.1
+    "@heroku-cli/plugin-pg-v5": ^8.11.1
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
-    "@heroku-cli/plugin-redis-v5": ^8.11.0
+    "@heroku-cli/plugin-redis-v5": ^8.11.1
     "@heroku-cli/plugin-run": 8.1.4
-    "@heroku-cli/plugin-spaces": ^8.11.0
+    "@heroku-cli/plugin-spaces": ^8.11.1
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
@@ -11096,6 +11096,7 @@ __metadata:
     qqjs: 0.3.11
     read-pkg: ^4.0.1
     rollbar: ^2.26.2
+    semver: 5.7.2
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
     sinon: ^7.2.4
@@ -17016,12 +17017,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:5.7.2":
+"semver@npm:2 || 3 || 4 || 5, semver@npm:5.7.2, semver@npm:^5.5.0, semver@npm:^5.6.0":
   version: 5.7.2
   resolution: "semver@npm:5.7.2"
   bin:
     semver: bin/semver
   checksum: fb4ab5e0dd1c22ce0c937ea390b4a822147a9c53dbd2a9a0132f12fe382902beef4fbf12cf51bb955248d8d15874ce8cd89532569756384f994309825f10b686
+  languageName: node
+  linkType: hard
+
+"semver@npm:7.3.4":
+  version: 7.3.4
+  resolution: "semver@npm:7.3.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 96451bfd7cba9b60ee87571959dc47e87c95b2fe58a9312a926340fee9907fc7bc062c352efdaf5bb24b2dff59c145e14faf7eb9d718a84b4751312531b39f43
+  languageName: node
+  linkType: hard
+
+"semver@npm:^6.0.0, semver@npm:^6.1.0, semver@npm:^6.3.0, semver@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "semver@npm:6.3.1"
+  bin:
+    semver: bin/semver.js
+  checksum: ae47d06de28836adb9d3e25f22a92943477371292d9b665fb023fae278d345d508ca1958232af086d85e0155aee22e313e100971898bbb8d5d89b8b1d4054ca2
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.1.3, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.1, semver@npm:^7.5.3, semver@npm:^7.5.4":
+  version: 7.6.0
+  resolution: "semver@npm:7.6.0"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 7427f05b70786c696640edc29fdd4bc33b2acf3bbe1740b955029044f80575fc664e1a512e4113c3af21e767154a94b4aa214bf6cd6e42a1f6dba5914e0b208c
   languageName: node
   linkType: hard
 
