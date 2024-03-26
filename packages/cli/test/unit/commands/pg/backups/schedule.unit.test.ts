@@ -7,7 +7,7 @@ import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
 const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
-  const continuousProtectionWarning = heredoc('Warning: Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
+  const continuousProtectionWarning = heredoc('Logical backups of large databases are likely to fail.')
 
   beforeEach(() => {
     nock('https://api.heroku.com')
