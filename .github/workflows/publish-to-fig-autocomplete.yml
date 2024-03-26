@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
- push-to-fig-autocomplete:
+  push-to-fig-autocomplete:
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v3
@@ -23,14 +23,14 @@ jobs:
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')" >> $GITHUB_OUTPUT
       - name: Generate Fig Spec
-        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts && echo "${{ steps.cli-version.outputs.version }}"
-      # - name: Create Fig Autocomplete PR
-      #   uses: withfig/push-to-fig-autocomplete-action@v2
-      #   with:
-      #     token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
-      #     autocomplete-spec-name: 'heroku'
-      #     spec-path: ./packages/cli/spec.ts
-      #     integration: oclif
-      #     diff-based-versioning: true
-      #     new-spec-version: ${{ needs.get-cli-version.outputs.version }}
-      #     pr-body: Automated PR for latest Heroku CLI release
+        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
+      - name: Create Fig Autocomplete PR
+        uses: withfig/push-to-fig-autocomplete-action@v2
+        with:
+          token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
+          autocomplete-spec-name: 'heroku'
+          spec-path: ./packages/cli/spec.ts
+          integration: oclif
+          diff-based-versioning: true
+          new-spec-version: ${{ steps.cli-version.outputs.version }}
+          pr-body: Automated PR for latest Heroku CLI release
