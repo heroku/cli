@@ -1286,7 +1286,7 @@ __metadata:
     filesize: ^4.0.0
     fs-extra: ^7.0.1
     heroku-cli-util: ^8.0.11
-    inquirer: ^6.2.2
+    inquirer: ^9.2.16
     js-yaml: ^3.12.1
     lodash: ^4.17.21
     lolex: ^3.1.0
@@ -1323,7 +1323,7 @@ __metadata:
     chai-as-promised: ^7.1.1
     date-fns: ^1.29.0
     heroku-cli-util: ^8.0.11
-    inquirer: ^6.2.2
+    inquirer: ^9.2.16
     lodash: ^4.17.21
     lolex: ^3.1.0
     mocha: ^9.2.2
@@ -1353,7 +1353,7 @@ __metadata:
     got: ^9.6.0
     heroku-cli-util: ^8.0.11
     heroku-client: ^3.0.7
-    inquirer: ^7.0.0
+    inquirer: ^9.2.16
     lodash.flatten: ^4.4.0
     mocha: ^9.2.2
     nock: ^10.0.6
@@ -1381,7 +1381,7 @@ __metadata:
     heroku-cli-util: ^8.0.11
     heroku-container-registry: ^4.99.0
     http-call: ^5.2.3
-    inquirer: ^6.2.2
+    inquirer: ^9.2.16
     lolex: ^3.1.0
     mocha: ^9.2.2
     mockdate: ^2.0.2
@@ -1420,7 +1420,7 @@ __metadata:
     "@oclif/plugin-legacy": ^1.3.0
     chai: ^4.2.0
     heroku-cli-util: ^8.0.11
-    inquirer: ^6.2.2
+    inquirer: ^9.2.16
     lodash: ^4.17.21
     lodash.flatten: ^4.4.0
     mocha: ^9.2.2
@@ -2554,6 +2554,15 @@ __metadata:
     npmlog: ^6.0.2
     write-file-atomic: ^4.0.1
   checksum: 27c934ad5bf5fa030dfcd4b85ab464954609913e55be8ac2a026a295352fbab65c3ef9855d6f963c16e344a8befc9fa2cca54272a471626030c0f4888c0c2f7b
+  languageName: node
+  linkType: hard
+
+"@ljharb/through@npm:^2.3.13":
+  version: 2.3.13
+  resolution: "@ljharb/through@npm:2.3.13"
+  dependencies:
+    call-bind: ^1.0.7
+  checksum: 0255464a0ec7901b08cff3e99370b87e66663f46249505959c0cb4f6121095d533bbb7c7cda338063d3e134cbdd721e2705bc18eac7611b4f9ead6e7935d13ba
   languageName: node
   linkType: hard
 
@@ -5223,13 +5232,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inquirer@npm:7.3.0":
-  version: 7.3.0
-  resolution: "@types/inquirer@npm:7.3.0"
+"@types/inquirer@npm:9.0.7":
+  version: 9.0.7
+  resolution: "@types/inquirer@npm:9.0.7"
   dependencies:
     "@types/through": "*"
-    rxjs: ^6.4.0
-  checksum: 85edca2e2bb7a2e582c5994998384c7c44d8fb2d7b1f4a5910f60125283b3cdb3343c47be71115643a3fda243cb37e1ffadfbe7c315d6fd679670e057da06f78
+    rxjs: ^7.2.0
+  checksum: c14c7a52797606a08ca7450d9263c01518b30e0b7610d0817fb530bc4fae7b3ffdcc9d50bb9f7befc2b220bb54195507cc423de3c8f320bbe9f7e5e8881a0226
   languageName: node
   linkType: hard
 
@@ -6020,7 +6029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-escapes@npm:3.2.0, ansi-escapes@npm:^3.0.0, ansi-escapes@npm:^3.1.0, ansi-escapes@npm:^3.2.0":
+"ansi-escapes@npm:3.2.0, ansi-escapes@npm:^3.0.0, ansi-escapes@npm:^3.1.0":
   version: 3.2.0
   resolution: "ansi-escapes@npm:3.2.0"
   checksum: 0f94695b677ea742f7f1eed961f7fd8d05670f744c6ad1f8f635362f6681dcfbc1575cb05b43abc7bb6d67e25a75fb8c7ea8f2a57330eb2c76b33f18cb2cef0a
@@ -7341,6 +7350,13 @@ __metadata:
   version: 3.0.0
   resolution: "cli-width@npm:3.0.0"
   checksum: 4c94af3769367a70e11ed69aa6095f1c600c0ff510f3921ab4045af961820d57c0233acfa8b6396037391f31b4c397e1f614d234294f979ff61430a6c166c3f6
+  languageName: node
+  linkType: hard
+
+"cli-width@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "cli-width@npm:4.1.0"
+  checksum: 0a79cff2dbf89ef530bcd54c713703ba94461457b11e5634bd024c78796ed21401e32349c004995954e06f442d82609287e7aabf6a5f02c919a1cf3b9b6854ff
   languageName: node
   linkType: hard
 
@@ -9515,6 +9531,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"external-editor@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "external-editor@npm:3.1.0"
+  dependencies:
+    chardet: ^0.7.0
+    iconv-lite: ^0.4.24
+    tmp: ^0.0.33
+  checksum: 1c2a616a73f1b3435ce04030261bed0e22d4737e14b090bb48e58865da92529c9f2b05b893de650738d55e692d071819b45e1669259b2b354bc3154d27a698c7
+  languageName: node
+  linkType: hard
+
 "extract-stack@npm:^1.0.0":
   version: 1.0.0
   resolution: "extract-stack@npm:1.0.0"
@@ -9649,7 +9676,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"figures@npm:3.2.0":
+"figures@npm:3.2.0, figures@npm:^3.2.0":
   version: 3.2.0
   resolution: "figures@npm:3.2.0"
   dependencies:
@@ -11094,7 +11121,7 @@ __metadata:
     "@types/fs-extra": ^5.0.5
     "@types/glob": ^7.1.1
     "@types/got": ^9.6.7
-    "@types/inquirer": 7.3.0
+    "@types/inquirer": 9.0.7
     "@types/lodash": ^4.14.123
     "@types/mocha": ^5.2.6
     "@types/nock": ^9.3.1
@@ -11127,7 +11154,7 @@ __metadata:
     got: ^9.6.0
     heroku-cli-util: ^8.0.12
     http-call: 5.3.0
-    inquirer: ^7.3.0
+    inquirer: ^9.2.16
     lodash: ^4.17.11
     mocha: ^9.2.2
     netrc-parser: 3.1.6
@@ -11604,69 +11631,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inquirer@npm:^6.2.2":
-  version: 6.2.2
-  resolution: "inquirer@npm:6.2.2"
-  dependencies:
-    ansi-escapes: ^3.2.0
-    chalk: ^2.4.2
-    cli-cursor: ^2.1.0
-    cli-width: ^2.0.0
-    external-editor: ^3.0.3
-    figures: ^2.0.0
-    lodash: ^4.17.11
-    mute-stream: 0.0.7
-    run-async: ^2.2.0
-    rxjs: ^6.4.0
-    string-width: ^2.1.0
-    strip-ansi: ^5.0.0
-    through: ^2.3.6
-  checksum: e7799200103f7b7a7e51b5bf9a00848cf0f7c4b596a19e196ecf6e7f3f96d26f5dd1dd3be49bdd0217e0b7ad9ed4216d35a41236fb8ef5621a780eec316de333
-  languageName: node
-  linkType: hard
-
-"inquirer@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "inquirer@npm:7.0.0"
-  dependencies:
-    ansi-escapes: ^4.2.1
-    chalk: ^2.4.2
-    cli-cursor: ^3.1.0
-    cli-width: ^2.0.0
-    external-editor: ^3.0.3
-    figures: ^3.0.0
-    lodash: ^4.17.15
-    mute-stream: 0.0.8
-    run-async: ^2.2.0
-    rxjs: ^6.4.0
-    string-width: ^4.1.0
-    strip-ansi: ^5.1.0
-    through: ^2.3.6
-  checksum: 0e02dc507abd571a6153dc4ec54b87aee4ad32593ddf9fe22cf5aac1627c7f1afc626c5ae48055c1ee7462e6f65bd7dcaeadd407c5104a91b585b0b2d69dfa1d
-  languageName: node
-  linkType: hard
-
-"inquirer@npm:^7.3.0":
-  version: 7.3.3
-  resolution: "inquirer@npm:7.3.3"
-  dependencies:
-    ansi-escapes: ^4.2.1
-    chalk: ^4.1.0
-    cli-cursor: ^3.1.0
-    cli-width: ^3.0.0
-    external-editor: ^3.0.3
-    figures: ^3.0.0
-    lodash: ^4.17.19
-    mute-stream: 0.0.8
-    run-async: ^2.4.0
-    rxjs: ^6.6.0
-    string-width: ^4.1.0
-    strip-ansi: ^6.0.0
-    through: ^2.3.6
-  checksum: 4d387fc1eb6126acbd58cbdb9ad99d2887d181df86ab0c2b9abdf734e751093e2d5882c2b6dc7144d9ab16b7ab30a78a1d7f01fb6a2850a44aeb175d1e3f8778
-  languageName: node
-  linkType: hard
-
 "inquirer@npm:^8.0.0, inquirer@npm:^8.2.4":
   version: 8.2.5
   resolution: "inquirer@npm:8.2.5"
@@ -11710,6 +11674,29 @@ __metadata:
     through: ^2.3.6
     wrap-ansi: ^6.0.1
   checksum: 387ffb0a513559cc7414eb42c57556a60e302f820d6960e89d376d092e257a919961cd485a1b4de693dbb5c0de8bc58320bfd6247dfd827a873aa82a4215a240
+  languageName: node
+  linkType: hard
+
+"inquirer@npm:^9.2.16":
+  version: 9.2.16
+  resolution: "inquirer@npm:9.2.16"
+  dependencies:
+    "@ljharb/through": ^2.3.13
+    ansi-escapes: ^4.3.2
+    chalk: ^5.3.0
+    cli-cursor: ^3.1.0
+    cli-width: ^4.1.0
+    external-editor: ^3.1.0
+    figures: ^3.2.0
+    lodash: ^4.17.21
+    mute-stream: 1.0.0
+    ora: ^5.4.1
+    run-async: ^3.0.0
+    rxjs: ^7.8.1
+    string-width: ^4.2.3
+    strip-ansi: ^6.0.1
+    wrap-ansi: ^6.2.0
+  checksum: 3727d7ec5eaa5142c63c067004daed563656eefd04a42a57fcb1a4956625596cf0bb2e6e525e6202fff1dace8a0419a28e5f3b848af29e71ce739d09f9cf8bf6
   languageName: node
   linkType: hard
 
@@ -13024,7 +13011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.11.1, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.3.0, lodash@npm:~4.17.2":
+"lodash@npm:^4.11.1, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.17.5, lodash@npm:^4.3.0, lodash@npm:~4.17.2":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -13933,6 +13920,13 @@ __metadata:
   version: 0.0.8
   resolution: "mute-stream@npm:0.0.8"
   checksum: ff48d251fc3f827e5b1206cda0ffdaec885e56057ee86a3155e1951bc940fd5f33531774b1cc8414d7668c10a8907f863f6561875ee6e8768931a62121a531a1
+  languageName: node
+  linkType: hard
+
+"mute-stream@npm:1.0.0":
+  version: 1.0.0
+  resolution: "mute-stream@npm:1.0.0"
+  checksum: 36fc968b0e9c9c63029d4f9dc63911950a3bdf55c9a87f58d3a266289b67180201cade911e7699f8b2fa596b34c9db43dad37649e3f7fdd13c3bb9edb0017ee7
   languageName: node
   linkType: hard
 
@@ -16982,6 +16976,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"run-async@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "run-async@npm:3.0.0"
+  checksum: 280c03d5a88603f48103fc6fd69f07fb0c392a1e0d319c34ec96a2516030e07ba06f79231a563c78698b882649c2fc1fda601bc84705f57d50efcd1fa506cfc0
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.2, run-parallel@npm:^1.1.9":
   version: 1.1.9
   resolution: "run-parallel@npm:1.1.9"
@@ -16998,30 +16999,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^6.4.0":
-  version: 6.5.3
-  resolution: "rxjs@npm:6.5.3"
-  dependencies:
-    tslib: ^1.9.0
-  checksum: 8e9b18f7e3cc255722e3042461142ca2278de5556ec3ca2aaa17d6872711451694e25c5d9aa3913d6e5a453e6805fd754dcd43311475e3a926cbb00ea4bd2a30
-  languageName: node
-  linkType: hard
-
-"rxjs@npm:^6.6.0":
-  version: 6.6.7
-  resolution: "rxjs@npm:6.6.7"
-  dependencies:
-    tslib: ^1.9.0
-  checksum: bc334edef1bb8bbf56590b0b25734ba0deaf8825b703256a93714308ea36dff8a11d25533671adf8e104e5e8f256aa6fdfe39b2e248cdbd7a5f90c260acbbd1b
-  languageName: node
-  linkType: hard
-
 "rxjs@npm:^7.0.0, rxjs@npm:^7.5.5":
   version: 7.8.0
   resolution: "rxjs@npm:7.8.0"
   dependencies:
     tslib: ^2.1.0
   checksum: 61b4d4fd323c1043d8d6ceb91f24183b28bcf5def4f01ca111511d5c6b66755bc5578587fe714ef5d67cf4c9f2e26f4490d4e1d8cabf9bd5967687835e9866a2
+  languageName: node
+  linkType: hard
+
+"rxjs@npm:^7.2.0, rxjs@npm:^7.8.1":
+  version: 7.8.1
+  resolution: "rxjs@npm:7.8.1"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: de4b53db1063e618ec2eca0f7965d9137cabe98cf6be9272efe6c86b47c17b987383df8574861bcced18ebd590764125a901d5506082be84a8b8e364bf05f119
   languageName: node
   linkType: hard
 
@@ -18015,7 +18007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-ansi@npm:^5.0.0, strip-ansi@npm:^5.1.0, strip-ansi@npm:^5.2.0":
+"strip-ansi@npm:^5.0.0, strip-ansi@npm:^5.2.0":
   version: 5.2.0
   resolution: "strip-ansi@npm:5.2.0"
   dependencies:
