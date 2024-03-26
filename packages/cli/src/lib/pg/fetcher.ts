@@ -12,20 +12,10 @@ export type TransferSchedule = {
   name: string,
   timezone: string,
 }
-
-type AddOnAttachment = {
-  addon: {
-    id: string;
-    name: string;
-    plan: {
-      name: string;
-    };
-  };
-  app: {
-    id: string;
-    name: string;
-  };
-  config_vars: string[];
+type AddOnWithPlan = Heroku.AddOnAttachment['addon'] & {plan: Heroku.AddOn['plan']}
+type AddOnAttachmentWithConfigVarsAndPlan = Heroku.AddOnAttachment & {
+  config_vars: Heroku.AddOn['config_vars']
+  addon: AddOnWithPlan
 }
 
 export async function arbitraryAppDB(heroku: APIClient, app: string) {
@@ -41,10 +31,10 @@ export async function arbitraryAppDB(heroku: APIClient, app: string) {
 }
 
 async function allAttachments(heroku: APIClient, app: string) {
-  const {body: attachments} = await heroku.get<AddOnAttachment[]>(`/apps/${app}/addon-attachments`, {
+  const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app}/addon-attachments`, {
     headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
   })
-  return attachments.filter((a: AddOnAttachment) => a.addon?.plan.name.startsWith('heroku-postgresql'))
+  return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
 }
 
 export async function getAttachment(heroku: APIClient, app: string, passedDb?: string, namespace?: string) {
@@ -100,10 +90,10 @@ export async function getAttachment(heroku: APIClient, app: string, passedDb?: s
       throw new Error(`${color.app(app)} has no databases`)
     }
 
-    matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars)])
+    matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars || [])])
 
     if (matches.length === 0) {
-      const validOptions = attachments.map(attachment => getConfigVarName(attachment.config_vars))
+      const validOptions = attachments.map(attachment => getConfigVarName(attachment.config_vars || []))
       throw new Error(`Unknown database: ${passedDb}. Valid options are: ${validOptions.join(', ')}`)
     }
   }
@@ -112,10 +102,10 @@ export async function getAttachment(heroku: APIClient, app: string, passedDb?: s
   const first = matches[0]
 
   // case for 422 where there are ambiguous attachments that are equivalent
-  if (matches.every((match: AddOnAttachment) => first.addon.id === match.addon.id && first.app.id === match.app.id)) {
+  if (matches.every((match: AddOnAttachmentWithConfigVarsAndPlan) => first.addon.id === match.addon.id && first.app.id === match.app?.id)) {
     const {body: config} = await heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
 
-    if (matches.every((match: AddOnAttachment)  => config[getConfigVarName(first.config_vars)] === config[getConfigVarName(match.config_vars)])) {
+    if (matches.every((match: AddOnAttachmentWithConfigVarsAndPlan)  => config[getConfigVarName(first.config_vars)] === config[getConfigVarName(match.config_vars || [])])) {
       return first
     }
   }
