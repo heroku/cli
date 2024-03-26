@@ -4,8 +4,11 @@ import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
+import stripAnsi = require('strip-ansi')
 
 const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
+  const continuousProtectionWarning = heredoc('Warning: Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
+
   beforeEach(() => {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
@@ -61,7 +64,7 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
       .get('/client/v11/databases/1')
       .reply(200, dbA)
     await cmdRun(['--at', '06:00 EDT', '--app', 'myapp'])
-    expect(stderr.output).to.include('Warning: Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
+    expect(stripAnsi(stderr.output)).to.include(continuousProtectionWarning)
   })
 
   it('does not warn user that logical backups are error prone if continuous protection is off', async () => {
@@ -72,7 +75,7 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
       .get('/client/v11/databases/1')
       .reply(200, dbA)
     await cmdRun(['--at', '06:00 EDT', '--app', 'myapp'])
-    expect(stderr.output).to.not.include('Warning: Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
+    expect(stripAnsi(stderr.output)).not.to.include(continuousProtectionWarning)
   })
 }
 
