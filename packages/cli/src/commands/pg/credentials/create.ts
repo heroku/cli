@@ -13,6 +13,7 @@ export default class Create extends Command {
     static flags = {
       name: flags.string({char: 'n', required: true, description: 'name of the new credential within the database'}),
       app: flags.app({rezuired: true}),
+      remote: flags.remote(),
     }
 
     static args = {
