@@ -68,8 +68,10 @@ export default class Schedule extends Command {
     const [, hour, timezone] = m
     let scheduledTZ = TZ[timezone.toUpperCase()]
     if (!scheduledTZ) {
-      ux.warn(`Unknown timezone ${color.yellow(timezone)}. Defaulting to UTC.`)
       scheduledTZ = 'UTC'
+      if (timezone) {
+        ux.warn(`Unknown timezone ${color.yellow(timezone)}. Defaulting to UTC.`)
+      }
     }
 
     return {hour, timezone: scheduledTZ}
