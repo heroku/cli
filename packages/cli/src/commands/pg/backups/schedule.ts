@@ -66,7 +66,13 @@ export default class Schedule extends Command {
     if (!m)
       throw new Error("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
     const [, hour, timezone] = m
-    return {hour, timezone: TZ[timezone.toUpperCase()] || timezone || 'UTC'}
+    let scheduledTZ = TZ[timezone.toUpperCase()]
+    if (!scheduledTZ) {
+      ux.warn(`Unknown timezone ${color.yellow(timezone)}. Defaulting to UTC.`)
+      scheduledTZ = 'UTC'
+    }
+
+    return {hour, timezone: scheduledTZ}
   };
 
   public async run(): Promise<void> {
