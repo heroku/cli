@@ -12,7 +12,7 @@ export default class Create extends Command {
     static help = 'Example:\n\n    heroku pg:credentials:create postgresql-something-12345 --name new-cred-name\n'
     static flags = {
       name: flags.string({char: 'n', required: true, description: 'name of the new credential within the database'}),
-      app: flags.app({rezuired: true}),
+      app: flags.app({required: true}),
       remote: flags.remote(),
     }
 
