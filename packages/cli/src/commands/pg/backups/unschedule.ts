@@ -1,7 +1,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {arbitraryAppDB, TransferSchedule, getAddon} from '../../../lib/pg/fetcher'
+import {arbitraryAppDB, getAddon} from '../../../lib/pg/fetcher'
+import {TransferSchedule} from '../../../lib/pg/types'
 import pgHost from '../../../lib/pg/host'
 
 export default class Unschedule extends Command {

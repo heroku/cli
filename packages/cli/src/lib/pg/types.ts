@@ -4,6 +4,7 @@ export type TransferSchedule = {
   hour: number,
   name: string,
   timezone: string,
+  uuid: string,
 }
 export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Heroku.AddOn['plan']}
 export type AddOnAttachmentWithConfigVarsAndPlan = Heroku.AddOnAttachment & {

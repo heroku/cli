@@ -105,5 +105,5 @@ async function allAttachments(heroku: APIClient, app: string) {
 }
 
 export async function getAddon(heroku: APIClient, app: string, db: string) {
-  return ((await getAttachment(heroku, app, db))).addon
+  return ((await attachment(heroku, app, db))).addon
 }
