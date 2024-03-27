@@ -28,9 +28,9 @@ export default class Unschedule extends Command {
         {hostname: pgHost()},
       )
       if (schedules.length === 0)
-        throw new Error(`No schedules on ${color.magenta(app)}`)
+        throw new Error(`No schedules on ${color.app(app)}`)
       if (schedules.length > 1) {
-        throw new Error(`Specify schedule on ${color.magenta(app)}. Existing schedules: ${schedules.map(s => color.green(s.name))
+        throw new Error(`Specify schedule on ${color.app(app)}. Existing schedules: ${schedules.map(s => color.green(s.name))
           .join(', ')}`)
       }
 
