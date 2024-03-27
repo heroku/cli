@@ -49,14 +49,13 @@ export default class Update extends Command {
       `,
     )
 
-    ux.action.start(`Updating SSL certificate ${sniEndpoint.name} for ${color.magenta(app)}`)
-    sniEndpoint = await this.heroku.request<SniEndpoint>(
-      `/apps/${app}/sni-endpoints/${sniEndpoint.name}`,
-      {
-        method: 'PATCH',
-        body: {certificate_chain: files.crt, private_key: files.key},
+    ux.action.start(`Updating SSL certificate ${sniEndpoint.name} for ${color.magenta(app)}`);
+    ({body: sniEndpoint} = await this.heroku.patch<SniEndpoint>(`/apps/${app}/sni-endpoints/${sniEndpoint.name}`, {
+      body: {
+        certificate_chain: files.crt,
+        private_key: files.key,
       },
-    ).then(response => response.body)
+    }))
     ux.action.stop()
 
     displayCertificateDetails(sniEndpoint, 'Updated certificate details:')
