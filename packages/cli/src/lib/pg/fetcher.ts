@@ -104,6 +104,6 @@ async function allAttachments(heroku: APIClient, app: string) {
   return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
 }
 
-export async function getAddon(heroku: APIClient, app: string, db: string) {
+export async function getAddon(heroku: APIClient, app: string, db = 'DATABASE_URL') {
   return ((await attachment(heroku, app, db))).addon
 }
