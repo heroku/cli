@@ -14,14 +14,19 @@ import {
 } from '../../../helpers/stubs/sni-endpoints'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
+import heredoc from 'tsheredoc'
 
-export const shouldHandleArgs = function (
+export const shouldHandleArgs = (
   commandText: string,
   command: GenericCmd,
-  callback: (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) => any,
-  options: any,
-  flags: Record<string, unknown> = {},
-) {
+  callback: (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) => nock.Scope,
+  options: {
+    stderr?: (endpoint: Partial<SniEndpoint>) => string,
+    stdout?: (certificateDetails: string, endpoint: Partial<SniEndpoint>) => string,
+    args?: string[],
+    flags?: {[key: string]: string},
+  },
+) => {
   const stdoutOutput = options.stdout || function () {
     return ''
   }
@@ -30,7 +35,8 @@ export const shouldHandleArgs = function (
     return ''
   }
 
-  const additionalFlags = Object.entries(flags).map(([k, v]) => `--${k}=${v}`)
+  const additionalFlags = Object.entries(options?.flags || {}).map(([k, v]) => `--${k}=${v}`)
+  const additionalArgs: string[] = options.args || []
 
   describe(`${commandText}`, function () {
     beforeEach(function () {
@@ -42,14 +48,14 @@ export const shouldHandleArgs = function (
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [
+      await runCommand(command, additionalArgs.concat([
         '--app',
         'example',
         '--name',
         'tokyo-1050',
-      ].concat(additionalFlags))
+      ], additionalFlags))
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expectOutput(stdout.output, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
     it('errors out for --endpoint when there are multiple', async function () {
@@ -61,12 +67,12 @@ export const shouldHandleArgs = function (
         .get('/apps/example/domains/01234567-89ab-cdef-0123-456789abcdef')
         .reply(200, endpointCnameDomain)
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [
+      await runCommand(command, additionalArgs.concat([
         '--app',
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ].concat(additionalFlags)).catch(function (error: Error) {
+      ], additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
       })
     })
@@ -78,14 +84,14 @@ export const shouldHandleArgs = function (
         .get('/apps/example/domains/456789ab-cdef-0123-4567-89abcdef0123')
         .reply(200, endpointDomain)
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [
+      await runCommand(command, additionalArgs.concat([
         '--app',
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ].concat(additionalFlags))
+      ], additionalFlags))
       expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(certificateDetails, endpoint))
+      expectOutput(stdout.output, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
     it('errors out if there is no match for --endpoint', async function () {
@@ -94,12 +100,12 @@ export const shouldHandleArgs = function (
         .reply(200, [endpoint2])
         .get('/apps/example/domains/89abcdef-0123-4567-89ab-cdef01234567')
         .reply(200, endpoint2Domain)
-      await runCommand(command, [
+      await runCommand(command, additionalArgs.concat([
         '--app',
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com',
-      ].concat(additionalFlags)).catch(function (error: Error) {
+      ], additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('Record not found.')
       })
     })
@@ -108,12 +114,12 @@ export const shouldHandleArgs = function (
       nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint, endpointHeroku])
-      await runCommand(command, [
+      await runCommand(command, additionalArgs.concat([
         '--app',
         'example',
         '--name',
         'tokyo-1050',
-      ].concat(additionalFlags)).catch(function (error: Error) {
+      ], additionalFlags)).catch(function (error: Error) {
         expect(error.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
       })
     })

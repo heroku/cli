@@ -75,5 +75,5 @@ describe('heroku shared', function () {
     `)
   }
 
-  sharedSni.shouldHandleArgs('certs:remove', Cmd, callback, {stderr}, {confirm: 'example'})
+  sharedSni.shouldHandleArgs('certs:remove', Cmd, callback, {stderr, flags: {confirm: 'example'}})
 })
