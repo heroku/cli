@@ -83,6 +83,6 @@ describe('pg:backups:unschedule error state', () => {
 
   it('errors when multiple schedules are returned from API', async () => {
     await runCommand(Cmd, ['--app', appName])
-      .catch(error => expect(stripAnsi(error.message)).to.equal(`Specify schedule on ${appName}. Existing schedules: DATABASE_URL, DATABASE_URL2`))
+      .catch(error => expect(stripAnsi(error.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: DATABASE_URL, DATABASE_URL2`))
   })
 })
