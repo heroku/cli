@@ -38,7 +38,6 @@ export default class Pull extends Command {
     for (const process of argv as string[]) {
       const tag = `${registry}/${app}/${process}`
       ux.styledHeader(`Pulling ${process} as ${tag}`)
-      // eslint-disable-next-line no-await-in-loop
       await DockerHelper.pullImage(tag)
     }
   }

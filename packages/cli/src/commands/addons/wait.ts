@@ -45,7 +45,6 @@ export default class Wait extends Command {
         if (addon.state === 'provisioning') {
           let addonResponse
           try {
-            // eslint-disable-next-line no-await-in-loop
             addonResponse = await waitForAddonProvisioning(this.heroku, addon, interval)
           } catch (error) {
             notify(`heroku addons:wait ${addonName}`, 'Add-on failed to provision', false)
@@ -63,7 +62,6 @@ export default class Wait extends Command {
             notify(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
           }
         } else if (addon.state === 'deprovisioning') {
-          // eslint-disable-next-line no-await-in-loop
           await waitForAddonDeprovisioning(this.heroku, addon, interval)
           if (Date.now() - startTime.valueOf() >= 1000 * 5) {
             notify(`heroku addons:wait ${addonName}`, 'Add-on successfully deprovisioned')
