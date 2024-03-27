@@ -50,7 +50,3 @@ const shouldCancel = function (cmdRun) {
 describe('pg:backups:cancel', () => {
   shouldCancel(args => cmd.run(args))
 })
-
-describe('pg:backups cancel', () => {
-  shouldCancel(require('./helpers.js').dup('cancel', cmd))
-})
