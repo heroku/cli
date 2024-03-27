@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import {HTTP, HTTPError} from 'http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {AddonWithPlan} from '../pg/util'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from '../pg/types'
 
 const addonHeaders = {
   Accept: 'application/vnd.heroku+json; version=3.actions',
@@ -10,7 +10,7 @@ const addonHeaders = {
 }
 
 export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}) {
-  const response = await heroku.post<(AddOnAttachment & {addon: {plan: AddOn['plan']}})[]>('/actions/addons/resolve', {
+  const response = await heroku.post<AddOnAttachmentWithConfigVarsAndPlan[]>('/actions/addons/resolve', {
     headers: addonHeaders,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
@@ -76,8 +76,8 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
 export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
-} = {}): Promise<AddOnAttachment & {addon: AddonWithPlan}> => {
-  const result = await heroku.post<(AddOnAttachment & {addon: AddonWithPlan})[]>('/actions/addon-attachments/resolve', {
+} = {}): Promise<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}> => {
+  const result = await heroku.post<(AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan})[]>('/actions/addon-attachments/resolve', {
     headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
   })
   return singularize('addon_attachment', options.namespace)(result.body)
