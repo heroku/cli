@@ -17,7 +17,7 @@ export async function arbitraryAppDB(heroku: APIClient, app: string) {
 
   pgDebug(`fetching arbitrary app db on ${app}`)
   const {body: addons} = await heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`)
-  const addon = addons.find(a => a.app?.name === app && a.plan?.name?.startsWith('heroku-postgresql'))
+  const addon = addons.find(a => a?.app?.name === app && a?.plan?.name?.startsWith('heroku-postgresql'))
   if (!addon) throw new Error(`No heroku-postgresql databases on ${app}`)
   return addon
 }
@@ -102,4 +102,8 @@ async function allAttachments(heroku: APIClient, app: string) {
     headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
   })
   return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
+}
+
+export async function getAddon(heroku: APIClient, app: string, db: string) {
+  return ((await attachment(heroku, app, db))).addon
 }
