@@ -41,7 +41,7 @@ export default class Destroy extends Command {
       throw new Error(`Credential ${name} must be detached from the app${credAttachmentApps.length > 1 ? 's' : ''} ${credAttachmentApps.map(appName => color.app(appName || ''))
         .join(', ')} before destroying.`)
 
-    await confirmApp(app, confirm, 'WARNING: Destructive action')
+    await confirmApp(app, confirm)
     ux.action.start(`Destroying credential ${color.cyan.bold(name)}`)
     await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: pgHost()})
     ux.action.stop()
