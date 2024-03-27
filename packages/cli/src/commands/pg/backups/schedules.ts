@@ -2,7 +2,8 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
-import {arbitraryAppDB, TransferSchedule} from '../../../lib/pg/fetcher'
+import {arbitraryAppDB} from '../../../lib/pg/fetcher'
+import type {TransferSchedule} from '../../../lib/pg/types'
 
 export default class Schedules extends Command {
   static topic = 'pg';

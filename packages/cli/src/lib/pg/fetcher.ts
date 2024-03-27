@@ -1,22 +1,14 @@
 import {APIClient} from '@heroku-cli/command'
+import type {AddOnAttachment} from '@heroku-cli/schema'
 import * as Heroku from '@heroku-cli/schema'
-import {appAttachment} from '../addons/resolve'
 import debug from 'debug'
-import {color} from '@heroku-cli/color'
+import {AmbiguousError, appAttachment, NotFound} from '../addons/resolve'
+import {getConfig} from './config'
+import color from '@heroku-cli/color'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from './types'
 import {getConfigVarName} from './util'
 
 const pgDebug = debug('pg')
-
-export type TransferSchedule = {
-  hour: number,
-  name: string,
-  timezone: string,
-}
-type AddOnWithPlan = Heroku.AddOnAttachment['addon'] & {plan: Heroku.AddOn['plan']}
-type AddOnAttachmentWithConfigVarsAndPlan = Heroku.AddOnAttachment & {
-  config_vars: Heroku.AddOn['config_vars']
-  addon: AddOnWithPlan
-}
 
 export async function arbitraryAppDB(heroku: APIClient, app: string) {
   // Since Postgres backups are tied to the app and not the add-on, but
@@ -30,41 +22,34 @@ export async function arbitraryAppDB(heroku: APIClient, app: string) {
   return addon
 }
 
-async function allAttachments(heroku: APIClient, app: string) {
-  const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app}/addon-attachments`, {
-    headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
-  })
-  return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
+async function matchesHelper(heroku: APIClient, app: string, db: string, namespace?: string): Promise<{matches: AddOnAttachment[] | null, error?: AmbiguousError | NotFound}> {
+  debug(`fetching ${db} on ${app}`)
+
+  const addonService = process.env.HEROKU_POSTGRESQL_ADDON_NAME || 'heroku-postgresql'
+  debug(`addon service: ${addonService}`)
+  try {
+    const attached = await appAttachment(heroku, app, db, {addon_service: addonService, namespace})
+    return ({matches: [attached]})
+  } catch (error) {
+    if (error instanceof AmbiguousError && error.body?.id === 'multiple_matches' && error.matches) {
+      return {matches: error.matches, error}
+    }
+
+    if (error instanceof NotFound) {
+      return {matches: null, error}
+    }
+
+    throw error
+  }
 }
 
-export async function getAttachment(heroku: APIClient, app: string, passedDb?: string, namespace?: string) {
-  let db = passedDb || 'DATABASE_URL'
-
-  function matchesHelper(app: string, db: string) {
-    pgDebug(`fetching ${db} on ${app}`)
-
-    const addonService = process.env.HEROKU_POSTGRESQL_ADDON_NAME || 'heroku-postgresql'
-    pgDebug(`addon service: ${addonService}`)
-    return appAttachment(heroku, app, db, {addon_service: addonService, namespace: namespace})
-      .then(attached => ({matches: [attached]}))
-      .catch(function (error) {
-        if (error.statusCode === 422 && error.body && error.body.id === 'multiple_matches' && error.matches) {
-          return {matches: error.matches, err: error}
-        }
-
-        if (error.statusCode === 404 && error.body && error.body.id === 'not_found') {
-          return {matches: null, err: error}
-        }
-
-        throw error
-      })
-  }
-
-  let {matches} = await matchesHelper(app, db)
-
+export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_URL', namespace = ''): Promise<Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>> {
+  const matchesOrError = await matchesHelper(heroku, app, db, namespace)
+  let {matches} = matchesOrError
+  const {error} = matchesOrError
   // happy path where the resolver matches just one
   if (matches && matches.length === 1) {
-    return matches[0]
+    return matches[0] as Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>
   }
 
   // case for 404 where there are implicit attachments
@@ -80,9 +65,8 @@ export async function getAttachment(heroku: APIClient, app: string, passedDb?: s
       db += '_URL'
     }
 
-    const [{body: config}, attachments] = await Promise.all([
-      heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`),
-      // getConfig(heroku, app),
+    const [config = {}, attachments] = await Promise.all([
+      getConfig(heroku, app),
       allAttachments(heroku, app),
     ])
 
@@ -90,23 +74,32 @@ export async function getAttachment(heroku: APIClient, app: string, passedDb?: s
       throw new Error(`${color.app(app)} has no databases`)
     }
 
-    matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars || [])])
+    matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars as string[])])
 
     if (matches.length === 0) {
-      const validOptions = attachments.map(attachment => getConfigVarName(attachment.config_vars || []))
-      throw new Error(`Unknown database: ${passedDb}. Valid options are: ${validOptions.join(', ')}`)
+      const validOptions = attachments.map(attachment => getConfigVarName(attachment.config_vars as string[]))
+      throw new Error(`Unknown database: ${db}. Valid options are: ${validOptions.join(', ')}`)
     }
   }
 
   // case for multiple attachments with passedDb
-  const first = matches[0]
+  const first = matches[0] as Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>
 
   // case for 422 where there are ambiguous attachments that are equivalent
-  if (matches.every((match: AddOnAttachmentWithConfigVarsAndPlan) => first.addon.id === match.addon.id && first.app.id === match.app?.id)) {
-    const {body: config} = await heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
+  if (matches.every(match => first.addon?.id === match.addon?.id && first.app?.id === match.app?.id)) {
+    const config = await getConfig(heroku, first.app.name as string) ?? {}
 
-    if (matches.every((match: AddOnAttachmentWithConfigVarsAndPlan)  => config[getConfigVarName(first.config_vars)] === config[getConfigVarName(match.config_vars || [])])) {
+    if (matches.every(match => config[getConfigVarName(first.config_vars)] === config[getConfigVarName(match.config_vars)])) {
       return first
     }
   }
+
+  throw error
+}
+
+async function allAttachments(heroku: APIClient, app: string) {
+  const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app}/addon-attachments`, {
+    headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
+  })
+  return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
 }

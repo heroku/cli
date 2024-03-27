@@ -2,10 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
-import {getAttachment} from '../../../lib/pg/fetcher'
+import {attachment as getAttachment} from '../../../lib/pg/fetcher'
 
 type Timezone = {
-  [key: string]: string;
   PST: string;
   PDT: string;
   MST: string;

@@ -2,6 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import {HTTP, HTTPError} from 'http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from '../pg/types'
 
 const addonHeaders = {
   Accept: 'application/vnd.heroku+json; version=3.actions',
@@ -9,7 +10,7 @@ const addonHeaders = {
 }
 
 export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}) {
-  const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
+  const response = await heroku.post<AddOnAttachmentWithConfigVarsAndPlan[]>('/actions/addons/resolve', {
     headers: addonHeaders,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
@@ -75,9 +76,9 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
 export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
-} = {}) => {
-  const result: HTTP<AddOnAttachment[]> = await heroku.post('/actions/addon-attachments/resolve', {
-    headers: attachmentHeaders, body: {app: app, addon_attachment: id, addon_service: options.addon_service},
+} = {}): Promise<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}> => {
+  const result = await heroku.post<(AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan})[]>('/actions/addon-attachments/resolve', {
+    headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
   })
   return singularize('addon_attachment', options.namespace)(result.body)
 }
@@ -155,24 +156,24 @@ export async function resolveAddon(...args: Parameters<typeof addonResolver>): R
 
 resolveAddon.cache = addonResolverMap
 
-class NotFound extends Error {
+export class NotFound extends Error {
   public readonly statusCode = 404
   public readonly message = 'Couldn\'t find that addon.'
 }
 
-class AmbiguousError extends Error {
+export class AmbiguousError extends Error {
   public readonly statusCode = 422
   public readonly message: string
   public readonly body = {id: 'multiple_matches', message: this.message}
 
-  constructor(public readonly matches: { name: string }[], public readonly type: string) {
+  constructor(public readonly matches: { name?: string }[], public readonly type: string) {
     super()
     this.message = `Ambiguous identifier; multiple matching add-ons found: ${matches.map(match => match.name).join(', ')}.`
   }
 }
 
-const singularize = function (type?: string | null, namespace?: string | null) {
-  return (matches: AddOnAttachment[]) => {
+function singularize(type?: string | null, namespace?: string | null) {
+  return <T extends {namespace?: string | null, name?: string}>(matches: T[]): T => {
     if (namespace) {
       matches = matches.filter(m => m.namespace === namespace)
     } else if (matches.length > 1) {
@@ -182,14 +183,12 @@ const singularize = function (type?: string | null, namespace?: string | null) {
 
     switch (matches.length) {
     case 0:
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       throw new NotFound()
+
     case 1:
       return matches[0]
+
     default:
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       throw new AmbiguousError(matches, type ?? '')
     }
   }
