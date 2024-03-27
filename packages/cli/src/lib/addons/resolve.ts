@@ -72,7 +72,7 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
   'Accept-Inclusion': 'addon:plan,config_vars',
 }
 
-const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
+export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
 } = {}) => {
