@@ -8,8 +8,7 @@ import {essentialPlan} from '../../../lib/pg/util'
 
 export default class Create extends Command {
     static topic = 'pg'
-    static description = 'create credential within database'
-    static help = 'Example:\n\n    heroku pg:credentials:create postgresql-something-12345 --name new-cred-name\n'
+    static description = 'create credential within database\nExample:\n\n    heroku pg:credentials:create postgresql-something-12345 --name new-cred-name\n'
     static flags = {
       name: flags.string({char: 'n', required: true, description: 'name of the new credential within the database'}),
       app: flags.app({required: true}),
