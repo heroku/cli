@@ -19,6 +19,9 @@
     "standard": "12.0.1",
     "tmp": "^0.2.1"
   },
+  "resolutions": {
+    "ansi-regex": "4.1.1"
+  },
   "standard": {
     "env": "mocha",
     "ignore": [
