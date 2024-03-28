@@ -7,6 +7,7 @@ globalThis.setTimeout = cb => {
 }
 
 process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
+process.env.IS_HEROKU_TEST_ENV = 'true'
 
 // Env var used to prevent some expensive
 // prerun and postrun hooks from initializing

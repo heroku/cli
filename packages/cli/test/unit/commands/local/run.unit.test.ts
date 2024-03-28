@@ -15,7 +15,7 @@ describe('local:run', () => {
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
-        expect(argv).is.eql(['run', '--', 'echo', 'hello'])
+        expect(argv).is.eql(['run', '--env', '.env', '--', 'echo', 'hello'])
       })
       .command(['local:run', 'echo', 'hello'])
       .it('can handle one argument passed to foreman after the -- argument separator')
@@ -24,7 +24,7 @@ describe('local:run', () => {
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
-        expect(argv).is.eql(['run', '--', 'echo', 'hello', 'world'])
+        expect(argv).is.eql(['run', '--env', '.env', '--', 'echo', 'hello', 'world'])
       })
       .command(['local:run', 'echo', 'hello', 'world'])
       .it('can handle multiple argument passed to foreman after the `--` argument separator')
@@ -55,7 +55,7 @@ describe('local:run', () => {
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
-        expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
+        expect(argv).is.eql(['run', '--env', '.env', '--port', '4200', '--', 'bin/serve'])
       })
       .command(['local:run', 'bin/serve', '--port', '4200'])
       .it('is passed to foreman an a --port flag before the `--` argument separator')
@@ -64,7 +64,7 @@ describe('local:run', () => {
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
-        expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
+        expect(argv).is.eql(['run', '--env', '.env', '--port', '4200', '--', 'bin/serve'])
       })
       .command(['local:run', 'bin/serve', '-p', '4200'])
       .it('is can pass the `-p` shorthand to foreman an a --port flag before the `--` argument separator')

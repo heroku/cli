@@ -38,7 +38,7 @@ ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
 module.exports = {
   topic: 'pg',
   command: 'upgrade',
-  description: 'For an Essential-* plan, this command upgrades the database to the latest stable PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the parent database before upgrading to the latest stable PostgreSQL version.',
+  description: 'For an Essential-* plan, this command upgrades the database\'s PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the PostgreSQL version.',
   help: 'to upgrade to another PostgreSQL version, use pg:copy instead',
   needsApp: true,
   needsAuth: true,
