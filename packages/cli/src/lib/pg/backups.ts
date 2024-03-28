@@ -3,38 +3,8 @@ import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import host from './host'
-import pgHost from './host'
+import type {BackupTransfer} from './types'
 import bytes = require('bytes')
-
-export type BackupTransfer = {
-  created_at: string,
-  canceled_at: string,
-  finished_at: string,
-  from_name: string,
-  from_type: string,
-  logs: Array<{
-    created_at: string,
-    message: string,
-  }>,
-  num: number,
-  options: {
-    pgbackups_name: string,
-  },
-  processed_bytes: number,
-  schedule: { uuid: string },
-  started_at: string,
-  source_bytes: number,
-  succeeded: boolean,
-  to_name: string,
-  to_type: string,
-  to_url: string,
-  updated_at: string,
-  warnings: number,
-}
-
-export type PublicUrlResponse = {
-  url: string,
-}
 
 function prefix(transfer: BackupTransfer) {
   if (transfer.from_type === 'pg_dump') {
@@ -55,7 +25,6 @@ function prefix(transfer: BackupTransfer) {
 }
 
 class Backups {
-  public transfer: Pick<Backups, 'status' | 'num' | 'name'> // legacy purposes only
   protected app: string
   protected heroku: APIClient
   protected logsAlreadyShown = new Set<string>()
@@ -63,7 +32,6 @@ class Backups {
   constructor(app: string, heroku: APIClient) {
     this.app = app
     this.heroku = heroku
-    this.transfer = this
   }
 
   public filesize(size: number, opts = {}): string {
@@ -100,7 +68,7 @@ class Backups {
     if (m) return Number.parseInt(m[1], 10)
     m = name.match(/^o[ab]\d+$/)
     if (m) {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: pgHost()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: host()})
       const transfer = transfers.find(t => this.name(t) === name)
       if (transfer) return transfer.num
     }

@@ -3,9 +3,10 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import confirmApp from '../../../lib/apps/confirm-app'
-import backupsFactory, {type BackupTransfer} from '../../../lib/pg/backups'
+import backupsFactory from '../../../lib/pg/backups'
 import {attachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
+import type {BackupTransfer} from '../../../lib/pg/types'
 
 function dropboxURL(url: string) {
   if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
@@ -23,12 +24,14 @@ function dropboxURL(url: string) {
 export default class Restore extends Command {
   static topic = 'pg'
   static description = 'restore a backup (default latest) to a database'
-  static help = 'defaults to saving the latest database to DATABASE_URL'
   static flags = {
-    'wait-interval': flags.string(),
+    'wait-interval': flags.integer({default: 3}),
     extensions: flags.string({
       char: 'e',
-      description: 'comma-separated list of extensions to pre-install in the public schema',
+      description: heredoc(`
+      comma-separated list of extensions to pre-install in the public schema
+      defaults to saving the latest database to DATABASE_URL
+      `),
     }),
     verbose: flags.boolean({char: 'v'}),
     confirm: flags.string({char: 'c'}),
@@ -43,9 +46,9 @@ export default class Restore extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Restore)
     const {app, 'wait-interval': waitInterval, extensions, confirm, verbose} = flags
-    const interval = Math.max(3, Number.parseInt(waitInterval ?? '0', 10)) || 3
+    const interval = Math.max(3, waitInterval)
     const {addon: db} = await attachment(this.heroku, app as string, args.database)
-    const {transfer: {name}, wait} = backupsFactory(app, this.heroku)
+    const {name, wait} = backupsFactory(app, this.heroku)
     let backupURL
     let backupName = args.backup
 
@@ -66,9 +69,9 @@ export default class Restore extends Command {
       if (backupName) {
         backup = backups.find(b => name(b) === backupName)
         if (!backup)
-          throw new Error(`Backup ${color.cyan(backupName)} not found for ${color.magenta(backupApp)}`)
+          throw new Error(`Backup ${color.cyan(backupName)} not found for ${color.app(backupApp)}`)
         if (!backup.succeeded)
-          throw new Error(`Backup ${color.cyan(backupName)} for ${color.magenta(backupApp)} did not complete successfully`)
+          throw new Error(`Backup ${color.cyan(backupName)} for ${color.app(backupApp)} did not complete successfully`)
       } else {
         backup = backups.filter(b => b.succeeded).sort((a, b) => {
           if (a.finished_at < b.finished_at) {
@@ -82,7 +85,7 @@ export default class Restore extends Command {
           return 0
         }).pop()
         if (!backup) {
-          throw new Error(`No backups for ${color.magenta(backupApp)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+          throw new Error(`No backups for ${color.app(backupApp)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
         }
 
         backupName = name(backup)
@@ -108,7 +111,7 @@ export default class Restore extends Command {
     await wait('Restoring', restore.uuid, interval, verbose, db.app.id as string)
   }
 
-  protected getSortedExtensions(extensions: string): string[] {
+  protected getSortedExtensions(extensions: string | null | undefined): string[] | undefined {
     return extensions?.split(',').map(ext => ext.trim().toLowerCase()).sort()
   }
 }

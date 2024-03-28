@@ -2,8 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
-import pgBackupsApi, {BackupTransfer} from '../../../lib/pg/backups'
+import pgBackupsApi from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
+import type {BackupTransfer} from '../../../lib/pg/types'
 
 function status(backup: BackupTransfer) {
   if (backup.succeeded) {
@@ -45,8 +46,8 @@ export default class Info extends Command {
   getBackup = async (id: string | undefined, app: string) => {
     let backupID
     if (id) {
-      const {transfer} = pgBackupsApi(app, this.heroku)
-      backupID = await transfer.num(id)
+      const {num} = pgBackupsApi(app, this.heroku)
+      backupID = await num(id)
       if (!backupID)
         throw new Error(`Invalid ID: ${id}`)
     } else {
@@ -64,8 +65,8 @@ export default class Info extends Command {
   }
 
   displayBackup = (backup: BackupTransfer, app: string) => {
-    const {filesize, transfer} = pgBackupsApi(app, this.heroku)
-    ux.styledHeader(`Backup ${color.cyan(transfer.name(backup))}`)
+    const {filesize, name} = pgBackupsApi(app, this.heroku)
+    ux.styledHeader(`Backup ${color.cyan(name(backup))}`)
     ux.styledObject({
       Database: color.green(backup.from_name),
       'Started at': backup.started_at,

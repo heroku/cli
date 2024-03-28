@@ -2,10 +2,11 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
-import pgBackupsApi, {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/backups'
+import pgBackupsApi from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
 import download from '../../../lib/pg/download'
 import * as fs from 'fs-extra'
+import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types'
 
 function defaultFilename() {
   let f = 'latest.dump'
@@ -39,7 +40,7 @@ export default class Download extends Command {
     let num
     ux.action.start(`Getting backup from ${color.magenta(app)}`)
     if (backup_id) {
-      num = await pgBackupsApi(app, this.heroku).transfer.num(backup_id)
+      num = await pgBackupsApi(app, this.heroku).num(backup_id)
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
