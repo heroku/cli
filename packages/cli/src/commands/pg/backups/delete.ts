@@ -31,7 +31,7 @@ export default class Delete extends Command {
     await confirmApp(app, confirm)
     ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)
 
-    const num = await pgbackups.transfer.num(backup_id)
+    const num = await pgbackups.num(backup_id)
     if (!num) {
       throw new Error(`Invalid Backup: ${backup_id}`)
     }

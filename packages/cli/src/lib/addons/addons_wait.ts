@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'

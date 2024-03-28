@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 import {APIClient} from '@heroku-cli/command'
 import {parse, ParsedDomain, ParseError} from 'psl'
 import * as Heroku from '@heroku-cli/schema'

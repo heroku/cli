@@ -2,8 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import host from '../../../lib/pg/host'
-import pgBackupsApi, {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/backups'
+import pgBackupsApi from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
+import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types'
 
 export default class Url extends Command {
     static topic = 'pg';
@@ -24,7 +25,7 @@ export default class Url extends Command {
 
       let num
       if (backup_id) {
-        num = await pgBackupsApi(app, this.heroku).transfer.num(backup_id)
+        num = await pgBackupsApi(app, this.heroku).num(backup_id)
         if (!num)
           throw new Error(`Invalid Backup: ${backup_id}`)
       } else {

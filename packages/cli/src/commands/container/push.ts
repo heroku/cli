@@ -87,7 +87,6 @@ export default class Push extends Command {
           ux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
         }
 
-        // eslint-disable-next-line no-await-in-loop
         await DockerHelper.buildImage(job.dockerfile, job.resource, buildArgs, contextPath)
       }
     } catch (error) {
@@ -102,7 +101,6 @@ export default class Push extends Command {
           ux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
         }
 
-        // eslint-disable-next-line no-await-in-loop
         await DockerHelper.pushImage(job.resource)
       }
 

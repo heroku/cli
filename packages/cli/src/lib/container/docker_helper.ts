@@ -148,7 +148,6 @@ export const chooseJobs = async function (jobs: groupedDockerJobs) {
           message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
         }] as inquirer.QuestionCollection
 
-        // eslint-disable-next-line no-await-in-loop
         const answer = await inquirer.prompt(prompt)
         const found = group.find(o => o.dockerfile === answer[processType])
 
