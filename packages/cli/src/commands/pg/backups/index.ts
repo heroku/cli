@@ -1,8 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import backupsFactory, {type BackupTransfer} from '../../../lib/pg/backups'
+import backupsFactory from '../../../lib/pg/backups'
 import host from '../../../lib/pg/host'
+import type {BackupTransfer} from '../../../lib/pg/types'
 
 export default class Index extends Command {
   static topic = 'pg'
@@ -42,7 +43,7 @@ export default class Index extends Command {
 
   private displayBackups(transfers: BackupTransfer[], app: string) {
     const backups = transfers.filter(backupTransfer => backupTransfer.from_type === 'pg_dump' && backupTransfer.to_type === 'gof3r')
-    const {transfer: {name, status}, filesize} = backupsFactory(app, this.heroku)
+    const {name, status, filesize} = backupsFactory(app, this.heroku)
     ux.styledHeader('Backups')
     if (backups.length === 0) {
       ux.log(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
@@ -73,7 +74,7 @@ export default class Index extends Command {
     const restores = transfers
       .filter(t => t.from_type !== 'pg_dump' && t.to_type === 'pg_restore')
       .slice(0, 10) // first 10 only
-    const {transfer: {name, status}, filesize} = backupsFactory(app, this.heroku)
+    const {name, status, filesize} = backupsFactory(app, this.heroku)
     ux.styledHeader('Restores')
     if (restores.length === 0) {
       ux.log(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
@@ -101,7 +102,7 @@ export default class Index extends Command {
   }
 
   private displayCopies(transfers: BackupTransfer[], app: string) {
-    const {transfer: {name, status}, filesize} = backupsFactory(app, this.heroku)
+    const {name, status, filesize} = backupsFactory(app, this.heroku)
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
     ux.styledHeader('Copies')
     if (copies.length === 0) {

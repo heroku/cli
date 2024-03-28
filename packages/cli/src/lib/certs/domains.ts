@@ -5,7 +5,6 @@ import {Domain} from '../types/domain'
 async function * customDomainCreationComplete(app: string, heroku: APIClient): AsyncGenerator<Domain[] | null> {
   let retries = 30
   while (retries--) {
-    // eslint-disable-next-line no-await-in-loop
     const {body: apiDomains} = await heroku.get<Domain[]>(`/apps/${app}/domains`)
     const someNull = apiDomains.some((domain: Domain) => domain.kind === 'custom' && !domain.cname)
     if (!someNull) {
@@ -13,7 +12,6 @@ async function * customDomainCreationComplete(app: string, heroku: APIClient): A
       break
     }
 
-    // eslint-disable-next-line no-await-in-loop
     await new Promise(resolve => {
       setTimeout(resolve, 1000)
     })

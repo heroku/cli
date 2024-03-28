@@ -36,7 +36,6 @@ export default class Wait extends Command {
       let waiting = false
       while (true) {
         try {
-          // eslint-disable-next-line no-await-in-loop
           status = await api.request<RedisFormationWaitResponse>(`/redis/v0/databases/${addon.name}/wait`, 'GET').then(response => response.body)
         } catch (error) {
           const httpError = error as HTTPError
@@ -60,7 +59,6 @@ export default class Wait extends Command {
 
         ux.action.status = status.message
 
-        // eslint-disable-next-line no-await-in-loop
         await wait(interval * 1000)
       }
     }

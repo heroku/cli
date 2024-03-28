@@ -162,7 +162,6 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       if (json) {
         const redii = []
         for (const db of databases) {
-          // eslint-disable-next-line no-await-in-loop
           const {body: redis} = await db.redis || {}
           if (!redis) {
             continue
@@ -181,7 +180,6 @@ export default (app: string, database: string | undefined, json: boolean, heroku
 
       // print out the info of the addon and redis db info
       for (const db of databases) {
-        // eslint-disable-next-line no-await-in-loop
         const {body: redis} = await db.redis || {}
         if (!redis) {
           continue
