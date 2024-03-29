@@ -22,7 +22,7 @@ export default class Url extends Command {
 
   static args = {
     database: Args.string(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Url)
