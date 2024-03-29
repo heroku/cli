@@ -5,16 +5,12 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
+import * as fixtures from '../../../../fixtures/addons/fixtures'
 
 describe('pg:credentials:url', () => {
-  const addon = {
-    name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
-  }
-  const attachments = [
-    {
-      app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
-    },
-  ]
+  const addon = fixtures.addons['dwh-db']
+  const attachments = [fixtures.attachments['acme-inc-dwh::DATABASE']]
+
   afterEach(() => {
     nock.cleanAll()
   })
@@ -33,11 +29,12 @@ describe('pg:credentials:url', () => {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
     nock('https://api.heroku.com')
-      .get('/addons/postgres-1/addon-attachments')
+      .get(`/addons/${addon.name}/addon-attachments`)
       .reply(200, attachments)
     nock('https://api.data.heroku.com')
-      .get('/postgres/v0/databases/postgres-1/credentials/gandalf')
+      .get(`/postgres/v0/databases/${addon.name}/credentials/gandalf`)
       .reply(200, roleInfo)
+
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -54,13 +51,12 @@ describe('pg:credentials:url', () => {
   })
 
   it('throws an error when the db is starter plan but the name is specified', async () => {
-    const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
-    }
+    const hobbyAddon = fixtures.addons['www-db']
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     const err = 'Legacy Essential-tier databases do not support named credentials.'
+
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -85,8 +81,9 @@ describe('pg:credentials:url', () => {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
     nock('https://api.data.heroku.com')
-      .get('/postgres/v0/databases/postgres-1/credentials/lucy')
+      .get(`/postgres/v0/databases/${addon.name}/credentials/lucy`)
       .reply(200, roleInfo)
+
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -103,10 +100,7 @@ describe('pg:credentials:url', () => {
   })
 
   it('shows the correct credentials with starter plan', async () => {
-    const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
-    }
-
+    const hobbyAddon = fixtures.addons['www-db']
     const roleInfo = {
       uuid: null, name: 'default', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
         {
@@ -118,8 +112,9 @@ describe('pg:credentials:url', () => {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     nock('https://api.data.heroku.com')
-      .get('/postgres/v0/databases/postgres-1/credentials/default')
+      .get(`/postgres/v0/databases/${hobbyAddon.name}/credentials/default`)
       .reply(200, roleInfo)
+
     await runCommand(Cmd, [
       '--app',
       'myapp',
