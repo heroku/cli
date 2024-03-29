@@ -3,7 +3,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd  from '../../../../../src/commands/pg/credentials/rotate'
+import Cmd from '../../../../../src/commands/pg/credentials/rotate'
 import runCommand from '../../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import stripAnsi = require('strip-ansi')
@@ -132,7 +132,7 @@ describe('pg:credentials:rotate', async () => {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
       const message = heredoc(`
-      WARNING: Destructive Action
+      Destructive Action
       Connections will be reset and applications will be restarted.
       This command will affect the apps ⬢ appname_1, ⬢ appname_2, ⬢ appname_3.`)
       await runCommand(Cmd, [
@@ -149,7 +149,7 @@ describe('pg:credentials:rotate', async () => {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
       const message = heredoc(`
-      WARNING: Destructive Action
+      Destructive Action
       This forces rotation on all credentials including the default credential.
       Connections will be reset and applications will be restarted.
       Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
@@ -167,7 +167,7 @@ describe('pg:credentials:rotate', async () => {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       const message = heredoc(`
-      WARNING: Destructive Action
+      Destructive Action
       The password for the my_role credential will rotate.
       Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.
       This command will affect the apps ⬢ appname_1, ⬢ appname_2.`)
@@ -184,7 +184,7 @@ describe('pg:credentials:rotate', async () => {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       const message = heredoc(`
-      WARNING: Destructive Action
+      Destructive Action
       The password for the my_role credential will rotate.
       Connections will be reset and applications will be restarted.
       Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
