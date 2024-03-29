@@ -19,7 +19,7 @@ describe('pg:credentials:url', () => {
     nock.cleanAll()
   })
 
-  it.only('shows the correct credentials', async () => {
+  it('shows the correct credentials', async () => {
     const roleInfo = {
       uuid: 'aaaa', name: 'gandalf', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
         {
