@@ -27,11 +27,9 @@ const handleNotFound = function (err: { statusCode: number, body?: { resource: s
 }
 
 export const addonResolver = async (heroku: APIClient, app: string | undefined, id: string, options?: AddOnAttachment) => {
-  const headers = addonHeaders
-
   const getAddon = async (addonId: string) => {
-    const response = await heroku.post<AddOnAttachment[]>('/actions/addons/resolve', {
-      headers: headers,
+    const response = await heroku.post<AddOnAttachmentWithConfigVarsAndPlan[]>('/actions/addons/resolve', {
+      headers: addonHeaders,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
     return singularize('addon', options?.namespace || '')(response?.body)
@@ -76,10 +74,12 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
 export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
-} = {}): Promise<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}> => {
-  const result = await heroku.post<(AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan})[]>('/actions/addon-attachments/resolve', {
-    headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
-  })
+} = {}): Promise<AddOnAttachment & { addon: AddOnAttachmentWithConfigVarsAndPlan }> => {
+  const result = await heroku.post<(AddOnAttachment & {
+    addon: AddOnAttachmentWithConfigVarsAndPlan
+  })[]>('/actions/addon-attachments/resolve', {
+      headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
+    })
   return singularize('addon_attachment', options.namespace)(result.body)
 }
 
@@ -173,7 +173,7 @@ export class AmbiguousError extends Error {
 }
 
 function singularize(type?: string | null, namespace?: string | null) {
-  return <T extends {namespace?: string | null, name?: string}>(matches: T[]): T => {
+  return <T extends { namespace?: string | null, name?: string }>(matches: T[]): T => {
     if (namespace) {
       matches = matches.filter(m => m.namespace === namespace)
     } else if (matches.length > 1) {
