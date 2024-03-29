@@ -29,14 +29,18 @@ export default class Url extends Command {
     const {app, name} = flags
     const {database} = args
     const db = await getAddon(this.heroku, app, database)
-    console.log('db', db)
     if (legacyEssentialPlan(db) && name !== 'default') {
       throw new Error('Legacy Essential-tier databases do not support named credentials.')
     }
 
     const {body: credInfo} = await this.heroku.get<CredentialsInfo>(
       `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
-      {hostname: pgHost()},
+      {
+        hostname: pgHost(),
+        headers: {
+          Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
+        },
+      },
     )
     const activeCreds = credInfo.credentials.find(c => c.state === 'active')
     if (!activeCreds) {
@@ -48,20 +52,19 @@ export default class Url extends Command {
     }, {
       user: activeCreds?.user, password: activeCreds?.password,
     })
-    const connUrl = new URL(`/${creds.database}`)
-    connUrl.host = `${creds.host}:${creds.port}`
+    const connUrl = new URL(`postgres://${creds.host}/${creds.database}`)
+    connUrl.port = creds.port.toString()
     if (creds.user && creds.password) {
       connUrl.username = creds.user
       connUrl.password = creds.password
     }
 
-    connUrl.protocol = 'postgres:'
     ux.log(heredoc(`
       Connection information for ${color.yellow(name)} credential.
       Connection info string:
-          "dbname=${creds.database} host=${creds.host} port=${creds.port} user=${creds.user} password=${creds.password} sslmode=require"
+        "dbname=${creds.database} host=${creds.host} port=${creds.port} user=${creds.user} password=${creds.password} sslmode=require"
       Connection URL:
-          ${connUrl}
+        ${connUrl}
     `))
   }
 }

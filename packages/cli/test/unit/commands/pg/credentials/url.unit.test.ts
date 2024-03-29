@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/credentials/destroy'
+import Cmd from '../../../../../src/commands/pg/credentials/url'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
@@ -47,10 +47,9 @@ describe('pg:credentials:url', () => {
     expectOutput(stdout.output, heredoc(`
       Connection information for gandalf credential.
       Connection info string:
-         "dbname=d123 host=localhost port=5442 user=gandalf
-          password=hunter2 sslmode=require"
+        "dbname=d123 host=localhost port=5442 user=gandalf password=hunter2 sslmode=require"
       Connection URL:
-          postgres://gandalf:hunter2@localhost:5442/d123
+        postgres://gandalf:hunter2@localhost:5442/d123
     `))
   })
 
@@ -97,10 +96,9 @@ describe('pg:credentials:url', () => {
     expectOutput(stdout.output, heredoc(`
       Connection information for lucy credential.
       Connection info string:
-         "dbname=d123 host=localhost
-          port=5442 user=lucy password=hunter2 sslmode=require"
+        "dbname=d123 host=localhost port=5442 user=lucy password=hunter2 sslmode=require"
       Connection URL:
-          postgres://lucy:hunter2@localhost:5442/d123
+        postgres://lucy:hunter2@localhost:5442/d123
     `))
   })
 
@@ -129,9 +127,9 @@ describe('pg:credentials:url', () => {
     expectOutput(stdout.output, heredoc(`
       Connection information for default credential.
       Connection info string:
-         "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
+        "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
       Connection URL:
-          postgres://abcdef:hunter2@localhost:5442/d123
+        postgres://abcdef:hunter2@localhost:5442/d123
     `))
   })
 })
