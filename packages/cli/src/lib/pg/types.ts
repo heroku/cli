@@ -43,3 +43,13 @@ export type Link = {
   message: string,
   name: string
 }
+export type CredentialsInfo = {
+  database: string
+  host: string
+  port: number
+  credentials: {
+    user: string
+    password: string
+    state: string
+  }[]
+}
