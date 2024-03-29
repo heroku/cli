@@ -19,11 +19,11 @@ jobs:
       - run: yarn --immutable --network-timeout 1000000
       - name: Build Heroku CLI
         run: yarn build
-      - name: Generate Fig Spec
-        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
       - name: Get Heroku Version
         id: cli-version
-        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')"
+        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')" >> $GITHUB_OUTPUT
+      - name: Generate Fig Spec
+        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
       - name: Create Fig Autocomplete PR
         uses: withfig/push-to-fig-autocomplete-action@v2
         with:

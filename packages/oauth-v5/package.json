@@ -23,7 +23,7 @@
   "dependencies": {
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@oclif/plugin-legacy": "^1.3.0",

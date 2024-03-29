@@ -3,6 +3,8 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {sortBy, compact} from 'lodash'
+import {HTTPError} from 'http-call'
+import heredoc from 'tsheredoc'
 
 const COST_MONTHLY: Record<string, number> = {
   Free: 0,
@@ -17,6 +19,9 @@ const COST_MONTHLY: Record<string, number> = {
   '1X': 36,
   '2X': 72,
   PX: 576,
+  'Performance-L-RAM': 500,
+  'Performance-XL': 750,
+  'Performance-2XL': 1500,
 }
 
 const calculateHourly =  (size: string) => COST_MONTHLY[size] / 720
@@ -99,24 +104,38 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 
 export default class Type extends Command {
   static strict = false
-  static description = 'manage dyno sizes'
-  static help = `
-Called with no arguments shows the current dyno size.
+  static description = heredoc`
+    manage dyno sizes
+    Called with no arguments shows the current dyno size.
 
-Called with one argument sets the size.
-Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
+    Called with one argument sets the size.
+    Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
-Called with 1..n TYPE=SIZE arguments sets the quantity per type.
-`
+    Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+  `
   static aliases = ['ps:resize', 'resize', 'dyno:type', 'dyno:resize']
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   public async run(): Promise<void> {
     const {flags, ...restParse} = await this.parse(Type)
     const argv = restParse.argv as string[]
     const {app} = flags
+
+    // will remove this flag once we have
+    // successfully launched larger dyno sizes
+    let isLargerDyno = false
+    const {body: largerDynoFeatureFlag} = await this.heroku.get<Heroku.AccountFeature>('/account/features/frontend-larger-dynos')
+      .catch((error: HTTPError) => {
+        if (error.statusCode === 404) {
+          return {body: {enabled: false}}
+        }
+
+        throw error
+      })
+
     const parse = async () => {
       if (!argv || argv.length === 0)
         return []
@@ -139,6 +158,21 @@ Called with 1..n TYPE=SIZE arguments sets the quantity per type.
     }
 
     const changes = await parse()
+
+    // checks for larger dyno sizes
+    // if the feature is not enabled
+    if (!largerDynoFeatureFlag.enabled) {
+      changes.forEach(({size}) => {
+        const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+        isLargerDyno = largerDynoNames.test(size)
+
+        if (isLargerDyno) {
+          const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+          ux.error(`No such size as ${size}. Use ${availableDynoSizes}.`, {exit: 1})
+        }
+      })
+    }
+
     if (changes.length > 0) {
       ux.action.start(`Scaling dynos on ${color.magenta(app)}`)
       await this.heroku.patch(`/apps/${app}/formation`, {body: {updates: changes}})

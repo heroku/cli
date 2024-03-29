@@ -34,7 +34,11 @@ jobs:
         run: curl https://cli-assets.heroku.com/install.sh | sh
         shell: bash
       - name: updating to heroku version ${{ inputs.version }}
-        run: heroku update --version=${{ inputs.version }}
+        id: current-cli-version
+        run: heroku update beta && version=$(heroku version | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+')
+      - name: check version ${{ inputs.version }} exists
+        if: ${{ inputs.version }} == ${{ steps.current-cli-version.outputs.version }}
+        run: heroku version
         shell: bash
       - name: test release
         run: ./scripts/postrelease/test_release
