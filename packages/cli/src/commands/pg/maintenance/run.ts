@@ -25,12 +25,12 @@ export default class Run extends Command {
     const {database} = args
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
-      throw new Error("pg:maintenance isn't available for Essential-tier databases.")
+      ux.error("pg:maintenance isn't available for Essential-tier databases.")
     ux.action.start(`Starting maintenance for ${color.yellow(db.name)}`)
     if (!force) {
       const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       if (!appInfo.maintenance)
-        throw new Error('Application must be in maintenance mode or run with --force')
+        ux.error('Application must be in maintenance mode or run with --force')
     }
 
     const {body: response} = await this.heroku.post<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: pgHost()})
