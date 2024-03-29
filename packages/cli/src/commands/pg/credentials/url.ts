@@ -9,8 +9,8 @@ import type {CredentialsInfo} from '../../../lib/pg/types'
 import heredoc from 'tsheredoc'
 
 export default class Url extends Command {
-  static topic = 'pg';
-  static description = 'show information on a database credential';
+  static topic = 'pg'
+  static description = 'show information on a database credential'
   static flags = {
     name: flags.string({
       char: 'n',
