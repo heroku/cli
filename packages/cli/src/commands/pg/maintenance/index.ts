@@ -22,7 +22,7 @@ export default class Index extends Command {
     const {database} = args
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
-      throw new Error("pg:maintenance isn't available for Essential-tier databases.")
+      ux.error("pg:maintenance isn't available for Essential-tier databases.")
     const {body: info} = await this.heroku.get<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: pgHost()})
     ux.log(info.message)
   }
