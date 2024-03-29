@@ -1,7 +1,8 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
-
+import color from '@heroku-cli/color'
 import {fork as foreman} from '../../lib/local/fork-foreman'
+import * as fs from 'fs'
 
 export default class Run extends Command {
   static description = 'run a one-off command'
@@ -31,7 +32,13 @@ export default class Run extends Command {
       this.error(errorMessage, {exit: -1})
     }
 
-    if (flags.env) execArgv.push('--env', flags.env)
+    let envFile = flags.env || '.env'
+    if (fs.existsSync(envFile) && !fs.statSync(envFile).isFile()) {
+      this.warn(`The specified location for the env file, ${color.bold(envFile)}, is not a file, ignoring.`)
+      envFile = ''
+    }
+
+    execArgv.push('--env', envFile)
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
