@@ -30,7 +30,7 @@ export default class Url extends Command {
     const {database} = args
     const db = await getAddon(this.heroku, app, database)
     if (legacyEssentialPlan(db) && name !== 'default') {
-      throw new Error('Legacy Essential-tier databases do not support named credentials.')
+      ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
 
     const {body: credInfo} = await this.heroku.get<CredentialsInfo>(
@@ -44,7 +44,7 @@ export default class Url extends Command {
     )
     const activeCreds = credInfo.credentials.find(c => c.state === 'active')
     if (!activeCreds) {
-      ux.error(`could not find any active credentials for ${name}`, {exit: 1})
+      ux.error(`Could not find any active credentials for ${name}`, {exit: 1})
     }
 
     const creds = Object.assign({}, db, {
