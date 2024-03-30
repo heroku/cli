@@ -14,6 +14,7 @@ export default class Create extends Command {
   static flags = {
     as: flags.string({description: 'name of link to create'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {
