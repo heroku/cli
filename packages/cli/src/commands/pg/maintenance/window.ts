@@ -32,9 +32,9 @@ export default class Window extends Command {
     const {app} = flags
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
-      throw new Error("pg:maintenance isn't available for Essential-tier databases.")
+      ux.error("pg:maintenance isn't available for Essential-tier databases.")
     if (!window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/))
-      throw new Error('Window must be "Day HH:MM" where MM is 00 or 30')
+      ux.error('Window must be "Day HH:MM" where MM is 00 or 30')
 
     ux.action.start(`Setting maintenance window for ${color.yellow(db.name)} to ${color.cyan(window)}`)
     const {body: response} = await this.heroku.put<MaintenanceApiResponse>(
