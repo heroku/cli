@@ -53,3 +53,6 @@ export type CredentialsInfo = {
     state: string
   }[]
 }
+export type MaintenanceApiResponse = {
+  message: string,
+}
