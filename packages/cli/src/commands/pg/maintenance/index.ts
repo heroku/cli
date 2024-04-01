@@ -10,7 +10,8 @@ export default class Index extends Command {
   static description = 'show current maintenance information';
   static flags = {
     app: flags.app({required: true}),
-  };
+    remote: flags.remote(),
+  }
 
   static args = {
     database: Args.string(),
