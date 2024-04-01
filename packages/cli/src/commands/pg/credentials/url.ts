@@ -18,7 +18,8 @@ export default class Url extends Command {
       default: 'default',
     }),
     app: flags.app({required: true}),
-  };
+    remote: flags.remote(),
+  }
 
   static args = {
     database: Args.string(),
