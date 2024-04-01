@@ -15,7 +15,6 @@ exports.commands = flatten([
   require('./commands/copy'),
   require('./commands/credentials'),
   require('./commands/credentials/rotate'),
-  require('./commands/credentials/url'),
   require('./commands/diagnose'),
   require('./commands/info'),
   require('./commands/kill'),
