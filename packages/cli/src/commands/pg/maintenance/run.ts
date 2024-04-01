@@ -8,16 +8,17 @@ import {MaintenanceApiResponse} from '../../../lib/pg/types'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Run extends Command {
-  static topic = 'pg';
-  static description = 'start maintenance';
+  static topic = 'pg'
+  static description = 'start maintenance'
   static flags = {
     force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),
-  };
+    remote: flags.remote(),
+  }
 
   static args = {
     database: Args.string(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Run)
