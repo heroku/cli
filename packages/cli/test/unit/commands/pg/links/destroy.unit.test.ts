@@ -1,0 +1,60 @@
+import {stdout, stderr} from 'stdout-stderr'
+import Cmd from '../../../../../src/commands/pg/links/destroy'
+import runCommand from '../../../../helpers/runCommand'
+import * as nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput'
+import {expect} from 'chai'
+import * as fixtures from '../../../../fixtures/addons/fixtures'
+import heredoc from 'tsheredoc'
+
+describe('pg:links:destroy', () => {
+  afterEach(() => {
+    nock.cleanAll()
+  })
+
+  describe('on an essential database', () => {
+    const addon = fixtures.addons['www-db']
+
+    it('errors when attempting to destroy a link', async () => {
+      nock('https://api.heroku.com')
+        .post('/actions/addon-attachments/resolve')
+        .reply(200, [{addon}])
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--confirm',
+        'myapp',
+        'redis',
+      ])
+        .catch(error => {
+          expect(error.message).to.equal("pg:links isn't available for Essential-tier databases.")
+        })
+    })
+  })
+
+  describe('on a production database', () => {
+    const addon = fixtures.addons['dwh-db']
+
+    it('destroys a link', async () => {
+      nock('https://api.heroku.com')
+        .post('/actions/addon-attachments/resolve')
+        .reply(200, [{addon}])
+      nock('https://api.data.heroku.com')
+        .delete(`/client/v11/databases/${addon.id}/links/redis`)
+        .reply(200)
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--confirm',
+        'myapp',
+        'redis',
+      ])
+
+      expectOutput(stdout.output, '')
+      expectOutput(stderr.output, heredoc(`
+        Destroying link redis from ${addon.name}...
+        Destroying link redis from ${addon.name}... done
+      `))
+    })
+  })
+})
