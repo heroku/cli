@@ -1,16 +1,21 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import heredoc from 'tsheredoc'
 import {addonResolver} from '../../../lib/addons/resolve'
-import {attachment, getAddon} from '../../../lib/pg/fetcher'
+import {getAddon} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
-import type {Link} from '../../../lib/pg/types'
+import type {AddOnAttachmentWithConfigVarsAndPlan, Link} from '../../../lib/pg/types'
 import {essentialPlan} from '../../../lib/pg/util'
 
 export default class Create extends Command {
   static topic = 'pg'
-  static description = 'create a link between data stores'
-  static help = 'Example:\n\n    heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN'
+  static description = heredoc(`
+  create a link between data stores
+  Example:
+  heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
+  `)
+
   static flags = {
     as: flags.string({description: 'name of link to create'}),
     app: flags.app({required: true}),
@@ -36,7 +41,7 @@ export default class Create extends Command {
     const [db, target] = await Promise.all([
       getAddon(this.heroku, app, args.database),
       service(args.remote),
-    ])
+    ]) as [AddOnAttachmentWithConfigVarsAndPlan, AddOnAttachmentWithConfigVarsAndPlan]
 
     if (essentialPlan(db))
       throw new Error('pg:links isn\u2019t available for Essential-tier databases.')
