@@ -6,7 +6,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
-describe.only('pg:maintenance', () => {
+describe('pg:maintenance', () => {
   const addon = fixtures.addons['dwh-db']
 
   afterEach(() => {
