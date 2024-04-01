@@ -21,7 +21,6 @@ exports.commands = flatten([
   require('./commands/kill'),
   require('./commands/killall'),
   require('./commands/links'),
-  require('./commands/links/create'),
   require('./commands/links/destroy'),
   require('./commands/locks'),
   require('./commands/maintenance'),

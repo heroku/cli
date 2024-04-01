@@ -6,9 +6,10 @@ import {addonResolver} from '../../lib/addons/resolve'
 import type {AddOn, Plan} from '@heroku-cli/schema'
 import {HTTP} from 'http-call'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
 
 export default class Upgrade extends Command {
-  static aliases = ['addons:downgrade'];
+  static aliases = ['addons:downgrade']
   static topic = 'addons'
   static description = 'change add-on plan'
   static help = 'See available plans with `heroku addons:plans SERVICE`.\n\nNote that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.\nEither one can be used to change an add-on plan up or down.\n\nhttps://devcenter.heroku.com/articles/managing-add-ons'
@@ -30,9 +31,9 @@ export default class Upgrade extends Command {
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
 
-    let resolvedAddon: Required<AddOn & { provision_message: string }>
+    let resolvedAddon: Required<AddOn> | AddOnAttachmentWithConfigVarsAndPlan
     try {
-      resolvedAddon = await addonResolver(this.heroku, app, addon) as Required<AddOn & { provision_message: string }>
+      resolvedAddon = await addonResolver(this.heroku, app, addon)
     } catch (error) {
       if (error instanceof HerokuAPIError && error.http.statusCode === 422 && error.body.id === 'multiple_matches') {
         throw new Error(this.buildApiErrorMessage(error.http.body.message, ctx))
@@ -48,9 +49,7 @@ export default class Upgrade extends Command {
     ux.action.start(`Changing ${color.magenta(addonName ?? '')} on ${color.cyan(appName ?? '')} from ${color.blue(resolvedAddonPlan?.name ?? '')} to ${color.blue(updatedPlanName)}`)
 
     try {
-      const patchResult: HTTP<Required<AddOn & {
-        provision_message: string
-      }>> = await this.heroku.patch(`/apps/${appName}/addons/${addonName}`,
+      const patchResult: HTTP<Required<AddOn>> = await this.heroku.patch(`/apps/${appName}/addons/${addonName}`,
         {
           body: {plan: {name: updatedPlanName}},
           headers: {

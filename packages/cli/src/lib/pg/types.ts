@@ -24,7 +24,7 @@ export type BackupTransfer = {
     pgbackups_name: string,
   },
   processed_bytes: number,
-  schedule: {uuid: string},
+  schedule: { uuid: string },
   started_at: string,
   source_bytes: number,
   succeeded: boolean,
@@ -34,8 +34,12 @@ export type BackupTransfer = {
   updated_at: string,
   warnings: number,
 }
-export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Required<Heroku.AddOn['plan']>}
-export type AddOnAttachmentWithConfigVarsAndPlan = Heroku.AddOnAttachment & {
+export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & { plan: Required<Heroku.AddOn['plan']> }
+export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
   config_vars: Heroku.AddOn['config_vars']
   addon: AddOnWithPlan
+}
+export type Link = {
+  message: string,
+  name: string
 }
