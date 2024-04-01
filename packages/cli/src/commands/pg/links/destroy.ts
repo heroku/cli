@@ -13,8 +13,9 @@ export default class Destroy extends Command {
   static example = '$ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100';
 
   static flags = {
-    confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
+    remote: flags.remote(),
   };
 
   static args = {
