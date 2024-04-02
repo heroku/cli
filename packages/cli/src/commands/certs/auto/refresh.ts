@@ -6,7 +6,7 @@ export default class Refresh extends Command {
   static description = 'refresh ACM for an app';
   static flags = {
     app: flags.app({required: true}),
-    flags: flags.remote(),
+    remote: flags.remote(),
   };
 
   public async run(): Promise<void> {

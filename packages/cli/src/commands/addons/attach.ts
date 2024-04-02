@@ -12,7 +12,7 @@ export default class Attach extends Command {
       credential: flags.string({description: 'credential name for scoped access to Heroku Postgres'}),
       confirm: flags.string({description: 'overwrite existing add-on attachment with same name'}),
       app: flags.app({required: true}),
-      flags: flags.remote(),
+      remote: flags.remote(),
     };
 
     static args = {
