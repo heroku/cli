@@ -11,6 +11,7 @@ export default class Destroy extends Command {
   static aliases = ['destroy', 'apps:delete']
   static flags = {
     app: flags.app(),
+    remote: flags.remote(),
     confirm: flags.string({char: 'c'}),
   }
 

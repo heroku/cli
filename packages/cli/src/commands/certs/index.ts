@@ -9,6 +9,7 @@ export default class Index extends Command {
   static description = 'list SSL certificates for an app';
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   public async run(): Promise<void> {

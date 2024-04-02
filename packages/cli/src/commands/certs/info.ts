@@ -14,6 +14,7 @@ export default class Info extends Command {
     endpoint: flags.string({description: 'endpoint to check info on'}),
     'show-domains': flags.boolean({description: 'show associated domains'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   public async run(): Promise<void> {

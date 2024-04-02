@@ -30,6 +30,7 @@ RACK_ENV:  staging`,
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   async run() {

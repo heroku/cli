@@ -30,6 +30,7 @@ export default class Scale extends Command {
   static aliases = ['dyno:scale', 'scale']
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   public async run(): Promise<void> {

@@ -9,6 +9,7 @@ export default class MaintenanceOn extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   async run() {

@@ -19,6 +19,7 @@ export default class StacksIndex extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   async run() {

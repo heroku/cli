@@ -15,6 +15,7 @@ export default class Destroy extends Command {
     name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
     confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

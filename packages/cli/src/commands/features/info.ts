@@ -7,6 +7,7 @@ export default class Info extends Command {
   static description = 'display information about a feature'
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     json: flags.boolean({description: 'output in json format'}),
   }
 

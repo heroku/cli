@@ -12,6 +12,7 @@ export default class Wait extends Command {
     static flags = {
       'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
       app: flags.app(),
+      remote: flags.remote(),
     };
 
     static args = {

@@ -10,6 +10,7 @@ export default class Enable extends Command {
     static flags = {
       wait: flags.boolean({description: 'watch ACM status and exit when complete'}),
       app: flags.app({required: true}),
+      remote: flags.remote(),
     };
 
     public async run(): Promise<void> {

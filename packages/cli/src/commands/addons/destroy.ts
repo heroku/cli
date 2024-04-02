@@ -19,6 +19,7 @@ export default class Destroy extends Command {
     confirm: flags.string({char: 'c'}),
     wait: flags.boolean({description: 'watch add-on destruction status and exit when complete'}),
     app: flags.app(),
+    remote: flags.remote(),
   }
 
   static args = {

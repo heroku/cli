@@ -16,6 +16,7 @@ export default class Upgrade extends Command {
   static examples = ['Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2']
   static flags = {
     app: flags.app(),
+    remote: flags.remote(),
   }
 
   static args = {

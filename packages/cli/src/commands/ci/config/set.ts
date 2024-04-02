@@ -26,6 +26,7 @@ export default class CiConfigSet extends Command {
 
   static flags = {
     app: flags.app(),
+    remote: flags.remote(),
     pipeline: flags.pipeline({required: true}),
   }
 

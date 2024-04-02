@@ -8,6 +8,7 @@ export default class Features extends Command {
   static description = 'list available app features'
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     json: flags.boolean({description: 'output in json format'}),
   }
 

@@ -227,6 +227,7 @@ export default class Addons extends Command {
     all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
     json: flags.boolean({description: 'return add-ons in json format'}),
     app: flags.app(),
+    remote: flags.remote(),
   }
 
   static examples = [

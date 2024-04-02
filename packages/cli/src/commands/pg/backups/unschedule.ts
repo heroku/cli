@@ -10,6 +10,7 @@ export default class Unschedule extends Command {
   static description = 'stop daily backups';
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

@@ -18,6 +18,7 @@ export default class CiReRun extends Command {
 
   static flags = {
     app: flags.string({char: 'a', description: 'app name'}),
+    remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
   }
 

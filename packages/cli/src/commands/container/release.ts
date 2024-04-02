@@ -28,6 +28,7 @@ export default class ContainerRelease extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
 

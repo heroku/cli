@@ -21,6 +21,7 @@ export default class Stop extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   async run() {
