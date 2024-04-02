@@ -32,8 +32,13 @@ jobs:
       - run: yarn --immutable --network-timeout 1000000
       - run: ./scripts/release/validate-prerelease
 
+  change-management:
+    runs-on: ubuntu-latest
+    uses: './.github/workflows/ctc.yml'
+    secrets: inherit
+
   publish-github-tag:
-    needs: [ get-version-channel, validate-prerelease ]
+    needs: [ get-version-channel, validate-prerelease, change-management ]
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     env:
