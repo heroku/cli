@@ -17,6 +17,7 @@ export default class Run extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     port: flags.integer({char: 'p', description: 'port the app will run on', default: 5000}),
     verbose: flags.boolean({char: 'v'}),
   }

@@ -8,6 +8,7 @@ export default class Detach extends Command {
   static description = 'detach an existing add-on resource from an app'
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {

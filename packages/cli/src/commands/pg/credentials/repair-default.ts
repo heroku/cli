@@ -13,6 +13,7 @@ export default class RepairDefault extends Command {
   static flags = {
     confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

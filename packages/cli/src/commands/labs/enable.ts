@@ -15,6 +15,7 @@ export default class LabsEnable extends Command {
 
   static flags = {
     app: flags.app({required: false}),
+    remote: flags.remote(),
   }
 
   static args = {

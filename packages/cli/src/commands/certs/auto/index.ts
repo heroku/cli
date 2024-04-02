@@ -42,6 +42,7 @@ export default class Index extends Command {
   static flags = {
     wait: flags.boolean({description: 'watch ACM status and display the status when complete'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   public async run(): Promise<void> {

@@ -118,6 +118,7 @@ repo_size=5000000
 
   static flags = {
     app: flags.app(),
+    remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
     extended: flags.boolean({char: 'x', hidden: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),

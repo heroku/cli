@@ -12,6 +12,7 @@ export default class Info extends Command {
   static description = 'show detailed add-on resource and attachment information'
   static flags = {
     app: flags.app(),
+    remote: flags.remote(),
   }
 
   static usage = `${topic}:info ADDON`

@@ -25,6 +25,7 @@ export default class NotificationsIndex extends Command {
 
   static flags = {
     app: flags.app({required: false}),
+    remote: flags.remote(),
     all: flags.boolean({description: 'view all notifications (not just the ones for the current app)'}),
     json: flags.boolean({description: 'output in json format'}),
     read: flags.boolean({description: 'show notifications already read'}),

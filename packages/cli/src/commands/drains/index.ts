@@ -15,6 +15,7 @@ export default class Drains extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     extended: flags.boolean({char: 'x', hidden: true}),
     json: flags.boolean({description: 'output in json format'}),
   }

@@ -14,6 +14,7 @@ export default class Update extends Command {
         required: true,
       }),
       app: flags.app({required: true}),
+      remote: flags.remote(),
     };
 
     static args = {

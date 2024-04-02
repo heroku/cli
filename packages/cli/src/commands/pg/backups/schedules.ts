@@ -10,6 +10,7 @@ export default class Schedules extends Command {
   static description = 'list backup schedule';
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   public async run(): Promise<void> {

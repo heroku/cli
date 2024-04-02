@@ -36,6 +36,7 @@ export default class Restore extends Command {
     verbose: flags.boolean({char: 'v'}),
     confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {

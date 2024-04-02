@@ -37,6 +37,7 @@ export default class Info extends Command {
   static description = 'get information about a specific backup';
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

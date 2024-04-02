@@ -17,6 +17,7 @@ export default class AppsRename extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {

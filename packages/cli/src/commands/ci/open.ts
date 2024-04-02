@@ -12,6 +12,7 @@ export default class CiOpen extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
   }
 

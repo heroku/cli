@@ -186,6 +186,7 @@ export default class Index extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     json: flags.boolean({description: 'display as json'}),
     extended: flags.boolean({char: 'x', hidden: true}), // should be removed? Platform API doesn't serialize extended attributes even if the query param `extended=true` is sent.
   }

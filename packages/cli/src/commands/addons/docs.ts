@@ -11,6 +11,7 @@ export default class Docs extends Command {
     static flags = {
       'show-url': flags.boolean({description: 'show URL, do not open browser'}),
       app: flags.app(),
+      remote: flags.remote(),
     };
 
     static args = {

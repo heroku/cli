@@ -54,6 +54,7 @@ export default class Schedule extends Command {
   static flags = {
     at: flags.string({required: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'"}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {

@@ -47,6 +47,7 @@ export default class Errors extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     json: flags.boolean({description: 'output in json format'}),
     hours: flags.string({description: 'number of hours to look back (default 24)', default: '24'}),
     router: flags.boolean({description: 'show only router errors'}),

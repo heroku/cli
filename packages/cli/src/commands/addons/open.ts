@@ -76,6 +76,7 @@ export default class Open extends Command {
   public static flags = {
     'show-url': flags.boolean({description: 'show URL, do not open browser'}),
     app: flags.app(),
+    remote: flags.remote(),
   }
 
   public static args = {

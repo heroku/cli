@@ -47,6 +47,7 @@ export default class Create extends Command {
     confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
     wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {
