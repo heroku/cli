@@ -19,8 +19,8 @@ export default class Destroy extends Command {
   };
 
   static args = {
+    database: Args.string({required: true}),
     link: Args.string({required: true}),
-    database: Args.string(),
   };
 
   public async run(): Promise<void> {

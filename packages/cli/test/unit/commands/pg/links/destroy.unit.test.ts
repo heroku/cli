@@ -24,7 +24,8 @@ describe('pg:links:destroy', () => {
         'myapp',
         '--confirm',
         'myapp',
-        'redis',
+        addon.name || '',
+        'postgres-link',
       ])
         .catch(error => {
           expect(error.message).to.equal("pg:links isn't available for Essential-tier databases.")
@@ -40,20 +41,21 @@ describe('pg:links:destroy', () => {
         .post('/actions/addon-attachments/resolve')
         .reply(200, [{addon}])
       nock('https://api.data.heroku.com')
-        .delete(`/client/v11/databases/${addon.id}/links/redis`)
+        .delete(`/client/v11/databases/${addon.id}/links/postgres-link`)
         .reply(200)
       await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
-        'redis',
+        addon.name || '',
+        'postgres-link',
       ])
 
       expectOutput(stdout.output, '')
       expectOutput(stderr.output, heredoc(`
-        Destroying link redis from ${addon.name}...
-        Destroying link redis from ${addon.name}... done
+        Destroying link postgres-link from ${addon.name}...
+        Destroying link postgres-link from ${addon.name}... done
       `))
     })
   })
