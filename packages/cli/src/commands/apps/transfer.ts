@@ -6,7 +6,7 @@ import {sortBy} from 'lodash'
 import * as inquirer from 'inquirer'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
 import lock from './lock'
-import {AppTransfer} from '../../lib/apps/appTransfer'
+import {appTransfer} from '../../lib/apps/app-transfer'
 import confirmApp from '../../lib/apps/confirm-app'
 
 function getAppsToTransfer(apps: Heroku.App[]) {
@@ -57,10 +57,13 @@ $ heroku apps:transfer --bulk acme-widgets
         ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
         for (const app of selectedApps.choices) {
           try {
-            const appTransfer = new AppTransfer({
-              heroku: this.heroku, appName: app.name, recipient: recipient, personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner), bulk: true,
+            await appTransfer({
+              heroku: this.heroku,
+              appName: app.name,
+              recipient: recipient,
+              personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
+              bulk: true,
             })
-            await appTransfer.start()
           } catch (error) {
             const {message} = error as {message: string}
             ux.error(message)
@@ -73,14 +76,13 @@ $ heroku apps:transfer --bulk acme-widgets
           await confirmApp(appName, confirm, 'All collaborators will be removed from this app')
         }
 
-        const appTransfer = new AppTransfer({
+        await appTransfer({
           heroku: this.heroku,
           appName,
           recipient,
           personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
           bulk,
         })
-        await appTransfer.start()
         if (locked) {
           await lock.run([], this.config)
         }
