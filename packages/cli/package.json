@@ -28,7 +28,7 @@
     "@oclif/core": "^2.8.11",
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2",
     "@oclif/plugin-commands": "2.2.2",
-    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-help": "^6",
     "@oclif/plugin-legacy": "^1.3.0",
     "@oclif/plugin-not-found": "2.3.16",
     "@oclif/plugin-plugins": "2.4.3",
