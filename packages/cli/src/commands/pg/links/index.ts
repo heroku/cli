@@ -19,8 +19,6 @@ export default class Index extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Index)
-    // const host = require('../../lib/host')
-    // const fetcher = require('../../lib/fetcher')(heroku)
     const {app} = flags
     const {database} = args
     let dbs
@@ -47,7 +45,7 @@ export default class Index extends Command {
       if (db.links.length === 0)
         return ux.log('No data sources are linked into this database')
       db.links.forEach((link: Link) => {
-        ux.log(`\n * ${color.cyan(link.name)}`)
+        ux.log(` * ${color.cyan(link.name)}`)
         const remoteAttachmentName = link.remote?.attachment_name || ''
         const remoteName = link.remote?.name || ''
         const remoteLinkText = `${color.green(remoteAttachmentName)} (${color.yellow(remoteName)})`
