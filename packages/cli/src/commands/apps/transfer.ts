@@ -24,68 +24,68 @@ function getAppsToTransfer(apps: Heroku.App[]) {
 }
 
 export default class AppsTransfer extends Command {
-    static topic = 'apps';
-    static description = 'transfer applications to another user or team';
-    static flags = {
-      locked: flags.boolean({char: 'l', required: false, description: 'lock the app upon transfer'}),
-      bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
-      app: flags.app(),
-      remote: flags.remote({char: 'r'}),
-      confirm: flags.string({char: 'c', hidden: true}),
-    };
+  static topic = 'apps';
+  static description = 'transfer applications to another user or team';
+  static flags = {
+    locked: flags.boolean({char: 'l', required: false, description: 'lock the app upon transfer'}),
+    bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
+    app: flags.app(),
+    remote: flags.remote({char: 'r'}),
+    confirm: flags.string({char: 'c', hidden: true}),
+  };
 
-    static args = {
-      recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
-    };
+  static args = {
+    recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
+  };
 
-    static example = `$ heroku apps:transfer collaborator@example.com
+  static examples = [`$ heroku apps:transfer collaborator@example.com
 Transferring example to collaborator@example.com... done
 
 $ heroku apps:transfer acme-widgets
 Transferring example to acme-widgets... done
 
 $ heroku apps:transfer --bulk acme-widgets
-...`
+...`]
 
-    public async run(): Promise<void> {
-      const {flags, args} = await this.parse(AppsTransfer)
-      const {app, bulk, locked, confirm} = flags
-      const recipient = args.recipient
-      if (bulk) {
-        const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
-        const selectedApps = await getAppsToTransfer(sortBy(allApps, 'name'))
-        ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
-        for (const app of selectedApps.choices) {
-          try {
-            await appTransfer({
-              heroku: this.heroku,
-              appName: app.name,
-              recipient: recipient,
-              personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
-              bulk: true,
-            })
-          } catch (error) {
-            const {message} = error as {message: string}
-            ux.error(message)
-          }
-        }
-      } else {
-        const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-        const appName = appInfo.name ?? app ?? ''
-        if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
-          await confirmApp(appName, confirm, 'All collaborators will be removed from this app')
-        }
-
-        await appTransfer({
-          heroku: this.heroku,
-          appName,
-          recipient,
-          personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
-          bulk,
-        })
-        if (locked) {
-          await AppsLock.run([], this.config)
+  public async run() {
+    const {flags, args} = await this.parse(AppsTransfer)
+    const {app, bulk, locked, confirm} = flags
+    const recipient = args.recipient
+    if (bulk) {
+      const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
+      const selectedApps = await getAppsToTransfer(sortBy(allApps, 'name'))
+      ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
+      for (const app of selectedApps.choices) {
+        try {
+          await appTransfer({
+            heroku: this.heroku,
+            appName: app.name,
+            recipient: recipient,
+            personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
+            bulk: true,
+          })
+        } catch (error) {
+          const {message} = error as {message: string}
+          ux.error(message)
         }
       }
+    } else {
+      const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+      const appName = appInfo.name ?? app ?? ''
+      if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
+        await confirmApp(appName, confirm, 'All collaborators will be removed from this app')
+      }
+
+      await appTransfer({
+        heroku: this.heroku,
+        appName,
+        recipient,
+        personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
+        bulk,
+      })
+      if (locked) {
+        await AppsLock.run(['--app', appName], this.config)
+      }
     }
+  }
 }

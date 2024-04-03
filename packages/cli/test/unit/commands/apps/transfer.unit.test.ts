@@ -136,7 +136,7 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       expect('').to.eq(stdout.output)
-      expect('Transferring myapp to team... done\nLocking myapp... done\n').to.eq(stderr.output)
+      expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\nLocking myapp...\nLocking myapp... done\n').to.eq(stderr.output)
       api.done()
       lockedAPI.done()
     })
