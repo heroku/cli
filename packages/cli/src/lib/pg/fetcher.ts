@@ -22,6 +22,31 @@ export async function arbitraryAppDB(heroku: APIClient, app: string) {
   return addon
 }
 
+function getAttachmentNamesByAddon(attachments: AddOnAttachmentWithConfigVarsAndPlan[]) {
+  return attachments.reduce((results: any, a) => {
+    results[a.addon.id] = (results[a.addon.id] || []).concat(a.name)
+    return results
+  }, {})
+}
+
+export async function all(heroku: APIClient, app_id: string) {
+  const {uniqBy} = require('lodash')
+
+  pgDebug(`fetching all DBs on ${app_id}`)
+
+  const attachments = await allAttachments(heroku, app_id)
+  let addons = attachments.map(a => a.addon)
+
+  // Get the list of attachment names per addon here and add to each addon obj
+  const attachmentNamesByAddon = getAttachmentNamesByAddon(attachments)
+  addons = uniqBy(addons, 'id')
+  addons.forEach(addon => {
+    addon.attachment_names = attachmentNamesByAddon[addon.id]
+  })
+
+  return addons
+}
+
 async function matchesHelper(heroku: APIClient, app: string, db: string, namespace?: string): Promise<{matches: AddOnAttachment[] | null, error?: AmbiguousError | NotFound}> {
   debug(`fetching ${db} on ${app}`)
 
@@ -72,7 +97,7 @@ export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_
     if (attachments.length === 0) {
       throw new Error(`${color.app(app)} has no databases`)
     }
-
+    console.log('hi', JSON.stringify(attachments))
     matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars as string[])])
 
     if (matches.length === 0) {
@@ -96,8 +121,8 @@ export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_
   throw error
 }
 
-async function allAttachments(heroku: APIClient, app: string) {
-  const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app}/addon-attachments`, {
+async function allAttachments(heroku: APIClient, app_id: string) {
+  const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app_id}/addon-attachments`, {
     headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
   })
   return attachments.filter((a: AddOnAttachmentWithConfigVarsAndPlan) => a.addon.plan?.name?.startsWith('heroku-postgresql'))
