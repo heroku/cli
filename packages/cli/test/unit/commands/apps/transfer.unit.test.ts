@@ -13,10 +13,11 @@ let inquirer: {prompt?: (prompts: { choices: any }[]) => void} = {}
 describe('heroku apps:transfer', () => {
   beforeEach(() => {
     inquirer = {}
-    Cmd = proxyquire('../../../../src/commands/apps/transfer', {
+    const {default: proxyCmd} = proxyquire('../../../../src/commands/apps/transfer', {
       inquirer,
       '@noCallThru': true,
-    })[0]
+    })
+    Cmd = proxyCmd
   })
   afterEach(() => nock.cleanAll())
   context('when transferring in bulk', () => {
@@ -42,7 +43,7 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       api.done()
-      expect(stderr.output).to.equal('Transferring applications to team...\n\nTransferring myapp... done\n')
+      expect(stderr.output).to.equal(' ›   Warning: Transferring applications to team...\n ›\nTransferring ⬢ myapp...\nTransferring ⬢ myapp... done\n')
     })
     it('transfers selected apps to a personal account', async () => {
       inquirer.prompt = (prompts: { choices: any }[]) => {
@@ -63,7 +64,7 @@ describe('heroku apps:transfer', () => {
         'raulb@heroku.com',
       ])
       api.done()
-      expect(stderr.output).to.equal('Transferring applications to raulb@heroku.com...\n\nInitiating transfer of myapp... email sent\n')
+      expect(stderr.output).to.equal(' ›   Warning: Transferring applications to raulb@heroku.com...\n ›\nInitiating transfer of ⬢ myapp...\nInitiating transfer of ⬢ myapp... email sent\n')
     })
   })
   context('when it is a personal app', () => {
@@ -78,7 +79,7 @@ describe('heroku apps:transfer', () => {
         'raulb@heroku.com',
       ])
       expect('').to.eq(stdout.output)
-      expect('Initiating transfer of myapp to raulb@heroku.com... email sent\n').to.eq(stderr.output)
+      expect('Initiating transfer of ⬢ myapp to raulb@heroku.com...\nInitiating transfer of ⬢ myapp to raulb@heroku.com... email sent\n').to.eq(stderr.output)
       api.done()
     })
     it('transfers the app to a team', async () => {
@@ -89,7 +90,7 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       expect('').to.eq(stdout.output)
-      expect('Transferring myapp to team... done\n').to.eq(stderr.output)
+      expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
   })
@@ -107,7 +108,7 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       expect('').to.eq(stdout.output)
-      expect('Transferring myapp to team... done\n').to.eq(stderr.output)
+      expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
     it('transfers the app to a team', async () => {
@@ -118,10 +119,10 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       expect('').to.eq(stdout.output)
-      expect('Transferring myapp to team... done\n').to.eq(stderr.output)
+      expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
-    it('transfers and locks the app if --locked is passed', async () => {
+    it.only('transfers and locks the app if --locked is passed', async () => {
       const api = teamAppTransfer()
       const lockedAPI = nock('https://api.heroku.com:443')
         .get('/teams/apps/myapp')

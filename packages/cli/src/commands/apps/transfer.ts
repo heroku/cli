@@ -5,7 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {sortBy} from 'lodash'
 import * as inquirer from 'inquirer'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
-import lock from './lock'
+import AppsLock from './lock'
 import {appTransfer} from '../../lib/apps/app-transfer'
 import confirmApp from '../../lib/apps/confirm-app'
 
@@ -84,7 +84,7 @@ $ heroku apps:transfer --bulk acme-widgets
           bulk,
         })
         if (locked) {
-          await lock.run([], this.config)
+          await AppsLock.run([], this.config)
         }
       }
     }
