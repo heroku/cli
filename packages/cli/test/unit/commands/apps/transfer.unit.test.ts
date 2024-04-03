@@ -122,7 +122,7 @@ describe('heroku apps:transfer', () => {
       expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
-    it.only('transfers and locks the app if --locked is passed', async () => {
+    it('transfers and locks the app if --locked is passed', async () => {
       const api = teamAppTransfer()
       const lockedAPI = nock('https://api.heroku.com:443')
         .get('/teams/apps/myapp')
