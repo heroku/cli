@@ -16,7 +16,7 @@ export default class Rotate extends Command {
       char: 'n',
       description: 'which credential to rotate (default credentials if not specified and --all is not used)',
     }),
-    all: flags.boolean({description: 'rotate all credentials'}),
+    all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
     confirm: flags.string({char: 'c'}),
     force: flags.boolean({description: 'forces rotating the targeted credentials'}),
     app: flags.app({required: true}),

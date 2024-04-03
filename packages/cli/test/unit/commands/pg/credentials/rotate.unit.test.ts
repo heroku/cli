@@ -116,7 +116,10 @@ describe('pg:credentials:rotate', async () => {
     })
 
     it('fails with an error if both --all and --name are included', async () => {
-      const err = 'cannot pass both --all and --name'
+      const err = heredoc(`
+      The following error occurred:
+        [2m--name=my_role cannot also be provided when using --all[22m
+      See more help with --help`)
       return expect(runCommand(Cmd, [
         '--app',
         'myapp',
