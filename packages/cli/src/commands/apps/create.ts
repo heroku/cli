@@ -1,8 +1,13 @@
 import {ParserOutput} from '@oclif/core/lib/interfaces/parser'
-import {load} from 'js-yaml'
+import yaml = require('js-yaml')
 import {readFile} from 'fs-extra'
 import {APIClient, flags, Command} from '@heroku-cli/command'
-import {BuildpackCompletion, RegionCompletion, SpaceCompletion, StackCompletion} from '@heroku-cli/command/lib/completions'
+import {
+  BuildpackCompletion,
+  RegionCompletion,
+  SpaceCompletion,
+  StackCompletion,
+} from '@heroku-cli/command/lib/completions'
 import {Args, Interfaces, ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
@@ -53,7 +58,7 @@ async function createApp(context: ParserOutput<Create>, heroku: APIClient, name:
   return app
 }
 
-async function addAddons(heroku: APIClient, app: Heroku.App, addons: {plan: string, as?: string}[]) {
+async function addAddons(heroku: APIClient, app: Heroku.App, addons: { plan: string, as?: string }[]) {
   for (const addon of addons) {
     const body = {
       plan: addon.plan,
@@ -138,7 +143,7 @@ async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, co
 
 async function readManifest() {
   const buffer = await readFile('heroku.yml')
-  return load(buffer.toString(), {filename: 'heroku.yml'})
+  return yaml.load(buffer.toString(), {filename: 'heroku.yml'})
 }
 
 async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient) {
@@ -146,7 +151,7 @@ async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient)
   const name = flags.app || args.app || process.env.HEROKU_APP
 
   ux.action.start('Reading heroku.yml manifest')
-  const manifest = await  readManifest()
+  const manifest = await readManifest()
   ux.action.stop()
 
   ux.action.start(createText(name, flags.space))
@@ -202,14 +207,21 @@ $ heroku apps:create --region eu`,
     // `app` set to `flags.string` instead of `flags.app` to maintain original v5 functionality and avoid a default value from the git remote set when used without an app
     app: flags.string({hidden: true}),
     addons: flags.string({description: 'comma-delimited list of addons to install'}),
-    buildpack: flags.string({char: 'b', description: 'buildpack url to use for this app', completion: BuildpackCompletion}),
+    buildpack: flags.string({
+      char: 'b',
+      description: 'buildpack url to use for this app',
+      completion: BuildpackCompletion,
+    }),
     manifest: flags.boolean({char: 'm', description: 'use heroku.yml settings for this app', hidden: true}),
     'no-remote': flags.boolean({char: 'n', description: 'do not create a git remote'}),
     remote: flags.remote({description: 'the git remote to create, default "heroku"', default: 'heroku'}),
     stack: flags.string({char: 's', description: 'the stack to create the app on', completion: StackCompletion}),
     space: flags.string({description: 'the private space to create the app in', completion: SpaceCompletion}),
     region: flags.string({description: 'specify region for the app to run in', completion: RegionCompletion}),
-    'internal-routing': flags.boolean({hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.'}),
+    'internal-routing': flags.boolean({
+      hidden: true,
+      description: 'private space-only. create as an Internal Web App that is only routable in the local network.',
+    }),
     features: flags.string({hidden: true}),
     kernel: flags.string({hidden: true}),
     locked: flags.boolean({hidden: true}),

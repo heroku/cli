@@ -1,5 +1,5 @@
 import {test, expect} from '@oclif/test'
-import * as yaml from 'js-yaml'
+import yaml = require('js-yaml')
 import * as fse from 'fs-extra'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
