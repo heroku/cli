@@ -8,7 +8,6 @@ exports.topics = [
 
 exports.commands = flatten([
   require('./commands/backups/cancel'),
-  require('./commands/backups/capture'),
   require('./commands/bloat'),
   require('./commands/blocking'),
   require('./commands/connection_pooling'),
