@@ -17,6 +17,11 @@ export abstract class PGSettingsCommand extends Command {
     remote: flags.remote(),
   }
 
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse()
     const {app} = flags

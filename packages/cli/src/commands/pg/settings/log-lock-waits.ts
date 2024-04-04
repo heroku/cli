@@ -1,7 +1,6 @@
-import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting} from '../../../lib/pg/setter'
+import {PGSettingsCommand, type Setting, boolean} from '../../../lib/pg/setter'
 export default class LogLockWaits extends PGSettingsCommand {
   static topic = 'pg'
   static description = heredoc(`
@@ -10,20 +9,15 @@ export default class LogLockWaits extends PGSettingsCommand {
     Applications and their query patterns should try to avoid changes to many different tables within the same transaction.
   `)
 
-  static flags = {
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string(),
-    value: Args.boolean(),
+    value: Args.string(),
   }
 
   protected settingsName = 'log_lock_waits'
 
   protected convertValue(val: boolean): boolean {
-    return val
+    return boolean(val)
   }
 
   protected explain(setting: Setting) {
