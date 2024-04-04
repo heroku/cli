@@ -136,6 +136,8 @@ Created www-redis as REDIS_URL
       })
       it('shows that it failed to provision', function () {
         nock('https://api.heroku.com')
+          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .reply(200, [fixtures.addons['www-redis']])
           .get('/addons/www-redis')
           .reply(200, fixtures.addons['www-redis'])
         const deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
