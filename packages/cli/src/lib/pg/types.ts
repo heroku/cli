@@ -63,6 +63,12 @@ export type CredentialsInfo = {
 export type MaintenanceApiResponse = {
   message: string,
 }
+export type PgDatabaseConfig = {
+  [key: string]: any;
+  'log_lock_waits': {
+    value: boolean,
+  },
+}
 export type SettingKey = 'log_lock_waits' | 'log_connections' | 'log_min_duration_statement' | 'log_statement' | 'track_functions' |
   'pgbouncer_max_client_conn' | 'pg_bouncer_max_db_conns' | 'pg_bouncer_default_pool_size' | 'auto_explain' | 'auto_explain.log_min_duration' |
   'auto_explain.log_analyze' | 'auto_explain.log_triggers' | 'auto_explain.log_buffers' | 'auto_explain.log_verbose' |
