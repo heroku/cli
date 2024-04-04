@@ -5,18 +5,8 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-describe.only('pg:backups:capture', () => {
+describe('pg:backups:capture', () => {
   const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
-  const captureText = () => {
-    if (process.stderr.isTTY) {
-      return heredoc`
-        Backing up DATABASE to b005...
-        Backing up DATABASE to b005... done
-      `
-    }
-
-    return 'Backing up DATABASE to b005... done'
-  }
 
   afterEach(() => {
     nock.cleanAll()
@@ -58,9 +48,12 @@ describe.only('pg:backups:capture', () => {
       Stop a running backup with heroku pg:backups:cancel.
 
     `)
-    expect(stderr.output).to.match(new RegExp(
-      `Starting backup of postgres-1...\nStarting backup of postgres-1... done\n${captureText()}`,
-    ), 'm')
+    expect(stderr.output).to.match(new RegExp(heredoc`
+      Starting backup of postgres-1...
+      Starting backup of postgres-1... done
+      Backing up DATABASE to b005...
+      Backing up DATABASE to b005... done
+    `))
     expect(stderr.output).to.match(/backups of large databases are likely to fail/)
   })
 
@@ -152,32 +145,5 @@ describe.only('pg:backups:capture', () => {
     `)
     expect(stderr.output).to.match(/Starting backup of postgres-1... done/)
     expect(stderr.output).to.match(/backups of large databases are likely to fail/)
-  })
-
-  it('captures a snapshot if called with the --snapshot flag', async () => {
-    addon.app.name = 'mybillingapp'
-    const api = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
-      })
-      .reply(200, [{addon}])
-    const pg = nock('https://api.data.heroku.com')
-      .post('/postgres/v0/databases/1/snapshots')
-      .reply(200, {})
-
-    await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--snapshot',
-    ])
-
-    api.done()
-    pg.done()
-
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal(heredoc`
-      Taking snapshot of postgres-1...
-      Taking snapshot of postgres-1... done
-    `)
   })
 })

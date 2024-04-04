@@ -136,8 +136,6 @@ class Backups {
         } else {
           ux.action.status = msg
         }
-
-        ux.flush()
       }
 
       if (backup?.finished_at) {
