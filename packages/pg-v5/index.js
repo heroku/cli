@@ -14,7 +14,6 @@ exports.commands = flatten([
   require('./commands/connection_pooling'),
   require('./commands/copy'),
   require('./commands/credentials'),
-  require('./commands/credentials/rotate'),
   require('./commands/diagnose'),
   require('./commands/info'),
   require('./commands/kill'),

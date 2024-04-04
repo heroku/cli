@@ -54,8 +54,7 @@ export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_
 
   // case for 404 where there are implicit attachments
   if (!matches) {
-    // eslint-disable-next-line prefer-regex-literals
-    const appConfigMatch = new RegExp('^(.+?)::(.+)').exec(db)
+    const appConfigMatch = /^(.+?)::(.+)/.exec(db)
     if (appConfigMatch) {
       app = appConfigMatch[1]
       db = appConfigMatch[2]
