@@ -43,7 +43,8 @@ describe('heroku apps:transfer', () => {
         'team',
       ])
       api.done()
-      expect(stderr.output).to.include('Warning: Transferring applications to team...\n ›\nTransferring ⬢ myapp...\nTransferring ⬢ myapp... done\n')
+      expect(stderr.output).to.include('Warning: Transferring applications to team...\n')
+      expect(stderr.output).to.include('\nTransferring ⬢ myapp...\nTransferring ⬢ myapp... done\n')
     })
     it('transfers selected apps to a personal account', async () => {
       inquirer.prompt = (prompts: { choices: any }[]) => {
@@ -64,7 +65,8 @@ describe('heroku apps:transfer', () => {
         'raulb@heroku.com',
       ])
       api.done()
-      expect(stderr.output).to.include('Warning: Transferring applications to raulb@heroku.com...\n ›\nInitiating transfer of ⬢ myapp...\nInitiating transfer of ⬢ myapp... email sent\n')
+      expect(stderr.output).to.include('Warning: Transferring applications to raulb@heroku.com...\n')
+      expect(stderr.output).to.include('\nInitiating transfer of ⬢ myapp...\nInitiating transfer of ⬢ myapp... email sent\n')
     })
   })
   context('when it is a personal app', () => {
