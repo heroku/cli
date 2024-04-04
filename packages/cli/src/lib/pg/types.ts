@@ -34,14 +34,21 @@ export type BackupTransfer = {
   updated_at: string,
   warnings: number,
 }
-export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & { plan: Required<Heroku.AddOn['plan']> }
+export type AddOnWithRelatedData = Required<Heroku.AddOnAttachment['addon']> & {
+  attachment_names?: string[],
+  links?: Link[],
+  plan: Required<Heroku.AddOn['plan']>
+}
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
   config_vars: Heroku.AddOn['config_vars']
-  addon: AddOnWithPlan
+  addon: AddOnWithRelatedData
 }
 export type Link = {
+  attachment_name?: string,
+  created_at: string,
   message: string,
-  name: string
+  name: string,
+  remote?: Link,
 }
 export type CredentialsInfo = {
   database: string
