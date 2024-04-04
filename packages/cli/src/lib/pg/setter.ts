@@ -1,4 +1,4 @@
-import {Command} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {addonResolver} from '../addons/resolve'
 import host from './host'
