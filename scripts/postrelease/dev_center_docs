@@ -4,7 +4,7 @@
 
 set +x
 
-PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
 
 if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
   echo "Not on stable release, skipping devcenter docs update"

@@ -26,6 +26,8 @@ jobs:
         run: |
           gem install devcenter
           devcenter help
+      - name: Build CLI
+        run: yarn build
       - name: Compile documentation and push to devcenter
         run: |
           cd packages/cli
