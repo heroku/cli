@@ -2,7 +2,7 @@ import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
 export default class Auth2faGenerate extends Command {
-  static description = 'disables 2fa on account'
+  static summary = 'disables 2fa on account'
 
   static example = '$ heroku auth:2fa:disable'
 
