@@ -1,6 +1,6 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, type SettingKey, booleanConverter} from '../../../lib/pg/setter'
+import {PGSettingsCommand, type Setting, type SettingKey} from '../../../lib/pg/setter'
 
 export default class LogStatement extends PGSettingsCommand {
   static description = heredoc(`
@@ -19,8 +19,8 @@ export default class LogStatement extends PGSettingsCommand {
 
   protected settingKey: SettingKey = 'log_statement'
 
-  protected convertValue(val: boolean): boolean {
-    return booleanConverter(val)
+  protected convertValue(val: string): string {
+    return val
   }
 
   protected explain(setting: Setting) {
