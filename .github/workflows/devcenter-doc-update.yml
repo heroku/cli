@@ -26,6 +26,8 @@ jobs:
         run: |
           gem install devcenter
           devcenter help
+      - name: Compile documentation and push to devcenter
+        run: ./scripts/postrelease/dev_center_docs
         env:
           HEROKU_DEB_SECRET_KEY: ${[ secrets.HEROKU_DEB_SECRET_KEY }}
           HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
