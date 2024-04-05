@@ -1,6 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, booleanConverter} from '../../../lib/pg/setter'
+import {PGSettingsCommand, type Setting, booleanConverter, SettingKey} from '../../../lib/pg/setter'
+
 export default class LogLockWaits extends PGSettingsCommand {
   static topic = 'pg'
   static description = heredoc(`
@@ -14,7 +15,7 @@ export default class LogLockWaits extends PGSettingsCommand {
     value: Args.string(),
   }
 
-  protected settingsName = 'log_lock_waits'
+  protected settingKey: SettingKey = 'log_lock_waits'
 
   protected convertValue(val: boolean): boolean {
     return booleanConverter(val)
