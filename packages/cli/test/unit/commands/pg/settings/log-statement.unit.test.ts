@@ -6,7 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/log-statement'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
-describe.only('pg:settings:log-statement', () => {
+describe('pg:settings:log-statement', () => {
   const addon = fixtures.addons['dwh-db']
 
   beforeEach(() => {
