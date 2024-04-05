@@ -153,7 +153,6 @@
       "-v",
       "version"
     ],
-    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "commands": "./lib/commands",
     "plugins": [
       "@oclif/plugin-legacy",
@@ -342,7 +341,9 @@
       "sudo": "@heroku/sudo"
     }
   },
-  "repository": "heroku/cli",
+  "repository": {
+    "url": "https://github.com/heroku/cli/"
+  },
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
