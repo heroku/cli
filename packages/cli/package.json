@@ -153,6 +153,7 @@
       "-v",
       "version"
     ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "commands": "./lib/commands",
     "plugins": [
       "@oclif/plugin-legacy",
