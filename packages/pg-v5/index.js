@@ -30,7 +30,6 @@ exports.commands = flatten([
   require('./commands/settings/auto_explain_log_analyze'),
   require('./commands/settings/auto_explain_log_nested_statements'),
   require('./commands/settings/auto_explain_log_triggers'),
-  require('./commands/settings/auto_explain_log_verbose'),
   require('./commands/settings/log_lock_waits'),
   require('./commands/settings/log_min_duration_statement'),
   require('./commands/settings/log_statement'),
