@@ -1,6 +1,6 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting} from '../../../../lib/pg/setter'
+import {PGSettingsCommand, type Setting, type SettingKey} from '../../../../lib/pg/setter'
 
 export default class LogMinDuration extends PGSettingsCommand {
   static topic = 'pg'
@@ -14,7 +14,7 @@ export default class LogMinDuration extends PGSettingsCommand {
     value: Args.integer(),
   }
 
-  protected settingsName = 'auto_explain.log_min_duration'
+  protected settingKey:SettingKey = 'auto_explain.log_min_duration'
 
   protected convertValue(val: number): number {
     return val
