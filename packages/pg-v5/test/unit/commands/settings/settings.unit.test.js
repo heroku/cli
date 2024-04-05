@@ -96,6 +96,30 @@ describe('pg:settings', () => {
       .then(() => expect(cli.stdout).to.equal(`${settingsResultName} is set to ${settingResult.value} for postgres-1.\n${settingResult.values[settingResult.value]}\n`))
   })
 
+  it('shows settings for auto_explain_log_analyze with value', () => {
+    setupSettingsMockData('auto_explain.log_analyze')
+    cmd = proxyquire('../../../../commands/settings/auto_explain_log_analyze', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal('auto-explain.log-analyze is set to test_value for postgres-1.\nEXPLAIN ANALYZE execution plans will be logged.\n'))
+  })
+
+  it('shows settings for auto_explain_log_analyze with no value', () => {
+    setupSettingsMockData('auto_explain.log_analyze', '')
+    cmd = proxyquire('../../../../commands/settings/auto_explain_log_analyze', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal('auto-explain.log-analyze is set to  for postgres-1.\nEXPLAIN ANALYZE execution plans will not be logged.\n'))
+  })
+
   it('shows settings for log_min_duration_statement with value', () => {
     setupSettingsMockData('log_min_duration_statement')
     cmd = proxyquire('../../../../commands/settings/log_min_duration_statement', {
