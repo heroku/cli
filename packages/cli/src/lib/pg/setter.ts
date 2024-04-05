@@ -29,6 +29,11 @@ export abstract class PGSettingsCommand extends Command {
 
   protected abstract explain(setting: Setting): string
 
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse()
     const {app} = flags
@@ -36,7 +41,7 @@ export abstract class PGSettingsCommand extends Command {
 
     const db = await addonResolver(this.heroku, app, database || '')
 
-    if (essentialPlan(db)) throw new Error('You can’t perform this operation on Essential-tier databases.')
+    if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
 
     if (value) {
       const {body: settings} = await this.heroku.patch<Record<SettingKey, Setting>>(`/postgres/v0/databases/${db.id}/config`, {

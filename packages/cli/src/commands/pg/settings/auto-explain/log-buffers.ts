@@ -1,6 +1,6 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, boolean} from '../../../../lib/pg/setter'
+import {PGSettingsCommand, type Setting, type SettingKey, booleanConverter} from '../../../../lib/pg/setter'
 
 export default class LogBuffersWaits extends PGSettingsCommand {
   static topic = 'pg'
@@ -14,10 +14,10 @@ export default class LogBuffersWaits extends PGSettingsCommand {
     value: Args.string(),
   }
 
-  protected settingsName = 'auto_explain.log_buffers'
+  protected settingKey: SettingKey = 'auto_explain.log_buffers'
 
   protected convertValue(val: boolean): boolean {
-    return boolean(val)
+    return booleanConverter(val)
   }
 
   protected explain(setting: Setting) {
