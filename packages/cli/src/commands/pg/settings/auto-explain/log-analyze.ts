@@ -5,7 +5,6 @@ import {FormationSetting, Setting} from '../../../../lib/pg/types'
 
 export default class LogAnalyze extends PGSettingsCommand {
   static topic = 'pg'
-  // static command = 'settings:auto-explain:log-analyze'
   static description = heredoc(`
     Shows actual run times on the execution plan.
     This is equivalent to calling EXPLAIN ANALYZE.
