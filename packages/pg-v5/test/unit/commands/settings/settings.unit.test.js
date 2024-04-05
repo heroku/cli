@@ -120,6 +120,42 @@ describe('pg:settings', () => {
       .then(() => expect(cli.stdout).to.equal('auto-explain.log-analyze is set to  for postgres-1.\nEXPLAIN ANALYZE execution plans will not be logged.\n'))
   })
 
+  it('shows settings for log_min_duration_statement with value', () => {
+    setupSettingsMockData('log_min_duration_statement')
+    cmd = proxyquire('../../../../commands/settings/log_min_duration_statement', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal('log-min-duration-statement is set to test_value for postgres-1.\nThe duration of each completed statement will be logged if the statement ran for at least test_value milliseconds.\n'))
+  })
+
+  it('shows settings for log_min_duration_statement with no value', () => {
+    setupSettingsMockData('log_min_duration_statement', -1)
+    cmd = proxyquire('../../../../commands/settings/log_min_duration_statement', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal('log-min-duration-statement is set to -1 for postgres-1.\nThe duration of each completed statement will not be logged.\n'))
+  })
+
+  it('shows settings for log_min_duration_statement with value set to 0', () => {
+    setupSettingsMockData('log_min_duration_statement', 0)
+    cmd = proxyquire('../../../../commands/settings/log_min_duration_statement', {
+      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
+        './fetcher': fetcher,
+      }),
+    })
+    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
+    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
+      .then(() => expect(cli.stdout).to.equal('log-min-duration-statement is set to 0 for postgres-1.\nThe duration of each completed statement will be logged.\n'))
+  })
+
   it('shows settings for auto_explain_log_nested_statements with value', () => {
     setupSettingsMockData('auto_explain.log_nested_statements')
     cmd = proxyquire('../../../../commands/settings/auto_explain_log_nested_statements', {
