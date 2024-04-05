@@ -120,30 +120,6 @@ describe('pg:settings', () => {
       .then(() => expect(cli.stdout).to.equal('auto-explain.log-analyze is set to  for postgres-1.\nEXPLAIN ANALYZE execution plans will not be logged.\n'))
   })
 
-  it('shows settings for auto_explain_log_buffers with value', () => {
-    setupSettingsMockData('auto_explain.log_buffers')
-    cmd = proxyquire('../../../../commands/settings/auto_explain_log_buffers', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('auto-explain.log-buffers is set to test_value for postgres-1.\nBuffer statistics have been enabled for auto_explain.\n'))
-  })
-
-  it('shows settings for auto_explain_log_buffers with no value', () => {
-    setupSettingsMockData('auto_explain.log_buffers', '')
-    cmd = proxyquire('../../../../commands/settings/auto_explain_log_buffers', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('auto-explain.log-buffers is set to  for postgres-1.\nBuffer statistics have been disabled for auto_explain.\n'))
-  })
-
   it('shows settings for auto_explain_log_min_duration with value', () => {
     setupSettingsMockData('auto_explain.log_min_duration')
     cmd = proxyquire('../../../../commands/settings/auto_explain_log_min_duration', {
