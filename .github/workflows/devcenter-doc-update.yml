@@ -35,3 +35,8 @@ jobs:
 #        env:
 #          HEROKU_DEB_SECRET_KEY: ${[ secrets.HEROKU_DEB_SECRET_KEY }}
 #          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
+      - name: Upload md file as artifact
+        uses: actions/upload-artifact@4
+        with:
+          name: heroku-cli-commands
+          path: /tmp/heroku-cli-commands.md
