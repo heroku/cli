@@ -1,7 +1,8 @@
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {booleanConverter, PGSettingsCommand, type Setting, type SettingKey} from '../../../lib/pg/setter'
+import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
+import {Setting, SettingKey} from '../../../lib/pg/types'
 
 // ref: https://www.postgresql.org/docs/current/auto-explain.html
 export default class AutoExplain extends PGSettingsCommand {
@@ -26,11 +27,11 @@ export default class AutoExplain extends PGSettingsCommand {
 
   protected settingKey: SettingKey = 'auto_explain'
 
-  protected convertValue(val: boolean): boolean {
+  protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }
 
-  protected explain(setting: Setting): string {
+  protected explain(setting: Setting<boolean>): string {
     if (setting.value) {
       return 'Execution plans of queries will be logged for future connections.'
     }
