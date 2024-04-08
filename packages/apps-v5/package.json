@@ -36,7 +36,7 @@
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
     "mocha": "^9.2.2",
-    "mockdate": "^2.0.2",
+    "mockdate": "^3.0.5",
     "netrc-parser": "^3.1.6",
     "nock": "^10.0.6",
     "nyc": "^15.1.0",

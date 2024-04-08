@@ -1329,7 +1329,7 @@ __metadata:
     lodash: ^4.17.21
     lolex: ^3.1.0
     mocha: ^9.2.2
-    mockdate: ^2.0.2
+    mockdate: ^3.0.5
     netrc-parser: ^3.1.6
     nock: ^10.0.6
     nyc: ^15.1.0
@@ -1422,7 +1422,7 @@ __metadata:
     inquirer: ^8.2.6
     lolex: ^3.1.0
     mocha: ^9.2.2
-    mockdate: ^2.0.2
+    mockdate: ^3.0.5
     nock: ^10.0.6
     nyc: ^15.1.0
     oclif: 3.11.3
@@ -13977,10 +13977,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mockdate@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "mockdate@npm:2.0.2"
-  checksum: ab634969d694d01cb1b87313a65dd522c0b7057e91b023a25100dcea3a80d9e033261ff37857c89b92e048075e5a790e11ee80376eaa0f3ddf73e9dc33c689e3
+"mockdate@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "mockdate@npm:3.0.5"
+  checksum: 72b66786d9e072379693f80bf9fb82eb5153c9741030a4294184e3ccaf952d0713fae8966f77780580cf902f8ec7ccc95577b0ad47980d255e2ffb71fc7ca49c
   languageName: node
   linkType: hard
 
