@@ -146,6 +146,7 @@
     "timeout": 360000
   },
   "oclif": {
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "additionalHelpFlags": [
       "-h"
     ],
@@ -341,9 +342,7 @@
       "sudo": "@heroku/sudo"
     }
   },
-  "repository": {
-    "url": "https://github.com/heroku/cli/"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
