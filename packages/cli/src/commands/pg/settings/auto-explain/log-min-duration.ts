@@ -1,6 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, type SettingKey} from '../../../../lib/pg/setter'
+import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter'
+import {Setting, SettingKey} from '../../../../lib/pg/types'
 
 export default class LogMinDuration extends PGSettingsCommand {
   static topic = 'pg'
@@ -14,13 +15,13 @@ export default class LogMinDuration extends PGSettingsCommand {
     value: Args.integer(),
   }
 
-  protected settingKey:SettingKey = 'auto_explain.log_min_duration'
+  protected settingKey: SettingKey = 'auto_explain.log_min_duration'
 
-  protected convertValue(val: number): number {
-    return val
+  protected convertValue(val: string): number {
+    return numericConverter(val)
   }
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<number>) {
     if (setting.value === -1) {
       return 'Execution plan logging has been disabled.'
     }
