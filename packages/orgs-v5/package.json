@@ -40,7 +40,7 @@
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
     "heroku-cli-util": "^8.0.11",
-    "inquirer": "^6.2.2",
+    "inquirer": "^8.2.6",
     "lodash": "^4.17.21",
     "lodash.flatten": "^4.4.0"
   },
