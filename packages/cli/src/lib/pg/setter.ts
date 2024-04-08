@@ -36,6 +36,7 @@ export abstract class PGSettingsCommand extends Command {
       const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: host()})
       const setting = settings[this.settingKey]
       ux.log(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
+      ux.log(this.explain(setting))
     }
   }
 }
@@ -59,7 +60,7 @@ export const booleanConverter = (value: BooleanAsString) => {
   }
 }
 
-export const numericConverter = (value: string | number) => {
+export const numericConverter = (value: string) => {
   const n = Number(value)
   if (!Number.isFinite(n)) {
     throw new TypeError('Invalid value. Valid options are: a numeric value')
