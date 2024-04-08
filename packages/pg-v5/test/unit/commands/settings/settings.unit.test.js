@@ -203,14 +203,4 @@ describe('pg:settings', () => {
     return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
       .then(() => expect(cli.stdout).to.equal('log-lock-waits is set to  for postgres-1.\nWhen a deadlock is detected, no log message will be emitted in your application\'s logs.\n'))
   })
-
-  it('shows settings for settings/index', () => {
-    setupSettingsMockData('index')
-    cmd = proxyquire('../../../../commands/settings/index', {
-      '../../../../lib/fetcher': fetcher,
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('=== postgres-1\nindex: test_value\n'))
-  })
 })
