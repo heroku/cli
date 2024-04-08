@@ -75,6 +75,7 @@ export type SettingKey = 'log_lock_waits' | 'log_connections' | 'log_min_duratio
   'auto_explain.log_nested_statements'
 export type Setting<T> = {
   value: T
+  values: Record<string, string>
   desc: string
   default: T
 }

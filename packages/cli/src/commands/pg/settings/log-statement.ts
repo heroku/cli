@@ -1,7 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, type SettingKey} from '../../../lib/pg/setter'
-
+import {type Setting, type SettingKey} from '../../../lib/pg/types'
+import {PGSettingsCommand} from '../../../lib/pg/setter'
 export default class LogStatement extends PGSettingsCommand {
   static description = heredoc(`
     log_statement controls which SQL statements are logged.
@@ -23,7 +23,7 @@ export default class LogStatement extends PGSettingsCommand {
     return val
   }
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<string>) {
     return setting.values[setting.value]
   }
 }
