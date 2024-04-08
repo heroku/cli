@@ -1,7 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter'
-import {FormationSetting, Setting} from '../../../../lib/pg/types'
+import {SettingKey, Setting} from '../../../../lib/pg/types'
 
 export default class LogAnalyze extends PGSettingsCommand {
   static topic = 'pg'
@@ -17,7 +17,7 @@ export default class LogAnalyze extends PGSettingsCommand {
     value: Args.string(),
   }
 
-  protected settingKey = 'auto_explain.log_analyze' as FormationSetting
+  protected settingKey = 'auto_explain.log_analyze' as SettingKey
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)

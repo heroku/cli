@@ -63,7 +63,7 @@ export type CredentialsInfo = {
 export type MaintenanceApiResponse = {
   message: string,
 }
-export type FormationSetting = 'log_lock_waits' | 'log_connections' | 'log_min_duration_statement' | 'log_statement' | 'track_functions' |
+export type SettingKey = 'log_lock_waits' | 'log_connections' | 'log_min_duration_statement' | 'log_statement' | 'track_functions' |
   'pgbouncer_max_client_conn' | 'pg_bouncer_max_db_conns' | 'pg_bouncer_default_pool_size' | 'auto_explain' | 'auto_explain.log_min_duration' |
   'auto_explain.log_analyze' | 'auto_explain.log_triggers' | 'auto_explain.log_buffers' | 'auto_explain.log_verbose' |
   'auto_explain.log_nested_statements'
@@ -72,4 +72,4 @@ export type Setting<T> = {
   desc: string
   default: T
 }
-export type SettingsResponse = Record<FormationSetting, Setting<unknown>>
+export type SettingsResponse = Record<SettingKey, Setting<unknown>>

@@ -3,10 +3,10 @@ import {ux} from '@oclif/core'
 import {addonResolver} from '../addons/resolve'
 import host from './host'
 import {essentialPlan} from './util'
-import {FormationSetting, Setting, SettingsResponse} from './types'
+import {SettingKey, Setting, SettingsResponse} from './types'
 
 export abstract class PGSettingsCommand extends Command {
-  protected abstract settingKey: FormationSetting
+  protected abstract settingKey: SettingKey
   protected abstract convertValue(val: string): unknown
   protected abstract explain(setting: Setting<unknown>): string
 
