@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {isTeamApp, getOwner} from '../../lib/access/utils'
+import {isTeamApp, getOwner} from '../../lib/teamUtils'
 import * as _ from 'lodash'
 export default class AccessAdd extends Command {
   static description = 'add new users to your app'

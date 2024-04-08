@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {isTeamApp} from '../../lib/access/utils'
+import {isTeamApp} from '../../lib/teamUtils'
 
 export default class Update extends Command {
     static topic = 'access';

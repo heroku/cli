@@ -10,8 +10,9 @@ const stopMock = () => {
   stderr.stop()
 }
 
-const runCommand = (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
-  const instance = new Cmd(args, getConfig())
+const runCommand = async (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
+  const conf = await getConfig()
+  const instance = new Cmd(args, conf)
   if (printStd) {
     stdout.print = true
     stderr.print = true

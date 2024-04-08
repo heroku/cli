@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
-import {isTeamApp, getOwner} from '../../lib/access/utils'
+import {isTeamApp, getOwner} from '../../lib/teamUtils'
 
 type MemberData = {
   email: string,
