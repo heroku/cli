@@ -1,7 +1,8 @@
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {booleanConverter, PGSettingsCommand, type Setting, type SettingKey} from '../../../../lib/pg/setter'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter'
+import type {Setting, SettingKey} from '../../../../lib/pg/types'
 
 export default class AutoExplainLogVerbose extends PGSettingsCommand {
   static topic = 'pg'
@@ -21,7 +22,7 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
 
   protected settingKey: SettingKey = 'auto_explain.log_verbose'
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<unknown>) {
     if (setting.value) {
       return 'Verbose execution plan logging has been enabled for auto_explain.'
     }
@@ -29,7 +30,7 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
     return 'Verbose execution plan logging has been disabled for auto_explain.'
   }
 
-  protected convertValue(val: boolean): boolean {
-    return booleanConverter(val)
+  protected convertValue(val: unknown): boolean {
+    return booleanConverter(val as BooleanAsString)
   }
 }
