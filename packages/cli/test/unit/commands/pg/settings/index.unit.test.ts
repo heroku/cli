@@ -5,7 +5,7 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/index'
 
-describe.only('pg:settings', () => {
+describe('pg:settings', () => {
   let api: nock.Scope
   let pg: nock.Scope
 
