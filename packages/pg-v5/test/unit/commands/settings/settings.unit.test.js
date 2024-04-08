@@ -156,30 +156,6 @@ describe('pg:settings', () => {
       .then(() => expect(cli.stdout).to.equal('auto-explain.log-nested-statements is set to  for postgres-1.\nOnly top-level execution plans will be included in logs.\n'))
   })
 
-  it('shows settings for auto_explain_log_triggers with value', () => {
-    setupSettingsMockData('auto_explain.log_triggers')
-    cmd = proxyquire('../../../../commands/settings/auto_explain_log_triggers', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('auto-explain.log-triggers is set to test_value for postgres-1.\nTrigger execution statistics have been enabled for auto_explain.\n'))
-  })
-
-  it('shows settings for auto_explain_log_triggers with no value', () => {
-    setupSettingsMockData('auto_explain.log_triggers', '')
-    cmd = proxyquire('../../../../commands/settings/auto_explain_log_triggers', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('auto-explain.log-triggers is set to  for postgres-1.\nTrigger execution statistics have been disabled for auto_explain.\n'))
-  })
-
   it('shows settings for auto_explain_log_verbose with value', () => {
     setupSettingsMockData('auto_explain.log_verbose')
     cmd = proxyquire('../../../../commands/settings/auto_explain_log_verbose', {
