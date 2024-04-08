@@ -31,7 +31,7 @@ export abstract class PGSettingsCommand extends Command {
     const {app} = flags
     const {value, database} = args as {value: string | undefined, database: string | undefined}
 
-    const db = await addonResolver(this.heroku, app, database || '')
+    const db = await addonResolver(this.heroku, app, database || 'DATABASE_URL')
 
     if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
 
