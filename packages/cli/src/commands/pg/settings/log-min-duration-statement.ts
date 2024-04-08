@@ -1,6 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, type SettingKey} from '../../../lib/pg/setter'
+import {PGSettingsCommand} from '../../../lib/pg/setter'
+import type {Setting, SettingKey} from '../../../lib/pg/types'
 
 export default class LogMinDurationStatement extends PGSettingsCommand {
   static description = heredoc(`
@@ -16,11 +17,11 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
 
   protected settingKey:SettingKey = 'log_min_duration_statement'
 
-  protected convertValue(val: number): number {
-    return val
+  protected convertValue(val: unknown): number {
+    return val as number
   }
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<unknown>) {
     if (setting.value === -1) {
       return 'The duration of each completed statement will not be logged.'
     }
