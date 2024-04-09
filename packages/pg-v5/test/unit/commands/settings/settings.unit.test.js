@@ -143,28 +143,4 @@ describe('pg:settings', () => {
     return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
       .then(() => expect(cli.stdout).to.equal('auto-explain.log-triggers is set to  for postgres-1.\nTrigger execution statistics have been disabled for auto_explain.\n'))
   })
-
-  it('shows settings for log_lock_waits with value', () => {
-    setupSettingsMockData('log_lock_waits')
-    cmd = proxyquire('../../../../commands/settings/log_lock_waits', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('log-lock-waits is set to test_value for postgres-1.\nWhen a deadlock is detected, a log message will be emitted in your application\'s logs.\n'))
-  })
-
-  it('shows settings for log_lock_waits with no value', () => {
-    setupSettingsMockData('log_lock_waits', '')
-    cmd = proxyquire('../../../../commands/settings/log_lock_waits', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal('log-lock-waits is set to  for postgres-1.\nWhen a deadlock is detected, no log message will be emitted in your application\'s logs.\n'))
-  })
 })

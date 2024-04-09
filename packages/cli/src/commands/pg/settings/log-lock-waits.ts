@@ -1,6 +1,7 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand, type Setting, booleanConverter, SettingKey} from '../../../lib/pg/setter'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
+import type {Setting, SettingKey} from '../../../lib/pg/types'
 
 export default class LogLockWaits extends PGSettingsCommand {
   static topic = 'pg'
@@ -17,11 +18,11 @@ export default class LogLockWaits extends PGSettingsCommand {
 
   protected settingKey: SettingKey = 'log_lock_waits'
 
-  protected convertValue(val: boolean): boolean {
-    return booleanConverter(val)
+  protected convertValue(val: unknown): boolean {
+    return booleanConverter(val as BooleanAsString)
   }
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<unknown>) {
     if (setting.value) {
       return "When a deadlock is detected, a log message will be emitted in your application's logs."
     }
