@@ -1,0 +1,62 @@
+name: ctc
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  
+jobs:
+  create-ctc-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Call CTC API TO Create Lock
+        id: create-lock
+        run: |
+          CODE=`curl --w '%{http_code}' \
+          -X PUT \
+          -H "Accept: application/json" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
+          -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ vars.TPS_API_APP_ID }}"}}' \
+          ${{ vars.TPS_API_URL_PARAM }}/api/ctc`
+          echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
+          echo "Response status code is $CODE."
+
+      - name: Retry if TPS returns 409
+        env:
+          RETRY_LATER: "409"
+        uses:
+          nick-fields/retry@v2
+        if: ${{ env.STATUS_CODE == env.RETRY_LATER}}
+        with:
+          max_attempts: 15
+          warning_on_retry: true
+          retry_wait_seconds: 3600
+          retry_on_exit_code: 1
+          timeout_minutes: 3600
+          command: |
+            CODE=`curl --w '%{http_code}' \
+            -X PUT \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
+            -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ vars.TPS_API_APP_ID }}"}}' \
+            ${{ vars.TPS_API_URL_PARAM }}/api/ctc`
+
+            echo "Response status code is $CODE"
+            if [ $CODE == "409" ]
+            then
+              exit 1
+            else
+              echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
+            fi
+
+      - name: Verify CTC Lock Did Not Fail for Other Reasons
+        env:
+          UPDATE_LOCK_SUCCESS: "200"
+          NEW_LOCK_SUCCESS: "201"
+        if: ${{ env.STATUS_CODE != env.NEW_LOCK_SUCCESS && env.STATUS_CODE != env.UPDATE_LOCK_SUCCESS}}
+        uses: actions/github-script@v6
+        with:
+          script: |
+              core.setFailed("Failed to create CTC lock with TPS with response code ${{ env.STATUS_CODE }}")
