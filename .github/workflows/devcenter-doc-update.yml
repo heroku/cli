@@ -32,9 +32,9 @@ jobs:
         run: |
           cd packages/cli
           ./scripts/postrelease/dev_center_docs
-#        env:
-#          HEROKU_DEB_SECRET_KEY: ${[ secrets.HEROKU_DEB_SECRET_KEY }}
-#          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
+        env:
+          HEROKU_DEB_SECRET_KEY: ${[ secrets.HEROKU_DEB_SECRET_KEY }}
+          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
       - name: Upload md file as artifact
         uses: actions/upload-artifact@v3
         with:
