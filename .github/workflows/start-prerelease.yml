@@ -73,3 +73,4 @@ jobs:
     secrets: inherit
     with:
       releaseChannel: ${{ needs.get-version-channel.outputs.channel }}
+
