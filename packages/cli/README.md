@@ -36,7 +36,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku access`](docs/access.md) - manage user access to apps
 * [`heroku addons`](docs/addons.md) - tools and services for developing, extending, and operating your app
 * [`heroku apps`](docs/apps.md) - manage apps on Heroku
-* [`heroku auth`](docs/auth.md) - check 2fa status
+* [`heroku auth`](docs/auth.md) - manage authentication for your Heroku account
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
