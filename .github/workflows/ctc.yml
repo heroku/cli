@@ -3,10 +3,11 @@ name: ctc
 on:
   workflow_dispatch:
   workflow_call:
-  
+
 jobs:
   create-ctc-lock:
     runs-on: ubuntu-latest
+    environment: ChangeManagement
     steps:
       - uses: actions/checkout@v3
       - name: Call CTC API TO Create Lock
