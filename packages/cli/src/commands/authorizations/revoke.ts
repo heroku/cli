@@ -6,7 +6,7 @@ import {Args, ux} from '@oclif/core'
 export default class AuthorizationsRevoke extends Command {
   static description = 'revoke OAuth authorization'
 
-  static aliases = ['authorizations:revoke', 'authorizations:destroy']
+  static hiddenAliases = ['authorizations:destroy']
 
   static examples = [
     '$ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb',

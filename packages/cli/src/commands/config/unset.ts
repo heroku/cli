@@ -5,7 +5,7 @@ import {ux} from '@oclif/core'
 import * as _ from 'lodash'
 
 export class ConfigUnset extends Command {
-  static aliases = [
+  static hiddenAliases = [
     'config:remove',
   ]
 

@@ -5,7 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 export default class TwoFactor extends Command {
   static description = 'check 2fa status'
 
-  static aliases = ['2fa', 'twofactor']
+  static hiddenAliases = ['2fa', 'twofactor']
 
   async run() {
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')

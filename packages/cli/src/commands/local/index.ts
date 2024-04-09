@@ -12,7 +12,7 @@ export default class Index extends Command {
   // and the DESCRIPTION section shown in the help
   static description = 'run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile)'
 
-  static aliases = ['local:start']
+  static hiddenAliases = ['local:start']
 
   static args = {
     processname: Args.string({required: false}),
