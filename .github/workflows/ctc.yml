@@ -18,8 +18,8 @@ jobs:
           -H "Accept: application/json" \
           -H "Content-Type: application/json" \
           -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-          -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ vars.TPS_API_APP_ID }}"}}' \
-          ${{ vars.TPS_API_URL_PARAM }}/api/ctc`
+          -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ secrets.TPS_API_APP_ID }}"}}' \
+          ${{ secrets.TPS_API_URL_PARAM }}/api/ctc`
           echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
           echo "Response status code is $CODE."
 
@@ -41,8 +41,8 @@ jobs:
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-            -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ vars.TPS_API_APP_ID }}"}}' \
-            ${{ vars.TPS_API_URL_PARAM }}/api/ctc`
+            -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ secrets.TPS_API_APP_ID }}"}}' \
+            ${{ secrets.TPS_API_URL_PARAM }}/api/ctc`
 
             echo "Response status code is $CODE"
             if [ $CODE == "409" ]
