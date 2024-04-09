@@ -59,21 +59,21 @@ jobs:
           git push origin "${{ env.TAG_NAME }}"
 
   create-prerelease:
-    needs: [ get-version-channel, validate-prerelease ]
+    needs: [ get-version-channel, validate-prerelease, change-management ]
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
       isStableCandidate: ${{ false }}
 
   prerelease-smoke-tests:
-    needs: [ get-version-channel, create-prerelease ]
+    needs: [ get-version-channel, create-prerelease, change-management ]
     uses: ./.github/workflows/test-installed-cli.yml
     secrets: inherit
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
 
   prerelease-direwolf-tests:
-    needs: [ get-version-channel, create-prerelease ]
+    needs: [ get-version-channel, create-prerelease, change-management ]
     uses: ./.github/workflows/direwolf.yml
     secrets: inherit
     with:
