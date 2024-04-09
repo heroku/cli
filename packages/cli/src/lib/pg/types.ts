@@ -9,30 +9,39 @@ export type TransferSchedule = {
 export type PublicUrlResponse = {
   url: string,
 }
+type TransferTargetType = 'pg_dump' | 'pg_restore' | 'gof3r' | 'htcat'
 export type BackupTransfer = {
-  created_at: string,
-  canceled_at: string,
-  finished_at: string,
-  from_name: string,
-  from_type: string,
-  logs: Array<{
-    created_at: string,
-    message: string,
-  }>,
-  num: number,
+  uuid: string
+  num: number
+  from_name: string
+  from_type: TransferTargetType
+  from_url: string
+  to_name: string
+  to_type: TransferTargetType
+  to_url: string
   options: {
-    pgbackups_name: string,
-  },
-  processed_bytes: number,
-  schedule: { uuid: string },
-  started_at: string,
-  source_bytes: number,
-  succeeded: boolean,
-  to_name: string,
-  to_type: string,
-  to_url: string,
-  updated_at: string,
-  warnings: number,
+    [k: string]: unknown
+  }
+  source_bytes: number
+  processed_bytes: number
+  succeeded: boolean
+  warnings: number
+  created_at: string
+  started_at: string
+  canceled_at: string
+  updated_at: string
+  finished_at: string
+  deleted_at: string
+  purged_at: string
+  num_keep: number
+  schedule?: {
+    uuid: string
+  }
+  logs: Array<{
+    created_at: string
+    level: string
+    message: string
+  }>
 }
 export type AddOnWithRelatedData = Required<Heroku.AddOnAttachment['addon']> & {
   attachment_names?: string[],
