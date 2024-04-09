@@ -6,7 +6,7 @@ export default class Auth2faGenerate extends Command {
 
   static example = '$ heroku auth:2fa:disable'
 
-  static hiddenAliases = [
+  static aliases = [
     'twofactor:disable',
     '2fa:disable',
   ]
