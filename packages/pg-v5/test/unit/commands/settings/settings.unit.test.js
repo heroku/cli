@@ -72,18 +72,6 @@ describe('pg:settings', () => {
     pg.done()
   })
 
-  it('shows settings for log_statements', () => {
-    setupSettingsMockData('log_statement')
-    cmd = proxyquire('../../../../commands/settings/log_statement', {
-      settings: proxyquire.noCallThru().load('../../../../lib/setter', {
-        './fetcher': fetcher,
-      }),
-    })
-    pg.get('/postgres/v0/databases/1/config').reply(200, settingsResult)
-    return cmd.run({args: {database: 'test-database', value: ''}, flags: {}})
-      .then(() => expect(cli.stdout).to.equal(`${settingsResultName} is set to ${settingResult.value} for postgres-1.\n${settingResult.values[settingResult.value]}\n`))
-  })
-
   it('shows settings for track_functions', () => {
     setupSettingsMockData('track_functions')
     cmd = proxyquire('../../../../commands/settings/track_functions', {
