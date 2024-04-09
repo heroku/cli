@@ -32,13 +32,8 @@ jobs:
       - run: yarn --immutable --network-timeout 1000000
       - run: ./scripts/release/validate-prerelease
 
-  change-management:
-    runs-on: ubuntu-latest
-    uses: './.github/workflows/ctc.yml'
-    secrets: inherit
-
   publish-github-tag:
-    needs: [ get-version-channel, validate-prerelease, change-management ]
+    needs: [ get-version-channel, validate-prerelease ]
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     env:
@@ -59,21 +54,21 @@ jobs:
           git push origin "${{ env.TAG_NAME }}"
 
   create-prerelease:
-    needs: [ get-version-channel, validate-prerelease, change-management ]
+    needs: [ get-version-channel, validate-prerelease ]
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
       isStableCandidate: ${{ false }}
 
   prerelease-smoke-tests:
-    needs: [ get-version-channel, create-prerelease, change-management ]
+    needs: [ get-version-channel, create-prerelease ]
     uses: ./.github/workflows/test-installed-cli.yml
     secrets: inherit
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
 
   prerelease-direwolf-tests:
-    needs: [ get-version-channel, create-prerelease, change-management ]
+    needs: [ get-version-channel, create-prerelease ]
     uses: ./.github/workflows/direwolf.yml
     secrets: inherit
     with:

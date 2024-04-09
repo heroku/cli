@@ -21,13 +21,8 @@ jobs:
         id: sourceName
         run: echo "sourceName=${GITHUB_HEAD_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-  change-management:
-    runs-on: ubuntu-latest
-    uses: './.github/workflows/ctc.yml'
-    secrets: inherit
-
   start-release:
-    needs: [ get-source-branch-name, change-management ]
+    needs: [ get-source-branch-name ]
     if: startsWith(needs.get-source-branch-name.outputs.sourceName, 'release-')
     uses: ./.github/workflows/tag-create-github-release.yml
     secrets: inherit
