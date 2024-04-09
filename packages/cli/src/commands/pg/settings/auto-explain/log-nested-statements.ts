@@ -1,5 +1,6 @@
 import {Args} from '@oclif/core'
-import {PGSettingsCommand, type Setting, type SettingKey, booleanConverter} from '../../../../lib/pg/setter'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter'
+import type {Setting, SettingKey} from '../../../../lib/pg/types'
 
 export default class LogNestedStatements extends PGSettingsCommand {
   static description = "Nested statements are included in the execution plan's log."
@@ -11,11 +12,11 @@ export default class LogNestedStatements extends PGSettingsCommand {
 
   protected settingKey: SettingKey = 'auto_explain.log_nested_statements'
 
-  protected convertValue(val: boolean): boolean {
-    return booleanConverter(val)
+  protected convertValue(val: unknown): boolean {
+    return booleanConverter(val as BooleanAsString)
   }
 
-  protected explain(setting: Setting) {
+  protected explain(setting: Setting<unknown>) {
     if (setting.value) {
       return 'Nested statements will be included in execution plan logs.'
     }
