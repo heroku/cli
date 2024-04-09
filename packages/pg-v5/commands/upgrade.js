@@ -9,25 +9,23 @@ async function run(context, heroku) {
   let {app, args, flags} = context
   let db = await fetcher.addon(app, args.database)
 
-  if (util.essentialPlan(db)) throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
+  if (util.legacyEssentialPlan(db)) throw new Error('pg:upgrade is only available for Essential-* databases and follower databases on Standard-tier and higher plans.')
 
-  let [replica, status] = await Promise.all([
-    heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)}),
-    heroku.get(`/client/v11/databases/${db.id}/upgrade_status`, {host: host(db)}),
-  ])
+  const replica = await heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)})
 
-  if (status.error) throw new Error(status.error)
+  if (replica.following) {
+    let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
 
-  if (!replica.following) {
-    throw new Error('pg:upgrade is only available for follower databases on at least the Standard tier.')
+    await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
+  ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
+
+  This cannot be undone.`)
+  } else {
+    await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
+${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
+
+  This cannot be undone.`)
   }
-
-  let origin = util.databaseNameFromUrl(replica.following, await heroku.get(`/apps/${app}/config-vars`))
-
-  await cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
-${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
-
-This cannot be undone.`)
 
   let data = {version: flags.version}
 
@@ -40,7 +38,7 @@ This cannot be undone.`)
 module.exports = {
   topic: 'pg',
   command: 'upgrade',
-  description: 'unfollow a database and upgrade it to the latest stable PostgreSQL version',
+  description: 'For an Essential-* plan, this command upgrades the database\'s PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the PostgreSQL version.',
   help: 'to upgrade to another PostgreSQL version, use pg:copy instead',
   needsApp: true,
   needsAuth: true,

@@ -10,7 +10,7 @@ const shouldCancel = function (cmdRun) {
   let pg
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/apps/myapp/transfers/100-001/actions/cancel').reply(200, {})
     cli.mockConsole()
   })

@@ -34,7 +34,7 @@ describe('pipelines:add', () => {
     .stderr()
     .stdout()
   // this `stub` overrides the prompt function on
-  // the inqurier package to simulate what would be
+  // the inquirer package to simulate what would be
   // returned from answering if "development" was
   // selected by the user
     .stub(inquirer, 'prompt', function () {
@@ -71,7 +71,7 @@ describe('pipelines:add', () => {
     .stderr()
     .stdout()
   // this `stub` overrides the prompt function,
-  // similuating that the user picked the identical
+  // simulating that the user picked the identical
   // pipeline value with id: '0987' for the pipeline
   // question
     .stub(inquirer, 'prompt', function () {
@@ -95,7 +95,7 @@ describe('pipelines:add', () => {
 
       // by returning to a query for pipeline names with
       // multiple results we trigger a choice from the
-      // user to disambigute between the choices
+      // user to disambiguate between the choices
       const pipelinesWithIdenticalNames = [
         firstIdenticallyNamedPipeline,
         secondIdenticallyNamedPipeline,

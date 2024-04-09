@@ -1,6 +1,7 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, Command, Flags} from '@oclif/core'
-
+import * as fs from 'fs'
+import color from '@heroku-cli/color'
 import {fork as foreman} from '../../lib/local/fork-foreman'
 
 // eslint-disable-next-line node/no-missing-require
@@ -38,7 +39,6 @@ $ heroku local web=1,worker=2`,
     port: Flags.string({
       char: 'p',
       description: 'port to listen on',
-      default: '5001',
     }),
     restart: Flags.boolean({
       char: 'r',
@@ -64,8 +64,14 @@ $ heroku local web=1,worker=2`,
       this.error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
 
+    let envFile = flags.env || '.env'
+    if (fs.existsSync(envFile) && !fs.statSync(envFile).isFile()) {
+      this.warn(`The specified location for the env file, ${color.bold(envFile)}, is not a file, ignoring.`)
+      envFile = ''
+    }
+
     if (flags.procfile) execArgv.push('--procfile', flags.procfile)
-    if (flags.env) execArgv.push('--env', flags.env)
+    execArgv.push('--env', envFile)
     if (flags.port) execArgv.push('--port', flags.port)
 
     if (args.processname) {

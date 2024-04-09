@@ -208,12 +208,12 @@ export default `\u001B[1m Command                                        Summary
  pg:settings:log-statement                      log_statement controls which SQL statements are logged.                                                                                                 
  pg:settings:track-functions                    track_functions controls tracking of function call counts and time used. Default is none.                                                               
  pg:unfollow                                    stop a replica from following and make it a writeable database                                                                                          
- pg:upgrade                                     unfollow a database and upgrade it to the latest stable PostgreSQL version                                                                              
+ pg:upgrade                                     For an Essential-* plan, this command upgrades the database\'s PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the PostgreSQL version.
  pg:vacuum-stats                                show dead rows and whether an automatic vacuum is expected to be triggered                                                                              
  pg:wait                                        blocks until database is available                                                                                                                      
  pipelines                                      list pipelines you have access to                                                                                                                       
  pipelines:add                                  add this app to a pipeline                                                                                                                              
- pipelines:connect                              connect a github repo to an existing pipeline                                                                                                           
+ pipelines:connect                              connect a GitHub repo to an existing pipeline                                                                                                           
  pipelines:create                               create a new pipeline                                                                                                                                   
  pipelines:destroy                              destroy a pipeline                                                                                                                                      
  pipelines:diff                                 compares the latest release of this app to its downstream app(s)                                                                                        

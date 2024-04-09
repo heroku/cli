@@ -40,7 +40,7 @@ describe('pg:connection-polling:attach', () => {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     api.get('/addons/postgres-1').reply(200, addon)
     api.get('/apps/myapp/releases').reply(200, [{version: 0}])
 

@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
+
+**Note:** Version bump only for package @heroku-cli/plugin-pg-v5
+
+
+
+
+
+# [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* **cli:** use uuid rather than addon name for pg:credentials ([#2042](https://github.com/heroku/cli/issues/2042)) ([efec095](https://github.com/heroku/cli/commit/efec0951bb3a1f3c09a9b1acdc728a0066596637))
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
+
+
+### Features
+
+* **pg:upgrade:** support essential dbs ([#2637](https://github.com/heroku/cli/issues/2637)) ([c062c59](https://github.com/heroku/cli/commit/c062c590956afe38c60ea57982ccc28b51b2c5b5))
+
+
+
+
+
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+
+### Features
+
+* **pg-v5:** Updating Data's hostname to api.data.heroku.com ([#2529](https://github.com/heroku/cli/issues/2529)) ([387bf55](https://github.com/heroku/cli/commit/387bf55d5fdcda3e7b539be9510cce92fab0eab7))
+
+
+
+
+
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+
+### Features
+
+* **pg:** enable credentials url/rotation command for essential tier dbs ([#2621](https://github.com/heroku/cli/issues/2621)) ([79b8eca](https://github.com/heroku/cli/commit/79b8eca64d505f94fc86601f1c76cd0643369922))
+
+
+
+
+
 # [8.7.0](https://github.com/heroku/cli/compare/v8.6.0...v8.7.0) (2023-10-24)
 
 

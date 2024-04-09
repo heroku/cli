@@ -12,7 +12,19 @@ https://devcenter.heroku.com/articles/procfile`)
 async function run(context, heroku) {
   let app = context.app
 
-  function parse(args) {
+  // will remove this flag once we have
+  // successfully launched larger dyno sizes
+  let isLargerDyno = false
+  const largerDynoFeatureFlag = await heroku.get('/account/features/frontend-larger-dynos')
+    .catch(error => {
+      if (error.statusCode === 404) {
+        return {enabled: false}
+      }
+
+      throw error
+    })
+
+  async function parse(args) {
     return compact(args.map(arg => {
       let change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
@@ -22,7 +34,22 @@ async function run(context, heroku) {
     }))
   }
 
-  let changes = parse(context.args)
+  let changes = await parse(context.args)
+
+  // checks for larger dyno sizes
+  // if the feature is not enabled
+  if (!largerDynoFeatureFlag.enabled) {
+    changes.forEach(({size}) => {
+      const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
+      isLargerDyno = largerDynoNames.test(size)
+
+      if (isLargerDyno) {
+        const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
+        throw new Error(`No such size as ${size}. Use ${availableDynoSizes}.`)
+      }
+    })
+  }
+
   if (changes.length === 0) {
     let formation = await heroku.get(`/apps/${app}/formation`)
 

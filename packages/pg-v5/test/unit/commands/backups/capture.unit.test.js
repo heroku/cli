@@ -35,7 +35,7 @@ const shouldCapture = function (cmdRun) {
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
@@ -74,7 +74,7 @@ Stop a running backup with heroku pg:backups:cancel.
       addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
@@ -116,7 +116,7 @@ Backing up DATABASE to b005...
       addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
@@ -161,7 +161,7 @@ Backing up DATABASE to b005...
       addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/postgres/v0/databases/1/snapshots').reply(200, {})
 
     cli.mockConsole()

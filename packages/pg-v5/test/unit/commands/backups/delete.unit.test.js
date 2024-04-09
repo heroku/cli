@@ -10,7 +10,7 @@ const shouldDelete = function (cmdRun) {
   let pg
 
   beforeEach(() => {
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.delete('/client/v11/apps/myapp/transfers/3').reply(200, {
       url: 'https://dburl',
     })

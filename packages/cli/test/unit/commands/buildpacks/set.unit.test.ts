@@ -50,7 +50,7 @@ Run git push heroku main to create a new release using this buildpack.
       .stdout()
       .stderr()
       .command(['buildpacks:set', 'https://github.com/bar/bar', '-a', 'example'])
-      .it('# overwrites in the the first when no i is passed', ctx => {
+      .it('# overwrites in the first when no i is passed', ctx => {
         expect(ctx.stdout).to.equal(
           `Buildpack set. Next release on example will use:
   1. https://github.com/bar/bar

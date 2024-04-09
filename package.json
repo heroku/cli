@@ -11,11 +11,14 @@
     "execa": "5.1.1",
     "lerna": "^6.4.1",
     "mkdirp": "^0.5.2",
-    "oclif": "3.11.3",
+    "oclif": "4.4.7",
     "promise-request-retry": "^1.0.2",
     "qqjs": "0.3.11",
-    "standard": "12.0.1",
+    "standard": "17.1.0",
     "tmp": "^0.2.1"
+  },
+  "resolutions": {
+    "ansi-regex": "4.1.1"
   },
   "standard": {
     "env": "mocha",

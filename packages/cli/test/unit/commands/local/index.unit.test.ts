@@ -17,7 +17,7 @@ describe('local', () => {
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
-        expect(argv).is.eql(['start', '--port', '5001', 'web,other'])
+        expect(argv).is.eql(['start', '--env', '.env', 'web,other'])
       })
       .command(['local:start'])
       .it('can call foreman start via the local:start alias')
@@ -37,7 +37,7 @@ describe('local', () => {
         })
         .stub(foreman, 'fork', function () {
         // eslint-disable-next-line prefer-rest-params
-          expect(arguments[0]).is.eql(['start', '--port', '5001', 'web,other'])
+          expect(arguments[0]).is.eql(['start', '--env', '.env', 'web,other'])
         })
         .command(['local'])
         .it('can call foreman start with no arguments')
@@ -58,7 +58,7 @@ describe('local', () => {
         .stub(foreman, 'fork', function () {
         // eslint-disable-next-line prefer-rest-params
           const argv = arguments[0]
-          expect(argv).is.eql(['start', '--procfile', 'Procfile.other', '--port', '5001', 'web,background'])
+          expect(argv).is.eql(['start', '--procfile', 'Procfile.other', '--env', '.env', 'web,background'])
           expect(argv).to.not.include('release', 'the release process is not included')
         })
         .command(['local', '--procfile', 'Procfile.other'])
@@ -103,7 +103,7 @@ describe('local', () => {
         .stub(foreman, 'fork', function () {
         // eslint-disable-next-line prefer-rest-params
           const argv = arguments[0]
-          expect(argv).is.eql(['start', '--port', '5001', 'web,other'])
+          expect(argv).is.eql(['start', '--env', '.env', 'web,other'])
         })
         .command(['local', 'web,other'])
         .it('can call foreman start with only arguments')

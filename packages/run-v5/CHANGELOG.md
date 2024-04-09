@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run-v5
+
+
+
+
+
+# [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
+
+
+
+
+
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run-v5
+
+
+
+
+
+# [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
+
+
+### Bug Fixes
+
+* bump @oclif/plugin-update to a version that doesn't delete the CLI ([#2585](https://github.com/heroku/cli/issues/2585)) ([30c3963](https://github.com/heroku/cli/commit/30c396344e0545008484489158b7b453fb1f9527))
+
+
+
+
+
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 

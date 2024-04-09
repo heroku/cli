@@ -29,7 +29,7 @@ const shouldSchedule = function (cmdRun) {
         name: 'DATABASE',
       },
     ])
-    pg = nock('https://postgres-api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
     pg.post('/client/v11/databases/1/transfer-schedules', {
       hour: '06', timezone: 'America/New_York', schedule_name: 'DATABASE_URL',
     }).reply(201)
@@ -53,7 +53,7 @@ const shouldSchedule = function (cmdRun) {
       .then(() => expect(cli.stderr, 'to match', /Scheduling automatic daily backups of postgres-1 at 06:00 America\/New_York... done\n/))
   })
 
-  it('warns user that logical backups are error prone if continuous proctecion is on', () => {
+  it('warns user that logical backups are error prone if continuous protection is on', () => {
     let dbA = {info: [
       {name: 'Continuous Protection', values: ['On']},
     ]}
@@ -63,7 +63,7 @@ const shouldSchedule = function (cmdRun) {
       .then(() => expect(cli.stderr, 'to match', /backups of large databases are likely to fail/))
   })
 
-  it('does not warn user that logical backups are error prone if continuous proctecion is off', () => {
+  it('does not warn user that logical backups are error prone if continuous protection is off', () => {
     let dbA = {info: [
       {name: 'Continuous Protection', values: ['Off']},
     ]}

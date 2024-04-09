@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowJs": true, // allowed to support run-foreman.js. Should be removed when that funcitonality is refactored.
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,

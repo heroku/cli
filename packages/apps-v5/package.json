@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-apps-v5",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "8.6.0",
+  "version": "8.11.1",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^9.0.2",
-    "@oclif/core": "^1.26.2",
+    "@oclif/core": "^2.8.11",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
     "heroku-cli-util": "^8.0.11",
-    "inquirer": "^6.2.2",
+    "inquirer": "^8.2.6",
     "js-yaml": "^3.12.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
@@ -35,7 +35,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
-    "mocha": "^5.2.0",
+    "mocha": "^9.2.2",
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.6",
     "nock": "^10.0.6",
@@ -60,6 +60,15 @@
   ],
   "license": "ISC",
   "main": "src/index.js",
+  "mocha": {
+    "require": [
+      "./test/init.js",
+      "./test/helpers.js"
+    ],
+    "reporter": "list",
+    "recursive": true,
+    "timeout": 360000
+  },
   "publishConfig": {
     "access": "public"
   },

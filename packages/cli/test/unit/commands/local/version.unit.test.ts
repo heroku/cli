@@ -8,7 +8,6 @@ const sinon = require('sinon')
 let existsSyncSpy: any
 const extensionRoot = path.join(__dirname, '..', '..', '..', '..', 'src', 'lib', 'local')
 const jsExtensionPath = path.join(extensionRoot, 'run-foreman.js')
-const tsExtensionPath = path.join(extensionRoot, 'run-foreman.ts')
 
 describe('local:version', () => {
   test
@@ -27,7 +26,6 @@ describe('local:version', () => {
     .command(['local:version'])
     .it('selects correct extensions', () => {
       expect(existsSyncSpy.calledWith(jsExtensionPath)).to.be.true
-      expect(existsSyncSpy.calledWith(tsExtensionPath)).to.be.true
     })
 
   test

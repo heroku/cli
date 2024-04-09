@@ -3,6 +3,58 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
+
+
+### Bug Fixes
+
+* **ps:** update larger dyno checking ([#2741](https://github.com/heroku/cli/issues/2741)) ([853b94f](https://github.com/heroku/cli/commit/853b94f3f9b5f3a5c795286573b80c9245df02a0))
+
+
+
+
+
+# [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+
+
+
+
+
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+
+### Bug Fixes
+
+* allow ps:scale to handle extra args ([#2643](https://github.com/heroku/cli/issues/2643)) ([a618081](https://github.com/heroku/cli/commit/a618081af80effe96d1a422c4b7fc6e1d2ff6fd0))
+
+
+
+
+
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
+
+
+### Features
+
+* **ps:** add larger dyno information to ps:type and ps:scale ([#2598](https://github.com/heroku/cli/issues/2598)) ([23f8e2d](https://github.com/heroku/cli/commit/23f8e2dae8ecef0b3945c67e84a5d93ab53ed9c0))
+
+
+
+
+
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
 
 
