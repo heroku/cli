@@ -1,4 +1,9 @@
 name: ctc
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  
 jobs:
   create-ctc-lock:
     runs-on: ubuntu-latest
