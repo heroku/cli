@@ -1322,26 +1322,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^9.0.0-alpha.0, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
-  version: 0.0.0-use.local
-  resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
-  dependencies:
-    "@heroku-cli/command": ^9.0.2
-    "@oclif/plugin-legacy": ^1.3.0
-    chai: ^4.2.0
-    heroku-cli-util: ^8.0.11
-    inquirer: ^8.2.6
-    lodash: ^4.17.21
-    lodash.flatten: ^4.4.0
-    mocha: ^9.2.2
-    nock: ^10.0.6
-    nyc: ^15.1.0
-    oclif: 3.11.3
-    proxyquire: ^2.1.0
-    sinon: ^6.3.5
-  languageName: unknown
-  linkType: soft
-
 "@heroku-cli/plugin-pg-v5@^9.0.0-alpha.0, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
@@ -4319,15 +4299,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/formatio@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "@sinonjs/formatio@npm:3.1.0"
-  dependencies:
-    "@sinonjs/samsam": ^2 || ^3
-  checksum: 31368e66a8b1ec0ab2b7233d7e5227877ff22c319adbe0f75b501b227c33a535cac8938e6df13a29d80ae7b83ecbe72d53e2dceb88b51823e23d375e570d9bcb
-  languageName: node
-  linkType: hard
-
 "@sinonjs/formatio@npm:^3.2.1":
   version: 3.2.1
   resolution: "@sinonjs/formatio@npm:3.2.1"
@@ -4335,24 +4306,6 @@ __metadata:
     "@sinonjs/commons": ^1
     "@sinonjs/samsam": ^3.1.0
   checksum: 3bc09dd51a10ffb94969e0bc3ed6d04c860a2e92a8b88eaa881b96473e879bac22d330be824d8de519271d9d8625eb067c34ad376b9e0aaca66c3b7c57822b9b
-  languageName: node
-  linkType: hard
-
-"@sinonjs/samsam@npm:^2 || ^3":
-  version: 3.1.0
-  resolution: "@sinonjs/samsam@npm:3.1.0"
-  dependencies:
-    "@sinonjs/commons": ^1.0.2
-    array-from: ^2.1.1
-    lodash.get: ^4.4.2
-  checksum: 7dd2789727a59edc4f2faeea9292dc6bd4c6f4e81d1603ee1929494aaa0a8abc6f86ec689ac3ed50e0731665848e1274bcfb2dc361b5a06f831e1f4f393998ec
-  languageName: node
-  linkType: hard
-
-"@sinonjs/samsam@npm:^2.1.2":
-  version: 2.1.3
-  resolution: "@sinonjs/samsam@npm:2.1.3"
-  checksum: 4abc77d3c5f69dd0dd0c1139a8f8ee0026771dda9ae083e72f25717f43bff038bfded5f19a24c6ecef39f4809bc8acd8edcf5179a242bc8aa5d90f542d99d362
   languageName: node
   linkType: hard
 
@@ -10952,7 +10905,6 @@ __metadata:
     "@heroku-cli/notifications": ^1.2.4
     "@heroku-cli/plugin-certs-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-ci-v5": ^9.0.0-alpha.0
-    "@heroku-cli/plugin-orgs-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-pg-v5": ^9.0.0-alpha.0
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
@@ -12874,13 +12826,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.get@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "lodash.get@npm:4.4.2"
-  checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
-  languageName: node
-  linkType: hard
-
 "lodash.ismatch@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.ismatch@npm:4.4.0"
@@ -12986,13 +12931,6 @@ __metadata:
   version: 1.6.0
   resolution: "lolex@npm:1.6.0"
   checksum: ebe692e660422548edc2c40d3c65eabaa7c67a911c0d16c0c82f2cbfecaea541c60df028245c8799f9cdf752707fc291a417143657370cae209bfc2206f9b6e8
-  languageName: node
-  linkType: hard
-
-"lolex@npm:^2.7.5":
-  version: 2.7.5
-  resolution: "lolex@npm:2.7.5"
-  checksum: 25a0bc7487e76748bff5c0baf6ac7040dded620f76daef9f7d829e3aa0cf6126195c993b05b147b3e32720097def6bf3985d3f8ecbfb654300a878dceb963c7f
   languageName: node
   linkType: hard
 
@@ -13881,7 +13819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nise@npm:^1.4.5, nise@npm:^1.5.1":
+"nise@npm:^1.5.1":
   version: 1.5.3
   resolution: "nise@npm:1.5.3"
   dependencies:
@@ -17177,23 +17115,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon@npm:^6.3.5":
-  version: 6.3.5
-  resolution: "sinon@npm:6.3.5"
-  dependencies:
-    "@sinonjs/commons": ^1.0.2
-    "@sinonjs/formatio": ^3.0.0
-    "@sinonjs/samsam": ^2.1.2
-    diff: ^3.5.0
-    lodash.get: ^4.4.2
-    lolex: ^2.7.5
-    nise: ^1.4.5
-    supports-color: ^5.5.0
-    type-detect: ^4.0.8
-  checksum: e477bce307937d355ec5d063ed259ee8e302b0b7adc5056e4993c5354181b9c7d89194037b63a9db7bf6a1372cb6f5a58cafff7ce9154a8c8f2c0ecbb1ac5765
-  languageName: node
-  linkType: hard
-
 "sinon@npm:^7.2.3, sinon@npm:^7.2.4":
   version: 7.4.1
   resolution: "sinon@npm:7.4.1"
@@ -18493,7 +18414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5, type-detect@npm:^4.0.8":
+"type-detect@npm:4.0.8, type-detect@npm:^4.0.0, type-detect@npm:^4.0.5":
   version: 4.0.8
   resolution: "type-detect@npm:4.0.8"
   checksum: 62b5628bff67c0eb0b66afa371bd73e230399a8d2ad30d852716efcc4656a7516904570cd8631a49a3ce57c10225adf5d0cbdcb47f6b0255fe6557c453925a15
