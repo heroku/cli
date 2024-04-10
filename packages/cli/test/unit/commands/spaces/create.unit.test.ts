@@ -5,7 +5,6 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import {CLIError} from '@oclif/core/lib/errors'
-import stripAnsi = require('strip-ansi')
 
 describe('spaces:create', function () {
   const now = new Date()
