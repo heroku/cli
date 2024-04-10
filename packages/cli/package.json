@@ -212,6 +212,9 @@
       "apps": {
         "description": "manage apps on Heroku"
       },
+      "auth": {
+        "description": "manage authentication for your Heroku account"
+      },
       "authorizations": {
         "description": "OAuth authorizations"
       },
