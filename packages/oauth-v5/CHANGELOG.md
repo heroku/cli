@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.11.2](https://github.com/heroku/cli/compare/v8.11.1...v8.11.2) (2024-04-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
+
+
+
+
+
 ## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-oauth-v5
