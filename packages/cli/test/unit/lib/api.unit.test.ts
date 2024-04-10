@@ -3,10 +3,10 @@ import {getHerokuAPI} from '../../helpers/testInstances'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-const herokuAPI = getHerokuAPI()
 const TEST_RUN = {id: 'uuid-999'}
 
-describe('api', () => {
+describe('api', async () => {
+  const herokuAPI = await getHerokuAPI()
   describe('#createTestRun', function () {
     it('creates test run', async function () {
       const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})

@@ -97,6 +97,7 @@ export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_
     if (attachments.length === 0) {
       throw new Error(`${color.app(app)} has no databases`)
     }
+
     console.log('hi', JSON.stringify(attachments))
     matches = attachments.filter(attachment => config[db] && config[db] === config[getConfigVarName(attachment.config_vars as string[])])
 

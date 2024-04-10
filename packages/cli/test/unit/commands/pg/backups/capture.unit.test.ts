@@ -139,7 +139,7 @@ describe('pg:backups:capture', () => {
 
       HINT: You are running this command with a non-billing application.
       Use heroku pg:backups -a mybillingapp to check the list of backups.
-      
+
       Backing up DATABASE to b005...
       100 log message 1
     `)

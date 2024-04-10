@@ -8,9 +8,9 @@ const PIPELINE = {
   name: 'test-pipeline',
 }
 const FLAGS = {pipeline: PIPELINE.id}
-const herokuAPI = getHerokuAPI()
 
-describe('pipelines.ts', function () {
+describe('pipelines.ts', async function () {
+  const herokuAPI = await getHerokuAPI()
   afterEach(() => nock.cleanAll())
 
   describe('#getPipeline', function () {
