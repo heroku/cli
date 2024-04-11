@@ -7,8 +7,6 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/backups/cancel'),
-  require('./commands/backups/capture'),
   require('./commands/bloat'),
   require('./commands/blocking'),
   require('./commands/connection_pooling'),
@@ -26,9 +24,6 @@ exports.commands = flatten([
   require('./commands/pull'),
   require('./commands/repoint'),
   require('./commands/reset'),
-  require('./commands/settings/auto_explain_log_nested_statements'),
-  require('./commands/settings/auto_explain_log_triggers'),
-  require('./commands/settings/log_statement'),
   require('./commands/settings/track_functions'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),

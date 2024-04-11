@@ -26,7 +26,7 @@ describe('pg:settings:auto-explain:log-verbose', () => {
     pg.done()
   })
 
-  it('shows settings for auto_explain_log_verbose with value', async () => {
+  it('shows settings for auto_explain.log_verbose with value', async () => {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: 'test_value'}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`
@@ -35,7 +35,7 @@ describe('pg:settings:auto-explain:log-verbose', () => {
     `))
   })
 
-  it('shows settings for auto_explain_log_verbose with no value', async () => {
+  it('shows settings for auto_explain.log_verbose with no value', async () => {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: ''}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`
