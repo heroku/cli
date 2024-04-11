@@ -5,7 +5,7 @@
  * @returns An array of strings or an empty array
  *
  */
-export function splitCsv(csvString: string | undefined) {
+export function splitCsv(csvString?: string) {
   return (csvString || '')
     .split(',')
     .map(s => s.trim())
