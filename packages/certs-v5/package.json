@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
+    "@heroku-cli/color": "^2.0.1",
     "@heroku-cli/notifications": "^1.2.4",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",
