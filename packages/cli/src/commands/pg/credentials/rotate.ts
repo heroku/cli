@@ -4,7 +4,7 @@ import {APIClient} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import confirmApp from '../../../lib/apps/confirm-app'
-import {attachment} from '../../../lib/pg/fetcher'
+import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import {legacyEssentialPlan} from '../../../lib/pg/util'
 
@@ -29,7 +29,7 @@ export default class Rotate extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Rotate)
     const {app, all, confirm, name, force} = flags
-    const {addon: db} = await attachment(this.heroku, app, args.database)
+    const {addon: db} = await getAttachment(this.heroku, app, args.database)
     const warnings: string[] = []
     const cred = name || 'default'
     if (all && name !== undefined) {
