@@ -5,8 +5,10 @@ let nock = require('nock')
 let chai = require('chai')
 let cmd = require('../../../../commands/outbound-rules/add')
 let cli = require('heroku-cli-util')
+let chaiAsPromised = require('chai-as-promised')
 
 describe('outbound-rules:add', function () {
+  chai.use(chaiAsPromised)
   beforeEach(() => cli.mockConsole())
 
   it('adds a rule entry to the outbound rules', function () {
