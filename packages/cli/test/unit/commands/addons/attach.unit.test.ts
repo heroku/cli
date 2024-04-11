@@ -3,7 +3,7 @@ import Cmd  from '../../../../src/commands/addons/attach'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import * as confirmApp from '../../../../src/lib/apps/confirm-app'
+import * as confirmApp from '../../../../src/lib/confirm'
 import * as sinon from 'sinon'
 
 let confirmStub: ReturnType<typeof sinon.stub>

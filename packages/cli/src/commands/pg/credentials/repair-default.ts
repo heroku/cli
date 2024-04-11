@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {getAddon} from '../../../lib/pg/fetcher'
 import {essentialPlan} from '../../../lib/pg/util'
-import confirmApp from '../../../lib/apps/confirm-app'
+import confirm from '../../../lib/confirm'
 import heredoc from 'tsheredoc'
 import pgHost from '../../../lib/pg/host'
 
@@ -27,7 +27,7 @@ export default class RepairDefault extends Command {
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
       throw new Error("You can't perform this operation on Essential-tier databases.")
-    await confirmApp(app, confirm, heredoc(`
+    await confirm(app, confirm, heredoc(`
       Destructive Action
       Ownership of all database objects owned by additional credentials will be transferred to the default credential.
       This command will also grant the default credential admin option for all additional credentials.

@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import notify from '../../lib/notify'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirm from '../../lib/confirm'
 import destroyAddon from '../../lib/addons/destroy_addon'
 import {resolveAddon} from '../../lib/addons/resolve'
 import {groupBy} from 'lodash'
@@ -43,7 +43,7 @@ export default class Destroy extends Command {
     for (const addonApps of Object.entries(groupBy<Heroku.AddOn>(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
-      await confirmApp(appName, confirm)
+      await confirm(appName, confirm)
       for (const addon of currentAddons) {
         try {
           await destroyAddon(this.heroku, addon, force, wait)

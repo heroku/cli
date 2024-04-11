@@ -6,7 +6,7 @@ import {Client} from 'ssh2'
 import Parser = require('redis-parser')
 import type {Writable} from 'node:stream'
 import portfinder = require('portfinder')
-import confirmApp from '../../lib/apps/confirm-app'
+import confirm from '../../lib/confirm'
 import * as tls from 'tls'
 import type {Socket} from 'node:net'
 import type {Duplex} from 'stream'
@@ -202,7 +202,7 @@ export default class Cli extends Command {
     const hobby = redis.plan.indexOf('hobby') === 0
     const prefer_native_tls = redis.prefer_native_tls
     if (!prefer_native_tls && hobby) {
-      await confirmApp(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
+      await confirm(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
     }
 
     const nonBastionVars = Object.keys(configVars)
