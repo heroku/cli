@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {getAddon} from '../../../lib/pg/fetcher'
 import {essentialPlan} from '../../../lib/pg/util'
-import confirm from '../../../lib/confirm'
+import confirmCommand from '../../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 import pgHost from '../../../lib/pg/host'
 
@@ -30,7 +30,7 @@ export default class Destroy extends Command {
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
       throw new Error("pg:links isn't available for Essential-tier databases.")
-    await confirm(app, confirm, heredoc(`
+    await confirmCommand(app, confirm, heredoc(`
       Destructive action
       This command will affect the database ${color.yellow(db.name)}
       This will delete ${color.cyan(link)} along with the tables and views created within it.

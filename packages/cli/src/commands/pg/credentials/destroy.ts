@@ -5,7 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {essentialPlan} from '../../../lib/pg/util'
 import {getAddon} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
-import confirm from '../../../lib/confirm'
+import confirmCommand from '../../../lib/confirmCommand'
 
 export default class Destroy extends Command {
   static topic = 'pg';
@@ -42,7 +42,7 @@ export default class Destroy extends Command {
       throw new Error(`Credential ${name} must be detached from the app${credAttachmentApps.length > 1 ? 's' : ''} ${credAttachmentApps.map(appName => color.app(appName || ''))
         .join(', ')} before destroying.`)
 
-    await confirm(app, confirm)
+    await confirmCommand(app, confirm)
     ux.action.start(`Destroying credential ${color.cyan.bold(name)}`)
     await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: pgHost()})
     ux.action.stop()

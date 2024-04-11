@@ -6,7 +6,7 @@ import host from '../../lib/pg/host'
 import backupsFactory from '../../lib/pg/backups'
 import {getAttachment} from '../../lib/pg/fetcher'
 import {parsePostgresConnectionString} from '../../lib/pg/util'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
+import confirmCommand from '../../lib/confirmCommand'
 
 const cli = require('heroku-cli-util')
 
@@ -74,7 +74,7 @@ export default class Copy extends Command {
       const [source, target] = await Promise.all([getAttachmentInfo(this.heroku, args.source, app), getAttachmentInfo(this.heroku, args.target, app)])
       if (source.url === target.url)
         throw new Error('Cannot copy database onto itself')
-      await ux.confirm(target.confirm, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
+      await confirmCommand(target.confirm, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
       let copy
       let attachment
       await ux.action(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`, (async function () {
