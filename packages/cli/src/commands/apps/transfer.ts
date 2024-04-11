@@ -7,7 +7,7 @@ import * as inquirer from 'inquirer'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
 import AppsLock from './lock'
 import {appTransfer} from '../../lib/apps/app-transfer'
-import confirm from '../../lib/confirm'
+import confirmCommand from '../../lib/confirmCommand'
 
 function getAppsToTransfer(apps: Heroku.App[]) {
   return inquirer.prompt([{
@@ -73,7 +73,7 @@ $ heroku apps:transfer --bulk acme-widgets
       const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       const appName = appInfo.name ?? app ?? ''
       if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
-        await confirm(appName, confirm, 'All collaborators will be removed from this app')
+        await confirmCommand(appName, confirm, 'All collaborators will be removed from this app')
       }
 
       await appTransfer({

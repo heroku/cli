@@ -2,9 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import confirm from '../../../lib/confirm'
+import confirmCommand from '../../../lib/confirmCommand'
 import backupsFactory from '../../../lib/pg/backups'
-import {attachment} from '../../../lib/pg/fetcher'
+import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import type {BackupTransfer} from '../../../lib/pg/types'
 
@@ -48,7 +48,7 @@ export default class Restore extends Command {
     const {flags, args} = await this.parse(Restore)
     const {app, 'wait-interval': waitInterval, extensions, confirm, verbose} = flags
     const interval = Math.max(3, waitInterval)
-    const {addon: db} = await attachment(this.heroku, app as string, args.database)
+    const {addon: db} = await getAttachment(this.heroku, app as string, args.database)
     const {name, wait} = backupsFactory(app, this.heroku)
     let backupURL
     let backupName = args.backup
@@ -95,7 +95,7 @@ export default class Restore extends Command {
       backupURL = backup.to_url
     }
 
-    await confirm(app, confirm)
+    await confirmCommand(app, confirm)
     ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.yellow(db.name)}`)
     ux.log(heredoc(`
 

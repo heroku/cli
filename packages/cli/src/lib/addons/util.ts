@@ -1,4 +1,4 @@
-import confirm from '../confirm'
+import confirmCommand from '../confirmCommand'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 const printf = require('printf')
@@ -8,7 +8,7 @@ export const trapConfirmationRequired = async function<T> (app: string, confirm:
     .catch((error: any) => {
       if (!error.body || error.body.id !== 'confirmation_required')
         throw error
-      return confirm(app, confirm, error.body.message)
+      return confirmCommand(app, confirm, error.body.message)
         .then(() => fn(app))
     })
 }

@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisApiResponse} from '../../lib/redis/api'
-import confirm from '../../lib/confirm'
+import confirmCommand from '../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
 
@@ -27,7 +27,7 @@ export default class StatsReset extends Command {
       WARNING: Irreversible action.
       All stats covered by RESETSTAT will be reset on ${color.addon(addon.name || '')}.
     `)
-    await confirm(app, confirm, warning)
+    await confirmCommand(app, confirm, warning)
 
     ux.action.start(`Resetting stats on ${color.addon(addon.name || '')}`)
     const {body: response} = await redisApi(app, database, false, this.heroku)

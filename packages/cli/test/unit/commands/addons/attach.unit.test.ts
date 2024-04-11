@@ -3,14 +3,14 @@ import Cmd  from '../../../../src/commands/addons/attach'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import * as confirmApp from '../../../../src/lib/confirm'
+import * as confirmCommand from '../../../../src/lib/confirmCommand'
 import * as sinon from 'sinon'
 
 let confirmStub: ReturnType<typeof sinon.stub>
 
 describe('addons:attach', function () {
   beforeEach(() => {
-    confirmStub = sinon.stub(confirmApp, 'default').returns(Promise.resolve())
+    confirmStub = sinon.stub(confirmCommand, 'default').returns(Promise.resolve())
   })
   afterEach(() => {
     confirmStub.restore()
