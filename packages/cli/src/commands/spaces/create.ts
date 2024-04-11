@@ -61,7 +61,7 @@ export default class Create extends Command {
     const dollarAmountHourly = shield ? '$4.17' : '$1.39'
     const spaceType = shield ? 'Shield' : 'Standard'
 
-    ux.action.start(`Creating space ${color.green(spaceName!)} in team ${color.cyan(team!)}`)
+    ux.action.start(`Creating space ${color.green(spaceName as string)} in team ${color.cyan(team as string)}`)
     const {body: space} = await this.heroku.post<Required<Heroku.Space>>('/spaces', {
       body: {
         name: spaceName, team: team, channel_name: channel, region: region, features: splitCsv(features),
