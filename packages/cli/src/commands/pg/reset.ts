@@ -13,6 +13,7 @@ export default class Reset extends Command {
     extensions: flags.string({char: 'e', description: 'comma-separated list of extensions to pre-install in the public schema'}),
     confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   };
 
   static args = {
