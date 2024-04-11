@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisApiResponse} from '../../lib/redis/api'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirm from '../../lib/confirm'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
 
@@ -28,7 +28,7 @@ export default class Upgrade extends Command {
       WARNING: Irreversible action.
       Redis database will be upgraded to ${color.configVar(version)}. This cannot be undone.
     `)
-    await confirmApp(app, confirm, warning)
+    await confirm(app, confirm, warning)
 
     ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
     const {body: response} = await redisApi(app, database, false, this.heroku)

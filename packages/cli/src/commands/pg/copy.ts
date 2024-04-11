@@ -71,33 +71,10 @@ export default class Copy extends Command {
       const pgbackups = backupsFactory(app, this.heroku)
       const interval = Math.max(3, Number.parseInt(waitInterval || '0')) || 3
 
-      // const getAttachmentInfo = async function (db: string) {
-      //   if (db.match(/^postgres:\/\//)) {
-      //     const conn = parsePostgresConnectionString(db)
-      //     const host = `${conn.host}:${conn.port}`
-      //     return {
-      //       name: conn.database ? `database ${conn.database} on ${host}` : `database on ${host}`, url: db, confirm: conn.database || conn.host,
-      //     }
-      //   }
-      //
-      //   const attachment = await getAttachment(this.heroku, app, db)
-      //   if (!attachment)
-      //     throw new Error(`${db} not found on ${color.magenta(app)}`)
-      //   const [addon, config] = await Promise.all([
-      //     this.heroku.get(`/addons/${attachment.addon.name}`), this.heroku.get(`/apps/${attachment.app.name}/config-vars`),
-      //   ])
-      //   attachment.addon = addon
-      //   const formattedConfig = config.map(key, () => key.toUpperCase())
-      //   return {
-      //     name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '')
-      //       .replace(/_URL$/, ''), url: formattedConfig[attachment.name.toUpperCase() + '_URL'], attachment, confirm: app,
-      //   }
-      // }
-
       const [source, target] = await Promise.all([getAttachmentInfo(this.heroku, args.source, app), getAttachmentInfo(this.heroku, args.target, app)])
       if (source.url === target.url)
         throw new Error('Cannot copy database onto itself')
-      await cli.confirmApp(target.confirm, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
+      await ux.confirm(target.confirm, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
       let copy
       let attachment
       await ux.action(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`, (async function () {
@@ -110,6 +87,8 @@ export default class Copy extends Command {
           }, host: host(attachment.addon),
         })
       })())
+
+
       if (source.attachment) {
         const credentials = await this.heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {host: host(source.attachment.addon)})
         if (credentials.length > 1) {

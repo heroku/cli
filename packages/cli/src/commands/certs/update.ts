@@ -5,7 +5,7 @@ import {displayCertificateDetails} from '../../lib/certs/certificate_details'
 import {getCertAndKey} from '../../lib/certs/get_cert_and_key'
 import heredoc from 'tsheredoc'
 import getEndpoint from '../../lib/certs/flags'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirm from '../../lib/confirm'
 import {SniEndpoint} from '../../lib/types/sni_endpoint'
 
 export default class Update extends Command {
@@ -40,7 +40,7 @@ export default class Update extends Command {
     let sniEndpoint = await getEndpoint(flags, this.heroku)
     const files = await getCertAndKey(args)
 
-    await confirmApp(
+    await confirm(
       app,
       confirm,
       heredoc`

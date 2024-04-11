@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import confirmApp from '../../../lib/apps/confirm-app'
+import confirm from '../../../lib/confirm'
 import host from '../../../lib/pg/host'
 import backupsFactory from '../../../lib/pg/backups'
 
@@ -28,7 +28,7 @@ export default class Delete extends Command {
     const {backup_id} = args
     const pgbackups = backupsFactory(app, this.heroku)
 
-    await confirmApp(app, confirm)
+    await confirm(app, confirm)
     ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)
 
     const num = await pgbackups.num(backup_id)

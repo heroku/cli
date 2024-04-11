@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import confirmApp from '../../../lib/apps/confirm-app'
+import confirm from '../../../lib/confirm'
 import backupsFactory from '../../../lib/pg/backups'
 import {attachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
@@ -95,7 +95,7 @@ export default class Restore extends Command {
       backupURL = backup.to_url
     }
 
-    await confirmApp(app, confirm)
+    await confirm(app, confirm)
     ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.yellow(db.name)}`)
     ux.log(heredoc(`
 

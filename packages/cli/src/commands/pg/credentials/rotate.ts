@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {APIClient} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import confirmApp from '../../../lib/apps/confirm-app'
+import confirm from '../../../lib/confirm'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import {legacyEssentialPlan} from '../../../lib/pg/util'
@@ -71,7 +71,7 @@ export default class Rotate extends Command {
       warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${uniqueAttachments}.`)
     }
 
-    await confirmApp(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
+    await confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
     const options: APIClient.Options = {
       hostname: host(),
       body: {forced: force ?? undefined},
