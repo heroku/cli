@@ -10,6 +10,8 @@ export abstract class PGSettingsCommand extends Command {
   protected abstract convertValue(val: string): unknown
   protected abstract explain(setting: Setting<unknown>): string
 
+  static topic = 'pg'
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

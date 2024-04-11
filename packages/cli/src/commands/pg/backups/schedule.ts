@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
 import {attachment as getAttachment} from '../../../lib/pg/fetcher'
+import {PgDatabase} from '../../../lib/pg/types'
 
 type Timezone = {
   PST: string;
@@ -34,12 +35,6 @@ const TZ:Timezone = {
   BST: 'Europe/London',
   CET: 'Europe/Paris',
   CEST: 'Europe/Paris',
-}
-
-type PgDatabase = {
-  id: string;
-  name: string;
-  info: {name: string; values: string[]}[];
 }
 
 type BackupSchedule = {
@@ -95,7 +90,7 @@ export default class Schedule extends Command {
       })
     const {body: dbInfo} = pgResponse || {body: null}
     if (dbInfo) {
-      const dbProtected = /On/.test(dbInfo.info.find((attribute: {name: string, values: string[]}) => attribute.name === 'Continuous Protection')?.values[0] || '')
+      const dbProtected = /On/.test(dbInfo.info.find(attribute => attribute.name === 'Continuous Protection')?.values[0] || '')
       if (dbProtected) {
         ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
         ux.warn('See https://devcenter.heroku.com/articles/heroku-postgres-data-safety-and-continuous-protection#physical-backups-on-heroku-postgres.')
