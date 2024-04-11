@@ -23,7 +23,6 @@ exports.commands = flatten([
   require('./commands/psql'),
   require('./commands/pull'),
   require('./commands/repoint'),
-  require('./commands/reset'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
