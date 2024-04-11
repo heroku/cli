@@ -5404,10 +5404,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/tmp@npm:^0.2.6":
+  version: 0.2.6
+  resolution: "@types/tmp@npm:0.2.6"
+  checksum: 0b24bb6040cc289440a609e10ec99a704978c890a5828ff151576489090b2257ce2e2570b0f320ace9c8099c3642ea6221fbdf6d8f2e22b7cd1f4fbf6e989e3e
+  languageName: node
+  linkType: hard
+
 "@types/tough-cookie@npm:*":
   version: 2.3.5
   resolution: "@types/tough-cookie@npm:2.3.5"
   checksum: 7f18233b3bdbaa9bd7b619df8284cd7e70cf666206ca17e2d0d627a70f42fbcb1da95eb3a989c1e79d46b030959723dc00a0526b7d039b81f2f7e12e67f404f5
+  languageName: node
+  linkType: hard
+
+"@types/tunnel-ssh@npm:4.1.1":
+  version: 4.1.1
+  resolution: "@types/tunnel-ssh@npm:4.1.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: 25beaca18691d83fbf115af0403788b6637e8034538d0b0f1720f05d116ccb4238cb0a22555a263bc5a766102dac1087f360ac6d054b838c6486fe27e11780f8
   languageName: node
   linkType: hard
 
@@ -10956,6 +10972,8 @@ __metadata:
     "@types/std-mocks": ^1.0.4
     "@types/strftime": ^0.9.8
     "@types/supports-color": ^5.3.0
+    "@types/tmp": ^0.2.6
+    "@types/tunnel-ssh": 4.1.1
     "@types/urijs": ^1.19.4
     "@types/uuid": ^8.3.0
     "@types/validator": ^10.9.0
@@ -11015,11 +11033,12 @@ __metadata:
     strftime: ^0.10.0
     strip-ansi: 6.0.1
     term-img: ^4.1.0
-    tmp: ^0.0.33
+    tmp: ^0.2.3
     true-myth: 2.2.3
     ts-node: ^10.9.1
     tsheredoc: ^1.0.1
     tslib: 1.14.1
+    tunnel-ssh: 4.1.6
     typescript: 4.8.4
     urijs: ^1.19.11
     uuid: 3.3.2
@@ -18106,6 +18125,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tmp@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "tmp@npm:0.2.3"
+  checksum: 73b5c96b6e52da7e104d9d44afb5d106bb1e16d9fa7d00dbeb9e6522e61b571fbdb165c756c62164be9a3bbe192b9b268c236d370a2a0955c7689cd2ae377b95
+  languageName: node
+  linkType: hard
+
 "to-fast-properties@npm:^2.0.0":
   version: 2.0.0
   resolution: "to-fast-properties@npm:2.0.0"
@@ -18371,7 +18397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tunnel-ssh@npm:^4.1.6":
+"tunnel-ssh@npm:4.1.6, tunnel-ssh@npm:^4.1.6":
   version: 4.1.6
   resolution: "tunnel-ssh@npm:4.1.6"
   dependencies:

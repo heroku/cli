@@ -3,10 +3,11 @@ import type {AddOnAttachment} from '@heroku-cli/schema'
 import * as Heroku from '@heroku-cli/schema'
 import debug from 'debug'
 import {AmbiguousError, appAttachment, NotFound} from '../addons/resolve'
+import {fetchConfig} from './bastion'
 import {getConfig} from './config'
 import color from '@heroku-cli/color'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from './types'
-import {getConfigVarName} from './util'
+import {bastionKeyPlan, getConfigVarName, getConnectionDetails} from './util'
 
 const pgDebug = debug('pg')
 
@@ -131,4 +132,24 @@ async function allAttachments(heroku: APIClient, app_id: string) {
 
 export async function getAddon(heroku: APIClient, app: string, db = 'DATABASE_URL') {
   return ((await getAttachment(heroku, app, db))).addon
+}
+
+export async function database(heroku: APIClient, app: string, db?: string, namespace?: string) {
+  const attached = await attachment(heroku, app, db, namespace)
+
+  // would inline this as well but in some cases attachment pulls down config
+  // as well, and we would request twice at the same time but I did not want
+  // to push this down into attachment because we do not always need config
+  const config = await getConfig(heroku, attached.app.name as string)
+
+  const database = getConnectionDetails(attached, config)
+  if (bastionKeyPlan(attached.addon) && !database.bastionKey) {
+    const {body: bastionConfig} = await fetchConfig(heroku, attached.addon)
+    const bastionHost = bastionConfig.host
+    const bastionKey = bastionConfig.private_key
+
+    Object.assign(database, {bastionHost, bastionKey})
+  }
+
+  return database
 }

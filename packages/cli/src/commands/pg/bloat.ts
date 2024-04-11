@@ -1,14 +1,9 @@
-'use strict'
+import {Command, flags} from '@heroku-cli/command'
+import {Args} from '@oclif/core'
+import {database} from '../../lib/pg/fetcher'
+import {exec} from '../../lib/pg/psql'
 
-const cli = require('heroku-cli-util')
-
-async function run(context, heroku) {
-  const fetcher = require('../lib/fetcher')(heroku)
-  const psql = require('../lib/psql')
-
-  let db = await fetcher.database(context.app, context.args.database)
-
-  let query = `
+const query = `
 WITH constants AS (
   SELECT current_setting('block_size')::numeric AS bs, 23 AS hdr, 4 AS ma
 ), bloat_info AS (
@@ -71,19 +66,24 @@ FROM
 ORDER BY raw_waste DESC, bloat DESC
 `
 
-  let output = await psql.exec(db, query)
-  process.stdout.write(output)
+export default class Bloat extends Command {
+  static topic = 'pg';
+  static description = 'show table and index bloat in your database ordered by most wasteful';
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  };
+
+  static args = {
+    database: Args.string(),
+  };
+
+  public async run(): Promise<void> {
+    const {flags, args} = await this.parse(Bloat)
+    const {app} = flags
+    const db = await database(this.heroku, app, args.database)
+    const output = await exec(db, query)
+    process.stdout.write(output)
+  }
 }
 
-const cmd = {
-  topic: 'pg',
-  description: 'show table and index bloat in your database ordered by most wasteful',
-  needsApp: true,
-  needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, run),
-}
-
-module.exports = [
-  Object.assign({command: 'bloat'}, cmd),
-]
