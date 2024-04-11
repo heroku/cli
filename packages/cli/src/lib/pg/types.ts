@@ -33,6 +33,7 @@ export type BackupTransfer = {
   to_url: string,
   updated_at: string,
   warnings: number,
+  uuid: string,
 }
 export type AddOnWithRelatedData = Required<Heroku.AddOnAttachment['addon']> & {
   attachment_names?: string[],

@@ -7,15 +7,7 @@ import backupsFactory from '../../lib/pg/backups'
 import {getAttachment} from '../../lib/pg/fetcher'
 import {parsePostgresConnectionString} from '../../lib/pg/util'
 import confirmCommand from '../../lib/confirmCommand'
-
-const cli = require('heroku-cli-util')
-
-type AttachmentInfo = {
-  name: string,
-  url: string,
-  confirm: string,
-  attachment?: Heroku.AddOnAttachment,
-}
+import {BackupTransfer, CredentialsInfo} from '../../lib/pg/types'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
   if (db.match(/^postgres:\/\//)) {
@@ -74,28 +66,28 @@ export default class Copy extends Command {
       const [source, target] = await Promise.all([getAttachmentInfo(this.heroku, args.source, app), getAttachmentInfo(this.heroku, args.target, app)])
       if (source.url === target.url)
         throw new Error('Cannot copy database onto itself')
-      await confirmCommand(target.confirm, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
-      let copy
-      let attachment
-      await ux.action(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`, (async function () {
-        attachment = target.attachment || source.attachment
-        if (!attachment)
-          throw new Error('Heroku PostgreSQL database must be source or target')
-        copy = await this.heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
-          body: {
-            from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
-          }, host: host(attachment.addon),
-        })
-      })())
 
+      await confirmCommand(target.confirm || args.target, confirm, `WARNING: Destructive action\nThis command will remove all data from ${color.yellow(target.name)}\nData from ${color.yellow(source.name)} will then be transferred to ${color.yellow(target.name)}`)
+      ux.action.start(`Starting copy of ${color.yellow(source.name)} to ${color.yellow(target.name)}`)
+      const attachment = target.attachment || source.attachment
+      if (!attachment) {
+        throw new Error('Heroku PostgreSQL database must be source or target')
+      }
+
+      const {body: copy} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${attachment.addon.id}/transfers`, {
+        body: {
+          from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
+        }, host: host(),
+      })
+      ux.action.stop()
 
       if (source.attachment) {
-        const credentials = await this.heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {host: host(source.attachment.addon)})
+        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {host: host()})
         if (credentials.length > 1) {
-          cli.action.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
+          ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
         }
       }
 
-      await pgbackups.wait('Copying', copy.uuid, interval, verbose, attachment.addon.app.name)
+      await pgbackups.wait('Copying', copy.uuid, interval, verbose, attachment.addon.app?.name || app)
     }
 }

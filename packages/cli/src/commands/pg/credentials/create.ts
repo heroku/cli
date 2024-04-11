@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {attachment} from '../../../lib/pg/fetcher'
+import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import {essentialPlan} from '../../../lib/pg/util'
 
@@ -22,7 +22,7 @@ export default class Create extends Command {
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Create)
       const {app, name} = flags
-      const {addon: db} = await attachment(this.heroku, app as string, args.database)
+      const {addon: db} = await getAttachment(this.heroku, app as string, args.database)
       if (essentialPlan(db)) {
         throw new Error("You can't create a custom credential on Essential-tier databases.")
       }
