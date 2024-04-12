@@ -7,7 +7,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../fixtures/addons/fixtures'
 
-describe.only('pg:upgrade', () => {
+describe('pg:upgrade', () => {
   const hobbyAddon = fixtures.addons['www-db']
   const addon = fixtures.addons['dwh-db']
 
