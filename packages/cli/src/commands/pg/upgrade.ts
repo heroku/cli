@@ -39,14 +39,14 @@ export default class Upgrade extends Command {
     if (replica.following) {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
-      confirmApp(app, confirm, heredoc(`
+      await confirmApp(app, confirm, heredoc(`
         Destructive action
         ${color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
 
         This cannot be undone.
       `))
     } else {
-      confirmApp(app, confirm, heredoc(`
+      await confirmApp(app, confirm, heredoc(`
         Destructive action
         ${color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
 
