@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
-  "version": "8.11.1",
+  "version": "8.11.2",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.14",
+    "@heroku-cli/color": "^2.0.1",
     "@heroku-cli/notifications": "^1.2.4",
     "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.11",

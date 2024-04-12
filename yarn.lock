@@ -1173,7 +1173,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:1.1.14, @heroku-cli/color@npm:^1.1.14, @heroku-cli/color@npm:^1.1.3":
+"@heroku-cli/color@npm:2.0.1, @heroku-cli/color@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@heroku-cli/color@npm:2.0.1"
+  dependencies:
+    ansi-styles: ^4.3.0
+    chalk: ^4.1.2
+    supports-color: ^7.2.0
+    tslib: ^1.9.3
+  checksum: 3f2591fab0d28a88592b78b8b6e171cafd927e8b6ea1b807878ad3a9b46636c07e63d6983b64b94ec47f05a5a9fe2db80f95d5f381e4b6c14dac48c4aab7ba93
+  languageName: node
+  linkType: hard
+
+"@heroku-cli/color@npm:^1.1.14, @heroku-cli/color@npm:^1.1.3":
   version: 1.1.14
   resolution: "@heroku-cli/color@npm:1.1.14"
   dependencies:
@@ -1275,7 +1287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-addons-v5@^8.11.1, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
+"@heroku-cli/plugin-addons-v5@^8.11.2, @heroku-cli/plugin-addons-v5@workspace:packages/addons-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-addons-v5@workspace:packages/addons-v5"
   dependencies:
@@ -1312,7 +1324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-apps-v5@^8.11.1, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
+"@heroku-cli/plugin-apps-v5@^8.11.2, @heroku-cli/plugin-apps-v5@workspace:packages/apps-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-apps-v5@workspace:packages/apps-v5"
   dependencies:
@@ -1350,11 +1362,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-certs-v5@^8.11.1, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
+"@heroku-cli/plugin-certs-v5@^8.11.2, @heroku-cli/plugin-certs-v5@workspace:packages/certs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-certs-v5@workspace:packages/certs-v5"
   dependencies:
-    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/color": ^2.0.1
     "@heroku-cli/notifications": ^1.2.4
     "@oclif/plugin-legacy": ^1.3.0
     chai: ^4.2.0
@@ -1376,7 +1388,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-ci-v5@^8.11.1, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
+"@heroku-cli/plugin-ci-v5@^8.11.2, @heroku-cli/plugin-ci-v5@workspace:packages/ci-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-ci-v5@workspace:packages/ci-v5"
   dependencies:
@@ -1405,7 +1417,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-container-registry-v5@^8.11.1, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
+"@heroku-cli/plugin-container-registry-v5@^8.11.2, @heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-container-registry-v5@workspace:packages/container-registry-v5"
   dependencies:
@@ -1450,7 +1462,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-orgs-v5@^8.11.1, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
+"@heroku-cli/plugin-orgs-v5@^8.11.2, @heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-orgs-v5@workspace:packages/orgs-v5"
   dependencies:
@@ -1470,7 +1482,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@heroku-cli/plugin-pg-v5@^8.11.1, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
+"@heroku-cli/plugin-pg-v5@^8.11.2, @heroku-cli/plugin-pg-v5@workspace:packages/pg-v5":
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-pg-v5@workspace:packages/pg-v5"
   dependencies:
@@ -1551,7 +1563,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@heroku-cli/plugin-run-v5@workspace:packages/run-v5"
   dependencies:
-    "@heroku-cli/color": ^1.1.14
+    "@heroku-cli/color": ^2.0.1
     "@heroku-cli/command": ^9.0.2
     "@heroku-cli/notifications": ^1.2.4
     "@heroku/eventsource": ^1.0.7
@@ -11180,17 +11192,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "heroku@workspace:packages/cli"
   dependencies:
-    "@heroku-cli/color": 1.1.14
+    "@heroku-cli/color": 2.0.1
     "@heroku-cli/command": ^10.0.0
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2"
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-addons-v5": ^8.11.1
-    "@heroku-cli/plugin-apps-v5": ^8.11.1
-    "@heroku-cli/plugin-certs-v5": ^8.11.1
-    "@heroku-cli/plugin-ci-v5": ^8.11.1
-    "@heroku-cli/plugin-container-registry-v5": ^8.11.1
-    "@heroku-cli/plugin-orgs-v5": ^8.11.1
-    "@heroku-cli/plugin-pg-v5": ^8.11.1
+    "@heroku-cli/plugin-addons-v5": ^8.11.2
+    "@heroku-cli/plugin-apps-v5": ^8.11.2
+    "@heroku-cli/plugin-certs-v5": ^8.11.2
+    "@heroku-cli/plugin-ci-v5": ^8.11.2
+    "@heroku-cli/plugin-container-registry-v5": ^8.11.2
+    "@heroku-cli/plugin-orgs-v5": ^8.11.2
+    "@heroku-cli/plugin-pg-v5": ^8.11.2
     "@heroku-cli/plugin-ps": ^8.1.7
     "@heroku-cli/plugin-ps-exec": ^2.4.0
     "@heroku-cli/plugin-redis-v5": ^8.11.1
@@ -18346,6 +18358,15 @@ __metadata:
   dependencies:
     has-flag: ^4.0.0
   checksum: 899480ac858a650abcca4a02ae655555270e6ace833b15a74e4a2d3456f54cd19b6b12ce14e9bac997c18dd69a0596ee65b95ba013f209dd0f99ebfe87783e41
+  languageName: node
+  linkType: hard
+
+"supports-color@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "supports-color@npm:7.2.0"
+  dependencies:
+    has-flag: ^4.0.0
+  checksum: 3dda818de06ebbe5b9653e07842d9479f3555ebc77e9a0280caf5a14fb877ffee9ed57007c3b78f5a6324b8dbeec648d9e97a24e2ed9fdb81ddc69ea07100f4a
   languageName: node
   linkType: hard
 
