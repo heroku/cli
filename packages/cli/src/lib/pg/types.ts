@@ -116,6 +116,7 @@ export type PgDatabaseTenant = {
     name: TenantInfo
     values: string[]
   }>
+  following: string
 }
 
 export type PgDatabase = PgDatabaseService | PgDatabaseTenant
