@@ -116,10 +116,9 @@ export type PgDatabaseTenant = {
     name: TenantInfo
     values: string[]
   }>
-  following: string
 }
 
-export type PgDatabase = PgDatabaseService | PgDatabaseTenant
+export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
 export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & { plan: Required<Heroku.AddOn['plan']> }
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
