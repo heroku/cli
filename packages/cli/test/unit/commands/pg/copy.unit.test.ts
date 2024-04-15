@@ -247,7 +247,7 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
         .reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
     })
-    it.only('fails to copy', async () => {
+    it('fails to copy', async () => {
       const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
       await expect(runCommand(Cmd, [
         '--app',
