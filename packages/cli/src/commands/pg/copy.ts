@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import host from '../../lib/pg/host'
+import pghost from '../../lib/pg/host'
 import backupsFactory from '../../lib/pg/backups'
 import {getAttachment} from '../../lib/pg/fetcher'
 import {parsePostgresConnectionString} from '../../lib/pg/util'
@@ -77,12 +77,13 @@ export default class Copy extends Command {
       const {body: copy} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${attachment.addon.id}/transfers`, {
         body: {
           from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
-        }, host: host(),
+        },
+        hostname: pghost(),
       })
       ux.action.stop()
 
       if (source.attachment) {
-        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {host: host()})
+        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {hostname: pghost()})
         if (credentials.length > 1) {
           ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
         }
