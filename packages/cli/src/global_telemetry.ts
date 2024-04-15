@@ -13,8 +13,8 @@ const {version} = require('../package.json')
 
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-const isDisabled = process.env.DISABLE_TELEMETRY === 'true'
-const canSendTelemetry = !isDisabled
+const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
+const canSendTelemetry = !isTelemetryDisabled
 
 function getToken() {
   const config = new Config({root})

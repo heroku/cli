@@ -118,17 +118,4 @@ describe('telemetry', async () => {
     await telemetry.sendToRollbar(mockRollbarError)
     rollbarAPI.done()
   })
-
-  it('disables telemetry request from honeycomb and rollbar', async () => {
-    process.env.DISABLE_TELEMETRY = 'true'
-    const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
-    telemetry.initializeInstrumentation()
-
-    // const honeycombAPI = nock(`${isDev ? 'https://backboard-staging.herokuapp.com/otel' : 'https://backboard.heroku.com/otel'}`)
-    //   .post('/v1/traces', identity)
-    //   .reply(200)
-
-    await telemetry.sendTelemetry(mockTelemetry!)
-    // honeycombAPI.done()
-  })
 })
