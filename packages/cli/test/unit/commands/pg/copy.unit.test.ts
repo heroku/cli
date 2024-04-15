@@ -40,7 +40,7 @@ const copyingText = () => {
 }
 
 const copyingFailText = () => {
-  return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying... !\n'
+  return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 }
 
 const credentialWarningText = () => {
@@ -248,7 +248,7 @@ describe('pg:copy', () => {
         .reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
     })
     it('fails to copy', async () => {
-      const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
+      const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun \u001B[36m\u001B[1mheroku pg:backups:info b001\u001B[22m\u001B[39m for more details.'
       await expect(runCommand(Cmd, [
         '--app',
         'myapp',
@@ -258,7 +258,7 @@ describe('pg:copy', () => {
         'HEROKU_POSTGRESQL_RED_URL',
       ])).to.be.rejectedWith(Error, err)
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
+      expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
     })
   })
 })

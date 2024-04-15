@@ -80,20 +80,23 @@ class Backups {
     return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
   }
 
-  // eslint-disable-next-line max-params
-  public wait = async (action: string, transferID: string, interval: number, verbose: boolean, app: string | undefined) => {
+  public wait = async (action: string, transferID: string, interval: number, verbose: boolean, app: string) => {
     if (verbose) {
       ux.log(`${action}...`)
     }
 
     ux.action.start(action)
-    for await (const backupSucceeded of this.poll(transferID, interval, verbose, app || this.app)) {
-      if (backupSucceeded) {
-        break
+    try {
+      for await (const backupSucceeded of this.poll(transferID, interval, verbose, app || this.app)) {
+        if (backupSucceeded) {
+          ux.action.stop()
+          break
+        }
       }
+    } catch (error) {
+      ux.action.stop('!')
+      ux.error(error as Error)
     }
-
-    ux.action.stop()
   }
 
   protected displayLogs(logs: BackupTransfer['logs']) {
@@ -147,7 +150,7 @@ class Backups {
         // logs is undefined unless verbose=true is passed
         ({body: backup} = await this.heroku.get<BackupTransfer>(verboseUrl, {hostname: host()}))
 
-        ux.error(heredoc(`
+        throw new Error(heredoc(`
           An error occurred and the backup did not finish.
 
           ${backup.logs.slice(-5).map(l => l.message).join('\n')}
