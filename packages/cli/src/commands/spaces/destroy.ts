@@ -12,11 +12,12 @@ export default class Destroy extends Command {
   static topic = 'spaces'
   static description = heredoc`
     destroy a space
-    Example:
-
+  `
+  static examples = [heredoc`
     $ heroku spaces:destroy --space my-space
     Destroying my-space... done
-  `
+  `]
+
   static flags = {
     space: flags.string({char: 's', description: 'space to destroy'}),
     confirm: flags.string({description: 'set to space name to bypass confirm prompt', hasValue: true}),
@@ -42,18 +43,15 @@ export default class Destroy extends Command {
     if (space.state === 'allocated') {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
-        natWarning = heredoc`
-          The Outbound IPs for this space will be reused!
-          Ensure that external services no longer allow these Outbound IPs: ${displayNat(space.outbound_ips)}
-        `
+        natWarning = `The Outbound IPs for this space will be reused!\nEnsure that external services no longer allow these Outbound IPs: ${displayNat(space.outbound_ips)}\n`
       }
     }
 
-    await confirmApp(spaceName as string, confirm, heredoc`
-      Destructive Action
-      This command will destroy the space ${color.bold.red(spaceName as string)}
-      ${natWarning}
-    `)
+    await confirmApp(
+      spaceName as string,
+      confirm,
+      `Destructive Action\nThis command will destroy the space ${color.bold.red(spaceName as string)}\n${natWarning}\n`,
+    )
 
     ux.action.start(`Destroying space ${color.cyan(spaceName as string)}`)
     await this.heroku.delete(`/spaces/${spaceName}`)
