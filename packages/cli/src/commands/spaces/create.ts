@@ -11,6 +11,8 @@ export default class Create extends Command {
   static topic = 'spaces'
   static description = heredoc`
     create a new space
+  `
+  static examples = [heredoc`
     Example:
 
     $ heroku spaces:create --space my-space --team my-team --region oregon
@@ -23,7 +25,8 @@ export default class Create extends Command {
     Data CIDR:  172.23.0.0/20
     State:      allocating
     Created at: 2016-01-06T03:23:13Z
-  `
+  `]
+
   static flags = {
     space: flags.string({char: 's', description: 'name of space to create'}),
     channel: flags.string({hidden: true}),
@@ -34,12 +37,12 @@ export default class Create extends Command {
     cidr: flags.string({description: 'RFC-1918 CIDR the space will use'}),
     'kpi-url': flags.string({hidden: true, description: 'self-managed KPI endpoint to use'}),
     'data-cidr': flags.string({description: 'RFC-1918 CIDR used by Heroku Data resources for the space'}),
-    team: flags.team(),
-  };
+    team: flags.team({required: true}),
+  }
 
   static args = {
     space: Args.string({hidden: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Create)
@@ -51,10 +54,6 @@ export default class Create extends Command {
         Space name required.
         USAGE: heroku spaces:create --space my-space --team my-team
       `)
-    }
-
-    if (!team) {
-      ux.error('No team specified')
     }
 
     const dollarAmountMonthly = shield ? '$3000' : '$1000'
@@ -71,7 +70,7 @@ export default class Create extends Command {
     ux.action.stop()
 
     ux.warn(`${color.bold('Spend Alert.')} During the limited GA period, each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
-    ux.warn('Use spaces:wait to track allocation.')
+    ux.warn(`Use ${color.cmd('heroku spaces:wait')} to track allocation.`)
 
     ux.styledHeader(space.name)
     ux.styledObject({

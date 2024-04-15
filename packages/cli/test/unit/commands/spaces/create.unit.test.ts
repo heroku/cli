@@ -4,7 +4,6 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
-import {CLIError} from '@oclif/core/lib/errors'
 
 describe('spaces:create', function () {
   const now = new Date()
@@ -214,17 +213,5 @@ describe('spaces:create', function () {
       Shield:     off
       Created at: ${now.toISOString()}
     `)
-  })
-
-  it('create fails without team name', async () => {
-    try {
-      await runCommand(Cmd, [
-        '--space=my-space',
-        '--region=my-region',
-      ])
-    } catch (error) {
-      const {message} = error as CLIError
-      expect(message).to.eq('No team specified')
-    }
   })
 })
