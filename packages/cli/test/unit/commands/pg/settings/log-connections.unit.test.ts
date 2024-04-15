@@ -32,7 +32,7 @@ describe('pg:settings:log-connections', () => {
     pg.done()
   })
 
-  it('shows settings for auto_explain with value', async () => {
+  it('shows settings for log-connections with value', async () => {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: 'test_value'}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`
@@ -41,7 +41,7 @@ describe('pg:settings:log-connections', () => {
     `))
   })
 
-  it('shows settings for auto_explain with no value', async () => {
+  it('shows settings for log-connections with no value', async () => {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: ''}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`

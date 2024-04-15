@@ -24,7 +24,6 @@ exports.commands = flatten([
   require('./commands/pull'),
   require('./commands/repoint'),
   require('./commands/reset'),
-  require('./commands/settings/track_functions'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
