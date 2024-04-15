@@ -83,7 +83,14 @@ export default class Copy extends Command {
       ux.action.stop()
 
       if (source.attachment) {
-        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`, {hostname: pghost()})
+        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(
+          `/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
+          {
+            hostname: pghost(),
+            headers: {
+              Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
+            },
+          })
         if (credentials.length > 1) {
           ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
         }
