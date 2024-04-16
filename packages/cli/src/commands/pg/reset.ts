@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import confirmCommand from '../../lib/confirmCommand'
 import pgHost from '../../lib/pg/host'
 import {getAddon} from '../../lib/pg/fetcher'
-import confirmApp from '../../lib/apps/confirm-app'
 import heredoc from 'tsheredoc'
 
 export default class Reset extends Command {
@@ -32,7 +32,7 @@ export default class Reset extends Command {
         .sort()
     }
 
-    await confirmApp(app, confirm, heredoc(`
+    await confirmCommand(app, confirm, heredoc(`
       Destructive action
       ${color.addon(db.name)} will lose all of its data
     `))

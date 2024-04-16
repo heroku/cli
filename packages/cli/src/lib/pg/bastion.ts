@@ -43,7 +43,7 @@ export const env = (db: ReturnType<typeof getConnectionDetails>) => {
   return baseEnv
 }
 
-export function tunnelConfig(db: ReturnType<typeof getConnectionDetails>) {
+export function tunnelConfig(db: ReturnType<typeof getConnectionDetails>): createTunnel.Config {
   const localHost = '127.0.0.1'
   // eslint-disable-next-line no-mixed-operators
   const localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
@@ -51,8 +51,8 @@ export function tunnelConfig(db: ReturnType<typeof getConnectionDetails>) {
     username: 'bastion',
     host: db.bastionHost,
     privateKey: db.bastionKey,
-    dstHost: db.host,
-    dstPort: Number.parseInt(db.port, 10),
+    dstHost: db.host || undefined,
+    dstPort: (db.port && Number.parseInt(db.port as string, 10)) || undefined,
     localHost: localHost,
     localPort: localPort,
   }
@@ -102,7 +102,7 @@ class Timeout {
   }
 }
 
-export async function sshTunnel(db: ReturnType<typeof getConnectionDetails>, dbTunnelConfig: ReturnType<typeof tunnelConfig>, timeout = 10000) {
+export async function sshTunnel(db: ReturnType<typeof getConnectionDetails>, dbTunnelConfig: createTunnel.Config, timeout = 10000) {
   if (!db.bastionKey) {
     return null
   }

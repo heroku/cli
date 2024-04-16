@@ -45,9 +45,8 @@ export function multiSortCompareFn(comparators: Comparator[]): Comparator {
     const bitLen = comparators.length - 1
     let bitA = 0
     let bitB = 0
-
-    comparators.forEach((comparator, index) => {
-      const priority = 1 << (bitLen - index)
+    for (const [i, comparator] of comparators.entries()) {
+      const priority = 1 << (bitLen - i)
       const score = comparator?.(a, b)
       if (score === -1) {
         bitA |= priority
@@ -56,7 +55,12 @@ export function multiSortCompareFn(comparators: Comparator[]): Comparator {
       if (score === 1) {
         bitB |= priority
       }
-    })
+
+      if (bitA !== bitB) {
+        break
+      }
+    }
+
     return bitA > bitB ? -1 : (bitA < bitB ? 1 : 0)
   }
 }

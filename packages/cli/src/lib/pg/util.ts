@@ -2,10 +2,11 @@ import color from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import debug from 'debug'
+import {parse} from 'url'
 import {renderAttachment} from '../../commands/addons'
 import {multiSortCompareFn} from '../utils/multisort'
 import {getBastion} from './bastion'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from './types'
+import type {AddOnAttachmentWithConfigVarsAndPlan, CredentialsInfo} from './types'
 import {env} from 'process'
 
 export function getConfigVarName(configVars: string[]): string {
@@ -114,7 +115,7 @@ export const getConnectionDetails = (attachment: Required<AddOnAttachment & {
   const conn = parsePostgresConnectionString(config[connstringVar])
 
   const payload = {
-    user: conn.username,
+    user: conn.user,
     password: conn.password,
     database: conn.database,
     host: conn.hostname,
@@ -173,27 +174,24 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
     return color.configVar(name.replace(/_URL$/, ''))
   }
 
-  const conn = exports.parsePostgresConnectionString(uri)
+  const conn = parsePostgresConnectionString(uri)
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
 
-export const parsePostgresConnectionString = (db: string): Omit<URL, 'toString' | 'toJSON' | 'searchParams' | 'hash' | 'search'> & {database: string | null} => {
-  const dbUrl = new URL(db.match(/:\/\//) ? db : `postgres:///${db}`)
-  const databaseName = dbUrl.pathname || null
-  let database: string | null
-  if (databaseName && databaseName.charAt(0) === '/') {
-    database = databaseName.slice(1) || null
-  } else {
-    database = databaseName
+export const parsePostgresConnectionString = (db: string) => {
+  const dbPath = db.match(/:\/\//) ? db : `postgres:///${db}`
+  const parsedURL = parse(dbPath)
+  const {auth, hostname, pathname, port} = parsedURL
+  const [user, password] = auth ? auth.split(':') : []
+  const databaseName = pathname && pathname.charAt(0) === '/' ?
+    pathname.slice(1) || null :
+    pathname
+  return {
+    ...parsedURL,
+    user,
+    password,
+    database: databaseName,
+    host: hostname,
+    port: hostname ? port || env.PGPORT || 5432 : port || env.PGPORT,
   }
-
-  dbUrl.port = dbUrl.port || env.PGPORT
-  if (dbUrl.hostname) {
-    dbUrl.port = dbUrl.port || '5432'
-  }
-
-  // Strange behavior in that we cannot spread the
-  // props of a URL. i.e. {...dbUrl, database} does not work
-  const {pathname, host, port, password, username, hostname, href, origin, protocol} = dbUrl
-  return {pathname, host, port, password, username, hostname, href, origin, protocol, database}
 }

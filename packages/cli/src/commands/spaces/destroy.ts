@@ -3,7 +3,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirmCommand from '../../lib/confirmCommand'
 import {displayNat} from '../../lib/spaces/spaces'
 
 type RequiredSpaceWithNat = Required<Heroku.Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
@@ -47,7 +47,7 @@ export default class Destroy extends Command {
       }
     }
 
-    await confirmApp(
+    await confirmCommand(
       spaceName as string,
       confirm,
       `Destructive Action\nThis command will destroy the space ${color.bold.red(spaceName as string)}\n${natWarning}\n`,

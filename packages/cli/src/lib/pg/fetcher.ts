@@ -135,7 +135,7 @@ export async function getAddon(heroku: APIClient, app: string, db = 'DATABASE_UR
 }
 
 export async function database(heroku: APIClient, app: string, db?: string, namespace?: string) {
-  const attached = await attachment(heroku, app, db, namespace)
+  const attached = await getAttachment(heroku, app, db, namespace)
 
   // would inline this as well but in some cases attachment pulls down config
   // as well, and we would request twice at the same time but I did not want
