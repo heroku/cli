@@ -138,7 +138,7 @@ export type CredentialsInfo = {
   host: string
   port: number
   name: string
-  state: 'active' | 'rotating'
+  state: CredentialsState
   credentials: {
     connections: number
     user: string
