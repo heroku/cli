@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 
-export default async function confirmApp(app: string, confirm?: string, message?: string) {
+export default async function confirmCommand(app: string, confirm?: string, message?: string) {
   if (confirm) {
     if (confirm === app) return
     throw new Error(`Confirmation ${color.bold.red(confirm)} did not match ${color.bold.red(app)}. Aborted.`)

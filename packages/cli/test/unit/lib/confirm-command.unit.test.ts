@@ -1,6 +1,6 @@
 import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import confirmApp from '../../../../src/lib/apps/confirm-app'
+import confirmCommand from '../../../src/lib/confirmCommand'
 
 const stripAnsi = require('strip-ansi')
 
@@ -8,7 +8,7 @@ describe('confirmApp', () => {
   test
     .stdout()
     .stderr()
-    .do(() => confirmApp('app', 'app'))
+    .do(() => confirmCommand('app', 'app'))
     .it('should not error or prompt with confirm flag match', ({stderr, stdout}) => {
       expect(stderr).to.equal('')
       expect(stdout).to.equal('')
@@ -17,7 +17,7 @@ describe('confirmApp', () => {
   test
     .stdout()
     .stderr()
-    .do(() => confirmApp('app', 'nope'))
+    .do(() => confirmCommand('app', 'nope'))
     .catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal('Confirmation nope did not match app. Aborted.')
     })
@@ -27,7 +27,7 @@ describe('confirmApp', () => {
     .stdout()
     .stderr()
     .stub(ux, 'prompt', () => Promise.resolve('app'))
-    .do(() => confirmApp('app'))
+    .do(() => confirmCommand('app'))
     .it('should not err on confirm prompt match', ({stderr, stdout}) => {
       expect(stderr).to.contain('Warning: WARNING: Destructive Action')
       expect(stdout).to.equal('')
@@ -39,7 +39,7 @@ describe('confirmApp', () => {
     .stdout()
     .stderr()
     .stub(ux, 'prompt', () => Promise.resolve('app'))
-    .do(() => confirmApp('app', undefined, customMessage))
+    .do(() => confirmCommand('app', undefined, customMessage))
     .it('should display custom message', ({stderr, stdout}) => {
       expect(stderr).to.contain(customMessage)
       expect(stdout).to.equal('')
@@ -47,7 +47,7 @@ describe('confirmApp', () => {
 
   test
     .stub(ux, 'prompt', () => Promise.resolve('nope'))
-    .do(() => confirmApp('app'))
+    .do(() => confirmCommand('app'))
     .catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal('Confirmation did not match app. Aborted.')
     })

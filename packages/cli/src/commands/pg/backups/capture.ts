@@ -68,6 +68,6 @@ export default class Capture extends Command {
       `)
     }
 
-    await pgBackupsApi.wait(`Backing up ${color.green(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name)
+    await pgBackupsApi.wait(`Backing up ${color.green(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name || app)
   }
 }

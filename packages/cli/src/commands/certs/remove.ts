@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import getEndpoint from '../../lib/certs/flags'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirmCommand from '../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 
 export default class Remove extends Command {
@@ -20,7 +20,7 @@ export default class Remove extends Command {
       const {flags} = await this.parse(Remove)
       const {app, confirm} = flags
       const sniEndpoint = await getEndpoint(flags, this.heroku)
-      await confirmApp(
+      await confirmCommand(
         app,
         confirm,
         heredoc`

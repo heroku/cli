@@ -68,7 +68,7 @@ async function matchesHelper(heroku: APIClient, app: string, db: string, namespa
   }
 }
 
-export async function attachment(heroku: APIClient, app: string, db = 'DATABASE_URL', namespace = ''): Promise<Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>> {
+export async function getAttachment(heroku: APIClient, app: string, db = 'DATABASE_URL', namespace = ''): Promise<Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>> {
   const matchesOrError = await matchesHelper(heroku, app, db, namespace)
   let {matches} = matchesOrError
   const {error} = matchesOrError
@@ -130,5 +130,5 @@ async function allAttachments(heroku: APIClient, app_id: string) {
 }
 
 export async function getAddon(heroku: APIClient, app: string, db = 'DATABASE_URL') {
-  return ((await attachment(heroku, app, db))).addon
+  return ((await getAttachment(heroku, app, db))).addon
 }
