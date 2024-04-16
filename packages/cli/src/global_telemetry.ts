@@ -14,7 +14,6 @@ const {version} = require('../package.json')
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
-const canSendTelemetry = !isTelemetryDisabled
 
 function getToken() {
   const config = new Config({root})
@@ -154,7 +153,7 @@ export function reportCmdNotFound(config: any) {
 
 export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => void) {
   // send telemetry to honeycomb and rollbar
-  if (!canSendTelemetry) {
+  if (isTelemetryDisabled) {
     return
   }
 
