@@ -141,7 +141,7 @@ function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
   return output.join(' ')
 }
 
-function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isFirst = false) {
+export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isFirst = false): string {
   const line = isFirst ? '\u2514\u2500' : '\u251C\u2500'
   const attName = formatAttachment(attachment, attachment.app?.name !== app)
   return printf(' %s %s', color.dim(line), attName)

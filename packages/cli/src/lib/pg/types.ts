@@ -132,11 +132,15 @@ export type Link = {
   name: string,
   remote?: Link,
 }
+export type CredentialsState = 'active' | 'rotating' | 'enabling' | 'revoking'
 export type CredentialsInfo = {
   database: string
   host: string
   port: number
+  name: string
+  state: CredentialsState
   credentials: {
+    connections: number
     user: string
     password: string
     state: string
