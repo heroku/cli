@@ -14,18 +14,18 @@ export default class Upgrade extends Command {
   static description = heredoc(`
     For an Essential-* plan, this command upgrades the database's PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the PostgreSQL version.
     To upgrade to another PostgreSQL version, use pg:copy instead
-  `);
+  `)
 
   static flags = {
     confirm: flags.string({char: 'c'}),
     version: flags.string({char: 'v', description: 'PostgreSQL version to upgrade to'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Upgrade)
