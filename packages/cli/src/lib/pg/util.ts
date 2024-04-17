@@ -22,7 +22,7 @@ export function essentialPlan(addon: AddOnAttachmentWithConfigVarsAndPlan) {
   return essentialNumPlan(addon) || legacyEssentialPlan(addon)
 }
 
-function getConfigVarNameFromAttachment(attachment: Required<AddOnAttachment & {
+export function getConfigVarNameFromAttachment(attachment: Required<AddOnAttachment & {
   addon: AddOnAttachmentWithConfigVarsAndPlan
 }>, config: Record<string, string> = {}): string {
   const configVars = attachment.config_vars?.filter((cv: string) => {
