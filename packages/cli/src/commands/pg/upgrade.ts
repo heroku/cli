@@ -7,7 +7,7 @@ import pgHost from '../../lib/pg/host'
 import {legacyEssentialPlan, databaseNameFromUrl} from '../../lib/pg/util'
 import {PgDatabase} from '../../lib/pg/types'
 import * as Heroku from '@heroku-cli/schema'
-import confirmApp from '../../lib/apps/confirm-app'
+import confirmCommand from '../../lib/confirmCommand'
 
 export default class Upgrade extends Command {
   static topic = 'pg';
@@ -39,14 +39,14 @@ export default class Upgrade extends Command {
     if (replica.following) {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
-      await confirmApp(app, confirm, heredoc(`
+      await confirmCommand(app, confirm, heredoc(`
         Destructive action
         ${color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop following ${origin}, and become writable.
 
         This cannot be undone.
       `))
     } else {
-      await confirmApp(app, confirm, heredoc(`
+      await confirmCommand(app, confirm, heredoc(`
         Destructive action
         ${color.addon(db.name)} will be upgraded to a newer PostgreSQL version.
 
