@@ -341,4 +341,8 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
+<<<<<<< HEAD
 _See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ps/wait.ts)_
+=======
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v8.11.4/src/commands/ps/wait.ts)_
+>>>>>>> main

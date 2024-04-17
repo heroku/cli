@@ -285,8 +285,8 @@ USAGE
   $ heroku clients:create [NAME] [REDIRECT_URI] [-s] [-j]
 
 FLAGS
-  -j, --1  output in json format
-  -s, --0  output in shell format
+  -j, --json  output in json format
+  -s, --shell  output in shell format
 
 DESCRIPTION
   create a new OAuth client
@@ -317,8 +317,8 @@ USAGE
   $ heroku clients:info [ID] [-j] [-s]
 
 FLAGS
-  -j, --0  output in json format
-  -s, --1  output in shell format
+  -j, --json  output in json format
+  -s, --shell  output in shell format
 
 DESCRIPTION
   show details of an oauth client
@@ -335,8 +335,8 @@ USAGE
   $ heroku clients:rotate [ID] [-j] [-s]
 
 FLAGS
-  -j, --0  output in json format
-  -s, --1  output in shell format
+  -j, --json  output in json format
+  -s, --shell  output in shell format
 
 DESCRIPTION
   rotate OAuth client secret
