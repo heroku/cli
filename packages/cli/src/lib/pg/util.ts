@@ -40,7 +40,7 @@ function getConfigVarNameFromAttachment(attachment: Required<AddOnAttachment & {
   return getConfigVarName(configVars)
 }
 
-export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialsInfo[], cred: unknown) {
+export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialsInfo, cred: string) {
   const isForeignApp = (attOrAddon: Required<AddOnAttachment>) => attOrAddon.app.name === app ? 0 : 1
   const comparators = [
     (a: Required<AddOnAttachment>, b: Required<AddOnAttachment>) => {
