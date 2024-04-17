@@ -39,4 +39,19 @@ describe('authorizations:create', () => {
         expect(json.scope).to.contain('global')
       })
   })
+
+  context('API warning headers', () => {
+    test
+      .stderr()
+      .stdout()
+      .nock('https://api.heroku.com:443', api => {
+        api
+          .post('/oauth/authorizations', {description: 'awesome'})
+          .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}}, {'warning-message': 'this is an API warning message example'})
+      })
+      .command(['authorizations:create', '--description', 'awesome'])
+      .it('outputs API warning message', ctx => {
+        expect(ctx.stderr).contains('this is an API warning message example')
+      })
+  })
 })

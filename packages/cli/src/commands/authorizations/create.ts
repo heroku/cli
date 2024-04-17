@@ -25,7 +25,7 @@ export default class AuthorizationsCreate extends Command {
 
     ux.action.start('Creating OAuth Authorization')
 
-    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
+    const {body: auth, headers} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
       body: {
         description: flags.description,
         scope: flags.scope ? flags.scope.split(',') : undefined,
@@ -34,6 +34,12 @@ export default class AuthorizationsCreate extends Command {
     })
 
     ux.action.stop()
+
+    const apiWarnings = headers['warning-message'] as string || ''
+
+    if (apiWarnings) {
+      ux.warn(apiWarnings)
+    }
 
     if (flags.short) {
       ux.log(auth.access_token && auth.access_token.token)
