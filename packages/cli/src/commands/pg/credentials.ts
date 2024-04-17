@@ -24,7 +24,15 @@ export default class Credentials extends Command {
     const {database} = args
     const addon = await getAddon(this.heroku, app, database)
 
-    const {body: credentials} = await this.heroku.get<CredentialsInfo>(`/postgres/v0/databases/${addon.id}/credentials`, {hostname: pghost()})
+    const {body: credentials} = await this.heroku.get<CredentialsInfo>(
+      `/postgres/v0/databases/${addon.id}/credentials`,
+      {
+        hostname: pghost(),
+        headers: {
+          Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
+        },
+      },
+    )
     const sortedCredentials = this.sortByDefaultAndName(credentials)
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 
