@@ -30,7 +30,7 @@ export default class AuthorizationsUpdate extends Command {
       }
     }
 
-    const {body: authentication} = await this.heroku.patch<Heroku.OAuthAuthorization>(
+    const {body: authentication, headers} = await this.heroku.patch<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${args.id}`,
       {
         body: {
@@ -39,6 +39,12 @@ export default class AuthorizationsUpdate extends Command {
         },
       },
     )
+
+    const apiWarnings = headers['warning-message'] as string || ''
+
+    if (apiWarnings) {
+      ux.warn(apiWarnings)
+    }
 
     ux.action.stop()
 
