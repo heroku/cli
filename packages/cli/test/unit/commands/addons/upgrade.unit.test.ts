@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import * as chalk from 'chalk'
+import stripAnsi = require('strip-ansi')
 
 describe('addons:upgrade', () => {
   let api: ReturnType<typeof nock>
@@ -178,7 +179,7 @@ describe('addons:upgrade', () => {
       ])
     } catch (error) {
       if (error instanceof Error) {
-        expect(error.message).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
+        expect(stripAnsi(error.message)).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
       }
     }
   })
