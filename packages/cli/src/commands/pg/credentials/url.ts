@@ -5,7 +5,7 @@ import {legacyEssentialPlan} from '../../../lib/pg/util'
 import {getAddon} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
 import {URL} from 'url'
-import type {CredentialsInfo} from '../../../lib/pg/types'
+import type {CredentialInfo} from '../../../lib/pg/types'
 import heredoc from 'tsheredoc'
 
 export default class Url extends Command {
@@ -34,7 +34,7 @@ export default class Url extends Command {
       ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
 
-    const {body: credInfo} = await this.heroku.get<CredentialsInfo>(
+    const {body: credInfo} = await this.heroku.get<CredentialInfo>(
       `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
       {
         hostname: pgHost(),

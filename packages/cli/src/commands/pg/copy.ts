@@ -83,7 +83,7 @@ export default class Copy extends Command {
       ux.action.stop()
 
       if (source.attachment) {
-        const {body: credentials} = await this.heroku.get<CredentialsInfo[]>(
+        const {body: credentials} = await this.heroku.get<CredentialsInfo>(
           `/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
           {
             hostname: pghost(),
