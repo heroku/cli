@@ -109,6 +109,7 @@ export type PgDatabaseTenant = {
   created_at: string
   database_user: string
   database_name: string
+  following?: string
   resource_url: string
   'waiting?': boolean
   num_bytes: number

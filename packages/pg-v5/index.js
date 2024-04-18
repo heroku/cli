@@ -7,8 +7,6 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/blocking'),
-  require('./commands/connection_pooling'),
   require('./commands/diagnose'),
   require('./commands/info'),
   require('./commands/kill'),
@@ -21,7 +19,6 @@ exports.commands = flatten([
   require('./commands/pull'),
   require('./commands/repoint'),
   require('./commands/unfollow'),
-  require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
   require('./commands/wait'),
 ])
