@@ -58,6 +58,8 @@ export default class Info extends Command {
       database: Args.string(),
     };
 
+    static aliases = ['pg']
+
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Info)
       const {app} = flags
