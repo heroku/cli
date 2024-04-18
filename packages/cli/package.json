@@ -6,7 +6,7 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "1.1.14",
+    "@heroku-cli/color": "2.0.1",
     "@heroku-cli/command": "^10.0.0",
     "@heroku-cli/command-v9": "npm:@heroku-cli/command@^9.0.2",
     "@heroku-cli/notifications": "^1.2.4",
