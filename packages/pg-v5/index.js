@@ -7,7 +7,6 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/connection_pooling'),
   require('./commands/credentials'),
   require('./commands/diagnose'),
   require('./commands/info'),
