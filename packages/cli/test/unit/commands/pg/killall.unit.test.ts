@@ -5,7 +5,7 @@ import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-describe.only('pg:killall', () => {
+describe('pg:killall', () => {
   let pg: nock.Scope
   const db = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}}
   const fetcher = {
