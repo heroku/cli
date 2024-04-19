@@ -149,7 +149,8 @@ export default class Promote extends Command {
             msg += ` It is safe to ignore the failed ${detach.description} release.`
           }
 
-          return ux.action.stop(msg)
+         ux.action.stop(msg)
+         return
         }
 
         if (attach && attach.status === 'failed') {
