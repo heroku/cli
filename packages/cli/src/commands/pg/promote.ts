@@ -117,7 +117,7 @@ export default class Promote extends Command {
         
         Promoting a database with ${color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
         
-        Use ${color.cyan(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.yellow(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
+        Use ${color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.yellow(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
       `))
     }
 
