@@ -67,7 +67,7 @@ export default class Promote extends Command {
         ux.error(heredoc(`
           Database cannot be promoted while in state: ${status.message}
           
-          Promoting this database can lead to application errors and outage. Please run ${color.cmd('pg:wait')} to wait for database to become available.
+          Promoting this database can lead to application errors and outage. Please run ${color.cmd('heroku pg:wait')} to wait for database to become available.
           
           To ignore this error, you can pass the --force flag to promote the database and risk application issues.
         `))
