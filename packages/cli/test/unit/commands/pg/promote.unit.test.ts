@@ -696,7 +696,7 @@ describe('pg:promote when database is not available or force flag is present', (
     const err = heredoc(`
       Database cannot be promoted while in state: pending
 
-      Promoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
+      Promoting this database can lead to application errors and outage. Please run heroku pg:wait to wait for database to become available.
 
       To ignore this error, you can pass the --force flag to promote the database and risk application issues.
     `)
