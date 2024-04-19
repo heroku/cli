@@ -73,6 +73,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -112,6 +113,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -149,6 +151,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -183,6 +186,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -219,6 +223,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -239,6 +244,7 @@ describe('pg:promote when argument is database', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ]).catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal(err)
     })
@@ -252,7 +258,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
-        addon_attachment: 'DATABASE_URL',
+        addon_attachment: 'DATABASE',
         addon_service: 'heroku-postgresql',
       })
       .reply(200, [{addon, name: 'PURPLE', namespace: 'credential:hello'}])
@@ -300,6 +306,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -343,6 +350,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -378,6 +386,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -388,9 +397,6 @@ describe('pg:promote when argument is a credential attachment', () => {
   })
 
   it('promotes the credential if the current promoted database is for the same addon, but the default credential', async () => {
-    // nock('https://api.heroku.com')
-    //   .post('/actions/addon-attachments/resolve')
-    //   .reply(200, [{addon}])
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -419,6 +425,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -458,6 +465,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -488,6 +496,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
       .catch((error: Error) => {
         expect(stripAnsi(error.message)).to.equal(err)
@@ -531,7 +540,7 @@ describe('pg:promote when release phase is present', () => {
       })
       .reply(201)
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'DATABASE', addon_service: 'heroku-postgresql',
       })
       .reply(201, [{
         name: 'PURPLE', addon: {name: addon.name, id: addon.id}, namespace: 'credential:hello',
@@ -558,6 +567,7 @@ describe('pg:promote when release phase is present', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -581,6 +591,7 @@ describe('pg:promote when release phase is present', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -604,6 +615,7 @@ describe('pg:promote when release phase is present', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -627,6 +639,7 @@ describe('pg:promote when release phase is present', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -645,6 +658,7 @@ describe('pg:promote when release phase is present', () => {
     return expect(runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])).to.be.rejected
   })
 })
@@ -695,6 +709,7 @@ describe('pg:promote when database is not available or force flag is present', (
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ]).catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal(err)
     })
@@ -730,6 +745,7 @@ describe('pg:promote when database is not available or force flag is present', (
       '--app',
       'myapp',
       '--force',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -769,6 +785,7 @@ describe('pg:promote when database is not available or force flag is present', (
       '--app',
       'myapp',
       '--force',
+      'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
       Ensuring an alternate alias for existing DATABASE_URL...
@@ -831,6 +848,7 @@ describe('pg:promote when promoted database is a follower', () => {
     await runCommand(Cmd, [
       '--app',
       'myapp',
+      'DATABASE',
     ])
     expect(stderr.output).to.include('Your database has been promoted but it is currently a follower')
   })

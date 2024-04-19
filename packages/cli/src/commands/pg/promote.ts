@@ -18,7 +18,7 @@ export default class Promote extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({required: true}),
   };
 
   public async run(): Promise<void> {
