@@ -15,11 +15,11 @@ export default class Promote extends Command {
     force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({required: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Promote)

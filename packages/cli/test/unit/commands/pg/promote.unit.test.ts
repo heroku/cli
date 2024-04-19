@@ -6,7 +6,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
-const stripAnsi = require('strip-ansi')
+import stripAnsi = require('strip-ansi')
 
 describe('pg:promote when argument is database', () => {
   const addon = fixtures.addons['dwh-db']
@@ -16,7 +16,6 @@ describe('pg:promote when argument is database', () => {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
     nock('https://api.data.heroku.com')
@@ -45,14 +44,12 @@ describe('pg:promote when argument is database', () => {
           namespace: 'connection-pooling:default',
         },
       ])
-    nock('https://api.heroku.com')
       .post('/addon-attachments', {
         app: {name: 'myapp'},
         addon: {name: 'postgres-2'},
         namespace: null,
         confirm: 'myapp',
       }).reply(201, {name: 'RED'})
-    nock('https://api.heroku.com')
       .post('/addon-attachments', {
         name: 'DATABASE',
         app: {name: 'myapp'},
@@ -60,8 +57,7 @@ describe('pg:promote when argument is database', () => {
         namespace: null,
         confirm: 'myapp',
       }).reply(201)
-    nock('https://api.heroku.com').delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
-    nock('https://api.heroku.com')
+      .delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
       .post('/addon-attachments', {
         name: 'DATABASE_CONNECTION_POOL',
         app: {name: 'myapp'},
@@ -262,7 +258,6 @@ describe('pg:promote when argument is a credential attachment', () => {
         addon_service: 'heroku-postgresql',
       })
       .reply(200, [{addon, name: 'PURPLE', namespace: 'credential:hello'}])
-    nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
     nock('https://api.data.heroku.com')
@@ -670,7 +665,6 @@ describe('pg:promote when database is not available or force flag is present', (
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
     nock('https://api.data.heroku.com')
@@ -803,7 +797,6 @@ describe('pg:promote when promoted database is a follower', () => {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
     nock('https://api.data.heroku.com')
