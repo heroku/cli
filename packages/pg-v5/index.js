@@ -13,7 +13,6 @@ exports.commands = flatten([
   require('./commands/killall'),
   require('./commands/locks'),
   require('./commands/outliers'),
-  require('./commands/promote'),
   require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),

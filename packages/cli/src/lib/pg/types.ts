@@ -99,6 +99,11 @@ export type PgDatabaseService = {
   }>
 }
 
+export type PgStatus = {
+  'waiting?': boolean
+  message: string
+}
+
 type TenantInfo = 'Plan' | 'Status' | 'Connections' | 'PG Version' | 'Created' | 'Data Size' | 'Tables' | 'Fork/Follow'
   | 'Rollback' | 'Continuous Protection'
 
@@ -119,7 +124,7 @@ export type PgDatabaseTenant = {
   }>
 }
 
-export type PgDatabase = PgDatabaseService | PgDatabaseTenant
+export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
 export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & { plan: Required<Heroku.AddOn['plan']> }
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
