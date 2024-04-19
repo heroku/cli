@@ -149,8 +149,8 @@ export default class Promote extends Command {
             msg += ` It is safe to ignore the failed ${detach.description} release.`
           }
 
-         ux.action.stop(msg)
-         return
+          ux.action.stop(msg)
+          return
         }
 
         if (attach && attach.status === 'failed') {
@@ -163,11 +163,13 @@ export default class Promote extends Command {
           }
 
           msg += ' Check your release phase logs for failure causes.'
-          return ux.action.stop(msg)
+          ux.action.stop(msg)
+          return
         }
 
         if (Date.now() > endTime) {
-          return ux.action.stop('timeout. Check your Attach DATABASE release for failures.')
+          ux.action.stop('timeout. Check your Attach DATABASE release for failures.')
+          return
         }
 
         await new Promise(resolve => setTimeout(resolve, 5000))
