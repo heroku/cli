@@ -39,7 +39,7 @@ async function run(context, heroku) {
 
   spinner.stop('done\n')
 
-  lib.renderInfo.render(space, context.flags)
+  lib.renderInfo(space, context.flags)
   _notify(context.flags.space || context.args.space)
 }
 
