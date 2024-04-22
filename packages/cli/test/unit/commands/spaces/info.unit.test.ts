@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 
-describe.only('spaces:info', function () {
+describe('spaces:info', function () {
   const space = fixtures.spaces['non-shield-space']
   const shieldSpace = fixtures.spaces['shield-space']
 
