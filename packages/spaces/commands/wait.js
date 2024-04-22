@@ -1,7 +1,7 @@
 // -*- mode: js; js-indent-level: 2; -*-
 'use strict'
 let cli = require('heroku-cli-util')
-let info = require('./info')
+const lib = require('../lib/spaces')
 let wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function run(context, heroku) {
@@ -39,7 +39,7 @@ async function run(context, heroku) {
 
   spinner.stop('done\n')
 
-  info.render(space, context.flags)
+  lib.renderInfo.render(space, context.flags)
   _notify(context.flags.space || context.args.space)
 }
 
