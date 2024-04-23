@@ -50,13 +50,3 @@ export default class Info extends Command {
     renderInfo(space, flags.json)
   }
 }
-// function render(space, flags) {
-//   if (flags.json) {
-//     ux.log(JSON.stringify(space, null, 2))
-//   } else {
-//     ux.styledHeader(space.name)
-//     ux.styledObject({
-//       ID: space.id, Team: space.team.name, Region: space.region.description, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: lib.displayShieldState(space), 'Outbound IPs': lib.displayNat(space.outbound_ips), 'Created at': space.created_at,
-//     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Created at'])
-//   }
-// }
