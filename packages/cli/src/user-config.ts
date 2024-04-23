@@ -1,4 +1,5 @@
 import {Interfaces} from '@oclif/core'
+import {randomUUID} from 'node:crypto'
 import * as path from 'path'
 
 import deps from './deps'
@@ -121,8 +122,7 @@ export default class UserConfig {
   }
 
   private genInstall() {
-    const uuid = require('uuid/v4')
-    this.install = uuid()
+    this.install = randomUUID()
     return this.install
   }
 }
