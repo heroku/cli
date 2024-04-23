@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        os: [pub-hk-ubuntu-22.04-small, macos-latest]
+        os: [ubuntu-latest, macos-latest]
     environment: AcceptanceTests
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
