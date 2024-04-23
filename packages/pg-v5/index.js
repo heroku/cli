@@ -7,13 +7,9 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/credentials'),
-  require('./commands/diagnose'),
   require('./commands/info'),
-  require('./commands/kill'),
   require('./commands/locks'),
   require('./commands/outliers'),
-  require('./commands/promote'),
   require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),

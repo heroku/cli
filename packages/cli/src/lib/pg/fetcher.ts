@@ -153,3 +153,8 @@ export async function database(heroku: APIClient, app: string, db?: string, name
 
   return database
 }
+
+export async function getRelease(heroku: APIClient, appName: string, id: string) {
+  const {body: release} = await heroku.get<Heroku.Release>(`/apps/${appName}/releases/${id}`)
+  return release
+}

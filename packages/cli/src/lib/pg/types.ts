@@ -52,10 +52,36 @@ export type AddOnWithRelatedData = Required<Heroku.AddOnAttachment['addon']> & {
   plan: Required<Heroku.AddOn['plan']>
 }
 
-type ServiceInfo = 'Status' | 'Fork/Follow' | 'Rollback' | 'Created' | 'Region' | 'Data Encryption' | 'Continuous Protection'
-  | 'Enhanced Certificates' | 'Upgradable Extensions' | 'Plan' | 'HA Status' | 'Behind By' | 'Data Size' | 'Tables' | 'PG Version'
-  | 'Connections' | 'Connection Pooling' | 'Credentials' | 'Restricted Credentials' | 'Mutual TLS' | 'Customer Encryption Key'
-  | 'Following' | 'Forked From' | 'Followers' | 'Forks' | 'Maintenance' | 'Maintenance window' | 'Infrastructure' | 'Warning'
+type ServiceInfo =
+  'Status'
+  | 'Fork/Follow'
+  | 'Rollback'
+  | 'Created'
+  | 'Region'
+  | 'Data Encryption'
+  | 'Continuous Protection'
+  | 'Enhanced Certificates'
+  | 'Upgradable Extensions'
+  | 'Plan'
+  | 'HA Status'
+  | 'Behind By'
+  | 'Data Size'
+  | 'Tables'
+  | 'PG Version'
+  | 'Connections'
+  | 'Connection Pooling'
+  | 'Credentials'
+  | 'Restricted Credentials'
+  | 'Mutual TLS'
+  | 'Customer Encryption Key'
+  | 'Following'
+  | 'Forked From'
+  | 'Followers'
+  | 'Forks'
+  | 'Maintenance'
+  | 'Maintenance window'
+  | 'Infrastructure'
+  | 'Warning'
 
 export type PgDatabaseService = {
   addon_id: string
@@ -99,6 +125,11 @@ export type PgDatabaseService = {
   }>
 }
 
+export type PgStatus = {
+  'waiting?': boolean
+  message: string
+}
+
 type TenantInfo = 'Plan' | 'Status' | 'Connections' | 'PG Version' | 'Created' | 'Data Size' | 'Tables' | 'Fork/Follow'
   | 'Rollback' | 'Continuous Protection'
 
@@ -119,9 +150,9 @@ export type PgDatabaseTenant = {
   }>
 }
 
-export type PgDatabase = PgDatabaseService | PgDatabaseTenant
+export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
-export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & { plan: Required<Heroku.AddOn['plan']> }
+export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Required<Heroku.AddOn['plan']>}
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
   config_vars: Heroku.AddOn['config_vars']
   addon: AddOnWithRelatedData
@@ -133,20 +164,24 @@ export type Link = {
   name: string,
   remote?: Link,
 }
-export type CredentialsState = 'active' | 'rotating' | 'enabling' | 'revoking'
-export type CredentialsInfo = {
+type CredentialState = 'enabling' | 'active' | 'revoking' | 'revoked' | 'archived'
+export type Credential = {
+  user: string
+  password: string
+  state: CredentialState
+  connections?: number | null
+}
+type CredentialStoreState = 'provisioning' | 'wait_for_provisioning' | 'active' | 'rotating' | 'rotation_completed' | 'revoking' | 'archived'
+export type CredentialInfo = {
+  uuid: string
+  name: string
+  state: CredentialStoreState
   database: string
   host: string
   port: number
-  name: string
-  state: CredentialsState
-  credentials: {
-    connections: number
-    user: string
-    password: string
-    state: string
-  }[]
+  credentials: Array<Credential>
 }
+export type CredentialsInfo = Array<CredentialInfo>
 export type MaintenanceApiResponse = {
   message: string,
 }
@@ -156,10 +191,22 @@ export type PgDatabaseConfig = {
     value: boolean,
   },
 }
-export type SettingKey = 'log_lock_waits' | 'log_connections' | 'log_min_duration_statement' | 'log_statement' | 'track_functions' |
-  'pgbouncer_max_client_conn' | 'pg_bouncer_max_db_conns' | 'pg_bouncer_default_pool_size' | 'auto_explain' | 'auto_explain.log_min_duration' |
-  'auto_explain.log_analyze' | 'auto_explain.log_triggers' | 'auto_explain.log_buffers' | 'auto_explain.log_verbose' |
-  'auto_explain.log_nested_statements'
+export type SettingKey =
+  'log_lock_waits'
+  | 'log_connections'
+  | 'log_min_duration_statement'
+  | 'log_statement'
+  | 'track_functions'
+  | 'pgbouncer_max_client_conn'
+  | 'pg_bouncer_max_db_conns'
+  | 'pg_bouncer_default_pool_size'
+  | 'auto_explain'
+  | 'auto_explain.log_min_duration'
+  | 'auto_explain.log_analyze'
+  | 'auto_explain.log_triggers'
+  | 'auto_explain.log_buffers'
+  | 'auto_explain.log_verbose'
+  | 'auto_explain.log_nested_statements'
 export type Setting<T> = {
   value: T
   values: Record<string, string>
@@ -167,3 +214,81 @@ export type Setting<T> = {
   default: T
 }
 export type SettingsResponse = Record<SettingKey, Setting<unknown>>
+
+export type PGDiagnoseResponse = {
+  id: string,
+  app: string,
+  database: string,
+  created_at: string,
+  checks: [
+    PGDiagnoseCheck<ConnCountResult>,
+    PGDiagnoseCheck<QueriesResult>,
+    PGDiagnoseCheck<QueriesResult>,
+    PGDiagnoseCheck<UnusedIndexesResult>,
+    PGDiagnoseCheck<BloatResult>,
+    PGDiagnoseCheck<HitRateResult>,
+    PGDiagnoseCheck<BlockingResult>,
+  ],
+}
+
+export type PGDiagnoseCheck<T extends PGDiagnoseResult = PGDiagnoseResult> = {
+  name: string,
+  status: 'red' | 'yellow' | 'green',
+  results: T[]
+}
+export type PGDiagnoseResult =
+  ConnCountResult
+  | QueriesResult
+  | UnusedIndexesResult
+  | BloatResult
+  | HitRateResult
+  | BlockingResult
+export type ConnCountResult = {
+  count: number
+}
+
+export type QueriesResult = {
+  pid: number,
+  duration: string,
+  query: string,
+}
+
+export type UnusedIndexesResult = {
+  reason: string,
+  index: string,
+  index_scan_pct: string,
+  scans_per_write: string,
+  index_size: string,
+  table_size: string,
+}
+
+export type BloatResult = {
+  type: string,
+  object: string,
+  bloat: number,
+  waste: string,
+}
+
+export type HitRateResult = {
+  name: string,
+  ratio: number,
+}
+
+export type BlockingResult = {
+  blocked_pid: number,
+  blocking_statement: string,
+  blocking_duration: string,
+  blocking_pid: number,
+  blocked_statement: string,
+  blocked_duration: string,
+}
+
+export type PGDiagnoseRequest = {
+  url: string,
+  plan: string,
+  app: string,
+  database: string,
+  metrics?: unknown[],
+  burst_data_present?: boolean,
+  burst_status?: string,
+}
