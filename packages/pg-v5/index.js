@@ -8,7 +8,6 @@ exports.topics = [
 
 exports.commands = flatten([
   require('./commands/info'),
-  require('./commands/killall'),
   require('./commands/locks'),
   require('./commands/outliers'),
   require('./commands/ps'),
