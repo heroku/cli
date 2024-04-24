@@ -74,7 +74,6 @@
     "postpack": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
     "test": "nyc --extension .js mocha \"test/**/*.unit.test.js\" && yarn lint",
-    "test:integration": "mocha --forbid-only \"test/**/*.integration.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }
