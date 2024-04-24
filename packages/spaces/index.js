@@ -20,7 +20,6 @@ exports.commands = [
   require('./commands/vpn/update'),
   require('./commands/ps'),
   require('./commands/transfer'),
-  require('./commands/topology'),
   require('./commands/drains/get'),
   require('./commands/drains/set'),
   require('./commands/trusted-ips'),
