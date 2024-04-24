@@ -60,8 +60,8 @@ export default class Topology extends Command {
       ux.styledJSON(topology)
     } else if (topology.apps) {
       topology.apps.forEach(app => {
-        let formations: string[] = []
-        let dynos: string[] = []
+        const formations: string[] = []
+        const dynos: string[] = []
         if (app.formations) {
           app.formations.forEach(formation => {
             formations.push(formation.process_type)
@@ -75,8 +75,8 @@ export default class Topology extends Command {
         }
 
         const domains = app.domains.sort()
-        formations = formations.sort()
-        dynos = dynos.sort((a, b) => {
+        formations.sort()
+        dynos.sort((a, b) => {
           const apt = this.getProcessType(a)
           const bpt = this.getProcessType(b)
           if (apt > bpt) {
