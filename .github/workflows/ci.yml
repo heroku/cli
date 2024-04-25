@@ -42,7 +42,6 @@ jobs:
         run: |
           cd packages/cli
           yarn test:integration
-      - run: ./bin/run whoami
       - name: Run orgs-v5 integration tests
         run: |
           cd packages/orgs-v5
