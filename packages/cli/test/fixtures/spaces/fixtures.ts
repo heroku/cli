@@ -1,4 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
+import type {SpaceTopology} from '../../../src/commands/spaces/topology'
 
 export const spaces: Record<string, Required<Heroku.Space>> = {
   'non-shield-space': {
@@ -40,5 +41,93 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     },
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
+  },
+}
+
+export const apps: Record<string, Heroku.App> = {
+  www: {
+    name: 'acme-inc-www',
+    id: 'a84b035c-4c83-11e5-9bda-2cf0ee2c94de',
+  },
+}
+
+export const topologies: Record<string, SpaceTopology> = {
+  'topology-one': {
+    version: 1,
+    apps: [
+      {
+        id: apps.www.id,
+        domains: ['example.com', 'example.net'],
+        formations: [
+          {
+            process_type: 'web',
+            dynos: [
+              {
+                number: 1,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+              {
+                number: 2,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'topology-two': {
+    version: 1,
+    apps: [
+      {
+        id: apps.www.id,
+        domains: ['example.com', 'example.net'],
+        formations: [
+          {
+            process_type: 'web',
+            dynos: [
+              {
+                number: 2,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+              {
+                number: 1,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'topology-three': {
+    version: 1,
+    apps: [
+      {
+        id: apps.www.id,
+        domains: ['example.com', 'example.net'],
+        formations: [
+          {
+            process_type: 'web',
+            dynos: [
+              {
+                number: 1,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+              {
+                number: 1,
+                private_ip: '10.0.134.42',
+                hostname: '1.example-app-90210.app.localspace',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 }

@@ -9,11 +9,9 @@ exports.topics = [
 exports.commands = flatten([
   require('./commands/info'),
   require('./commands/locks'),
-  require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),
   require('./commands/repoint'),
-  require('./commands/vacuum_stats'),
   require('./commands/wait'),
 ])
 
