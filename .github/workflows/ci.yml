@@ -40,9 +40,9 @@ jobs:
       - run: yarn --immutable --network-timeout 1500000
       - name: Run cli package integration tests
         run: |
-          ./bin/run whoami
           cd packages/cli
           yarn test:integration
+      - run: ./bin/run whoami
       - name: Run orgs-v5 integration tests
         run: |
           cd packages/orgs-v5
