@@ -17,6 +17,25 @@ describe('container push', () => {
   })
   afterEach(() => sandbox.restore())
 
+  it('exits when the app stack is not "container"', () => {
+    sandbox.stub(process, 'exit')
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp', stack: {name: 'heroku-22'}})
+
+    let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
+      .returns(['/path/to/Dockerfile'])
+    let build = sandbox.stub(Sanbashi, 'buildImage')
+
+    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
+      .then(() => expect(cli.stderr).to.contain('This command is only supported for the container stack'))
+      .then(() => expect(process.exit.calledWith(1)).to.equal(true))
+      .then(() => sandbox.assert.notCalled(dockerfiles))
+      .then(() => sandbox.assert.notCalled(build))
+      .then(() => api.done())
+  })
+
   it('gets a build error', () => {
     sandbox.stub(process, 'exit')
 
