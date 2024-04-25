@@ -6,7 +6,6 @@ exports.topics = [
 ]
 
 exports.commands = [
-  require('./commands/wait'),
   require('./commands/peering/info'),
   require('./commands/peering/index'),
   require('./commands/peering/accept'),
