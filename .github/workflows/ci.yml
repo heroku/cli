@@ -38,14 +38,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --network-timeout 1500000
-#      - name: Run cli package integration tests
-#        run: |
-#          cd packages/cli
-#          yarn test:integration
-      - name: Run orgs-v5 integration tests
+      - name: Run cli package integration tests
         run: |
-          cd packages/orgs-v5
+          cd packages/cli
           yarn test:integration
+#      - name: Run orgs-v5 integration tests
+#        run: |
+#          cd packages/orgs-v5
+#          yarn test:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
