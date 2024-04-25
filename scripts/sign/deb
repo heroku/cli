@@ -3,9 +3,13 @@ set -e -o pipefail
 
 # This will sign files after `oclif pack:deb`, this script should be ran from
 # the `dist/deb` folder
+echo "start"
 echo "$HEROKU_DEB_SECRET_KEY" | base64 -d 2> /dev/null | gpg --import --batch --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" 2> /dev/null
+echo "marker 1"
 gpg --digest-algo SHA512 --clearsign --pinentry-mode loopback --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o InRelease Release 2> /dev/null
+echo "marker 2"
 gpg --digest-algo SHA512 -abs --pinentry-mode loopback --passphrase "$HEROKU_DEB_SIGNING_PASSWORD" -u $HEROKU_DEB_KEY_ID -o Release.gpg Release 2> /dev/null
+echo "marker 3"
 echo "Signed debian packages successfully"
 echo "sha256 sums:"
 sha256sum *Release*
