@@ -1,9 +1,10 @@
 {
   // Global settings
-  "plugins": ["import"],
+  "plugins": ["import", "mocha"],
   "extends": [
     "oclif",
-    "oclif-typescript"
+    "oclif-typescript",
+    "plugin:mocha/recommended"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",

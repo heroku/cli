@@ -8885,6 +8885,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-mocha@npm:^10.4.3":
+  version: 10.4.3
+  resolution: "eslint-plugin-mocha@npm:10.4.3"
+  dependencies:
+    eslint-utils: ^3.0.0
+    globals: ^13.24.0
+    rambda: ^7.4.0
+  peerDependencies:
+    eslint: ">=7.0.0"
+  checksum: 67176a889099cb68733d13ba17af5d13f48dc2a7ac9360b04abe94e81e5e9c35346ae2070aa50dce8a4c80dca4602f62375b074f3485369c3a66867fa683ba3c
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-mocha@npm:^9.0.0":
   version: 9.0.0
   resolution: "eslint-plugin-mocha@npm:9.0.0"
@@ -10463,7 +10476,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^13.19.0":
+"globals@npm:^13.19.0, globals@npm:^13.24.0":
   version: 13.24.0
   resolution: "globals@npm:13.24.0"
   dependencies:
@@ -15897,6 +15910,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rambda@npm:^7.4.0":
+  version: 7.5.0
+  resolution: "rambda@npm:7.5.0"
+  checksum: ad608a9a4160d0b6b0921047cea1329276bf239ff58d439135288712dcdbbf0df47c76591843ad249d89e7c5a9109ce86fe099aa54aef0dc0aa92a9b4dd1b8eb
+  languageName: node
+  linkType: hard
+
 "ramda@npm:^0.27.1":
   version: 0.27.2
   resolution: "ramda@npm:0.27.2"
@@ -16646,6 +16666,7 @@ __metadata:
     eslint-config-oclif-typescript: ^1.0.2
     eslint-import-resolver-typescript: ^3.5.5
     eslint-plugin-import: ^2.27.5
+    eslint-plugin-mocha: ^10.4.3
     execa: 5.1.1
     lerna: ^6.4.1
     mkdirp: ^0.5.2
