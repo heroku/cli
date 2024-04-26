@@ -1,19 +1,22 @@
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 
-function assertExit(code, gen) {
-  let actualError
+/**
+ * Asserts that the given function throws an ErrorExit with the given code.
+ * @param code
+ * @param gen
+ * @returns {*} a promise that resolves with the error thrown
+ */
+function assertErrorExit(code, gen) {
   return gen.catch(function (error) {
+    expect(error).to.not.equal(undefined, 'Expected Error to be thrown')
     expect(error).to.be.an.instanceof(cli.exit.ErrorExit)
-    actualError = error
-  }).then(function () {
-    expect(actualError).to.not.equal(undefined, 'Expected Error to be thrown')
-    expect(actualError.code).to.be.an('number', 'Expected error.exit(i) to be called with a number')
-    expect(actualError.code).to.equal(code)
-    return actualError
+    expect(error.code).to.be.an('number', 'Expected error.exit(i) to be called with a number')
+    expect(error.code).to.equal(code)
+    return error
   })
 }
 
 module.exports = {
-  assertExit,
+  assertErrorExit,
 }

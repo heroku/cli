@@ -22,7 +22,7 @@ describe('container release', () => {
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
 
-    return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+    return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
         expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         api.done()
@@ -30,7 +30,7 @@ describe('container release', () => {
   })
 
   it('has no process type specified', () => {
-    return testutil.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
+    return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Requires one or more process types')
         expect(cli.stderr).to.contain('Requires one or more process types')
@@ -256,7 +256,7 @@ describe('container release', () => {
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
 
-      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.contain('Error: release command failed')
           expect(cli.stderr).to.contain('Releasing images web to testapp...')
@@ -288,7 +288,7 @@ describe('container release', () => {
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
 
-      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content')
           expect(error.message).to.contain('Error: release command failed')
@@ -371,7 +371,7 @@ describe('container release', () => {
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
 
-      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.contain('Error: release command failed')
           expect(stdMocks.flush().stdout.join('')).to.equal('')
@@ -404,7 +404,7 @@ describe('container release', () => {
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
 
-      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.contain('Error: release command failed')
           expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content')

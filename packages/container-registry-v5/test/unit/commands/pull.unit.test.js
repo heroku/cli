@@ -23,7 +23,7 @@ describe('container pull', () => {
   })
 
   it('requires a process type', async () => {
-    await testutil.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
+    await testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Requires one or more process types')
       })
@@ -34,7 +34,7 @@ describe('container pull', () => {
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
 
-    return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+    return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
         expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         api.done()
