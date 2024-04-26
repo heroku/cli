@@ -1,4 +1,5 @@
 const cli = require('heroku-cli-util')
+const helpers = require('../lib/helpers')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
@@ -23,6 +24,9 @@ let rm = async function (context, heroku) {
   if (context.args.length === 0) {
     cli.exit(1, `Error: Please specify at least one target process type\n ${usage} `)
   }
+
+  let app = await heroku.get(`/apps/${context.app}`)
+  helpers.checkAppStack(app)
 
   for (let container of context.args) {
     let r = heroku.request({

@@ -1,6 +1,7 @@
 const cli = require('heroku-cli-util')
 const debug = require('../lib/debug')
 const streamer = require('../lib/streamer')
+const helpers = require('../lib/helpers')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
@@ -35,7 +36,8 @@ let release = async function (context, heroku) {
     return
   }
 
-  await heroku.get(`/apps/${context.app}`)
+  let app = await heroku.get(`/apps/${context.app}`)
+  helpers.checkAppStack(app)
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
 

@@ -1,6 +1,7 @@
 const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')
+const helpers = require('../lib/helpers')
 
 module.exports = function (topic) {
   return {
@@ -60,10 +61,7 @@ let push = async function (context, heroku) {
   }
 
   let app = await heroku.get(`/apps/${context.app}`)
-  if (app.stack.name !== 'container') {
-    cli.exit(1, `This command is only supported for the ${cli.color.cyan('container')} stack. The stack for app ${cli.color.cyan(app.name)} is ${cli.color.cyan(app.stack.name)}.`)
-    return
-  }
+  helpers.checkAppStack(app)
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
