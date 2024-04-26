@@ -4,3 +4,8 @@ node_modules
 tmp
 dst
 packages/ci/src/interfaces/kolkrabbi.ts
+packages/oauth-v5/test
+packages/certs-v5/test
+packages/pg-v5/test
+packages/run-v5/test
+packages/spaces/test
