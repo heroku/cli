@@ -1,15 +1,6 @@
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
-export type OutboundRuleset = {
-  rules: {
-    target: string
-    from_port: number
-    to_port: number
-    protocol: string
-  }[]
-}
-
 export function displayRules(space: string, ruleset: Heroku.OutboundRuleset) {
   const rules = ruleset.rules || []
   if (rules.length > 0) {

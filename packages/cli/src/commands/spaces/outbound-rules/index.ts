@@ -6,7 +6,6 @@ import * as Heroku from '@heroku-cli/schema'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
 
 export default class Index extends Command {
-  static topic = 'outbound-rules'
   static description = heredoc(`
     list Outbound Rules for a space
     Outbound Rules are only available on Private Spaces.
@@ -17,6 +16,7 @@ export default class Index extends Command {
     talking to the world.
   `)
 
+  static aliases = ['outbound-rules']
   static hidden = true;
   static flags = {
     space: flags.string({char: 's', description: 'space to get outbound rules from', completion: SpaceCompletion}),
