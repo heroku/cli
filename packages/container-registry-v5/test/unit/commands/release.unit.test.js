@@ -4,21 +4,16 @@
 const cli = require('heroku-cli-util')
 const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'release')
 const {expect} = require('chai')
-const sinon = require('sinon')
 const nock = require('nock')
 const stdMocks = require('std-mocks')
 const helpers = require('../../helpers')
 
-let sandbox
-
 describe('container release', () => {
   beforeEach(() => {
     cli.mockConsole()
-    sandbox = sinon.createSandbox()
     cli.exit.mock()
   })
   afterEach(() => {
-    sandbox.restore()
     nock.cleanAll()
   })
 
