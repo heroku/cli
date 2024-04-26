@@ -18,7 +18,7 @@ let pull = async function (context, heroku) {
   }
 
   let app = await heroku.get(`/apps/${context.app}`)
-  helpers.checkAppStack(app)
+  helpers.ensureContainerStack(app)
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`

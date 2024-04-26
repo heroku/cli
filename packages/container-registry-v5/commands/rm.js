@@ -26,7 +26,7 @@ let rm = async function (context, heroku) {
   }
 
   let app = await heroku.get(`/apps/${context.app}`)
-  helpers.checkAppStack(app)
+  helpers.ensureContainerStack(app)
 
   for (let container of context.args) {
     let r = heroku.request({

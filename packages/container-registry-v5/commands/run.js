@@ -41,7 +41,7 @@ let run = async function (context, heroku) {
   }
 
   let app = await heroku.get(`/apps/${context.app}`)
-  helpers.checkAppStack(app)
+  helpers.ensureContainerStack(app)
 
   let processType = context.args.shift()
   let command = context.args
