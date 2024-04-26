@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('auth:logout', async () => {
+describe('auth:logout', () => {
   test
     .stderr()
     .command(['logout'])

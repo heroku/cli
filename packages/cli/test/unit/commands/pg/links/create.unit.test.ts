@@ -6,7 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
-describe('pg:links:create', async () => {
+describe('pg:links:create', () => {
   let api: nock.Scope
   let pg: nock.Scope
 

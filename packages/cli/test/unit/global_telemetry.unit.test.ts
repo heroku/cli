@@ -8,7 +8,7 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
 
-describe('telemetry', async () => {
+describe('telemetry', () => {
   afterEach(() => {
     nock.cleanAll()
   })

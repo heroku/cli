@@ -8,7 +8,7 @@ describe('heroku redis:promote', () => {
   require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(Cmd)
 })
 
-describe('heroku redis:promote', async () => {
+describe('heroku redis:promote', () => {
   beforeEach(async () => nock.cleanAll())
 
   it('# promotes', async () => {
