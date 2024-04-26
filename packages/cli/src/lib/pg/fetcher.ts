@@ -131,7 +131,7 @@ async function allAttachments(heroku: APIClient, app_id: string) {
 }
 
 export async function getAddon(heroku: APIClient, app: string, db = 'DATABASE_URL') {
-  return ((await getAttachment(heroku, app, db))).addon
+  return (await getAttachment(heroku, app, db)).addon
 }
 
 export async function database(heroku: APIClient, app: string, db?: string, namespace?: string) {

@@ -12,4 +12,3 @@ export async function getConfig(heroku: APIClient, app: string): Promise<Record<
   const result = await responseByAppId.get(app)
   return result?.body
 }
-

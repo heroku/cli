@@ -15,10 +15,8 @@ import {
   essentialPlan,
   getConfigVarNameFromAttachment,
   getConnectionDetails,
-  parsePostgresConnectionString,
 } from '../../lib/pg/util'
 import color from '@heroku-cli/color'
-import {format} from 'url'
 import {uuidValidate} from '../../lib/utils/uuid-validate'
 
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'pgdiagnose.herokai.com'
@@ -98,9 +96,9 @@ export default class Diagnose extends Command {
     })
   }
 
-  private async generateParams(url: ReturnType<typeof parsePostgresConnectionString>, db: AddOnAttachmentWithConfigVarsAndPlan, dbName: string): Promise<PGDiagnoseRequest> {
+  private async generateParams(url: string, db: AddOnAttachmentWithConfigVarsAndPlan, dbName: string): Promise<PGDiagnoseRequest> {
     const base_params: PGDiagnoseRequest = {
-      url: format(url),
+      url,
       plan: db.plan.name.split(':')[1],
       app: db.app.name as string,
       database: dbName,
