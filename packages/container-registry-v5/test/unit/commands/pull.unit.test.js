@@ -32,11 +32,11 @@ describe('container pull', () => {
   it('exits when the app stack is not "container"', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'heroku-22'}})
+      .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
 
     return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
-        expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-22.')
+        expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         api.done()
       })
   })
