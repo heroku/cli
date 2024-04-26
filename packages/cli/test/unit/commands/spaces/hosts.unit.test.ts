@@ -9,9 +9,17 @@ import {expect} from 'chai'
 describe('spaces:hosts', function () {
   const hosts = [
     {
-      host_id: 'h-0f927460a59aac18e', state: 'available', available_capacity_percentage: 72, allocated_at: '2020-05-28T04:15:59Z', released_at: null,
+      host_id: 'h-0f927460a59aac18e',
+      state: 'available',
+      available_capacity_percentage: 72,
+      allocated_at: '2020-05-28T04:15:59Z',
+      released_at: null,
     }, {
-      host_id: 'h-0e927460a59aac18f', state: 'released', available_capacity_percentage: 0, allocated_at: '2020-03-28T04:15:59Z', released_at: '2020-04-28T04:15:59Z',
+      host_id: 'h-0e927460a59aac18f',
+      state: 'released',
+      available_capacity_percentage: 0,
+      allocated_at: '2020-03-28T04:15:59Z',
+      released_at: '2020-04-28T04:15:59Z',
     },
   ]
 
