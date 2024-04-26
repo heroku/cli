@@ -1,10 +1,10 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../src/commands/pg/reset'
-import runCommand from '../../helpers/runCommand'
-import expectOutput from '../../helpers/utils/expectOutput'
+import Cmd from '../../../../src/commands/pg/reset'
+import runCommand from '../../../helpers/runCommand'
+import expectOutput from '../../../helpers/utils/expectOutput'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../fixtures/addons/fixtures'
+import * as fixtures from '../../../fixtures/addons/fixtures'
 
 describe('pg:reset', () => {
   const addon = fixtures.addons['dwh-db']

@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../src/commands/container/rm'
-import runCommand from '../../helpers/runCommand'
-import expectOutput from '../../helpers/utils/expectOutput'
+import Cmd from '../../../../src/commands/container/rm'
+import runCommand from '../../../helpers/runCommand'
+import expectOutput from '../../../helpers/utils/expectOutput'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
