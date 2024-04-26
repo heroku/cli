@@ -43,10 +43,6 @@ const copyingFailText = () => {
   return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 }
 
-const credentialWarningText = () => {
-  return 'pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.\n'
-}
-
 describe('pg:copy', () => {
   let pg: nock.Scope
   let api: nock.Scope

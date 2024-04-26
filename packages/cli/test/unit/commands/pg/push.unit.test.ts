@@ -30,7 +30,7 @@ describe('pg:push', () => {
   let psqlStub: sinon.SinonStub
   let mathRandomStub: sinon.SinonStub
 
-  const exitHandler = (key: string, func: CallableFunction) => {
+  const exitHandler = (_key: string, func: CallableFunction) => {
     func(0)
   }
 
@@ -90,14 +90,12 @@ describe('pg:push', () => {
       on: exitHandler,
     })
 
-    try {
-      await runCommand(Cmd, [
-        'localdb',
-        'postgres-1',
-        '-a',
-        'myapp',
-      ])
-    } catch {}
+    await runCommand(Cmd, [
+      'localdb',
+      'postgres-1',
+      '-a',
+      'myapp',
+    ])
 
     expect(spawnStub.callCount).to.eq(2)
     expect(stdout.output).to.eq(heredoc`
