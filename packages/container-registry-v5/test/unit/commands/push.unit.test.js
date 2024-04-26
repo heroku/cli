@@ -1,12 +1,12 @@
 'use strict'
-/* globals beforeEach afterEach */
+/* globals beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'push')
 const {expect} = require('chai')
 const sinon = require('sinon')
 const nock = require('nock')
-const helpers = require('../../helpers')
+const testutil = require('../../testutil')
 
 const Sanbashi = require('../../../lib/sanbashi')
 let sandbox
@@ -32,7 +32,7 @@ describe('container push', () => {
     afterEach(() => api.done())
 
     it('exits', () => {
-      return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         })
@@ -52,7 +52,7 @@ describe('container push', () => {
         .returns(['/path/to/Dockerfile'])
       let build = sandbox.stub(Sanbashi, 'buildImage').throws()
 
-      return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.equal('Error: docker build exited with Error: Error')
           expect(cli.stdout).to.contain('Building web (/path/to/Dockerfile)')
@@ -67,7 +67,7 @@ describe('container push', () => {
       let build = sandbox.stub(Sanbashi, 'buildImage')
       let push = sandbox.stub(Sanbashi, 'pushImage').throws()
 
-      return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.contain('docker push exited with Error: Error')
           expect(cli.stderr).to.contain('docker push exited with Error: Error')
@@ -150,7 +150,7 @@ describe('container push', () => {
       let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
         .returns([])
 
-      return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+      return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
         .then(error => {
           expect(error.message).to.contain('No images to push')
           expect(cli.stderr).to.contain('No images to push')
@@ -161,7 +161,7 @@ describe('container push', () => {
   })
 
   it('requires a process type if we are not recursive', () => {
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Requires either --recursive or one or more process types')
         expect(cli.stderr).to.contain('Requires either --recursive or one or more process types')
@@ -170,7 +170,7 @@ describe('container push', () => {
   })
 
   it('rejects multiple process types if we are not recursive', () => {
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web', 'worker'], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web', 'worker'], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Requires exactly one target process type, or --recursive option')
         expect(cli.stderr).to.contain('Requires exactly one target process type, or --recursive option')

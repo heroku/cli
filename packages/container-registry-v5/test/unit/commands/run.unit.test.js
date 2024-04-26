@@ -1,12 +1,12 @@
 'use strict'
-/* globals beforeEach afterEach */
+/* globals beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'run')
 const {expect} = require('chai')
 const sinon = require('sinon')
 const nock = require('nock')
-const helpers = require('../../helpers')
+const testutil = require('../../testutil')
 
 const Sanbashi = require('../../../lib/sanbashi')
 let sandbox
@@ -24,7 +24,7 @@ describe('container run', () => {
   })
 
   it('requires a process type', () => {
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Requires one process type')
         expect(cli.stdout).to.equal('')
@@ -37,7 +37,7 @@ describe('container run', () => {
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
 
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
         expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         api.done()

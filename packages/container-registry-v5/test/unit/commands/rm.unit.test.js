@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const cmd = require('../../..').commands.find(c => c.topic === 'container' && c.command === 'rm')
 const {expect} = require('chai')
 const nock = require('nock')
-const helpers = require('../../helpers')
+const testutil = require('../../testutil')
 
 describe('container removal', () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('container removal', () => {
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
 
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
         expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
         api.done()
@@ -62,7 +62,7 @@ describe('container removal', () => {
   })
 
   it('requires a container to be specified', () => {
-    return helpers.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
+    return testutil.assertExit(1, cmd.run({app: 'testapp', args: [], flags: {}}))
       .then(error => {
         expect(error.message).to.contain('Please specify at least one target process type')
         expect(cli.stdout).to.equal('')
