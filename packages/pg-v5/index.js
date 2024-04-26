@@ -7,18 +7,10 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/diagnose'),
   require('./commands/info'),
-  require('./commands/kill'),
-  require('./commands/killall'),
-  require('./commands/outliers'),
-  require('./commands/promote'),
-  require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),
   require('./commands/repoint'),
-  require('./commands/unfollow'),
-  require('./commands/vacuum_stats'),
   require('./commands/wait'),
 ])
 

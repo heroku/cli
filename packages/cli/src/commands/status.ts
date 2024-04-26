@@ -1,11 +1,10 @@
 import color from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
+import {capitalize} from '@oclif/core/lib/util'
 import {formatDistanceToNow} from 'date-fns'
 import HTTP from 'http-call'
 
 import {maxBy} from '../lib/status/util'
-
-const capitalize = (str: string) => str.slice(0, 1).toUpperCase() + str.slice(1)
 
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]
