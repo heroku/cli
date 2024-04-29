@@ -4,7 +4,7 @@ import * as fse from 'fs-extra'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
 
-describe('apps:create', async function () {
+describe('apps:create', function () {
   test
     .stdout()
     .stderr()
@@ -116,7 +116,7 @@ describe('apps:create', async function () {
       expect(JSON.parse(stdout)).to.deep.equal(json)
     })
 
-  describe('testing manifest flag', async () => {
+  describe('testing manifest flag', () => {
     const appName = 'foo'
 
     const manifest = {

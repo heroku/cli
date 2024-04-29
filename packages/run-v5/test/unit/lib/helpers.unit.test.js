@@ -20,7 +20,7 @@ describe('helpers.buildCommand()', () => {
     })
   })
 
-  describe('dyno function testing', async () => {
+  describe('dyno function testing', () => {
     const opts = {
       attach: false,
       showStatus: false,

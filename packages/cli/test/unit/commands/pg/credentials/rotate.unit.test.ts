@@ -22,7 +22,7 @@ const attachments = [
   },
 ]
 
-describe('pg:credentials:rotate', async () => {
+describe('pg:credentials:rotate', () => {
   let api: nock.Scope
   let pg: nock.Scope
   let uxWarnStub: sinon.SinonStub

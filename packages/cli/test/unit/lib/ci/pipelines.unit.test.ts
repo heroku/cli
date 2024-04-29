@@ -2,6 +2,7 @@ import {getPipeline} from '../../../../src/lib/ci/pipelines'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import {getHerokuAPI} from '../../../helpers/testInstances'
+import {APIClient} from '@heroku-cli/command'
 
 const PIPELINE = {
   id: '123e4567-e89b-12d3-a456-426655440000',
@@ -9,8 +10,13 @@ const PIPELINE = {
 }
 const FLAGS = {pipeline: PIPELINE.id}
 
-describe('pipelines.ts', async function () {
-  const herokuAPI = await getHerokuAPI()
+describe('pipelines.ts', function () {
+  let herokuAPI: APIClient
+
+  beforeEach(async () => {
+    herokuAPI = await getHerokuAPI()
+  })
+
   afterEach(() => nock.cleanAll())
 
   describe('#getPipeline', function () {

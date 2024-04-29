@@ -8,8 +8,8 @@ import type {Server} from 'node:net'
 import * as path from 'node:path'
 import {Stream} from 'node:stream'
 import {finished} from 'node:stream/promises'
-import {getConfigs, sshTunnel} from './bastion'
-import {getConnectionDetails} from './util'
+import {getConfigs, sshTunnel, TunnelConfig} from './bastion'
+import {ConnectionDetails, getConnectionDetails} from './util'
 
 const pgDebug = debug('pg')
 export function psqlQueryOptions(query:string, dbEnv: NodeJS.ProcessEnv, cmdArgs: string[] = []) {
@@ -163,7 +163,7 @@ export function consumeStream(inputStream: Stream) {
   return promise
 }
 
-export async function runWithTunnel(db:Parameters<typeof sshTunnel>[0], tunnelConfig: Parameters<typeof sshTunnel>[1], options: Parameters<typeof execPSQL>[0]): Promise<string> {
+export async function runWithTunnel(db: ConnectionDetails, tunnelConfig: TunnelConfig, options: Parameters<typeof execPSQL>[0]): Promise<string> {
   const tunnel = await Tunnel.connect(db, tunnelConfig)
   pgDebug('after create tunnel')
 
@@ -237,7 +237,7 @@ export class Tunnel {
     }
   }
 
-  static async connect(db: Parameters<typeof sshTunnel>[0], tunnelConfig: Parameters<typeof sshTunnel>[1]) {
+  static async connect(db: ConnectionDetails, tunnelConfig: TunnelConfig) {
     const tunnel = await sshTunnel(db, tunnelConfig)
     return new Tunnel(tunnel as Server)
   }
@@ -248,7 +248,7 @@ export async function fetchVersion(db: Parameters<typeof exec>[0]) {
   return output.match(/[0-9]{1,}\.[0-9]{1,}/)?.[0]
 }
 
-export async function exec(db: Parameters<typeof sshTunnel>[0], query: string, cmdArgs: string[] = []) {
+export async function exec(db: ConnectionDetails, query: string, cmdArgs: string[] = []) {
   const configs = getConfigs(db)
   const options = psqlQueryOptions(query, configs.dbEnv, cmdArgs)
   return runWithTunnel(db, configs.dbTunnelConfig, options)

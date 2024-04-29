@@ -24,7 +24,7 @@ function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
   readFileStub.withArgs(file, {encoding: 'utf-8'}).returns(Promise.resolve(content))
 }
 
-describe('heroku certs:add', async () => {
+describe('heroku certs:add', () => {
   let stubbedPromptReturnValue: unknown = {}
   let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
   let stubbedPrompt: SinonStub
@@ -132,7 +132,7 @@ describe('heroku certs:add', async () => {
     expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
-  describe('stable cnames', async () => {
+  describe('stable cnames', () => {
     beforeEach(async () => {
       nock('https://api.heroku.com')
         .get('/apps/example')
@@ -305,7 +305,7 @@ describe('heroku certs:add', async () => {
       expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
-    describe('waiting for domains', async () => {
+    describe('waiting for domains', () => {
       let timeoutStub: SinonStub
       beforeEach(function () {
         timeoutStub = sinon.stub(globalThis, 'setTimeout')

@@ -5,14 +5,16 @@ import {getHerokuAPI} from '../../../helpers/testInstances'
 const {expect} = require('chai')
 import * as nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
+import {APIClient} from '@heroku-cli/command'
 
-describe('resolve', async () => {
-  const herokuAPI = await getHerokuAPI()
+describe('resolve', () => {
+  let herokuAPI: APIClient
 
-  beforeEach(function () {
+  beforeEach(async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     resolveAddon.cache.clear()
+    herokuAPI = await getHerokuAPI()
   })
 
   afterEach(() => nock.cleanAll())

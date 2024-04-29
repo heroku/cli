@@ -2,12 +2,12 @@ import color from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import debug from 'debug'
-import {parse} from 'url'
 import {renderAttachment} from '../../commands/addons'
 import {multiSortCompareFn} from '../utils/multisort'
 import {getBastion} from './bastion'
 import type {AddOnAttachmentWithConfigVarsAndPlan, CredentialsInfo} from './types'
 import {env} from 'process'
+import {Server} from 'net'
 
 export function getConfigVarName(configVars: string[]): string {
   const connStringVars = configVars.filter(cv => (cv.endsWith('_URL')))
@@ -29,7 +29,7 @@ export function getConfigVarNameFromAttachment(attachment: Required<AddOnAttachm
     return config[cv]?.startsWith('postgres://')
   }) ?? []
   if (configVars.length === 0) {
-    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${color.cmd('heroku rollback')}? Use ${color.cmd('heroku addons:attach')} to create a new attachment and then ${color.cmd('heroku addons:detach')} to remove the current attachment.`)
+    ux.error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${color.cmd('heroku rollback')}? Use ${color.cmd('heroku addons:attach')} to create a new attachment and then ${color.cmd('heroku addons:detach')} to remove the current attachment.`)
   }
 
   const configVarName = `${attachment.name}_URL`
@@ -101,33 +101,49 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
   return [cred, ...attLines, ...rotationLines].join('\n')
 }
 
+export type ConnectionDetails = {
+  user: string
+  password: string
+  database: string
+  host: string
+  port: string
+  pathname: string
+  url: string
+  bastionKey?: string
+  bastionHost?: string
+  _tunnel?: Server
+}
+
+export type ConnectionDetailsWithAttachment = ConnectionDetails & {
+  attachment: Required<AddOnAttachment & {addon: AddOnAttachmentWithConfigVarsAndPlan}>
+}
+
 export const getConnectionDetails = (attachment: Required<AddOnAttachment & {
   addon: AddOnAttachmentWithConfigVarsAndPlan
-}>, config: Record<string, string> = {}) => {
-  const connstringVar = getConfigVarNameFromAttachment(attachment, config)
+}>, configVars: Record<string, string> = {}): ConnectionDetailsWithAttachment => {
+  const connStringVar = getConfigVarNameFromAttachment(attachment, configVars)
 
   // remove _URL from the end of the config var name
-  const baseName = connstringVar.slice(0, -4)
+  const baseName = connStringVar.slice(0, -4)
 
   // build the default payload for non-bastion dbs
-  debug(`Using "${connstringVar}" to connect to your database…`)
+  debug(`Using "${connStringVar}" to connect to your database…`)
 
-  const conn = parsePostgresConnectionString(config[connstringVar])
+  const conn = parsePostgresConnectionString(configVars[connStringVar])
 
-  const payload = {
+  const payload: ConnectionDetailsWithAttachment = {
     user: conn.user,
     password: conn.password,
     database: conn.database,
-    host: conn.hostname,
+    host: conn.host,
     port: conn.port,
+    pathname: conn.pathname,
+    url: conn.url,
     attachment,
-    url: conn,
-    bastionKey: '',
-    bastionHost: '',
   }
 
   // If bastion creds exist, graft it into the payload
-  const bastion = getBastion(config, baseName)
+  const bastion = getBastion(configVars, baseName)
   if (bastion) {
     Object.assign(payload, bastion)
   }
@@ -178,20 +194,18 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
 
-export const parsePostgresConnectionString = (db: string) => {
+export const parsePostgresConnectionString = (db: string): ConnectionDetails => {
   const dbPath = db.match(/:\/\//) ? db : `postgres:///${db}`
-  const parsedURL = parse(dbPath)
-  const {auth, hostname, pathname, port} = parsedURL
-  const [user, password] = auth ? auth.split(':') : []
-  const databaseName = pathname && pathname.charAt(0) === '/' ?
-    pathname.slice(1) || null :
-    pathname
+  const url = new URL(dbPath)
+  const {username, password, hostname, pathname, port} = url
+
   return {
-    ...parsedURL,
-    user,
+    user: username,
     password,
-    database: databaseName,
+    database: pathname.charAt(0) === '/' ? pathname.slice(1) : pathname,
     host: hostname,
-    port: hostname ? port || env.PGPORT || 5432 : port || env.PGPORT,
+    port: port || env.PGPORT || (hostname && '5432'),
+    pathname,
+    url: dbPath,
   }
 }

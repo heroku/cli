@@ -50,7 +50,7 @@ describe('dashboard', function () {
     },
   }
 
-  describe('with no favorites', async () => {
+  describe('with no favorites', () => {
     it('shows the dashboard', async () => {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')

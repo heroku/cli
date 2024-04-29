@@ -3,7 +3,7 @@ import * as sinon from 'sinon'
 import * as file from '../../src/file'
 import * as fs from 'fs-extra'
 
-describe('file functions', async () => {
+describe('file functions', () => {
   let renameStub: any
   let removeStub: any
   let readdirStub: any
