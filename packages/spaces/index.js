@@ -24,7 +24,6 @@ exports.commands = [
   require('./commands/trusted-ips'),
   require('./commands/trusted-ips/add'),
   require('./commands/trusted-ips/remove'),
-  require('./commands/outbound-rules'),
   require('./commands/outbound-rules/add'),
   require('./commands/outbound-rules/remove'),
   require('./commands/hosts'),
