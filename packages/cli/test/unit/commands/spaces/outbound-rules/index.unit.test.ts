@@ -8,6 +8,7 @@ import {expect} from 'chai'
 
 describe('outbound-rules', function () {
   const now = new Date()
+
   it('shows the outbound rules', async function () {
     nock('https://api.heroku.com')
       .get('/spaces/my-space/outbound-ruleset')
