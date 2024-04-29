@@ -11,8 +11,8 @@ import {Notification, notify} from '@heroku-cli/notifications'
 const pgDebug = debug('pg')
 
 export default class Wait extends Command {
-  static topic = 'spaces';
-  static description = 'wait for a space to be created';
+  static topic = 'spaces'
+  static description = 'wait for a space to be created'
   static flags = {
     space: flags.string({char: 's', description: 'space to get info of'}),
     json: flags.boolean({description: 'output in json format'}),
@@ -26,11 +26,11 @@ export default class Wait extends Command {
       description: 'maximum number of seconds to wait',
       default: 25 * 60,
     }),
-  };
+  }
 
   static args = {
     space: Args.string({hidden: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Wait)
