@@ -34,7 +34,8 @@ describe('auth:token', () => {
     .command(['auth:token'])
     .it('shows "long-term" token generation warning for non-internal users', ctx => {
       expect(ctx.stdout).to.equal('foobar\n')
-      expect(ctx.stderr).to.contain('To generate a long-lived token, use heroku authorizations:create.')
+      expect(ctx.stderr).to.contain('To generate a token that expires in one year, use heroku')
+      expect(ctx.stderr).to.contain('authorizations:create.')
       expect(ctx.stderr).to.not.contain('All tokens expire one year after we generate it.')
     })
 
@@ -54,6 +55,6 @@ describe('auth:token', () => {
     .it('shows AT2 token generation warning for internal users', ctx => {
       expect(ctx.stdout).to.equal('foobar\n')
       expect(ctx.stderr).to.contain('All tokens expire one year after we generate it.')
-      expect(ctx.stderr).to.not.contain('To generate a long-lived token, use heroku authorizations:create.')
+      expect(ctx.stderr).to.not.contain('To generate a token that expires in one year, use heroku authorizations:create.')
     })
 })
