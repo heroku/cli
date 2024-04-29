@@ -158,7 +158,7 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.chooseJobs', async () => {
+  describe('.chooseJobs', () => {
     afterEach(() => {
       inquirer.prompt.restoreDefaultPrompts()
     })
@@ -173,7 +173,7 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.chooseJobs multiple entries', async () => {
+  describe('.chooseJobs multiple entries', () => {
     const sandbox = sinon.createSandbox()
     const dockerfilePath = path.join('.', 'Nested', 'Dockerfile.web')
 

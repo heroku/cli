@@ -26,10 +26,10 @@ class Tunnel extends EventEmitter {
 }
 const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
 const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
-describe('heroku redis:cli', async () => {
-  describe('heroku redis:cli', async () => {
+describe('heroku redis:cli', () => {
+  describe('heroku redis:cli', () => {
     const proxyquire = noCallThru()
-    const command = proxyquire('../../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
+    const {default: command} = proxyquire('../../../../src/commands/redis/cli', {net: {}, tls: {}, ssh2: {}})
     require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(command)
   })
 

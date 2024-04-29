@@ -7,7 +7,7 @@ import {PassThrough} from 'node:stream'
 import * as proxyquire from 'proxyquire'
 import type {SinonExpectation} from 'sinon'
 import {stderr} from 'stdout-stderr'
-import type {getConnectionDetails} from '../../../../src/lib/pg/util'
+import type {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
 import {unwrap} from '../../../helpers/utils/unwrap'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
@@ -15,46 +15,47 @@ import type * as Pgsql from '../../../../src/lib/pg/psql'
 import type * as Bastion from '../../../../src/lib/pg/bastion'
 import {constants, SignalConstants} from 'os'
 
-type DB = ReturnType<typeof getConnectionDetails>
-const db: DB = {
-  attachment: {} as DB['attachment'],
-  user: 'jeff',
-  password: 'pass',
-  database: 'mydb',
-  port: '5432',
-  host: 'localhost',
-  bastionHost: '',
-  bastionKey: '',
-  url: {} as DB['url'],
-}
-
-const bastionDb:DB = {
-  attachment: {} as DB['attachment'],
-  user: 'jeff',
-  password: 'pass',
-  database: 'mydb',
-  port: '5432',
-  bastionHost: 'bastion-host',
-  bastionKey: 'super-private-key',
-  host: 'localhost',
-  url: {} as DB['url'],
-}
-
-const NOW_OUTPUT = `
-now
--------------------------------
- 2020-12-16 09:54:01.916894-08
-(1 row)
-`
-
-const VERSION_OUTPUT = `
-server_version
--------------------------------
-11.16 (Ubuntu 11.16-1.pgdg20.04+1)
-(1 row)
-`
-
 describe('psql', () => {
+  const db: ConnectionDetailsWithAttachment = {
+    attachment: {} as ConnectionDetailsWithAttachment['attachment'],
+    user: 'jeff',
+    password: 'pass',
+    database: 'mydb',
+    port: '5432',
+    host: 'localhost',
+    pathname: '/mydb',
+    bastionHost: '',
+    bastionKey: '',
+    url: '',
+  }
+
+  const bastionDb: ConnectionDetailsWithAttachment = {
+    attachment: {} as  ConnectionDetailsWithAttachment['attachment'],
+    user: 'jeff',
+    password: 'pass',
+    database: 'mydb',
+    port: '5432',
+    pathname: '/mydb',
+    bastionHost: 'bastion-host',
+    bastionKey: 'super-private-key',
+    host: 'localhost',
+    url: '',
+  }
+
+  const NOW_OUTPUT = `
+  now
+  -------------------------------
+   2020-12-16 09:54:01.916894-08
+  (1 row)
+  `
+
+  const VERSION_OUTPUT = `
+  server_version
+  -------------------------------
+  11.16 (Ubuntu 11.16-1.pgdg20.04+1)
+  (1 row)
+  `
+
   let fakePsqlProcess: FakeChildProcess | undefined
   let fakeTunnel: TunnelStub | undefined
   let tunnelStub: sinon.SinonStub<any[], any>
@@ -418,7 +419,7 @@ describe('psql', () => {
         },
         name: 'DATABASE',
       },
-    } as DB
+    } as ConnectionDetailsWithAttachment
 
     context('when HEROKU_PSQL_HISTORY is set', () => {
       let historyPath: string
@@ -539,7 +540,7 @@ describe('psql', () => {
         })
       })
 
-      context('when HEROKU_PSQL_HISTORY is an invalid path', async () => {
+      context('when HEROKU_PSQL_HISTORY is an invalid path', () => {
         it('issues a warning', async () => {
           const invalidPath = path.join('/', 'path', 'to', 'history')
           mockHerokuPSQLHistory(invalidPath)

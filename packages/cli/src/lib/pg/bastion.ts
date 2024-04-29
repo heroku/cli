@@ -4,7 +4,8 @@ import * as EventEmitter from 'node:events'
 import * as createTunnel from 'tunnel-ssh'
 import {promisify} from 'util'
 import host from './host'
-import {getConnectionDetails} from './util'
+import {ConnectionDetails} from './util'
+import {ux} from '@oclif/core'
 
 export const getBastion = function (config:Record<string, string>, baseName: string) {
   // If there are bastions, extract a host and a key
@@ -22,12 +23,12 @@ export const getBastion = function (config:Record<string, string>, baseName: str
   return (bastionKey && bastionHost) ? {bastionHost, bastionKey} : {}
 }
 
-export const env = (db: ReturnType<typeof getConnectionDetails>) => {
+export const env = (db: ConnectionDetails) => {
   const baseEnv = Object.assign({
     PGAPPNAME: 'psql non-interactive',
     PGSSLMODE: (!db.host || db.host === 'localhost') ? 'prefer' : 'require',
   }, process.env)
-  const mapping:Record<string, keyof Omit<typeof db, 'attachment'>> = {
+  const mapping: Record<string, keyof Omit<typeof db, 'url' | 'pathname' | 'bastionHost' | 'bastionKey' | '_tunnel'>> = {
     PGUSER: 'user',
     PGPASSWORD: 'password',
     PGDATABASE: 'database',
@@ -43,22 +44,23 @@ export const env = (db: ReturnType<typeof getConnectionDetails>) => {
   return baseEnv
 }
 
-export function tunnelConfig(db: ReturnType<typeof getConnectionDetails>): createTunnel.Config {
+export type TunnelConfig = createTunnel.Config
+
+export function tunnelConfig(db: ConnectionDetails): TunnelConfig {
   const localHost = '127.0.0.1'
-  // eslint-disable-next-line no-mixed-operators
-  const localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
+  const localPort = Math.floor((Math.random() * (65535 - 49152)) + 49152)
   return {
     username: 'bastion',
     host: db.bastionHost,
     privateKey: db.bastionKey,
     dstHost: db.host || undefined,
     dstPort: (db.port && Number.parseInt(db.port as string, 10)) || undefined,
-    localHost: localHost,
-    localPort: localPort,
+    localHost,
+    localPort,
   }
 }
 
-export function getConfigs(db: ReturnType<typeof getConnectionDetails>) {
+export function getConfigs(db: ConnectionDetails) {
   const dbEnv: NodeJS.ProcessEnv = env(db)
   const dbTunnelConfig = tunnelConfig(db)
   if (db.bastionKey) {
@@ -102,7 +104,7 @@ class Timeout {
   }
 }
 
-export async function sshTunnel(db: ReturnType<typeof getConnectionDetails>, dbTunnelConfig: createTunnel.Config, timeout = 10000) {
+export async function sshTunnel(db: ConnectionDetails, dbTunnelConfig: TunnelConfig, timeout = 10000) {
   if (!db.bastionKey) {
     return null
   }
@@ -116,7 +118,7 @@ export async function sshTunnel(db: ReturnType<typeof getConnectionDetails>, dbT
     ])
   } catch (error) {
     debug(error)
-    throw new Error('Unable to establish a secure tunnel to your database.')
+    ux.error('Unable to establish a secure tunnel to your database.')
   } finally {
     timeoutInstance.cancel()
   }

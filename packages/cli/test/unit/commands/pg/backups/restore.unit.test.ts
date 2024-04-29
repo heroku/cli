@@ -25,7 +25,7 @@ describe('pg:backups:restore', function () {
     api.done()
   })
 
-  context('b005', async () => {
+  context('b005', () => {
     beforeEach(async () => {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
@@ -110,7 +110,7 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('b005 (verbose)', async () => {
+  context('b005 (verbose)', () => {
     beforeEach(async () => {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
@@ -153,7 +153,7 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('with a URL', async () => {
+  context('with a URL', () => {
     beforeEach(async () => {
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'})
         .reply(200, {
@@ -190,7 +190,7 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('with extensions', async () => {
+  context('with extensions', () => {
     beforeEach(async () => {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
