@@ -36,7 +36,7 @@ describe('container pull', () => {
 
     return testutil.assertErrorExit(1, cmd.run({app: 'testapp', args: ['web'], flags: {}}))
       .then(error => {
-        expect(error.message).to.equal('This command is only supported for the container stack. The stack for app testapp is heroku-24.')
+        expect(error.message).to.equal('This command is for Docker apps only. Run git push heroku main to deploy your testapp heroku-24 app instead.')
         api.done()
       })
   })

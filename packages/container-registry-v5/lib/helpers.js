@@ -1,5 +1,9 @@
 const cli = require('heroku-cli-util')
 
+const stackLabelMap = {
+  cnb: 'Cloud Native Buildpack',
+}
+
 /**
  * Ensure that the given app is a container app.
  * @param app {Object} heroku app
@@ -7,7 +11,8 @@ const cli = require('heroku-cli-util')
  */
 function ensureContainerStack(app) {
   if (app.stack.name !== 'container') {
-    cli.exit(1, `This command is only supported for the ${cli.color.cyan('container')} stack. The stack for app ${cli.color.cyan(app.name)} is ${cli.color.cyan(app.stack.name)}.`)
+    const appLabel = stackLabelMap[app.stack.name] || app.stack.name
+    cli.exit(1, `This command is for Docker apps only. Run ${cli.color.cyan('git push heroku main')} to deploy your ${cli.color.cyan(app.name)} ${cli.color.cyan(appLabel)} app instead.`)
   }
 }
 
