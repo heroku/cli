@@ -14,10 +14,12 @@ export default class Index extends Command {
     allowing all egress dyno traffic outside of the space.  You can
     remove this default rule to completely stop your private dynos from
     talking to the world.
+
+    You can add specific rules that only allow your dyno to communicate with trusted hosts.
   `)
 
   static aliases = ['outbound-rules']
-  static hidden = true;
+  static hidden = true
   static flags = {
     space: flags.string({char: 's', description: 'space to get outbound rules from', completion: SpaceCompletion}),
     json: flags.boolean({description: 'output in json format'}),
