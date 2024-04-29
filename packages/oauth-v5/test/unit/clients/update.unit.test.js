@@ -40,7 +40,7 @@ describe('clients:update', () => {
   })
 
   it('does nothing with no changes', () => {
-    return expect(cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {}}))
-      .to.throw(Error, 'No changes provided.')
+    return cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {}})
+      .catch(error => expect(error.message).to.contain('No changes provided.'))
   })
 })

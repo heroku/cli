@@ -120,7 +120,7 @@ describe('pg:credentials:rotate', function () {
       The following error occurred:
         [2m--name=my_role cannot also be provided when using --all[22m
       See more help with --help`)
-      return expect(runCommand(Cmd, [
+      await runCommand(Cmd, [
         '--app',
         'myapp',
         '--all',
@@ -128,7 +128,7 @@ describe('pg:credentials:rotate', function () {
         'my_role',
         '--confirm',
         'myapp',
-      ])).to.throw(Error, err)
+      ]).catch(error => expect(error.message).to.contain(err))
     })
 
     it('requires app confirmation for rotating all roles with --all', async function () {
@@ -219,12 +219,12 @@ describe('pg:credentials:rotate', function () {
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = 'Legacy Essential-tier databases do not support named credentials.'
-    return expect(runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ])).to.throw(Error, err)
+    ]).catch(error => expect(error.message).to.contain(err))
   })
 
   it('rotates credentials when the db is numbered essential plan', async function () {

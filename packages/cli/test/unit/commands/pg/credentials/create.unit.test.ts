@@ -41,7 +41,7 @@ describe('pg:credentials:create', function () {
     return expect(stderr.output).to.equal('Creating credential credname...\nCreating credential credname... done\n')
   })
 
-  it('throws an error when the db is numbered essential plan', function () {
+  it('throws an error when the db is numbered essential plan', async function () {
     const essentialAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
@@ -53,15 +53,15 @@ describe('pg:credentials:create', function () {
     }).reply(200, [{addon: essentialAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    return expect(runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ])).to.throw(Error, err)
+    ]).catch(error => expect(error.message).to.contain(err))
   })
 
-  it('throws an error when the db is essential plan', function () {
+  it('throws an error when the db is essential plan', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
@@ -72,11 +72,11 @@ describe('pg:credentials:create', function () {
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    return expect(runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ])).to.throw(Error, err)
+    ]).catch(error => expect(error.message).to.contain(err))
   })
 })

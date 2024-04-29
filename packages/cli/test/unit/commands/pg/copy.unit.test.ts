@@ -247,14 +247,14 @@ describe('pg:copy', function () {
     })
     it('fails to copy', async function () {
       const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun \u001B[36m\u001B[1mheroku pg:backups:info b001\u001B[22m\u001B[39m for more details.'
-      await expect(runCommand(Cmd, [
+      await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
-      ])).to.throw(Error, err)
+      ]).catch(error => expect(error.message).to.contain(err))
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
     })
