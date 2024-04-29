@@ -2,9 +2,9 @@ import {expect} from 'chai'
 import {essentialPlan, parsePostgresConnectionString} from '../../../../src/lib/pg/util'
 import {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types'
 
-describe('util', () => {
-  describe('parsePostgresConnectionString', () => {
-    it('correctly parses relative connection strings', () => {
+describe('util', function () {
+  describe('parsePostgresConnectionString', function () {
+    it('correctly parses relative connection strings', function () {
       const connString = 'myapp/my_database_name'
       const parsed = parsePostgresConnectionString(connString)
 
@@ -13,7 +13,7 @@ describe('util', () => {
       expect(parsed.port).to.equal('')
     })
 
-    it('correctly parses absolute connection strings', () => {
+    it('correctly parses absolute connection strings', function () {
       const connString = 'postgres://localhost:5432/myapp/my_database_name?application_name=myapp&sslmode=require'
       const parsed = parsePostgresConnectionString(connString)
 
@@ -22,7 +22,7 @@ describe('util', () => {
       expect(parsed.port).to.equal('5432')
     })
 
-    it('correctly parses connection strings with auth', () => {
+    it('correctly parses connection strings with auth', function () {
       const connString = 'postgres://user:pass@198.0.0.1:5432/my_database_name'
       const parsed = parsePostgresConnectionString(connString)
 
@@ -34,8 +34,8 @@ describe('util', () => {
     })
   })
 
-  describe('essentialPlan', () => {
-    it('correctly identifies essential plans', () => {
+  describe('essentialPlan', function () {
+    it('correctly identifies essential plans', function () {
       const addon = (plan: string) => ({plan: {name: plan}})
       const parsed = (addon: unknown) => essentialPlan(addon as AddOnAttachmentWithConfigVarsAndPlan)
 

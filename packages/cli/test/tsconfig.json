@@ -3,7 +3,10 @@
   "extends": "../tsconfig",
   "compilerOptions": {
     "sourceMap": true,
-    "rootDirs": ["./", "../src"]
+    "rootDirs": ["./", "../src"],
+    "types": [
+      "mocha"
+    ]
   },
   "include": [
     "./**/*",

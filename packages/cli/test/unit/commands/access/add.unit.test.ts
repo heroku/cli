@@ -9,15 +9,17 @@ import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post'
 let apiGet: nock.Scope
 let apiPost: nock.Scope
 let apiGetOrgFeatures: nock.Scope
-describe('heroku access:add', () => {
-  context('with a team app with user permissions', () => {
-    beforeEach(() => {
+describe('heroku access:add', function () {
+  context('with a team app with user permissions', function () {
+    beforeEach(function () {
       apiGet = teamApp()
       apiPost = teamAppCollaborators('raulb@heroku.com', ['deploy', 'view'])
       apiGetOrgFeatures = teamFeatures([{name: 'org-access-controls'}])
     })
-    afterEach(() => nock.cleanAll())
-    it('adds user to the app with permissions, and view is implicit', () => {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('adds user to the app with permissions, and view is implicit', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -31,7 +33,7 @@ describe('heroku access:add', () => {
         .then(() => apiGetOrgFeatures.done())
         .then(() => apiPost.done())
     })
-    it('adds user to the app with permissions, even specifying the view permission', () => {
+    it('adds user to the app with permissions, even specifying the view permission', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -45,7 +47,7 @@ describe('heroku access:add', () => {
         .then(() => apiGetOrgFeatures.done())
         .then(() => apiPost.done())
     })
-    it('raises an error when permissions are not specified', () => {
+    it('raises an error when permissions are not specified', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -59,14 +61,16 @@ describe('heroku access:add', () => {
         .catch((error: any) => expect(error.message).to.equal('Missing argument: permissions'))
     })
   })
-  context('with a team app without user permissions', () => {
-    beforeEach(() => {
+  context('with a team app without user permissions', function () {
+    beforeEach(function () {
       apiGet = teamApp()
       apiPost = collaborators()
       apiGetOrgFeatures = teamFeatures([])
     })
-    afterEach(() => nock.cleanAll())
-    it('adds user to the app', () => {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('adds user to the app', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -79,13 +83,15 @@ describe('heroku access:add', () => {
         .then(() => apiPost.done())
     })
   })
-  context('with a non team app', () => {
-    beforeEach(() => {
+  context('with a non team app', function () {
+    beforeEach(function () {
       apiGet = personalApp()
       apiPost = collaborators()
     })
-    afterEach(() => nock.cleanAll())
-    it('adds user to the app as a collaborator', () => {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('adds user to the app as a collaborator', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',

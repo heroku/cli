@@ -7,7 +7,7 @@ import * as inquirer from 'inquirer'
 
 const EventEmitter = require('events').EventEmitter
 
-describe('DockerHelper', () => {
+describe('DockerHelper', function () {
   const eventMock = () => {
     const eventEmitter = new EventEmitter()
     process.nextTick(function () {
@@ -16,14 +16,16 @@ describe('DockerHelper', () => {
     return eventEmitter
   }
 
-  describe('.version', () => {
+  describe('.version', function () {
     let sandbox: sinon.SinonSandbox
 
-    beforeEach(() => {
+    beforeEach(function () {
       sandbox = sinon.createSandbox()
     })
 
-    afterEach(() => sandbox.restore())
+    afterEach(function () {
+      return sandbox.restore()
+    })
 
     it('returns a the major and minor version', async function () {
       sandbox.stub(DockerHelper, 'cmd')
@@ -35,7 +37,7 @@ describe('DockerHelper', () => {
       expect(version).to.deep.equal([18, 2])
     })
 
-    it('has an error', async () => {
+    it('has an error', async function () {
       sandbox.stub(DockerHelper, 'cmd')
         .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('an error occurred')
@@ -46,45 +48,46 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.pullImage', () => {
+  describe('.pullImage', function () {
     let eventStub: sinon.SinonStub
-    beforeEach(() => {
+
+    beforeEach(function () {
       eventStub = sinon.stub(childProcess, 'spawn')
         .callsFake(eventMock)
     })
 
-    afterEach(() => {
+    afterEach(function () {
       eventStub.restore()
     })
 
-    it('successfully pulls image to execute with DockerHelper cmd', async () => {
+    it('successfully pulls image to execute with DockerHelper cmd', async function () {
       await DockerHelper.pullImage('registry.heroku.com/testapp/web')
       expect(eventStub.calledOnce).to.equal(true)
     })
   })
 
-  describe('.getDockerfiles', () => {
-    it('can recurse the directory', () => {
+  describe('.getDockerfiles', function () {
+    it('can recurse the directory', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container')
       const results = DockerHelper.getDockerfiles(searchpath, true)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile.web'), path.join(`${searchpath}`, 'Nested', 'Dockerfile.web')])
     })
 
-    it('when recursing, rejects dockerfiles that have no postfix in the name', () => {
+    it('when recursing, rejects dockerfiles that have no postfix in the name', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container')
       const results = DockerHelper.getDockerfiles(searchpath, true)
       expect(results).to.not.have.members([`${searchpath}/Dockerfile`])
     })
 
-    it('returns only regular Dockerfiles when not recursing', () => {
+    it('returns only regular Dockerfiles when not recursing', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container/Nested')
       const results = DockerHelper.getDockerfiles(searchpath, false)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile')])
     })
   })
 
-  describe('.getJobs', () => {
-    it('returns objects representing jobs per Dockerfile', () => {
+  describe('.getJobs', function () {
+    it('returns objects representing jobs per Dockerfile', function () {
       const dockerfiles = [
         path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile.web'),
       ]
@@ -99,7 +102,7 @@ describe('DockerHelper', () => {
       expect(results.web[1]).to.have.property('postfix', 1)
     })
 
-    it('sorts dockerfiles by directory depth, then proc type', () => {
+    it('sorts dockerfiles by directory depth, then proc type', function () {
       const dockerfiles = [
         path.join('.', 'Nested', 'Dockerfile.worker'), path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile'),
       ]
@@ -111,7 +114,7 @@ describe('DockerHelper', () => {
       expect(results.worker[0]).to.have.property('dockerfile', path.join('Nested', 'Dockerfile.worker'))
     })
 
-    it('groups the jobs by process type', () => {
+    it('groups the jobs by process type', function () {
       const dockerfiles = [
         path.join('.', 'Nested', 'Dockerfile.worker'), path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile'),
       ]
@@ -124,26 +127,27 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.runImage', () => {
+  describe('.runImage', function () {
     let eventStub: sinon.SinonStub
-    beforeEach(() => {
+
+    beforeEach(function () {
       eventStub = sinon.stub(childProcess, 'spawn')
         .callsFake(eventMock)
     })
 
-    afterEach(() => {
+    afterEach(function () {
       eventStub.restore()
     })
 
-    it('successfully runs image to execute with and without shell command', async () => {
+    it('successfully runs image to execute with and without shell command', async function () {
       await DockerHelper.runImage('registry.heroku.com/testapp/web', '', 1234)
       await DockerHelper.runImage('registry.heroku.com/testapp/web', 'not empty', 1234)
       expect(eventStub.calledTwice).to.equal(true)
     })
   })
 
-  describe('.filterByProcessType', () => {
-    it('returns an array of jobs only of the type requested', async () => {
+  describe('.filterByProcessType', function () {
+    it('returns an array of jobs only of the type requested', async function () {
       const dockerfiles = [
         path.join('.', 'Nested', 'Dockerfile.worker'),
         path.join('.', 'Dockerfile.web'),
@@ -158,12 +162,12 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.chooseJobs', () => {
-    afterEach(() => {
+  describe('.chooseJobs', function () {
+    afterEach(function () {
       inquirer.prompt.restoreDefaultPrompts()
     })
 
-    it('returns the entry when only one exists', async () => {
+    it('returns the entry when only one exists', async function () {
       const dockerfiles = [path.join('.', 'Nested', 'Dockerfile.web')]
       const jobs = DockerHelper.getJobs('rootfulroot', dockerfiles)
       const chosenJob = await DockerHelper.chooseJobs(jobs)
@@ -173,20 +177,20 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.chooseJobs multiple entries', () => {
+  describe('.chooseJobs multiple entries', function () {
     const sandbox = sinon.createSandbox()
     const dockerfilePath = path.join('.', 'Nested', 'Dockerfile.web')
 
-    beforeEach(() => {
+    beforeEach(function () {
       sandbox.stub(inquirer, 'prompt').resolves({web: dockerfilePath})
     })
 
-    afterEach(() => {
+    afterEach(function () {
       sandbox.restore()
       inquirer.prompt.restoreDefaultPrompts()
     })
 
-    it('prompts user when multiple entries exists', async () => {
+    it('prompts user when multiple entries exists', async function () {
       const dockerfiles = [path.join('.', 'Nested', 'Dockerfile.web'), path.join('.', 'Dockerfile.web')]
       const jobs = DockerHelper.getJobs('rootfulroot', dockerfiles)
       const chosenJob = await DockerHelper.chooseJobs(jobs)
@@ -196,12 +200,14 @@ describe('DockerHelper', () => {
     })
   })
 
-  describe('.pushImage', () => {
+  describe('.pushImage', function () {
     const sandbox = sinon.createSandbox()
 
-    afterEach(() => sandbox.restore())
+    afterEach(function () {
+      return sandbox.restore()
+    })
 
-    it('successfully pushes image to DockerHelper cmd', async () => {
+    it('successfully pushes image to DockerHelper cmd', async function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await DockerHelper.pushImage('registry.heroku.com/testapp/web')

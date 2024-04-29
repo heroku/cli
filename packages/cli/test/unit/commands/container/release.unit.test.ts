@@ -8,12 +8,16 @@ import stdMocks = require('std-mocks')
 
 let sandbox: { restore: () => void; stub: (arg0: NodeJS.Process, arg1: string) => void }
 
-describe('container release', () => {
-  beforeEach(() => {
+describe('container release', function () {
+  beforeEach(function () {
     sandbox = sinon.createSandbox()
   })
-  afterEach(() => sandbox.restore())
-  it('has no process type specified', async () => {
+
+  afterEach(function () {
+    return sandbox.restore()
+  })
+
+  it('has no process type specified', async function () {
     await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -23,7 +27,8 @@ describe('container release', () => {
         expect(stdout.output, 'to be empty')
       })
   })
-  it('releases a single process type, no previous release', async () => {
+
+  it('releases a single process type, no previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -50,7 +55,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('releases a single process type, with a previous release', async () => {
+
+  it('releases a single process type, with a previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -77,7 +83,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('retrieves data from a v1 schema version, no previous release', async () => {
+
+  it('retrieves data from a v1 schema version, no previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -104,7 +111,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('retrieves data from a v1 schema version, with a previous release', async () => {
+
+  it('retrieves data from a v1 schema version, with a previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -131,7 +139,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('releases multiple process types, no previous release', async () => {
+
+  it('releases multiple process types, no previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -161,7 +170,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('releases multiple process types, with a previous release', async () => {
+
+  it('releases multiple process types, with a previous release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -191,7 +201,8 @@ describe('container release', () => {
     api.done()
     registry.done()
   })
-  it('releases with previous release and immediately successful release phase', () => {
+
+  it('releases with previous release and immediately successful release phase', function () {
     stdMocks.use()
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
@@ -222,7 +233,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with previous release and pending then successful release phase', () => {
+
+  it('releases with previous release and pending then successful release phase', function () {
     stdMocks.use()
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
@@ -259,7 +271,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with previous release and immediately failed release phase', () => {
+
+  it('releases with previous release and immediately failed release phase', function () {
     sandbox.stub(process, 'exit')
     stdMocks.use()
     const api = nock('https://api.heroku.com:443')
@@ -292,7 +305,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with previous release and pending then failed release phase', () => {
+
+  it('releases with previous release and pending then failed release phase', function () {
     sandbox.stub(process, 'exit')
     stdMocks.use()
     const busl = nock('https://busl.test:443')
@@ -331,7 +345,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with no previous release and immediately successful release phase', () => {
+
+  it('releases with no previous release and immediately successful release phase', function () {
     stdMocks.use()
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
@@ -360,7 +375,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with no previous release and pending then successful release phase', () => {
+
+  it('releases with no previous release and pending then successful release phase', function () {
     stdMocks.use()
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
@@ -397,7 +413,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with no previous release and immediately failed release phase', () => {
+
+  it('releases with no previous release and immediately failed release phase', function () {
     sandbox.stub(process, 'exit')
     stdMocks.use()
     const api = nock('https://api.heroku.com:443')
@@ -430,7 +447,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('releases with no previous release and pending then failed release phase', () => {
+
+  it('releases with no previous release and pending then failed release phase', function () {
     sandbox.stub(process, 'exit')
     stdMocks.use()
     const busl = nock('https://busl.test:443')
@@ -469,7 +487,8 @@ describe('container release', () => {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
-  it('has release phase but no new release', async () => {
+
+  it('has release phase but no new release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})

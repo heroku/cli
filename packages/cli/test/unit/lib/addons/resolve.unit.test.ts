@@ -7,20 +7,22 @@ import * as nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
 
-describe('resolve', () => {
+describe('resolve', function () {
   let herokuAPI: APIClient
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     resolveAddon.cache.clear()
     herokuAPI = await getHerokuAPI()
   })
 
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
-  describe('addon', () => {
-    it('finds a single matching addon', () => {
+  describe('addon', function () {
+    it('finds a single matching addon', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-1'}).reply(200, [{name: 'myaddon-1'}])
 
@@ -29,7 +31,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('finds a single matching addon for an app', () => {
+    it('finds a single matching addon for an app', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-2'}).reply(200, [{name: 'myaddon-2'}])
 
@@ -38,7 +40,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('fails if no addon found', () => {
+    it('fails if no addon found', function () {
       nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-3'}).reply(404, {resource: 'add_on'})
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-3'}).reply(404, {resource: 'add_on'})
@@ -50,7 +52,7 @@ describe('resolve', () => {
         .catch((error: any) => expect(error).to.have.nested.include({statusCode: 404}))
     })
 
-    it('fails if no addon found with addon-service', () => {
+    it('fails if no addon found with addon-service', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})
@@ -63,7 +65,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('fails if errored', () => {
+    it('fails if errored', function () {
       nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-5'}).reply(401)
 
@@ -74,7 +76,7 @@ describe('resolve', () => {
         .catch((error: any) => expect(error).to.have.nested.include({statusCode: 401}))
     })
 
-    it('fails if ambiguous', () => {
+    it('fails if ambiguous', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-5'})
         .reply(200, [{name: 'myaddon-5'}, {name: 'myaddon-6'}])
@@ -89,7 +91,7 @@ describe('resolve', () => {
         })
     })
 
-    it('fails if no addon found', () => {
+    it('fails if no addon found', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})
@@ -104,7 +106,7 @@ describe('resolve', () => {
         })
     })
 
-    it('fails if app not found', () => {
+    it('fails if app not found', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'app'})
 
@@ -121,7 +123,7 @@ describe('resolve', () => {
         })
     })
 
-    it('finds the addon with null namespace for an app if no namespace is specified', () => {
+    it('finds the addon with null namespace for an app if no namespace is specified', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1', namespace: null}, {name: 'myaddon-1b', namespace: 'definitely-not-null'}])
@@ -131,7 +133,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('finds the addon with no namespace for an app if no namespace is specified', () => {
+    it('finds the addon with no namespace for an app if no namespace is specified', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1'}, {name: 'myaddon-1b', namespace: 'definitely-not-null'}])
@@ -141,7 +143,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('finds the addon with the specified namespace for an app if there are multiple addons', () => {
+    it('finds the addon with the specified namespace for an app if there are multiple addons', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1'}, {name: 'myaddon-1b', namespace: 'great-namespace'}])
@@ -151,7 +153,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('finds the addon with the specified namespace for an app if there is only one addon', () => {
+    it('finds the addon with the specified namespace for an app if there is only one addon', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1b', namespace: 'great-namespace'}])
@@ -161,7 +163,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('fails if there is no addon with the specified namespace for an app', () => {
+    it('fails if there is no addon with the specified namespace for an app', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1'}])
@@ -176,7 +178,7 @@ describe('resolve', () => {
         })
     })
 
-    it('finds the addon with a namespace for an app if there is only match which happens to have a namespace', () => {
+    it('finds the addon with a namespace for an app if there is only match which happens to have a namespace', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-1'})
         .reply(200, [{name: 'myaddon-1', namespace: 'definitely-not-null'}])
@@ -186,8 +188,8 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    describe('memoization', () => {
-      it('memoizes an addon for an app', () => {
+    describe('memoization', function () {
+      it('memoizes an addon for an app', function () {
         const api = nock('https://api.heroku.com:443')
           .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-6'}).reply(200, [{name: 'myaddon-6'}])
 
@@ -236,7 +238,7 @@ describe('resolve', () => {
           })
       })
 
-      it('does not memoize errors', () => {
+      it('does not memoize errors', function () {
         const api = nock('https://api.heroku.com:443')
           .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-8'}).reply(500, {id: 'internal server error'})
 
@@ -268,8 +270,8 @@ describe('resolve', () => {
     })
   })
 
-  describe('appAddon', () => {
-    it('finds a single matching addon for an app', () => {
+  describe('appAddon', function () {
+    it('finds a single matching addon for an app', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-2'}).reply(200, [{name: 'myaddon-2'}])
 
@@ -278,7 +280,7 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('fails if not found', () => {
+    it('fails if not found', function () {
       nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-5'}).reply(404)
 
@@ -289,7 +291,7 @@ describe('resolve', () => {
         .catch((error: any) => expect(error).to.have.nested.include({statusCode: 404}))
     })
 
-    it('fails if ambiguous', () => {
+    it('fails if ambiguous', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-5'})
         .reply(200, [{name: 'myaddon-5'}, {name: 'myaddon-6'}])

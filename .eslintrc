@@ -15,6 +15,9 @@
     "import/no-unresolved": "error",
     "indent": ["error", 2, {"MemberExpression": 1}],
     "func-names":"warn", // TODO: fix issues and turn this back on
+    "mocha/no-mocha-arrows": "warn",
+    "mocha/no-exports": "warn",
+    "mocha/no-setup-in-describe": "warn",
     "no-await-in-loop": "off", // Perfect legit to use await in loops, we should leave it off
     "no-constant-condition": ["error", {"checkLoops": false }],
     "no-else-return": "warn", // TODO: fix issues and turn this back on

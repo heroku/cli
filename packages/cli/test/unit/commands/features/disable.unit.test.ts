@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 import stripAnsi = require('strip-ansi')
 
-describe('features:disable',  () => {
+describe('features:disable',  function () {
   test
     .stderr()
     .stdout()

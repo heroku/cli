@@ -33,6 +33,7 @@ describe('addons:docs', function () {
     expect(stdout.output).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
     api.done()
   })
+
   it('opens an addon by attachment name', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
@@ -46,6 +47,7 @@ describe('addons:docs', function () {
     expect(stderr.output).to.equal('')
     api.done()
   })
+
   it('opens an addon by app/attachment name', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')

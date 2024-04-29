@@ -1,7 +1,7 @@
 import {test, expect} from '@oclif/test'
 const stripAnsi = require('strip-ansi')
 
-describe('config:set', () => {
+describe('config:set', function () {
   test
     .stdout()
     .stderr()

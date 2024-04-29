@@ -26,8 +26,8 @@ class Tunnel extends EventEmitter {
 }
 const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
 const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
-describe('heroku redis:cli', () => {
-  describe('heroku redis:cli', () => {
+describe('heroku redis:cli', function () {
+  describe('heroku redis:cli', function () {
     const proxyquire = noCallThru()
     const {default: command} = proxyquire('../../../../src/commands/redis/cli', {net: {}, tls: {}, ssh2: {}})
     require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(command)
@@ -57,7 +57,7 @@ describe('heroku redis:cli', () => {
     command = Cmd
   })
 
-  it('# for hobby it uses net.connect', async () => {
+  it('# for hobby it uses net.connect', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -95,7 +95,7 @@ describe('heroku redis:cli', () => {
     expect(net.connect.called).to.equal(true)
   })
 
-  it('# for hobby it uses TLS if prefer_native_tls', async () => {
+  it('# for hobby it uses TLS if prefer_native_tls', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -133,7 +133,7 @@ describe('heroku redis:cli', () => {
     expect(tls.connect.called).to.equal(true)
   })
 
-  it('# for premium it uses tls.connect', async () => {
+  it('# for premium it uses tls.connect', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -216,7 +216,7 @@ describe('heroku redis:cli', () => {
     configVars.done()
   })
 
-  it('# for bastion it uses tunnel.connect', async () => {
+  it('# for bastion it uses tunnel.connect', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -255,7 +255,7 @@ describe('heroku redis:cli', () => {
     expect(outputParts[2]).to.equal('Disconnected from instance.')
   })
 
-  it('# for private spaces bastion with prefer_native_tls, it uses tls.connect', async () => {
+  it('# for private spaces bastion with prefer_native_tls, it uses tls.connect', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -293,7 +293,7 @@ describe('heroku redis:cli', () => {
     expect(tls.connect.called).to.equal(true)
   })
 
-  it('# selects correct connection information when multiple redises are present across multiple apps', async () => {
+  it('# selects correct connection information when multiple redises are present across multiple apps', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [

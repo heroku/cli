@@ -22,16 +22,16 @@ describe('heroku certs:update', function () {
 
   let stubbedReadFile: ReadFileStub
 
-  beforeEach(() => {
+  beforeEach(function () {
     stubbedReadFile = sinon.stub(fs, 'readFile')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     stubbedReadFile.restore()
     nock.cleanAll()
   })
 
-  it('# requires confirmation', async () => {
+  it('# requires confirmation', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -57,7 +57,7 @@ describe('heroku certs:update', function () {
     expect(stdout.output).to.equal('')
   })
 
-  it('# errors out when args < 2', async () => {
+  it('# errors out when args < 2', async function () {
     try {
       await runCommand(Cmd, [
         '--app',
@@ -73,7 +73,7 @@ describe('heroku certs:update', function () {
     expect(stdout.output).to.equal('')
   })
 
-  it('# can run', async () => {
+  it('# can run', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -102,7 +102,7 @@ describe('heroku certs:update', function () {
     expect(stdout.output).to.equal(`Updated certificate details:\n${heredoc(certificateDetails)}`)
   })
 
-  it('# errors out with intermediaries', async () => {
+  it('# errors out with intermediaries', async function () {
     try {
       await runCommand(Cmd, [
         '--app',
@@ -136,7 +136,7 @@ describe('shared', function () {
     mockFile(stubbedReadFile, 'key_file', 'key content')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     stubbedReadFile.restore()
   })
 

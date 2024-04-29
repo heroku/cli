@@ -9,10 +9,11 @@ import * as sinon from 'sinon'
 let confirmStub: ReturnType<typeof sinon.stub>
 
 describe('addons:attach', function () {
-  beforeEach(() => {
+  beforeEach(function () {
     confirmStub = sinon.stub(confirmCommand, 'default').returns(Promise.resolve())
   })
-  afterEach(() => {
+
+  afterEach(function () {
     confirmStub.restore()
     nock.cleanAll()
   })
@@ -37,6 +38,7 @@ describe('addons:attach', function () {
     expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting myapp... done, v10\n')
     return api.done()
   })
+
   it('attaches an add-on as foo', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addons/redis-123')
@@ -87,6 +89,7 @@ describe('addons:attach', function () {
         api.done()
       })
   })
+
   it('attaches an addon without a namespace if the credential flag is set to default', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addons/postgres-123')
@@ -110,6 +113,7 @@ describe('addons:attach', function () {
         api.done()
       })
   })
+
   it('attaches in the credential namespace if the credential flag is specified', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addons/postgres-123')
@@ -135,6 +139,7 @@ describe('addons:attach', function () {
         api.done()
       })
   })
+
   it('errors if the credential flag is specified but that credential does not exist for that addon', function () {
     nock('https://api.heroku.com:443')
       .get('/addons/postgres-123')

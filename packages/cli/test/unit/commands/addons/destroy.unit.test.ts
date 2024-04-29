@@ -9,10 +9,12 @@ import stripAnsi = require('strip-ansi')
 
 /* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
 * You MUST change requests to have different params, or they won't be made and nock will not be satisfied */
-describe('addons:destroy', () => {
-  afterEach(() => nock.cleanAll())
-  context('when an add-on implements sync deprovisioning', () => {
-    it('destroys the add-on synchronously', async () => {
+describe('addons:destroy', function () {
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+  context('when an add-on implements sync deprovisioning', function () {
+    it('destroys the add-on synchronously', async function () {
       const addon = {
         id: 201, name: 'db3-swiftly-123', addon_service: {name: 'heroku-db3'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
       }
@@ -34,8 +36,8 @@ describe('addons:destroy', () => {
       api.done()
     })
   })
-  context('when an add-on implements async deprovisioning', () => {
-    it('destroys the add-on asynchronously', async () => {
+  context('when an add-on implements async deprovisioning', function () {
+    it('destroys the add-on asynchronously', async function () {
       const addon = {
         id: 201, name: 'db4-swiftly-123', addon_service: {name: 'heroku-db4'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
       }
@@ -55,10 +57,10 @@ describe('addons:destroy', () => {
       expect(stderr.output).to.contain('Destroying db4-swiftly-123 on ⬢ myapp... pending\n')
       api.done()
     })
-    context('--wait', () => {
+    context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
       let sandbox: ReturnType<typeof sinon.createSandbox>
-      beforeEach(() => {
+      beforeEach(function () {
         sandbox = sinon.createSandbox()
         clock = lolex.install()
         clock.setTimeout = function (fn: () => unknown) {
@@ -69,7 +71,7 @@ describe('addons:destroy', () => {
         clock.uninstall()
         sandbox.restore()
       })
-      it('waits for response and notifies', async () => {
+      it('waits for response and notifies', async function () {
         const addon = {
           id: 201, name: 'db5-swiftly-123', addon_service: {name: 'heroku-db5'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
         }
@@ -100,7 +102,8 @@ describe('addons:destroy', () => {
       })
     })
   })
-  it('fails when addon app is not the app specified', async () => {
+
+  it('fails when addon app is not the app specified', async function () {
     const addon_in_other_app = {
       id: 201, name: 'db6-swiftly-123', addon_service: {name: 'heroku-db6'}, app: {name: 'myotherapp', id: 102}, state: 'provisioned',
     }
@@ -121,6 +124,7 @@ describe('addons:destroy', () => {
       expect(stripAnsi(error.message)).to.equal('db6-swiftly-123 is on myotherapp not myapp')
     }
   })
+
   it('shows that it failed to deprovision when there are errors returned', async function () {
     const addon = {
       id: 201, name: 'db7-swiftly-123', addon_service: {name: 'heroku-db7'}, app: {name: 'myapp', id: 101}, state: 'suspended',
@@ -144,8 +148,8 @@ describe('addons:destroy', () => {
       expect(error.message).to.equal('The add-on was unable to be destroyed: Cannot delete a suspended addon.')
     }
   })
-  context('when an multiple add-ons provided', () => {
-    it('destroys them all', async () => {
+  context('when an multiple add-ons provided', function () {
+    it('destroys them all', async function () {
       const addon = {
         id: 201,
         name: 'db23-swiftly-123',
@@ -182,7 +186,7 @@ describe('addons:destroy', () => {
       api.done()
     })
 
-    it('fails when additional addon app is not the app specified', async () => {
+    it('fails when additional addon app is not the app specified', async function () {
       const addon = {
         id: 201,
         name: 'db13-swiftly-123',

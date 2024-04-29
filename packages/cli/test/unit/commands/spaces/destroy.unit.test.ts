@@ -8,11 +8,11 @@ import heredoc from 'tsheredoc'
 describe('spaces:destroy', function () {
   const now = new Date()
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('destroys a space', async () => {
+  it('destroys a space', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces/my-space')
       .reply(200, {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, state: 'allocated', created_at: now})

@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
-describe('apps:rename', () => {
+describe('apps:rename', function () {
   const newApp = {
     name: 'newname',
     web_url: 'https://newname.com',

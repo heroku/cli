@@ -6,12 +6,12 @@ import runCommand from '../../../../../helpers/runCommand'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-verbose'
 import * as fixtures from '../../../../../fixtures/addons/fixtures'
 
-describe('pg:settings:auto-explain:log-verbose', () => {
+describe('pg:settings:auto-explain:log-verbose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   const addon = fixtures.addons['dwh-db']
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
     api.post('/actions/addons/resolve', {
       app: 'myapp',
@@ -21,12 +21,12 @@ describe('pg:settings:auto-explain:log-verbose', () => {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     api.done()
     pg.done()
   })
 
-  it('shows settings for auto_explain.log_verbose with value', async () => {
+  it('shows settings for auto_explain.log_verbose with value', async function () {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: 'test_value'}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`
@@ -35,7 +35,7 @@ describe('pg:settings:auto-explain:log-verbose', () => {
     `))
   })
 
-  it('shows settings for auto_explain.log_verbose with no value', async () => {
+  it('shows settings for auto_explain.log_verbose with no value', async function () {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: ''}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`

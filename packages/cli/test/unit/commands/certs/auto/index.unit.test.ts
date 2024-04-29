@@ -27,12 +27,12 @@ const selfSigned = {
   },
 }
 
-describe('heroku certs:auto', () => {
+describe('heroku certs:auto', function () {
   afterEach(function () {
     nock.cleanAll()
   })
 
-  it('displays enabled status message', async () => {
+  it('displays enabled status message', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -86,7 +86,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('displays partially enabled status message', async () => {
+  it('displays partially enabled status message', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -176,7 +176,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('does not have a false positive check with non-ACM lets encrypt certs', async () => {
+  it('does not have a false positive check with non-ACM lets encrypt certs', async function () {
     const now = new Date().toISOString()
     const sslCert = {...letsEncrypt.ssl_cert, acm: false}
     const acmFalse = {...letsEncrypt, ssl_cert: sslCert}
@@ -240,7 +240,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('displays partially enabled status with failed message', async () => {
+  it('displays partially enabled status with failed message', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -304,7 +304,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('displays partially enabled status with failing message', async () => {
+  it('displays partially enabled status with failing message', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -367,7 +367,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('displays disabled status message', async () => {
+  it('displays disabled status message', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {acm: false})
@@ -385,7 +385,7 @@ describe('heroku certs:auto', () => {
     expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on example\n\n')
   })
 
-  it('displays message that there are no certificates', async () => {
+  it('displays message that there are no certificates', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -433,7 +433,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('displays message that there are no domains', async () => {
+  it('displays message that there are no domains', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {acm: true})
@@ -459,7 +459,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('does not displays message that there are no certificates', async () => {
+  it('does not displays message that there are no certificates', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {acm: false})
@@ -477,7 +477,7 @@ describe('heroku certs:auto', () => {
     expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on example\n\n')
   })
 
-  it('displays message that there are no ACM certificates', async () => {
+  it('displays message that there are no ACM certificates', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {acm: true})
@@ -501,7 +501,7 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  it('does not displays message that there are not acm certificates', async () => {
+  it('does not displays message that there are not acm certificates', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {acm: false})
@@ -519,7 +519,7 @@ describe('heroku certs:auto', () => {
     expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on example\n\n')
   })
 
-  it('shows acm_status_reason', async () => {
+  it('shows acm_status_reason', async function () {
     const now = new Date().toISOString()
     const api = nock('https://api.heroku.com')
       .get('/apps/example')
@@ -572,10 +572,10 @@ describe('heroku certs:auto', () => {
     `)
   })
 
-  context('--wait', () => {
+  context('--wait', function () {
     let clock: lolex.InstalledClock<lolex.Clock>
 
-    beforeEach(() => {
+    beforeEach(function () {
       clock = lolex.install()
       clock.setTimeout = function (fn, _timeout) {
         fn()
@@ -583,12 +583,12 @@ describe('heroku certs:auto', () => {
       }
     })
 
-    afterEach(() => {
+    afterEach(function () {
       clock.uninstall()
       sandbox.restore()
     })
 
-    it('waits until certs are issued and displays the domains details', async () => {
+    it('waits until certs are issued and displays the domains details', async function () {
       const now = new Date().toISOString()
       const api = nock('https://api.heroku.com')
         .get('/apps/example')
@@ -694,7 +694,7 @@ describe('heroku certs:auto', () => {
       `)
     })
 
-    it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async () => {
+    it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async function () {
       const now = new Date().toISOString()
       const api = nock('https://api.heroku.com')
         .get('/apps/example')

@@ -8,12 +8,12 @@ import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
-describe('heroku redis:upgrade', () => {
-  beforeEach(() => {
+describe('heroku redis:upgrade', function () {
+  beforeEach(function () {
     nock.cleanAll()
   })
 
-  it('# upgrades the redis version', async () => {
+  it('# upgrades the redis version', async function () {
     const redisAddon =  fixtures.addons['www-redis']
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')

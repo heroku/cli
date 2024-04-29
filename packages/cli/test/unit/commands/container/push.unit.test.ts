@@ -9,10 +9,12 @@ import {CLIError} from '@oclif/core/lib/errors'
 
 const sandbox = sinon.createSandbox()
 
-describe('container push', () => {
-  afterEach(() => sandbox.restore())
+describe('container push', function () {
+  afterEach(function () {
+    return sandbox.restore()
+  })
 
-  it('gets a build error', async () => {
+  it('gets a build error', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -40,7 +42,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(build)
   })
 
-  it('gets a push error', async () => {
+  it('gets a push error', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -70,7 +72,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(push)
   })
 
-  it('pushes to the docker registry', async () => {
+  it('pushes to the docker registry', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -96,7 +98,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(push)
   })
 
-  it('pushes the standard dockerfile to non-web', async () => {
+  it('pushes the standard dockerfile to non-web', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -122,7 +124,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(push)
   })
 
-  it('pushes several dockerfiles recursively', async () => {
+  it('pushes several dockerfiles recursively', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -154,7 +156,7 @@ describe('container push', () => {
     sandbox.assert.calledTwice(push)
   })
 
-  it('builds with custom context path and pushes to the docker registry', async () => {
+  it('builds with custom context path and pushes to the docker registry', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -182,7 +184,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(push)
   })
 
-  it('does not find an image to push', async () => {
+  it('does not find an image to push', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp'})
@@ -207,7 +209,7 @@ describe('container push', () => {
     sandbox.assert.calledOnce(dockerfiles)
   })
 
-  it('requires a process type if we are not recursive', async () => {
+  it('requires a process type if we are not recursive', async function () {
     try {
       await runCommand(Cmd, [
         '--app',
@@ -222,7 +224,7 @@ describe('container push', () => {
     expect(stdout.output).to.equal('')
   })
 
-  it('rejects multiple process types if we are not recursive', async () => {
+  it('rejects multiple process types if we are not recursive', async function () {
     try {
       await runCommand(Cmd, [
         '--app',

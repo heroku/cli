@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
-describe('pipelines:connect', () => {
-  describe('when the user is not linked to GitHub', () => {
+describe('pipelines:connect', function () {
+  describe('when the user is not linked to GitHub', function () {
     test
       .stderr()
       .stdout()
@@ -13,7 +13,7 @@ describe('pipelines:connect', () => {
       .it('displays an error')
   })
 
-  describe('with an account connected to Github', () => {
+  describe('with an account connected to Github', function () {
     test
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         const kolkrabbiAccount = {
@@ -57,7 +57,7 @@ describe('pipelines:connect', () => {
       })
   })
 
-  describe('with an account connected to GitHub experiencing request failures', () => {
+  describe('with an account connected to GitHub experiencing request failures', function () {
     test
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         const kolkrabbiAccount = {

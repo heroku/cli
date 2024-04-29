@@ -4,14 +4,16 @@ import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/redis/promote'
 import runCommand from '../../../helpers/runCommand'
 
-describe('heroku redis:promote', () => {
+describe('heroku redis:promote should handle standard arg behavior', function () {
   require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(Cmd)
 })
 
-describe('heroku redis:promote', () => {
-  beforeEach(async () => nock.cleanAll())
+describe('heroku redis:promote', function () {
+  beforeEach(async function () {
+    return nock.cleanAll()
+  })
 
-  it('# promotes', async () => {
+  it('# promotes', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
@@ -43,7 +45,7 @@ describe('heroku redis:promote', () => {
     expect(stderr.output).to.equal('')
   })
 
-  it('# promotes and replaces attachment of existing REDIS_URL if necessary', async () => {
+  it('# promotes and replaces attachment of existing REDIS_URL if necessary', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [

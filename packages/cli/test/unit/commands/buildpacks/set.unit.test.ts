@@ -4,8 +4,8 @@ import * as nock from 'nock'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
 nock.disableNetConnect()
 
-describe('buildpacks:set', () => {
-  describe('URL', () => {
+describe('buildpacks:set', function () {
+  describe('URL', function () {
     test
       .nock('https://api.heroku.com', api => {
         Stubber.get(api)
@@ -61,7 +61,7 @@ Run git push heroku main to create a new release using these buildpacks.
       })
   })
 
-  describe('-i INDEX URL', () => {
+  describe('-i INDEX URL', function () {
     test
       .nock('https://api.heroku.com', api => {
         Stubber.get(api)

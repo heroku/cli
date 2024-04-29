@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
 
-describe('apps:stacks', () => {
+describe('apps:stacks', function () {
   test
     .stdout()
     .stderr()

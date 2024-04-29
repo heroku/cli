@@ -11,7 +11,7 @@ describe('pg:backups:restore', function () {
   let pg: nock.Scope
   let api: nock.Scope
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
@@ -19,14 +19,14 @@ describe('pg:backups:restore', function () {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(async () => {
+  afterEach(async function () {
     nock.cleanAll()
     pg.done()
     api.done()
   })
 
-  context('b005', () => {
-    beforeEach(async () => {
+  context('b005', function () {
+    beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
           {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
@@ -41,7 +41,7 @@ describe('pg:backups:restore', function () {
         })
     })
 
-    it('restores a db', async () => {
+    it('restores a db', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -63,7 +63,7 @@ describe('pg:backups:restore', function () {
       `))
     })
 
-    it('restores a specific db', async () => {
+    it('restores a specific db', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -86,7 +86,7 @@ describe('pg:backups:restore', function () {
       `))
     })
 
-    it('restores a specific app db', async () => {
+    it('restores a specific app db', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -110,8 +110,8 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('b005 (verbose)', () => {
-    beforeEach(async () => {
+  context('b005 (verbose)', function () {
+    beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
           {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
@@ -126,7 +126,7 @@ describe('pg:backups:restore', function () {
         })
     })
 
-    it('shows verbose output', async () => {
+    it('shows verbose output', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -153,8 +153,8 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('with a URL', () => {
-    beforeEach(async () => {
+  context('with a URL', function () {
+    beforeEach(async function () {
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'})
         .reply(200, {
           num: 5, from_name: 'DATABASE', uuid: '100-001',
@@ -165,7 +165,7 @@ describe('pg:backups:restore', function () {
         })
     })
 
-    it('restores a db from a URL', async () => {
+    it('restores a db from a URL', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -190,8 +190,8 @@ describe('pg:backups:restore', function () {
     })
   })
 
-  context('with extensions', () => {
-    beforeEach(async () => {
+  context('with extensions', function () {
+    beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
           {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
@@ -206,7 +206,7 @@ describe('pg:backups:restore', function () {
         })
     })
 
-    it('restores a db with pre-installed extensions', async () => {
+    it('restores a db with pre-installed extensions', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

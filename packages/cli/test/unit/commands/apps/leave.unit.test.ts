@@ -21,19 +21,21 @@ function mockCollaboratorsPersonalAppDeleteFailure(app: string, email: string) {
     .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`).reply(404, {})
 }
 
-describe('heroku apps:leave', () => {
+describe('heroku apps:leave', function () {
   let apiGetUserAccount: ReturnType<typeof mockUserAccount>
   let apiDeletePersonalAppCollaborator: ReturnType<typeof mockCollaboratorsPersonalApp>
 
-  beforeEach(() => {
+  beforeEach(function () {
     apiGetUserAccount = mockUserAccount()
     apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalApp('myapp', 'raulb@heroku.com')
   })
 
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
-  context('when it is an org app', () => {
-    it('leaves the app', async () => {
+  context('when it is an org app', function () {
+    it('leaves the app', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -45,8 +47,8 @@ describe('heroku apps:leave', () => {
     })
   })
 
-  context('when it is not an org app', () => {
-    it('leaves the app', async () => {
+  context('when it is not an org app', function () {
+    it('leaves the app', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -58,15 +60,17 @@ describe('heroku apps:leave', () => {
     })
   })
 
-  describe('when the user tries to leave the app', () => {
-    before(() => {
+  describe('when the user tries to leave the app', function () {
+    before(function () {
       apiGetUserAccount = mockUserAccount()
       apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalAppDeleteFailure('myapp', 'raulb@heroku.com')
     })
 
-    after(() => nock.cleanAll())
+    after(function () {
+      return nock.cleanAll()
+    })
 
-    it('shows an error if the heroku.delete() operation returns an error', async () => {
+    it('shows an error if the heroku.delete() operation returns an error', async function () {
       try {
         await runCommand(Cmd, [
           '--app',

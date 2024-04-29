@@ -13,11 +13,13 @@ const FLAGS = {pipeline: PIPELINE.id}
 describe('pipelines.ts', function () {
   let herokuAPI: APIClient
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     herokuAPI = await getHerokuAPI()
   })
 
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
   describe('#getPipeline', function () {
     it('disambiguates when passing a pipeline', async function () {

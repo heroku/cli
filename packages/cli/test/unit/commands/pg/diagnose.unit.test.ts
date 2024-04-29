@@ -8,7 +8,7 @@ import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/
 import Cmd  from '../../../../src/commands/pg/diagnose'
 import runCommand from '../../../helpers/runCommand'
 
-describe('pg:diagnose', () => {
+describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let diagnose: nock.Scope
@@ -21,7 +21,7 @@ describe('pg:diagnose', () => {
   let reportID: string
   const dbURL = 'postgres://user:password@herokupostgres.com/db'
 
-  beforeEach(() => {
+  beforeEach(function () {
     plan = {
       name: 'heroku-postgresql:standard-0', id: randomUUID(),
     }
@@ -57,15 +57,15 @@ describe('pg:diagnose', () => {
     diagnose = nock('https://pgdiagnose.herokai.com:443')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     api.done()
     pg.done()
     diagnose.done()
   })
 
-  describe('when not passing arguments', () => {
-    it('generates a report', async () => {
+  describe('when not passing arguments', function () {
+    it('generates a report', async function () {
       api.get(`/apps/${app.name}/config-vars`).reply(200, {
         DATABASE_ENDPOINT_042EExxx_URL: dbURL, DATABASE_URL: dbURL, HEROKU_POSTGRESQL_SILVER_URL: dbURL,
       })
@@ -103,9 +103,10 @@ describe('pg:diagnose', () => {
       `))
     })
   })
-  describe('when passing arguments', () => {
-    context('and this argument is a report ID', () => {
-      it('displays an existing report', async () => {
+
+  describe('when passing arguments', function () {
+    context('and this argument is a report ID', function () {
+      it('displays an existing report', async function () {
         dbName = 'HEROKU_POSTGRESQL_SILVER'
         const report = {
           id: reportID, app: app.name, database: addon.name, created_at: '101', checks: [
@@ -135,8 +136,8 @@ describe('pg:diagnose', () => {
         `))
       })
     })
-    context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', () => {
-      it('generates a report for that DB', async () => {
+    context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', function () {
+      it('generates a report for that DB', async function () {
         api.get(`/addons/${addon.name}`)
           .reply(200, db)
         api.get(`/apps/${app.name}/config-vars`)
@@ -177,8 +178,8 @@ describe('pg:diagnose', () => {
         `))
       })
 
-      context('with the --json flag set', () => {
-        it('outputs in styled JSON', async () => {
+      context('with the --json flag set', function () {
+        it('outputs in styled JSON', async function () {
           api.get(`/addons/${addon.name}`)
             .reply(200, db)
           api.get(`/apps/${app.name}/config-vars`)
@@ -212,7 +213,7 @@ describe('pg:diagnose', () => {
       })
     })
 
-    it('displays an existing report with empty results', async () => {
+    it('displays an existing report with empty results', async function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {
@@ -238,7 +239,7 @@ describe('pg:diagnose', () => {
       `))
     })
 
-    it('roughly conforms with Ruby output', async () => {
+    it('roughly conforms with Ruby output', async function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {
@@ -276,7 +277,7 @@ describe('pg:diagnose', () => {
       `))
     })
 
-    it('converts underscores to spaces', async () => {
+    it('converts underscores to spaces', async function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {

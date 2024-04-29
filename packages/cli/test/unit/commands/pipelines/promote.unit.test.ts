@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 import * as PromoteCmd from '../../../../src/commands/pipelines/promote'
 
-describe('pipelines:promote', () => {
+describe('pipelines:promote', function () {
   const apiUrl = 'https://api.heroku.com'
 
   const pipeline = {
@@ -142,6 +142,7 @@ describe('pipelines:promote', () => {
         expect(ctx.stdout).to.contain('Because reasons')
       })
 
+    // eslint-disable-next-line mocha/no-sibling-hooks
     setup(mockPromotionTargets(test))
       .stdout()
       .stderr()

@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 import * as foreman from '../../../../src/lib/local/fork-foreman'
 
-describe('local:run', () => {
+describe('local:run', function () {
   describe('when no arguments are given', function () {
     test
       .command(['local:run'])

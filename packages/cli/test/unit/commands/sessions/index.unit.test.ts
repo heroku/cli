@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('sessions:index', () => {
+describe('sessions:index', function () {
   const exampleSession1 = {
     description: 'B Session @ 166.176.184.223',
     id: 'aBcD1234-129f-42d2-854b-dEf123abc123',
@@ -26,7 +26,7 @@ describe('sessions:index', () => {
       )
     })
 
-  context('with json flag', () => {
+  context('with json flag', function () {
     testWithSessions()
       .command(['sessions', '--json'])
       .it('lists the sessions alphabetically as json', ctx => {
@@ -37,7 +37,7 @@ describe('sessions:index', () => {
       })
   })
 
-  context('without sessions', () => {
+  context('without sessions', function () {
     testWithSessions([])
       .command(['sessions'])
       .it('shows no sessions message', ctx => {

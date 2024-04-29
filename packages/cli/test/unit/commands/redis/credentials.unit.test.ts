@@ -5,7 +5,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
-describe('heroku redis:credentials', function () {
+describe('heroku redis:credentials should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd)
 })
 
@@ -14,7 +14,7 @@ describe('heroku redis:credentials', function () {
     nock.cleanAll()
   })
 
-  it('displays the redis credentials', async () => {
+  it('displays the redis credentials', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -37,7 +37,7 @@ describe('heroku redis:credentials', function () {
     expect(stderr.output).to.equal('')
   })
 
-  it('resets the redis credentials', async () => {
+  it('resets the redis credentials', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},

@@ -25,7 +25,7 @@ const completedUpgradeApp = {
   },
 }
 
-describe('stack:set', () => {
+describe('stack:set', function () {
   test
     .stderr()
     .stdout()

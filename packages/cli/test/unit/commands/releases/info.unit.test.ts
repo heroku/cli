@@ -6,7 +6,9 @@ import {expect} from 'chai'
 
 const d = new Date(2000, 1, 1)
 describe('releases:info', function () {
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
   const release = {
     description: 'something changed',
@@ -16,6 +18,7 @@ describe('releases:info', function () {
   }
 
   const configVars = {FOO: 'foo', BAR: 'bar'}
+
   it('shows most recent release info', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')

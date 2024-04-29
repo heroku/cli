@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
 
-describe('apps:open', () => {
+describe('apps:open', function () {
   const app = {
     web_url: 'https://myapp.herokuapp.com',
   }
@@ -29,7 +29,7 @@ describe('apps:open', () => {
       expect(hasCorrectUrl).to.be.true
     })
 
-  describe('apps:open reset stub', () => {
+  describe('apps:open reset stub', function () {
     const spawnStub = sinon.stub().returns({on: (event: string, cb: CallableFunction) => {
       if (event === 'exit') {
         cb()

@@ -15,7 +15,8 @@ describe('heroku certs:generate', function () {
   let stubbedPrompt: SinonStub
   let stubbedPromptReturnValue: unknown = {}
   let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
-  beforeEach(() => {
+
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -43,7 +44,7 @@ describe('heroku certs:generate', function () {
     })
   })
 
-  afterEach(() => {
+  afterEach(function () {
     stubbedPrompt.restore()
   })
 
@@ -51,7 +52,7 @@ describe('heroku certs:generate', function () {
     childProcessStub.restore()
   })
 
-  it('# with certificate prompts emitted if no parts of subject provided', async () => {
+  it('# with certificate prompts emitted if no parts of subject provided', async function () {
     stubbedPromptReturnValue = {owner: 'Heroku', country: 'US', area: 'California', city: 'San Francisco'}
 
     await runCommand(Cmd, [
@@ -85,7 +86,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/C=US/ST=California/L=San Francisco/O=Heroku/CN=example.com'])).to.be.true
   })
 
-  it('# not emitted if any part of subject is specified', async () => {
+  it('# not emitted if any part of subject is specified', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -98,7 +99,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/O=Heroku/CN=example.com'])).to.be.true
   })
 
-  it('# not emitted if --now is specified', async () => {
+  it('# not emitted if --now is specified', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -110,7 +111,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/CN=example.com'])).to.be.true
   })
 
-  it('# not emitted if --subject is specified', async () => {
+  it('# not emitted if --subject is specified', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -122,7 +123,8 @@ describe('heroku certs:generate', function () {
     expect(stdout.output).to.equal('')
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', 'SOMETHING'])).to.be.true
   })
-  it('# without --selfsigned does not request a self-signed certificate', async () => {
+
+  it('# without --selfsigned does not request a self-signed certificate', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -135,7 +137,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/CN=example.com'])).to.be.true
   })
 
-  it('# with --selfsigned does request a self-signed certificate', async () => {
+  it('# with --selfsigned does request a self-signed certificate', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -149,7 +151,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.crt', '-subj', '/CN=example.com', '-x509'])).to.be.true
   })
 
-  it('# suggests next step should be certs:update when domain is known in sni', async () => {
+  it('# suggests next step should be certs:update when domain is known in sni', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',
@@ -162,7 +164,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
   })
 
-  it('# suggests next step should be certs:update when domain is known in ssl', async () => {
+  it('# suggests next step should be certs:update when domain is known in ssl', async function () {
     nock.cleanAll()
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
@@ -179,7 +181,7 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
   })
 
-  it('# key size can be changed using keysize', async () => {
+  it('# key size can be changed using keysize', async function () {
     await runCommand(Cmd, [
       '--app',
       'example',

@@ -78,7 +78,7 @@ describe('ps:type', function () {
     api.done()
   })
 
-  it('switches to performance-l-ram dyno when feature flag is enabled', async () => {
+  it('switches to performance-l-ram dyno when feature flag is enabled', async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload(true))
@@ -147,6 +147,7 @@ describe('ps:type', function () {
     expect(stderr.output).to.include('Scaling dynos on myapp... done\n')
     api.done()
   })
+
   it('switches to standard-1x and standard-2x dynos', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp')
@@ -206,7 +207,7 @@ describe('ps:type', function () {
     api.done()
   })
 
-  it('errors when user requests larger dynos and feature flag is NOT enabled', async () => {
+  it('errors when user requests larger dynos and feature flag is NOT enabled', async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload())
@@ -230,7 +231,7 @@ describe('ps:type', function () {
     expect(stdout.output).to.eq('')
   })
 
-  it('errors when user requests larger dynos and feature flag is NOT enabled when changing all type sizes', async () => {
+  it('errors when user requests larger dynos and feature flag is NOT enabled when changing all type sizes', async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload())
@@ -254,7 +255,7 @@ describe('ps:type', function () {
     expect(stdout.output).to.eq('')
   })
 
-  it("errors when user requests larger dynos and feature flag doesn't exist", async () => {
+  it("errors when user requests larger dynos and feature flag doesn't exist", async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(404, {})

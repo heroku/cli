@@ -1,6 +1,6 @@
 // import {expect, test} from '@oclif/test'
 
-describe('version hook', () => {
+describe('version hook', function () {
   // test
   //   .stderr()
   //   .hook('init', {argv: ['version']})

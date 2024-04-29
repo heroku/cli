@@ -14,7 +14,7 @@ describe('heroku certs:auto:enable', function () {
     nock.cleanAll()
   })
 
-  it('enables acm with domains', async () => {
+  it('enables acm with domains', async function () {
     const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
@@ -45,7 +45,7 @@ describe('heroku certs:auto:enable', function () {
     expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
   })
 
-  it('enables acm with changed domains', async () => {
+  it('enables acm with changed domains', async function () {
     const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
@@ -85,7 +85,7 @@ describe('heroku certs:auto:enable', function () {
     `)
   })
 
-  it('enables acm with no domains', async () => {
+  it('enables acm with no domains', async function () {
     const acmApi = nock('https://api.heroku.com')
       .post('/apps/example/acm', {})
       .reply(200, {acm: true})
@@ -128,7 +128,7 @@ describe('heroku certs:auto:enable', function () {
       sandbox.restore()
     })
 
-    it('waits until all certs are issued and notifies', async () => {
+    it('waits until all certs are issued and notifies', async function () {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
       const acmApi = nock('https://api.heroku.com')
@@ -185,7 +185,7 @@ describe('heroku certs:auto:enable', function () {
       expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
     })
 
-    it('waits until all certs are issued or failed and notifies', async () => {
+    it('waits until all certs are issued or failed and notifies', async function () {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
       const acmApi = nock('https://api.heroku.com')
@@ -237,7 +237,7 @@ describe('heroku certs:auto:enable', function () {
       })
     })
 
-    it('waits until all certs are failed and notifies', async () => {
+    it('waits until all certs are failed and notifies', async function () {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
       const acmApi = nock('https://api.heroku.com')
@@ -289,7 +289,7 @@ describe('heroku certs:auto:enable', function () {
       })
     })
 
-    it('does not wait if all certs are issued when first checked', async () => {
+    it('does not wait if all certs are issued when first checked', async function () {
       const now = new Date().toISOString()
       const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
       const acmApi = nock('https://api.heroku.com')

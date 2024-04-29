@@ -6,7 +6,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
-describe('pg:links', () => {
+describe('pg:links', function () {
   const addon = fixtures.addons['www-db']
   const appName = 'myapp'
   const redisLink = {
@@ -18,11 +18,11 @@ describe('pg:links', () => {
     },
   }
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows links', async () => {
+  it('shows links', async function () {
     nock('https://api.heroku.com')
       .get(`/apps/${appName}/addon-attachments`)
       .reply(200, [{addon}])
@@ -43,7 +43,7 @@ describe('pg:links', () => {
     `))
   })
 
-  it('shows links when args are present', async () => {
+  it('shows links when args are present', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])

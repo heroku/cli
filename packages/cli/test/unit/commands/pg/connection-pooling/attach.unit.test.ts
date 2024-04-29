@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import * as proxyquire from 'proxyquire'
 
-describe('pg:connection-pooling:attach', () => {
+describe('pg:connection-pooling:attach', function () {
   const addon = {
     name: 'postgres-1',
     id: '1234',
@@ -25,7 +25,7 @@ describe('pg:connection-pooling:attach', () => {
   const defaultCredential = 'default'
   const attachmentName = 'CONNECTION_POOL'
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
       .get('/addons/postgres-1')
       .reply(200, addon)
@@ -34,20 +34,20 @@ describe('pg:connection-pooling:attach', () => {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     pg.done()
     api.done()
   })
 
-  context('includes an attachment name', () => {
-    beforeEach(() => {
+  context('includes an attachment name', function () {
+    beforeEach(function () {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
         credential: defaultCredential, name: attachmentName, app: 'myapp',
       }).reply(201, {name: attachmentName})
     })
 
-    it('attaches pgbouncer with attachment name', async () => {
+    it('attaches pgbouncer with attachment name', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -62,14 +62,14 @@ describe('pg:connection-pooling:attach', () => {
     })
   })
 
-  context('base command with no credential or attachment name', () => {
-    beforeEach(() => {
+  context('base command with no credential or attachment name', function () {
+    beforeEach(function () {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
         credential: defaultCredential, app: 'myapp',
       }).reply(201, {name: 'HEROKU_COLOR'})
     })
 
-    it('attaches pgbouncer with default credential', async () => {
+    it('attaches pgbouncer with default credential', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

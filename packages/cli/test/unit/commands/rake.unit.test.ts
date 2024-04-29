@@ -4,7 +4,7 @@ import * as sinon from 'sinon'
 
 import Dyno from '../../../src/lib/run/dyno'
 
-describe('rake', () => {
+describe('rake', function () {
   let dynoOpts: { command: any }
 
   test

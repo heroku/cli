@@ -13,12 +13,12 @@ const assertLineWidths = function (blob: string, lineWidth: number) {
   }
 }
 
-describe('releases', () => {
-  before(() => {
+describe('releases', function () {
+  before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
   })
 
-  afterEach(() => {
+  afterEach(function () {
     process.stdout.isTTY = isTTY
   })
 
@@ -113,7 +113,7 @@ describe('releases', () => {
     },
   }
 
-  it('shows releases', async () => {
+  it('shows releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     const api = nock('https://api.heroku.com:443')
@@ -138,7 +138,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows successful releases', async () => {
+  it('shows successful releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     const api = nock('https://api.heroku.com:443')
@@ -163,7 +163,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows releases in wider terminal', async () => {
+  it('shows releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     const api = nock('https://api.heroku.com:443')
@@ -188,7 +188,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows successful releases in wider terminal', async () => {
+  it('shows successful releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     const api = nock('https://api.heroku.com:443')
@@ -213,7 +213,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows releases in narrow terminal', async () => {
+  it('shows releases in narrow terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 65
     const api = nock('https://api.heroku.com:443')
@@ -238,7 +238,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows pending releases without release phase', async () => {
+  it('shows pending releases without release phase', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     const api = nock('https://api.heroku.com:443')
@@ -263,7 +263,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows pending releases without a slug', async () => {
+  it('shows pending releases without a slug', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     const api = nock('https://api.heroku.com:443')
@@ -284,7 +284,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows releases as json', async () => {
+  it('shows releases as json', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releases)
@@ -300,7 +300,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows message if no releases', async () => {
+  it('shows message if no releases', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [])
@@ -315,7 +315,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows extended info', async () => {
+  it('shows extended info', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
@@ -334,7 +334,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows extended info in wider terminal', async () => {
+  it('shows extended info in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
     const api = nock('https://api.heroku.com:443')
@@ -355,7 +355,7 @@ describe('releases', () => {
     api.done()
   })
 
-  it('shows no current release', async () => {
+  it('shows no current release', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     releases[releases.length - 1].current = false

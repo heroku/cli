@@ -9,7 +9,7 @@ import stripAnsi = require('strip-ansi')
 const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
   const continuousProtectionWarning = heredoc('Logical backups of large databases are likely to fail.')
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
@@ -37,11 +37,11 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
       })
       .reply(201)
   })
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('schedules a backup', async () => {
+  it('schedules a backup', async function () {
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['On']},
     ]}
@@ -56,7 +56,7 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
     `))
   })
 
-  it('warns user that logical backups are error prone if continuous protection is on', async () => {
+  it('warns user that logical backups are error prone if continuous protection is on', async function () {
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['On']},
     ]}
@@ -67,7 +67,7 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
     expect(stripAnsi(stderr.output)).to.include(continuousProtectionWarning)
   })
 
-  it('does not warn user that logical backups are error prone if continuous protection is off', async () => {
+  it('does not warn user that logical backups are error prone if continuous protection is off', async function () {
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['Off']},
     ]}
@@ -79,6 +79,6 @@ const shouldSchedule = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-describe('pg:backups:schedule', () => {
+describe('pg:backups:schedule', function () {
   shouldSchedule((args: string[]) => runCommand(Cmd, args))
 })

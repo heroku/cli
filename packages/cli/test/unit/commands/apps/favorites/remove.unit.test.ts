@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
-describe('apps:favorites:remove', () => {
+describe('apps:favorites:remove', function () {
   test
     .stdout()
     .stderr()

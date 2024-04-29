@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
-describe('webhooks:deliveries', () => {
-  describe('app webhooks', () => {
+describe('webhooks:deliveries', function () {
+  describe('app webhooks', function () {
     test
       .stdout()
       .stderr()
@@ -151,7 +151,7 @@ describe('webhooks:deliveries', () => {
       })
   })
 
-  describe('pipeline webhooks', () => {
+  describe('pipeline webhooks', function () {
     test
       .stdout()
       .stderr()

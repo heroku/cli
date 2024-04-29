@@ -17,11 +17,11 @@ describe('spaces', function () {
     created_at: now.toISOString(),
   }]
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows spaces', async () => {
+  it('shows spaces', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces')
       .reply(200, spaces)
@@ -36,7 +36,7 @@ describe('spaces', function () {
     `)
   })
 
-  it('shows spaces with --json', async () => {
+  it('shows spaces with --json', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces')
       .reply(200, spaces)
@@ -47,7 +47,7 @@ describe('spaces', function () {
     expect(JSON.parse(stdout.output)).to.deep.eq(spaces)
   })
 
-  it('shows spaces scoped by teams', async () => {
+  it('shows spaces scoped by teams', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces')
       .reply(200, spaces.concat([{
@@ -67,7 +67,7 @@ describe('spaces', function () {
     `)
   })
 
-  it('shows spaces team error message', async () => {
+  it('shows spaces team error message', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces')
       .reply(200, spaces)
@@ -82,7 +82,7 @@ describe('spaces', function () {
     api.done()
   })
 
-  it('shows spaces error message', async () => {
+  it('shows spaces error message', async function () {
     const api = nock('https://api.heroku.com')
       .get('/spaces')
       .reply(200, [])

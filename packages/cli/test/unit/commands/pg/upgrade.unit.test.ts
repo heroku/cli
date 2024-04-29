@@ -7,15 +7,15 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
-describe('pg:upgrade', () => {
+describe('pg:upgrade', function () {
   const hobbyAddon = fixtures.addons['www-db']
   const addon = fixtures.addons['dwh-db']
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('refuses to upgrade legacy essential dbs', async () => {
+  it('refuses to upgrade legacy essential dbs', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
@@ -29,7 +29,7 @@ describe('pg:upgrade', () => {
     })
   })
 
-  it('upgrades db', async () => {
+  it('upgrades db', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -54,7 +54,7 @@ describe('pg:upgrade', () => {
     `))
   })
 
-  it('upgrades db with version flag', async () => {
+  it('upgrades db with version flag', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])

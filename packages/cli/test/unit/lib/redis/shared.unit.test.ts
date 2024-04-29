@@ -10,7 +10,7 @@ export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unkn
       nock.cleanAll()
     })
 
-    it('shows an error if an app has no addons', async () => {
+    it('shows an error if an app has no addons', async function () {
       const api = nock('https://api.heroku.com')
         .get('/apps/example/addons').reply(200, [])
 
@@ -29,7 +29,7 @@ export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unkn
       expect(stdout.output).to.eq('')
     })
 
-    it('shows an error if the addon is ambiguous', async () => {
+    it('shows an error if the addon is ambiguous', async function () {
       const api = nock('https://api.heroku.com')
         .get('/apps/example/addons').reply(200, [
           {name: 'redis-haiku-a', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO']},

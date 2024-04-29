@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('sessions:destroy', () => {
+describe('sessions:destroy', function () {
   test
     .stderr()
     .nock('https://api.heroku.com:443', api => {

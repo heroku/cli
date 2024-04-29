@@ -4,10 +4,10 @@ import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
-describe('pg:backups:delete', () => {
+describe('pg:backups:delete', function () {
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     pg = nock('https://api.data.heroku.com')
       .delete('/client/v11/apps/myapp/transfers/3')
       .reply(200, {
@@ -15,12 +15,12 @@ describe('pg:backups:delete', () => {
       })
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     pg.done()
   })
 
-  it('shows URL', async () => {
+  it('shows URL', async function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',

@@ -7,15 +7,15 @@ import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
-describe('pg:credentials:url', () => {
+describe('pg:credentials:url', function () {
   const addon = fixtures.addons['dwh-db']
   const attachments = [fixtures.attachments['acme-inc-dwh::DATABASE']]
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows the correct credentials', async () => {
+  it('shows the correct credentials', async function () {
     const roleInfo = {
       uuid: 'aaaa', name: 'gandalf', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
         {
@@ -50,7 +50,7 @@ describe('pg:credentials:url', () => {
     `))
   })
 
-  it('throws an error when the db is starter plan but the name is specified', async () => {
+  it('throws an error when the db is starter plan but the name is specified', async function () {
     const hobbyAddon = fixtures.addons['www-db']
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
@@ -67,7 +67,7 @@ describe('pg:credentials:url', () => {
     })
   })
 
-  it('shows the credentials when the db is numbered essential plan', async () => {
+  it('shows the credentials when the db is numbered essential plan', async function () {
     const roleInfo = {
       uuid: 'bbbb', name: 'lucy', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
         {
@@ -99,7 +99,7 @@ describe('pg:credentials:url', () => {
     `))
   })
 
-  it('shows the correct credentials with starter plan', async () => {
+  it('shows the correct credentials with starter plan', async function () {
     const hobbyAddon = fixtures.addons['www-db']
     const roleInfo = {
       uuid: null, name: 'default', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [

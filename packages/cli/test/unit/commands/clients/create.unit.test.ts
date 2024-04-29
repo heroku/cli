@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('clients:create', () => {
+describe('clients:create', function () {
   const createResponse = {
     name: 'awesome',
     id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',

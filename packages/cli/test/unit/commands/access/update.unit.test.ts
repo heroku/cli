@@ -8,11 +8,13 @@ import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import stripAnsi = require('strip-ansi')
 
-describe('heroku access:update', () => {
-  context('with a team app with permissions', () => {
-    afterEach(() => nock.cleanAll())
+describe('heroku access:update', function () {
+  context('with a team app with permissions', function () {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
 
-    it('updates the app permissions, view being implicit', async () => {
+    it('updates the app permissions, view being implicit', async function () {
       teamApp()
       appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
       await runCommand(Cmd, [
@@ -29,7 +31,7 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
 `)
     })
 
-    it('updates the app permissions, even specifying view as a permission', async () => {
+    it('updates the app permissions, even specifying view as a permission', async function () {
       teamApp()
       appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
       await runCommand(Cmd, [
@@ -47,9 +49,11 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
     })
   })
 
-  context('with a non team app', () => {
-    afterEach(() => nock.cleanAll())
-    it('returns an error when passing permissions', async () => {
+  context('with a non team app', function () {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('returns an error when passing permissions', async function () {
       personalApp()
       await runCommand(Cmd, [
         '--app',

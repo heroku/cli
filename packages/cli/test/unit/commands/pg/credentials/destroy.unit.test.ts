@@ -7,15 +7,16 @@ import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 
-describe('pg:credentials:destroy', () => {
+describe('pg:credentials:destroy', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
   }
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('destroys the credential', async () => {
+  it('destroys the credential', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -49,7 +50,7 @@ describe('pg:credentials:destroy', () => {
     `))
   })
 
-  it('throws an error when the db is starter plan', async () => {
+  it('throws an error when the db is starter plan', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
     }
@@ -68,7 +69,7 @@ describe('pg:credentials:destroy', () => {
     })
   })
 
-  it('throws an error when the db is numbered essential plan', async () => {
+  it('throws an error when the db is numbered essential plan', async function () {
     const essentialAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
@@ -86,7 +87,7 @@ describe('pg:credentials:destroy', () => {
     })
   })
 
-  it('throws an error when the credential is still used for an attachment', async () => {
+  it('throws an error when the credential is still used for an attachment', async function () {
     const attachments = [
       {
         app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
@@ -111,7 +112,7 @@ describe('pg:credentials:destroy', () => {
     })
   })
 
-  it('only mentions an app with multiple attachments once', async () => {
+  it('only mentions an app with multiple attachments once', async function () {
     const attachments = [
       {
         app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],

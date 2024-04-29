@@ -14,7 +14,7 @@ describe('heroku certs:remove', function () {
     nock.cleanAll()
   })
 
-  it('# deletes the endpoint', async () => {
+  it('# deletes the endpoint', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
@@ -36,7 +36,7 @@ describe('heroku certs:remove', function () {
     `)
   })
 
-  it('# requires confirmation if wrong endpoint on app', async () => {
+  it('# requires confirmation if wrong endpoint on app', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])

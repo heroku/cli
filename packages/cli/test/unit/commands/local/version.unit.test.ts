@@ -9,7 +9,7 @@ let existsSyncSpy: any
 const extensionRoot = path.join(__dirname, '..', '..', '..', '..', 'src', 'lib', 'local')
 const jsExtensionPath = path.join(extensionRoot, 'run-foreman.js')
 
-describe('local:version', () => {
+describe('local:version', function () {
   test
     .stub(foreman, 'fork', function () {
     // eslint-disable-next-line prefer-rest-params

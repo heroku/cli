@@ -13,7 +13,7 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
   const attachment = {addon}
   const appName = addon.app?.name || 'myapp'
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .get(`/apps/${appName}/addons`)
       .reply(200, [addon])
@@ -30,11 +30,11 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
       .delete(`/client/v11/databases/${addon.id}/transfer-schedules/100-001`)
       .reply(200)
   })
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('unschedules a backup', async () => {
+  it('unschedules a backup', async function () {
     await cmdRun(['--app', appName])
     expectOutput(stdout.output, '')
     expectOutput(stderr.output, heredoc(`
@@ -44,16 +44,16 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-describe('pg:backups:unschedule', () => {
+describe('pg:backups:unschedule', function () {
   shouldUnschedule((args: string[]) => runCommand(Cmd, args))
 })
 
-describe('pg:backups:unschedule error state', () => {
+describe('pg:backups:unschedule error state', function () {
   const addon = fixtures.addons['www-db']
   const attachment = {addon}
   const appName = addon.app?.name || 'myapp'
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .get(`/apps/${appName}/addons`)
       .reply(200, [addon])
@@ -77,11 +77,12 @@ describe('pg:backups:unschedule error state', () => {
         },
       ])
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('errors when multiple schedules are returned from API', async () => {
+  it('errors when multiple schedules are returned from API', async function () {
     await runCommand(Cmd, ['--app', appName])
       .catch(error => expect(stripAnsi(error.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: DATABASE_URL, DATABASE_URL2`))
   })

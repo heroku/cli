@@ -83,6 +83,7 @@ describe('heroku certs', function () {
       tokyo-1050 *.example.org  2013-08-01 21:34 UTC False   SNI  0
     `))
   })
+
   it('# shows certs with common names stacked and just stable cname matches', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')

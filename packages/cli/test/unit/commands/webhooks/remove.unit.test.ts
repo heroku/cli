@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('webhooks:remove', () => {
+describe('webhooks:remove', function () {
   test
     .stderr()
     .stdout()

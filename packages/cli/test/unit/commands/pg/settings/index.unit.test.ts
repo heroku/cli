@@ -5,11 +5,11 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/index'
 
-describe('pg:settings', () => {
+describe('pg:settings', function () {
   let api: nock.Scope
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     const addon = {
       id: 1,
       name: 'postgres-1',
@@ -26,18 +26,13 @@ describe('pg:settings', () => {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
-    api.done()
-    pg.done()
-  })
-
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     api.done()
     pg.done()
   })
 
-  it('shows settings', async () => {
+  it('shows settings', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_statement: {value: 'none'}})
 
     await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])

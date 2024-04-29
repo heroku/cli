@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('pipelines:remove', () => {
+describe('pipelines:remove', function () {
   const app = 'example'
   const id = '0123'
 

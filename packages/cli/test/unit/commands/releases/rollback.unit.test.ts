@@ -6,7 +6,9 @@ import {expect} from 'chai'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
 describe('releases:rollback', function () {
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
   it('rolls back the release', async function () {
     const api = nock('https://api.heroku.com:443')

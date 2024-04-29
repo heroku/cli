@@ -14,12 +14,13 @@ const errorOnPrompt = () => {
   throw new Error('should not prompt')
 }
 
-describe('keys:add', () => {
-  beforeEach(() => {
+describe('keys:add', function () {
+  beforeEach(function () {
     rimraf.sync(home)
     fs.mkdirpSync(home)
   })
-  afterEach(() => {
+
+  afterEach(function () {
     rimraf.sync(home)
   })
 

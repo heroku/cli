@@ -8,11 +8,11 @@ import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import stripAnsi = require('strip-ansi')
 
-describe('pg:promote when argument is database', () => {
+describe('pg:promote when argument is database', function () {
   const addon = fixtures.addons['dwh-db']
   const pgbouncerAddonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -25,11 +25,11 @@ describe('pg:promote when argument is database', () => {
       .reply(200, {following: null})
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachment', async () => {
+  it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachment', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments').reply(200, [
         {
@@ -81,7 +81,7 @@ describe('pg:promote when argument is database', () => {
     `))
   })
 
-  it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', async () => {
+  it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -119,7 +119,7 @@ describe('pg:promote when argument is database', () => {
     `))
   })
 
-  it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', async () => {
+  it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -157,7 +157,7 @@ describe('pg:promote when argument is database', () => {
     `))
   })
 
-  it('promotes the db and creates another attachment if current DATABASE does not have another', async () => {
+  it('promotes the db and creates another attachment if current DATABASE does not have another', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -192,7 +192,7 @@ describe('pg:promote when argument is database', () => {
     `))
   })
 
-  it('promotes the db and does not create another attachment if current DATABASE has another', async () => {
+  it('promotes the db and does not create another attachment if current DATABASE has another', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -229,7 +229,7 @@ describe('pg:promote when argument is database', () => {
     `))
   })
 
-  it('does not promote the db if is already is DATABASE', async () => {
+  it('does not promote the db if is already is DATABASE', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -247,10 +247,10 @@ describe('pg:promote when argument is database', () => {
   })
 })
 
-describe('pg:promote when argument is a credential attachment', () => {
+describe('pg:promote when argument is a credential attachment', function () {
   const addon = fixtures.addons['dwh-db']
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
@@ -267,11 +267,11 @@ describe('pg:promote when argument is a credential attachment', () => {
       .reply(200, {following: null})
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('promotes the credential and creates another attachment if current DATABASE does not have another', async () => {
+  it('promotes the credential and creates another attachment if current DATABASE does not have another', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -311,7 +311,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     `))
   })
 
-  it('promotes the credential and creates another attachment if current DATABASE does not have another and current DATABASE is a credential', async () => {
+  it('promotes the credential and creates another attachment if current DATABASE does not have another and current DATABASE is a credential', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -355,7 +355,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     `))
   })
 
-  it('promotes the credential and does not create another attachment if current DATABASE has another', async () => {
+  it('promotes the credential and does not create another attachment if current DATABASE has another', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -391,7 +391,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     `))
   })
 
-  it('promotes the credential if the current promoted database is for the same addon, but the default credential', async () => {
+  it('promotes the credential if the current promoted database is for the same addon, but the default credential', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -430,7 +430,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     `))
   })
 
-  it('promotes the credential if the current promoted database is for the same addon, but another credential', async () => {
+  it('promotes the credential if the current promoted database is for the same addon, but another credential', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -470,7 +470,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     `))
   })
 
-  it('does not promote the credential if it already is DATABASE', async () => {
+  it('does not promote the credential if it already is DATABASE', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -499,10 +499,10 @@ describe('pg:promote when argument is a credential attachment', () => {
   })
 })
 
-describe('pg:promote when release phase is present', () => {
+describe('pg:promote when release phase is present', function () {
   const addon = fixtures.addons['dwh-db']
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/formation')
       .reply(200, [{type: 'release'}])
@@ -546,11 +546,12 @@ describe('pg:promote when release phase is present', () => {
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: null})
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('checks release phase', async () => {
+  it('checks release phase', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
@@ -574,7 +575,7 @@ describe('pg:promote when release phase is present', () => {
     `))
   })
 
-  it('checks release phase for detach failure', async () => {
+  it('checks release phase for detach failure', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
@@ -598,7 +599,7 @@ describe('pg:promote when release phase is present', () => {
     `))
   })
 
-  it('checks release phase for attach failure', async () => {
+  it('checks release phase for attach failure', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
@@ -622,7 +623,7 @@ describe('pg:promote when release phase is present', () => {
     `))
   })
 
-  it('checks release phase for attach failure and detach success', async () => {
+  it('checks release phase for attach failure and detach success', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
@@ -646,7 +647,7 @@ describe('pg:promote when release phase is present', () => {
     `))
   })
 
-  it('checks release phase for attach failure and detach success', () => {
+  it('errors when there are no releases', function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [])
@@ -658,10 +659,10 @@ describe('pg:promote when release phase is present', () => {
   })
 })
 
-describe('pg:promote when database is not available or force flag is present', () => {
+describe('pg:promote when database is not available or force flag is present', function () {
   const addon = fixtures.addons['dwh-db']
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -671,11 +672,12 @@ describe('pg:promote when database is not available or force flag is present', (
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: null})
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('warns user if database is unavailable', async () => {
+  it('warns user if database is unavailable', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -709,7 +711,7 @@ describe('pg:promote when database is not available or force flag is present', (
     })
   })
 
-  it('promotes database in unavailable state if --force flag is present', async () => {
+  it('promotes database in unavailable state if --force flag is present', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -749,7 +751,7 @@ describe('pg:promote when database is not available or force flag is present', (
     `))
   })
 
-  it('promotes database in available state if --force flag is present', async () => {
+  it('promotes database in available state if --force flag is present', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
@@ -790,10 +792,10 @@ describe('pg:promote when database is not available or force flag is present', (
   })
 })
 
-describe('pg:promote when promoted database is a follower', () => {
+describe('pg:promote when promoted database is a follower', function () {
   const addon = fixtures.addons['dwh-db']
 
-  beforeEach(() => {
+  beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -803,11 +805,12 @@ describe('pg:promote when promoted database is a follower', () => {
       .get(`/client/v11/databases/${addon.id}/wait_status`)
       .reply(200, {'waiting?': false, message: 'available'})
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('warns user if database is a follower', async () => {
+  it('warns user if database is a follower', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [

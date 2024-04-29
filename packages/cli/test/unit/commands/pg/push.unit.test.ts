@@ -8,7 +8,7 @@ import sinon = require('sinon')
 import * as psql from '../../../../src/lib/pg/psql'
 import * as childProcess from 'node:child_process'
 
-describe('pg:push', () => {
+describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const env = process.env
   const emptyResponse = '00'
@@ -34,7 +34,7 @@ describe('pg:push', () => {
     func(0)
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     db = {
       user: 'jeff',
       password: 'pass',
@@ -65,7 +65,7 @@ describe('pg:push', () => {
     spawnStub = sinon.stub(childProcess, 'spawn')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     tunnelStub.reset()
     mathRandomStub.restore()
     psqlStub.restore()
