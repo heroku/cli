@@ -37,7 +37,7 @@ let release = async function (context, heroku) {
   }
 
   let app = await heroku.get(`/apps/${context.app}`)
-  helpers.ensureContainerStack(app)
+  helpers.ensureContainerStack(app, 'release')
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
 
