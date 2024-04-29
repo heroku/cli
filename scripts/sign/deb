@@ -19,4 +19,4 @@ sha256sum *Release*
 # echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /build/dist/apt/release.key
 #
 mkdir -p /home/runner/work/cli/cli/packages/cli/dist/apt
-echo $HEROKU_DEB_PUBLIC_KEY | base64 --decode > /home/runner/work/cli/cli/packages/cli/dist/apt/release.key
+echo $HEROKU_DEB_PUBLIC_KEY | base64 -d > /home/runner/work/cli/cli/packages/cli/dist/apt/release.key
