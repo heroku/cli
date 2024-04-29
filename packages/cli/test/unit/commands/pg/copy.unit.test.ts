@@ -254,7 +254,7 @@ describe('pg:copy', function () {
         'myapp',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
-      ])).to.be.rejectedWith(Error, err)
+      ])).to.throw(Error, err)
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
     })

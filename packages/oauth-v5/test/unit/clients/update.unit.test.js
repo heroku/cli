@@ -41,6 +41,6 @@ describe('clients:update', () => {
 
   it('does nothing with no changes', () => {
     return expect(cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {}}))
-      .to.be.rejectedWith(Error, 'No changes provided.')
+      .to.throw(Error, 'No changes provided.')
   })
 })

@@ -128,7 +128,7 @@ describe('pg:credentials:rotate', function () {
         'my_role',
         '--confirm',
         'myapp',
-      ])).to.be.rejectedWith(Error, err)
+      ])).to.throw(Error, err)
     })
 
     it('requires app confirmation for rotating all roles with --all', async function () {
@@ -224,7 +224,7 @@ describe('pg:credentials:rotate', function () {
       'myapp',
       '--name',
       'jeff',
-    ])).to.be.rejectedWith(Error, err)
+    ])).to.throw(Error, err)
   })
 
   it('rotates credentials when the db is numbered essential plan', async function () {

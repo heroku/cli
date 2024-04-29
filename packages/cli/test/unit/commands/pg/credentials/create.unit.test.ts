@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
-import nock = require('nock')
+import * as nock from 'nock'
 import Cmd from '../../../../../src/commands/pg/credentials/create'
 
 describe('pg:credentials:create', function () {
@@ -58,7 +58,7 @@ describe('pg:credentials:create', function () {
       'myapp',
       '--name',
       'jeff',
-    ])).to.be.rejectedWith(Error, err)
+    ])).to.throw(Error, err)
   })
 
   it('throws an error when the db is essential plan', function () {
@@ -77,6 +77,6 @@ describe('pg:credentials:create', function () {
       'myapp',
       '--name',
       'jeff',
-    ])).to.be.rejectedWith(Error, err)
+    ])).to.throw(Error, err)
   })
 })

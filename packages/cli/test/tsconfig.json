@@ -4,9 +4,6 @@
   "compilerOptions": {
     "sourceMap": true,
     "rootDirs": ["./", "../src"],
-    "types": [
-      "mocha"
-    ]
   },
   "include": [
     "./**/*",
