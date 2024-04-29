@@ -1,15 +1,20 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import heredoc from 'tsheredoc'
 
 export default class Transfer extends Command {
-  static topic = 'spaces';
-  static description = 'transfer a space to another team';
-  static help = 'Example:\n\n    $ heroku spaces:transfer --space=space-name --team=team-name\n    Transferring space-name to team-name... done\n';
+  static topic = 'spaces'
+  static description = 'transfer a space to another team'
+  static examples = [heredoc(`
+  $ heroku spaces:transfer --space=space-name --team=team-name
+  Transferring space-name to team-name... done
+  `)]
+
   static flags = {
     space: flags.string({required: true, description: 'name of space'}),
     team: flags.string({required: true, description: 'desired owner of space'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Transfer)
@@ -22,8 +27,8 @@ export default class Transfer extends Command {
     } catch (error) {
       const {body: {message}} = error as {body: {message: string}}
       ux.error(message)
+    } finally {
+      ux.action.stop()
     }
-
-    ux.action.stop()
   }
 }
