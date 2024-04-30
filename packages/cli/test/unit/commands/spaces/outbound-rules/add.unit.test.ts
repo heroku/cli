@@ -39,10 +39,9 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
-    // return cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '80', protocol: 'tcp'}})
-    // .then(() => api.done())
   })
 
   it('support ranges', async function () {
@@ -75,10 +74,9 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
-    // return cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '80-100', protocol: 'tcp'}})
-    //   .then(() => api.done())
   })
 
   it('handles strange port range case of 80-', async function () {
@@ -111,7 +109,8 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
   })
 
@@ -136,7 +135,6 @@ describe('outbound-rules:add', function () {
     ]).catch((error: any) => {
       expect(error.message).to.contain('Specified --port range seems incorrect.')
     })
-    // return chai.assert.isRejected(cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '80-100-200', protocol: 'tcp'}}), /^Specified --port range seems incorrect.$/)
   })
 
   it('supports -1 as port', async function () {
@@ -169,10 +167,9 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
-    // return cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '-1', protocol: 'tcp'}})
-    // .then(() => api.done())
   })
 
   it('supports any as port', async function () {
@@ -205,10 +202,9 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
-    // return cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: 'any', protocol: 'tcp'}})
-    // .then(() => api.done())
   })
 
   it('correct supports any as port for ICMP', async function () {
@@ -241,9 +237,8 @@ describe('outbound-rules:add', function () {
     expectOutput(stripAnsi(stderr.output), heredoc(`
       Adding rule to the Outbound Rules of my-space...
       Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this Private Space
+       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
+       ›   Private Space
     `))
-    // return cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: 'any', protocol: 'icmp'}})
-    //   .then(() => api.done())
   })
 })
