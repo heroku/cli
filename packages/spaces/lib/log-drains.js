@@ -8,19 +8,7 @@ module.exports = function (heroku) {
     })
   }
 
-  function putLogDrain(space, url) {
-    return heroku.request({
-      method: 'PUT',
-      path: `/spaces/${space}/log-drain`,
-      body: {
-        url: url,
-      },
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-    })
-  }
-
   return {
     getLogDrain,
-    putLogDrain,
   }
 }
