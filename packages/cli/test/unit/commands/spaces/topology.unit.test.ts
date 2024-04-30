@@ -6,12 +6,21 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import {expect} from 'chai'
+import type {SpaceTopology} from '../../../../src/commands/spaces/topology'
+import {App} from '@heroku-cli/schema'
 
 describe('spaces:topology', function () {
-  const topo1 = fixtures.topologies['topology-one']
-  const topo2 = fixtures.topologies['topology-two']
-  const topo3 = fixtures.topologies['topology-three']
-  const app = fixtures.apps.www
+  let topo1: SpaceTopology
+  let topo2: SpaceTopology
+  let topo3: SpaceTopology
+  let app: App
+
+  beforeEach(function () {
+    topo1 = fixtures.topologies['topology-one']
+    topo2 = fixtures.topologies['topology-two']
+    topo3 = fixtures.topologies['topology-three']
+    app = fixtures.apps.www
+  })
 
   it('shows space topology', async function () {
     nock('https://api.heroku.com')

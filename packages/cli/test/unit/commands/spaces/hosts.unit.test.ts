@@ -24,7 +24,11 @@ describe('spaces:hosts', function () {
   ]
 
   it('lists space hosts', async function () {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {
+      reqheaders: {
+        Accept: 'application/vnd.heroku+json; version=3.dogwood',
+      },
+    })
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
     await runCommand(Cmd, [
@@ -42,7 +46,11 @@ describe('spaces:hosts', function () {
   })
 
   it('shows hosts:info --json', async function () {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {
+      reqheaders: {
+        Accept: 'application/vnd.heroku+json; version=3.dogwood',
+      },
+    })
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
 
