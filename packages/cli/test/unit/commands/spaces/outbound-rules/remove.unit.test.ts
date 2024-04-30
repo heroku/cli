@@ -1,15 +1,12 @@
-'use strict'
-/* globals beforeEach */
-
-let nock = require('nock')
-let cmd = require('../../../../commands/outbound-rules/remove')
-let cli = require('heroku-cli-util')
+import {expect} from '@oclif/test'
+import * as nock from 'nock'
+import {stdout} from 'stdout-stderr'
+import runCommand from '../../../../helpers/runCommand'
+import Cmd from '../../../../../src/commands/spaces/outbound-rules/remove'
 
 describe('outbound-rules:remove', function () {
-  beforeEach(() => cli.mockConsole())
-
-  it('removes a rule entry from the outbound rules', function () {
-    let api = nock('https://api.heroku.com:443')
+  it('removes a rule entry from the outbound rules', async function () {
+    const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, {
         created_by: 'dickeyxxx',
@@ -26,7 +23,8 @@ describe('outbound-rules:remove', function () {
         ],
       })
       .reply(200, {rules: []})
-    return cmd.run({args: {ruleNumber: 2}, flags: {space: 'my-space', confirm: 'my-space'}})
-      .then(() => api.done())
+    await runCommand(Cmd, ['2', '--space', 'my-space', '--confirm', 'my-space'])
+    api.done()
+    expect(stdout.output).to.eql('Removed Rule 2 from Outbound Rules on my-space\n')
   })
 })
