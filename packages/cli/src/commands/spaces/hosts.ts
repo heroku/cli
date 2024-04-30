@@ -27,7 +27,10 @@ export default class Hosts extends Command {
       `))
     }
 
-    const {body: hosts} = await this.heroku.get<Host[]>(`/spaces/${spaceName}/hosts`)
+    const {body: hosts} = await this.heroku.get<Host[]>(
+      `/spaces/${spaceName}/hosts`,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+    )
     if (flags.json)
       displayHostsAsJSON(hosts)
     else
