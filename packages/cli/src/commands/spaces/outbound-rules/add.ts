@@ -5,9 +5,6 @@ import heredoc from 'tsheredoc'
 import {parsePorts} from '../../../lib/spaces/outbound-rules'
 import * as Heroku from '@heroku-cli/schema'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
-
-// let cli = require('heroku-cli-util')
-// const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
 import {ProtocolCompletion} from '../../../lib/autocomplete/completions'
 
 export default class Add extends Command {
@@ -21,21 +18,20 @@ export default class Add extends Command {
   static examples = [
     heredoc(`
       $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80
-      Added 192.168.0.1/24 to the outbound rules on my-space
+      Adding rule to the Outbound Rules of my-space... done
     `),
     heredoc(`
       # with port range:
       $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100
-      Added 192.168.0.1/24 to the outbound rules on my-space
+      Adding rule to the Outbound Rules of my-space... done
     `),
     heredoc(`
       # opening up everything
       $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
-      Added 0.0.0.0/0 to the outbound rules on my-space
+      Adding rule to the Outbound Rules of my-space... done
     `),
   ]
 
-  // static help = '\nThe destination flag uses CIDR notation.\n\n Example:\n\n    $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80\n    Added 192.168.0.1/24 to the outbound rules on my-space\n\n Example with port range:\n\n    $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100\n    Added 192.168.0.1/24 to the outbound rules on my-space\n\n Example opening up everything\n\n    $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any\n    Added 0.0.0.0/0 to the outbound rules on my-space\n\nICMP Rules\nThe ICMP protocol has types, not ports, but the underlying systems treat them as the same. For this reason,\nwhen you want to allow ICMP traffic you will use the --port flag to specify the ICMP types you want to\nallow. ICMP types are numbered, 0-255.\n  ';
   static hidden = true
   static aliases = ['outbound-rules:add']
   static flags = {
@@ -60,8 +56,7 @@ export default class Add extends Command {
     }),
   }
 
-  static args = {}
-  public async run(): Promise<void> {
+  public async runF(): Promise<void> {
     const {flags} = await this.parse(Add)
     const {space, dest, protocol, port} = flags
 
