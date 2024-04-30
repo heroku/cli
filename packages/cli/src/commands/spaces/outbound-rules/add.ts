@@ -13,6 +13,11 @@ export default class Add extends Command {
     Add outbound rules to a Private Space
 
     The destination flag uses CIDR notation.
+
+    ICMP Rules
+    The ICMP protocol has types, not ports, but the underlying systems treat them as the same. For this reason,
+    when you want to allow ICMP traffic you will use the --port flag to specify the ICMP types you want to
+    allow. ICMP types are numbered, 0-255.
   `)
 
   static examples = [

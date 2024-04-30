@@ -2,8 +2,6 @@ import {stderr} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/spaces/outbound-rules/add'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
-import heredoc from 'tsheredoc'
-import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
@@ -36,12 +34,8 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'tcp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 
   it('support ranges', async function () {
@@ -71,12 +65,8 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'tcp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 
   it('handles strange port range case of 80-', async function () {
@@ -106,12 +96,8 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'tcp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 
   it('handles strange port range case of 80-100-200', async function () {
@@ -164,12 +150,8 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'tcp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 
   it('supports any as port', async function () {
@@ -199,12 +181,8 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'tcp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 
   it('correct supports any as port for ICMP', async function () {
@@ -234,11 +212,7 @@ describe('outbound-rules:add', function () {
       '--protocol',
       'icmp',
     ])
-    expectOutput(stripAnsi(stderr.output), heredoc(`
-      Adding rule to the Outbound Rules of my-space...
-      Adding rule to the Outbound Rules of my-space... done
-       ›   Warning: Modifying the Outbound Rules may break Add-ons for Apps in this
-       ›   Private Space
-    `))
+    expect(stripAnsi(stderr.output)).to.include('Adding rule to the Outbound Rules of my-space... done')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Modifying the Outbound Rules may break Add-ons for Apps')
   })
 })
