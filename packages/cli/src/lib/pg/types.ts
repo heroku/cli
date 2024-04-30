@@ -82,8 +82,6 @@ type ServiceInfo =
   | 'Maintenance window'
   | 'Infrastructure'
   | 'Warning'
-  | 'Billing App'
-  | 'Add-on'
 
 export type PgDatabaseService = {
   addon_id: string
@@ -125,21 +123,31 @@ export type PgDatabaseService = {
     name: ServiceInfo
     values: string[]
   }>
-  configVars: string[]
-}
-
-export type TenantInfoNames = 'Plan' | 'Status' | 'Connections' | 'PG Version' | 'Created' | 'Data Size' | 'Tables' | 'Fork/Follow'
-  | 'Rollback' | 'Continuous Protection' | 'Billing App' | 'Add-on'
-
-export type TenantInfo = {
-  name: TenantInfoNames
-  values: string[]
-  resolve_db_name?: boolean
 }
 
 export type PgStatus = {
   'waiting?': boolean
   message: string
+}
+
+type TenantInfoNames =
+  'Plan'
+  | 'Status'
+  | 'Connections'
+  | 'PG Version'
+  | 'Created'
+  | 'Data Size'
+  | 'Tables'
+  | 'Fork/Follow'
+  | 'Rollback'
+  | 'Continuous Protection'
+  | 'Billing App'
+  | 'Add-on'
+
+export type TenantInfo = {
+  name: TenantInfoNames
+  values: string[]
+  resolve_db_name?: boolean
 }
 
 export type PgDatabaseTenant = {
@@ -220,3 +228,81 @@ export type Setting<T> = {
   default: T
 }
 export type SettingsResponse = Record<SettingKey, Setting<unknown>>
+
+export type PGDiagnoseResponse = {
+  id: string,
+  app: string,
+  database: string,
+  created_at: string,
+  checks: [
+    PGDiagnoseCheck<ConnCountResult>,
+    PGDiagnoseCheck<QueriesResult>,
+    PGDiagnoseCheck<QueriesResult>,
+    PGDiagnoseCheck<UnusedIndexesResult>,
+    PGDiagnoseCheck<BloatResult>,
+    PGDiagnoseCheck<HitRateResult>,
+    PGDiagnoseCheck<BlockingResult>,
+  ],
+}
+
+export type PGDiagnoseCheck<T extends PGDiagnoseResult = PGDiagnoseResult> = {
+  name: string,
+  status: 'red' | 'yellow' | 'green',
+  results: T[]
+}
+export type PGDiagnoseResult =
+  ConnCountResult
+  | QueriesResult
+  | UnusedIndexesResult
+  | BloatResult
+  | HitRateResult
+  | BlockingResult
+export type ConnCountResult = {
+  count: number
+}
+
+export type QueriesResult = {
+  pid: number,
+  duration: string,
+  query: string,
+}
+
+export type UnusedIndexesResult = {
+  reason: string,
+  index: string,
+  index_scan_pct: string,
+  scans_per_write: string,
+  index_size: string,
+  table_size: string,
+}
+
+export type BloatResult = {
+  type: string,
+  object: string,
+  bloat: number,
+  waste: string,
+}
+
+export type HitRateResult = {
+  name: string,
+  ratio: number,
+}
+
+export type BlockingResult = {
+  blocked_pid: number,
+  blocking_statement: string,
+  blocking_duration: string,
+  blocking_pid: number,
+  blocked_statement: string,
+  blocked_duration: string,
+}
+
+export type PGDiagnoseRequest = {
+  url: string,
+  plan: string,
+  app: string,
+  database: string,
+  metrics?: unknown[],
+  burst_data_present?: boolean,
+  burst_status?: string,
+}
