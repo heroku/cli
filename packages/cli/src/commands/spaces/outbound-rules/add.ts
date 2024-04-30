@@ -56,7 +56,7 @@ export default class Add extends Command {
     }),
   }
 
-  public async runF(): Promise<void> {
+  public async run(): Promise<void> {
     const {flags} = await this.parse(Add)
     const {space, dest, protocol, port} = flags
 
