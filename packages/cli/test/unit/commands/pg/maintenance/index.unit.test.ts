@@ -5,14 +5,14 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
-describe('pg:maintenance', () => {
+describe('pg:maintenance', function () {
   const addon = fixtures.addons['dwh-db']
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows maintenance', async () => {
+  it('shows maintenance', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])

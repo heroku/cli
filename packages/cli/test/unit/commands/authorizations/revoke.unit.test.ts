@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('authorizations:revoke', () => {
+describe('authorizations:revoke', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
   test
@@ -15,7 +15,7 @@ describe('authorizations:revoke', () => {
       )
     })
 
-  context('without an ID argument', () => {
+  context('without an ID argument', function () {
     test
       .command(['authorizations:revoke'])
       .catch(error => expect(error.message).to.equal(

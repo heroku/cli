@@ -29,7 +29,7 @@ const errors = {
 
 const APP = 'myapp'
 
-describe('apps:errors', () => {
+describe('apps:errors', function () {
   test
     .stdout()
     .stderr()

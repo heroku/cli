@@ -21,7 +21,7 @@ MockOut.prototype._write = function (d: any) {
   this.data.push(d)
 }
 
-describe('streaming', () => {
+describe('streaming', function () {
   let clock: ReturnType<typeof lolex.install>
 
   beforeEach(function () {
@@ -35,7 +35,7 @@ describe('streaming', () => {
     clock.uninstall()
   })
 
-  it('streams data', () => {
+  it('streams data', function () {
     const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
@@ -46,7 +46,7 @@ describe('streaming', () => {
       .then(() => api.done())
   })
 
-  it('retries a missing stream', () => {
+  it('retries a missing stream', function () {
     const ws = new (MockOut as any)()
     let attempts = 0
 
@@ -68,7 +68,7 @@ describe('streaming', () => {
       .then(() => api.done())
   })
 
-  it('errors on too many retries', async () => {
+  it('errors on too many retries', async function () {
     const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
@@ -79,7 +79,7 @@ describe('streaming', () => {
     api.done()
   })
 
-  it('does not retry on non-404 errors', async () => {
+  it('does not retry on non-404 errors', async function () {
     const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')

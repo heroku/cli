@@ -5,8 +5,8 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-describe('container removal', () => {
-  it('removes one container', async () => {
+describe('container removal', function () {
+  it('removes one container', async function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'}})
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
@@ -21,7 +21,8 @@ Removing container web for ⬢ testapp...
 Removing container web for ⬢ testapp... done
 `)
   })
-  it('removes two containers', async () => {
+
+  it('removes two containers', async function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'}})
       .patch('/apps/testapp/formation/web')
       .reply(200, {})
@@ -42,7 +43,7 @@ Removing container worker for ⬢ testapp... done
 `)
   })
 
-  it('requires a container to be specified', async () => {
+  it('requires a container to be specified', async function () {
     await runCommand(Cmd, [
       '--app',
       'testapp',

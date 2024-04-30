@@ -6,27 +6,27 @@ import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
-describe('pg:links:create', () => {
+describe('pg:links:create', function () {
   let api: nock.Scope
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     api.done()
     pg.done()
   })
 
-  describe('on an essential database', () => {
+  describe('on an essential database', function () {
     const addon = {
       id: 2, name: 'postgres-1', plan: {name: 'heroku-postgresql:basic'},
     }
 
-    it('errors when attempting to create a link', async () => {
+    it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
         app: 'myapp', addon_attachment: 'heroku-postgres', addon_service: 'heroku-postgresql',
       }).reply(200, [{addon}])
@@ -52,12 +52,12 @@ describe('pg:links:create', () => {
     })
   })
 
-  describe('on a production database', () => {
+  describe('on a production database', function () {
     const addon = {
       id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
     }
 
-    it('errors when attempting to create a link', async () => {
+    it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'heroku-postgres',

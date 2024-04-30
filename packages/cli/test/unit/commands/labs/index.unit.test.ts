@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('labs', () => {
+describe('labs', function () {
   test
     .stdout()
     .stderr()

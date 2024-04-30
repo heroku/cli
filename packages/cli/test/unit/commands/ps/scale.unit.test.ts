@@ -7,7 +7,7 @@ import stripAnsi = require('strip-ansi')
 import heredoc from 'tsheredoc'
 import {CLIError} from '@oclif/core/lib/errors'
 
-describe('ps:scale', () => {
+describe('ps:scale', function () {
   // will remove this flag once we have
   // successfully launched larger dyno sizes
   function featureFlagPayload(isEnabled = false) {
@@ -16,9 +16,11 @@ describe('ps:scale', () => {
     }
   }
 
-  afterEach(() => nock.cleanAll())
+  afterEach(function () {
+    return nock.cleanAll()
+  })
 
-  it('shows formation with no args', async () => {
+  it('shows formation with no args', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
@@ -35,7 +37,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('scales up a new large dyno size if feature flag is enabled', async () => {
+  it('scales up a new large dyno size if feature flag is enabled', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload(true))
@@ -59,7 +61,7 @@ describe('ps:scale', () => {
     `)
   })
 
-  it('shows formation with shield dynos for apps in a shielded private space', async () => {
+  it('shows formation with shield dynos for apps in a shielded private space', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [{type: 'web', quantity: 1, size: 'Private-L'}, {type: 'worker', quantity: 2, size: 'Private-M'}])
@@ -76,7 +78,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('errors with no process types', async () => {
+  it('errors with no process types', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
       .reply(200, [])
@@ -97,7 +99,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('scales web=1 worker=2', async () => {
+  it('scales web=1 worker=2', async function () {
     const api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1'}, {type: 'worker', quantity: '2'}]})
       .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
@@ -116,7 +118,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('scales up a shield dyno if the app is in a shielded private space', async () => {
+  it('scales up a shield dyno if the app is in a shielded private space', async function () {
     const api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1', size: 'Private-L'}]})
       .reply(200, [{type: 'web', quantity: 1, size: 'Private-L'}])
@@ -134,7 +136,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('scales web-1', async () => {
+  it('scales web-1', async function () {
     const api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '+1'}]})
       .reply(200, [{type: 'web', quantity: 2, size: 'Free'}])
@@ -152,7 +154,7 @@ describe('ps:scale', () => {
     api.done()
   })
 
-  it('errors if user attempts to scale up using new larger dyno size and feature flag is NOT enabled', async () => {
+  it('errors if user attempts to scale up using new larger dyno size and feature flag is NOT enabled', async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(200, featureFlagPayload())
@@ -175,7 +177,7 @@ describe('ps:scale', () => {
     expect(stdout.output).to.eq('')
   })
 
-  it("errors if user attempts to scale up using new larger dyno size and feature flag doesn't exist", async () => {
+  it("errors if user attempts to scale up using new larger dyno size and feature flag doesn't exist", async function () {
     const api = nock('https://api.heroku.com')
       .get('/account/features/frontend-larger-dynos')
       .reply(404, {})

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('domains:wait', () => {
+describe('domains:wait', function () {
   test
     .stderr()
     .nock('https://api.heroku.com', api => api

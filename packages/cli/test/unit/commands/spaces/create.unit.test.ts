@@ -9,11 +9,11 @@ describe('spaces:create', function () {
   const now = new Date()
   const features = ['one', 'two']
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('creates a Standard space', async () => {
+  it('creates a Standard space', async function () {
     const api = nock('https://api.heroku.com')
       .post('/spaces', {
         name: 'my-space',
@@ -55,7 +55,7 @@ describe('spaces:create', function () {
     `)
   })
 
-  it('shows Standard Private Space Add-on cost warning', async () => {
+  it('shows Standard Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com')
       .post('/spaces', {
         name: 'my-space',
@@ -89,7 +89,7 @@ describe('spaces:create', function () {
     expect(stderr.output).to.include('second.')
   })
 
-  it('creates a Shield space', async () => {
+  it('creates a Shield space', async function () {
     const api = nock('https://api.heroku.com')
       .post('/spaces', {
         name: 'my-space',
@@ -133,7 +133,7 @@ describe('spaces:create', function () {
     `)
   })
 
-  it('shows Shield Private Space Add-on cost warning', async () => {
+  it('shows Shield Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com')
       .post('/spaces', {
         name: 'my-space',
@@ -169,7 +169,7 @@ describe('spaces:create', function () {
     expect(stderr.output).to.include('second.')
   })
 
-  it('creates a space with custom cidr and data cidr', async () => {
+  it('creates a space with custom cidr and data cidr', async function () {
     const api = nock('https://api.heroku.com')
       .post('/spaces', {
         name: 'my-space',

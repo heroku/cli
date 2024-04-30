@@ -10,8 +10,8 @@ import {personalToPersonal} from '../../../helpers/stubs/post'
 let Cmd: GenericCmd
 let inquirer: {prompt?: (prompts: { choices: any }[]) => void} = {}
 
-describe('heroku apps:transfer', () => {
-  beforeEach(() => {
+describe('heroku apps:transfer', function () {
+  beforeEach(function () {
     inquirer = {}
     const {default: proxyCmd} = proxyquire('../../../../src/commands/apps/transfer', {
       inquirer,
@@ -19,12 +19,15 @@ describe('heroku apps:transfer', () => {
     })
     Cmd = proxyCmd
   })
-  afterEach(() => nock.cleanAll())
-  context('when transferring in bulk', () => {
-    beforeEach(() => {
+
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+  context('when transferring in bulk', function () {
+    beforeEach(function () {
       apps()
     })
-    it('transfers selected apps to a team', async () => {
+    it('transfers selected apps to a team', async function () {
       inquirer.prompt = (prompts: { choices: any }[]) => {
         const choices = prompts[0].choices
         expect(choices).to.eql([
@@ -46,7 +49,7 @@ describe('heroku apps:transfer', () => {
       expect(stderr.output).to.include('Warning: Transferring applications to team...\n')
       expect(stderr.output).to.include('\nTransferring ⬢ myapp...\nTransferring ⬢ myapp... done\n')
     })
-    it('transfers selected apps to a personal account', async () => {
+    it('transfers selected apps to a personal account', async function () {
       inquirer.prompt = (prompts: { choices: any }[]) => {
         const choices = prompts[0].choices
         expect(choices).to.eql([
@@ -69,11 +72,11 @@ describe('heroku apps:transfer', () => {
       expect(stderr.output).to.include('\nInitiating transfer of ⬢ myapp...\nInitiating transfer of ⬢ myapp... email sent\n')
     })
   })
-  context('when it is a personal app', () => {
-    beforeEach(() => {
+  context('when it is a personal app', function () {
+    beforeEach(function () {
       personalApp()
     })
-    it('transfers the app to a personal account', async () => {
+    it('transfers the app to a personal account', async function () {
       const api = personalToPersonal()
       await runCommand(Cmd, [
         '--app',
@@ -84,7 +87,7 @@ describe('heroku apps:transfer', () => {
       expect('Initiating transfer of ⬢ myapp to raulb@heroku.com...\nInitiating transfer of ⬢ myapp to raulb@heroku.com... email sent\n').to.eq(stderr.output)
       api.done()
     })
-    it('transfers the app to a team', async () => {
+    it('transfers the app to a team', async function () {
       const api = teamAppTransfer()
       await runCommand(Cmd, [
         '--app',
@@ -96,11 +99,11 @@ describe('heroku apps:transfer', () => {
       api.done()
     })
   })
-  context('when it is an org app', () => {
-    beforeEach(() => {
+  context('when it is an org app', function () {
+    beforeEach(function () {
       teamApp()
     })
-    it('transfers the app to a personal account confirming app name', async () => {
+    it('transfers the app to a personal account confirming app name', async function () {
       const api = teamAppTransfer()
       await runCommand(Cmd, [
         '--app',
@@ -113,7 +116,7 @@ describe('heroku apps:transfer', () => {
       expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
-    it('transfers the app to a team', async () => {
+    it('transfers the app to a team', async function () {
       const api = teamAppTransfer()
       await runCommand(Cmd, [
         '--app',
@@ -124,7 +127,7 @@ describe('heroku apps:transfer', () => {
       expect('Transferring ⬢ myapp to team...\nTransferring ⬢ myapp to team... done\n').to.eq(stderr.output)
       api.done()
     })
-    it('transfers and locks the app if --locked is passed', async () => {
+    it('transfers and locks the app if --locked is passed', async function () {
       const api = teamAppTransfer()
       const lockedAPI = nock('https://api.heroku.com:443')
         .get('/teams/apps/myapp')

@@ -17,6 +17,7 @@ describe('addons:plans', function () {
       .get('/addon-services/daservice/plans')
       .reply(200, plans)
   })
+
   it('shows add-on plans', async function () {
     await runCommand(Cmd, ['daservice'])
     expectOutput(stdout.output, `

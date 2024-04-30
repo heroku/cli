@@ -15,6 +15,7 @@ describe('addons:services', function () {
       .get('/addon-services')
       .reply(200, services)
   })
+
   it('shows addon services', async function () {
     await runCommand(Cmd, [])
     expectOutput(stdout.output, `

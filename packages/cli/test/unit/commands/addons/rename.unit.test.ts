@@ -6,8 +6,8 @@ import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 
-describe('addons:rename', () => {
-  context('when the add-on exists', () => {
+describe('addons:rename', function () {
+  context('when the add-on exists', function () {
     let redis_name: string
     let renameRequest: nock.Scope
 
@@ -27,7 +27,7 @@ describe('addons:rename', () => {
       expectOutput(stdout.output, `${redis_name} successfully renamed to cache-redis.`)
     })
   })
-  context('when the add-on does not exist', () => {
+  context('when the add-on does not exist', function () {
     it('displays an appropriate error', async function () {
       nock('https://api.heroku.com')
         .get('/addons/not-an-addon')

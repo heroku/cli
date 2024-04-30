@@ -20,7 +20,7 @@ const withRelease = test
     .reply(200, [CURRENT]),
   )
 
-describe('heroku ps:wait', () => {
+describe('heroku ps:wait', function () {
   test
     .nock(API_HOST, api => api
       .get(`/apps/${APP_NAME}/releases`)

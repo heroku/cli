@@ -7,11 +7,11 @@ import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 
 const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows empty message with no databases', async () => {
+  it('shows empty message with no databases', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addons')
       .reply(200, [])
@@ -21,8 +21,8 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
       })
   })
 
-  context('with databases', () => {
-    beforeEach(() => {
+  context('with databases', function () {
+    beforeEach(function () {
       nock('https://api.heroku.com')
         .get('/apps/myapp/addons')
         .reply(200, [
@@ -32,7 +32,7 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
         ])
     })
 
-    it('shows empty message with no schedules', async () => {
+    it('shows empty message with no schedules', async function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/databases/1/transfer-schedules')
         .reply(200, [])
@@ -41,7 +41,7 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
       expect(stderr.output).to.include('Use heroku pg:backups:schedule to set one up')
     })
 
-    it('shows schedule', async () => {
+    it('shows schedule', async function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/databases/1/transfer-schedules')
         .reply(200, [
@@ -56,6 +56,6 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-describe('pg:backups:schedules', () => {
+describe('pg:backups:schedules', function () {
   shouldSchedules((args: string[]) => runCommand(Cmd, args))
 })

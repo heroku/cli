@@ -4,7 +4,7 @@ import confirmCommand from '../../../src/lib/confirmCommand'
 
 const stripAnsi = require('strip-ansi')
 
-describe('confirmApp', () => {
+describe('confirmApp', function () {
   test
     .stdout()
     .stderr()

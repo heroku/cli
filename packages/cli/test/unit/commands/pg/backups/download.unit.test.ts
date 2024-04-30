@@ -4,8 +4,8 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
 
-describe('pg:backups:download', () => {
-  beforeEach(() => {
+describe('pg:backups:download', function () {
+  beforeEach(function () {
     nock('https://api.data.heroku.com')
       .post('/client/v11/apps/myapp/transfers/3/actions/public-url')
       .reply(200, {
@@ -15,12 +15,12 @@ describe('pg:backups:download', () => {
       .reply(200, {})
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  context('with no id', () => {
-    beforeEach(() => {
+  context('with no id', function () {
+    beforeEach(function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
@@ -28,7 +28,7 @@ describe('pg:backups:download', () => {
         ])
     })
 
-    it('downloads to latest.dump', async () => {
+    it('downloads to latest.dump', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -39,8 +39,8 @@ describe('pg:backups:download', () => {
     })
   })
 
-  context('with id', () => {
-    it('downloads to latest.dump', async () => {
+  context('with id', function () {
+    it('downloads to latest.dump', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

@@ -8,18 +8,18 @@ import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 
 const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  context('without specifying a backup and no backups', () => {
-    beforeEach(() => {
+  context('without specifying a backup and no backups', function () {
+    beforeEach(function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [])
     })
 
-    it('shows error message', async () => {
+    it('shows error message', async function () {
       await cmdRun(['--app', 'myapp'])
         .catch((error: Error) => {
           expect(stripAnsi(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
@@ -27,8 +27,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
   })
 
-  context('with specifying a backup', () => {
-    beforeEach(() => {
+  context('with specifying a backup', function () {
+    beforeEach(function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers/3?verbose=true')
         .reply(200, {
@@ -36,7 +36,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
         })
     })
 
-    it('shows the backup', async () => {
+    it('shows the backup', async function () {
       await cmdRun(['--app', 'myapp', 'b003'])
       expectOutput(stdout.output, heredoc(`
         === Backup b003
@@ -53,8 +53,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
   })
 
-  context('with specifying a legacy backup', () => {
-    beforeEach(() => {
+  context('with specifying a legacy backup', function () {
+    beforeEach(function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
@@ -66,7 +66,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
         })
     })
 
-    it('shows the backup', async () => {
+    it('shows the backup', async function () {
       await cmdRun(['--app', 'myapp', 'ob001'])
       expectOutput(stdout.output, heredoc(`
         === Backup ob001
@@ -83,8 +83,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
   })
 
-  context('without specifying a backup', () => {
-    beforeEach(() => {
+  context('without specifying a backup', function () {
+    beforeEach(function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
@@ -96,7 +96,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
         })
     })
 
-    it('shows the latest backup', async () => {
+    it('shows the latest backup', async function () {
       await cmdRun(['--app', 'myapp'])
       expectOutput(stdout.output, heredoc(`
         === Backup b003
@@ -115,6 +115,6 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-describe('pg:backups:info', () => {
+describe('pg:backups:info', function () {
   shouldInfo((args: string[]) => runCommand(Cmd, args))
 })

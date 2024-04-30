@@ -7,8 +7,10 @@ import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 
 const sandbox = sinon.createSandbox()
 
-describe('container logout', () => {
-  afterEach(() => sandbox.restore())
+describe('container logout', function () {
+  afterEach(function () {
+    return sandbox.restore()
+  })
 
   it('logs out of the docker registry', async function () {
     const logout = sandbox.stub(DockerHelper, 'cmd')

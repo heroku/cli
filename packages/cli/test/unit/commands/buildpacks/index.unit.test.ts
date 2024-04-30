@@ -4,7 +4,7 @@ import * as nock from 'nock'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
 nock.disableNetConnect()
 
-describe('buildpacks', () => {
+describe('buildpacks', function () {
   test
     .nock('https://api.heroku.com', api => {
       Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])

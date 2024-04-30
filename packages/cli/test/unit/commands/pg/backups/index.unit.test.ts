@@ -6,24 +6,27 @@ import Cmd from '../../../../../src/commands/pg/backups/index'
 import type {BackupTransfer} from '../../../../../src/lib/pg/types'
 import runCommand from '../../../../helpers/runCommand'
 
-describe('pg:backups', () => {
+describe('pg:backups', function () {
   let pg: nock.Scope
   let transfers: BackupTransfer[]
-  beforeEach(() => {
+
+  beforeEach(function () {
     pg = nock('https://api.data.heroku.com')
     pg.get('/client/v11/apps/myapp/transfers')
       .reply(200, transfers)
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
     pg.done()
   })
-  describe('with no backups/restores/copies', () => {
-    before(() => {
+
+  describe('with no backups/restores/copies', function () {
+    before(function () {
       transfers = []
     })
 
-    it('shows empty message', async () => {
+    it('shows empty message', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -45,8 +48,8 @@ describe('pg:backups', () => {
     })
   })
 
-  describe('with backups', () => {
-    before(() => {
+  describe('with backups', function () {
+    before(function () {
       transfers = [
         {
           num: 3,
@@ -97,7 +100,7 @@ describe('pg:backups', () => {
       ]
     })
 
-    it('shows backups', async () => {
+    it('shows backups', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -124,8 +127,8 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
   })
 
-  describe('with restore', () => {
-    before(() => {
+  describe('with restore', function () {
+    before(function () {
       transfers = [
         {
           num: 3,
@@ -141,7 +144,7 @@ No copies found. Use heroku pg:copy to copy a database to another
       ]
     })
 
-    it('shows restore', async () => {
+    it('shows restore', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -164,8 +167,8 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
   })
 
-  describe('with copy', () => {
-    before(() => {
+  describe('with copy', function () {
+    before(function () {
       transfers = [
         {
           num: 3,
@@ -183,7 +186,7 @@ No copies found. Use heroku pg:copy to copy a database to another
       ]
     })
 
-    it('shows copy', async () => {
+    it('shows copy', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

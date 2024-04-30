@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('2fa', () => {
+describe('2fa', function () {
   test
     .nock('https://api.heroku.com', api => api
       .get('/account')

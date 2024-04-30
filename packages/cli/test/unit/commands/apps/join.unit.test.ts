@@ -7,14 +7,19 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import {userAccount} from '../../../helpers/stubs/get'
 import {teamAppCollaborators} from '../../../helpers/stubs/post'
 
-describe('heroku apps:join', () => {
+describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope
   let apiPostCollaborators: nock.Scope
-  beforeEach(() => {
+
+  beforeEach(function () {
     apiGetUserAccount = userAccount('raulb@heroku.com')
   })
-  afterEach(() => nock.cleanAll())
-  it('joins the app', async () => {
+
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+
+  it('joins the app', async function () {
     apiPostCollaborators = teamAppCollaborators('raulb@heroku.com')
     await runCommand(Cmd, [
       '--app',
@@ -25,7 +30,8 @@ describe('heroku apps:join', () => {
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })
-  it('is forbidden from joining the app', async () => {
+
+  it('is forbidden from joining the app', async function () {
     const response = {
       code: 403, description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
     }

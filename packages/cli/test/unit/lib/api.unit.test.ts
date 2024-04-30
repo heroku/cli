@@ -6,10 +6,10 @@ import {APIClient} from '@heroku-cli/command'
 
 const TEST_RUN = {id: 'uuid-999'}
 
-describe('api', () => {
+describe('api', function () {
   let herokuAPI: APIClient
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     herokuAPI = await getHerokuAPI()
   })
 

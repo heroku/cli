@@ -7,11 +7,14 @@ import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 
 const sandbox = sinon.createSandbox()
 
-describe('container:login', () => {
-  beforeEach(() => {
+describe('container:login', function () {
+  beforeEach(function () {
     process.env.HEROKU_API_KEY = 'heroku_token'
   })
-  afterEach(() => sandbox.restore())
+
+  afterEach(function () {
+    return sandbox.restore()
+  })
 
   it('logs to the docker registry', async function () {
     const version = sandbox.stub(DockerHelper, 'version').resolves([19, 12])

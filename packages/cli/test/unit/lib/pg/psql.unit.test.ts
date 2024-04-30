@@ -15,7 +15,7 @@ import type * as Pgsql from '../../../../src/lib/pg/psql'
 import type * as Bastion from '../../../../src/lib/pg/bastion'
 import {constants, SignalConstants} from 'os'
 
-describe('psql', () => {
+describe('psql', function () {
   const db: ConnectionDetailsWithAttachment = {
     attachment: {} as ConnectionDetailsWithAttachment['attachment'],
     user: 'jeff',
@@ -64,7 +64,7 @@ describe('psql', () => {
   let psql: typeof Pgsql
   let bastion: typeof Bastion
 
-  beforeEach(() => {
+  beforeEach(function () {
     sandbox = sinon.createSandbox()
     tunnelStub = sandbox.stub().callsFake((_config, callback) => {
       fakeTunnel = new TunnelStub()
@@ -82,7 +82,7 @@ describe('psql', () => {
     stderr.start()
   })
 
-  afterEach(async () => {
+  afterEach(async function () {
     await fakePsqlProcess?.teardown()
     // eslint-disable-next-line no-multi-assign
     fakeTunnel = fakePsqlProcess = undefined
@@ -108,8 +108,8 @@ describe('psql', () => {
     }
   }
 
-  describe('exec', () => {
-    it('runs psql', async () => {
+  describe('exec', function () {
+    it('runs psql', async function () {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -143,7 +143,7 @@ describe('psql', () => {
       expect(output).to.equal(NOW_OUTPUT)
     })
 
-    it('runs psql with supplied args', async () => {
+    it('runs psql with supplied args', async function () {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -177,7 +177,7 @@ describe('psql', () => {
       expect(output).to.equal(NOW_OUTPUT)
     })
 
-    it('runs psql and throws an error if psql exits with exit code > 0', async () => {
+    it('runs psql and throws an error if psql exits with exit code > 0', async function () {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -218,8 +218,8 @@ describe('psql', () => {
       }
     })
 
-    describe('private databases (not shield)', () => {
-      it('opens an SSH tunnel and runs psql for bastion databases', async () => {
+    describe('private databases (not shield)', function () {
+      it('opens an SSH tunnel and runs psql for bastion databases', async function () {
         const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
@@ -247,7 +247,7 @@ describe('psql', () => {
         await ensureFinished(promise)
       })
 
-      it('closes the tunnel manually if psql exits and the tunnel does not close on its own', async () => {
+      it('closes the tunnel manually if psql exits and the tunnel does not close on its own', async function () {
         const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
@@ -278,7 +278,7 @@ describe('psql', () => {
         expect(fakeTunnel?.exited).to.equal(true)
       })
 
-      it('closes psql manually if the tunnel exits and psql does not close on its own', async () => {
+      it('closes psql manually if the tunnel exits and psql does not close on its own', async function () {
         const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
@@ -311,8 +311,8 @@ describe('psql', () => {
     })
   })
 
-  describe('fetchVersion', () => {
-    it('gets the server version', async () => {
+  describe('fetchVersion', function () {
+    it('gets the server version', async function () {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -347,8 +347,8 @@ describe('psql', () => {
     })
   })
 
-  describe('execFile', () => {
-    it('runs psql with file as input', async () => {
+  describe('execFile', function () {
+    it('runs psql with file as input', async function () {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -378,7 +378,8 @@ describe('psql', () => {
       await fakePsqlProcess?.simulateExit(0)
       await ensureFinished(promise)
     })
-    it('opens an SSH tunnel and runs psql for bastion databases', async () => {
+
+    it('opens an SSH tunnel and runs psql for bastion databases', async function () {
       const tunnelConf = {
         username: 'bastion',
         host: 'bastion-host',
@@ -411,7 +412,7 @@ describe('psql', () => {
     })
   })
 
-  describe('psqlInteractive', () => {
+  describe('psqlInteractive', function () {
     const db = {
       attachment: {
         app: {
@@ -421,32 +422,32 @@ describe('psql', () => {
       },
     } as ConnectionDetailsWithAttachment
 
-    context('when HEROKU_PSQL_HISTORY is set', () => {
+    context('when HEROKU_PSQL_HISTORY is set', function () {
       let historyPath: string
 
       function mockHerokuPSQLHistory(path: string) {
         process.env.HEROKU_PSQL_HISTORY = path
       }
 
-      before(() => {
+      before(function () {
         tmp.setGracefulCleanup()
       })
 
-      afterEach(() => {
+      afterEach(function () {
         delete process.env.HEROKU_PSQL_HISTORY
       })
 
-      context('when HEROKU_PSQL_HISTORY is a valid directory path', () => {
-        beforeEach(() => {
+      context('when HEROKU_PSQL_HISTORY is a valid directory path', function () {
+        beforeEach(function () {
           historyPath = tmp.dirSync().name
           mockHerokuPSQLHistory(historyPath)
         })
 
-        afterEach(() => {
+        afterEach(function () {
           fs.rmdirSync(historyPath)
         })
 
-        it('is the directory path to per-app history files', async () => {
+        it('is the directory path to per-app history files', async function () {
           const expectedArgs = [
             '--set',
             'PROMPT1=sleepy-hollow-9876::DATABASE%R%# ',
@@ -488,17 +489,17 @@ describe('psql', () => {
         })
       })
 
-      context('when HEROKU_PSQL_HISTORY is a valid file path', () => {
+      context('when HEROKU_PSQL_HISTORY is a valid file path', function () {
         beforeEach(function () {
           historyPath = tmp.fileSync().name
           mockHerokuPSQLHistory(historyPath)
         })
 
-        afterEach(() => {
+        afterEach(function () {
           fs.unlinkSync(historyPath)
         })
 
-        it('is the path to the history file', async () => {
+        it('is the path to the history file', async function () {
           const expectedEnv = Object.freeze({
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer',
@@ -540,8 +541,8 @@ describe('psql', () => {
         })
       })
 
-      context('when HEROKU_PSQL_HISTORY is an invalid path', () => {
-        it('issues a warning', async () => {
+      context('when HEROKU_PSQL_HISTORY is an invalid path', function () {
+        it('issues a warning', async function () {
           const invalidPath = path.join('/', 'path', 'to', 'history')
           mockHerokuPSQLHistory(invalidPath)
 

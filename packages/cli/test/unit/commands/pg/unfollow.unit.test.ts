@@ -6,15 +6,15 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
-describe('pg:unfollow', () => {
+describe('pg:unfollow', function () {
   const addon = fixtures.addons['dwh-db']
   const appName = 'myapp'
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('unfollows db', async () => {
+  it('unfollows db', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])

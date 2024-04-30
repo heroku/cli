@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 const PUBLIC_KEY = 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'
 
-describe('heroku keys', () => {
+describe('heroku keys', function () {
   test
     .stderr()
     .stdout()

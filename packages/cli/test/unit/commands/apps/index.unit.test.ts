@@ -74,8 +74,8 @@ let euLockedApp = {}
 let euInternalApp = {}
 let euInternalLockedApp = {}
 
-describe('apps', () => {
-  describe('with no args', () => {
+describe('apps', function () {
+  describe('with no args', function () {
     test
       .stdout()
       .stderr()
@@ -262,7 +262,7 @@ describe('apps', () => {
       })
   })
 
-  describe('with team', () => {
+  describe('with team', function () {
     test
       .stdout()
       .stderr()
@@ -296,7 +296,7 @@ describe('apps', () => {
       })
   })
 
-  describe('with space', () => {
+  describe('with space', function () {
     test
       .stdout()
       .stderr()

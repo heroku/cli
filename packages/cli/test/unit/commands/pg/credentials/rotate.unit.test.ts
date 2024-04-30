@@ -22,18 +22,18 @@ const attachments = [
   },
 ]
 
-describe('pg:credentials:rotate', () => {
+describe('pg:credentials:rotate', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
 
-  before(() => {
+  before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
     uxPromptStub = sinon.stub(ux, 'prompt').resolves('myapp')
   })
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     api = nock('https://api.heroku.com')
     api.get('/addons/postgres-1/addon-attachments')
       .reply(200, attachments)
@@ -42,18 +42,18 @@ describe('pg:credentials:rotate', () => {
     uxPromptStub.resetHistory()
   })
 
-  afterEach(async () => {
+  afterEach(async function () {
     nock.cleanAll()
     api.done()
   })
 
-  after(() => {
+  after(function () {
     uxWarnStub.restore()
     uxPromptStub.restore()
   })
 
-  describe('standard addon', () => {
-    beforeEach(() => {
+  describe('standard addon', function () {
+    beforeEach(function () {
       api.post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'DATABASE_URL',
@@ -61,7 +61,7 @@ describe('pg:credentials:rotate', () => {
       }).reply(200, [{addon}])
     })
 
-    it('rotates credentials for a specific role with --name', async () => {
+    it('rotates credentials for a specific role with --name', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       await runCommand(Cmd, [
@@ -79,7 +79,7 @@ describe('pg:credentials:rotate', () => {
       `))
     })
 
-    it('rotates credentials for all roles with --all', async () => {
+    it('rotates credentials for all roles with --all', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
       await runCommand(Cmd, [
@@ -96,7 +96,7 @@ describe('pg:credentials:rotate', () => {
       `))
     })
 
-    it('rotates credentials for a specific role with --name and --force', async () => {
+    it('rotates credentials for a specific role with --name and --force', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       await runCommand(Cmd, [
@@ -115,12 +115,12 @@ describe('pg:credentials:rotate', () => {
       `))
     })
 
-    it('fails with an error if both --all and --name are included', async () => {
+    it('fails with an error if both --all and --name are included', async function () {
       const err = heredoc(`
       The following error occurred:
         [2m--name=my_role cannot also be provided when using --all[22m
       See more help with --help`)
-      return expect(runCommand(Cmd, [
+      await runCommand(Cmd, [
         '--app',
         'myapp',
         '--all',
@@ -128,10 +128,10 @@ describe('pg:credentials:rotate', () => {
         'my_role',
         '--confirm',
         'myapp',
-      ])).to.be.rejectedWith(Error, err)
+      ]).catch(error => expect(error.message).to.contain(err))
     })
 
-    it('requires app confirmation for rotating all roles with --all', async () => {
+    it('requires app confirmation for rotating all roles with --all', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
       const message = heredoc(`
@@ -148,7 +148,7 @@ describe('pg:credentials:rotate', () => {
       expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
     })
 
-    it('requires app confirmation for rotating all roles with --all and --force', async () => {
+    it('requires app confirmation for rotating all roles with --all and --force', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
       const message = heredoc(`
@@ -166,7 +166,8 @@ describe('pg:credentials:rotate', () => {
       expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
       expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
     })
-    it('requires app confirmation for rotating a specific role with --name', async () => {
+
+    it('requires app confirmation for rotating a specific role with --name', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       const message = heredoc(`
@@ -183,7 +184,8 @@ describe('pg:credentials:rotate', () => {
       expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
       expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
     })
-    it('requires app confirmation for force rotating a specific role with --name and --force', async () => {
+
+    it('requires app confirmation for force rotating a specific role with --name and --force', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
       const message = heredoc(`
@@ -205,7 +207,7 @@ describe('pg:credentials:rotate', () => {
     })
   })
 
-  it('throws an error when the db is essential plan but the name is specified', async () => {
+  it('throws an error when the db is essential plan but the name is specified', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
@@ -217,15 +219,15 @@ describe('pg:credentials:rotate', () => {
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = 'Legacy Essential-tier databases do not support named credentials.'
-    return expect(runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ])).to.be.rejectedWith(Error, err)
+    ]).catch(error => expect(error.message).to.contain(err))
   })
 
-  it('rotates credentials when the db is numbered essential plan', async () => {
+  it('rotates credentials when the db is numbered essential plan', async function () {
     const essentialAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
@@ -254,7 +256,7 @@ describe('pg:credentials:rotate', () => {
     `))
   })
 
-  it('rotates credentials with no --name with starter plan', async () => {
+  it('rotates credentials with no --name with starter plan', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
     }
@@ -280,7 +282,7 @@ describe('pg:credentials:rotate', () => {
     `))
   })
 
-  it('rotates credentials with --all with starter plan', async () => {
+  it('rotates credentials with --all with starter plan', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
     }

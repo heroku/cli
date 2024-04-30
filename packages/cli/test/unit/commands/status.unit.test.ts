@@ -6,10 +6,14 @@ const test = base
 
 const api = nock('https://status.heroku.com:443')
 
-beforeEach(() => nock.cleanAll())
-afterEach(() => api.done())
+beforeEach(function () {
+  return nock.cleanAll()
+})
+afterEach(function () {
+  return api.done()
+})
 
-describe('when heroku is green', () => {
+describe('when heroku is green', function () {
   test
     .stdout()
     .nock('https://status.heroku.com', api => {
@@ -49,15 +53,15 @@ Tools:     No known issues at this time.\n`)
     })
 })
 
-describe('when heroku has issues', () => {
+describe('when heroku has issues', function () {
   const now = Date.now()
   const timeISO = new Date(now).toISOString()
 
-  before(() => {
+  before(function () {
     sinon.stub(Date, 'now').returns(now)
   })
 
-  after(() => {
+  after(function () {
     sinon.restore()
   })
 

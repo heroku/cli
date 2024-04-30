@@ -5,13 +5,15 @@ import Cmd  from '../../../../src/commands/access/remove'
 import runCommand from '../../../helpers/runCommand'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete'
 let apiDelete: { done: () => any }
-describe('heroku access:remove', () => {
-  context('with either a personal or org app', () => {
-    beforeEach(() => {
+describe('heroku access:remove', function () {
+  context('with either a personal or org app', function () {
+    beforeEach(function () {
       apiDelete = collaboratorsPersonalApp('myapp', 'raulb@heroku.com')
     })
-    afterEach(() => nock.cleanAll())
-    it('removes the user from an app', () => {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('removes the user from an app', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',

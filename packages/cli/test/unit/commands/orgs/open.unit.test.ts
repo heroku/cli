@@ -6,16 +6,16 @@ const expect = require('chai').expect
 import * as nock from 'nock'
 import {teamInfo} from '../../../helpers/stubs/get'
 
-describe('heroku org:open', () => {
+describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope
   const urlOpenerStub = sinon.stub(Cmd, 'openUrl').callsFake(async (_: string) => {})
 
-  beforeEach(() => {
+  beforeEach(function () {
     apiGetOrgInfo = teamInfo()
     urlOpenerStub.reset()
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
@@ -25,6 +25,7 @@ describe('heroku org:open', () => {
         expect(error).to.be.instanceOf(Error)
       })
   })
+
   it('opens org in dashboard via browser if team flag is passed', function () {
     return runCommand(Cmd, [
       '--team',

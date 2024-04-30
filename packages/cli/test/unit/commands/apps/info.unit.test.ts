@@ -62,7 +62,7 @@ Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
 `
 
-describe('apps:info', () => {
+describe('apps:info', function () {
   test
     .stdout()
     .stderr()

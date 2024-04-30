@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('domains', () => {
+describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
     acm_status: null,
     acm_status_reason: null,

@@ -1,8 +1,8 @@
 import {expect} from '@oclif/test'
 import {multiSortCompareFn, type Comparator} from '../../../../src/lib/utils/multisort'
 
-describe('MultiSort', () => {
-  it('sorts based on precedence', () => {
+describe('MultiSort', function () {
+  it('sorts based on precedence', function () {
     type User = {
       firstName: string
       lastName: string

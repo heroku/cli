@@ -5,7 +5,7 @@ import * as nock from 'nock'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
 
-describe('pg:credentials', () => {
+describe('pg:credentials', function () {
   const addon = {
     id: 1,
     name: 'postgres-1',
@@ -22,18 +22,18 @@ describe('pg:credentials', () => {
   let api: nock.Scope
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     pg.done()
     api.done()
   })
 
-  it('shows the correct credentials', async () => {
+  it('shows the correct credentials', async function () {
     const credentials = [
       {uuid: 'aaaa',
         name: 'ransom',
@@ -117,7 +117,7 @@ describe('pg:credentials', () => {
     `)
   })
 
-  it('shows the correct rotation information if no connection information is available yet', async () => {
+  it('shows the correct rotation information if no connection information is available yet', async function () {
     const credentials = [
       {uuid: 'aaaa',
         name: 'ransom',

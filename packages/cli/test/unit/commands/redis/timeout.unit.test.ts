@@ -14,7 +14,7 @@ describe('heroku redis:timeout', function () {
   shouldHandleArgs(Cmd, {seconds: '5'})
 })
 
-describe('heroku redis:timeout', function () {
+describe('heroku redis:timeout should handle standard arg behavior', function () {
   const redisAddon = fixtures.addons['www-redis']
 
   beforeEach(function () {

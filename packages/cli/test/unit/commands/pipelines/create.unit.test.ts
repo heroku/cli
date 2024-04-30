@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('pipelines:create', () => {
+describe('pipelines:create', function () {
   context('when not specifying ownership', function () {
     test
       .stderr()

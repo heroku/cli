@@ -6,14 +6,14 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
-describe('pg:reset', () => {
+describe('pg:reset', function () {
   const addon = fixtures.addons['dwh-db']
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('reset db', async () => {
+  it('reset db', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -32,8 +32,8 @@ describe('pg:reset', () => {
     `))
   })
 
-  context('with extensions', () => {
-    beforeEach(() => {
+  context('with extensions', function () {
+    beforeEach(function () {
       nock('https://api.heroku.com')
         .post('/actions/addon-attachments/resolve')
         .reply(200, [{addon}])
@@ -44,7 +44,7 @@ describe('pg:reset', () => {
         })
     })
 
-    it('resets a db with pre-installed extensions', async () => {
+    it('resets a db with pre-installed extensions', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

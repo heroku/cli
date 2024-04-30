@@ -24,7 +24,7 @@ function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
   readFileStub.withArgs(file, {encoding: 'utf-8'}).returns(Promise.resolve(content))
 }
 
-describe('heroku certs:add', () => {
+describe('heroku certs:add', function () {
   let stubbedPromptReturnValue: unknown = {}
   let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
   let stubbedPrompt: SinonStub
@@ -38,7 +38,7 @@ describe('heroku certs:add', () => {
     stubbedPromptReturnValue = {domains: []}
   }
 
-  before(() => {
+  before(function () {
     stubbedPrompt = sinon.stub(inquirer, 'prompt')
       .callsFake((questions: QuestionCollection<inquirer.Answers>) => {
         questionsReceived = questions as ReadonlyArray<inquirer.Answers>
@@ -46,7 +46,7 @@ describe('heroku certs:add', () => {
       })
   })
 
-  beforeEach(async () => {
+  beforeEach(async function () {
     stubbedReadFile = sinon.stub(fs, 'readFile')
     questionsReceived = undefined
     nock.cleanAll()
@@ -56,11 +56,11 @@ describe('heroku certs:add', () => {
     stubbedReadFile.restore()
   })
 
-  after(() => {
+  after(function () {
     stubbedPrompt.restore()
   })
 
-  it('# works with a cert and key', async () => {
+  it('# works with a cert and key', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {space: null})
@@ -83,7 +83,7 @@ describe('heroku certs:add', () => {
     expect(stdout.output).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
-  it('# creates an SNI endpoint', async () => {
+  it('# creates an SNI endpoint', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {space: null})
@@ -106,7 +106,7 @@ describe('heroku certs:add', () => {
     expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
-  it('# shows the configure prompt', async () => {
+  it('# shows the configure prompt', async function () {
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, {space: null})
@@ -132,8 +132,8 @@ describe('heroku certs:add', () => {
     expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
-  describe('stable cnames', () => {
-    beforeEach(async () => {
+  describe('stable cnames', function () {
+    beforeEach(async function () {
       nock('https://api.heroku.com')
         .get('/apps/example')
         .reply(200, {space: null})
@@ -141,7 +141,7 @@ describe('heroku certs:add', () => {
       mockFile(stubbedReadFile, 'key_file', 'key content')
     })
 
-    it('# prompts creates an SNI endpoint with stable cnames', async () => {
+    it('# prompts creates an SNI endpoint with stable cnames', async function () {
       const mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content',
@@ -183,7 +183,7 @@ describe('heroku certs:add', () => {
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
-    it('# does not error out if the cert CN is for the heroku domain', async () => {
+    it('# does not error out if the cert CN is for the heroku domain', async function () {
       const mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content',
@@ -217,7 +217,7 @@ describe('heroku certs:add', () => {
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): tokyo-1050.herokuapp.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com\nSSL certificate is not trusted.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
-    it('# does not prompt if domains covered with wildcard', async () => {
+    it('# does not prompt if domains covered with wildcard', async function () {
       const mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content',
@@ -246,7 +246,7 @@ describe('heroku certs:add', () => {
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
-    it('# does not prompt if no domains and wildcard cert', async () => {
+    it('# does not prompt if no domains and wildcard cert', async function () {
       const mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content',
@@ -270,7 +270,7 @@ describe('heroku certs:add', () => {
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
-    it('# prints mismatched domains for wildcard cert', async () => {
+    it('# prints mismatched domains for wildcard cert', async function () {
       const mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
           certificate_chain: 'pem content', private_key: 'key content',
@@ -305,8 +305,10 @@ describe('heroku certs:add', () => {
       expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
-    describe('waiting for domains', () => {
+
+    describe('waiting for domains', function () {
       let timeoutStub: SinonStub
+
       beforeEach(function () {
         timeoutStub = sinon.stub(globalThis, 'setTimeout')
         timeoutStub.callsArgWith(0)
@@ -316,7 +318,7 @@ describe('heroku certs:add', () => {
         timeoutStub.restore()
       })
 
-      it('# waits for custom domains to have a cname', async () => {
+      it('# waits for custom domains to have a cname', async function () {
         const mock = nock('https://api.heroku.com')
           .post('/apps/example/sni-endpoints', {
             certificate_chain: 'pem content', private_key: 'key content',
@@ -417,7 +419,7 @@ describe('heroku certs:add', () => {
         expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
       })
 
-      it('# tries 30 times and then gives up', async () => {
+      it('# tries 30 times and then gives up', async function () {
         const mock = nock('https://api.heroku.com')
           .post('/apps/example/sni-endpoints', {
             certificate_chain: 'pem content', private_key: 'key content',

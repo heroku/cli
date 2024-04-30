@@ -6,11 +6,11 @@ import runCommand from '../../../../../helpers/runCommand'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-analyze'
 import * as fixtures from '../../../../../fixtures/addons/fixtures'
 
-describe('pg:settings:auto-explain:log-analyze', () => {
+describe('pg:settings:auto-explain:log-analyze', function () {
   const addon = fixtures.addons['dwh-db']
   let api: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
       .post('/actions/addons/resolve', {
         app: 'myapp',
@@ -18,11 +18,11 @@ describe('pg:settings:auto-explain:log-analyze', () => {
       }).reply(200, [addon])
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('updates settings for auto_explain.log_analyze with value', async () => {
+  it('updates settings for auto_explain.log_analyze with value', async function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: true}})
 
@@ -37,7 +37,7 @@ describe('pg:settings:auto-explain:log-analyze', () => {
     `))
   })
 
-  it('shows settings for auto_explain.log_analyze with no value', async () => {
+  it('shows settings for auto_explain.log_analyze with no value', async function () {
     const pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: false}})
 

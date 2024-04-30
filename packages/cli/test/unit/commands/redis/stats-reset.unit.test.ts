@@ -6,12 +6,12 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
-describe('heroku redis:stats-reset', () => {
-  beforeEach(() => {
+describe('heroku redis:stats-reset', function () {
+  beforeEach(function () {
     nock.cleanAll()
   })
 
-  it('# resets the stats of the addon', async () => {
+  it('# resets the stats of the addon', async function () {
     const redisAddon =  fixtures.addons['www-redis']
 
     nock('https://api.heroku.com:443')

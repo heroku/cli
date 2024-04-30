@@ -8,18 +8,18 @@ import {AddOnAttachment} from '@heroku-cli/schema'
 import Cmd from '../../../../src/commands/addons/open'
 import * as path from 'node:path'
 
-describe('The addons:open command', () => {
+describe('The addons:open command', function () {
   const urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async (_: string) => {})
 
-  beforeEach(() => {
+  beforeEach(function () {
     urlOpenerStub.reset()
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('should only print the url when --show-url is used', async () => {
+  it('should only print the url when --show-url is used', async function () {
     const api = nock('https://api.heroku.com:443')
       .post('/actions/addon-attachments/resolve', {app: 'myApp', addon_attachment: 'db2'})
       .reply(404, {app: 'myApp', addon_attachment: 'db2', addon_service: undefined})
@@ -39,7 +39,7 @@ describe('The addons:open command', () => {
     return api.done()
   })
 
-  it('should open an attached addon, by slug, with the correct `context_app`.', async () => {
+  it('should open an attached addon, by slug, with the correct `context_app`.', async function () {
     const api = nock('https://api.heroku.com:443')
       .post('/actions/addon-attachments/resolve', {app: 'myapp-2', addon_attachment: 'slowdb'})
       .reply(404, {resource: 'add_on attachment'})
@@ -64,11 +64,12 @@ describe('The addons:open command', () => {
     return api.done()
   })
 
-  describe('should open the specified addon', () => {
-    afterEach(() => {
+  describe('should open the specified addon', function () {
+    afterEach(function () {
       delete process.env.HEROKU_SUDO
     })
-    it('url via the standard happy path.', async () => {
+
+    it('url via the standard happy path.', async function () {
       const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {app: 'myApp', addon_attachment: 'redis-321'})
@@ -84,7 +85,7 @@ describe('The addons:open command', () => {
       return api.done()
     })
 
-    it('url when "::" exists in the addon_attachment.', async () => {
+    it('url when "::" exists in the addon_attachment.', async function () {
       const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {app: null, addon_attachment: 'redis::321'})
@@ -100,7 +101,7 @@ describe('The addons:open command', () => {
       return api.done()
     })
 
-    it('url using sudo via sso.', async () => {
+    it('url using sudo via sso.', async function () {
       process.env.HEROKU_SUDO = 'true'
       const api = nock('https://api.heroku.com:443')
         .get('/apps/myapp/addons/db2/sso')
@@ -117,7 +118,7 @@ describe('The addons:open command', () => {
       return api.done()
     })
 
-    it('file path using sudo via sso.', async () => {
+    it('file path using sudo via sso.', async function () {
       process.env.HEROKU_SUDO = 'true'
       const api = nock('https://api.heroku.com:443')
         .get('/apps/myapp/addons/db2/sso')

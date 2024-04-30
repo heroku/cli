@@ -5,9 +5,12 @@ import Cmd  from '../../../../src/commands/orgs'
 import runCommand from '../../../helpers/runCommand'
 import {teams} from '../../../helpers/stubs/get'
 
-describe('heroku teams', () => {
-  afterEach(() => nock.cleanAll())
-  it('shows Enterprise teams only when passing the --enterprise flag', () => {
+describe('heroku teams', function () {
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+
+  it('shows Enterprise teams only when passing the --enterprise flag', function () {
     const apiGetTeams = teams()
     return runCommand(Cmd, [
       '--enterprise',
@@ -16,7 +19,8 @@ describe('heroku teams', () => {
       .then(() => expect('').to.eq(stderr.output))
       .then(() => apiGetTeams.done())
   })
-  it('shows teams', () => {
+
+  it('shows teams', function () {
     const apiGetTeamsOnly = teams([
       {name: 'enterprise a', role: 'collaborator', type: 'enterprise'}, {name: 'enterprise b', role: 'admin', type: 'enterprise'},
     ])

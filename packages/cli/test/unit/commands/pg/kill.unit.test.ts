@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
 
-describe('pg:kill', () => {
+describe('pg:kill', function () {
   let queryString = ''
   const db = {}
   const psql = {
@@ -20,11 +20,11 @@ describe('pg:kill', () => {
     '../../lib/pg/psql': psql,
   })
 
-  afterEach(() => {
+  afterEach(function () {
     queryString = ''
   })
 
-  it('kills pid 100', async () => {
+  it('kills pid 100', async function () {
     await runCommand(Cmd, [
       '100',
       '--app',
@@ -34,7 +34,7 @@ describe('pg:kill', () => {
     expect(queryString).to.eq('SELECT pg_cancel_backend(100);')
   })
 
-  it('force kills pid 100', async () => {
+  it('force kills pid 100', async function () {
     await runCommand(Cmd, [
       '100',
       '--app',

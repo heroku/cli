@@ -4,8 +4,9 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-describe('addons:detach', () => {
+describe('addons:detach', function () {
   afterEach(nock.cleanAll)
+
   it('detaches an add-on', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/addon-attachments/redis-123')

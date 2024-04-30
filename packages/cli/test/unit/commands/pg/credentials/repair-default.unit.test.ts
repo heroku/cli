@@ -6,16 +6,16 @@ import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 
-describe('pg:credentials:repair-default', () => {
+describe('pg:credentials:repair-default', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
   }
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('resets the credential permissions', async () => {
+  it('resets the credential permissions', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
@@ -35,7 +35,7 @@ describe('pg:credentials:repair-default', () => {
     `))
   })
 
-  it('throws an error when the db is essential plan', async () => {
+  it('throws an error when the db is essential plan', async function () {
     const hobbyAddon = {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
     }

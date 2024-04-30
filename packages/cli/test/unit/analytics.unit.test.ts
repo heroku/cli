@@ -54,15 +54,15 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   backboard.done()
 }
 
-describe('analytics (backboard has an error) with authorizationToken', () => {
+describe('analytics (backboard has an error) with authorizationToken', function () {
   let sandbox: any
 
-  before(async () => {
+  before(async function () {
     sandbox = sinon.createSandbox()
     sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
   })
 
-  it('does not show an error on console', async () => {
+  it('does not show an error on console', async function () {
     const backboard = nock('https://backboard.heroku.com/')
       .get('/hamurai')
       .query(() => true)
@@ -87,7 +87,7 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
     }
   })
 
-  it('does not record if plugin is not present', async () => {
+  it('does not record if plugin is not present', async function () {
     const config = await Config.load()
     config.platform = 'win32'
     config.shell = 'fish'
@@ -105,18 +105,18 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
     }
   })
 
-  describe('analytics (backboard has an error) without authorizationToken', () => {
+  describe('analytics (backboard has an error) without authorizationToken', function () {
     let sandbox: any
     let analyticsSandbox: any
 
-    before(async () => {
+    before(async function () {
       sandbox = sinon.createSandbox()
       sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
       analyticsSandbox = sinon.createSandbox()
       analyticsSandbox.stub(AnalyticsCommand.prototype, 'netrcToken').get(() => '')
     })
 
-    it('does not show an error on console', async () => {
+    it('does not show an error on console', async function () {
       const backboard = nock('https://backboard.heroku.com/')
         .get('/hamurai')
         .query(() => true)
@@ -142,79 +142,80 @@ describe('analytics (backboard has an error) with authorizationToken', () => {
     })
   })
 
-  describe('analytics', () => {
+  describe('analytics', function () {
     let sandbox: any
 
-    before(async () => {
+    before(async function () {
       sandbox = sinon.createSandbox()
       sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
     })
 
-    it('emits source', async () => {
+    it('emits source', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.source, 'cli')
     })
 
-    it('emits event', async () => {
+    it('emits event', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.event, 'login')
     })
 
-    it('emits property cli', async () => {
+    it('emits property cli', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.cli, 'heroku')
     })
 
-    it('emits property command', async () => {
+    it('emits property command', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.command, 'login')
     })
 
-    it('emits property completion', async () => {
+    it('emits property completion', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.completion, 0)
     })
 
-    it('emits property version', async () => {
+    it('emits property version', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.version, '1')
     })
 
-    it('emits property plugin', async () => {
+    it('emits property plugin', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.plugin, 'foo')
     })
 
-    it('emits property plugin_version', async () => {
+    it('emits property plugin_version', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.plugin_version, '123')
     })
 
-    it('emits property os', async () => {
+    it('emits property os', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.os, 'win32')
     })
 
-    it('emits property shell', async () => {
+    it('emits property shell', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.shell, 'fish')
     })
 
-    it('emits property valid', async () => {
+    it('emits property valid', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.valid, true)
     })
 
-    it('emits property language', async () => {
+    it('emits property language', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.language, 'node')
     })
 
-    it('emits property install_id', async () => {
+    it('emits property install_id', async function () {
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.install_id, 'abcde')
     })
 
-    after(() => {
+    after(function () {
       sandbox.restore()
     })
   })
 
-  describe('analytics additional methods', () => {
+  describe('analytics additional methods', function () {
     let user: any
-    beforeEach(() => {
+
+    beforeEach(function () {
       process.env.HEROKU_API_KEY = 'testHerokuAPIKey'
       user = netrc.machines[vars.apiHost]?.login || undefined
     })
 
-    it('retreives user heroku API key', async () => {
+    it('retreives user heroku API key', async function () {
       const config = await Config.load()
       config.platform = 'win32'
       config.shell = 'fish'

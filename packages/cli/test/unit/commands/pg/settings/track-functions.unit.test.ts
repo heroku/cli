@@ -5,11 +5,11 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/track-functions'
 
-describe('pg:settings:track-functions', () => {
+describe('pg:settings:track-functions', function () {
   let api: nock.Scope
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     const addon = {
       id: 1,
       name: 'postgres-1',
@@ -27,12 +27,12 @@ describe('pg:settings:track-functions', () => {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     api.done()
     pg.done()
   })
 
-  it('shows settings for track_functions with value', async () => {
+  it('shows settings for track_functions with value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {
       track_functions: {
         value: 'test_value',

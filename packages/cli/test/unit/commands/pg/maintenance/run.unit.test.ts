@@ -6,13 +6,14 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
-describe('pg:maintenance:run', () => {
+describe('pg:maintenance:run', function () {
   const addon = fixtures.addons['dwh-db']
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('runs maintenance', async () => {
+  it('runs maintenance', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('ps:restart', () => {
+describe('ps:restart', function () {
   test
     .stdout()
     .stderr()

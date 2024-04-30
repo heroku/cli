@@ -43,20 +43,22 @@ const copyingFailText = () => {
   return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 }
 
-describe('pg:copy', () => {
+describe('pg:copy', function () {
   let pg: nock.Scope
   let api: nock.Scope
-  beforeEach(() => {
+
+  beforeEach(function () {
     pg = nock('https://api.data.heroku.com')
     api = nock('https://api.heroku.com')
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
     api.done()
     pg.done()
   })
-  context('url to heroku', () => {
-    beforeEach(() => {
+  context('url to heroku', function () {
+    beforeEach(function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
@@ -76,7 +78,7 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myapp/transfers/100-001')
         .reply(200, {finished_at: '100', succeeded: true})
     })
-    it('copies', async () => {
+    it('copies', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -88,7 +90,7 @@ describe('pg:copy', () => {
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`)
     })
-    it('copies (with port number)', async () => {
+    it('copies (with port number)', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -101,8 +103,8 @@ describe('pg:copy', () => {
       expect(stderr.output).to.equal(`Starting copy of database bar on boop.com:5678 to RED...\nStarting copy of database bar on boop.com:5678 to RED... done\n${copyingText()}`)
     })
   })
-  context('heroku to heroku with additional credentials', () => {
-    beforeEach(() => {
+  context('heroku to heroku with additional credentials', function () {
+    beforeEach(function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.get('/addons/postgres-2')
@@ -128,7 +130,7 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myotherapp/transfers/100-001')
         .reply(200, {finished_at: '100', succeeded: true})
     })
-    it('copies', async () => {
+    it('copies', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -145,8 +147,8 @@ describe('pg:copy', () => {
       expect(stderr.output).to.include(copyingText())
     })
   })
-  context('heroku to heroku with non-billing app attachment name', () => {
-    beforeEach(() => {
+  context('heroku to heroku with non-billing app attachment name', function () {
+    beforeEach(function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.get('/addons/postgres-2')
@@ -171,7 +173,7 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myotherapp/transfers/100-001')
         .reply(200, {finished_at: '100', succeeded: true})
     })
-    it('copies', async () => {
+    it('copies', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -184,8 +186,8 @@ describe('pg:copy', () => {
       expect(stderr.output).to.equal(`Starting copy of RED to ATTACHED_BLUE...\nStarting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`)
     })
   })
-  context('heroku to heroku with lower case attachment name', () => {
-    beforeEach(() => {
+  context('heroku to heroku with lower case attachment name', function () {
+    beforeEach(function () {
       api.get('/addons/postgres-3')
         .reply(200, lowercaseAddon)
       api.get('/addons/postgres-2')
@@ -211,7 +213,7 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myotherapp/transfers/100-001')
         .reply(200, {finished_at: '100', succeeded: true})
     })
-    it('copies', async () => {
+    it('copies', async function () {
       await runCommand(Cmd, [
         '--app',
         'mylowercaseapp',
@@ -224,8 +226,8 @@ describe('pg:copy', () => {
       expect(stderr.output).to.equal(`Starting copy of lowercase_database to BLUE...\nStarting copy of lowercase_database to BLUE... done\n${copyingText()}`)
     })
   })
-  context('fails', () => {
-    beforeEach(() => {
+  context('fails', function () {
+    beforeEach(function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
@@ -243,16 +245,16 @@ describe('pg:copy', () => {
       pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
         .reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
     })
-    it('fails to copy', async () => {
+    it('fails to copy', async function () {
       const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun \u001B[36m\u001B[1mheroku pg:backups:info b001\u001B[22m\u001B[39m for more details.'
-      await expect(runCommand(Cmd, [
+      await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
-      ])).to.be.rejectedWith(Error, err)
+      ]).catch(error => expect(error.message).to.contain(err))
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
     })

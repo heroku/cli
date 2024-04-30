@@ -4,7 +4,7 @@ import * as nock from 'nock'
 
 nock.disableNetConnect()
 
-describe('buildpacks:search', () => {
+describe('buildpacks:search', function () {
   test
     .nock('https://buildpack-registry.heroku.com', api => {
       api

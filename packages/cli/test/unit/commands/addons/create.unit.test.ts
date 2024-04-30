@@ -8,26 +8,28 @@ import * as nock from 'nock'
 import stripAnsi = require('strip-ansi')
 const lolex = require('lolex')
 
-describe('addons:create', () => {
+describe('addons:create', function () {
   let api: ReturnType<typeof nock>
   const addon = {
     id: 201, name: 'db3-swiftly-123', addon_service: {name: 'heroku-db3'}, app: {name: 'myapp', id: 101}, config_vars: ['DATABASE_URL'], plan: {price: {cents: 10000, unit: 'month'}}, state: 'provisioned', provision_message: 'provision message',
   }
-  beforeEach(async () => {
+
+  beforeEach(async function () {
     api = nock('https://api.heroku.com:443')
   })
-  afterEach(() => {
+
+  afterEach(function () {
     api.done()
     nock.cleanAll()
   })
-  context('creating a db with a name', () => {
-    beforeEach(() => {
+  context('creating a db with a name', function () {
+    beforeEach(function () {
       api.post('/apps/myapp/addons', {
         plan: {name: 'heroku-postgresql:standard-0'}, name: 'foobar', attachment: {}, config: {},
       })
         .reply(200, addon)
     })
-    it('passes name through to the API', async () => {
+    it('passes name through to the API', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -37,8 +39,8 @@ describe('addons:create', () => {
       ])
     })
   })
-  context('calling addons:create without a plan', () => {
-    it('errors out with usage', async () => {
+  context('calling addons:create without a plan', function () {
+    it('errors out with usage', async function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -52,8 +54,8 @@ describe('addons:create', () => {
         })
     })
   })
-  context('creating a db', () => {
-    beforeEach(() => {
+  context('creating a db', function () {
+    beforeEach(function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'},
         config: {follow: 'otherdb', rollback: true, foo: true},
@@ -61,7 +63,7 @@ describe('addons:create', () => {
       })
         .reply(200, addon)
     })
-    it('creates an add-on with proper output', async () => {
+    it('creates an add-on with proper output', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -77,7 +79,7 @@ describe('addons:create', () => {
       expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
     })
-    it('creates an addon with = args', async () => {
+    it('creates an addon with = args', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -90,7 +92,7 @@ describe('addons:create', () => {
         '--foo',
       ])
     })
-    it('turns args value true into literal true, not a string', async () => {
+    it('turns args value true into literal true, not a string', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -104,16 +106,16 @@ describe('addons:create', () => {
       ])
     })
   })
-  context('when add-on is async', () => {
-    context('provisioning message and config vars provided by add-on provider', () => {
-      beforeEach(() => {
+  context('when add-on is async', function () {
+    context('provisioning message and config vars provided by add-on provider', function () {
+      beforeEach(function () {
         const asyncAddon = {..._.clone(addon), state: 'provisioning'}
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, asyncAddon)
       })
-      it('creates an add-on with output about async provisioning', async () => {
+      it('creates an add-on with output about async provisioning', async function () {
         await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -125,15 +127,15 @@ describe('addons:create', () => {
         expect(stdout.output).to.equal('provision message\ndb3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n')
       })
     })
-    context('and no provision message supplied', () => {
-      beforeEach(() => {
+    context('and no provision message supplied', function () {
+      beforeEach(function () {
         const asyncAddon = {..._.clone(addon), state: 'provisioning', provision_message: undefined}
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, asyncAddon)
       })
-      it('creates an add-on with output about async provisioning', async () => {
+      it('creates an add-on with output about async provisioning', async function () {
         await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -145,15 +147,15 @@ describe('addons:create', () => {
         expect(stdout.output).to.equal('db3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n')
       })
     })
-    context('and no config vars supplied by add-on provider', () => {
-      beforeEach(() => {
+    context('and no config vars supplied by add-on provider', function () {
+      beforeEach(function () {
         const asyncAddon = {..._.clone(addon), state: 'provisioning', config_vars: undefined}
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, asyncAddon)
       })
-      it('creates an add-on with output about async provisioning', async () => {
+      it('creates an add-on with output about async provisioning', async function () {
         await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -165,10 +167,10 @@ describe('addons:create', () => {
         expect(stdout.output).to.equal('provision message\ndb3-swiftly-123 is being created in the background. The app will restart when complete...\nUse heroku addons:info db3-swiftly-123 to check creation progress\nUse heroku addons:docs heroku-db3 to view documentation\n')
       })
     })
-    context('--wait', () => {
+    context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
       let sandbox: ReturnType<typeof sinon.createSandbox>
-      beforeEach(() => {
+      beforeEach(function () {
         sandbox = sinon.createSandbox()
         clock = lolex.install()
         clock.setTimeout = function (fn: () => unknown) {
@@ -179,7 +181,7 @@ describe('addons:create', () => {
         clock.uninstall()
         sandbox.restore()
       })
-      it('waits for response and notifies', async () => {
+      it('waits for response and notifies', async function () {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
         const asyncAddon = {..._.clone(addon), state: 'provisioning'}
         const post = api.post('/apps/myapp/addons', {
@@ -209,7 +211,7 @@ describe('addons:create', () => {
         provisioningResponse.done()
         provisionedResponse.done()
       })
-      it('notifies when provisioning failure occurs', () => {
+      it('notifies when provisioning failure occurs', function () {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
         const asyncAddon = _.clone(addon)
         asyncAddon.state = 'provisioning'
@@ -239,7 +241,7 @@ describe('addons:create', () => {
           })
       })
     })
-    context('when add-on provision errors', () => {
+    context('when add-on provision errors', function () {
       it('shows that it failed to provision', function () {
         const deprovisionedAddon = _.clone(addon)
         deprovisionedAddon.state = 'deprovisioned'
@@ -263,8 +265,8 @@ describe('addons:create', () => {
       })
     })
   })
-  context('creating a db requiring confirmation', () => {
-    it('aborts if confirmation does not match', () => {
+  context('creating a db requiring confirmation', function () {
+    it('aborts if confirmation does not match', function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'}, config: {follow: 'otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'}, confirm: 'not-my-app',
       })
@@ -288,7 +290,7 @@ describe('addons:create', () => {
           expect(stripAnsi(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
         })
     })
-    it('succeeds if confirmation does match', async () => {
+    it('succeeds if confirmation does match', async function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'}, config: {follow: 'otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'}, confirm: 'myapp',
       })
@@ -311,14 +313,14 @@ describe('addons:create', () => {
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
     })
   })
-  context('--follow=--otherdb', () => {
-    beforeEach(() => {
+  context('--follow=--otherdb', function () {
+    beforeEach(function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'}, config: {follow: '--otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
     })
-    it('creates an addon with =-- args', () => {
+    it('creates an addon with =-- args', function () {
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -332,8 +334,8 @@ describe('addons:create', () => {
       ])
     })
   })
-  context('no config vars supplied by add-on provider', () => {
-    beforeEach(() => {
+  context('no config vars supplied by add-on provider', function () {
+    beforeEach(function () {
       const noConfigAddon = {..._.clone(addon), config_vars: undefined}
 
       api.post('/apps/myapp/addons', {
@@ -341,7 +343,7 @@ describe('addons:create', () => {
       })
         .reply(200, noConfigAddon)
     })
-    it('creates an add-on without the config vars listed', async () => {
+    it('creates an add-on without the config vars listed', async function () {
       await runCommand(Cmd, [
         '--app',
         'myapp',

@@ -11,13 +11,16 @@ import * as sinon from 'sinon'
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
-    it('does not run on Windows', () => expect(true))
+    it('does not run on Windows', function () {
+      return expect(true)
+    })
     return
   }
 
   let clock: any
   let now: Date
-  beforeEach(() => {
+
+  beforeEach(function () {
     clock = sinon.useFakeTimers({
       now: new Date(2024, 1, 1, 0, 0),
       shouldAdvanceTime: true,
@@ -50,8 +53,8 @@ describe('dashboard', function () {
     },
   }
 
-  describe('with no favorites', () => {
-    it('shows the dashboard', async () => {
+  describe('with no favorites', function () {
+    it('shows the dashboard', async function () {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
@@ -73,8 +76,8 @@ describe('dashboard', function () {
     })
   })
 
-  describe('with no telex', () => {
-    it('shows the dashboard', async () => {
+  describe('with no telex', function () {
+    it('shows the dashboard', async function () {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
@@ -96,8 +99,8 @@ describe('dashboard', function () {
     })
   })
 
-  describe('with notifications', () => {
-    it('shows the dashboard', async () => {
+  describe('with notifications', function () {
+    it('shows the dashboard', async function () {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [])
@@ -119,8 +122,8 @@ describe('dashboard', function () {
     })
   })
 
-  describe('with a favorite app', () => {
-    it('shows the dashboard', async () => {
+  describe('with a favorite app', function () {
+    it('shows the dashboard', async function () {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [{resource_name: 'myapp'}])
@@ -172,8 +175,8 @@ describe('dashboard', function () {
     })
   })
 
-  describe('with a apps and metrics', () => {
-    it('shows the dashboard', async () => {
+  describe('with a apps and metrics', function () {
+    it('shows the dashboard', async function () {
       nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app')
         .reply(200, [{resource_name: 'myapp'}])

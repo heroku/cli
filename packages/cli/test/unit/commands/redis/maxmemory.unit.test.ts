@@ -8,7 +8,7 @@ import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
-describe('heroku redis:maxmemory', function () {
+describe('heroku redis:maxmemory should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {policy: 'noeviction'})
 })
 
@@ -40,6 +40,7 @@ describe('heroku redis:maxmemory', function () {
       noeviction return errors when memory limit is reached.
     `))
   })
+
   it('# errors on missing eviction policy', async function () {
     await runCommand(Cmd, [
       '--app',

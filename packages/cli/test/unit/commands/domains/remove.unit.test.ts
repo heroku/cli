@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('domains:remove', () => {
+describe('domains:remove', function () {
   test
     .stderr()
     .nock('https://api.heroku.com', api => api

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('run:detached', () => {
+describe('run:detached', function () {
   test
     .stdout()
     .command(['run:detached', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])

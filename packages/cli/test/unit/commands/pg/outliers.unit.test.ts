@@ -5,7 +5,7 @@ import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-describe('pg:outliers', () => {
+describe('pg:outliers', function () {
   let api: nock.Scope
   let fetchVersionCalled = false
   let queryString = ''
@@ -31,11 +31,11 @@ describe('pg:outliers', () => {
     '../../lib/pg/psql': psql,
   })
 
-  beforeEach(() => {
+  beforeEach(function () {
     api = nock('https://api.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     api.done()
     fetchVersionCalled = false
     queryString = ''
@@ -43,7 +43,7 @@ describe('pg:outliers', () => {
     nock.cleanAll()
   })
 
-  it('resets query stats', async () => {
+  it('resets query stats', async function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -53,7 +53,7 @@ describe('pg:outliers', () => {
     expect(queryString).to.eq('SELECT pg_stat_statements_reset();')
   })
 
-  it('returns query outliers', async () => {
+  it('returns query outliers', async function () {
     serverVersion = '11.16'
 
     await runCommand(Cmd, [
@@ -67,7 +67,7 @@ describe('pg:outliers', () => {
     expect(stdout.output.trim()).to.eq(expected_output_text)
   })
 
-  it('uses an updated query for a newer version', async () => {
+  it('uses an updated query for a newer version', async function () {
     serverVersion = '13.7'
 
     await runCommand(Cmd, [

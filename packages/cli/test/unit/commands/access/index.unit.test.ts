@@ -12,10 +12,12 @@ import {
   teamAppCollaboratorsWithPermissions,
 } from '../../../helpers/stubs/get'
 
-describe('heroku access', () => {
-  context('with personal app', () => {
-    afterEach(() => nock.cleanAll())
-    it('shows the app collaborators', () => {
+describe('heroku access', function () {
+  context('with personal app', function () {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('shows the app collaborators', function () {
       const apiGetPersonalApp = personalApp()
       const apiGetAppCollaborators = appCollaborators()
       return runCommand(Cmd, [
@@ -28,9 +30,11 @@ describe('heroku access', () => {
         .then(() => apiGetAppCollaborators.done())
     })
   })
-  context('with team', () => {
-    afterEach(() => nock.cleanAll())
-    it('shows the app collaborators and hides the team collaborator record', () => {
+  context('with team', function () {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+    it('shows the app collaborators and hides the team collaborator record', function () {
       const apiGetTeamApp = teamApp()
       const apiGetOrgMembers = teamMembers()
       const apiGetAppPermissions = appPermissions()

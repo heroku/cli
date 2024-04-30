@@ -7,7 +7,7 @@ import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as Heroku from '@heroku-cli/schema'
 
-describe('addons', () => {
+describe('addons', function () {
   describe('--all', function () {
     const addons = [
       fixtures.addons['www-db'], fixtures.addons['www-redis'], fixtures.addons['api-redis'],
@@ -77,6 +77,7 @@ describe('addons', () => {
  acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
       })
     })
+
     it('prints message when there are no add-ons', async function () {
       nock('https://api.heroku.com')
         .get('/addons')
@@ -176,11 +177,13 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
             fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
           ])
         })
+
         it('omits attachment app for local attachments', function () {
           return run('acme-inc-dwh', function () {
             expect(stdout.output).to.match(/├─ as WWW_DB\s*$/m)
           })
         })
+
         it('includes app name for foreign attachments', function () {
           return run('acme-inc-dwh', function () {
             expect(stdout.output).to.match(/└─ as DATABASE on acme-inc-www app\s*$/m)
@@ -312,6 +315,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
         })
       })
     })
+
     it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function () {

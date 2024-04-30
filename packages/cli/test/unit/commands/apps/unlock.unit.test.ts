@@ -5,9 +5,12 @@ import {CLIError} from '@oclif/core/lib/errors'
 import Cmd  from '../../../../src/commands/apps/unlock'
 import runCommand from '../../../helpers/runCommand'
 
-describe('heroku apps:unlock', () => {
-  afterEach(() => nock.cleanAll())
-  it('unlocks the app', async () => {
+describe('heroku apps:unlock', function () {
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+
+  it('unlocks the app', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/teams/apps/myapp')
       .reply(200, {name: 'myapp', locked: true})
@@ -21,7 +24,8 @@ describe('heroku apps:unlock', () => {
     expect('Unlocking myapp...\nUnlocking myapp... done\n').to.eq(stderr.output)
     api.done()
   })
-  it('returns an error if the app is already unlocked', async () => {
+
+  it('returns an error if the app is already unlocked', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/teams/apps/myapp')
       .reply(200, {name: 'myapp', locked: false})

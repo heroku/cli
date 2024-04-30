@@ -5,7 +5,7 @@ import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-describe('pg:killall', () => {
+describe('pg:killall', function () {
   let pg: nock.Scope
   const db = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}}
   const fetcher = {
@@ -15,16 +15,16 @@ describe('pg:killall', () => {
     '../../lib/pg/fetcher': fetcher,
   })
 
-  beforeEach(() => {
+  beforeEach(function () {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
     pg.done()
   })
 
-  it('waits for all databases to be available', async () => {
+  it('waits for all databases to be available', async function () {
     pg.post('/client/v11/databases/1/connection_reset')
       .reply(200)
 

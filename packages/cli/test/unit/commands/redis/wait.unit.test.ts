@@ -9,12 +9,12 @@ describe('heroku redis:credentials', function () {
   shouldHandleArgs(Cmd)
 })
 
-describe('heroku redis:wait ', () => {
-  afterEach(() => {
+describe('heroku redis:wait ', function () {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('# returns when waiting? is false', async () => {
+  it('# returns when waiting? is false', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [
@@ -36,7 +36,7 @@ describe('heroku redis:wait ', () => {
     expect(stderr.output).to.equal('')
   })
 
-  it('# waits for version upgrade', async () => {
+  it('# waits for version upgrade', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [

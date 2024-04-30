@@ -9,7 +9,7 @@ import * as psql from '../../../../src/lib/pg/psql'
 import * as childProcess from 'node:child_process'
 import {TunnelConfig} from '../../../../src/lib/pg/bastion'
 
-describe('pg:pull', () => {
+describe('pg:pull', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
@@ -36,7 +36,7 @@ describe('pg:pull', () => {
     func(0)
   }
 
-  beforeEach(() => {
+  beforeEach(function () {
     db = {
       user: 'jeff',
       password: 'pass',
@@ -81,7 +81,7 @@ describe('pg:pull', () => {
     })
   })
 
-  afterEach(() => {
+  afterEach(function () {
     createDbStub.restore()
     tunnelStub.reset()
     mathRandomStub.restore()

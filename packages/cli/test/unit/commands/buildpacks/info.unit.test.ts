@@ -3,7 +3,7 @@ import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 nock.disableNetConnect()
 
-describe('buildpacks:info', () => {
+describe('buildpacks:info', function () {
   test
     .nock('https://buildpack-registry.heroku.com', api => {
       api

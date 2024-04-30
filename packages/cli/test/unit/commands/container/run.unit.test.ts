@@ -6,16 +6,19 @@ import {expect} from 'chai'
 import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
-describe('container run', () => {
+describe('container run', function () {
   let sandbox: sinon.SinonSandbox
 
-  beforeEach(() => {
+  beforeEach(function () {
     process.env.HEROKU_API_KEY = 'heroku_token'
     sandbox = sinon.createSandbox()
   })
-  afterEach(() => sandbox.restore())
 
-  it('requires a process type', async () => {
+  afterEach(function () {
+    return sandbox.restore()
+  })
+
+  it('requires a process type', async function () {
     await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -26,7 +29,7 @@ describe('container run', () => {
     })
   })
 
-  it('runs a container', async () => {
+  it('runs a container', async function () {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     const run = sandbox.stub(DockerHelper, 'runImage')
@@ -42,7 +45,7 @@ describe('container run', () => {
     sandbox.assert.calledOnce(run)
   })
 
-  it('runs a container with a command', async () => {
+  it('runs a container with a command', async function () {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     const run = sandbox.stub(DockerHelper, 'runImage')
@@ -59,7 +62,7 @@ describe('container run', () => {
     sandbox.assert.calledOnce(run)
   })
 
-  it('requires a known dockerfile', async () => {
+  it('requires a known dockerfile', async function () {
     const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
       .returns([])
     await runCommand(Cmd, [

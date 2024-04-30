@@ -5,14 +5,14 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-describe('pg:backups:capture', () => {
+describe('pg:backups:capture', function () {
   const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
-  afterEach(() => {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  it('captures a db', async () => {
+  it('captures a db', async function () {
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['On']},
     ]}
@@ -57,7 +57,7 @@ describe('pg:backups:capture', () => {
     expect(stderr.output).to.match(/backups of large databases are likely to fail/)
   })
 
-  it('captures a db (verbose)', async () => {
+  it('captures a db (verbose)', async function () {
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['Off']},
     ]}
@@ -100,7 +100,7 @@ describe('pg:backups:capture', () => {
     expect(stderr.output).not.to.match(/backups of large databases are likely to fail/)
   })
 
-  it('captures a db (verbose) with non billing app', async () => {
+  it('captures a db (verbose) with non billing app', async function () {
     addon.app.name = 'mybillingapp'
     const dbA = {info: [
       {name: 'Continuous Protection', values: ['On']},

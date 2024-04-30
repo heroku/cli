@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('access', () => {
+describe('access', function () {
   test
     .stdout()
     .command(['access', '--app=heroku-cli-ci-smoke-test-app'])

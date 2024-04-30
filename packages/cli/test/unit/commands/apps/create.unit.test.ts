@@ -116,7 +116,7 @@ describe('apps:create', function () {
       expect(JSON.parse(stdout)).to.deep.equal(json)
     })
 
-  describe('testing manifest flag', () => {
+  describe('testing manifest flag', function () {
     const appName = 'foo'
 
     const manifest = {
@@ -136,7 +136,7 @@ describe('apps:create', function () {
     let readFileStub: ReturnType<typeof sinon.stub>
     let safeLoadStub: ReturnType<typeof sinon.stub>
 
-    beforeEach(async () => {
+    beforeEach(async function () {
       readFileStub = sinon.stub(fse, 'readFile').returns(Promise.resolve((Buffer.from(''))))
       safeLoadStub = sinon.stub(yaml, 'load').returns(manifest)
 
@@ -146,7 +146,7 @@ describe('apps:create', function () {
       })
     })
 
-    afterEach(() => {
+    afterEach(function () {
       readFileStub.restore()
       safeLoadStub.restore()
     })

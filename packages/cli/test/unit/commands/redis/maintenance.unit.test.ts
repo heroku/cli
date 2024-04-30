@@ -6,7 +6,7 @@ import * as nock from 'nock'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 import {CLIError} from '@oclif/core/lib/errors'
 
-describe('heroku redis:maintenance', function () {
+describe('heroku redis:maintenance should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd)
 })
 
@@ -15,7 +15,7 @@ describe('heroku redis:maintenance', function () {
     nock.cleanAll()
   })
 
-  it('# shows the maintenance message', async () => {
+  it('# shows the maintenance message', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -36,7 +36,7 @@ describe('heroku redis:maintenance', function () {
     expect(stderr.output).to.equal('')
   })
 
-  it('# sets the maintenance window', async () => {
+  it('# sets the maintenance window', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -61,7 +61,7 @@ describe('heroku redis:maintenance', function () {
     expect(stderr.output).to.equal('')
   })
 
-  it('# runs the maintenance', async () => {
+  it('# runs the maintenance', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -84,7 +84,7 @@ describe('heroku redis:maintenance', function () {
     expect(stderr.output).to.equal('')
   })
 
-  it('# run errors out when not in maintenance', async () => {
+  it('# run errors out when not in maintenance', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -107,7 +107,7 @@ describe('heroku redis:maintenance', function () {
     expect(stdout.output).to.equal('')
   })
 
-  it('# errors out on hobby dynos', async () => {
+  it('# errors out on hobby dynos', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'hobby'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
@@ -128,7 +128,7 @@ describe('heroku redis:maintenance', function () {
     expect(stdout.output).to.equal('')
   })
 
-  it('# errors out on bad maintenance window', async () => {
+  it('# errors out on bad maintenance window', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},

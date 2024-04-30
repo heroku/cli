@@ -27,9 +27,9 @@ const notifications = [
   },
 ]
 
-describe('notifications', () => {
-  describe('no notifications', () => {
-    describe('with app', () => {
+describe('notifications', function () {
+  describe('no notifications', function () {
+    describe('with app', function () {
       test
         .stdout()
         .stderr()
@@ -65,7 +65,7 @@ describe('notifications', () => {
         })
     })
 
-    describe('no app', () => {
+    describe('no app', function () {
       test
         .stdout()
         .stderr()
@@ -93,7 +93,7 @@ describe('notifications', () => {
         })
     })
 
-    describe('with notifications', () => {
+    describe('with notifications', function () {
       test
         .stdout()
         .stderr()

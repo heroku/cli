@@ -16,12 +16,13 @@ const FAKE_OUTPUT_TEXT = heredoc(`
    
  `)
 
-describe('pg:ps', () => {
+describe('pg:ps', function () {
   let api: nock.Scope
   let stub: sinon.SinonStub
   const addon = fixtures.addons['www-db']
   const app = fixtures.apps.api
-  beforeEach(() => {
+
+  beforeEach(function () {
     stub = sinon.stub(psql, 'exec').resolves(FAKE_OUTPUT_TEXT)
     api = nock('https://api.heroku.com:443')
       .post('/actions/addon-attachments/resolve')
@@ -30,13 +31,13 @@ describe('pg:ps', () => {
       .reply(200, {DATABASE_URL: 'postgres://test-database'})
   })
 
-  afterEach(() => {
+  afterEach(function () {
     stub.restore()
     nock.cleanAll()
     api.done()
   })
 
-  it('runs query', async () => {
+  it('runs query', async function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -56,7 +57,7 @@ SELECT pid,
     expect(stdout.output).to.equal(FAKE_OUTPUT_TEXT)
   })
 
-  it('runs verbose query', async () => {
+  it('runs verbose query', async function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',

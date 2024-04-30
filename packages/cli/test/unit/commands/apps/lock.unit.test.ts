@@ -3,9 +3,12 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import Cmd  from '../../../../src/commands/apps/lock'
 import runCommand from '../../../helpers/runCommand'
-describe('heroku apps:lock', () => {
-  afterEach(() => nock.cleanAll())
-  it('locks the app', async () => {
+describe('heroku apps:lock', function () {
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+
+  it('locks the app', async function () {
     const apiGetApp = nock('https://api.heroku.com:443')
       .get('/teams/apps/myapp')
       .reply(200, {name: 'myapp', locked: false})
@@ -20,7 +23,8 @@ describe('heroku apps:lock', () => {
     expect('Locking myapp...\nLocking myapp... done\n').to.eq(stderr.output)
     apiGetApp.done()
   })
-  it('returns an error if the app is already locked', async () => {
+
+  it('returns an error if the app is already locked', async function () {
     const apiGetApp = nock('https://api.heroku.com:443')
       .get('/teams/apps/myapp')
       .reply(200, {name: 'myapp', locked: true})

@@ -5,11 +5,11 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/log-connections'
 
-describe('pg:settings:log-connections', () => {
+describe('pg:settings:log-connections', function () {
   let api: nock.Scope
   let pg: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
     const addon = {
       id: 1,
       name: 'postgres-1',
@@ -27,12 +27,12 @@ describe('pg:settings:log-connections', () => {
     pg = nock('https://api.data.heroku.com')
   })
 
-  afterEach(() => {
+  afterEach(function () {
     api.done()
     pg.done()
   })
 
-  it('shows settings for log-connections with value', async () => {
+  it('shows settings for log-connections with value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: 'test_value'}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`
@@ -41,7 +41,7 @@ describe('pg:settings:log-connections', () => {
     `))
   })
 
-  it('shows settings for log-connections with no value', async () => {
+  it('shows settings for log-connections with no value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_connections: {value: ''}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout.output).to.equal(heredoc(`

@@ -118,7 +118,7 @@ State:        created\n
     })
   })
 
-  context('with add-ons', function () {
+  context('with add-ons with grandfathered pricing', function () {
     beforeEach(function () {
       const addon = fixtures.addons['dwh-db']
       addon.billed_price = {cents: 10000}

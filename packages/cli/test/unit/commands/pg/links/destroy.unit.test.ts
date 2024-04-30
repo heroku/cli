@@ -7,15 +7,15 @@ import {expect} from 'chai'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
-describe('pg:links:destroy', () => {
-  afterEach(() => {
+describe('pg:links:destroy', function () {
+  afterEach(function () {
     nock.cleanAll()
   })
 
-  describe('on an essential database', () => {
+  describe('on an essential database', function () {
     const addon = fixtures.addons['www-db']
 
-    it('errors when attempting to destroy a link', async () => {
+    it('errors when attempting to destroy a link', async function () {
       nock('https://api.heroku.com')
         .post('/actions/addon-attachments/resolve')
         .reply(200, [{addon}])
@@ -33,10 +33,10 @@ describe('pg:links:destroy', () => {
     })
   })
 
-  describe('on a production database', () => {
+  describe('on a production database', function () {
     const addon = fixtures.addons['dwh-db']
 
-    it('destroys a link', async () => {
+    it('destroys a link', async function () {
       nock('https://api.heroku.com')
         .post('/actions/addon-attachments/resolve')
         .reply(200, [{addon}])

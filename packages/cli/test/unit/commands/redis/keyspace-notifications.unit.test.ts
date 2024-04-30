@@ -5,7 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
-describe('heroku redis:keyspace-notifications', function () {
+describe('heroku redis:keyspace-notifications should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {config: 'A'})
 })
 
@@ -14,7 +14,7 @@ describe('heroku redis:keyspace-notifications', function () {
     nock.cleanAll()
   })
 
-  it('# sets the keyspace notify events', async () => {
+  it('# sets the keyspace notify events', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},

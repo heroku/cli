@@ -4,7 +4,7 @@ import * as _ from 'lodash'
 const writeFile = fs.writeFile
 const unlinkFile = fs.unlink
 
-describe('ci:migrate-manifest', () => {
+describe('ci:migrate-manifest', function () {
   let appJsonFileContents
   const appJsonPath = './app.json'
   const mockNewAppJsonFileContents = {environments: {}}

@@ -5,7 +5,7 @@ import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks
 import {unwrap} from '../../../helpers/utils/unwrap'
 nock.disableNetConnect()
 
-describe('buildpacks:clear', () => {
+describe('buildpacks:clear', function () {
   test
     .nock('https://api.heroku.com', api => {
       Stubber.put(api)

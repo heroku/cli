@@ -5,10 +5,16 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
+import * as Heroku from '@heroku-cli/schema'
 
 describe('spaces:info', function () {
-  const space = fixtures.spaces['non-shield-space']
-  const shieldSpace = fixtures.spaces['shield-space']
+  let space: Required<Heroku.Space>
+  let shieldSpace: Required<Heroku.Space>
+
+  beforeEach(function () {
+    space = fixtures.spaces['non-shield-space']
+    shieldSpace = fixtures.spaces['shield-space']
+  })
 
   it('shows space info', async function () {
     nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
