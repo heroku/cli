@@ -7,11 +7,9 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/psql'),
   require('./commands/repoint'),
   require('./commands/wait'),
 ])
 
 exports.host = require('./lib/host')
 exports.fetcher = require('./lib/fetcher')
-exports.psql = require('./lib/psql')
