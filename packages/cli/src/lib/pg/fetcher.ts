@@ -6,7 +6,7 @@ import {AmbiguousError, appAttachment, NotFound} from '../addons/resolve'
 import {fetchConfig} from './bastion'
 import {getConfig} from './config'
 import color from '@heroku-cli/color'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from './types'
+import type {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData} from './types'
 import {bastionKeyPlan, getConfigVarName, getConnectionDetails} from './util'
 
 const pgDebug = debug('pg')
@@ -23,20 +23,20 @@ export async function arbitraryAppDB(heroku: APIClient, app: string) {
   return addon
 }
 
-function getAttachmentNamesByAddon(attachments: AddOnAttachmentWithConfigVarsAndPlan[]) {
+function getAttachmentNamesByAddon(attachments: AddOnAttachmentWithConfigVarsAndPlan[]): AddOnAttachmentWithConfigVarsAndPlan {
   return attachments.reduce((results: any, a) => {
     results[a.addon.id] = (results[a.addon.id] || []).concat(a.name)
     return results
   }, {})
 }
 
-export async function all(heroku: APIClient, app_id: string) {
+export async function all(heroku: APIClient, app_id: string): Promise<AddOnWithRelatedData[]> {
   const {uniqBy} = require('lodash')
 
   pgDebug(`fetching all DBs on ${app_id}`)
 
   const attachments = await allAttachments(heroku, app_id)
-  let addons = attachments.map(a => a.addon)
+  let addons: AddOnWithRelatedData[] = attachments.map(a => a.addon)
 
   // Get the list of attachment names per addon here and add to each addon obj
   const attachmentNamesByAddon = getAttachmentNamesByAddon(attachments)
@@ -123,7 +123,7 @@ export async function getAttachment(heroku: APIClient, app: string, db = 'DATABA
   throw error
 }
 
-async function allAttachments(heroku: APIClient, app_id: string) {
+async function allAttachments(heroku: APIClient, app_id: string): Promise<AddOnAttachmentWithConfigVarsAndPlan[]> {
   const {body: attachments} = await heroku.get<AddOnAttachmentWithConfigVarsAndPlan[]>(`/apps/${app_id}/addon-attachments`, {
     headers: {'Accept-Inclusion': 'addon:plan,config_vars'},
   })

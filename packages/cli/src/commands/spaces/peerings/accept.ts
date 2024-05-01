@@ -29,7 +29,10 @@ export default class Accept extends Command {
     }
 
     const pcxID = flags.pcxid || args.pcxid
-    await this.heroku.post(`/spaces/${space}/peerings`, {body: {pcx_id: pcxID}})
+    await this.heroku.post(`/spaces/${space}/peerings`, {
+      body: {pcx_id: pcxID},
+      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
+    })
     ux.log(`Accepting and configuring peering connection ${color.cyan.bold(pcxID)}`)
   }
 }
