@@ -1,10 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
 import * as sinon from 'sinon'
-import * as fetcher from '../../../../src/lib/pg/fetcher'
-const proxyquire = require('proxyquire')
+import * as proxyquire from 'proxyquire'
 import runCommand from '../../../helpers/runCommand'
+import * as psql from '../../../../src/lib/pg/psql'
 
 const db = {
   user: 'jeff', password: 'pass', database: 'mydb', port: 5432, host: 'localhost', attachment: {
@@ -14,35 +13,40 @@ const db = {
   },
 }
 
-const fetcher = () => ({
+const fetcher = {
   database: () => db,
+}
+const {default: Cmd} = proxyquire('../../../../src/commands/pg/psql', {
+  '../../lib/pg/fetcher': fetcher,
 })
-const cmd = proxyquire('../../../commands/psql', {
-  '../lib/fetcher': fetcher,
-})[0]
-describe('psql', () => {
-  it('runs psql', () => {
-    let psql = require('../../../lib/psql')
-    sinon.stub(psql, 'exec')
-      .returns(Promise.resolve(''))
-    return runCommand(Cmd, [
+describe('psql', function () {
+  let stub: sinon.SinonStub
+
+  afterEach(function () {
+    stub.restore()
+  })
+
+  it('runs psql', async function () {
+    stub = sinon.stub(psql, 'exec').returns(Promise.resolve(''))
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
       '--command',
       'SELECT 1',
     ])
-      .then(() => expect(stdout.output).to.equal(''))
-      .then(() => expect(stderr.output).to.equal('--> Connecting to postgres-1\n'))
-      .then(() => psql.exec.restore())
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
   })
-  it('runs psql with file', () => {
-    let psql = require('../../../lib/psql')
-    sinon.stub(psql, 'execFile')
-      .returns(Promise.resolve(''))
-    return runCommand(Cmd, [
+  it('runs psql with file', async function () {
+    stub = sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
       '--file',
       'test.sql',
     ])
-      .then(() => expect(stdout.output).to.equal(''))
-      .then(() => expect(stderr.output).to.equal('--> Connecting to postgres-1\n'))
-      .then(() => psql.execFile.restore())
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
   })
 })
