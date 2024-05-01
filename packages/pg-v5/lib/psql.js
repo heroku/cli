@@ -266,10 +266,10 @@ async function execFile(db, file) {
 
 async function interactive(db) {
   const name = db.attachment.name
-  const prompt = `${db.attachment.app.name}::${name}%R%# `
+  const herokuprompt = `\x1b[35m${db.attachment.app.name}\x1b[0m::\x1b[32m${name}\x1b[0m%R%#`
   const configs = bastion.getConfigs(db)
   configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
-  const options = psqlInteractiveOptions(prompt, configs.dbEnv)
+  const options = psqlInteractiveOptions(herokuprompt, configs.dbEnv)
 
   return runWithTunnel(db, configs.dbTunnelConfig, options)
 }

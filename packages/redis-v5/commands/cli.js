@@ -10,7 +10,7 @@ let Client = require('ssh2').Client
 
 const REPLY_OK = 'OK'
 
-function redisCLI(addonName, uri, client) {
+function redisCLI(appName, uri, client) {
   let io = readline.createInterface(process.stdin, process.stdout)
   let reply = new Parser({
     returnReply(reply) {
@@ -71,8 +71,8 @@ function redisCLI(addonName, uri, client) {
 
   client.write(`AUTH ${uri.auth.split(':')[1]}\n`)
 
-  // io.setPrompt(uri.host + '> ')
-  io.setPrompt('\x1b[35m' + addonName + '\x1b[0m' + '> ')
+  let herokuprompt = `\x1b[35m${appName}\x1b[0m::\x1b[32mREDIS\x1b[0m> `
+  io.setPrompt(herokuprompt)
   io.on('line', function (line) {
     switch (line.split(' ')[0]) {
     case 'MONITOR':
@@ -104,7 +104,7 @@ function redisCLI(addonName, uri, client) {
   })
 }
 
-function bastionConnect({addonName, uri, bastions, config, prefer_native_tls}) {
+function bastionConnect({appName, uri, bastions, config, prefer_native_tls}) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -127,7 +127,7 @@ function bastionConnect({addonName, uri, bastions, config, prefer_native_tls}) {
           client = stream
         }
 
-        redisCLI(addonName, uri, client).then(resolve).catch(reject)
+        redisCLI(appName, uri, client).then(resolve).catch(reject)
       })
     }).connect({
       host: bastions.split(',')[0],
@@ -147,7 +147,7 @@ function match(config, lookup) {
   return null
 }
 
-function maybeTunnel(redis, config) {
+function maybeTunnel(appName, redis, config) {
   let bastions = match(config, /_BASTIONS/)
   let hobby = redis.plan.indexOf('hobby') === 0
   let uri = url.parse(redis.resource_url)
@@ -159,7 +159,7 @@ function maybeTunnel(redis, config) {
 
   // eslint-disable-next-line no-negated-condition, no-eq-null, eqeqeq
   if (bastions != null) {
-    return bastionConnect({redis.name, uri, bastions, config, prefer_native_tls})
+    return bastionConnect({appName, uri, bastions, config, prefer_native_tls})
   // eslint-disable-next-line no-else-return
   } else {
     let client
@@ -179,7 +179,7 @@ function maybeTunnel(redis, config) {
       client = net.connect({port: uri.port, host: uri.hostname})
     }
 
-    return redisCLI(redis.name, uri, client)
+    return redisCLI(appName, uri, client)
   }
 }
 
@@ -195,6 +195,7 @@ module.exports = {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
     let configVars = await getRedisConfigVars(addon, heroku)
+    let appName = addon.app.name
 
     let redis = await api.request(`/redis/v0/databases/${addon.name}`)
 
@@ -218,7 +219,7 @@ module.exports = {
     }).join(', ')
 
     cli.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
-    return maybeTunnel(redis, configVars)
+    return maybeTunnel(appName, redis, configVars)
   }),
 }
 
