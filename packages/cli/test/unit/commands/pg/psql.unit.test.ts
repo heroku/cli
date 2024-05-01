@@ -38,6 +38,7 @@ describe('psql', function () {
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
   })
+
   it('runs psql with file', async function () {
     stub = sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
     await runCommand(Cmd, [
