@@ -10,7 +10,7 @@ export function parsePorts(protocol: string, port: string = '') {
     return [0, 65535]
   }
 
-  let actual: any[] = []
+  let actual: string[] = []
   // eslint-disable-next-line no-eq-null, eqeqeq
   const ports: number[] = port.split('-').map(port => Number.parseInt(port))
   if (ports.length === 2) {
