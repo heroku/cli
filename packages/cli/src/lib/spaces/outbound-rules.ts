@@ -1,7 +1,7 @@
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
-export function parsePorts(protocol: string, port: string | undefined) {
+export function parsePorts(protocol: string, port: string = '') {
   if (port === '-1' || port === 'any') {
     if (protocol === 'icmp') {
       return [0, 255]
