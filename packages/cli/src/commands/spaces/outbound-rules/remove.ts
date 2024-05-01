@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import confirmCommand from '../../../lib/confirmCommand'
 
 export default class Remove extends Command {
+  static aliases = ['outbound-rules:remove']
   static topic = 'outbound-rules'
   static description = 'Remove a Rules from the list of Outbound Rules';
   static examples = [heredoc(`
