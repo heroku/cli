@@ -24,22 +24,24 @@ const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
   return Cmd
 }
 
-describe('pg', () => {
+describe('pg', function () {
   let api: nock.Scope
   let pg: nock.Scope
-  beforeEach(() => {
+
+  beforeEach(function () {
     api = nock('https://api.heroku.com:443')
     pg = nock('https://api.data.heroku.com:443')
   })
-  afterEach(() => {
+
+  afterEach(function () {
     nock.cleanAll()
     api.done()
     pg.done()
     allSinonStub.restore()
     addonSinonStub.restore()
   })
-  context('with 0 dbs', () => {
-    it('shows empty state', async () => {
+  context('with 0 dbs', function () {
+    it('shows empty state', async function () {
       const Cmd = getCmd({allResult: [], addonResult: {}})
       api.get('/apps/myapp/config-vars')
         .reply(200, {})
@@ -51,7 +53,7 @@ describe('pg', () => {
       expect(stderr.output).to.equal('')
     })
   })
-  context('with 2 dbs', () => {
+  context('with 2 dbs', function () {
     const plan = {name: 'heroku-postgresql:hobby-dev'}
     const config = {
       DATABASE_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx', HEROKU_POSTGRESQL_COBALT_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx', HEROKU_POSTGRESQL_PURPLE_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec3-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx',
@@ -65,7 +67,7 @@ describe('pg', () => {
     const dbB = {info: [
       {name: 'Plan', values: ['Hobby-dev']}, {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-55-111-111-1.compute-1.amazonaws.com/dxxxxxxxxxxxx']},
     ], resource_url: config.HEROKU_POSTGRESQL_PURPLE_URL}
-    it('shows postgres info', async () => {
+    it('shows postgres info', async function () {
       const Cmd = getCmd({allResult: addons, addonResult: {}})
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
@@ -80,7 +82,7 @@ describe('pg', () => {
       expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_COBALT_URL, DATABASE_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
       expect(stderr.output).to.equal('')
     })
-    it('shows postgres info using attachment names', async () => {
+    it('shows postgres info using attachment names', async function () {
       all = [
         {
           id: 1,
@@ -104,7 +106,7 @@ describe('pg', () => {
       ])
       expect(stdout.output).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
     })
-    it('shows postgres info for single database when arg sent in', async () => {
+    it('shows postgres info for single database when arg sent in', async function () {
       addon = addons[1]
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
@@ -120,7 +122,7 @@ describe('pg', () => {
       expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
       expect(stderr.output).to.equal('')
     })
-    it('shows warning for 404', async () => {
+    it('shows warning for 404', async function () {
       all = addons
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
