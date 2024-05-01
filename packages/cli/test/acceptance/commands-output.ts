@@ -292,10 +292,10 @@ spaces                                         list available spaces
 spaces:create                                  create a new space
 spaces:destroy                                 destroy a space
 spaces:info                                    show info about a space
-spaces:peering:info                            display the information necessary to initiate a peering connection
 spaces:peerings                                list peering connections for a space
 spaces:peerings:accept                         accepts a pending peering request for a private space
 spaces:peerings:destroy                        destroys an active peering connection in a private space
+spaces:peerings:info                           display the information necessary to initiate a peering connection
 spaces:ps                                      list dynos for a space
 spaces:rename                                  renames a space
 spaces:topology                                show space topology
