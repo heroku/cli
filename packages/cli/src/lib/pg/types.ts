@@ -130,8 +130,25 @@ export type PgStatus = {
   message: string
 }
 
-type TenantInfo = 'Plan' | 'Status' | 'Connections' | 'PG Version' | 'Created' | 'Data Size' | 'Tables' | 'Fork/Follow'
-  | 'Rollback' | 'Continuous Protection'
+type TenantInfoNames =
+  'Plan'
+  | 'Status'
+  | 'Connections'
+  | 'PG Version'
+  | 'Created'
+  | 'Data Size'
+  | 'Tables'
+  | 'Fork/Follow'
+  | 'Rollback'
+  | 'Continuous Protection'
+  | 'Billing App'
+  | 'Add-on'
+
+export type TenantInfo = {
+  name: TenantInfoNames
+  values: string[]
+  resolve_db_name?: boolean
+}
 
 export type PgDatabaseTenant = {
   addon_id: string
@@ -144,10 +161,7 @@ export type PgDatabaseTenant = {
   resource_url: string
   'waiting?': boolean
   num_bytes: number
-  info: Array<{
-    name: TenantInfo
-    values: string[]
-  }>
+  info: Array<TenantInfo>
 }
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant

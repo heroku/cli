@@ -3,7 +3,6 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import Cmd  from '../../../../src/commands/pg/copy'
 import runCommand from '../../../helpers/runCommand'
-// const unwrap = require('../../unwrap')
 
 const addon = {
   id: 1, name: 'postgres-1', app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], plan: {name: 'heroku-postgresql:standard-0'},
