@@ -12,17 +12,13 @@ export function parsePorts(protocol: string, port: string | undefined) {
 
   let actual: any[] = []
   // eslint-disable-next-line no-eq-null, eqeqeq
-  if (port != null) {
-    const ports: any[] = port.split('-')
-    if (ports.length === 2) {
-      // eslint-disable-next-line unicorn/prefer-math-trunc
-      actual = [ports[0] | 0, ports[1] | 0]
-    } else if (ports.length === 1) {
-      // eslint-disable-next-line unicorn/prefer-math-trunc
-      actual = [ports[0] | 0, ports[0] | 0]
-    } else {
-      throw new Error('Specified --port range seems incorrect.')
-    }
+  const ports: number[] = port.split('-').map(port => Number.parseInt(port))
+  if (ports.length === 2) {
+    actual = ports
+  } else if (ports.length === 1) {
+    actual = ports.concat(ports)
+  } else {
+    throw new Error('Specified --port range seems incorrect.')
   }
 
   if (actual.length !== 2) {
