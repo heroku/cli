@@ -10,7 +10,7 @@ let Client = require('ssh2').Client
 
 const REPLY_OK = 'OK'
 
-function redisCLI(uri, client) {
+function redisCLI(addonName, uri, client) {
   let io = readline.createInterface(process.stdin, process.stdout)
   let reply = new Parser({
     returnReply(reply) {
@@ -71,7 +71,8 @@ function redisCLI(uri, client) {
 
   client.write(`AUTH ${uri.auth.split(':')[1]}\n`)
 
-  io.setPrompt(uri.host + '> ')
+  // io.setPrompt(uri.host + '> ')
+  io.setPrompt('\x1b[35m' + addonName + '\x1b[0m' + '> ')
   io.on('line', function (line) {
     switch (line.split(' ')[0]) {
     case 'MONITOR':
@@ -103,7 +104,7 @@ function redisCLI(uri, client) {
   })
 }
 
-function bastionConnect({uri, bastions, config, prefer_native_tls}) {
+function bastionConnect({addonName, uri, bastions, config, prefer_native_tls}) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -126,7 +127,7 @@ function bastionConnect({uri, bastions, config, prefer_native_tls}) {
           client = stream
         }
 
-        redisCLI(uri, client).then(resolve).catch(reject)
+        redisCLI(addonName, uri, client).then(resolve).catch(reject)
       })
     }).connect({
       host: bastions.split(',')[0],
@@ -158,7 +159,7 @@ function maybeTunnel(redis, config) {
 
   // eslint-disable-next-line no-negated-condition, no-eq-null, eqeqeq
   if (bastions != null) {
-    return bastionConnect({uri, bastions, config, prefer_native_tls})
+    return bastionConnect({redis.name, uri, bastions, config, prefer_native_tls})
   // eslint-disable-next-line no-else-return
   } else {
     let client
@@ -178,7 +179,7 @@ function maybeTunnel(redis, config) {
       client = net.connect({port: uri.port, host: uri.hostname})
     }
 
-    return redisCLI(uri, client)
+    return redisCLI(redis.name, uri, client)
   }
 }
 
