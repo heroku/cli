@@ -29,6 +29,7 @@ export default class Info extends Command {
   static examples = [heredoc(`
     $ heroku spaces:peering:info example-space
     === example-space  Peering Info
+
     AWS Account ID:    012345678910
     AWS Region:        us-west-2
     AWS VPC ID:        vpc-baadf00d
