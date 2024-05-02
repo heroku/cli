@@ -15,6 +15,21 @@ export function hostStatus(s: string) {
     return `${color.red(s)}`
   case 'released':
     return `${color.gray(s)}`
+  }
+}
+
+export function peeringStatus(s: string) {
+  switch (s) {
+  case 'active':
+    return `${color.green(s)}`
+  case 'pending-acceptance':
+  case 'provisioning':
+    return `${color.yellow(s)}`
+  case 'expired':
+  case 'failed':
+  case 'deleted':
+  case 'rejected':
+    return `${color.red(s)}`
   default:
     return s
   }
