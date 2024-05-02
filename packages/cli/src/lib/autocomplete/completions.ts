@@ -149,6 +149,12 @@ export const ProcessTypeCompletion: Completion = {
   },
 }
 
+export const ProtocolCompletion = {
+  cacheDuration: 60 * 60 * 24 * 365, options: async () => {
+    return ['tcp', 'udp', 'icmp', '0-255', 'any']
+  },
+}
+
 export const RegionCompletion: Completion = {
   cacheDuration: oneDay * 7,
   options: async ctx => {

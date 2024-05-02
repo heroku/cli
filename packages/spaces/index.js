@@ -15,12 +15,9 @@ exports.commands = [
   require('./commands/vpn/wait'),
   require('./commands/vpn/destroy'),
   require('./commands/vpn/update'),
-  require('./commands/transfer'),
   require('./commands/drains/get'),
   require('./commands/trusted-ips'),
   require('./commands/trusted-ips/add'),
   require('./commands/trusted-ips/remove'),
-  require('./commands/outbound-rules/add'),
-  require('./commands/outbound-rules/remove'),
   require('./commands/hosts'),
 ]

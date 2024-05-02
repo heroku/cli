@@ -1,6 +1,32 @@
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
+export function parsePorts(protocol: string, port: string = '') {
+  if (port === '-1' || port === 'any') {
+    if (protocol === 'icmp') {
+      return [0, 255]
+    }
+
+    return [0, 65535]
+  }
+
+  let actual: number[] = []
+  const ports: number[] = port.split('-').map(port => Number.parseInt(port))
+  if (ports.length === 2) {
+    actual = ports
+  } else if (ports.length === 1) {
+    actual = ports.concat(ports)
+  } else {
+    throw new Error('Specified --port range seems incorrect.')
+  }
+
+  if (actual.length !== 2) {
+    throw new Error('Specified --port range seems incorrect.')
+  }
+
+  return actual
+}
+
 export function displayRules(space: string, ruleset: Heroku.OutboundRuleset) {
   const rules = ruleset.rules || []
   if (rules.length > 0) {
