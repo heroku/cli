@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 const {safeLoad} = require('js-yaml')
 const {readFile} = require('fs-extra')
 const {flags} = require('@heroku-cli/command')

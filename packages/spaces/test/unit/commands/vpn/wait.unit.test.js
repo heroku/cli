@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cmd = require('../../../../commands/vpn/wait')
 const expect = require('chai').expect
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 describe('spaces:vpn:wait', function () {
   beforeEach(() => cli.mockConsole())

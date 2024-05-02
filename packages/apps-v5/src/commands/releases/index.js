@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const stripAnsi = require('strip-ansi')
 
 async function run(context, heroku) {

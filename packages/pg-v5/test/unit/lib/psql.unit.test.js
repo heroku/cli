@@ -543,7 +543,7 @@ describe('psql', () => {
           const invalidPath = path.join('/', 'path', 'to', 'history')
           mockHerokuPSQLHistory(invalidPath)
 
-          const cli = require('heroku-cli-util')
+          const cli = require('@heroku/heroku-cli-util')
           cli.mockConsole()
 
           const expectedEnv = Object.freeze({

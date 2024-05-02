@@ -1,7 +1,7 @@
 'use strict'
 /* globals context beforeEach */
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let cmd = require('../../../commands/addons')
 let expect = require('chai').expect
 let fixtures = require('../../fixtures')

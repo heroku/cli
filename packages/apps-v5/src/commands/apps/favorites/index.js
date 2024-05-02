@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 async function run(context, heroku) {
   let favorites = await heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})

@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const {capitalize} = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 

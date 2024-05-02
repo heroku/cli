@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const lib = require('../lib/spaces')
 
 async function run(context, heroku) {

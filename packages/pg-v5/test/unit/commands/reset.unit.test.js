@@ -1,7 +1,7 @@
 'use strict'
 /* global beforeEach afterEach context */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const {expect} = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')

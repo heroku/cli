@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
 const {flags} = require('@heroku-cli/command')

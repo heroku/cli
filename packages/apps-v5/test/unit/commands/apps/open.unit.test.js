@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const expect = require('chai').expect
 const nock = require('nock')
 const proxyquire = require('proxyquire')
@@ -19,7 +19,7 @@ describe('heroku apps:open', function () {
     openStub = sinon.stub(cli, 'open')
 
     cmd = proxyquire('../../../../src/commands/apps/open', {
-      'heroku-cli-util': openStub,
+      '@heroku/heroku-cli-util': openStub,
     })
     cli.mockConsole()
   })

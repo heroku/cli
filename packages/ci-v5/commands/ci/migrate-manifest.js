@@ -1,5 +1,5 @@
 const fs = require('fs')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const BB = require('bluebird')
 const writeFile = BB.promisify(fs.writeFile)
 const unlinkFile = BB.promisify(fs.unlink)

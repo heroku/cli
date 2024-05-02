@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 function dropboxURL(url) {
   // Force a dump file to download instead of rendering as HTML

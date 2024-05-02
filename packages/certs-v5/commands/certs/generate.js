@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 let openssl = require('../../lib/openssl.js')
 let endpoints = require('../../lib/endpoints.js').all

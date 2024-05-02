@@ -1,5 +1,5 @@
 let _ = require('lodash')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let error = require('./error')
 
 let getOwner = function (owner) {

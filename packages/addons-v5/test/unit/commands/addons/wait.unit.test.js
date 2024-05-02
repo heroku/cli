@@ -2,7 +2,7 @@
 /* globals context beforeEach afterEach */
 
 let fixtures = require('../../../fixtures')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let nock = require('nock')
 let cmd = require('../../../../commands/addons/wait')
 let _ = require('lodash')

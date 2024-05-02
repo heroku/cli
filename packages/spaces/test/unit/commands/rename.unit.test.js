@@ -3,7 +3,7 @@
 
 let nock = require('nock')
 let cmd = require('../../../commands/rename')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 describe('spaces:rename', function () {
   beforeEach(() => cli.mockConsole())

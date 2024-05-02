@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cmd = require('../../../../commands/vpn/config')
 const expect = require('chai').expect
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 let vpnResponse = {
   id: '123456789012',

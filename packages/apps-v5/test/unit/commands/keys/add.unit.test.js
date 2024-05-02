@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const {expect} = require('chai')
 const proxyquire = require('proxyquire')
@@ -22,7 +22,7 @@ describe('keys:add', () => {
     mockCli = Object.assign({}, cli)
 
     cmd = proxyquire('../../../../src/commands/keys/add', {
-      'heroku-cli-util': mockCli,
+      '@heroku/heroku-cli-util': mockCli,
       os: {homedir: osHomedir},
       inquirer,
     })

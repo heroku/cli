@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 

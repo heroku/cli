@@ -3,7 +3,7 @@
 
 let fixtures = require('../../../fixtures')
 let util = require('../../../util')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let nock = require('nock')
 const {expect} = require('chai')
 let cmd = require('../../../../commands/addons/rename')

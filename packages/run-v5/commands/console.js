@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
 

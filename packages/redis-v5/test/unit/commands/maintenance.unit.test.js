@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let exit = require('heroku-cli-util').exit
+let exit = require('@heroku/heroku-cli-util').exit
 
 let command = require('../../../commands/maintenance')
 const unwrap = require('../../unwrap')

@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 const {flags} = require('@heroku-cli/command')
 
 async function run(context, heroku) {

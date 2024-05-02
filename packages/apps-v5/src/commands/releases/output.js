@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let releases = require('../../releases')
 let output = require('../../output')
 
@@ -18,7 +18,7 @@ async function run(context, heroku) {
   // eslint-disable-next-line new-cap
   await output.Stream(streamUrl)
     .catch(error => {
-      if (error.statusCode === 404) {
+      if (error.statusCode === 404 || error.response?.statusCode === 404) {
         cli.warn('Release command not started yet. Please try again in a few seconds.')
         return
       }

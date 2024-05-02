@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 function displayJSON(info) {
   cli.log(JSON.stringify(info, null, 2))

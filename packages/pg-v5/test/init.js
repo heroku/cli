@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 chai.use(chaiAsPromised)
 
-let cli = require('heroku-cli-util') // Load heroku-cli-util helpers
+let cli = require('@heroku/heroku-cli-util') // Load heroku-cli-util helpers
 cli.raiseErrors = true // Fully raise exceptions
 process.env.TZ = 'UTC' // Use UTC time always
 

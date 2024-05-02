@@ -1,5 +1,5 @@
 const api = require('./heroku-api')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const disambiguatePipeline = require('./disambiguate')
 
 async function getPipeline(context, client) {

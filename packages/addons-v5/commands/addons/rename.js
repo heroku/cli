@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 let run = cli.command({preauth: true}, function (ctx, api) {
   return (async function () {

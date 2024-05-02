@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 function printJSON(features) {
   cli.log(JSON.stringify(features, null, 2))

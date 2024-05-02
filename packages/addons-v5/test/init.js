@@ -4,7 +4,7 @@
 const chai = require('chai')
 chai.use(require('chai-as-promised'))
 
-global.cli = require('heroku-cli-util')
+global.cli = require('@heroku/heroku-cli-util')
 global.commands = require('..').commands
 global.expect = chai.expect
 global.nock = require('nock')

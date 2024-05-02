@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 const getProcessType = s => s.split('-', 2)[0].split('.', 2)[0]
 const getProcessNum = s => Number.parseInt(s.split('-', 2)[0].split('.', 2)[1])

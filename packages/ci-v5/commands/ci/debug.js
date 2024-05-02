@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const Dyno = require('@heroku-cli/plugin-run-v5').Dyno
 const api = require('../../lib/heroku-api')
 const git = require('../../lib/git')

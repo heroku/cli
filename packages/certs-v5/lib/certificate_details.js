@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let formatDate = require('./format_date.js')
 
 module.exports = function (cert, message) {

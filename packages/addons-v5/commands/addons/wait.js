@@ -2,7 +2,7 @@
 
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const {notify} = require('../../lib/notify')
 const {waitForAddonProvisioning, waitForAddonDeprovisioning} = require('../../lib/addons_wait')
 

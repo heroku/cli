@@ -1,7 +1,7 @@
 'use strict'
 /* globals after before beforeEach afterEach context nock expect */
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let cmd = require('../../../../commands/access/remove')[0]
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')

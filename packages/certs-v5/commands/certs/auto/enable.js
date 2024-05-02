@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let {waitForDomains, printDomains, waitForCertIssuedOnDomains} = require('../../../lib/domains')
 const {notify} = require('../../../lib/notify')
 

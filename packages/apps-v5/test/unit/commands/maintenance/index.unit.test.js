@@ -1,7 +1,7 @@
 'use strict'
 /* globals commands beforeEach afterEach */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 
 // get command from index.js

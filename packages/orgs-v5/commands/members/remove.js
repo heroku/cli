@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let Utils = require('../../lib/utils')
 const {flags} = require('@heroku-cli/command')
 

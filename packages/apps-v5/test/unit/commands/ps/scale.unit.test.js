@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach commands */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'ps' && c.command === 'scale')
 const {expect} = require('chai')

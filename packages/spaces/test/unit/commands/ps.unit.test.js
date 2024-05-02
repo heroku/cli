@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cmd = require('../../../commands/ps')
 const expect = require('chai').expect
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const strftime = require('strftime')
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
