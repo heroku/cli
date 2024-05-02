@@ -33,7 +33,7 @@ export default class Destroy extends Command {
     if (!pcxID) {
       ux.error(heredoc`
         pcxid required.
-        USAGE: heroku spaces:destroy my-space
+        USAGE: heroku spaces:peering:destroy pcx-4bd27022
       `)
     }
 
