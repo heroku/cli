@@ -64,7 +64,7 @@
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
+    "test": "cross-env TZ=utc nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
     "version": "oclif readme && git add README.md"
   },
   "topic": "container"
