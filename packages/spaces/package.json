@@ -58,7 +58,7 @@
     "lint": "eslint . --ext .js --config ../../.eslintrc --ignore-path ../../.eslintignore",
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif manifest",
-    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\" && yarn lint",
+    "test": "nyc mocha --forbid-only \"test/**/*.unit.test.js\"",
     "version": "oclif readme && git add README.md"
   }
 }

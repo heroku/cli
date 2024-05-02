@@ -18,7 +18,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - run: yarn test
+      - name: unit tests
+        run: yarn test
+      - name: linting
+        run: yarn lint
 
   integration:
     runs-on: ${{ matrix.os }}
