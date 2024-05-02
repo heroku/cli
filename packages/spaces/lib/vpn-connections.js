@@ -1,4 +1,5 @@
 'use strict'
+const cli = require('heroku-cli-util')
 
 module.exports = function (heroku) {
   function postVPNConnections(space, name, ip, cidrs) {
@@ -35,11 +36,32 @@ module.exports = function (heroku) {
     })
   }
 
+  function displayVPNConfigInfo(space, name, config) {
+    cli.styledHeader(`${name} VPN Tunnels`)
+    config.tunnels.forEach((val, i) => {
+      val.tunnel_id = 'Tunnel ' + (i + 1)
+      val.routable_cidr = config.space_cidr_block
+      val.ike_version = config.ike_version
+    })
+
+    cli.table(config.tunnels, {
+      columns: [
+        {key: 'tunnel_id', label: 'VPN Tunnel'},
+        {key: 'customer_ip', label: 'Customer Gateway'},
+        {key: 'ip', label: 'VPN Gateway'},
+        {key: 'pre_shared_key', label: 'Pre-shared Key'},
+        {key: 'routable_cidr', label: 'Routable Subnets'},
+        {key: 'ike_version', label: 'IKE Version'},
+      ],
+    })
+  }
+
   return {
     postVPNConnections,
     patchVPNConnections,
     getVPNConnections,
     getVPNConnection,
     deleteVPNConnection,
+    displayVPNConfigInfo,
   }
 }
