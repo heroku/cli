@@ -19,7 +19,6 @@ exports.commands = [
   require('./commands/transfer'),
   require('./commands/drains/get'),
   require('./commands/trusted-ips'),
-  require('./commands/trusted-ips/add'),
   require('./commands/trusted-ips/remove'),
   require('./commands/hosts'),
 ]
