@@ -7,7 +7,7 @@ import heredoc from 'tsheredoc'
 export default class Config extends Command {
   static topic = 'spaces'
   static description = heredoc(`
-    display the configuration information for VPN connections in a Private Space
+    display the configuration information for VPN
 
     You will use the information provided by this command to establish a Private Space VPN Connection.
 
