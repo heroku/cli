@@ -7,7 +7,6 @@ exports.topics = [
 ]
 
 exports.commands = flatten([
-  require('./commands/repoint'),
   require('./commands/wait'),
 ])
 

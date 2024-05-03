@@ -7,19 +7,22 @@ import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import * as sinon from 'sinon'
+import {Space} from '@heroku-cli/schema'
 
 describe('spaces:wait', function () {
-  const allocatingSpace = fixtures.spaces['allocating-space']
-  const allocatedSpace = fixtures.spaces['non-shield-space']
+  let allocatingSpace: Required<Space>
+  let allocatedSpace: Required<Space>
   let sandbox: sinon.SinonSandbox
   let notifySpy: sinon.SinonSpy
 
-  beforeEach(() => {
+  beforeEach(function () {
     sandbox = sinon.createSandbox()
     notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+    allocatingSpace = fixtures.spaces['allocating-space']
+    allocatedSpace = fixtures.spaces['non-shield-space']
   })
 
-  afterEach(() => {
+  afterEach(function () {
     sandbox.restore()
   })
 

@@ -6,7 +6,6 @@ exports.topics = [
 ]
 
 exports.commands = [
-  require('./commands/peering/index'),
   require('./commands/vpn/connect'),
   require('./commands/vpn/index'),
   require('./commands/vpn/info'),
@@ -16,5 +15,4 @@ exports.commands = [
   require('./commands/drains/get'),
   require('./commands/trusted-ips'),
   require('./commands/trusted-ips/remove'),
-  require('./commands/hosts'),
 ]
