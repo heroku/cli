@@ -20,7 +20,7 @@ export function displayPeeringsAsJSON(peerings: Peering[]) {
 
 export function displayPeerings(space: string, peerings: Peering[]) {
   ux.styledHeader(`${space} Peerings`)
-  ux.table(peerings, {
+  ux.table<Peering>(peerings, {
     pcx_id: {
       header: 'PCX ID',
     },
@@ -29,11 +29,11 @@ export function displayPeerings(space: string, peerings: Peering[]) {
     },
     cidr_blocks: {
       header: 'CIDR Blocks',
-      get: (row: any) => displayCIDR(row.cidr_blocks),
+      get: (row: Peering) => displayCIDR(row.cidr_blocks),
     },
     status: {
       header: 'Status',
-      get: (row: any) => peeringStatus(row.status),
+      get: (row: Required<Peering>) => peeringStatus(row.status),
     },
     aws_vpc_id: {
       header: 'VPC ID',
