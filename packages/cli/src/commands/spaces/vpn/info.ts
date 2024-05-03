@@ -30,7 +30,6 @@ export default class Info extends Command {
       required: true,
     }),
     json: flags.boolean({description: 'output in json format'}),
-    name: flags.string({char: 'n', description: 'name or id of the VPN connection to get info from'}),
   }
 
   static args = {
