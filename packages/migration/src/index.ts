@@ -203,7 +203,7 @@ import * as Heroku from '@heroku-cli/schema'
   }
 
   private migrateHerokuCliUtilsExports(sourceFile: ts.SourceFile, file: string): ts.SourceFile {
-    const importName = findRequiredPackageVarNameIfExits(sourceFile, 'heroku-cli-util')
+    const importName = findRequiredPackageVarNameIfExits(sourceFile, '@heroku/heroku-cli-util')
 
     //  todo: hoist requires to top of the file?
     if (!importName) {
