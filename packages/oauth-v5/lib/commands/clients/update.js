@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let lib = require('../../clients')
 
 let empty = o => Object.keys(o).length === 0

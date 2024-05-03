@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 function prefix(transfer) {
   if (transfer.from_type === 'pg_dump') {

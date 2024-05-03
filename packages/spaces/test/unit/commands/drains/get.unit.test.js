@@ -4,7 +4,7 @@
 let nock = require('nock')
 let cmd = require('../../../../commands/drains/get')
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 describe('drains:get', function () {
   beforeEach(() => cli.mockConsole())

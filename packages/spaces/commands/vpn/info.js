@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const format = require('../../lib/format')()
 
 function displayVPNInfo(space, name, info) {

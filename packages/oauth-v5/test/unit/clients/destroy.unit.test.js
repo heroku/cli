@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 let nock = require('nock')
 let cmd = require('../../../lib/commands/clients/destroy')
 

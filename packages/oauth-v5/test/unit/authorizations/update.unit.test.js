@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../lib/commands/authorizations/update')
 
