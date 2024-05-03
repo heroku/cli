@@ -3,7 +3,7 @@
 const debug = require('./debug')
 const pgUtil = require('./util')
 const getConfig = require('./config')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const bastion = require('./bastion')
 
 module.exports = heroku => {

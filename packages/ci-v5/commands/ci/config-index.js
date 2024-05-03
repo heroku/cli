@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const shellescape = require('shell-escape')
 const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')

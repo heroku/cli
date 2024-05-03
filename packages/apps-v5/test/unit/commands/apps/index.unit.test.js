@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach afterEach */
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const apps = require('../../../../src/commands/apps/index.js')[0]

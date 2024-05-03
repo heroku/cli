@@ -1,7 +1,7 @@
 'use strict'
 /* globals beforeEach commands expect nock */
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let proxyquire = require('proxyquire')
 const sinon = require('sinon')
 let openStub = sinon.stub(cli, 'open').callsFake(() => {})
@@ -28,7 +28,7 @@ describe('addons:docs', function () {
       .reply(200, {name: 'slowdb'})
 
     docs = proxyquire('../../../../commands/addons/docs', {
-      'heroku-cli-util': openStub,
+      '@heroku/heroku-cli-util': openStub,
     })
 
     return docs.run({args: {addon: 'slowdb'}, flags: {}})

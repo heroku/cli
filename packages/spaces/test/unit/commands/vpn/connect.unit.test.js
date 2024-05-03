@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cmd = require('../../../../commands/vpn/connect')
 const expect = require('chai').expect
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const unwrap = require('../../../unwrap')
 
 describe('spaces:vpn:connect', function () {

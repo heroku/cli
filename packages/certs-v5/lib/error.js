@@ -1,7 +1,7 @@
 'use strict'
 
 var util = require('util')
-var cli = require('heroku-cli-util')
+var cli = require('@heroku/heroku-cli-util')
 
 function ErrorExit(code) {
   Error.call(this)

@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')

@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const configCmd = require('./config')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 

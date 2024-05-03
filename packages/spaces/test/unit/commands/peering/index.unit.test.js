@@ -4,7 +4,7 @@
 let nock = require('nock')
 let cmd = require('../../../../commands/peering/index')
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let peers = [
   {
     type: 'heroku',

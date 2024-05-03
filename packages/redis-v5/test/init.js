@@ -1,7 +1,7 @@
 'use strict'
 /* globals cli */
 
-global.cli = require('heroku-cli-util')
+global.cli = require('@heroku/heroku-cli-util')
 cli.raiseErrors = true
 
 let chai = require('chai')

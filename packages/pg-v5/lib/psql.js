@@ -58,7 +58,7 @@ function psqlInteractiveOptions(prompt, dbEnv) {
       debug('Logging psql history to %s', psqlHistoryPath)
       psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
     } else {
-      const cli = require('heroku-cli-util')
+      const cli = require('@heroku/heroku-cli-util')
       cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
     }
   }

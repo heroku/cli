@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 const grandfatheredPrice = require('../../lib/util').grandfatheredPrice
 const formatPrice = require('../../lib/util').formatPrice

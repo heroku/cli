@@ -6,7 +6,7 @@ nock.disableNetConnect()
 
 describe('buildpacks:search', () => {
   test
-    .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       api
         .get('/buildpacks?in[namespace][]=heroku')
         .reply(200, [
@@ -24,7 +24,7 @@ describe('buildpacks:search', () => {
     })
 
   test
-    .nock('https://buildpack-registry.heroku.com', (api: nock.ReplyCallbackResult) => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       const rubyBuildpack = Fixture.buildpack({
         name: 'ruby',
         description: 'Official Heroku Buildpack for Ruby',

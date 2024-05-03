@@ -1,7 +1,7 @@
 'use strict'
 
 let _ = require('lodash')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let Utils = require('../../lib/utils')
 const {flags} = require('@heroku-cli/command')
 const {RoleCompletion} = require('@heroku-cli/command/lib/completions')

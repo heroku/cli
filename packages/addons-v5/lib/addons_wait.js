@@ -2,7 +2,7 @@
 
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 module.exports = {
   waitForAddonProvisioning: async function (api, addon, interval) {

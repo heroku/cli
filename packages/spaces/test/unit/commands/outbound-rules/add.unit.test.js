@@ -4,7 +4,7 @@
 let nock = require('nock')
 let chai = require('chai')
 let cmd = require('../../../../commands/outbound-rules/add')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 describe('outbound-rules:add', function () {
   beforeEach(() => cli.mockConsole())

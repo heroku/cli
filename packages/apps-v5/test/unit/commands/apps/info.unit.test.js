@@ -2,7 +2,7 @@
 /* globals beforeEach commands */
 
 const nock = require('nock')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const expect = require('chai').expect
 const cmd = commands.find(c => c.topic === 'apps' && c.command === 'info')
 const unwrap = require('../../../unwrap')

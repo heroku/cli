@@ -10,7 +10,7 @@ let expect = chai.expect
 let chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 let now = new Date()
 

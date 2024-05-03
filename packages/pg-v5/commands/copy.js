@@ -1,7 +1,7 @@
 'use strict'
 
 const util = require('../lib/util')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 async function run(context, heroku) {
   const host = require('../lib/host')

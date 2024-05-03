@@ -4,7 +4,7 @@
 let nock = require('nock')
 let cmd = require('../../../commands/create')
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 let now = new Date()
 let features = ['one', 'two']

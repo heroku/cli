@@ -9,7 +9,7 @@ let sinonChai = require('sinon-chai')
 chai.should()
 chai.use(sinonChai)
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let childProcess = require('child_process')
 
 let certs = require('../../../../commands/certs/generate.js')

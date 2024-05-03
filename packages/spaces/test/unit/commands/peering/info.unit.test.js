@@ -4,7 +4,7 @@
 let nock = require('nock')
 let cmd = require('../../../../commands/peering/info')
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let info = {
   aws_account_id: '012345678900',
   aws_region: 'us-west-2',

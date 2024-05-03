@@ -2,7 +2,7 @@
 /* globals afterEach beforeEach commands */
 
 const unwrap = require('../../../unwrap')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'releases' && c.command === 'rollback')
 const expect = require('chai').expect
@@ -67,7 +67,7 @@ describe('releases:rollback', function () {
       .then(() => stdMocks.restore())
   })
 
-  it('has a missing missing output', function () {
+  it('has a missing output', function () {
     stdMocks.use()
     process.stdout.columns = 80
     let busl = nock('https://busl.test:443')

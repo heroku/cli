@@ -3,7 +3,7 @@
 
 let nock = require('nock')
 let cmd = require('../../../../commands/outbound-rules/remove')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 describe('outbound-rules:remove', function () {
   beforeEach(() => cli.mockConsole())

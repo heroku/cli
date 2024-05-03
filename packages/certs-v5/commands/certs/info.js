@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 let flags = require('../../lib/flags.js')
 let certificateDetails = require('../../lib/certificate_details.js')

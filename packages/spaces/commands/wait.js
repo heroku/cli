@@ -1,6 +1,6 @@
 // -*- mode: js; js-indent-level: 2; -*-
 'use strict'
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let info = require('./info')
 let wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 

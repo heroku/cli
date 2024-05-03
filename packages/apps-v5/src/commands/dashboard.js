@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const {round, flatten, mean, groupBy, map, sum, sumBy, toPairs, sortBy, zip} = require('lodash')
 
 let empty = o => Object.keys(o).length === 0

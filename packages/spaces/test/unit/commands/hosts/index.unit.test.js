@@ -4,7 +4,7 @@
 let nock = require('nock')
 let cmd = require('../../../../commands/hosts/index')
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let hosts = [
   {
     host_id: 'h-0f927460a59aac18e',

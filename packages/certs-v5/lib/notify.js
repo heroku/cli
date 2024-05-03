@@ -1,7 +1,7 @@
 'use strict'
 
 const path = require('path')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 module.exports = {
   notify: function (subtitle, message, success = true) {

@@ -2,7 +2,7 @@
 
 let _ = require('lodash')
 let AppTransfer = require('../../lib/app_transfer')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let inquirer = require('inquirer')
 let lock = require('./lock.js')[0]
 let Utils = require('../../lib/utils')

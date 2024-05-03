@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}

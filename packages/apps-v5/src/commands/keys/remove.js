@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 async function run(context, heroku) {
   await cli.action(`Removing ${cli.color.cyan(context.args.key)} SSH key`, (async function () {

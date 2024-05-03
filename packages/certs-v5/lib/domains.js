@@ -1,7 +1,7 @@
 'use strict'
 
 let _ = require('lodash')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let psl = require('psl')
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))

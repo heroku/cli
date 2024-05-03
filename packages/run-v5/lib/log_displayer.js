@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let EventSource = require('@heroku/eventsource')
 let url = require('url')
 let liner = require('../lib/line_transform')

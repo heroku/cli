@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
 
 function displayJSON(rules) {

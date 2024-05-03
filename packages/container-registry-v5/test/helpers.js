@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 cli.raiseErrors = true // Fully raise exceptions
 global.commands = require('../index').commands // Load plugin commands
 process.env.TZ = 'UTC' // Use UTC time always

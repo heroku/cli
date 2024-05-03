@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 const {sortBy, compact} = require('lodash')
 
 const costMonthly = {Free: 0, Eco: 0, Hobby: 7, Basic: 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, Performance: 500, 'Performance-L': 500, '1X': 36, '2X': 72, PX: 576, 'Performance-L-RAM': 500, 'Performance-XL': 750, 'Performance-2XL': 1500}

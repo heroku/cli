@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const path = require('path')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 

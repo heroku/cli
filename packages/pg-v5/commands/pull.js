@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const bastion = require('../lib/bastion')

@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cmd = require('../../../commands/topology')
 const expect = require('chai').expect
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 
 const topo = {
   version: 1,

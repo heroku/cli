@@ -4,7 +4,7 @@
 
 const fixtures = require('../../../fixtures')
 const util = require('../../../util')
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../../commands/addons/info')
 const cache = require('../../../../lib/resolve').addon.cache

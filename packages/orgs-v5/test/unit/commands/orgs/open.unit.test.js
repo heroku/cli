@@ -1,5 +1,5 @@
 /* globals beforeEach afterEach nock */
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 const sinon = require('sinon')
 const expect = require('chai').expect
 let stubGet = require('../../stub/get')
