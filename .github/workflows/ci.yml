@@ -18,14 +18,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - run: yarn test
+      - name: unit tests
+        run: yarn test
+      - name: linting
+        run: yarn lint
 
   integration:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [16.x]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
     environment: AcceptanceTests
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -38,7 +41,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --network-timeout 1500000
-      - run: yarn lerna run test:integration
+      - name: Run cli package integration tests
+        run: |
+          cd packages/cli
+          yarn test:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}

@@ -3,7 +3,7 @@
 
 let nock = require('nock')
 let cmd = require('../../../../commands/trusted-ips/remove')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 describe('trusted-ips:remove', function () {
   beforeEach(() => cli.mockConsole())

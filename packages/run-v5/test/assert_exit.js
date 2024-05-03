@@ -1,7 +1,7 @@
 'use strict'
 
 let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 
 function exit(code, gen) {
   var actual

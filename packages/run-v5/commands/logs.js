@@ -1,6 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let logDisplayer = require('../lib/log_displayer')
 const {DynoCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
 

@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
-const cli = require('heroku-cli-util')
+const cli = require('@heroku/heroku-cli-util')
 const {expect} = require('chai')
 let nock = require('nock')
 let cmd = require('../../../lib/commands/clients/create')

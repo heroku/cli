@@ -4,7 +4,7 @@ let tls = require('tls')
 let url = require('url')
 let tty = require('tty')
 let {Duplex, Transform} = require('stream')
-let cli = require('heroku-cli-util')
+let cli = require('@heroku/heroku-cli-util')
 let helpers = require('../lib/helpers')
 
 const http = require('https')
