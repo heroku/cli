@@ -29,6 +29,21 @@ export function peeringStatus(s: string) {
   case 'failed':
   case 'deleted':
   case 'rejected':
+  }
+}
+
+export function displayVPNStatus(s: string | undefined) {
+  switch (s) {
+  case 'UP':
+  case 'available':
+    return `${color.green(s)}`
+  case 'pending':
+  case 'provisioning':
+  case 'deprovisioning':
+    return `${color.yellow(s)}`
+  case 'DOWN':
+  case 'deleting':
+  case 'deleted':
     return `${color.red(s)}`
   default:
     return s
