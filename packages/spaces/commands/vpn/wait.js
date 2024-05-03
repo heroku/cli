@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('@heroku/heroku-cli-util')
-const configCmd = require('./config')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 function check(val, message) {
@@ -45,7 +44,7 @@ async function run(context, heroku) {
   spinner.stop('done\n')
 
   var config = await lib.getVPNConnection(space, name)
-  configCmd.displayVPNConfigInfo(space, name, config)
+  lib.displayVPNConfigInfo(space, name, config)
 }
 
 module.exports = {

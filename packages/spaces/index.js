@@ -10,7 +10,6 @@ exports.commands = [
   require('./commands/vpn/connect'),
   require('./commands/vpn/index'),
   require('./commands/vpn/info'),
-  require('./commands/vpn/config'),
   require('./commands/vpn/wait'),
   require('./commands/vpn/destroy'),
   require('./commands/vpn/update'),
