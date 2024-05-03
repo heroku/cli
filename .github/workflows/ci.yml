@@ -45,10 +45,6 @@ jobs:
         run: |
           cd packages/cli
           yarn test:integration
-      - name: Run orgs-v5 integration tests
-        run: |
-          cd packages/orgs-v5
-          yarn test:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
