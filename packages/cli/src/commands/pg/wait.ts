@@ -1,12 +1,14 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import debug from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 import * as path from 'path'
 import {all, getAddon} from '../../lib/pg/fetcher'
 import pgHost from '../../lib/pg/host'
 import notify from '../../lib/notify'
-import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData} from '../../lib/pg/types'
+import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgStatus} from '../../lib/pg/types'
+import {HTTPError} from 'http-call'
 
 export default class Wait extends Command {
   static topic = 'pg';
@@ -22,7 +24,7 @@ export default class Wait extends Command {
     database: Args.string(),
   };
 
-  waitFor = async function waitFor(heroku: APIClient, db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData, waitInterval: string | undefined, debug) {
+  async waitFor(heroku: APIClient, db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData, waitInterval: string | undefined, pgDebug: debug.Debugger) {
     let interval = Number.parseInt(waitInterval || '0')
     if (!interval || interval < 0)
       interval = 5
@@ -32,31 +34,30 @@ export default class Wait extends Command {
     let retries = 20
     while (true) {
       try {
-        status = await heroku.request({
-          host: pgHost(), path: `/client/v11/databases/${db.id}/wait_status`,
-        })
-      } catch (error) {
-        debug(error)
-        if (!retries || error.statusCode !== 404)
-          throw error
+        const statusReq = await heroku.get<PgStatus>(
+          `/client/v11/databases/${db.id}/wait_status`,
+          {
+            host: pgHost(),
+          })
+        status = statusReq.body
+      } catch (error: unknown) {
+        const httpError = error as HTTPError
+        pgDebug(httpError)
+        if (!retries || httpError.statusCode !== 404)
+          throw httpError
         retries--
         status = {'waiting?': true}
       }
 
       if (status['error?']) {
-        notify({
-          sound: true, subtitle: 'error', message: `${name} ${status.message}`, contentImage: path.join(__dirname, '../assets/error.png'),
-        })
-        ux.error(status.message)
-        ux.exit(1)
+        notify('error', `${name} ${status.message}`, false)
+        ux.error(status.message || '', {exit: 1})
       }
 
       if (!status['waiting?']) {
         if (waiting) {
-          notify({
-            sound: true, message: `${name} is ${status.message}`, contentImage: path.join(__dirname, '../assets/success.png'),
-          })
-          ux.action.done(status.message)
+          notify('', `${name} is ${status.message}`, true)
+          ux.action.stop(status.message)
         }
 
         return
@@ -68,7 +69,7 @@ export default class Wait extends Command {
         ux.action.start(`Waiting for database ${color.yellow(db.name)}`)
       }
 
-      ux.action.status(status.message)
+      ux.action.status = status.message
       const wait = (ms: number | undefined) => new Promise(resolve => setTimeout(resolve, ms))
       await wait(interval * 1000)
     }
@@ -76,9 +77,9 @@ export default class Wait extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Wait)
-    const debug = require('debug')('heroku-pg')
     const {app, 'wait-interval': waitInterval} = flags
     const dbName = args.database
+    const pgDebug = debug('pg')
 
     let dbs: AddOnAttachmentWithConfigVarsAndPlan[] | AddOnWithRelatedData[] | [] = []
     if (dbName) {
@@ -88,6 +89,6 @@ export default class Wait extends Command {
     }
 
     for (const db of dbs)
-      await this.waitFor(this.heroku, db, waitInterval, debug)
+      await this.waitFor(this.heroku, db, waitInterval, pgDebug)
   }
 }
