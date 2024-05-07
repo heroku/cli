@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
+import {CLIError} from '@oclif/core/lib/errors'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
@@ -71,9 +72,9 @@ describe('pg:wait', function () {
       '--app',
       'myapp',
     ]).catch(error => {
-      if (error.code !== 1) throw error
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal('this is an error message\n')
+      const {message, oclif} = error as CLIError
+      expect(message).to.equal('this is an error message')
+      expect(oclif.exit).to.equal(1)
     })
   })
 })

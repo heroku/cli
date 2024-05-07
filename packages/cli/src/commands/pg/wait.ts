@@ -1,5 +1,5 @@
 import color from '@heroku-cli/color'
-import {APIClient, Command, flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import {all, getAddon} from '../../lib/pg/fetcher'
@@ -11,6 +11,7 @@ import {HTTPError} from 'http-call'
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
 })
+
 export default class Wait extends Command {
   static topic = 'pg';
   static description = 'blocks until database is available';
@@ -24,57 +25,6 @@ export default class Wait extends Command {
   static args = {
     database: Args.string(),
   };
-
-  // async waitFor(heroku: APIClient, db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData, waitInterval: string | undefined, pgDebug: debug.Debugger) {
-  //   let interval = Number.parseInt(waitInterval || '0', 10)
-  //   if (!interval || interval < 0)
-  //     interval = 5
-  //   let status
-  //   let waiting = false
-  //   let name = 'db'
-  //   let retries = 20
-  //   while (true) {
-  //     try {
-  //       const statusReq = await heroku.get<PgStatus>(
-  //         `/client/v11/databases/${db.id}/wait_status`,
-  //         {
-  //           hostname: pgHost(),
-  //         })
-  //       status = statusReq.body
-  //     } catch (error) {
-  //       const httpError = error as HTTPError
-  //       pgDebug(httpError)
-  //       if (!retries || httpError.statusCode !== 404)
-  //         throw httpError
-  //       retries--
-  //       status = {'waiting?': true}
-  //     }
-  //
-  //     if (status['error?']) {
-  //       notify('error', `${name} ${status.message}`, false)
-  //       ux.error(status.message || '', {exit: 1})
-  //     }
-  //
-  //     if (!status['waiting?']) {
-  //       if (waiting) {
-  //         notify('', `${name} is ${status.message}`, true)
-  //         ux.action.stop(status.message)
-  //       }
-  //
-  //       return
-  //     }
-  //
-  //     if (!waiting) {
-  //       waiting = true
-  //       name = db.name
-  //       ux.action.start(`Waiting for database ${color.yellow(db.name)}`)
-  //     }
-  //
-  //     ux.action.stop(status.message)
-  //     const wait = (ms: number | undefined) => new Promise(resolve => setTimeout(resolve, ms))
-  //     await wait(interval * 1000)
-  //   }
-  // }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Wait)
@@ -95,14 +45,19 @@ export default class Wait extends Command {
             `/client/v11/databases/${db.id}/wait_status`,
             {
               hostname: pgHost(),
-            },
-          ).then(response => response.body)
+            })
+            .then(response => response.body)
         } catch (error) {
           const httpError = error as HTTPError
           pgDebug(httpError)
           if (!retries || httpError.statusCode !== 404) throw httpError
           retries--
           status = {'waiting?': true}
+        }
+
+        if (status['error?']) {
+          notify('error', `${db.name} ${status.message}`, false)
+          ux.error(status.message || '', {exit: 1})
         }
 
         if (!status['waiting?']) {
@@ -115,7 +70,7 @@ export default class Wait extends Command {
 
         if (!waiting) {
           waiting = true
-          ux.action.start(`Waiting for database ${color.yellow(db.name)}`)
+          ux.action.start(`Waiting for database ${color.yellow(db.name)}`, status.message)
         }
 
         ux.action.status = status.message
@@ -131,7 +86,8 @@ export default class Wait extends Command {
       dbs = await all(this.heroku, app)
     }
 
-    for (const db of dbs)
+    for (const db of dbs) {
       await waitFor(db)
+    }
   }
 }
