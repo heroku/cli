@@ -6,7 +6,6 @@ exports.topics = [
 ]
 
 exports.commands = [
-  require('./commands/vpn/connect'),
   require('./commands/vpn/index'),
   require('./commands/vpn/wait'),
   require('./commands/vpn/destroy'),
