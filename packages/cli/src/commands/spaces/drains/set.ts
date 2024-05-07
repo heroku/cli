@@ -5,6 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 
 export default class Set extends Command {
   static topic = 'drains'
+  static aliases = ['drains:set']
   static hidden = true
   static description = 'replaces the log drain for a space'
   static flags = {

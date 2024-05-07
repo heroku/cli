@@ -1,10 +1,10 @@
 import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand'
-import Cmd from '../../../../src/commands/drains/set'
+import runCommand from '../../../../helpers/runCommand'
+import Cmd from '../../../../../src/commands/spaces/drains/set'
 
-describe('drains:set', function () {
+describe('spaces:drains:set', function () {
   it('shows the log drain', async function () {
     const api = nock('https://api.heroku.com:443')
       .put('/spaces/my-space/log-drain', {
