@@ -13,18 +13,18 @@ const wait = (ms: number) => new Promise(resolve => {
 })
 
 export default class Wait extends Command {
-  static topic = 'pg';
-  static description = 'blocks until database is available';
+  static topic = 'pg'
+  static description = 'blocks until database is available'
   static flags = {
     'wait-interval': flags.string({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
     'no-notify': flags.boolean({description: 'do not show OS notification'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Wait)
@@ -41,12 +41,10 @@ export default class Wait extends Command {
 
       while (true) {
         try {
-          status = await this.heroku.get<PgStatus>(
+          ({body: status} = await this.heroku.get<PgStatus>(
             `/client/v11/databases/${db.id}/wait_status`,
-            {
-              hostname: pgHost(),
-            })
-            .then(response => response.body)
+            {hostname: pgHost()},
+          ))
         } catch (error) {
           const httpError = error as HTTPError
           pgDebug(httpError)
