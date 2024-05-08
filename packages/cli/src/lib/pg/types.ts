@@ -127,6 +127,7 @@ export type PgDatabaseService = {
 
 export type PgStatus = {
   'waiting?': boolean
+  'error?': boolean
   message: string
 }
 
