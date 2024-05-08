@@ -5,8 +5,8 @@ import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 
 export default class Remove extends Command {
+  static topic = 'spaces'
   static aliases = ['trusted-ips:remove']
-  static topic = 'trusted-ips'
   static description = heredoc(`
   Remove a range from the list of trusted IP ranges
   Uses CIDR notation.`)

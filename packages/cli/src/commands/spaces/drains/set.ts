@@ -4,7 +4,8 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Set extends Command {
-  static topic = 'drains'
+  static topic = 'spaces'
+  static aliases = ['drains:set']
   static hidden = true
   static description = 'replaces the log drain for a space'
   static flags = {
