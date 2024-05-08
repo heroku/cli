@@ -4,8 +4,8 @@ import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Get extends Command {
+  static topic = 'spaces'
   static aliases = ['drains:get']
-  static topic = 'drains'
   static hidden = true
   static description = 'display the log drain for a space'
   static flags = {
