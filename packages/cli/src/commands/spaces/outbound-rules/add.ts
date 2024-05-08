@@ -8,7 +8,8 @@ import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
 import {ProtocolCompletion} from '../../../lib/autocomplete/completions'
 
 export default class Add extends Command {
-  static topic = 'outbound-rules'
+  static topic = 'spaces'
+  static aliases = ['outbound-rules:add']
   static description = heredoc(`
     Add outbound rules to a Private Space
 
@@ -38,7 +39,6 @@ export default class Add extends Command {
   ]
 
   static hidden = true
-  static aliases = ['outbound-rules:add']
   static flags = {
     space: flags.string({
       char: 's',
