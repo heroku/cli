@@ -27,7 +27,8 @@ export default class Scale extends Command {
     web=3:Standard-2X worker=1:Standard-1X
   `]
 
-  static aliases = ['dyno:scale', 'scale']
+  static aliases = ['dyno:scale']
+  static hiddenAliases = ['scale']
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

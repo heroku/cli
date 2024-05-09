@@ -40,7 +40,7 @@ export default class Create extends Command {
   static topic = 'addons'
   static description = 'create a new add-on resource'
   static strict = false
-  static aliases = ['addons:add']
+  static hiddenAliases = ['addons:add']
   static flags = {
     name: flags.string({description: 'name for the add-on resource'}),
     as: flags.string({description: 'name for the initial add-on attachment'}),

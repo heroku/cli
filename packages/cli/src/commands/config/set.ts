@@ -16,7 +16,7 @@ const lastRelease = async (client: APIClient, app: string) => {
 export default class Set extends Command {
   static description = 'set one or more config vars'
   static strict = false
-  static aliases = ['config:add']
+  static hiddenAliases = ['config:add']
   static examples = [
     `$ heroku config:set RAILS_ENV=staging
 Setting config vars and restarting example... done, v10

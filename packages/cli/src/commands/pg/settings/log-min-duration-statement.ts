@@ -6,8 +6,8 @@ import type {Setting, SettingKey} from '../../../lib/pg/types'
 export default class LogMinDurationStatement extends PGSettingsCommand {
   static description = heredoc(`
     The duration of each completed statement will be logged if the statement completes after the time specified by VALUE.
-  VALUE needs to specified as a whole number, in milliseconds.
-  Setting log_min_duration_statement to zero prints all statement durations and -1 will disable logging statement durations.
+    VALUE needs to specified as a whole number, in milliseconds.
+    Setting log_min_duration_statement to zero prints all statement durations and -1 will disable logging statement durations.
   `)
 
   static args = {

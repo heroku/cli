@@ -9,7 +9,7 @@ export default class AppsRename extends Command {
   static description = 'rename an app'
   static help = 'This will locally update the git remote if it is set to the old app.'
   static topic = 'apps'
-  static aliases = ['rename']
+  static hiddenAliases = ['rename']
 
   static examples = [
     '$ heroku apps:rename --app oldname newname',
