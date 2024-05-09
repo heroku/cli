@@ -376,7 +376,7 @@
     "test:unit:justTest:ci": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test": "yarn pretest && yarn test:unit:justTest:ci",
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
-    "version": "oclif readme --multi && git add README.md ../../docs"
+    "version": "oclif readme --multi --no-aliases && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }
