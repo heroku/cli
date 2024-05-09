@@ -1,7 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import * as Heroku from '@heroku-cli/schema'
 import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections'
 
@@ -22,7 +21,7 @@ export default class Wait extends Command {
 
     public async run(): Promise<void> {
       const {flags} = await this.parse(Wait)
-      const {name, space} = flags
+      const {name, space, json} = flags
       const interval = (flags.interval ? Number.parseInt(flags.interval, 10) : 10) * 1000
       const timeout = (flags.timeout ? Number.parseInt(flags.timeout, 10) : 20 * 60) * 1000
       const deadline = new Date(Date.now() + timeout)
@@ -32,15 +31,14 @@ export default class Wait extends Command {
         return
       }
 
-      const action = new Spinner()
-      action.start(`Waiting for VPN Connection ${color.green(name)} to allocate...`)
+      ux.action.start(`Waiting for VPN Connection ${color.green(name)} to allocate...`)
       while (vpnConnection.status !== 'active') {
         if (new Date() > deadline) {
-          throw new Error('Timeout waiting for VPN to become allocated.')
+          ux.error('Timeout waiting for VPN to become allocated.', {exit: 1})
         }
 
         if (vpnConnection.status === 'failed') {
-          throw new Error(vpnConnection.status_message)
+          ux.error(vpnConnection.status_message || '', {exit: 1})
         }
 
         await wait(interval)
@@ -48,8 +46,12 @@ export default class Wait extends Command {
         vpnConnection = updatedVpnConnection
       }
 
-      action.stop('done\n')
-      const config = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)
-      displayVPNConfigInfo(space, name, config)
+      ux.action.stop()
+      const {body: newVpnConnection} = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)
+      if (json) {
+        ux.styledJSON(newVpnConnection)
+      } else {
+        displayVPNConfigInfo(space, name, newVpnConnection)
+      }
     }
 }
