@@ -7,7 +7,7 @@ import Cmd from '../../../../../src/commands/spaces/vpn/wait'
 import runCommand from '../../../../helpers/runCommand'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 
-describe.only('spaces:vpn:wait', function () {
+describe('spaces:vpn:wait', function () {
   let api: nock.Scope
 
   afterEach(function () {
