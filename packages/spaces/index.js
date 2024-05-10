@@ -7,5 +7,4 @@ exports.topics = [
 
 exports.commands = [
   require('./commands/vpn/index'),
-  require('./commands/vpn/wait'),
 ]
