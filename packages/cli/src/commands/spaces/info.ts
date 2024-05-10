@@ -5,7 +5,7 @@ import heredoc from 'tsheredoc'
 import {renderInfo} from '../../lib/spaces/spaces'
 import debug from 'debug'
 
-const pgDebug = debug('pg')
+const spacesDebug = debug('spaces:info')
 
 export default class Info extends Command {
   static topic = 'spaces'
@@ -43,7 +43,7 @@ export default class Info extends Command {
         const {body: outbound_ips} = await this.heroku.get<Heroku.SpaceNetworkAddressTranslation>(`/spaces/${spaceName}/nat`)
         space.outbound_ips = outbound_ips
       } catch (error) {
-        pgDebug(`Retrieving NAT details for the space failed with ${error}`)
+        spacesDebug(`Retrieving NAT details for the space failed with ${error}`)
       }
     }
 

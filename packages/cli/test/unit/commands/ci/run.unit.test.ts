@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 import * as fs from 'async-file'
 
 import * as git from '../../../../src/lib/ci/git'
-const got = require('got')
+import got from 'got'
 
 describe('ci:run', function () {
   test

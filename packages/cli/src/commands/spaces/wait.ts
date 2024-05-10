@@ -8,7 +8,7 @@ import debug from 'debug'
 import {renderInfo} from '../../lib/spaces/spaces'
 import {Notification, notify} from '@heroku-cli/notifications'
 
-const pgDebug = debug('pg')
+const spacesDebug = debug('spaces:wait')
 
 export default class Wait extends Command {
   static topic = 'spaces'
@@ -68,7 +68,7 @@ export default class Wait extends Command {
       const {body: nat} = await this.heroku.get<Heroku.SpaceNetworkAddressTranslation>(`/spaces/${spaceName}/nat`)
       space.outbound_ips = nat
     } catch (error) {
-      pgDebug(`Retrieving NAT details for the space failed with ${error}`)
+      spacesDebug(`Retrieving NAT details for the space failed with ${error}`)
     }
 
     action.stop()

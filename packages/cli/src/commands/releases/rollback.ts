@@ -37,7 +37,7 @@ export default class Rollback extends Command {
       ux.log('Running release command...')
       await stream(streamUrl)
         .catch(error => {
-          if (error.statusCode === 404) {
+          if (error.statusCode === 404 || error.response?.statusCode === 404) {
             ux.warn('Release command starting. Use `heroku releases:output` to view the log.')
             return
           }

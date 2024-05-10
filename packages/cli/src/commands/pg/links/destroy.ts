@@ -29,7 +29,7 @@ export default class Destroy extends Command {
     const {database, link} = args
     const db = await getAddon(this.heroku, app, database)
     if (essentialPlan(db))
-      throw new Error("pg:links isn't available for Essential-tier databases.")
+      throw new Error('pg:links isn’t available for Essential-tier databases.')
     await confirmCommand(app, confirm, heredoc(`
       Destructive action
       This command will affect the database ${color.yellow(db.name)}
