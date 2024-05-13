@@ -28,7 +28,7 @@ describe('pg:links:destroy', function () {
         'postgres-link',
       ])
         .catch(error => {
-          expect(error.message).to.equal("pg:links isn't available for Essential-tier databases.")
+          expect(error.message).to.equal('pg:links isn’t available for Essential-tier databases.')
         })
     })
   })

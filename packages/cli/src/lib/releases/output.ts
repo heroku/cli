@@ -1,4 +1,4 @@
-import got = require('got')
+import got from 'got'
 
 export const stream = function (url: string) {
   return new Promise(function (resolve, reject) {
@@ -9,4 +9,3 @@ export const stream = function (url: string) {
     piped.on('error', reject)
   })
 }
-
