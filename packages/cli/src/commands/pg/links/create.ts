@@ -44,9 +44,9 @@ export default class Create extends Command {
     ]) as [AddOnAttachmentWithConfigVarsAndPlan, AddOnAttachmentWithConfigVarsAndPlan]
 
     if (essentialPlan(db))
-      throw new Error('pg:links isn\u2019t available for Essential-tier databases.')
+      throw new Error('pg:links isn’t available for Essential-tier databases.')
     if (essentialPlan(target))
-      throw new Error('pg:links isn\u2019t available for Essential-tier databases.')
+      throw new Error('pg:links isn’t available for Essential-tier databases.')
 
     ux.action.start(`Adding link from ${color.yellow(target.name)} to ${color.yellow(db.name)}`)
     const {body: link} = await this.heroku.post<Link>(`/client/v11/databases/${db.id}/links`, {

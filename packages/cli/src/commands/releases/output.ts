@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
 import {findByLatestOrId} from '../../lib/releases/releases'
 import {stream} from '../../lib/releases/output'
 
@@ -29,7 +28,7 @@ export default class Output extends Command {
 
       await stream(streamUrl)
         .catch(error => {
-          if (error.statusCode === 404) {
+          if (error.statusCode === 404 || error.response?.statusCode === 404) {
             ux.warn('Release command not started yet. Please try again in a few seconds.')
             return
           }

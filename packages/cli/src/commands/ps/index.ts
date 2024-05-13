@@ -138,7 +138,7 @@ function decorateCommandDyno(dyno: DynoExtended) : string {
   const since = ago(new Date(dyno.updated_at))
   const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
 
-  return `${dyno.name}: ${color.green(state)} ${color.dim(since)}`
+  return `${dyno.name}: ${state} ${color.dim(since)}`
 }
 
 function printDynos(dynos: DynoExtended[]) : void {
