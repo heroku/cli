@@ -69,10 +69,8 @@ certs:auto                                     show ACM status for an app
 certs:auto:disable                             disable ACM for an app
 certs:auto:enable                              enable ACM status for an app
 certs:auto:refresh                             refresh ACM for an app
-certs:chain                                    print an ordered & complete chain for a certificate
 certs:generate                                 generate a key and a CSR or self-signed certificate
 certs:info                                     show certificate information for an SSL certificate
-certs:key                                      print the correct key for the given certificate
 certs:remove                                   remove an SSL certificate from an app
 certs:update                                   update an SSL certificate on an app
 ci                                             display the most recent CI runs for the given pipeline
