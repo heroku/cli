@@ -94,15 +94,12 @@ Testing
 
 Run all tests with `yarn test`.
 
-Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku-cli/plugin-certs-v5 test`.
-
 ## Debugging
 
 Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
 
 - Create a new run/debug configuration
 - Select the 'Mocha' type
-- Set the working directory to the directory of the package you are using.  (i.e. ~/Heroku/Repos/cli/packages/certs-v5)
 
 Releasing
 =========
