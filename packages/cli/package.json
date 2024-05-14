@@ -9,7 +9,6 @@
     "@heroku-cli/color": "2.0.1",
     "@heroku-cli/command": "^11.0.0",
     "@heroku-cli/notifications": "^1.2.4",
-    "@heroku-cli/plugin-certs-v5": "^9.0.0-alpha.0",
     "@heroku-cli/plugin-ps": "^8.1.7",
     "@heroku-cli/plugin-ps-exec": "^2.4.0",
     "@heroku-cli/schema": "^1.0.25",
@@ -175,7 +174,6 @@
     "commands": "./lib/commands",
     "plugins": [
       "@oclif/plugin-legacy",
-      "@heroku-cli/plugin-certs-v5",
       "@heroku-cli/plugin-ps-exec",
       "@oclif/plugin-commands",
       "@oclif/plugin-help",
