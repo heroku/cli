@@ -1,10 +1,8 @@
-// tslint:disable:file-name-casing
-import {Command, flags} from '@heroku-cli/command-v9'
-import {CliUx} from '@oclif/core-v1'
-import '@oclif/core-v1/lib/parser'
+import {Command, flags} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
 import debugFactory from 'debug'
-import Dyno from '@heroku-cli/plugin-run/lib/lib/dyno'
-import {buildCommand} from '@heroku-cli/plugin-run/lib/lib/helpers'
+import Dyno from '../../lib/run/dyno'
+import {buildCommand} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run:inside')
 
@@ -37,8 +35,8 @@ export default class RunInside extends Command {
     const opts = {
       'exit-code': flags['exit-code'],
       app: flags.app,
-      command: buildCommand(argv.slice(1)),
-      dyno: argv[0],
+      command: buildCommand(argv.slice(1) as string[]),
+      dyno: argv[0] as string,
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
@@ -51,7 +49,7 @@ export default class RunInside extends Command {
     } catch (error: any) {
       debug(error)
       if (error.exitCode) {
-        CliUx.ux.exit(error.exitCode)
+        ux.exit(error.exitCode)
       } else {
         throw error
       }

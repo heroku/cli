@@ -7,7 +7,6 @@ access:add                                     add new users to your app
 access:remove                                  remove users from a team app
 access:update                                  update existing collaborators on an team app
 addons                                         lists your add-ons and attachments
-addons:add                                     create a new add-on resource
 addons:attach                                  attach an existing add-on resource to an app
 addons:create                                  create a new add-on resource
 addons:destroy                                 permanently destroy an add-on resource
@@ -17,14 +16,12 @@ addons:downgrade                               change add-on plan
 addons:info                                    show detailed add-on resource and attachment information
 addons:open                                    open an add-on's dashboard in your browser
 addons:plans                                   list all available plans for an add-on service
-addons:remove                                  permanently destroy an add-on resource
 addons:rename                                  rename an add-on
 addons:services                                list all available add-on services
 addons:upgrade                                 change add-on plan
 addons:wait                                    show provisioning status of the add-ons on the app
 apps                                           list your apps
 apps:create                                    creates a new app
-apps:delete                                    permanently destroy an app
 apps:destroy                                   permanently destroy an app
 apps:errors                                    view app errors
 apps:favorites                                 list favorited apps
@@ -33,7 +30,6 @@ apps:favorites:remove                          unfavorites an app
 apps:info                                      show detailed app information
 apps:join                                      add yourself to a team app
 apps:leave                                     remove yourself from a team app
-apps:list                                      list your apps
 apps:lock                                      prevent team members from joining an app
 apps:open                                      open the app in a web browser
 apps:rename                                    rename an app
@@ -93,7 +89,6 @@ clients:rotate                                 rotate OAuth client secret
 clients:update                                 update OAuth client
 commands                                       list all the commands
 config                                         display the config vars for an app
-config:add                                     set one or more config vars
 config:edit                                    interactively edit config vars
 config:get                                     display a single config value for an app
 config:remove                                  unset one or more config vars
@@ -107,8 +102,6 @@ container:push                                 builds, then pushes Docker images
 container:release                              Releases previously pushed Docker images to your Heroku app
 container:rm                                   remove the process type from your app
 container:run                                  builds, then runs the docker image locally
-create                                         creates a new app
-destroy                                        permanently destroy an app
 domains                                        list domains for an app
 domains:add                                    add a domain to an app
 domains:clear                                  remove all domains from an app
@@ -124,7 +117,6 @@ dyno:resize                                    manage dyno sizes
 dyno:restart                                   restart app dynos
 dyno:scale                                     scale dyno quantity up or down
 dyno:stop                                      stop app dyno
-dyno:type                                      manage dyno sizes
 features                                       list available app features
 features:disable                               disables an app feature
 features:enable                                enables an app feature
@@ -132,19 +124,16 @@ features:info                                  display information about a featu
 git:clone                                      clones a heroku app to your local machine at DIRECTORY (defaults to app name)
 git:remote                                     adds a git remote to an app repo
 help                                           Display help for heroku.
-info                                           show detailed app information
 join                                           add yourself to a team app
 keys                                           display your SSH keys
 keys:add                                       add an SSH key for a user
 keys:clear                                     remove all SSH keys for current user
 keys:remove                                    remove an SSH key from the user
-kill                                           stop app dyno
 labs                                           list experimental features
 labs:disable                                   disables an experimental feature
 labs:enable                                    enables an experimental feature
 labs:info                                      show feature info
 leave                                          remove yourself from a team app
-list                                           list your apps
 local                                          run heroku app locally
 local:run                                      run a one-off command
 local:start                                    run heroku app locally
@@ -161,7 +150,6 @@ members:add                                    adds a user to a team
 members:remove                                 removes a user from a team
 members:set                                    sets a members role in a team
 notifications                                  display notifications
-open                                           open the app in a web browser
 orgs                                           list the teams that you are a member of
 orgs:open                                      open the team interface in a browser window
 pg                                             show database information
@@ -212,6 +200,7 @@ pg:settings:auto-explain:log-min-duration      Sets the minimum execution time i
 pg:settings:auto-explain:log-nested-statements Nested statements are included in the execution plan's log.
 pg:settings:auto-explain:log-triggers          Includes trigger execution statistics in execution plan logs.
 pg:settings:auto-explain:log-verbose           Include verbose details in execution plans.
+pg:settings:log-connections                    Controls whether a log message is produced when a login attempt is made. Default is true.
 pg:settings:log-lock-waits                     Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
 pg:settings:log-min-duration-statement         The duration of each completed statement will be logged if the statement completes after the time specified by VALUE.
 pg:settings:log-statement                      log_statement controls which SQL statements are logged.
@@ -275,15 +264,10 @@ releases                                       display the releases for an app
 releases:info                                  view detailed information for a release
 releases:output                                View the release command output
 releases:rollback                              rollback to a previous release
-rename                                         rename an app
-resize                                         manage dyno sizes
-restart                                        restart app dynos
 reviewapps:disable                             disable review apps and/or settings on an existing pipeline
 reviewapps:enable                              enable review apps and/or settings on an existing pipeline
-rollback                                       rollback to a previous release
 run                                            run a one-off process inside a heroku dyno
 run:detached                                   run a detached dyno, where output is sent to your logs
-scale                                          scale dyno quantity up or down
 sessions                                       list your OAuth sessions
 sessions:destroy                               delete (logout) OAuth session by ID
 spaces                                         list available spaces
@@ -298,6 +282,9 @@ spaces:ps                                      list dynos for a space
 spaces:rename                                  renames a space
 spaces:topology                                show space topology
 spaces:transfer                                transfer a space to another team
+spaces:trusted-ips                             list trusted IP ranges for a space
+spaces:trusted-ips:add                         Add one range to the list of trusted IP ranges
+spaces:trusted-ips:remove                      Remove a range from the list of trusted IP ranges
 spaces:vpn:config                              display the configuration information for VPN
 spaces:vpn:connect                             create VPN
 spaces:vpn:connections                         list the VPN Connections for a space
@@ -306,14 +293,8 @@ spaces:vpn:info                                display the information for VPN
 spaces:vpn:update                              update VPN
 spaces:vpn:wait                                wait for VPN Connection to be created
 spaces:wait                                    wait for a space to be created
-stack                                          show the list of available stacks
-stack:set                                      set the stack of an app
 status                                         display current status of the Heroku platform
-stop                                           stop app dyno
 teams                                          list the teams that you are a member of
-trusted-ips                                    list trusted IP ranges for a space
-trusted-ips:add                                Add one range to the list of trusted IP ranges
-trusted-ips:remove                             Remove a range from the list of trusted IP ranges
 twofactor                                      check 2fa status
 twofactor:disable                              disables 2fa on account
 unlock                                         unlock an app so any team member can join

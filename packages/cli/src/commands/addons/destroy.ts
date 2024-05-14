@@ -13,7 +13,7 @@ export default class Destroy extends Command {
   static description = 'permanently destroy an add-on resource'
   static strict = false
   static examples = ['addons:destroy [ADDON]... [flags]']
-  static aliases = ['addons:remove']
+  static hiddenAliases = ['addons:remove']
   static flags = {
     force: flags.boolean({char: 'f', description: 'allow destruction even if connected to other apps'}),
     confirm: flags.string({char: 'c'}),

@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 
 export default class Remove extends Command {
   static topic = 'spaces'
-  static aliases = ['trusted-ips:remove']
+  static hiddenAliases = ['trusted-ips:remove']
   static description = heredoc(`
   Remove a range from the list of trusted IP ranges
   Uses CIDR notation.`)

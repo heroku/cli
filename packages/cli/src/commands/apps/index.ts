@@ -65,7 +65,7 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
 export default class AppsIndex extends Command {
   static description = 'list your apps'
   static topic = 'apps'
-  static aliases = ['list', 'apps:list']
+  static hiddenAliases = ['list', 'apps:list']
 
   static examples = [
     '$ heroku apps',

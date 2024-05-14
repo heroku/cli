@@ -6,7 +6,8 @@ import {Args, ux} from '@oclif/core'
 export default class Restart extends Command {
   static description = 'restart app dynos'
   static topic = 'ps'
-  static aliases = ['restart', 'dyno:restart']
+  static aliases = ['dyno:restart']
+  static hiddenAliases = ['restart']
 
   static examples = [
     '$ heroku ps:restart web.1',

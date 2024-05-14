@@ -15,7 +15,7 @@ function updateCedarName(stack: string) {
 export default class StacksIndex extends Command {
   static description = 'show the list of available stacks'
   static topic = 'apps'
-  static aliases = ['stack']
+  static hiddenAliases = ['stack']
 
   static flags = {
     app: flags.app({required: true}),
