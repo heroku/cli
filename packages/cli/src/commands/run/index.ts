@@ -1,11 +1,10 @@
-import {Command, flags} from '@heroku-cli/command-v9'
-import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command-v9/lib/completions'
-import {CliUx} from '@oclif/core-v1'
-import '@oclif/core-v1/lib/parser'
+import {Command, flags} from '@heroku-cli/command'
+import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
+import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
-import Dyno from '@heroku-cli/plugin-run/lib/lib/dyno'
-import {buildCommand} from '@heroku-cli/plugin-run/lib/lib/helpers'
+import Dyno from '../../lib/run/dyno'
+import {buildCommand} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run')
 
@@ -40,7 +39,7 @@ export default class Run extends Command {
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(argv),
+      command: buildCommand(argv as string[]),
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
@@ -61,7 +60,7 @@ export default class Run extends Command {
     } catch (error: any) {
       debug(error)
       if (error.exitCode) {
-        CliUx.ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
+        ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
       } else {
         throw error
       }
