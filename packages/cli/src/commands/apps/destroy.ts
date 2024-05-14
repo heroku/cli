@@ -8,7 +8,7 @@ import * as git from '../../lib/ci/git'
 export default class Destroy extends Command {
   static description = 'permanently destroy an app'
   static help = 'This will also destroy all add-ons on the app.'
-  static aliases = ['destroy', 'apps:delete']
+  static hiddenAliases = ['destroy', 'apps:delete']
   static flags = {
     app: flags.app(),
     remote: flags.remote(),

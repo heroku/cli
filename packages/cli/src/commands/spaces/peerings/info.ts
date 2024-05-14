@@ -6,6 +6,7 @@ import {displayPeeringInfo} from '../../../lib/spaces/peering'
 
 export default class Info extends Command {
   static topic = 'spaces'
+  static hiddenAliases = ['spaces:peering:info']
   static description = heredoc(`
     display the information necessary to initiate a peering connection
 

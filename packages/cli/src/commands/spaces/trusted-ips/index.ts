@@ -5,7 +5,7 @@ import heredoc from 'tsheredoc'
 
 export default class Index extends Command {
   static topic = 'spaces'
-  static aliases = ['trusted-ips']
+  static hiddenAliases = ['trusted-ips']
   static description = heredoc(`
   list trusted IP ranges for a space
   Trusted IP ranges are only available on Private Spaces.

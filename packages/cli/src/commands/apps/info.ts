@@ -98,7 +98,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
 export default class AppsInfo extends Command {
   static description = 'show detailed app information'
   static topic = 'apps'
-  static aliases = ['info']
+  static hiddenAliases = ['info']
 
   static examples = [
     '$ heroku apps:info',

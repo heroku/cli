@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 
 export default class Add extends Command {
   static topic = 'spaces'
-  static aliases = ['trusted-ips:add']
+  static hiddenAliases = ['trusted-ips:add']
   static description = heredoc(`
   Add one range to the list of trusted IP ranges
   Uses CIDR notation.`)

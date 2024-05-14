@@ -113,7 +113,8 @@ export default class Type extends Command {
 
     Called with 1..n TYPE=SIZE arguments sets the quantity per type.
   `
-  static aliases = ['ps:resize', 'resize', 'dyno:type', 'dyno:resize']
+  static aliases = ['ps:resize', 'dyno:resize']
+  static hiddenAliases = ['resize', 'dyno:type']
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

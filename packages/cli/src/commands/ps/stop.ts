@@ -6,7 +6,8 @@ import {Args, ux} from '@oclif/core'
 export default class Stop extends Command {
   static description = 'stop app dyno'
   static topic = 'ps'
-  static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill', 'stop', 'kill']
+  static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill']
+  static hiddenAliases = ['stop', 'kill']
 
   static examples = [
     '$ heroku ps:stop run.1828',

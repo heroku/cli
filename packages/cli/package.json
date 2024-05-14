@@ -7,7 +7,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "2.0.1",
-    "@heroku-cli/command": "^10.0.0",
+    "@heroku-cli/command": "^11.0.0",
     "@heroku-cli/notifications": "^1.2.4",
     "@heroku-cli/plugin-certs-v5": "^9.0.0-alpha.0",
     "@heroku-cli/plugin-ps": "^8.1.7",
@@ -16,7 +16,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "^8.0.13",
-    "@oclif/core": "^2.8.11",
+    "@oclif/core": "^2.16.0",
     "@oclif/plugin-commands": "2.2.2",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-legacy": "^1.3.0",
@@ -369,7 +369,7 @@
     "test:unit:justTest:ci": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test": "yarn pretest && yarn test:unit:justTest:ci",
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
-    "version": "oclif readme --multi && git add README.md ../../docs"
+    "version": "oclif readme --multi --no-aliases && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
 }
