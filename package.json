@@ -41,8 +41,6 @@
     "lint": "lerna run lint --concurrency 4",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache",
-    "migrateCommand": "lerna run --scope=command-migration build && node ./packages/migration/.bin/command-migration.mjs --files",
-    "migrateCommandTest": "lerna run --scope=command-migration build && node ./packages/migration/.bin/command-test-migration.mjs --files"
   },
   "workspaces": {
     "packages": [
