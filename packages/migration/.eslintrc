@@ -1,6 +1,0 @@
-{
-  "extends": "../../.eslintrc",
-  "rules": {
-    "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 1 }]
-  }
-}
