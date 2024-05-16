@@ -21,7 +21,6 @@ export default class RunInside extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
     'exit-code': flags.boolean({char: 'x', description: 'passthrough the exit code of the remote command'}),
-    env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
   }
 
@@ -39,7 +38,6 @@ export default class RunInside extends Command {
       app: flags.app,
       command: buildCommand(argv.slice(1)),
       dyno: argv[0],
-      env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
     }
