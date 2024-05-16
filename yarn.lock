@@ -4411,10 +4411,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.15.2, @opentelemetry/semantic-conventions@npm:^1.15.1":
+"@opentelemetry/semantic-conventions@npm:1.15.2":
   version: 1.15.2
   resolution: "@opentelemetry/semantic-conventions@npm:1.15.2"
   checksum: 6de4f8ffa277af18351dff19b821f04438bd4f3917f84816f0bf1577a810424d11ba5f15dca9739a17812a996eeb251048fc7d61b0eef9dc39beb9d4304f57e2
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:^1.24.1":
+  version: 1.24.1
+  resolution: "@opentelemetry/semantic-conventions@npm:1.24.1"
+  checksum: af5c16528b0bbe124eaff3d7f7f6d604d5cb8d66435f9023c50936d5e3fe03fd9cadff52c09bc4493cb5c8e073ea6ee656cd28bc3a8f7e22f317338ac2b4f2d6
   languageName: node
   linkType: hard
 
@@ -11252,7 +11259,7 @@ __metadata:
     "@opentelemetry/resources": ^1.15.1
     "@opentelemetry/sdk-trace-base": ^1.15.1
     "@opentelemetry/sdk-trace-node": ^1.15.1
-    "@opentelemetry/semantic-conventions": ^1.15.1
+    "@opentelemetry/semantic-conventions": ^1.24.1
     "@types/ansi-styles": ^3.2.1
     "@types/chai": ^4.1.7
     "@types/debug": ^4.1.12
