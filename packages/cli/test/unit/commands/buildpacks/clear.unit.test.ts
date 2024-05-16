@@ -7,7 +7,7 @@ nock.disableNetConnect()
 
 describe('buildpacks:clear', function () {
   test
-    .nock('https://api.heroku.com', api => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.put(api)
       api
         .get('/apps/example/config-vars')
@@ -22,7 +22,7 @@ describe('buildpacks:clear', function () {
     })
 
   test
-    .nock('https://api.heroku.com', api => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.put(api)
       api
         .get('/apps/example/config-vars')
@@ -37,7 +37,7 @@ describe('buildpacks:clear', function () {
     })
 
   test
-    .nock('https://api.heroku.com', api => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.put(api)
       api
         .get('/apps/example/config-vars')
