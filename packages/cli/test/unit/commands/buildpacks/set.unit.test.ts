@@ -7,7 +7,7 @@ nock.disableNetConnect()
 describe('buildpacks:set', function () {
   describe('URL', function () {
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api)
         Stubber.put(api, [
           'https://github.com/heroku/heroku-buildpack-ruby',
@@ -25,7 +25,7 @@ Run git push heroku main to create a new release using this buildpack.
       })
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/foobar/foobar',
         ])
@@ -35,7 +35,7 @@ Run git push heroku main to create a new release using this buildpack.
       .it('# errors out when already exists')
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/foo/foo',
           'https://github.com/baz/baz',
@@ -63,7 +63,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
   describe('-i INDEX URL', function () {
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api)
         Stubber.put(api, [
           'https://github.com/heroku/heroku-buildpack-ruby',
@@ -81,7 +81,7 @@ Run git push heroku main to create a new release using this buildpack.
       })
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-java',
         ])
@@ -100,7 +100,7 @@ Run git push heroku main to create a new release using this buildpack.
 `)
       })
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-ruby',
         ])
@@ -112,7 +112,7 @@ Run git push heroku main to create a new release using this buildpack.
       .it('# with one existing buildpack unsuccessfully fails if buildpack is already set')
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-java',
           'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -136,7 +136,7 @@ Run git push heroku main to create a new release using these buildpacks.
       })
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-java',
           'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -162,7 +162,7 @@ Run git push heroku main to create a new release using these buildpacks.
       })
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-java',
           'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -188,7 +188,7 @@ Run git push heroku main to create a new release using these buildpacks.
       })
 
     test
-      .nock('https://api.heroku.com', api => {
+      .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
           'https://github.com/heroku/heroku-buildpack-java',
           'https://github.com/heroku/heroku-buildpack-nodejs',

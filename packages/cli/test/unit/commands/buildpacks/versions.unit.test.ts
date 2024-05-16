@@ -7,7 +7,7 @@ nock.disableNetConnect()
 describe('buildpacks:versions', function () {
   test
     .env({HEROKU_API_KEY: 'authtoken'})
-    .nock('https://buildpack-registry.heroku.com', api => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       api
         .get('/buildpacks/heroku%2Fruby/revisions')
         .reply(200, [
@@ -24,7 +24,7 @@ describe('buildpacks:versions', function () {
 
   test
     .env({HEROKU_API_KEY: 'authtoken'})
-    .nock('https://buildpack-registry.heroku.com', api => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       api
         .get('/buildpacks/hone%2Ftest/revisions')
         .reply(404, '')
@@ -35,7 +35,7 @@ describe('buildpacks:versions', function () {
 
   test
     .env({HEROKU_API_KEY: 'authtoken'})
-    .nock('https://buildpack-registry.heroku.com', api => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       api
         .get('/buildpacks/hone%2Ftest/revisions')
         .reply(500, 'some error')
