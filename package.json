@@ -35,10 +35,9 @@
   },
   "private": true,
   "scripts": {
-    "build": "lerna run prepack --concurrency 4",
-    "buildCLI": "cd packages/cli && yarn prepack",
+    "build": "cd packages/cli && yarn prepack",
     "test": "lerna run test --concurrency 4",
-    "lint": "lerna run lint --concurrency 4",
+    "lint": "cd packages/cli && yarn lint",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache"
   },
