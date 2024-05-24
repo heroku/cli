@@ -6,7 +6,7 @@ access                                         list who has access to an app
 access:add                                     add new users to your app
 access:remove                                  remove users from a team app
 access:update                                  update existing collaborators on an team app
-addons                                         lists your add-ons and attachments
+addons                                         Lists your add-ons and attachments.
 addons:attach                                  attach an existing add-on resource to an app
 addons:create                                  create a new add-on resource
 addons:destroy                                 permanently destroy an add-on resource
@@ -60,7 +60,7 @@ buildpacks:search                              search for buildpacks
 buildpacks:set
 buildpacks:versions                            list versions of a buildpack
 certs                                          list SSL certificates for an app
-certs:add                                      add an SSL certificate to an app
+certs:add                                      Add an SSL certificate to an app.
 certs:auto                                     show ACM status for an app
 certs:auto:disable                             disable ACM for an app
 certs:auto:enable                              enable ACM status for an app
@@ -263,7 +263,7 @@ regions                                        list available regions for deploy
 releases                                       display the releases for an app
 releases:info                                  view detailed information for a release
 releases:output                                View the release command output
-releases:rollback                              rollback to a previous release
+releases:rollback                              Roll back to a previous release
 reviewapps:disable                             disable review apps and/or settings on an existing pipeline
 reviewapps:enable                              enable review apps and/or settings on an existing pipeline
 run                                            run a one-off process inside a heroku dyno
