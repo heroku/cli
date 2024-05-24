@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "9.0.0-alpha.1",
+  "version": "9.0.0-alpha.2",
   "author": "Jeff Dickey @jdxcode",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -231,13 +231,10 @@
         "hidden": true
       },
       "container": {
-        "description": "Use containers to build and deploy Heroku apps"
+        "description": "deploy your Docker-based app to Heroku"
       },
       "config": {
         "description": "environment variables of apps"
-      },
-      "container": {
-        "description": "deploy your Docker-based app to Heroku"
       },
       "domains": {
         "description": "custom domains for apps"

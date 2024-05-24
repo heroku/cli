@@ -40,11 +40,11 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
-* [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
+* [`heroku certs`](docs/certs.md) - SSL certificates
 * [`heroku ci`](docs/ci.md) - test runner for Heroku Pipelines
 * [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
-* [`heroku container`](docs/container.md) - Use containers to build and deploy Heroku apps
+* [`heroku container`](docs/container.md) - deploy your Docker-based app to Heroku
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
@@ -62,14 +62,13 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
-* [`heroku psql`](docs/psql.md) - open a psql shell to the database
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
-* [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
+* [`heroku spaces`](docs/spaces.md) - list available spaces
 * [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
