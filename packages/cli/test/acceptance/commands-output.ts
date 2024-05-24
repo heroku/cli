@@ -12,7 +12,7 @@ addons:create                                  create a new add-on resource
 addons:destroy                                 permanently destroy an add-on resource
 addons:detach                                  detach an existing add-on resource from an app
 addons:docs                                    open an add-on's Dev Center documentation in your browser
-addons:downgrade                               change add-on plan
+addons:downgrade                               change add-on plan.
 addons:info                                    show detailed add-on resource and attachment information
 addons:open                                    open an add-on's dashboard in your browser
 addons:plans                                   list all available plans for an add-on service
@@ -184,7 +184,7 @@ pg:links:destroy                               destroys a link between data stor
 pg:locks                                       display queries with active locks
 pg:maintenance                                 show current maintenance information
 pg:maintenance:run                             start maintenance
-pg:maintenance:window                          set weekly maintenance window
+pg:maintenance:window                          Set weekly maintenance window.
 pg:outliers                                    show 10 queries that have longest execution time in aggregate
 pg:promote                                     sets DATABASE as your DATABASE_URL
 pg:ps                                          view active queries with execution time
