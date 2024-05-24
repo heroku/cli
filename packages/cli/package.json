@@ -200,6 +200,12 @@
         "description": "two-factor authentication",
         "hidden": true
       },
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "addons": {
+        "description": "tools and services for developing, extending, and operating your app"
+      },
       "apps": {
         "description": "manage apps on Heroku"
       },
@@ -223,6 +229,9 @@
       },
       "commands": {
         "hidden": true
+      },
+      "container": {
+        "description": "Use containers to build and deploy Heroku apps"
       },
       "config": {
         "description": "environment variables of apps"
@@ -260,15 +269,27 @@
       "maintenance": {
         "description": "enable/disable access to app"
       },
+      "members": {
+        "description": "manage organization members"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
       "outbound-rules": {
         "description": "space outbound IP rules",
         "hidden": true
+      },
+      "pg": {
+        "description": "manage postgresql databases"
       },
       "pipelines": {
         "description": "manage pipelines"
       },
       "ps": {
         "description": "manage app dynos"
+      },
+      "redis": {
+        "description": "manage heroku redis instances"
       },
       "reviewapps": {
         "description": "manage reviewapps in pipelines"
@@ -282,6 +303,9 @@
       "stack": {
         "description": "list available stacks",
         "hidden": true
+      },
+      "teams": {
+        "description": "manage teams"
       },
       "twofactor": {
         "description": "two-factor authentication",

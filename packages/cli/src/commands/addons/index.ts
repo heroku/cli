@@ -222,7 +222,15 @@ function displayJSON(addons: Heroku.AddOn[]) {
 
 export default class Addons extends Command {
   static topic = topic
-  static description = 'lists your add-ons and attachments'
+  static usage = 'addons [--all|--app APP]'
+  static description = `
+  Lists your add-ons and attachments.
+
+  The default filter applied depends on whether you are in a Heroku app
+  directory. If so, the --app flag is implied. If not, the default of --all
+  is implied. Explicitly providing either flag overrides the default
+  behavior.
+  `
   static flags = {
     all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
     json: flags.boolean({description: 'return add-ons in json format'}),
@@ -234,11 +242,6 @@ export default class Addons extends Command {
     `$ heroku ${topic} --all`,
     `$ heroku ${topic} --app acme-inc-www`,
   ]
-
-  static help = `The default filter applied depends on whether you are in a Heroku app
-  directory. If so, the --app flag is implied. If not, the default of --all
-  is implied. Explicitly providing either flag overrides the default
-  behavior.`
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Addons)

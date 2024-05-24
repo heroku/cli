@@ -11,8 +11,15 @@ import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
   static topic = 'addons'
-  static description = 'change add-on plan'
-  static help = 'See available plans with `heroku addons:plans SERVICE`.\n\nNote that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.\nEither one can be used to change an add-on plan up or down.\n\nhttps://devcenter.heroku.com/articles/managing-add-ons'
+  static description = `
+  change add-on plan.
+  See available plans with \`heroku addons:plans SERVICE\`.
+
+  Note that \`heroku addons:upgrade\` and \`heroku addons:downgrade\` are the same.\
+  Either one can be used to change an add-on plan up or down.
+
+  https://devcenter.heroku.com/articles/managing-add-ons
+  `
   static examples = ['Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2']
   static flags = {
     app: flags.app(),

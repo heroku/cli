@@ -33,8 +33,11 @@ async function configureDomains(app: string, heroku: APIClient, cert: SniEndpoin
 export default class Add extends Command {
   static topic = 'certs'
   static strict = true
-  static description = 'add an SSL certificate to an app'
-  static help = 'Note: certificates with PEM encoding are also valid'
+  static description = `
+  Add an SSL certificate to an app.
+
+  Note: certificates with PEM encoding are also valid.
+  `
   static examples = [
     heredoc(`$ heroku certs:add example.com.crt example.com.key
     If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:

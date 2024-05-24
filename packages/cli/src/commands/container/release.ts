@@ -19,7 +19,7 @@ type ImageResponse = {
 export default class ContainerRelease extends Command {
   static topic = 'container'
   static description = 'Releases previously pushed Docker images to your Heroku app'
-  static usage = 'heroku container:release'
+  static usage = 'container:release'
   static example = `
   ${color.cmd('heroku container:release web')}        # Releases the previously pushed web process type
   ${color.cmd('heroku container:release web worker')} # Releases the previously pushed web and worker process types`

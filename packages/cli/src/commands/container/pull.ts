@@ -7,7 +7,7 @@ import color from '@heroku-cli/color'
 export default class Pull extends Command {
   static topic = 'container'
   static description = 'pulls an image from an app\'s process type'
-  static usage = '$ heroku container:pull -a APP [-v] PROCESS_TYPE...'
+  static usage = 'container:pull -a APP [-v] PROCESS_TYPE...'
   static example = `
   ${color.cmd('$ heroku container:pull web')}        # Pulls the web image from the app
   ${color.cmd('$ heroku container:pull web worker')} # Pulls both the web and worker images from the app

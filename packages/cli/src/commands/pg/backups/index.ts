@@ -17,6 +17,7 @@ export default class Index extends Command {
     at: flags.string({hidden: true}),
     quiet: flags.boolean({char: 'q', hidden: true}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   public async run(): Promise<void> {
