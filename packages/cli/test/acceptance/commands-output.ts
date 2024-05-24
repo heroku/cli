@@ -18,7 +18,7 @@ addons:open                                    open an add-on's dashboard in you
 addons:plans                                   list all available plans for an add-on service
 addons:rename                                  rename an add-on
 addons:services                                list all available add-on services
-addons:upgrade                                 change add-on plan
+addons:upgrade                                 change add-on plan.
 addons:wait                                    show provisioning status of the add-ons on the app
 apps                                           list your apps
 apps:create                                    creates a new app
