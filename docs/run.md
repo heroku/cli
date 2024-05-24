@@ -21,9 +21,9 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
   -x, --exit-code       passthrough the exit code of the remote command
-  --no-notify           disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
-  --no-tty              force the command to not run in a tty
-  --type=<value>        process type
+      --no-notify       disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
+      --no-tty          force the command to not run in a tty
+      --type=<value>    process type
 
 DESCRIPTION
   run a one-off process inside a heroku dyno
@@ -35,7 +35,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -51,7 +51,7 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
   -t, --tail            continually stream logs
-  --type=<value>        process type
+      --type=<value>    process type
 
 DESCRIPTION
   run a detached dyno, where output is sent to your logs
@@ -60,4 +60,4 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/run/detached.ts)_

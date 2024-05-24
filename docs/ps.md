@@ -29,11 +29,10 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                display as json
+      --json            display as json
 
 DESCRIPTION
   list dynos for an app
-
 
 EXAMPLES
   $ heroku ps
@@ -41,10 +40,13 @@ EXAMPLES
   run.1: up for 5m: bash
   === web: bundle exec thin start -p $PORT
   web.1: created for 30s
+
   $ heroku ps run # specifying types
   === run: one-off dyno
   run.1: up for 5m: bash
 ```
+
+_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/index.ts)_
 
 ## `heroku ps:autoscale:disable`
 
@@ -62,7 +64,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -75,16 +77,16 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --max=<value>         (required) maximum number of dynos
-  --min=<value>         (required) minimum number of dynos
-  --notifications       receive email notifications when the max dyno limit is reached
-  --p95=<value>         desired p95 response time
+      --max=<value>     (required) maximum number of dynos
+      --min=<value>     (required) minimum number of dynos
+      --notifications   receive email notifications when the max dyno limit is reached
+      --p95=<value>     desired p95 response time
 
 DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -119,8 +121,8 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
-  --ssh                 use native ssh
-  --status              lists the status of the SSH server in the dyno
+      --ssh             use native ssh
+      --status          lists the status of the SSH server in the dyno
 
 DESCRIPTION
   Create an SSH session to a dyno
@@ -169,13 +171,15 @@ FLAGS
 DESCRIPTION
   stop app dyno
 
-  stop app dyno or dyno type
+ALIASES
+  $ heroku dyno:stop
+  $ heroku ps:kill
+  $ heroku dyno:kill
 
 EXAMPLES
   $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
+
   $ heroku ps:stop run
-  Stopping run dynos... done
 ```
 
 ## `heroku ps:resize`
@@ -192,13 +196,17 @@ FLAGS
 
 DESCRIPTION
   manage dyno sizes
-
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
   Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+
+
+ALIASES
+  $ heroku ps:resize
+  $ heroku dyno:resize
 ```
 
 ## `heroku ps:restart [DYNO]`
@@ -215,16 +223,19 @@ FLAGS
 
 DESCRIPTION
   restart app dynos
-  if DYNO is not specified, restarts all dynos on app
+
+ALIASES
+  $ heroku dyno:restart
 
 EXAMPLES
   $ heroku ps:restart web.1
-  Restarting web.1 dyno... done
+
   $ heroku ps:restart web
-  Restarting web dynos... done
+
   $ heroku ps:restart
-  Restarting dynos... done
 ```
+
+_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/restart.ts)_
 
 ## `heroku ps:scale`
 
@@ -245,12 +256,19 @@ DESCRIPTION
   Omitting any arguments will display the app's current dyno formation, in a
   format suitable for passing back into ps:scale.
 
+
+ALIASES
+  $ heroku dyno:scale
+
 EXAMPLES
-  $ heroku ps:scale web=3:Standard-2X worker+1
+  $ heroku ps:scale web=3:Standard-2X worker+1 --app APP
   Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
-  $ heroku ps:scale
+
+  $ heroku ps:scale --app APP
   web=3:Standard-2X worker=1:Standard-1X
 ```
+
+_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/scale.ts)_
 
 ## `heroku ps:socks`
 
@@ -290,14 +308,18 @@ FLAGS
 DESCRIPTION
   stop app dyno
 
-  stop app dyno or dyno type
+ALIASES
+  $ heroku dyno:stop
+  $ heroku ps:kill
+  $ heroku dyno:kill
 
 EXAMPLES
   $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
+
   $ heroku ps:stop run
-  Stopping run dynos... done
 ```
+
+_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/stop.ts)_
 
 ## `heroku ps:type`
 
@@ -313,14 +335,20 @@ FLAGS
 
 DESCRIPTION
   manage dyno sizes
-
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
   Where SIZE is one of eco|basic|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+
+
+ALIASES
+  $ heroku ps:resize
+  $ heroku dyno:resize
 ```
+
+_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/type.ts)_
 
 ## `heroku ps:wait`
 
@@ -341,4 +369,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ps/wait.ts)_

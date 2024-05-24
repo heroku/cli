@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-alpha.2](https://github.com/heroku/cli/compare/v8.11.5...v9.0.0-alpha.2) (2024-05-24)
+
+
+### Bug Fixes
+
+* add import of CLIError to tests ([2b15a40](https://github.com/heroku/cli/commit/2b15a40d775e1585c737839892145f42767c335f))
+* add space to fix linting error ([2a9a0c7](https://github.com/heroku/cli/commit/2a9a0c7b11972c8bb80660f3df2216ca518b7bda))
+* **codemods:** stop intercepting mocha output ([#2591](https://github.com/heroku/cli/issues/2591)) ([1f579a8](https://github.com/heroku/cli/commit/1f579a8b293f77c79180d41ac18864831c2e7183))
+* remove import of afterEach ([7c0a42c](https://github.com/heroku/cli/commit/7c0a42cf97947e539ea1186e86f37ea160b43495))
+* revert package version of plugins in monorepo to get symlinks ([#2609](https://github.com/heroku/cli/issues/2609)) ([c261828](https://github.com/heroku/cli/commit/c261828de992b404b3ff428277471606b622d361))
+
+
+
+# [9.0.0-alpha.1](https://github.com/heroku/cli/compare/v8.7.1...v9.0.0-alpha.1) (2023-11-09)
+
+
+
+
+
 # [9.0.0-alpha.1](https://github.com/heroku/cli/compare/v8.7.1...v9.0.0-alpha.1) (2023-11-09)
 
 **Note:** Version bump only for package heroku

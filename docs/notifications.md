@@ -11,15 +11,17 @@ display notifications
 
 ```
 USAGE
-  $ heroku notifications [--all] [--json] [--read] [-a <value>] [-r <value>]
+  $ heroku notifications [-a <value>] [-r <value>] [--all] [--json] [--read]
 
 FLAGS
   -a, --app=<value>     app to run command against
   -r, --remote=<value>  git remote of app to use
-  --all                 view all notifications (not just the ones for the current app)
-  --json                output in json format
-  --read                show notifications already read
+      --all             view all notifications (not just the ones for the current app)
+      --json            output in json format
+      --read            show notifications already read
 
 DESCRIPTION
   display notifications
 ```
+
+_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/notifications/index.ts)_

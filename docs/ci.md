@@ -22,13 +22,14 @@ display the most recent CI runs for the given pipeline
 
 ```
 USAGE
-  $ heroku ci [-a <value>] [--watch] [-p <value>] [--json]
+  $ heroku ci [-a <value>] [-r <value>] [--watch] [-p <value>] [--json]
 
 FLAGS
   -a, --app=<value>       app name
   -p, --pipeline=<value>  name of pipeline
-  --json                  output in json format
-  --watch                 keep running and watch for new and update tests
+  -r, --remote=<value>    git remote of app to use
+      --json              output in json format
+      --watch             keep running and watch for new and update tests
 
 DESCRIPTION
   display the most recent CI runs for the given pipeline
@@ -37,7 +38,7 @@ EXAMPLES
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -51,7 +52,7 @@ FLAGS
   -a, --app=<value>       app name
   -p, --pipeline=<value>  name of pipeline
   -s, --shell             output config vars in shell format
-  --json                  output config vars in json format
+      --json              output config vars in json format
 
 DESCRIPTION
   display CI config vars
@@ -60,7 +61,7 @@ EXAMPLES
   $ heroku ci:config --app murmuring-headland-14719 --json
 ```
 
-_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/config/index.ts)_
+_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/config/index.ts)_
 
 ## `heroku ci:config:get KEY`
 
@@ -68,12 +69,13 @@ get a CI config var
 
 ```
 USAGE
-  $ heroku ci:config:get KEY [-h] [-a <value>] [-p <value>] [-s]
+  $ heroku ci:config:get KEY [-h] [-a <value>] [-r <value>] [-p <value>] [-s]
 
 FLAGS
   -a, --app=<value>       app to run command against
   -h, --help              Show CLI help.
   -p, --pipeline=<value>  name of pipeline
+  -r, --remote=<value>    git remote of app to use
   -s, --shell             output config var in shell format
 
 DESCRIPTION
@@ -84,7 +86,7 @@ EXAMPLES
       test
 ```
 
-_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/config/get.ts)_
+_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/config/get.ts)_
 
 ## `heroku ci:config:set`
 
@@ -92,11 +94,12 @@ set CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:set -p <value> [-a <value>]
+  $ heroku ci:config:set -p <value> [-a <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
   -p, --pipeline=<value>  (required) name of pipeline
+  -r, --remote=<value>    git remote of app to use
 
 DESCRIPTION
   set CI config vars
@@ -107,7 +110,7 @@ EXAMPLES
       RAILS_ENV: test
 ```
 
-_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/config/set.ts)_
+_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/config/set.ts)_
 
 ## `heroku ci:config:unset`
 
@@ -115,12 +118,13 @@ unset CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:unset [-h] [-a <value>] [-p <value>]
+  $ heroku ci:config:unset [-h] [-a <value>] [-r <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
   -h, --help              Show CLI help.
   -p, --pipeline=<value>  name of pipeline
+  -r, --remote=<value>    git remote of app to use
 
 DESCRIPTION
   unset CI config vars
@@ -129,7 +133,7 @@ EXAMPLES
   $ heroku ci:config:unset RAILS_ENV
 ```
 
-_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/config/unset.ts)_
+_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/config/unset.ts)_
 
 ## `heroku ci:debug`
 
@@ -142,14 +146,14 @@ USAGE
 FLAGS
   -a, --app=<value>       app to run command against
   -p, --pipeline=<value>  name of pipeline
-  --no-cache              start test run with an empty cache
-  --no-setup              start test dyno without running test-setup
+      --no-cache          start test run with an empty cache
+      --no-setup          start test dyno without running test-setup
 
 DESCRIPTION
   opens an interactive test debugging session with the contents of the current directory
 ```
 
-_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/debug.ts)_
+_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/debug.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -157,12 +161,13 @@ show the status of a specific test run
 
 ```
 USAGE
-  $ heroku ci:info TEST-RUN [-a <value>] [--node <value>] [-p <value>]
+  $ heroku ci:info TEST-RUN [-a <value>] [-r <value>] [--node <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app name
   -p, --pipeline=<value>  name of pipeline
-  --node=<value>          the node number to show its setup and output
+  -r, --remote=<value>    git remote of app to use
+      --node=<value>      the node number to show its setup and output
 
 DESCRIPTION
   show the status of a specific test run
@@ -171,7 +176,7 @@ EXAMPLES
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -179,12 +184,13 @@ looks for the most recent run and returns the output of that run
 
 ```
 USAGE
-  $ heroku ci:last [-a <value>] [--node <value>] [-p <value>]
+  $ heroku ci:last [-a <value>] [-r <value>] [--node <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app name
   -p, --pipeline=<value>  name of pipeline
-  --node=<value>          the node number to show its setup and output
+  -r, --remote=<value>    git remote of app to use
+      --node=<value>      the node number to show its setup and output
 
 DESCRIPTION
   looks for the most recent run and returns the output of that run
@@ -193,7 +199,7 @@ EXAMPLES
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -210,7 +216,7 @@ EXAMPLES
   $ heroku ci:migrate-manifest
 ```
 
-_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/migrate-manifest.ts)_
+_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/migrate-manifest.ts)_
 
 ## `heroku ci:open`
 
@@ -218,12 +224,13 @@ open the Dashboard version of Heroku CI
 
 ```
 USAGE
-  $ heroku ci:open -a <value> [-h] [-p <value>]
+  $ heroku ci:open -a <value> [-h] [-r <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       (required) app to run command against
   -h, --help              Show CLI help.
   -p, --pipeline=<value>  name of pipeline
+  -r, --remote=<value>    git remote of app to use
 
 DESCRIPTION
   open the Dashboard version of Heroku CI
@@ -232,7 +239,7 @@ EXAMPLES
   $ heroku ci:open --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/open.ts)_
+_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/open.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -240,11 +247,12 @@ rerun tests against current directory
 
 ```
 USAGE
-  $ heroku ci:rerun [NUMBER] [-a <value>] [-p <value>]
+  $ heroku ci:rerun [NUMBER] [-a <value>] [-r <value>] [-p <value>]
 
 FLAGS
   -a, --app=<value>       app name
   -p, --pipeline=<value>  name of pipeline
+  -r, --remote=<value>    git remote of app to use
 
 DESCRIPTION
   rerun tests against current directory
@@ -253,7 +261,7 @@ EXAMPLES
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -274,4 +282,4 @@ EXAMPLES
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.1/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.2/src/commands/ci/run.ts)_
