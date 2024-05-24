@@ -263,7 +263,7 @@ regions                                        list available regions for deploy
 releases                                       display the releases for an app
 releases:info                                  view detailed information for a release
 releases:output                                View the release command output
-releases:rollback                              Roll back to a previous release
+releases:rollback                              Roll back to a previous release.
 reviewapps:disable                             disable review apps and/or settings on an existing pipeline
 reviewapps:enable                              enable review apps and/or settings on an existing pipeline
 run                                            run a one-off process inside a heroku dyno
