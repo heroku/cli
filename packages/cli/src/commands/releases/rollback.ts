@@ -8,8 +8,7 @@ import {stream} from '../../lib/releases/output'
 export default class Rollback extends Command {
   static topic = 'releases'
   static hiddenAliases = ['rollback']
-  static description = `
-    Roll back to a previous release.
+  static description = `Roll back to a previous release.
 
     If RELEASE is not specified, it will roll back one release.
     `

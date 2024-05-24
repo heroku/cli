@@ -223,8 +223,7 @@ function displayJSON(addons: Heroku.AddOn[]) {
 export default class Addons extends Command {
   static topic = topic
   static usage = 'addons [--all|--app APP]'
-  static description = `
-  Lists your add-ons and attachments.
+  static description = `Lists your add-ons and attachments.
 
   The default filter applied depends on whether you are in a Heroku app
   directory. If so, the --app flag is implied. If not, the default of --all

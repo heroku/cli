@@ -33,8 +33,7 @@ async function configureDomains(app: string, heroku: APIClient, cert: SniEndpoin
 export default class Add extends Command {
   static topic = 'certs'
   static strict = true
-  static description = `
-  Add an SSL certificate to an app.
+  static description = `Add an SSL certificate to an app.
 
   Note: certificates with PEM encoding are also valid.
   `

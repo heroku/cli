@@ -11,8 +11,7 @@ import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
   static topic = 'addons'
-  static description = `
-  change add-on plan.
+  static description = `change add-on plan.
   See available plans with \`heroku addons:plans SERVICE\`.
 
   Note that \`heroku addons:upgrade\` and \`heroku addons:downgrade\` are the same.\
