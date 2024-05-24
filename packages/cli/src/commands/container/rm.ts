@@ -5,7 +5,7 @@ import color from '@heroku-cli/color'
 export default class Rm extends Command {
   static topic = 'container'
   static description = 'remove the process type from your app'
-  static usage = '$ heroku container:rm -a APP [-v] PROCESS_TYPE...'
+  static usage = 'container:rm -a APP [-v] PROCESS_TYPE...'
   static example = `
   ${color.cmd('heroku container:rm web')}        # Destroys the web container
   ${color.cmd('heroku container:rm web worker')} # Destroys the web and worker containers`

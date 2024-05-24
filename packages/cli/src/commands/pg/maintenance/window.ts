@@ -10,8 +10,8 @@ import heredoc from 'tsheredoc'
 export default class Window extends Command {
   static topic = 'pg';
   static description = heredoc(`
-    set weekly maintenance window
-    All times are in UTC
+    Set weekly maintenance window.
+    All times are in UTC.
   `);
 
   static example = '$ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100';

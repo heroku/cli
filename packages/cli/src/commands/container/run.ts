@@ -7,7 +7,7 @@ import color from '@heroku-cli/color'
 export default class Run extends Command {
   static topic = 'container'
   static description = 'builds, then runs the docker image locally'
-  static usage = '$ heroku container:pull -a APP [-v] PROCESS_TYPE...'
+  static usage = 'container:run -a APP [-v] PROCESS_TYPE...'
   static example = `
   ${color.cmd('$ heroku container:pull web')}        # Pulls the web image from the app
   ${color.cmd('$ heroku container:pull web worker')} # Pulls both the web and worker images from the app

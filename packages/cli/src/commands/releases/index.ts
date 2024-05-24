@@ -66,11 +66,11 @@ const getDescriptionTruncation = function (releases: Heroku.Formation[], columns
 export default class Index extends Command {
   static topic = 'releases'
   static description = 'display the releases for an app'
-  static usage = `$ heroku releases
-=== example Releases
-v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`
+  static examples = [
+    'v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)',
+    'v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)',
+    'v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)',
+  ]
 
   static flags = {
     num: flags.string({char: 'n', description: 'number of releases to show'}),

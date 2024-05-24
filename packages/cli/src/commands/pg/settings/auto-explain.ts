@@ -10,7 +10,7 @@ export default class AutoExplain extends PGSettingsCommand {
   static description = heredoc(`
   Automatically log execution plans of queries without running EXPLAIN by hand.
   The auto_explain module is loaded at session-time so existing connections will not be logged.
-  Restart your Heroku app and/or restart existing connections for logging to start taking place.'
+  Restart your Heroku app and/or restart existing connections for logging to start taking place.
   `)
 
   static flags = {
