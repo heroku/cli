@@ -13,10 +13,7 @@ async function run(context, heroku) {
   }
 }
 
-module.exports = {
-  topic: 'drains',
-  command: 'get',
-  hidden: true,
+const cmd = {
   description: 'display the log drain for a space',
   needsApp: false,
   needsAuth: true,
@@ -26,3 +23,8 @@ module.exports = {
   ],
   run: cli.command(run),
 }
+
+module.exports = [
+  Object.assign({topic: 'spaces', command: 'drains:get', hidden: false}, cmd),
+  Object.assign({topic: 'drains', command: 'get', hidden: true}, cmd),
+]
