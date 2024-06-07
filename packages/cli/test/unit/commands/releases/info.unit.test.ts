@@ -30,7 +30,6 @@ describe('releases:info', function () {
       'myapp',
     ])
       .then(() => expect(stdout.output).to.equal(`=== Release v10\n\nAdd-ons: addon1\n         addon2\nBy:      foo@foo.com\nChange:  something changed\nWhen:    ${d.toISOString()}\n\n=== v10 Config vars\n\nBAR: bar\nFOO: foo\n`))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 
@@ -46,7 +45,6 @@ describe('releases:info', function () {
       '--shell',
     ])
       .then(() => expect(stdout.output).to.equal(`=== Release v10\n\nAdd-ons: addon1\n         addon2\nBy:      foo@foo.com\nChange:  something changed\nWhen:    ${d.toISOString()}\n\n=== v10 Config vars\n\nFOO=foo\nBAR=bar\n`))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 
@@ -62,7 +60,6 @@ describe('releases:info', function () {
       'v10',
     ])
       .then(() => expect(stdout.output).to.equal(`=== Release v10\n\nAdd-ons: addon1\n         addon2\nBy:      foo@foo.com\nChange:  something changed\nWhen:    ${d.toISOString()}\n\n=== v10 Config vars\n\nBAR: bar\nFOO: foo\n`))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 
@@ -77,7 +74,6 @@ describe('releases:info', function () {
       'v10',
     ])
       .then(() => expect(stdout.output).to.contain('"version": 10'))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 
@@ -94,7 +90,6 @@ describe('releases:info', function () {
       'myapp',
     ])
       .then(() => expect(stdout.output).to.equal(`=== Release v10\n\nBy:      foo@foo.com\nChange:  something changed (release command failed)\nWhen:    ${d.toISOString()}\n\n=== v10 Config vars\n\nBAR: bar\nFOO: foo\n`))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 
@@ -111,7 +106,6 @@ describe('releases:info', function () {
       'myapp',
     ])
       .then(() => expect(stdout.output).to.equal(`=== Release v10\n\nAdd-ons: addon1\n         addon2\nBy:      foo@foo.com\nChange:  something changed (release command executing)\nWhen:    ${d.toISOString()}\n\n=== v10 Config vars\n\nBAR: bar\nFOO: foo\n`))
-      .then(() => expect(stderr.output, 'to be empty'))
       .then(() => api.done())
   })
 })
