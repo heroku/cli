@@ -31,15 +31,17 @@ describe('container push', function () {
     })
 
     it('exits', async function () {
+      let error
       await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
-      ]).catch((error: any) => {
-        const {message, oclif} = error as CLIError
-        expect(message).to.equal(`This command is for Docker apps only. Run ${color.cyan('git push heroku main')} to deploy your ${color.cyan('testapp')} ${color.cyan('heroku-24')} app instead.`)
-        expect(oclif.exit).to.equal(1)
+      ]).catch((error_: any) => {
+        error = error_
       })
+      const {message, oclif} = error as unknown as CLIError
+      expect(message).to.equal(`This command is for Docker apps only. Run ${color.cyan('git push heroku main')} to deploy your ${color.cyan('testapp')} ${color.cyan('heroku-24')} app instead.`)
+      expect(oclif.exit).to.equal(1)
     })
   })
 
@@ -51,22 +53,22 @@ describe('container push', function () {
     })
 
     it('gets a build error', async function () {
+      let error
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
         .throws()
 
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'testapp',
-          'web',
-        ])
-      } catch (error) {
-        const {message, oclif} = error as CLIError
-        expect(message).to.contain('docker build exited with Error: Error')
-        expect(oclif.exit).to.equal(1)
-      }
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ]).catch(error_ => {
+        error = error_
+      })
+      const {message, oclif} = error as unknown as CLIError
+      expect(message).to.contain('docker build exited with Error: Error')
+      expect(oclif.exit).to.equal(1)
 
       expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
@@ -74,23 +76,23 @@ describe('container push', function () {
     })
 
     it('gets a push error', async function () {
+      let error
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
       const push = sandbox.stub(DockerHelper, 'pushImage')
         .throws()
 
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'testapp',
-          'web',
-        ])
-      } catch (error) {
-        const {message, oclif} = error as CLIError
-        expect(message).to.contain('docker push exited with Error: Error')
-        expect(oclif.exit).to.equal(1)
-      }
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ]).catch(error_ => {
+        error = error_
+      })
+      const {message, oclif} = error as unknown as CLIError
+      expect(message).to.contain('docker push exited with Error: Error')
+      expect(oclif.exit).to.equal(1)
 
       expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
@@ -191,20 +193,20 @@ describe('container push', function () {
     })
 
     it('does not find an image to push', async function () {
+      let error
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns([])
 
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'testapp',
-          'web',
-        ])
-      } catch (error) {
-        const {message, oclif} = error as CLIError
-        expect(message).to.contain('No images to push')
-        expect(oclif.exit).to.equal(1)
-      }
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ]).catch(error_ => {
+        error = error_
+      })
+      const {message, oclif} = error as unknown as CLIError
+      expect(message).to.contain('No images to push')
+      expect(oclif.exit).to.equal(1)
 
       expect(stdout.output, 'to be empty')
       sandbox.assert.calledOnce(dockerfiles)
@@ -212,34 +214,32 @@ describe('container push', function () {
   })
 
   it('requires a process type if we are not recursive', async function () {
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'testapp',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as CLIError
-      expect(message).to.contain('Requires either --recursive or one or more process types')
-      expect(oclif.exit).to.equal(1)
-    }
-
+    let error
+    await runCommand(Cmd, [
+      '--app',
+      'testapp',
+    ]).catch(error_ => {
+      error = error_
+    })
+    const {message, oclif} = error as unknown as CLIError
+    expect(message).to.contain('Requires either --recursive or one or more process types')
+    expect(oclif.exit).to.equal(1)
     expect(stdout.output).to.equal('')
   })
 
   it('rejects multiple process types if we are not recursive', async function () {
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'testapp',
-        'web',
-        'worker',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as CLIError
-      expect(message).to.contain('Requires exactly one target process type, or --recursive option')
-      expect(oclif.exit).to.equal(1)
-    }
-
+    let error
+    await runCommand(Cmd, [
+      '--app',
+      'testapp',
+      'web',
+      'worker',
+    ]).catch(error_ => {
+      error = error_
+    })
+    const {message, oclif} = error as unknown as CLIError
+    expect(message).to.contain('Requires exactly one target process type, or --recursive option')
+    expect(oclif.exit).to.equal(1)
     expect(stdout.output).to.equal('')
   })
 })
