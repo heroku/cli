@@ -37,7 +37,7 @@ export default class Run extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'push')
+    helpers.ensureContainerStack(appBody, 'run')
 
     const processType = argv.shift() as string
     const command: string = argv.join(' ')

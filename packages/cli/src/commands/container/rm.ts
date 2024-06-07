@@ -28,7 +28,7 @@ export default class Rm extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'push')
+    helpers.ensureContainerStack(appBody, 'rm')
 
     for (const process of argv as string[]) {
       ux.action.start(`Removing container ${process} for ${color.app(app)}`)

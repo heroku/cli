@@ -46,7 +46,7 @@ export default class ContainerRelease extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'push')
+    helpers.ensureContainerStack(appBody, 'release')
 
     const herokuHost: string = process.env.HEROKU_HOST || 'heroku.com'
     const updateData: any[] = []

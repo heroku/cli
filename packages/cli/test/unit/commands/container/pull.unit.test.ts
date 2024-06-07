@@ -30,6 +30,7 @@ describe('container pull', function () {
   })
 
   it('exits when the app stack is not container', async function () {
+    let error
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
@@ -37,11 +38,13 @@ describe('container pull', function () {
       '--app',
       'testapp',
       'web',
-    ]).catch((error: any) => {
-      const {message, oclif} = error as CLIError
-      expect(message).to.equal('This command is for Docker apps only.')
-      expect(oclif.exit).to.equal(1)
+    ]).catch((error_: any) => {
+      error = error_
     })
+    const {message, oclif} = error as unknown as CLIError
+    expect(message).to.equal('This command is for Docker apps only.')
+    expect(oclif.exit).to.equal(1)
+
     expect(stdout.output).to.equal('')
     api.done()
   })
