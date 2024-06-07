@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
+import * as helpers from '../../lib/container/helpers'
+import * as Heroku from '@heroku-cli/schema'
 
 export default class Rm extends Command {
   static topic = 'container'
@@ -24,6 +26,9 @@ export default class Rm extends Command {
     if (argv.length === 0) {
       this.error(`Error: Requires one or more process types\n${Rm.example}`)
     }
+
+    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    helpers.ensureContainerStack(appBody, 'push')
 
     for (const process of argv as string[]) {
       ux.action.start(`Removing container ${process} for ${color.app(app)}`)

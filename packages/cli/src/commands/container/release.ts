@@ -4,6 +4,7 @@ import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {debug} from '../../lib/container/debug'
 import {streamer} from '../../lib/container/streamer'
+import * as helpers from '../../lib/container/helpers'
 
 type ImageResponse = {
   schemaVersion: number,
@@ -44,7 +45,8 @@ export default class ContainerRelease extends Command {
       debug.enabled = true
     }
 
-    await this.heroku.get(`/apps/${app}`)
+    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    helpers.ensureContainerStack(appBody, 'push')
 
     const herokuHost: string = process.env.HEROKU_HOST || 'heroku.com'
     const updateData: any[] = []

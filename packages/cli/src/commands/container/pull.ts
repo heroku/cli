@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
+import * as helpers from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
 import color from '@heroku-cli/color'
+import * as Heroku from '@heroku-cli/schema'
 
 export default class Pull extends Command {
   static topic = 'container'
@@ -28,6 +30,9 @@ export default class Pull extends Command {
     if (argv.length === 0) {
       this.error(`Error: Requires one or more process types\n${Pull.example}`)
     }
+
+    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    helpers.ensureContainerStack(appBody, 'pull')
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`

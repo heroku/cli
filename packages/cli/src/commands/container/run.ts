@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
+import * as helpers from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
 import color from '@heroku-cli/color'
+import * as Heroku from '@heroku-cli/schema'
 
 export default class Run extends Command {
   static topic = 'container'
@@ -33,6 +35,9 @@ export default class Run extends Command {
     if (verbose) {
       debug.enabled = true
     }
+
+    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    helpers.ensureContainerStack(appBody, 'push')
 
     const processType = argv.shift() as string
     const command: string = argv.join(' ')
