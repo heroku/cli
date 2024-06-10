@@ -72,6 +72,7 @@
     "strip-ansi": "^6",
     "term-img": "^4.1.0",
     "true-myth": "2.2.3",
+    "tsheredoc": "^1.0.1",
     "tslib": "1.14.1",
     "tunnel-ssh": "4.1.6",
     "urijs": "^1.19.11",
@@ -131,7 +132,6 @@
     "strip-ansi": "6.0.1",
     "tmp": "^0.2.3",
     "ts-node": "^10.9.1",
-    "tsheredoc": "^1.0.1",
     "typescript": "4.8.4"
   },
   "engines": {
