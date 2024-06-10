@@ -4,6 +4,11 @@ const {Console} = require('node:console')
 const net = require('node:net')
 const ipcEnabled = process.env.ALLOW_IPC_CONNECT === 'true'
 
+// TODO: successfully establish IPC connection
+// TODO: successfully send data to IPC server
+// TODO: push command messages to IPC server
+// TODO: output data from node's console as optional output
+
 export function setupIPC(config: any, opts: any) {
   // cancel IPC connection setup if ALLOW_IPC_CONNECT is not enabled
   if (!ipcEnabled) {
