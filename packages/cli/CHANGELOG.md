@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-alpha.3](https://github.com/heroku/cli/compare/v9.0.0-alpha.2...v9.0.0-alpha.3) (2024-06-10)
+
+
+### Bug Fixes
+
+* move tsheredoc to dependencies ([#2899](https://github.com/heroku/cli/issues/2899)) ([ef80505](https://github.com/heroku/cli/commit/ef80505389f4acd86cc1db65a22576db44c20ab8))
+* **W-15838634:** plugins --json yields TypeError: Converting circular structure to JSON ([#2895](https://github.com/heroku/cli/issues/2895)) ([e7daae4](https://github.com/heroku/cli/commit/e7daae4ea670121082b8d29602342e7aca48e8ca))
+* **W-15954887:** json flag yelds error for command: heroku commands --json ([#2897](https://github.com/heroku/cli/issues/2897)) ([7843813](https://github.com/heroku/cli/commit/7843813f09deacb3de8ad3f366c09f17f99b350a))
+
+
+
+
+
 # [9.0.0-alpha.2](https://github.com/heroku/cli/compare/v8.11.5...v9.0.0-alpha.2) (2024-05-24)
 
 
