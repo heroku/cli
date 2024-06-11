@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
-import * as helpers from '../../lib/container/helpers'
+import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -68,7 +68,7 @@ export default class Push extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'push')
+    ensureContainerStack(appBody, 'push')
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`

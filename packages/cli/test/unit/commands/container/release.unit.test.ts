@@ -63,8 +63,6 @@ describe('container release', function () {
       registry = nock('https://registry.heroku.com:443')
     })
 
-    afterEach(function () {})
-
     it('releases a single process type, no previous release', async function () {
       api
         .patch('/apps/testapp/formation', {

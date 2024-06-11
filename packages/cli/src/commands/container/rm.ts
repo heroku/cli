@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
-import * as helpers from '../../lib/container/helpers'
+import {ensureContainerStack} from '../../lib/container/helpers'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Rm extends Command {
@@ -28,7 +28,7 @@ export default class Rm extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'rm')
+    ensureContainerStack(appBody, 'rm')
 
     for (const process of argv as string[]) {
       ux.action.start(`Removing container ${process} for ${color.app(app)}`)

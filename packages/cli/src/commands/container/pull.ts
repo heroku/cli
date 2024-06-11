@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
-import * as helpers from '../../lib/container/helpers'
+import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
@@ -32,7 +32,7 @@ export default class Pull extends Command {
     }
 
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    helpers.ensureContainerStack(appBody, 'pull')
+    ensureContainerStack(appBody, 'pull')
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`
