@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
+import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
+import * as Heroku from '@heroku-cli/schema'
 
 async function selectJobs(jobs: DockerHelper.groupedDockerJobs, processTypes: string[], recursive: boolean) {
   let filteredJobs: DockerHelper.groupedDockerJobs = {}
@@ -65,7 +67,8 @@ export default class Push extends Command {
       ux.error('Requires exactly one target process type, or --recursive option', {exit: 1})
     }
 
-    await this.heroku.get(`/apps/${app}`)
+    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    ensureContainerStack(appBody, 'push')
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`
