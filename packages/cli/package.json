@@ -26,6 +26,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "^8.0.13",
+    "@inquirer/prompts": "^5.0.5",
     "@oclif/core": "^2.8.11",
     "@oclif/core-v1": "npm:@oclif/core@^1.26.2",
     "@oclif/plugin-commands": "2.2.2",
