@@ -83,6 +83,12 @@ www.example.com  CNAME            www.example.herokudns.com
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
         ux.log()
+        if (customDomains.length > 100 && !flags.csv) {
+          ux.warn('This app has over 100 domains. Your terminal may not be configured to display the amount of domains this app contains. We recommend outputting this information into a csv file like so: heroku domains -a example-app --csv > example-file.txt')
+          return
+        }
+
+        ux.log()
         ux.styledHeader(`${flags.app} Custom Domains`)
         ux.table(customDomains, this.tableConfig(true), {
           ...flags,
