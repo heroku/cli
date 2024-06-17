@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as Uri from 'urijs'
+import {confirm} from '@inquirer/prompts'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -75,6 +76,7 @@ www.example.com  CNAME            www.example.herokudns.com
     const {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
+    let displayTotalDomains = false
 
     if (flags.json) {
       ux.styledJSON(domains)
@@ -85,7 +87,11 @@ www.example.com  CNAME            www.example.herokudns.com
         ux.log()
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn('This app has over 100 domains. Your terminal may not be configured to display the amount of domains this app contains. We recommend outputting this information into a csv file like so: heroku domains -a example-app --csv > example-file.txt')
-          return
+          displayTotalDomains = await confirm({default: false, message: 'Display total list of custom domains?'})
+
+          if (!displayTotalDomains) {
+            return
+          }
         }
 
         ux.log()
