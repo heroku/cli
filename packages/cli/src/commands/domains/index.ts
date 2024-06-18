@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
+import {paginateRequest} from '../../lib/utils/paginator'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -73,10 +74,14 @@ www.example.com  CNAME            www.example.herokudns.com
 
   async run() {
     const {flags} = await this.parse(DomainsIndex)
-    const {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
+    const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
+    const {body: domainsNew, headers: headerInfo2} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
     let displayTotalDomains = false
+
+    // console.log('headerInfo', domainsNew)
+    console.log('headerInfo', headerInfo2)
 
     if (flags.json) {
       ux.styledJSON(domains)
