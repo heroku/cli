@@ -74,14 +74,15 @@ www.example.com  CNAME            www.example.herokudns.com
 
   async run() {
     const {flags} = await this.parse(DomainsIndex)
-    const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
-    const {body: domainsNew, headers: headerInfo2} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`)
+    // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
+    const {body: domains, headers: headerInfo, statusCode: code} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 200)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
     let displayTotalDomains = false
 
     // console.log('headerInfo', domainsNew)
-    console.log('headerInfo', headerInfo2)
+    console.log('statusCode', code)
+    console.log('headerInfo', headerInfo)
 
     if (flags.json) {
       ux.styledJSON(domains)
@@ -89,6 +90,8 @@ www.example.com  CNAME            www.example.herokudns.com
       ux.styledHeader(`${flags.app} Heroku Domain`)
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
+        console.log('# of custom domains', customDomains.length)
+        console.log('# of total domains', domains.length)
         ux.log()
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn('This app has over 100 domains. Your terminal may not be configured to display the amount of domains this app contains. We recommend outputting this information into a csv file like so: heroku domains -a example-app --csv > example-file.txt')
