@@ -8,30 +8,35 @@ import {APIClient} from '@heroku-cli/command'
 // use status code to determine passing Next-Range header
 
 export async function paginateRequest(client: APIClient, url: string, pageSize = 1000) {
-  const isPartial = true
-  const isFirstRequest = true
-  const nextRange = ''
+//   const isPartial = true
+//   const isFirstRequest = true
+//   const nextRange = ''
+//   let aggregatedResponseBody: any = []
 
   const response = await client.get<Array<any>>(url)
 
-  //   while (isPartial) {
-  //     console.log('pageSize', pageSize)
-  //     // either construct headers before and pass them to range or
-  //     // update the undefined type error on nextRange
-  //     const response = await client.get<Array<any>>(url, {
-  //       headers: {
-  //         Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `hostname ..; max=${pageSize};`}`,
-  //       },
-  //     })
+  // while (isPartial) {
+  //   console.log('pageSize', pageSize)
+  //   // either construct headers before and pass them to range or
+  //   // update the undefined type error on nextRange
+  //   const response = await client.get<Array<any>>(url, {
+  //     headers: {
+  //       Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `hostname ..; max=${pageSize};`}`,
+  //     },
+  //   })
 
-  //     isFirstRequest = false
+  //   aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
 
-  //     if (response.statusCode === 206) {
-  //       nextRange = response.headers['next-range']
-  //     } else {
-  //       isPartial = false
-  //     }
+  //   isFirstRequest = false
+
+  //   if (response.statusCode === 206) {
+  //     nextRange = response.headers['next-range']
+  //   } else {
+  //     isPartial = false
   //   }
+  // }
+
+  // return aggregatedResponseBody
 
   return response
 }
