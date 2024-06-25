@@ -19,7 +19,7 @@
     "@heroku/heroku-cli-util": "^8.0.13",
     "@oclif/core": "^2.8.11",
     "filesize": "^10.1.2",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^11.2.0",
     "inquirer": "^8.2.6",
     "js-yaml": "^3.12.1",
     "lodash": "^4.17.21",
