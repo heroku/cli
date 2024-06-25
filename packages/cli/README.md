@@ -98,7 +98,7 @@ Run one test, in this case plugin-certs-v5, with `yarn lerna run --scope @heroku
 
 ## Debugging
 
-Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+Using WebStorm (from JetBrains / IntelliJ), you can run/debug an individual test case.
 
 - Create a new run/debug configuration
 - Select the 'Mocha' type

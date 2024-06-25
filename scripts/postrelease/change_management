@@ -10,7 +10,7 @@ if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
 
 const REQUEST_PROMISE = require('promise-request-retry')
 
-// Set these in Github Actions in the heroku/cli project
+// Set these in GitHub Actions in the heroku/cli project
 //
 const TPS_API_APP_ID = process.env.TPS_API_APP_ID
 const TPS_API_RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL

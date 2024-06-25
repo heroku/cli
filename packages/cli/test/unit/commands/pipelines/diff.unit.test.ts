@@ -23,7 +23,7 @@ describe('pipelines:diff', function () {
     stage: 'staging',
   }
 
-  const targetGithubApp = {
+  const targetGitHubApp = {
     repo: 'heroku/example-app',
   }
 
@@ -40,7 +40,7 @@ describe('pipelines:diff', function () {
     stage: 'production',
   }
 
-  const downstreamApp1Github = {
+  const downstreamApp1GitHub = {
     repo: 'heroku/example-app',
   }
 
@@ -57,7 +57,7 @@ describe('pipelines:diff', function () {
     stage: 'production',
   }
 
-  const downstreamApp2Github = {
+  const downstreamApp2GitHub = {
     repo: 'heroku/some-other-app',
   }
 
@@ -121,9 +121,9 @@ describe('pipelines:diff', function () {
         .nock(kolkrabbiApi, api => {
           api
             .get(`/apps/${downstreamApp1.id}/github`)
-            .reply(200, downstreamApp1Github)
+            .reply(200, downstreamApp1GitHub)
             .get(`/apps/${downstreamApp2.id}/github`)
-            .reply(200, downstreamApp2Github)
+            .reply(200, downstreamApp2GitHub)
         })
     }
 
@@ -143,7 +143,7 @@ describe('pipelines:diff', function () {
       .nock(kolkrabbiApi, api => {
         api
           .get(`/apps/${targetApp.id}/github`)
-          .reply(200, targetGithubApp)
+          .reply(200, targetGitHubApp)
       })
       .command(['pipelines:diff', `--app=${targetApp.name}`])
       .catch(error => {
@@ -155,7 +155,7 @@ describe('pipelines:diff', function () {
       .nock(kolkrabbiApi, api => {
         api
           .get(`/apps/${targetApp.id}/github`)
-          .reply(200, targetGithubApp)
+          .reply(200, targetGitHubApp)
       })
       .nock(apiUrl, api => {
         api
@@ -180,11 +180,11 @@ describe('pipelines:diff', function () {
         .nock(kolkrabbiApi, api => {
           api
             .get(`/apps/${targetApp.id}/github`)
-            .reply(200, targetGithubApp)
+            .reply(200, targetGitHubApp)
             .get(`/apps/${downstreamApp1.id}/github`)
-            .reply(200, downstreamApp1Github)
+            .reply(200, downstreamApp1GitHub)
             .get(`/apps/${downstreamApp2.id}/github`)
-            .reply(200, downstreamApp2Github)
+            .reply(200, downstreamApp2GitHub)
             .get('/account/github/token')
             .reply(200, {github: {token: 'github-token'}})
         })
@@ -228,7 +228,7 @@ describe('pipelines:diff', function () {
       })
       .nock(githubApi, api => {
         api
-          .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
+          .get(`/repos/${targetGitHubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
           .reply(404)
       })
       .command(['pipelines:diff', `--app=${targetApp.name}`])

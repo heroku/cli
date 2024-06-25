@@ -13,7 +13,7 @@ describe('pipelines:connect', () => {
       .it('displays an error')
   })
 
-  describe('with an account connected to Github', () => {
+  describe('with an account connected to GitHub', () => {
     test
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         const kolkrabbiAccount = {

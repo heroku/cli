@@ -1,4 +1,4 @@
-name: Create Github Release & Tag version in Git
+name: Create GitHub Release & Tag version in Git
 
 on:
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
       - name: Create & Push Git Tag
         run: ./scripts/release/create-git-tag-and-push
         shell: bash
-      - name: Release to Github
+      - name: Release to GitHub
         # the script below will fail if run from a separate shell file
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")

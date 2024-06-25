@@ -860,7 +860,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.5.2] - 2017-04-27
 ### Changed
-- Releax engines requirements in package.json.
+- Relax engines requirements in package.json.
 
 ## [1.5.1] - 2017-04-03
 ### Changed
