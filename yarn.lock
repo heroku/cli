@@ -11285,7 +11285,7 @@ __metadata:
     aws-sdk: ^2.421.0
     bats: ^1.1.0
     chai: ^4.2.0
-    chalk: ^2.4.2
+    chalk: ^5.3.0
     commander: ^2.15.1
     date-fns: ^2.30.0
     debug: 4.3.4

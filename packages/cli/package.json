@@ -46,7 +46,7 @@
     "@opentelemetry/semantic-conventions": "^1.24.1",
     "ansi-escapes": "3.2.0",
     "async-file": "^2.0.2",
-    "chalk": "^2.4.2",
+    "chalk": "^5.3.0",
     "commander": "^2.15.1",
     "date-fns": "^2.30.0",
     "debug": "4.3.4",
