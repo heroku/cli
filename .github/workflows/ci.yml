@@ -78,7 +78,7 @@ jobs:
         run: yarn lerna run test:acceptance
 
   spell-check:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check Spelling
         uses: check-spelling/check-spelling@v0.0.22
