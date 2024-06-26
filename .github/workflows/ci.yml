@@ -74,6 +74,7 @@ jobs:
         run: cd packages/cli && yarn test:acceptance
 
   spell-check:
+    runs-on: macos-latest
     steps:
       - name: Check Spelling
         uses: check-spelling/check-spelling@v0.0.22
@@ -81,7 +82,7 @@ jobs:
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [test, integration, acceptance]
+    needs: [test, integration, acceptance, spell-check]
     steps:
       - run: echo done
         working-directory: /
