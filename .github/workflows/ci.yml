@@ -73,6 +73,11 @@ jobs:
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
         run: cd packages/cli && yarn test:acceptance
 
+  spell-check:
+    steps:
+      - name: Check Spelling
+        uses: check-spelling/check-spelling@v0.0.22
+            
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
