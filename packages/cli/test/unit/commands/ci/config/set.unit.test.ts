@@ -29,4 +29,12 @@ describe('heroku ci:config:set', function () {
       expect(error.message).to.equal('Usage: heroku ci:config:set KEY1 [KEY2 ...]\nMust specify KEY to set.')
     })
     .it('errors with example of valid args')
+
+  test
+    .stderr()
+    .command(['ci:config:set', '--', `${key}=${value}`])
+    .catch(error => {
+      expect(error.message).to.include('Exactly one of the following must be provided: --app, --pipeline')
+    })
+    .it('errors with explanation of required flags')
 })
