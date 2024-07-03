@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import notify from '../../lib/notify'
 import createAddon from '../../lib/addons/create_addon'
+import heredoc from 'tsheredoc'
 
 function parseConfig(args: string[]) {
   const config: Record<string, string | boolean> = {}
@@ -38,7 +39,19 @@ function parseConfig(args: string[]) {
 
 export default class Create extends Command {
   static topic = 'addons'
-  static description = 'create a new add-on resource'
+  static description = heredoc`
+  Create a new add-on resource.
+
+  In order to add additional config items, please place them at the end of the command after a double-dash (--).
+  `
+
+  static example = heredoc`
+  Create an add-on resource:
+  $heroku addons:create heroku-redis --app my-app
+
+  Create an add-on resource with additional config items:
+  $heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
+  `
   static strict = false
   static hiddenAliases = ['addons:add']
   static flags = {
