@@ -48,8 +48,8 @@ export default class Git {
     const remotes = await this.exec(['remote', '-v'])
     return remotes.split('\n')
       .map(r => r.split('\t'))
-      .find(r => r[0] === name)![1]
-      .split(' ')[0]
+      .find(r => r[0] === name)?.[1]
+      ?.split(' ')[0] ?? ''
   }
 
   url(app: string) {
