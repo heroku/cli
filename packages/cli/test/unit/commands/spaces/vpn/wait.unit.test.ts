@@ -79,10 +79,9 @@ describe('spaces:vpn:wait', function () {
 
     try {
       await runCommand(Cmd, [
+        'vpn-connection-name-wait',
         '--space',
         'my-space',
-        '--name',
-        'vpn-connection-name-wait',
         '--interval',
         '0',
       ])
@@ -184,10 +183,9 @@ describe('spaces:vpn:wait', function () {
         ],
       })
     await runCommand(Cmd, [
+      'vpn-connection-name-wait',
       '--space',
       'my-space',
-      '--name',
-      'vpn-connection-name-wait',
       '--interval',
       '0',
     ])
@@ -217,10 +215,9 @@ describe('spaces:vpn:wait', function () {
       })
 
     await runCommand(Cmd, [
+      'vpn-connection-allocated',
       '--space',
       'my-space',
-      '--name',
-      'vpn-connection-allocated',
       '--interval',
       '0',
     ])

@@ -17,11 +17,14 @@ export default class Update extends Command {
   }
 
   static example = heredoc`
-    $ heroku spaces:vpn:update office --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24
+    $ heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24
     Updating VPN Connection in space my-space... done
   `
   static args = {
-    name: Args.string({required: true}),
+    name: Args.string({
+      required: true,
+      description: 'name or id of the VPN connection to update',
+    }),
   }
 
   public async run(): Promise<void> {

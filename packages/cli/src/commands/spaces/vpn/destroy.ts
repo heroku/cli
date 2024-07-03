@@ -18,7 +18,10 @@ export default class Destroy extends Command {
   }
 
   static args = {
-    name: Args.string({description: 'name of the VPN connection to destroy', required: true}),
+    name: Args.string({
+      required: true,
+      description: 'name or id of the VPN connection to destroy',
+    }),
   }
 
   public async run(): Promise<void> {

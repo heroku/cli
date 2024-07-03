@@ -8,7 +8,7 @@ export default class Info extends Command {
   static topic = 'spaces';
   static description = 'display the information for VPN';
   static example = heredoc(`
-    $ heroku spaces:vpn:info --space my-space vpn-connection-name
+    $ heroku spaces:vpn:info vpn-connection-name --space my-space
     === vpn-connection-name VPN Tunnel Info
     Name:           vpn-connection-name
     ID:             123456789012
