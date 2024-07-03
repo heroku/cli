@@ -8,7 +8,7 @@ access:remove                                  remove users from a team app
 access:update                                  update existing collaborators on an team app
 addons                                         Lists your add-ons and attachments.
 addons:attach                                  attach an existing add-on resource to an app
-addons:create                                  create a new add-on resource
+addons:create                                  Create a new add-on resource.
 addons:destroy                                 permanently destroy an add-on resource
 addons:detach                                  detach an existing add-on resource from an app
 addons:docs                                    open an add-on's Dev Center documentation in your browser
