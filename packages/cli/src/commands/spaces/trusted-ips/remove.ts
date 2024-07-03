@@ -17,7 +17,7 @@ export default class Remove extends Command {
         `)]
 
   static flags = {
-    space: flags.string({optional: false, description: 'space to remove rule from'}),
+    space: flags.string({required: true, char: 's', description: 'space to remove rule from'}),
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
   }
 

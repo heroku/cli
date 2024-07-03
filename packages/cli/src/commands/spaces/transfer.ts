@@ -12,7 +12,7 @@ export default class Transfer extends Command {
   `)]
 
   static flags = {
-    space: flags.string({required: true, description: 'name of space'}),
+    space: flags.string({required: true, char: 's', description: 'name of space'}),
     team: flags.string({required: true, description: 'desired owner of space'}),
   }
 
