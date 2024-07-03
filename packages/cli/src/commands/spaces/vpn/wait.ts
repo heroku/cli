@@ -32,7 +32,7 @@ export default class Wait extends Command {
 
     static args = {
       name: Args.string({
-        description: 'name or id of the VPN connection to get info from',
+        description: 'name or id of the VPN connection you are waiting on for allocation.',
         required: true,
       }),
     }

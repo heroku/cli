@@ -26,7 +26,7 @@ export default class Connect extends Command {
   static args = {
     name: Args.string({
       required: true,
-      description: 'name or id of the VPN connection to retrieve config from',
+      description: 'name or id of the VPN connection to create',
     }),
   }
 
