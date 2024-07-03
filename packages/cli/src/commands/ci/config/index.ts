@@ -16,10 +16,11 @@ export default class CiConfig extends Command {
   ]
 
   static flags = {
-    app: cmdFlags.string({char: 'a', description: 'app name'}),
+    app: cmdFlags.app(),
+    remote: cmdFlags.remote(),
     shell: cmdFlags.boolean({char: 's', description: 'output config vars in shell format'}),
     json: cmdFlags.boolean({description: 'output config vars in json format'}),
-    pipeline: cmdFlags.pipeline(),
+    pipeline: cmdFlags.pipeline({exactlyOne: ['pipeline', 'app']}),
   }
 
   async run() {

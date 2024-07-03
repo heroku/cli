@@ -14,9 +14,9 @@ export default class CiConfigGet extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    app: flags.app({required: false}),
+    app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({required: false}),
+    pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
     shell: flags.boolean({char: 's', description: 'output config var in shell format'}),
   }
 

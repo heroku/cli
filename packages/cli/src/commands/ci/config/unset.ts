@@ -14,10 +14,9 @@ export default class CiConfigUnset extends Command {
   static strict = false
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    app: flags.app({required: false}),
+    app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({required: false}),
+    pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
   }
 
   async run() {
