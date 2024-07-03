@@ -18,7 +18,7 @@ export default class Config extends Command {
   `)
 
   static example = heredoc(`
-    $ heroku spaces:vpn:config --space my-space vpn-connection-name
+    $ heroku spaces:vpn:config vpn-connection-name --space my-space
     === vpn-connection-name VPN Tunnels
      VPN Tunnel Customer Gateway VPN Gateway    Pre-shared Key Routable Subnets IKE Version
      ────────── ──────────────── ────────────── ────────────── ──────────────── ───────────
