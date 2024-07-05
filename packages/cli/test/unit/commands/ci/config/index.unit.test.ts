@@ -11,7 +11,7 @@ describe('ci:config', function () {
   test
     .command(['ci:config'])
     .catch(error => {
-      expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
+      expect(error.message).to.contain('Exactly one of the following must be provided: --app, --pipeline')
     })
     .it('errors when not specifying a pipeline or an app')
 
