@@ -272,10 +272,6 @@
       "orgs": {
         "description": "manage organizations"
       },
-      "outbound-rules": {
-        "description": "space outbound IP rules",
-        "hidden": true
-      },
       "pg": {
         "description": "manage postgresql databases"
       },
