@@ -1,0 +1,8 @@
+# custom dictionary for heroku repository
+buildpack
+buildpacks
+dyno
+dynos
+kolkrabbi
+oclif
+procfile
