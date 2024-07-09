@@ -43,7 +43,7 @@
     "debug": "4.3.4",
     "edit-string": "^1.1.6",
     "execa": "5.1.1",
-    "filesize": "^4.0.0",
+    "filesize": "^10.1.2",
     "foreman": "^3.0.1",
     "fs-extra": "7.0.1",
     "github-url-to-object": "^4.0.4",
