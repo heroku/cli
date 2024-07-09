@@ -3,41 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [9.0.0-alpha.3](https://github.com/heroku/cli/compare/v9.0.0-alpha.2...v9.0.0-alpha.3) (2024-06-10)
-
-
-### Bug Fixes
-
-* move tsheredoc to dependencies ([#2899](https://github.com/heroku/cli/issues/2899)) ([ef80505](https://github.com/heroku/cli/commit/ef80505389f4acd86cc1db65a22576db44c20ab8))
-* **W-15838634:** plugins --json yields TypeError: Converting circular structure to JSON ([#2895](https://github.com/heroku/cli/issues/2895)) ([e7daae4](https://github.com/heroku/cli/commit/e7daae4ea670121082b8d29602342e7aca48e8ca))
-* **W-15954887:** json flag yelds error for command: heroku commands --json ([#2897](https://github.com/heroku/cli/issues/2897)) ([7843813](https://github.com/heroku/cli/commit/7843813f09deacb3de8ad3f366c09f17f99b350a))
-
-
-
-
-
-# [9.0.0-alpha.2](https://github.com/heroku/cli/compare/v8.11.5...v9.0.0-alpha.2) (2024-05-24)
-
-
-### Bug Fixes
-
-* add import of CLIError to tests ([2b15a40](https://github.com/heroku/cli/commit/2b15a40d775e1585c737839892145f42767c335f))
-* add space to fix linting error ([2a9a0c7](https://github.com/heroku/cli/commit/2a9a0c7b11972c8bb80660f3df2216ca518b7bda))
-* **codemods:** stop intercepting mocha output ([#2591](https://github.com/heroku/cli/issues/2591)) ([1f579a8](https://github.com/heroku/cli/commit/1f579a8b293f77c79180d41ac18864831c2e7183))
-* remove import of afterEach ([7c0a42c](https://github.com/heroku/cli/commit/7c0a42cf97947e539ea1186e86f37ea160b43495))
-* revert package version of plugins in monorepo to get symlinks ([#2609](https://github.com/heroku/cli/issues/2609)) ([c261828](https://github.com/heroku/cli/commit/c261828de992b404b3ff428277471606b622d361))
-
-
-
-# [9.0.0-alpha.1](https://github.com/heroku/cli/compare/v8.7.1...v9.0.0-alpha.1) (2023-11-09)
-
-
-
-
-
-# [9.0.0-alpha.1](https://github.com/heroku/cli/compare/v8.7.1...v9.0.0-alpha.1) (2023-11-09)
+## [8.11.5](https://github.com/heroku/cli/compare/v8.11.4...v8.11.5) (2024-04-30)
 
 **Note:** Version bump only for package heroku
+
+
+
+
+
+## [8.11.4](https://github.com/heroku/cli/compare/v8.11.3...v8.11.4) (2024-04-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [8.11.3](https://github.com/heroku/cli/compare/v8.11.2...v8.11.3) (2024-04-15)
+
+
+### Bug Fixes
+
+* **authorizations:** surface api warnings in temporary fix ([#2804](https://github.com/heroku/cli/issues/2804)) ([33f8aac](https://github.com/heroku/cli/commit/33f8aac631e2b406f12a878bb1fd9a994df75025))
+
+
+
+
+
+## [8.11.2](https://github.com/heroku/cli/compare/v8.11.1...v8.11.2) (2024-04-10)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+* **workflow:** remove fig command & update workflow ([#2686](https://github.com/heroku/cli/issues/2686)) ([748e71c](https://github.com/heroku/cli/commit/748e71c1026474bb75bf44ccd5c10720ff811f7b))
+* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
+
+
+### Features
+
+* **pg:upgrade:** support essential dbs ([#2637](https://github.com/heroku/cli/issues/2637)) ([c062c59](https://github.com/heroku/cli/commit/c062c590956afe38c60ea57982ccc28b51b2c5b5))
+
+
+
+
+
+# [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
+
+
+### Bug Fixes
+
+* bump @oclif/plugin-update to a version that doesn't delete the CLI ([#2585](https://github.com/heroku/cli/issues/2585)) ([30c3963](https://github.com/heroku/cli/commit/30c396344e0545008484489158b7b453fb1f9527))
+* set default port for heroku:local to 5006 ([#2618](https://github.com/heroku/cli/issues/2618)) ([9687e82](https://github.com/heroku/cli/commit/9687e82c152548ea593778b2caf2d0413ec7c75a))
 
 
 
