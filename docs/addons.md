@@ -47,7 +47,7 @@ EXAMPLES
   $ heroku addons --app acme-inc-www
 ```
 
-_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/index.ts)_
+_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/index.ts)_
 
 ## `heroku addons:attach ADDON_NAME`
 
@@ -69,11 +69,11 @@ DESCRIPTION
   attach an existing add-on resource to an app
 ```
 
-_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/attach.ts)_
+_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/attach.ts)_
 
 ## `heroku addons:create SERVICE:PLAN`
 
-create a new add-on resource
+Create a new add-on resource.
 
 ```
 USAGE
@@ -89,10 +89,19 @@ FLAGS
       --wait             watch add-on creation status and exit when complete
 
 DESCRIPTION
-  create a new add-on resource
+  Create a new add-on resource.
+
+  In order to add additional config items, please place them at the end of the command after a double-dash (--).
+
+
+EXAMPLES
+  Create an add-on resource:
+  $heroku addons:create heroku-redis --app my-app
+  Create an add-on resource with additional config items:
+  $heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
 ```
 
-_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/create.ts)_
+_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/create.ts)_
 
 ## `heroku addons:destroy ADDONNAME`
 
@@ -116,7 +125,7 @@ EXAMPLES
   addons:destroy [ADDON]... [flags]
 ```
 
-_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/destroy.ts)_
+_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/destroy.ts)_
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
@@ -134,7 +143,7 @@ DESCRIPTION
   detach an existing add-on resource from an app
 ```
 
-_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/detach.ts)_
+_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/detach.ts)_
 
 ## `heroku addons:docs ADDON`
 
@@ -153,7 +162,7 @@ DESCRIPTION
   open an add-on's Dev Center documentation in your browser
 ```
 
-_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/docs.ts)_
+_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/docs.ts)_
 
 ## `heroku addons:downgrade ADDON [PLAN]`
 
@@ -203,7 +212,7 @@ DESCRIPTION
   show detailed add-on resource and attachment information
 ```
 
-_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/info.ts)_
+_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/info.ts)_
 
 ## `heroku addons:open ADDON`
 
@@ -222,7 +231,7 @@ DESCRIPTION
   open an add-on's dashboard in your browser
 ```
 
-_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/open.ts)_
+_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/open.ts)_
 
 ## `heroku addons:plans SERVICE`
 
@@ -239,7 +248,7 @@ DESCRIPTION
   list all available plans for an add-on service
 ```
 
-_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/plans.ts)_
+_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/plans.ts)_
 
 ## `heroku addons:rename ADDON_NAME NEW_NAME`
 
@@ -253,7 +262,7 @@ DESCRIPTION
   rename an add-on
 ```
 
-_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/rename.ts)_
+_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/rename.ts)_
 
 ## `heroku addons:services`
 
@@ -270,7 +279,7 @@ DESCRIPTION
   list all available add-on services
 ```
 
-_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/services.ts)_
+_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/services.ts)_
 
 ## `heroku addons:upgrade ADDON [PLAN]`
 
@@ -304,7 +313,7 @@ EXAMPLES
   $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
 
-_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/upgrade.ts)_
+_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/upgrade.ts)_
 
 ## `heroku addons:wait [ADDON]`
 
@@ -323,4 +332,4 @@ DESCRIPTION
   show provisioning status of the add-ons on the app
 ```
 
-_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-alpha.3/src/commands/addons/wait.ts)_
+_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.0/src/commands/addons/wait.ts)_
