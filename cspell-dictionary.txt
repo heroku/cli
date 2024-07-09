@@ -1,8 +1,25 @@
 # custom dictionary for heroku repository
+autodeploy
 buildpack
 buildpacks
+devcenter
+direwolf
+displayer
 dyno
 dynos
 kolkrabbi
+logplex
+netrc
 oclif
+pico
+pjson
+prerun
 procfile
+postrun
+psql
+recache
+reviewapps
+rollbar
+snyk
+stampy
+unfollow

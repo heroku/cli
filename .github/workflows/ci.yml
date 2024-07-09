@@ -78,7 +78,6 @@ jobs:
         run: yarn lerna run test:acceptance
 
   spell-check:
-    name: Check Spelling
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -88,7 +87,7 @@ jobs:
         with:
           node-version: "20"
       - run: npm install -g cspell
-      - run: cspell packages/cli --gitignore
+      - run: cspell packages/cli .github --gitignore --unique --no-progress
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
