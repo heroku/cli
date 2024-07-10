@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-beta.1](https://github.com/heroku/cli/compare/v9.0.0-beta.0...v9.0.0-beta.1) (2024-07-10)
+
+
+### Bug Fixes
+
+* rollback plugin-plugins to 2.4.3 ([#2918](https://github.com/heroku/cli/issues/2918)) ([d1b4597](https://github.com/heroku/cli/commit/d1b4597ec52137f24eaa7638257324a15126be0c))
+
+
+
+
+
 # [9.0.0-beta.0](https://github.com/heroku/cli/compare/v9.0.0-alpha.3...v9.0.0-beta.0) (2024-07-09)
 
 
