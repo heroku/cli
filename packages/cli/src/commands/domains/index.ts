@@ -73,17 +73,65 @@ www.example.com  CNAME            www.example.herokudns.com
     return tableConfig
   }
 
+  // put into utility lib
+  splitKeyValuePair(input: string) {
+    let [key, value] = input.split(/=(.+)/)
+
+    key = key.trim()
+    value = value ? value.trim() : ''
+
+    return {key, value}
+  }
+
+  getFilteredDomainsSize = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
+    // parse --filter key-value pair
+    const {key: filterName, value} = this.splitKeyValuePair(filterKeyValue)
+
+    // filter table headers by value from --filter
+    // return size from filter
+
+    if (filterName === 'Domain Name') {
+      const filteredDomains = domains.filter(domain => domain.hostname!.includes(value))
+      return filteredDomains.length
+    }
+
+    if (filterName === 'DNS Record Type') {
+      // eslint-disable-next-line array-callback-return
+      const filteredDomains = domains.filter(domain => {
+        const kind = isApexDomain(domain.hostname!) ? 'ALIAS or ANAME' : 'CNAME'
+        kind.includes(value)
+      })
+      return filteredDomains.length
+    }
+
+    if (filterName === 'DNS Target') {
+      const filteredDomains = domains.filter(domain => domain.cname!.includes(value))
+      console.log('filteredDomains', filteredDomains.length)
+      return filteredDomains.length
+    }
+
+    if (filterName === 'SNI Endpoint') {
+      const filteredDomains = domains.filter(domain => domain.sni_endpoint!.includes(value))
+      return filteredDomains.length
+    }
+  }
+
   async run() {
     const {flags} = await this.parse(DomainsIndex)
     // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const {body: domains, headers: headerInfo, statusCode: code} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 1000)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
+    let filteredDomainsSize: any = 0
     let displayTotalDomains = false
 
     // console.log('headerInfo', domainsNew)
     // console.log('statusCode', code)
     // console.log('headerInfo', headerInfo)
+
+    if (flags.filter) {
+      filteredDomainsSize = this.getFilteredDomainsSize(flags.filter, domains)
+    }
 
     if (flags.json) {
       ux.styledJSON(domains)
@@ -94,9 +142,10 @@ www.example.com  CNAME            www.example.herokudns.com
         // console.log('# of custom domains', customDomains.length)
         // console.log('# of total domains', domains.length)
         // ux.log()
+        console.log('filteredDomainsSize.length', filteredDomainsSize.length)
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
-          displayTotalDomains = await confirm({default: false, message: `Display all ${customDomains.length} domains?`})
+          displayTotalDomains = await confirm({default: false, message: `Display all ${flags.filter ? filteredDomainsSize : customDomains.length} domains?`})
 
           if (!displayTotalDomains) {
             return
