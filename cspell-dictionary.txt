@@ -7,6 +7,7 @@ direwolf
 displayer
 dyno
 dynos
+DVCS
 kolkrabbi
 logplex
 netrc
@@ -23,3 +24,4 @@ rollbar
 snyk
 stampy
 unfollow
+qqjs

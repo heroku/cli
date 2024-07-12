@@ -83,7 +83,7 @@ jobs:
         with:
           node-version: "20"
       - run: npm install -g cspell
-      - run: cspell packages/cli .github --gitignore --unique --no-progress
+      - run: git fetch origin main:refs/remotes/origin/main && git diff origin/main --name-only --diff-filter=ACMRTUXB | cspell --unique --no-progress --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
