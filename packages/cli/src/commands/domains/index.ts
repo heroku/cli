@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as Uri from 'urijs'
@@ -81,8 +82,8 @@ www.example.com  CNAME            www.example.herokudns.com
     let displayTotalDomains = false
 
     // console.log('headerInfo', domainsNew)
-    console.log('statusCode', code)
-    console.log('headerInfo', headerInfo)
+    // console.log('statusCode', code)
+    // console.log('headerInfo', headerInfo)
 
     if (flags.json) {
       ux.styledJSON(domains)
@@ -90,11 +91,11 @@ www.example.com  CNAME            www.example.herokudns.com
       ux.styledHeader(`${flags.app} Heroku Domain`)
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
-        console.log('# of custom domains', customDomains.length)
-        console.log('# of total domains', domains.length)
-        ux.log()
+        // console.log('# of custom domains', customDomains.length)
+        // console.log('# of total domains', domains.length)
+        // ux.log()
         if (customDomains.length > 100 && !flags.csv) {
-          ux.warn('This app has over 100 domains. Your terminal may not be configured to display the amount of domains this app contains. We recommend outputting this information into a csv file like so: heroku domains -a example-app --csv > example-file.txt')
+          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
           displayTotalDomains = await confirm({default: false, message: 'Display total list of custom domains?'})
 
           if (!displayTotalDomains) {
