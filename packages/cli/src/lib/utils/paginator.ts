@@ -13,7 +13,7 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
 //   const nextRange = ''
 //   let aggregatedResponseBody: any = []
 
-  const response = await client.get<Array<any>>(url)
+  const response = await client.get<Array<any>>(url, {headers: {Range: 'id ..; max=200;'}, partial: true})
 
   // while (isPartial) {
   //   console.log('pageSize', pageSize)
