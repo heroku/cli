@@ -96,7 +96,7 @@ www.example.com  CNAME            www.example.herokudns.com
         // ux.log()
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
-          displayTotalDomains = await confirm({default: false, message: 'Display total list of custom domains?'})
+          displayTotalDomains = await confirm({default: false, message: `Display all ${customDomains.length} domains?`})
 
           if (!displayTotalDomains) {
             return
