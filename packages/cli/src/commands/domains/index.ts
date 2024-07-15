@@ -12,6 +12,11 @@ function isApexDomain(hostname: string) {
   return a.subdomain() === ''
 }
 
+interface FilteredDomainsInfo {
+  size: number,
+  filteredDomains: Array<Heroku.Domain>
+}
+
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
 
@@ -83,7 +88,8 @@ www.example.com  CNAME            www.example.herokudns.com
     return {key, value}
   }
 
-  getFilteredDomainsSize = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
+  getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
+    const filteredInfo: FilteredDomainsInfo = {size: 0, filteredDomains: domains}
     // parse --filter key-value pair
     const {key: filterName, value} = this.splitKeyValuePair(filterKeyValue)
 
@@ -91,29 +97,32 @@ www.example.com  CNAME            www.example.herokudns.com
     // return size from filter
 
     if (filterName === 'Domain Name') {
-      const filteredDomains = domains.filter(domain => domain.hostname!.includes(value))
-      return filteredDomains.length
+      console.log('WE ARE HERE')
+      filteredInfo.filteredDomains = domains.filter(domain => domain.hostname!.includes(value))
     }
 
-    if (filterName === 'DNS Record Type') {
-      // eslint-disable-next-line array-callback-return
-      const filteredDomains = domains.filter(domain => {
-        const kind = isApexDomain(domain.hostname!) ? 'ALIAS or ANAME' : 'CNAME'
-        kind.includes(value)
-      })
-      return filteredDomains.length
-    }
+    // if (filterName === 'DNS Record Type') {
+    //   // eslint-disable-next-line array-callback-return
+    //   const filteredDomains = domains.filter(domain => {
+    //     const kind = isApexDomain(domain.hostname!) ? 'ALIAS or ANAME' : 'CNAME'
+    //     kind.includes(value)
+    //   })
+    //   return filteredDomains.length
+    // }
 
-    if (filterName === 'DNS Target') {
-      const filteredDomains = domains.filter(domain => domain.cname!.includes(value))
-      console.log('filteredDomains', filteredDomains.length)
-      return filteredDomains.length
-    }
+    // if (filterName === 'DNS Target') {
+    //   const filteredDomains = domains.filter(domain => domain.cname!.includes(value))
+    //   console.log('filteredDomains', filteredDomains.length)
+    //   return filteredDomains.length
+    // }
 
-    if (filterName === 'SNI Endpoint') {
-      const filteredDomains = domains.filter(domain => domain.sni_endpoint!.includes(value))
-      return filteredDomains.length
-    }
+    // if (filterName === 'SNI Endpoint') {
+    //   const filteredDomains = domains.filter(domain => domain.sni_endpoint!.includes(value))
+    //   return filteredDomains.length
+    // }
+
+    filteredInfo.size = filteredInfo.filteredDomains.length
+    return filteredInfo
   }
 
   async run() {
@@ -121,8 +130,8 @@ www.example.com  CNAME            www.example.herokudns.com
     // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const {body: domains, headers: headerInfo, statusCode: code} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 1000)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
-    const customDomains = domains.filter(domain => domain.kind === 'custom')
-    let filteredDomainsSize: any = 0
+    let customDomains: Array<Heroku.Domain> | undefined = domains.filter(domain => domain.kind === 'custom')
+    // let filteredDomains: FilteredDomainsInfo | undefined = {size: 0, filteredDomains: []}
     let displayTotalDomains = false
 
     // console.log('headerInfo', domainsNew)
@@ -130,7 +139,8 @@ www.example.com  CNAME            www.example.herokudns.com
     // console.log('headerInfo', headerInfo)
 
     if (flags.filter) {
-      filteredDomainsSize = this.getFilteredDomainsSize(flags.filter, domains)
+      customDomains = this.getFilteredDomains(flags.filter, domains).filteredDomains
+      // customDomains = filteredDomains?.filteredDomains
     }
 
     if (flags.json) {
@@ -142,10 +152,11 @@ www.example.com  CNAME            www.example.herokudns.com
         // console.log('# of custom domains', customDomains.length)
         // console.log('# of total domains', domains.length)
         // ux.log()
-        console.log('filteredDomainsSize.length', filteredDomainsSize.length)
+        // console.log('filteredDomains', filteredDomains)
+
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
-          displayTotalDomains = await confirm({default: false, message: `Display all ${flags.filter ? filteredDomainsSize : customDomains.length} domains?`})
+          displayTotalDomains = await confirm({default: false, message: `Display all ${customDomains.length} domains?`})
 
           if (!displayTotalDomains) {
             return
