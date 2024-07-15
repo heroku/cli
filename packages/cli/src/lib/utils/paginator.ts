@@ -11,11 +11,11 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
   let isPartial = true
   let isFirstRequest = true
   let nextRange: string | undefined = ''
-  let aggregatedResponseBody: any = []
+  let aggregatedResponseBody: any[] = []
 
   while (isPartial) {
-    console.log('WE ARE HERE')
-    console.log('pageSize', pageSize)
+    // console.log('WE ARE HERE')
+    // console.log('pageSize', pageSize)
     // either construct headers before and pass them to range or
     // update the undefined type error on nextRange
     const response: any = await client.get<Array<any>>(url, {
@@ -25,9 +25,9 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
       partial: true,
     })
 
-    console.log('statusCode', response.statusCode)
-    console.log('responseHeaders', response.headers)
-    console.log('response.body.length', response.body.length)
+    // console.log('statusCode', response.statusCode)
+    // console.log('responseHeaders', response.headers)
+    // console.log('response.body.length', response.body.length)
 
     aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
     isFirstRequest = false
@@ -39,7 +39,7 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
     }
   }
 
-  console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
+  // console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
 
   return aggregatedResponseBody
 }
