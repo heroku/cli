@@ -115,13 +115,8 @@ www.example.com  CNAME            www.example.herokudns.com
 
     if (filterName === 'SNI Endpoint') {
       filteredInfo.filteredDomains = domains.filter(domain => {
-        // eslint-disable-next-line no-negated-condition
-        if (!domain.sni_endpoint) {
-          return ''
-        // eslint-disable-next-line no-else-return
-        } else {
-          return domain.sni_endpoint!.includes(value)
-        }
+        if (!domain.sni_endpoint) domain.sni_endpoint = ''
+        return domain.sni_endpoint!.includes(value)
       })
     }
 
@@ -153,7 +148,6 @@ www.example.com  CNAME            www.example.herokudns.com
         // console.log('# of custom domains', customDomains.length)
         // console.log('# of total domains', domains.length)
         // ux.log()
-        console.log('filteredDomains', customDomains.length)
 
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
