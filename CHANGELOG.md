@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0-beta.3](https://github.com/heroku/cli/compare/v9.0.0-beta.1...v9.0.0-beta.3) (2024-07-15)
+
+
+### Bug Fixes
+
+* correct error handling in matchesHelper ([#2921](https://github.com/heroku/cli/issues/2921)) ([9fbf596](https://github.com/heroku/cli/commit/9fbf59612d3e9be6f4d9dd2a996842bce49e19a9))
+* second attempt at fixing the error handling in matchesHelper ([#2923](https://github.com/heroku/cli/issues/2923)) ([77fe6b9](https://github.com/heroku/cli/commit/77fe6b93d8eb74d71dbe24d81f350b29aefb22ea))
+
+
+
+
+
 # [9.0.0-beta.2](https://github.com/heroku/cli/compare/v9.0.0-beta.1...v9.0.0-beta.2) (2024-07-15)
 
 
