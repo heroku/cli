@@ -127,13 +127,10 @@ www.example.com  CNAME            www.example.herokudns.com
   async run() {
     const {flags} = await this.parse(DomainsIndex)
     // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
-    const {body: domains, headers: headerInfo, statusCode: code} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 1000)
-    const herokuDomain = domains.find(domain => domain.kind === 'heroku')
-    let customDomains = domains.filter(domain => domain.kind === 'custom')
+    const domains = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 300)
+    const herokuDomain = domains.find((domain: Heroku.Domain) => domain.kind === 'heroku')
+    let customDomains = domains.filter((domain: Heroku.Domain) => domain.kind === 'custom')
     let displayTotalDomains = false
-
-    // console.log('statusCode', code)
-    // console.log('headerInfo', headerInfo)
 
     if (flags.filter) {
       customDomains = this.getFilteredDomains(flags.filter, domains).filteredDomains
@@ -145,8 +142,8 @@ www.example.com  CNAME            www.example.herokudns.com
       ux.styledHeader(`${flags.app} Heroku Domain`)
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
-        // console.log('# of custom domains', customDomains.length)
-        // console.log('# of total domains', domains.length)
+        console.log('# of custom domains', customDomains.length)
+        console.log('# of total domains', domains.length)
         // ux.log()
 
         if (customDomains.length > 100 && !flags.csv) {

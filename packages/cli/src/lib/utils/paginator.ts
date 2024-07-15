@@ -8,37 +8,38 @@ import {APIClient} from '@heroku-cli/command'
 // use status code to determine passing Next-Range header
 
 export async function paginateRequest(client: APIClient, url: string, pageSize = 1000) {
-//   const isPartial = true
-//   const isFirstRequest = true
-//   const nextRange = ''
-//   let aggregatedResponseBody: any = []
+  let isPartial = true
+  let isFirstRequest = true
+  let nextRange: string | undefined = ''
+  let aggregatedResponseBody: any = []
 
-  const response = await client.get<Array<any>>(url, {headers: {Range: 'id ..; max=200;'}, partial: true})
+  while (isPartial) {
+    console.log('WE ARE HERE')
+    console.log('pageSize', pageSize)
+    // either construct headers before and pass them to range or
+    // update the undefined type error on nextRange
+    const response: any = await client.get<Array<any>>(url, {
+      headers: {
+        Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `id ..; max=${pageSize};`}`,
+      },
+      partial: true,
+    })
 
-  // while (isPartial) {
-  //   console.log('pageSize', pageSize)
-  //   // either construct headers before and pass them to range or
-  //   // update the undefined type error on nextRange
-  //   const response = await client.get<Array<any>>(url, {
-  //     headers: {
-  //       Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `hostname ..; max=${pageSize};`}`,
-  //     },
-  //   })
+    console.log('statusCode', response.statusCode)
+    console.log('responseHeaders', response.headers)
+    console.log('response.body.length', response.body.length)
 
-  //   aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
+    aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
+    isFirstRequest = false
 
-  //   isFirstRequest = false
+    if (response.statusCode === 206) {
+      nextRange = response.headers['next-range']
+    } else {
+      isPartial = false
+    }
+  }
 
-  //   if (response.statusCode === 206) {
-  //     nextRange = response.headers['next-range']
-  //   } else {
-  //     isPartial = false
-  //   }
-  // }
+  console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
 
-  // return aggregatedResponseBody
-
-  return response
+  return aggregatedResponseBody
 }
-
-// const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
