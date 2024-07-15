@@ -90,36 +90,40 @@ www.example.com  CNAME            www.example.herokudns.com
 
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
     const filteredInfo: FilteredDomainsInfo = {size: 0, filteredDomains: domains}
+
     // parse --filter key-value pair
     const {key: filterName, value} = this.splitKeyValuePair(filterKeyValue)
 
-    // filter table headers by value from --filter
-    // return size from filter
+    if (!value) {
+      throw new Error('Filter flag has an invalid value')
+    }
 
     if (filterName === 'Domain Name') {
-      console.log('WE ARE HERE')
       filteredInfo.filteredDomains = domains.filter(domain => domain.hostname!.includes(value))
     }
 
-    // if (filterName === 'DNS Record Type') {
-    //   // eslint-disable-next-line array-callback-return
-    //   const filteredDomains = domains.filter(domain => {
-    //     const kind = isApexDomain(domain.hostname!) ? 'ALIAS or ANAME' : 'CNAME'
-    //     kind.includes(value)
-    //   })
-    //   return filteredDomains.length
-    // }
+    if (filterName === 'DNS Record Type') {
+      filteredInfo.filteredDomains = domains.filter(domain => {
+        const kind = isApexDomain(domain.hostname!) ? 'ALIAS or ANAME' : 'CNAME'
+        return kind.includes(value)
+      })
+    }
 
-    // if (filterName === 'DNS Target') {
-    //   const filteredDomains = domains.filter(domain => domain.cname!.includes(value))
-    //   console.log('filteredDomains', filteredDomains.length)
-    //   return filteredDomains.length
-    // }
+    if (filterName === 'DNS Target') {
+      filteredInfo.filteredDomains = domains.filter(domain => domain.cname!.includes(value))
+    }
 
-    // if (filterName === 'SNI Endpoint') {
-    //   const filteredDomains = domains.filter(domain => domain.sni_endpoint!.includes(value))
-    //   return filteredDomains.length
-    // }
+    if (filterName === 'SNI Endpoint') {
+      filteredInfo.filteredDomains = domains.filter(domain => {
+        // eslint-disable-next-line no-negated-condition
+        if (!domain.sni_endpoint) {
+          return ''
+        // eslint-disable-next-line no-else-return
+        } else {
+          return domain.sni_endpoint!.includes(value)
+        }
+      })
+    }
 
     filteredInfo.size = filteredInfo.filteredDomains.length
     return filteredInfo
@@ -133,7 +137,6 @@ www.example.com  CNAME            www.example.herokudns.com
     let customDomains = domains.filter(domain => domain.kind === 'custom')
     let displayTotalDomains = false
 
-    // console.log('headerInfo', domainsNew)
     // console.log('statusCode', code)
     // console.log('headerInfo', headerInfo)
 
@@ -150,7 +153,7 @@ www.example.com  CNAME            www.example.herokudns.com
         // console.log('# of custom domains', customDomains.length)
         // console.log('# of total domains', domains.length)
         // ux.log()
-        console.log('filteredDomains', customDomains)
+        console.log('filteredDomains', customDomains.length)
 
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
