@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import * as Heroku from '@heroku-cli/schema'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import debug from 'debug'
 import {AmbiguousError, appAttachment} from '../addons/resolve'
 import {fetchConfig} from './bastion'
@@ -8,7 +9,6 @@ import {getConfig} from './config'
 import color from '@heroku-cli/color'
 import type {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData} from './types'
 import {bastionKeyPlan, getConfigVarName, getConnectionDetails} from './util'
-import {HTTPError} from 'http-call'
 
 const pgDebug = debug('pg')
 
@@ -49,7 +49,7 @@ export async function all(heroku: APIClient, app_id: string): Promise<AddOnWithR
   return addons
 }
 
-async function matchesHelper(heroku: APIClient, app: string, db: string, namespace?: string): Promise<{matches: AddOnAttachment[] | null, error?: AmbiguousError | HTTPError}> {
+async function matchesHelper(heroku: APIClient, app: string, db: string, namespace?: string): Promise<{matches: AddOnAttachment[] | null, error?: AmbiguousError | HerokuAPIError}> {
   debug(`fetching ${db} on ${app}`)
 
   const addonService = process.env.HEROKU_POSTGRESQL_ADDON_NAME || 'heroku-postgresql'
@@ -62,7 +62,7 @@ async function matchesHelper(heroku: APIClient, app: string, db: string, namespa
       return {matches: error.matches, error}
     }
 
-    if (error instanceof HTTPError && error.statusCode === 404 && error.body && error.body.id === 'not_found') {
+    if (error instanceof HerokuAPIError && error.http.statusCode === 404 && error.body && error.body.id === 'not_found') {
       return {matches: null, error}
     }
 
