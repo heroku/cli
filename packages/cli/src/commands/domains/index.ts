@@ -130,8 +130,7 @@ www.example.com  CNAME            www.example.herokudns.com
     // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const {body: domains, headers: headerInfo, statusCode: code} = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 1000)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
-    let customDomains: Array<Heroku.Domain> | undefined = domains.filter(domain => domain.kind === 'custom')
-    // let filteredDomains: FilteredDomainsInfo | undefined = {size: 0, filteredDomains: []}
+    let customDomains = domains.filter(domain => domain.kind === 'custom')
     let displayTotalDomains = false
 
     // console.log('headerInfo', domainsNew)
@@ -140,7 +139,6 @@ www.example.com  CNAME            www.example.herokudns.com
 
     if (flags.filter) {
       customDomains = this.getFilteredDomains(flags.filter, domains).filteredDomains
-      // customDomains = filteredDomains?.filteredDomains
     }
 
     if (flags.json) {
@@ -152,7 +150,7 @@ www.example.com  CNAME            www.example.herokudns.com
         // console.log('# of custom domains', customDomains.length)
         // console.log('# of total domains', domains.length)
         // ux.log()
-        // console.log('filteredDomains', filteredDomains)
+        console.log('filteredDomains', customDomains)
 
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. We recommend outputting this information to a csv file: ${color.cyan('heroku domains -a example-app --csv > example-file.txt')}`)
