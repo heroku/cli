@@ -13,11 +13,6 @@ function isApexDomain(hostname: string) {
   return a.subdomain() === ''
 }
 
-interface FilteredDomainsInfo {
-  size: number,
-  filteredDomains: Array<Heroku.Domain>
-}
-
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
 
@@ -80,9 +75,7 @@ www.example.com  CNAME            www.example.herokudns.com
   }
 
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
-    const filteredInfo: FilteredDomainsInfo = {size: 0, filteredDomains: domains}
-
-    // parse --filter key-value pair
+    const filteredInfo = {size: 0, filteredDomains: domains}
     const {key: filterName, value} = parseKeyValue(filterKeyValue)
 
     if (!value) {
@@ -117,7 +110,6 @@ www.example.com  CNAME            www.example.herokudns.com
 
   async run() {
     const {flags} = await this.parse(DomainsIndex)
-    // const {body: domains, headers: headerInfo} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const domains = await paginateRequest(this.heroku, `/apps/${flags.app}/domains`, 1000)
     const herokuDomain = domains.find((domain: Heroku.Domain) => domain.kind === 'heroku')
     let customDomains = domains.filter((domain: Heroku.Domain) => domain.kind === 'custom')
@@ -133,8 +125,6 @@ www.example.com  CNAME            www.example.herokudns.com
       ux.styledHeader(`${flags.app} Heroku Domain`)
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
-        // console.log('# of custom domains', customDomains.length)
-        // console.log('# of total domains', domains.length)
         ux.log()
 
         if (customDomains.length > 100 && !flags.csv) {
