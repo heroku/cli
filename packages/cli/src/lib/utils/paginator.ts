@@ -10,21 +10,14 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
   let isFirstRequest = true
   let nextRange: string | undefined = ''
   let aggregatedResponseBody: any[] = []
-  let requestCalls = 0
 
   while (isPartial) {
-    ++requestCalls
     const response: any = await client.get<Array<any>>(url, {
       headers: {
         Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `id ..; max=${pageSize};`}`,
       },
       partial: true,
     })
-
-    console.log('\nrequestCalls', requestCalls)
-    console.log('pageSize', pageSize)
-    console.log('statusCode', response.statusCode)
-    console.log('response.body.length', response.body.length)
 
     aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
     isFirstRequest = false
@@ -35,8 +28,6 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
       isPartial = false
     }
   }
-
-  console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
 
   return aggregatedResponseBody
 }
