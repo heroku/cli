@@ -5,6 +5,7 @@ import {ux} from '@oclif/core'
 import * as Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
 import {paginateRequest} from '../../lib/utils/paginator'
+import parseKeyValue from '../../lib/utils/keyValueParser'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -78,21 +79,11 @@ www.example.com  CNAME            www.example.herokudns.com
     return tableConfig
   }
 
-  // put into utility lib
-  splitKeyValuePair(input: string) {
-    let [key, value] = input.split(/=(.+)/)
-
-    key = key.trim()
-    value = value ? value.trim() : ''
-
-    return {key, value}
-  }
-
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
     const filteredInfo: FilteredDomainsInfo = {size: 0, filteredDomains: domains}
 
     // parse --filter key-value pair
-    const {key: filterName, value} = this.splitKeyValuePair(filterKeyValue)
+    const {key: filterName, value} = parseKeyValue(filterKeyValue)
 
     if (!value) {
       throw new Error('Filter flag has an invalid value')
