@@ -3,54 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [9.0.0-beta.3](https://github.com/heroku/cli/compare/v9.0.0-beta.1...v9.0.0-beta.3) (2024-07-15)
-
-
-### Bug Fixes
-
-* correct error handling in matchesHelper ([#2921](https://github.com/heroku/cli/issues/2921)) ([9fbf596](https://github.com/heroku/cli/commit/9fbf59612d3e9be6f4d9dd2a996842bce49e19a9))
-* second attempt at fixing the error handling in matchesHelper ([#2923](https://github.com/heroku/cli/issues/2923)) ([77fe6b9](https://github.com/heroku/cli/commit/77fe6b93d8eb74d71dbe24d81f350b29aefb22ea))
-
-
-
-
-
-# [9.0.0-beta.2](https://github.com/heroku/cli/compare/v9.0.0-beta.1...v9.0.0-beta.2) (2024-07-15)
-
-
-### Bug Fixes
-
-* correct error handling in matchesHelper ([#2921](https://github.com/heroku/cli/issues/2921)) ([9fbf596](https://github.com/heroku/cli/commit/9fbf59612d3e9be6f4d9dd2a996842bce49e19a9))
-
-
-
-
-
-# [9.0.0-beta.1](https://github.com/heroku/cli/compare/v9.0.0-beta.0...v9.0.0-beta.1) (2024-07-10)
-
-
-### Bug Fixes
-
-* rollback plugin-plugins to 2.4.3 ([#2918](https://github.com/heroku/cli/issues/2918)) ([d1b4597](https://github.com/heroku/cli/commit/d1b4597ec52137f24eaa7638257324a15126be0c))
-
-
-
-
-
-# [9.0.0-beta.0](https://github.com/heroku/cli/compare/v9.0.0-alpha.3...v9.0.0-beta.0) (2024-07-09)
-
-
-### Bug Fixes
-
-* add short char for the team flag on spaces:transfer ([#2912](https://github.com/heroku/cli/issues/2912)) ([95c5c6c](https://github.com/heroku/cli/commit/95c5c6cefbd6d86812b35962b57f0f2f6a475540))
-* **cli:** Change to require either app or pipeline ([#2907](https://github.com/heroku/cli/issues/2907)) ([3914169](https://github.com/heroku/cli/commit/3914169673d44e2437b2b7eb28ff897bbbc0b3b3))
-* **container:** Error out `container:push` command if not `container` stack ([#2898](https://github.com/heroku/cli/issues/2898)) ([acae792](https://github.com/heroku/cli/commit/acae79238001a5334fe74075fe0c582a232daf07))
-* update spaces:vpn commands to improve consistency in args and flags ([#2909](https://github.com/heroku/cli/issues/2909)) ([634aef5](https://github.com/heroku/cli/commit/634aef5e8105e24aa8db17d32cc27d7834487f13))
-
-
-
-
-
 ## [8.11.5](https://github.com/heroku/cli/compare/v8.11.4...v8.11.5) (2024-04-30)
 
 **Note:** Version bump only for package heroku
