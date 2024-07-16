@@ -1,23 +1,19 @@
 /* eslint-disable no-await-in-loop */
-import {APIClient} from '@heroku-cli/command'
-// import * as Heroku from '@heroku-cli/schema'
-
 // page size ranges from 200 - 1000 seen here
 // https://devcenter.heroku.com/articles/platform-api-reference#ranges
 
-// use status code to determine passing Next-Range header
+// This paginator uses status code to determine passing the Next-Range header
+import {APIClient} from '@heroku-cli/command'
 
-export async function paginateRequest(client: APIClient, url: string, pageSize = 1000) {
+export async function paginateRequest(client: APIClient, url: string, pageSize = 200) {
   let isPartial = true
   let isFirstRequest = true
   let nextRange: string | undefined = ''
   let aggregatedResponseBody: any[] = []
+  let requestCalls = 0
 
   while (isPartial) {
-    // console.log('WE ARE HERE')
-    // console.log('pageSize', pageSize)
-    // either construct headers before and pass them to range or
-    // update the undefined type error on nextRange
+    ++requestCalls
     const response: any = await client.get<Array<any>>(url, {
       headers: {
         Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `id ..; max=${pageSize};`}`,
@@ -25,9 +21,10 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
       partial: true,
     })
 
-    // console.log('statusCode', response.statusCode)
-    // console.log('responseHeaders', response.headers)
-    // console.log('response.body.length', response.body.length)
+    console.log('\nrequestCalls', requestCalls)
+    console.log('pageSize', pageSize)
+    console.log('statusCode', response.statusCode)
+    console.log('response.body.length', response.body.length)
 
     aggregatedResponseBody = [...response.body, ...aggregatedResponseBody]
     isFirstRequest = false
@@ -39,7 +36,7 @@ export async function paginateRequest(client: APIClient, url: string, pageSize =
     }
   }
 
-  // console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
+  console.log('aggregatedResponseBody.length', aggregatedResponseBody.length)
 
   return aggregatedResponseBody
 }
