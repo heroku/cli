@@ -6,7 +6,7 @@ const APP_NAME = 'wubalubadubdub'
 const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'
 const MONITOR_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-222222222222'
 
-describe('ps:autoscale:disable without a web dyno/monitor', () => {
+describe('ps:autoscale:disable without a web dyno/monitor', function () {
   test
     .stderr()
     .nock(API_HOST, api => api
@@ -22,7 +22,7 @@ describe('ps:autoscale:disable without a web dyno/monitor', () => {
     .it('throws an error')
 })
 
-describe('ps:autoscale:disable with a web dyno/monitor', () => {
+describe('ps:autoscale:disable with a web dyno/monitor', function () {
   test
     .stderr()
     .nock(API_HOST, api => api

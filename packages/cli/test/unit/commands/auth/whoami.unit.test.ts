@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('auth:whoami', () => {
+describe('auth:whoami', function () {
   test
     .env({HEROKU_API_KEY: 'foobar'})
     .nock('https://api.heroku.com', api => api

@@ -1,15 +1,13 @@
 import {Command} from '@heroku-cli/command'
 import * as fs from 'async-file'
 import {ux} from '@oclif/core'
-
 import * as git from './git'
-
-const got = require('got')
+import got from 'got'
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {
     headers: {
-      'content-length': (await fs.stat(filePath)).size,
+      'content-length': (await fs.stat(filePath)).size.toString(),
     },
   })
 

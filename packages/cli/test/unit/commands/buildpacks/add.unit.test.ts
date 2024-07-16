@@ -5,8 +5,8 @@ import * as nock from 'nock'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
 nock.disableNetConnect()
 
-describe('buildpacks:add', () => {
-  describe('URL', () => {
+describe('buildpacks:add', function () {
+  describe('URL', function () {
     test
       .nock('https://api.heroku.com', (api: nock.Scope) => {
         const registry = new Map()
@@ -148,7 +148,7 @@ Run git push heroku main to create a new release using these buildpacks.
       .it('# errors out when already exists urn')
   })
 
-  describe('-i INDEX URL', () => {
+  describe('-i INDEX URL', function () {
     test
       .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api)

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('authorizations', () => {
+describe('authorizations', function () {
   const exampleAuthorization1 = {
     description: 'b description',
     id: 'aBcD1234-129f-42d2-854b-dEf123abc123',
@@ -28,7 +28,7 @@ describe('authorizations', () => {
       )
     })
 
-  context('with json flag', () => {
+  context('with json flag', function () {
     testWithAuthorizations()
       .command(['authorizations', '--json'])
       .it('lists the authorizations alphabetically as json', ctx => {
@@ -39,7 +39,7 @@ describe('authorizations', () => {
       })
   })
 
-  context('without authorizations', () => {
+  context('without authorizations', function () {
     testWithAuthorizations([])
       .command(['authorizations'])
       .it('shows no authorizations message', ctx => {

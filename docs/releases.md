@@ -20,19 +20,20 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -n, --num=<value>     number of releases to show
   -r, --remote=<value>  git remote of app to use
-  --json                output releases in json format
+      --json            output releases in json format
 
 DESCRIPTION
   display the releases for an app
 
-
 EXAMPLES
-  $ heroku releases
-  === example Releases
   v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+
   v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+
   v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
+
+_See code: [src/commands/releases/index.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/releases/index.ts)_
 
 ## `heroku releases:info [RELEASE]`
 
@@ -46,11 +47,13 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output in shell format
-  --json                output in json format
+      --json            output in json format
 
 DESCRIPTION
   view detailed information for a release
 ```
+
+_See code: [src/commands/releases/info.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/releases/info.ts)_
 
 ## `heroku releases:output [RELEASE]`
 
@@ -68,9 +71,11 @@ DESCRIPTION
   View the release command output
 ```
 
+_See code: [src/commands/releases/output.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/releases/output.ts)_
+
 ## `heroku releases:rollback [RELEASE]`
 
-rollback to a previous release
+Roll back to a previous release.
 
 ```
 USAGE
@@ -81,6 +86,9 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
-  rollback to a previous release
-  If RELEASE is not specified, it will rollback one release
+  Roll back to a previous release.
+
+  If RELEASE is not specified, it will roll back one release.
 ```
+
+_See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/releases/rollback.ts)_

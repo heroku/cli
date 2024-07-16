@@ -1,12 +1,12 @@
 import {expect, test} from '@oclif/test'
 
-describe('reviewapps:enable', () => {
+describe('reviewapps:enable', function () {
   const pipeline = {
     id: '123-pipeline',
     name: 'my-pipeline',
   }
 
-  describe('with repos api enabled', () => {
+  describe('with repos api enabled', function () {
     const feature = {
       name: 'dashboard-repositories-api',
       enabled: true,
@@ -137,7 +137,7 @@ describe('reviewapps:enable', () => {
       })
   })
 
-  describe('with repos api disabled', () => {
+  describe('with repos api disabled', function () {
     const feature = {
       name: 'dashboard-repositories-api',
       enabled: false,

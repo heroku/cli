@@ -5,7 +5,7 @@ import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
 
-describe('pipelines:setup', () => {
+describe('pipelines:setup', function () {
   test
     .nock('https://kolkrabbi.heroku.com', kolkrabbi => kolkrabbi.get('/account/github/token').replyWithError(''))
     .command(['pipelines:setup'])

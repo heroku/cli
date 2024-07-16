@@ -2,8 +2,8 @@ import {expect, test} from '@oclif/test'
 
 import {validateURL} from '../../../../src/lib/clients/clients'
 
-describe('validateURL', () => {
-  describe('secure URLs', () => {
+describe('validateURL', function () {
+  describe('secure URLs', function () {
     [
       {uri: 'https://heroku.com'},
       {uri: 'https://heroku.com:8080/foo'},
@@ -24,7 +24,7 @@ describe('validateURL', () => {
         })
     })
 
-    describe('insecure URLs', () => {
+    describe('insecure URLs', function () {
       [
         {uri: 'http://heroku.com'},
         {uri: 'http://10.foo.com'},
@@ -40,7 +40,7 @@ describe('validateURL', () => {
       })
     })
 
-    describe('invalid URLs', () => {
+    describe('invalid URLs', function () {
       test
         .do(() => validateURL('foo'))
         .catch(error => expect(error.message).to.contain('Invalid URL'))

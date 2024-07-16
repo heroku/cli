@@ -2,7 +2,7 @@ import {expect} from 'chai'
 
 import {parse, quote} from '../../../../src/lib/config/quote'
 
-describe('quote', () => {
+describe('quote', function () {
   [
     ['abc', 'abc'],
     ['ab$c', "'ab$c'"],
@@ -10,7 +10,7 @@ describe('quote', () => {
     ['a\nb\nc', '"a\\nb\\nc"'],
     ['foo\\nb:ar\\bz', "'foo\\\\nb:ar\\\\bz'"],
   ].forEach(([a, b]) => {
-    it(`${a}===${b}`, () => {
+    it(`${a}===${b}`, function () {
       expect(quote(a)).to.eq(b)
     })
   });
@@ -22,7 +22,7 @@ describe('quote', () => {
     'a\nb\nc',
     'foo\\nb:ar\\bz',
   ].forEach(s => {
-    it(`parses "${s}"`, () => {
+    it(`parses "${s}"`, function () {
       expect(parse(quote(s))).to.eq(s)
     })
   })

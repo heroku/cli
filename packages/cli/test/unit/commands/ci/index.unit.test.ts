@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 const Inquirer = require('inquirer')
 import sinon = require('sinon')
 
-describe('ci', () => {
+describe('ci', function () {
   test
     .command(['ci'])
     .catch(error => {
@@ -10,7 +10,7 @@ describe('ci', () => {
     })
     .it('errors when not specifying a pipeline or an app')
 
-  describe('when specifying a pipeline', () => {
+  describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}
 
     let testRuns: any = []
@@ -28,7 +28,7 @@ describe('ci', () => {
       },
     }
 
-    beforeEach(() => {
+    beforeEach(function () {
       testRuns = []
       for (let i = 0; i < 20; i++) {
         testRuns.push({
@@ -101,8 +101,8 @@ describe('ci', () => {
       })
       .it('errors if no pipeline is found')
 
-    describe('specifying a pipeline with prompt', () => {
-      before(() => {
+    describe('specifying a pipeline with prompt', function () {
+      before(function () {
         promptStub = sinon.stub(Inquirer, 'prompt')
         promptStub.onFirstCall().resolves(chosenOption)
       })
@@ -137,7 +137,7 @@ describe('ci', () => {
           expect(promptStub.calledOnce).to.equal(true)
         })
 
-      after(() => {
+      after(function () {
         promptStub.restore()
       })
     })

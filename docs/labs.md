@@ -14,16 +14,18 @@ list experimental features
 
 ```
 USAGE
-  $ heroku labs [--json] [-a <value>] [-r <value>]
+  $ heroku labs [-a <value>] [-r <value>] [--json]
 
 FLAGS
   -a, --app=<value>     app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                display as json
+      --json            display as json
 
 DESCRIPTION
   list experimental features
 ```
+
+_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/labs/index.ts)_
 
 ## `heroku labs:disable FEATURE`
 
@@ -34,15 +36,15 @@ USAGE
   $ heroku labs:disable FEATURE [-a <value>] [-r <value>] [--confirm <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>      app to run command against
+  -r, --remote=<value>   git remote of app to use
   --confirm=<value>
 
 DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v8.11.5/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -60,19 +62,23 @@ DESCRIPTION
   enables an experimental feature
 ```
 
+_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/labs/enable.ts)_
+
 ## `heroku labs:info FEATURE`
 
 show feature info
 
 ```
 USAGE
-  $ heroku labs:info FEATURE [--json] [-a <value>] [-r <value>]
+  $ heroku labs:info FEATURE [-a <value>] [-r <value>] [--json]
 
 FLAGS
   -a, --app=<value>     app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                display as json
+      --json            display as json
 
 DESCRIPTION
   show feature info
 ```
+
+_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/labs/info.ts)_

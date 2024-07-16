@@ -8,11 +8,11 @@ const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
     .stdout()
     .do(() => display(auth))
 
-describe('display', () => {
+describe('display', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const authDesc = 'a cool auth'
 
-  context('with an auth', () => {
+  context('with an auth', function () {
     const auth: Heroku.OAuthAuthorization = {
       id: authId,
       description: authDesc,
@@ -34,7 +34,7 @@ describe('display', () => {
       })
   })
 
-  context('with an auth access token', () => {
+  context('with an auth access token', function () {
     const auth: Heroku.OAuthAuthorization = {
       id: authId,
       description: authDesc,
@@ -65,7 +65,7 @@ describe('display', () => {
       })
   })
 
-  context('with a client', () => {
+  context('with a client', function () {
     const client: Heroku.OAuthClient = {
       redirect_uri: 'https://myapp.com',
       name: 'a cool client',

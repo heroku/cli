@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
-describe('clients', () => {
-  describe('with clients', () => {
+describe('clients', function () {
+  describe('with clients', function () {
     const exampleClient1 = {
       name: 'awesome',
       id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
@@ -27,7 +27,7 @@ describe('clients', () => {
       })
   })
 
-  describe('without clients', () => {
+  describe('without clients', function () {
     test
       .nock('https://api.heroku.com:443', api => {
         api.get('/oauth/clients').reply(200, [])

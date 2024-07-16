@@ -4,9 +4,8 @@ import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {ux} from '@oclif/core'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
+import push from '../git/push'
 
-// eslint-disable-next-line node/no-missing-require
-const push = require('./push')
 const validUrl = require('valid-url')
 
 export type BuildpackResponse = {

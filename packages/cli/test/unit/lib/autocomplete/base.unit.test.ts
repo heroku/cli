@@ -27,11 +27,11 @@ const config = new Config({root})
 const cmd = new AutocompleteTest([], config)
 
 runtest('AutocompleteBase', () => {
-  before(async () => {
+  before(async function () {
     await config.load()
   })
 
-  it('#errorIfWindows', async () => {
+  it('#errorIfWindows', async function () {
     try {
       new AutocompleteTest([], config).errorIfWindows()
     } catch (error: any) {
@@ -39,19 +39,19 @@ runtest('AutocompleteBase', () => {
     }
   })
 
-  it('#autocompleteCacheDir', async () => {
+  it('#autocompleteCacheDir', async function () {
     expect(cmd.autocompleteCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete'))
   })
 
-  it('#completionsCacheDir', async () => {
+  it('#completionsCacheDir', async function () {
     expect(cmd.completionsCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete', 'completions'))
   })
 
-  it('#acLogfilePath', async () => {
+  it('#acLogfilePath', async function () {
     expect(cmd.acLogfilePath).to.eq(path.join(config.cacheDir, 'autocomplete.log'))
   })
 
-  it('#findCompletion', async () => {
+  it('#findCompletion', async function () {
     expect((cmd as any).findCompletion(AutocompleteTest.id, 'app')).to.be.ok
     expect((cmd as any).findCompletion(AutocompleteTest.id, 'bar')).to.not.be.ok
   })

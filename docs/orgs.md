@@ -22,17 +22,21 @@ DESCRIPTION
   list the teams that you are a member of
 ```
 
+_See code: [src/commands/orgs/index.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/orgs/index.ts)_
+
 ## `heroku orgs:open`
 
 open the team interface in a browser window
 
 ```
 USAGE
-  $ heroku orgs:open [-t <value>]
+  $ heroku orgs:open -t <value>
 
 FLAGS
-  -t, --team=<value>  team to use
+  -t, --team=<value>  (required) team to use
 
 DESCRIPTION
   open the team interface in a browser window
 ```
+
+_See code: [src/commands/orgs/open.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/orgs/open.ts)_

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('ci:info', () => {
+describe('ci:info', function () {
   const testRunNumber = 10
   const testRun = {id: 'f53d34b4-c3a9-4608-a186-17257cf71d62', number: 10}
 
@@ -18,7 +18,7 @@ describe('ci:info', () => {
     })
     .it('errors when not specifying a pipeline or an app')
 
-  describe('when specifying a pipeline', () => {
+  describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
     test
@@ -71,7 +71,7 @@ describe('ci:info', () => {
         expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n')
       })
 
-    describe('and the exit was not successful', () => {
+    describe('and the exit was not successful', function () {
       const testRunExitCode = 34
       test
         .stdout()
@@ -125,7 +125,7 @@ describe('ci:info', () => {
         })
     })
 
-    describe('when the pipeline has parallel test runs enabled', () => {
+    describe('when the pipeline has parallel test runs enabled', function () {
       test
         .stdout()
         .nock('https://api.heroku.com', api => {
@@ -178,7 +178,7 @@ describe('ci:info', () => {
           expect(stdout).to.equal('✓ #10 main:b9e982a succeeded\n\n✓ #0 succeeded\n✓ #1 succeeded\n')
         })
 
-      describe('and the user passes in a test node index', () => {
+      describe('and the user passes in a test node index', function () {
         test
           .stdout()
           .nock('https://api.heroku.com', api => {
@@ -241,7 +241,7 @@ describe('ci:info', () => {
             expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n')
           })
 
-        describe('and the pipeline does not have parallel tests enabled', () => {
+        describe('and the pipeline does not have parallel tests enabled', function () {
           test
             .stdout()
             .stderr()
@@ -299,7 +299,7 @@ describe('ci:info', () => {
     })
   })
 
-  describe('when specifying an application', () => {
+  describe('when specifying an application', function () {
     // TODO: Check it has a similar behaviour, but via pipeline couplings
   })
 })

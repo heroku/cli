@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('authorizations:rotate', () => {
+describe('authorizations:rotate', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
   test

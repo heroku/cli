@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('domains:info', () => {
+describe('domains:info', function () {
   const domainInfoResponse = {
     acm_status: 'pending',
     acm_status_reason: 'Failing CCA check',

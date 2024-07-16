@@ -20,7 +20,7 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --source=<value>  only show output from this source (such as "app" or "heroku")
   -t, --tail            continually stream logs
-  --force-colors        force use of colors (even on non-tty output)
+      --force-colors    force use of colors (even on non-tty output)
 
 DESCRIPTION
   display recent log output
@@ -36,4 +36,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v8.11.5/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v9.0.0-beta.3/packages/cli/src/commands/logs.ts)_
