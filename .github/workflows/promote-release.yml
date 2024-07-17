@@ -44,20 +44,10 @@ jobs:
 
   ## POST release jobs
   invalidate-cdn-cache:
+    name: Invalidate CDN cache
     needs: [ promote ]
-    runs-on: ubuntu-latest
-    env:
-      CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_EC2_METADATA_DISABLED: true
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          aws configure set preview.cloudfront true
-      - run: ./scripts/postrelease/invalidate_cdn_cache
+    uses: ./.github/workflows/cache-invalidation.yml
+    secrets: inherit
 
   release-homebrew:
     needs: [ invalidate-cdn-cache ]
