@@ -18,7 +18,7 @@ const root = path.resolve(__dirname, '../../package.json')
 const config = new Config({root})
 const webhookObject = new Webhooks([], config)
 
-describe('webhooks type', () => {
+describe('webhooks type', function () {
   test
     .stdout()
     .do(function () {

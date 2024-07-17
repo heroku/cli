@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers'
 
-describe('helpers.buildCommand()', () => {
+describe('helpers.buildCommand()', function () {
   [
     {args: ['echo foo'], expected: 'echo foo'},
     {args: ['echo', 'foo bar'], expected: 'echo "foo bar"'},
@@ -17,14 +17,14 @@ describe('helpers.buildCommand()', () => {
   })
 })
 
-describe('helpers.buildEnvFromFlag()', () => {
-  it('returns an object with env key value pairs when one environment variable is given', () => {
+describe('helpers.buildEnvFromFlag()', function () {
+  it('returns an object with env key value pairs when one environment variable is given', function () {
     const envFlag = 'KEY=value'
     const envResult = buildEnvFromFlag(envFlag)
     expect(envResult).to.deep.equal({KEY: 'value'})
   })
 
-  it('returns an object with env key value pairs when multiple environment variables are given, separated by semicolons', () => {
+  it('returns an object with env key value pairs when multiple environment variables are given, separated by semicolons', function () {
     const envFlag = 'KEY=value;KEY2=value2'
     const envResult = buildEnvFromFlag(envFlag)
     expect(envResult).to.deep.equal({KEY: 'value', KEY2: 'value2'})

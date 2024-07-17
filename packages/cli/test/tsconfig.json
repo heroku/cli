@@ -3,7 +3,7 @@
   "extends": "../tsconfig",
   "compilerOptions": {
     "sourceMap": true,
-    "rootDirs": ["./", "../src"]
+    "rootDirs": ["./", "../src"],
   },
   "include": [
     "./**/*",

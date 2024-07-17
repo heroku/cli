@@ -14,16 +14,18 @@ list available app features
 
 ```
 USAGE
-  $ heroku features -a <value> [--json] [-r <value>]
+  $ heroku features -a <value> [-r <value>] [--json]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                output in json format
+      --json            output in json format
 
 DESCRIPTION
   list available app features
 ```
+
+_See code: [src/commands/features/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/features/index.ts)_
 
 ## `heroku features:disable FEATURE`
 
@@ -41,6 +43,8 @@ DESCRIPTION
   disables an app feature
 ```
 
+_See code: [src/commands/features/disable.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/features/disable.ts)_
+
 ## `heroku features:enable FEATURE`
 
 enables an app feature
@@ -57,19 +61,23 @@ DESCRIPTION
   enables an app feature
 ```
 
+_See code: [src/commands/features/enable.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/features/enable.ts)_
+
 ## `heroku features:info FEATURE`
 
 display information about a feature
 
 ```
 USAGE
-  $ heroku features:info FEATURE -a <value> [--json] [-r <value>]
+  $ heroku features:info FEATURE -a <value> [-r <value>] [--json]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                output in json format
+      --json            output in json format
 
 DESCRIPTION
   display information about a feature
 ```
+
+_See code: [src/commands/features/info.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/features/info.ts)_

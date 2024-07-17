@@ -3,7 +3,7 @@ import * as sinon from 'sinon'
 import * as file from '../../src/file'
 import * as fs from 'fs-extra'
 
-describe('file functions', async () => {
+describe('file functions', function () {
   let renameStub: any
   let removeStub: any
   let readdirStub: any
@@ -12,7 +12,7 @@ describe('file functions', async () => {
   let outputJSONStub: any
   let realpathSyncStub: any
 
-  beforeEach(() => {
+  beforeEach(function () {
     renameStub = sinon.stub(fs, 'rename').resolves()
     removeStub = sinon.stub(fs, 'remove').resolves()
     readdirStub = sinon.stub(fs, 'readdir').resolves(['foo'])
@@ -21,7 +21,7 @@ describe('file functions', async () => {
     realpathSyncStub = sinon.stub(fs, 'realpathSync').resolves()
   })
 
-  afterEach(() => {
+  afterEach(function () {
     renameStub.restore()
     removeStub.restore()
     readdirStub.restore()
@@ -30,7 +30,7 @@ describe('file functions', async () => {
     realpathSyncStub.restore()
   })
 
-  it('executes deps functions', async () => {
+  it('executes deps functions', async function () {
     await file.rename('foo', 'bar')
     const removeResult = await file.remove('foo.ts')
     await file.ls('testDir')

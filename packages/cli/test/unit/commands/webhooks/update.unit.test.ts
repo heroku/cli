@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('webhooks:update', () => {
+describe('webhooks:update', function () {
   test
     .stdout()
     .stderr()

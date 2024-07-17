@@ -40,7 +40,7 @@ function dynoTest(dynoType: string) {
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
 }
 
-describe('without specifying an app', () => {
+describe('without specifying an app', function () {
   test
     .stderr()
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2'])
@@ -48,7 +48,7 @@ describe('without specifying an app', () => {
     .it('aborts the command')
 })
 
-describe('without specify a minimum', () => {
+describe('without specify a minimum', function () {
   test
     .stderr()
     .command(['ps:autoscale:enable', '--max', '2', '--app', APP_NAME])
@@ -56,7 +56,7 @@ describe('without specify a minimum', () => {
     .it('aborts the command')
 })
 
-describe('without specify a maximum', () => {
+describe('without specify a maximum', function () {
   test
     .stderr()
     .command(['ps:autoscale:enable', '--min', '1', '--app', APP_NAME])
@@ -64,7 +64,7 @@ describe('without specify a maximum', () => {
     .it('aborts the command')
 })
 
-describe('without an existing web dyno', () => {
+describe('without an existing web dyno', function () {
   commonSetup()
     .nock(API_HOST, api => api
       .get(`/apps/${APP_NAME}/formation`)
@@ -75,7 +75,7 @@ describe('without an existing web dyno', () => {
     .it('fails without a web dyno')
 })
 
-describe('without an existing metrics monitor', () => {
+describe('without an existing metrics monitor', function () {
   commonSetup()
     .nock(API_HOST, api => api
       .get(`/apps/${APP_NAME}/formation`)
@@ -93,35 +93,35 @@ describe('without an existing metrics monitor', () => {
     .it('successfully enabled autoscaling')
 })
 
-describe('with a Performance-M dyno', () => {
+describe('with a Performance-M dyno', function () {
   dynoTest('Performance-M')
     .it('runs successfully', ctx => {
       expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
     })
 })
 
-describe('with a Performance-L dyno', () => {
+describe('with a Performance-L dyno', function () {
   dynoTest('Performance-L')
     .it('runs successfully', ctx => {
       expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
     })
 })
 
-describe('with a Private dyno type', () => {
+describe('with a Private dyno type', function () {
   dynoTest('private-s')
     .it('runs successfully', ctx => {
       expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
     })
 })
 
-describe('with a Shield dyno type', () => {
+describe('with a Shield dyno type', function () {
   dynoTest('shield-s')
     .it('runs successfully', ctx => {
       expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
     })
 })
 
-describe('with a Hobby dyno', () => {
+describe('with a Hobby dyno', function () {
   commonSetup()
     .nock(API_HOST, api => api
       .get(`/apps/${APP_NAME}/formation`)

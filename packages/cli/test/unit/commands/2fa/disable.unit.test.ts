@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('2fa:disable remove', () => {
+describe('2fa:disable remove', function () {
   test
     .command(['2fa:disable'])
     .catch(error => {

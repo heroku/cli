@@ -17,7 +17,7 @@ FLAGS
   -a, --available        Install a specific version.
   -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
   -v, --version=<value>  Install a specific version.
-  --force                Force a re-download of the requested version.
+      --force            Force a re-download of the requested version.
 
 DESCRIPTION
   update the heroku CLI

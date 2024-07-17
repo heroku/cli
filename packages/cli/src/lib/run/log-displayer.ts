@@ -10,7 +10,7 @@ const EventSource = require('@heroku/eventsource')
 
 interface LogDisplayerOptions {
   app: string;
-  dyno: string;
+  dyno?: string;
   lines?: number;
   tail: boolean;
   source?: string;

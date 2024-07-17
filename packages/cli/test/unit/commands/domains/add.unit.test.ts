@@ -2,7 +2,7 @@ import * as inquirer from 'inquirer'
 
 import {expect, test} from '@oclif/test'
 
-describe('domains:add', () => {
+describe('domains:add', function () {
   const domainsResponse = {
     acm_status: null,
     acm_status_reason: null,
@@ -19,7 +19,7 @@ describe('domains:add', () => {
     status: 'pending',
   }
 
-  describe('adding a domain to an app with multiple certs', () => {
+  describe('adding a domain to an app with multiple certs', function () {
     const domainsResponseWithEndpoint = {
       ...domainsResponse,
       sni_endpoint: {
@@ -27,7 +27,7 @@ describe('domains:add', () => {
       },
     }
 
-    describe('using the --cert flag', () => {
+    describe('using the --cert flag', function () {
       test
         .stderr()
         .nock('https://api.heroku.com', api => api
@@ -43,7 +43,7 @@ describe('domains:add', () => {
         })
     })
 
-    describe('without passing a cert', () => {
+    describe('without passing a cert', function () {
       const certsResponse = [
         {
           app: {

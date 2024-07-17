@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('config', () => {
+describe('config', function () {
   test
     .nock('https://api.heroku.com', api => api
       .get('/apps/myapp/config-vars')

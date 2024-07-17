@@ -39,7 +39,7 @@ Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ heroku plugins:install PLUGIN...
+  $ heroku plugins:add plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -173,7 +173,7 @@ Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ heroku plugins:uninstall PLUGIN...
+  $ heroku plugins:remove plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -221,7 +221,7 @@ Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ heroku plugins:uninstall PLUGIN...
+  $ heroku plugins:unlink plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall

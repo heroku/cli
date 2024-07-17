@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('domains:update', () => {
+describe('domains:update', function () {
   const responseBody = {
     acm_status: null,
     acm_status_reason: null,

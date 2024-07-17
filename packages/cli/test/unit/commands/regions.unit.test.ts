@@ -10,7 +10,7 @@ const withRegions = test
     ]),
   )
 
-describe('regions', () => {
+describe('regions', function () {
   withRegions
     .stdout()
     .command(['regions'])

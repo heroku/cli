@@ -1,8 +1,8 @@
 import {expect, test} from '@oclif/test'
 import {addDays} from 'date-fns'
 
-describe('webhooks:index', () => {
-  describe('app webhooks', () => {
+describe('webhooks:index', function () {
+  describe('app webhooks', function () {
     const appWebhooksUrl = '/apps/example/webhooks'
 
     test
@@ -38,7 +38,7 @@ describe('webhooks:index', () => {
       })
   })
 
-  describe('pipeline webhooks', () => {
+  describe('pipeline webhooks', function () {
     const pipelinesWebhooksUrl = '/pipelines/example/webhooks'
 
     test
@@ -74,7 +74,7 @@ describe('webhooks:index', () => {
       })
   })
 
-  describe('by default the table is sorted by "created_at"', () => {
+  describe('by default the table is sorted by "created_at"', function () {
     const firstDate = new Date('2019-06-11T14:20:42Z')
     const secondDate = addDays(new Date(firstDate), 1)
     const thirdDate = addDays(new Date(firstDate), 2)

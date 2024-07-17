@@ -4,7 +4,7 @@ import * as nock from 'nock'
 
 nock.disableNetConnect()
 
-describe('buildpacks:versions', () => {
+describe('buildpacks:versions', function () {
   test
     .env({HEROKU_API_KEY: 'authtoken'})
     .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {

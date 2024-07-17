@@ -10,7 +10,7 @@ const testFactory = () => {
     })
 }
 
-describe('run', () => {
+describe('run', function () {
   testFactory()
     .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'echo 1 2 3'])
     .it('runs a command', async ctx => {

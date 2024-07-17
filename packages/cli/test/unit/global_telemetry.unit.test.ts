@@ -8,8 +8,8 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
 
-describe('telemetry', async () => {
-  afterEach(() => {
+describe('telemetry', function () {
+  afterEach(function () {
     nock.cleanAll()
   })
 
@@ -84,19 +84,19 @@ describe('telemetry', async () => {
     expect(result.lifecycleHookCompletion.command_not_found).to.equal(mockTelemetryObject.lifecycleHookCompletion.command_not_found)
   }
 
-  it('confirms successful telemetry object creation', () => {
+  it('confirms successful telemetry object creation', function () {
     setupTelemetryTest(mockConfig, mockOpts)
   })
 
-  it('confirms successfully computes time duration', () => {
+  it('confirms successfully computes time duration', function () {
     computeDurationTest(mockCmdStartTime)
   })
 
-  it('confirms successful telemetry object creation with invalid command', () => {
+  it('confirms successful telemetry object creation with invalid command', function () {
     reportCmdNotFoundTest(mockConfig)
   })
 
-  it('confirms successful request to honeycomb', async () => {
+  it('confirms successful request to honeycomb', async function () {
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
 
@@ -108,7 +108,7 @@ describe('telemetry', async () => {
     honeycombAPI.done()
   })
 
-  it('confirms successful request to rollbar', async () => {
+  it('confirms successful request to rollbar', async function () {
     const mockRollbarError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
 
     const rollbarAPI = nock('https://api.rollbar.com:443')

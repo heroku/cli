@@ -3,11 +3,11 @@ import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
-import {unwrap} from '../../../helpers/buildpacks/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap'
 nock.disableNetConnect()
 
-describe('buildpacks:remove', () => {
-  describe('-i INDEX', () => {
+describe('buildpacks:remove', function () {
+  describe('-i INDEX', function () {
     test
       .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
@@ -161,7 +161,7 @@ Run git push heroku main to create a new release using these buildpacks.
       .it('# returns an error when the index > size and the size > one')
   })
 
-  describe('URL', () => {
+  describe('URL', function () {
     test
       .nock('https://api.heroku.com', (api: nock.Scope) => {
         Stubber.get(api, [
@@ -271,7 +271,7 @@ Run git push heroku main to create a new release using these buildpacks.
       })
   })
 
-  describe('-i INDEX URL', () => {
+  describe('-i INDEX URL', function () {
     test
       .command(['buildpacks:remove', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
       .catch('Please choose either index or Buildpack, but not both.')

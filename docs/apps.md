@@ -27,27 +27,23 @@ list your apps
 
 ```
 USAGE
-  $ heroku apps [-A] [--json] [-s <value>] [-p] [-t <value>]
+  $ heroku apps [-A] [-j] [-s <value>] [-p] [-t <value>]
 
 FLAGS
   -A, --all            include apps in all teams
+  -j, --json           output in json format
   -p, --personal       list apps in personal account when a default team is set
   -s, --space=<value>  filter by space
   -t, --team=<value>   team to use
-  --json               output in json format
 
 DESCRIPTION
   list your apps
 
-
 EXAMPLES
   $ heroku apps
-  === My Apps
-  example
-  example2
-  === Collaborated Apps
-  theirapp   other@owner.name
 ```
+
+_See code: [src/commands/apps/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/index.ts)_
 
 ## `heroku apps:create [APP]`
 
@@ -64,17 +60,16 @@ ARGUMENTS
 FLAGS
   -b, --buildpack=<value>  buildpack url to use for this app
   -n, --no-remote          do not create a git remote
-  -r, --remote=<value>     the git remote to create, default "heroku"
+  -r, --remote=<value>     [default: heroku] the git remote to create, default "heroku"
   -s, --stack=<value>      the stack to create the app on
   -t, --team=<value>       team to use
-  --addons=<value>         comma-delimited list of addons to install
-  --json                   output in json format
-  --region=<value>         specify region for the app to run in
-  --space=<value>          the private space to create the app in
+      --addons=<value>     comma-delimited list of addons to install
+      --json               output in json format
+      --region=<value>     specify region for the app to run in
+      --space=<value>      the private space to create the app in
 
 DESCRIPTION
   creates a new app
-
 
 EXAMPLES
   $ heroku apps:create
@@ -94,13 +89,15 @@ EXAMPLES
   $ heroku apps:create --region eu
 ```
 
+_See code: [src/commands/apps/create.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/create.ts)_
+
 ## `heroku apps:destroy`
 
 permanently destroy an app
 
 ```
 USAGE
-  $ heroku apps:destroy [APP] [-c <value>] [-a <value>] [-r <value>]
+  $ heroku apps:destroy [APP] [-a <value>] [-r <value>] [-c <value>]
 
 FLAGS
   -a, --app=<value>      app to run command against
@@ -109,8 +106,9 @@ FLAGS
 
 DESCRIPTION
   permanently destroy an app
-  This will also destroy all add-ons on the app.
 ```
+
+_See code: [src/commands/apps/destroy.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/destroy.ts)_
 
 ## `heroku apps:errors`
 
@@ -118,19 +116,21 @@ view app errors
 
 ```
 USAGE
-  $ heroku apps:errors -a <value> [--json] [--hours <value>] [--router] [--dyno] [-r <value>]
+  $ heroku apps:errors -a <value> [-r <value>] [--json] [--hours <value>] [--router] [--dyno]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --dyno                show only dyno errors
-  --hours=<value>       number of hours to look back (default 24)
-  --json                output in json format
-  --router              show only router errors
+      --dyno            show only dyno errors
+      --hours=<value>   [default: 24] number of hours to look back (default 24)
+      --json            output in json format
+      --router          show only router errors
 
 DESCRIPTION
   view app errors
 ```
+
+_See code: [src/commands/apps/errors.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/errors.ts)_
 
 ## `heroku apps:favorites`
 
@@ -138,14 +138,16 @@ list favorited apps
 
 ```
 USAGE
-  $ heroku apps:favorites [--json]
+  $ heroku apps:favorites [-j]
 
 FLAGS
-  --json  output in json format
+  -j, --json  output in json format
 
 DESCRIPTION
   list favorited apps
 ```
+
+_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/favorites/index.ts)_
 
 ## `heroku apps:favorites:add`
 
@@ -163,6 +165,8 @@ DESCRIPTION
   favorites an app
 ```
 
+_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/favorites/add.ts)_
+
 ## `heroku apps:favorites:remove`
 
 unfavorites an app
@@ -179,33 +183,32 @@ DESCRIPTION
   unfavorites an app
 ```
 
+_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/favorites/remove.ts)_
+
 ## `heroku apps:info`
 
 show detailed app information
 
 ```
 USAGE
-  $ heroku apps:info [APP] [-s] [-j] [-a <value>] [-r <value>]
+  $ heroku apps:info [APP] [-a <value>] [-r <value>] [-s] [-j]
 
 FLAGS
   -a, --app=<value>     app to run command against
-  -j, --json
+  -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output more shell friendly key/value pairs
 
 DESCRIPTION
   show detailed app information
+
+EXAMPLES
   $ heroku apps:info
-  === example
-  Git URL:   https://git.heroku.com/example.git
-  Repo Size: 5M
-  ...
 
   $ heroku apps:info --shell
-  git_url=https://git.heroku.com/example.git
-  repo_size=5000000
-  ...
 ```
+
+_See code: [src/commands/apps/info.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/info.ts)_
 
 ## `heroku apps:join`
 
@@ -221,7 +224,12 @@ FLAGS
 
 DESCRIPTION
   add yourself to a team app
+
+ALIASES
+  $ heroku join
 ```
+
+_See code: [src/commands/apps/join.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/join.ts)_
 
 ## `heroku apps:leave`
 
@@ -237,7 +245,15 @@ FLAGS
 
 DESCRIPTION
   remove yourself from a team app
+
+ALIASES
+  $ heroku leave
+
+EXAMPLES
+  $ heroku apps:leave -a APP
 ```
+
+_See code: [src/commands/apps/leave.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/leave.ts)_
 
 ## `heroku apps:lock`
 
@@ -253,7 +269,12 @@ FLAGS
 
 DESCRIPTION
   prevent team members from joining an app
+
+ALIASES
+  $ heroku lock
 ```
+
+_See code: [src/commands/apps/lock.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/lock.ts)_
 
 ## `heroku apps:open [PATH]`
 
@@ -270,13 +291,13 @@ FLAGS
 DESCRIPTION
   open the app in a web browser
 
-
 EXAMPLES
   $ heroku open -a myapp
-  # opens https://myapp.herokuapp.com
+
   $ heroku open -a myapp /foo
-  # opens https://myapp.herokuapp.com/foo
 ```
+
+_See code: [src/commands/apps/open.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/open.ts)_
 
 ## `heroku apps:rename NEWNAME`
 
@@ -292,13 +313,12 @@ FLAGS
 
 DESCRIPTION
   rename an app
-  This will locally update the git remote if it is set to the old app.
 
 EXAMPLES
   $ heroku apps:rename --app oldname newname
-  https://newname-xxxxxxxxxxxx.herokuapp.com/ | https://git.heroku.com/newname.git
-  Git remote heroku updated
 ```
+
+_See code: [src/commands/apps/rename.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/rename.ts)_
 
 ## `heroku apps:stacks`
 
@@ -316,6 +336,8 @@ DESCRIPTION
   show the list of available stacks
 ```
 
+_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/stacks/index.ts)_
+
 ## `heroku apps:stacks:set STACK`
 
 set the stack of an app
@@ -331,13 +353,14 @@ FLAGS
 DESCRIPTION
   set the stack of an app
 
-
 EXAMPLES
   $ heroku stack:set heroku-22 -a myapp
   Setting stack to heroku-22... done
   You will need to redeploy myapp for the change to take effect.
   Run git push heroku main to trigger a new build on myapp.
 ```
+
+_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/stacks/set.ts)_
 
 ## `heroku apps:transfer RECIPIENT`
 
@@ -354,11 +377,10 @@ FLAGS
   -a, --app=<value>     app to run command against
   -l, --locked          lock the app upon transfer
   -r, --remote=<value>  git remote of app to use
-  --bulk                transfer applications in bulk
+      --bulk            transfer applications in bulk
 
 DESCRIPTION
   transfer applications to another user or team
-
 
 EXAMPLES
   $ heroku apps:transfer collaborator@example.com
@@ -368,6 +390,8 @@ EXAMPLES
   $ heroku apps:transfer --bulk acme-widgets
   ...
 ```
+
+_See code: [src/commands/apps/transfer.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/transfer.ts)_
 
 ## `heroku apps:unlock`
 
@@ -383,4 +407,9 @@ FLAGS
 
 DESCRIPTION
   unlock an app so any team member can join
+
+ALIASES
+  $ heroku unlock
 ```
+
+_See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/apps/unlock.ts)_

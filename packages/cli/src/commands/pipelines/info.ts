@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import {listPipelineApps} from '../../lib/pipelines/api'
+import {listPipelineApps} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 import renderPipeline from '../../lib/pipelines/render-pipeline'
 

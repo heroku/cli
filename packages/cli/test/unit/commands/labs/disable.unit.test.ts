@@ -4,7 +4,7 @@ import * as sinon from 'sinon'
 
 const promptStub = sinon.stub()
 
-describe('labs:disable', () => {
+describe('labs:disable', function () {
   test
     .nock('https://api.heroku.com', api => api
       .get('/account')

@@ -4,9 +4,9 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import * as http from 'http'
 import {get, RequestOptions} from 'https'
+import {randomUUID} from 'node:crypto'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
-import {v4 as uuid} from 'uuid'
 import WebSocket = require('ws')
 
 const debug = require('debug')('ci')
@@ -165,7 +165,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
     transport: WebSocket,
     params: {
       token: command.heroku.auth,
-      tab_id: `heroku-cli-${uuid()}`,
+      tab_id: `heroku-cli-${randomUUID()}`,
     },
     logger: (kind: any, msg: any, data: any) => debug(`${kind}: ${msg}\n${inspect(data)}`),
   })
@@ -198,7 +198,7 @@ async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testN
   command.log(printLine(testRun))
 }
 
-async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
+export async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
   let newTestRun = testRun
 
   while (!states.includes(newTestRun.status!.toString())) {

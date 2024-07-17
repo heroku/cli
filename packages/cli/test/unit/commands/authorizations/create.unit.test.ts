@@ -9,7 +9,7 @@ const testWithAuthorizationsCreate = (requestBody = {}) =>
         .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
     })
 
-describe('authorizations:create', () => {
+describe('authorizations:create', function () {
   testWithAuthorizationsCreate({description: 'awesome'})
     .command(['authorizations:create', '--description', 'awesome'])
     .it('creates the authorization', ctx => {
@@ -21,7 +21,7 @@ describe('authorizations:create', () => {
       }
     })
 
-  context('with short flag', () => {
+  context('with short flag', function () {
     testWithAuthorizationsCreate({expires_in: '10000'})
       .command(['authorizations:create', '--expires-in', '10000', '--short'])
       .it('only prints token', ctx => {
@@ -29,7 +29,7 @@ describe('authorizations:create', () => {
       })
   })
 
-  context('with json flag', () => {
+  context('with json flag', function () {
     testWithAuthorizationsCreate()
       .command(['authorizations:create', '--json'])
       .it('prints json', ctx => {
@@ -40,7 +40,7 @@ describe('authorizations:create', () => {
       })
   })
 
-  context('API warning headers', () => {
+  context('API warning headers', function () {
     test
       .stderr()
       .stdout()
