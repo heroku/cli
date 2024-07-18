@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 import * as inquirer from '@inquirer/prompts'
+import {unwrap} from '../../../helpers/utils/unwrap'
 
 describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
@@ -160,6 +161,6 @@ describe('domains', function () {
     .command(['domains', '--app', 'myapp'])
     .it('shows warning message for over 100 domains', ctx => {
       expect(ctx.stdout).to.contain('=== myapp Heroku Domain')
-      expect(ctx.stderr).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
+      expect(unwrap(ctx.stderr)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
     })
 })
