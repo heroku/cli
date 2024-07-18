@@ -77,13 +77,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: Use Node.js
-      - uses: actions/setup-node@v3
-        name: Run spell check
+      - name: use Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: "20"
       - run: npm install -g cspell
-      - run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main --name-only --diff-filter=ACMRTUXB | cspell --unique --no-progress --no-must-find-files --file-list stdin
+      - name: run spell check on changed files
+        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main --name-only --diff-filter=ACMRTUXB | cspell --unique --no-progress --gitignore --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
