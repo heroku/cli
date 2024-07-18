@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('pipelines:update', () => {
+describe('pipelines:update', function () {
   const app = 'example'
   const id = '0123'
   const stage = 'production'

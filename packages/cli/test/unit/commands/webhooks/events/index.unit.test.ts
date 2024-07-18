@@ -1,11 +1,11 @@
 import {expect, test} from '@oclif/test'
 import {addDays} from 'date-fns'
 
-describe('webhooks:events', () => {
+describe('webhooks:events', function () {
   const deprecationWarning = 'Warning: heroku webhooks:event is deprecated, please use heroku'
   const deprecationWarning2 = 'webhooks:deliveries'
 
-  describe('app webhooks', () => {
+  describe('app webhooks', function () {
     const appWebhookEventsPath = '/apps/example-app/webhook-events'
 
     test
@@ -45,7 +45,7 @@ describe('webhooks:events', () => {
       })
   })
 
-  describe('pipeline webhooks', () => {
+  describe('pipeline webhooks', function () {
     const pipelineWebhookEventsPath = '/pipelines/example-pipeline/webhook-events'
 
     test
@@ -85,7 +85,7 @@ describe('webhooks:events', () => {
       })
   })
 
-  describe('by default the table is sorted by "created_at"', () => {
+  describe('by default the table is sorted by "created_at"', function () {
     const firstDate = new Date('2019-06-11T14:20:42Z')
     const secondDate = addDays(new Date(firstDate), 1)
     const thirdDate = addDays(new Date(firstDate), 2)

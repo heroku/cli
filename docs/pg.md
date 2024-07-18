@@ -35,7 +35,7 @@ manage postgresql databases
 * [`heroku pg:locks [DATABASE]`](#heroku-pglocks-database)
 * [`heroku pg:maintenance [DATABASE]`](#heroku-pgmaintenance-database)
 * [`heroku pg:maintenance:run [DATABASE]`](#heroku-pgmaintenancerun-database)
-* [`heroku pg:maintenance:window DATABASE WINDOW`](#heroku-pgmaintenancewindow-database-window)
+* [`heroku pg:maintenance:window WINDOW [DATABASE]`](#heroku-pgmaintenancewindow-window-database)
 * [`heroku pg:outliers [DATABASE]`](#heroku-pgoutliers-database)
 * [`heroku pg:promote DATABASE`](#heroku-pgpromote-database)
 * [`heroku pg:ps [DATABASE]`](#heroku-pgps-database)
@@ -44,17 +44,18 @@ manage postgresql databases
 * [`heroku pg:push SOURCE TARGET`](#heroku-pgpush-source-target)
 * [`heroku pg:reset [DATABASE]`](#heroku-pgreset-database)
 * [`heroku pg:settings [DATABASE]`](#heroku-pgsettings-database)
-* [`heroku pg:settings:auto-explain [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explain-value-database)
-* [`heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-analyze-value-database)
-* [`heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-buffers-value-database)
-* [`heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-min-duration-value-database)
-* [`heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-nested-statements-value-database)
-* [`heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-triggers-value-database)
-* [`heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE]`](#heroku-pgsettingsauto-explainlog-verbose-value-database)
-* [`heroku pg:settings:log-lock-waits [VALUE] [DATABASE]`](#heroku-pgsettingslog-lock-waits-value-database)
-* [`heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-min-duration-statement-value-database)
-* [`heroku pg:settings:log-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-statement-value-database)
-* [`heroku pg:settings:track-functions [VALUE] [DATABASE]`](#heroku-pgsettingstrack-functions-value-database)
+* [`heroku pg:settings:auto-explain [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explain-database-value)
+* [`heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-analyze-database-value)
+* [`heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-buffers-database-value)
+* [`heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-min-duration-database-value)
+* [`heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-nested-statements-database-value)
+* [`heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-triggers-database-value)
+* [`heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-verbose-database-value)
+* [`heroku pg:settings:log-connections [DATABASE] [VALUE]`](#heroku-pgsettingslog-connections-database-value)
+* [`heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`](#heroku-pgsettingslog-lock-waits-database-value)
+* [`heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`](#heroku-pgsettingslog-min-duration-statement-database-value)
+* [`heroku pg:settings:log-statement [DATABASE] [VALUE]`](#heroku-pgsettingslog-statement-database-value)
+* [`heroku pg:settings:track-functions [DATABASE] [VALUE]`](#heroku-pgsettingstrack-functions-database-value)
 * [`heroku pg:unfollow DATABASE`](#heroku-pgunfollow-database)
 * [`heroku pg:upgrade [DATABASE]`](#heroku-pgupgrade-database)
 * [`heroku pg:vacuum-stats [DATABASE]`](#heroku-pgvacuum-stats-database)
@@ -74,6 +75,9 @@ FLAGS
 
 DESCRIPTION
   show database information
+
+ALIASES
+  $ heroku pg
 ```
 
 ## `heroku pg:backups`
@@ -92,6 +96,8 @@ DESCRIPTION
   list database backups
 ```
 
+_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/index.ts)_
+
 ## `heroku pg:backups:cancel [BACKUP_ID]`
 
 cancel an in-progress backup or restore (default newest)
@@ -108,6 +114,8 @@ DESCRIPTION
   cancel an in-progress backup or restore (default newest)
 ```
 
+_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/cancel.ts)_
+
 ## `heroku pg:backups:capture [DATABASE]`
 
 capture a new backup
@@ -117,14 +125,16 @@ USAGE
   $ heroku pg:backups:capture [DATABASE] -a <value> [--wait-interval <value>] [-v] [-r <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
-  -r, --remote=<value>     git remote of app to use
+  -a, --app=<value>            (required) app to run command against
+  -r, --remote=<value>         git remote of app to use
   -v, --verbose
   --wait-interval=<value>
 
 DESCRIPTION
   capture a new backup
 ```
+
+_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/capture.ts)_
 
 ## `heroku pg:backups:delete BACKUP_ID`
 
@@ -141,7 +151,12 @@ FLAGS
 
 DESCRIPTION
   delete a backup
+
+EXAMPLES
+  $ heroku pg:backup:delete --app APP_ID BACKUP_ID
 ```
+
+_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/delete.ts)_
 
 ## `heroku pg:backups:download [BACKUP_ID]`
 
@@ -160,6 +175,8 @@ DESCRIPTION
   downloads database backup
 ```
 
+_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/download.ts)_
+
 ## `heroku pg:backups:info [BACKUP_ID]`
 
 get information about a specific backup
@@ -176,6 +193,8 @@ DESCRIPTION
   get information about a specific backup
 ```
 
+_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/info.ts)_
+
 ## `heroku pg:backups:restore [BACKUP] [DATABASE]`
 
 restore a backup (default latest) to a database
@@ -186,17 +205,19 @@ USAGE
     [-r <value>]
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>            (required) app to run command against
   -c, --confirm=<value>
-  -e, --extensions=<value>  comma-separated list of extensions to pre-install in the public schema
-  -r, --remote=<value>      git remote of app to use
+  -e, --extensions=<value>     comma-separated list of extensions to pre-install in the public schema
+                               defaults to saving the latest database to DATABASE_URL
+  -r, --remote=<value>         git remote of app to use
   -v, --verbose
-  --wait-interval=<value>
+      --wait-interval=<value>  [default: 3]
 
 DESCRIPTION
   restore a backup (default latest) to a database
-  defaults to saving the latest database to DATABASE_URL
 ```
+
+_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/restore.ts)_
 
 ## `heroku pg:backups:schedule [DATABASE]`
 
@@ -209,12 +230,14 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --at=<value>          (required) at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00
+      --at=<value>      (required) at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00
                         [TIMEZONE]'
 
 DESCRIPTION
   schedule daily backups for given database
 ```
+
+_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/schedule.ts)_
 
 ## `heroku pg:backups:schedules`
 
@@ -232,6 +255,8 @@ DESCRIPTION
   list backup schedule
 ```
 
+_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/schedules.ts)_
+
 ## `heroku pg:backups:unschedule [DATABASE]`
 
 stop daily backups
@@ -247,6 +272,8 @@ FLAGS
 DESCRIPTION
   stop daily backups
 ```
+
+_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/unschedule.ts)_
 
 ## `heroku pg:backups:url [BACKUP_ID]`
 
@@ -264,6 +291,8 @@ DESCRIPTION
   get secret but publicly accessible URL of a backup
 ```
 
+_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/backups/url.ts)_
+
 ## `heroku pg:bloat [DATABASE]`
 
 show table and index bloat in your database ordered by most wasteful
@@ -279,6 +308,8 @@ FLAGS
 DESCRIPTION
   show table and index bloat in your database ordered by most wasteful
 ```
+
+_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/bloat.ts)_
 
 ## `heroku pg:blocking [DATABASE]`
 
@@ -296,6 +327,8 @@ DESCRIPTION
   display queries holding locks other queries are waiting to be released
 ```
 
+_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/blocking.ts)_
+
 ## `heroku pg:connection-pooling:attach [DATABASE]`
 
 add an attachment to a database using connection pooling
@@ -307,14 +340,16 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --as=<value>          name for add-on attachment
+      --as=<value>      name for add-on attachment
 
 DESCRIPTION
   add an attachment to a database using connection pooling
-  Example:
 
-  heroku pg:connection-pooling:attach postgresql-something-12345
+EXAMPLES
+  $ heroku pg:connection-pooling:attach postgresql-something-12345
 ```
+
+_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/connection-pooling/attach.ts)_
 
 ## `heroku pg:copy SOURCE TARGET`
 
@@ -326,16 +361,17 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
-  -r, --remote=<value>     git remote of app to use
+  -a, --app=<value>            (required) app to run command against
+  -r, --remote=<value>         git remote of app to use
   --confirm=<value>
   --verbose
   --wait-interval=<value>
 
 DESCRIPTION
   copy all data from source db to target
-  at least one of the databases must be a Heroku PostgreSQL DB
 ```
+
+_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/copy.ts)_
 
 ## `heroku pg:credentials [DATABASE]`
 
@@ -352,6 +388,8 @@ FLAGS
 DESCRIPTION
   show information on credentials in the database
 ```
+
+_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials.ts)_
 
 ## `heroku pg:credentials:create [DATABASE]`
 
@@ -373,6 +411,8 @@ DESCRIPTION
   heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
 ```
 
+_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials/create.ts)_
+
 ## `heroku pg:credentials:destroy [DATABASE]`
 
 destroy credential within database
@@ -389,10 +429,12 @@ FLAGS
 
 DESCRIPTION
   destroy credential within database
-  Example:
 
-  heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
+EXAMPLES
+  $ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
 ```
+
+_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials/destroy.ts)_
 
 ## `heroku pg:credentials:repair-default [DATABASE]`
 
@@ -409,10 +451,12 @@ FLAGS
 
 DESCRIPTION
   repair the permissions of the default credential within database
-  Example:
 
-  heroku pg:credentials:repair-default postgresql-something-12345
+EXAMPLES
+  $ heroku pg:credentials:repair-default postgresql-something-12345
 ```
+
+_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials/repair-default.ts)_
 
 ## `heroku pg:credentials:rotate [DATABASE]`
 
@@ -420,19 +464,20 @@ rotate the database credentials
 
 ```
 USAGE
-  $ heroku pg:credentials:rotate [DATABASE] -a <value> [-n <value>] [--all] [-c <value>] [--force] [-r <value>]
+  $ heroku pg:credentials:rotate [DATABASE] -a <value> [--all | -n <value>] [-c <value>] [--force]
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
   -c, --confirm=<value>
-  -n, --name=<value>     which credential to rotate (default credentials if not specified)
-  -r, --remote=<value>   git remote of app to use
-  --all                  rotate all credentials
-  --force                forces rotating the targeted credentials
+  -n, --name=<value>     which credential to rotate (default credentials if not specified and --all is not used)
+      --all              rotate all credentials
+      --force            forces rotating the targeted credentials
 
 DESCRIPTION
   rotate the database credentials
 ```
+
+_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials/rotate.ts)_
 
 ## `heroku pg:credentials:url [DATABASE]`
 
@@ -444,12 +489,14 @@ USAGE
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -n, --name=<value>    which credential to show (default credentials if not specified)
+  -n, --name=<value>    [default: default] which credential to show (default credentials if not specified)
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show information on a database credential
 ```
+
+_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/credentials/url.ts)_
 
 ## `heroku pg:diagnose [DATABASE|REPORT_ID]`
 
@@ -462,14 +509,15 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --json                format output as JSON
+      --json            format output as JSON
 
 DESCRIPTION
   run or view diagnostics report
-
   defaults to DATABASE_URL database if no DATABASE is specified
   if REPORT_ID is specified instead, a previous report is displayed
 ```
+
+_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/diagnose.ts)_
 
 ## `heroku pg:info [DATABASE]`
 
@@ -485,7 +533,12 @@ FLAGS
 
 DESCRIPTION
   show database information
+
+ALIASES
+  $ heroku pg
 ```
+
+_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/info.ts)_
 
 ## `heroku pg:kill PID [DATABASE]`
 
@@ -504,6 +557,8 @@ DESCRIPTION
   kill a query
 ```
 
+_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/kill.ts)_
+
 ## `heroku pg:killall [DATABASE]`
 
 terminates all connections for all credentials
@@ -519,6 +574,8 @@ FLAGS
 DESCRIPTION
   terminates all connections for all credentials
 ```
+
+_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/killall.ts)_
 
 ## `heroku pg:links [DATABASE]`
 
@@ -536,6 +593,8 @@ DESCRIPTION
   lists all databases and information on link
 ```
 
+_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/links/index.ts)_
+
 ## `heroku pg:links:create REMOTE DATABASE`
 
 create a link between data stores
@@ -547,14 +606,15 @@ USAGE
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
-  --as=<value>          name of link to create
+      --as=<value>      name of link to create
 
 DESCRIPTION
   create a link between data stores
   Example:
-
   heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
 ```
+
+_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/links/create.ts)_
 
 ## `heroku pg:links:destroy DATABASE LINK`
 
@@ -571,10 +631,12 @@ FLAGS
 
 DESCRIPTION
   destroys a link between data stores
-  Example:
 
-  heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
+EXAMPLES
+  $ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
 ```
+
+_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/links/destroy.ts)_
 
 ## `heroku pg:locks [DATABASE]`
 
@@ -593,6 +655,8 @@ DESCRIPTION
   display queries with active locks
 ```
 
+_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/locks.ts)_
+
 ## `heroku pg:maintenance [DATABASE]`
 
 show current maintenance information
@@ -608,6 +672,8 @@ FLAGS
 DESCRIPTION
   show current maintenance information
 ```
+
+_See code: [src/commands/pg/maintenance/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/maintenance/index.ts)_
 
 ## `heroku pg:maintenance:run [DATABASE]`
 
@@ -626,26 +692,30 @@ DESCRIPTION
   start maintenance
 ```
 
-## `heroku pg:maintenance:window DATABASE WINDOW`
+_See code: [src/commands/pg/maintenance/run.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/maintenance/run.ts)_
 
-set weekly maintenance window
+## `heroku pg:maintenance:window WINDOW [DATABASE]`
+
+Set weekly maintenance window.
 
 ```
 USAGE
-  $ heroku pg:maintenance:window DATABASE WINDOW -a <value> [-r <value>]
+  $ heroku pg:maintenance:window WINDOW [DATABASE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
-  set weekly maintenance window
+  Set weekly maintenance window.
   All times are in UTC.
 
-  Example:
 
-  heroku pg:maintenance:window postgres-slippery-100 "Sunday 06:00"
+EXAMPLES
+  $ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100
 ```
+
+_See code: [src/commands/pg/maintenance/window.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/maintenance/window.ts)_
 
 ## `heroku pg:outliers [DATABASE]`
 
@@ -660,11 +730,13 @@ FLAGS
   -n, --num=<value>     the number of queries to display (default: 10)
   -r, --remote=<value>  git remote of app to use
   -t, --truncate        truncate queries to 40 characters
-  --reset               resets statistics gathered by pg_stat_statements
+      --reset           resets statistics gathered by pg_stat_statements
 
 DESCRIPTION
   show 10 queries that have longest execution time in aggregate
 ```
+
+_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/outliers.ts)_
 
 ## `heroku pg:promote DATABASE`
 
@@ -683,6 +755,8 @@ DESCRIPTION
   sets DATABASE as your DATABASE_URL
 ```
 
+_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/promote.ts)_
+
 ## `heroku pg:ps [DATABASE]`
 
 view active queries with execution time
@@ -700,6 +774,8 @@ DESCRIPTION
   view active queries with execution time
 ```
 
+_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/ps.ts)_
+
 ## `heroku pg:psql [DATABASE]`
 
 open a psql shell to the database
@@ -709,15 +785,20 @@ USAGE
   $ heroku pg:psql [DATABASE] -a <value> [-c <value>] [-f <value>] [--credential <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -c, --command=<value>  SQL command to run
-  -f, --file=<value>     SQL file to run
-  -r, --remote=<value>   git remote of app to use
-  --credential=<value>   credential to use
+  -a, --app=<value>         (required) app to run command against
+  -c, --command=<value>     SQL command to run
+  -f, --file=<value>        SQL file to run
+  -r, --remote=<value>      git remote of app to use
+      --credential=<value>  credential to use
 
 DESCRIPTION
   open a psql shell to the database
+
+ALIASES
+  $ heroku psql
 ```
+
+_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/psql.ts)_
 
 ## `heroku pg:pull SOURCE TARGET`
 
@@ -728,9 +809,9 @@ USAGE
   $ heroku pg:pull SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>             (required) app to run command against
-  -r, --remote=<value>          git remote of app to use
-  --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
+  -a, --app=<value>                 (required) app to run command against
+  -r, --remote=<value>              git remote of app to use
+      --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
 DESCRIPTION
   pull Heroku database into local or remote database
@@ -741,18 +822,22 @@ DESCRIPTION
   * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
   * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
 
-  To delete a local database run `dropdb TARGET`
-  To create an empty remote database, run `createdb` with connection command-line options (run `createdb --help` for
+  To delete a local database run dropdb TARGET.
+  To create an empty remote database, run createdb with connection command-line options (run createdb --help for
   details).
 
-  Examples:
 
+EXAMPLES
   # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
-  $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
+
+    $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
 
   # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
-  $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
+
+    $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 ```
+
+_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/pull.ts)_
 
 ## `heroku pg:push SOURCE TARGET`
 
@@ -763,27 +848,31 @@ USAGE
   $ heroku pg:push SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>             (required) app to run command against
-  -r, --remote=<value>          git remote of app to use
-  --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
+  -a, --app=<value>                 (required) app to run command against
+  -r, --remote=<value>              git remote of app to use
+      --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
 DESCRIPTION
   push local or remote into Heroku database
   Push from SOURCE into TARGET. TARGET must be empty.
 
-  To empty a Heroku database for push run `heroku pg:reset`
+  To empty a Heroku database for push run heroku pg:reset
 
   SOURCE must be either the name of a database existing on your localhost or the
   fully qualified URL of a remote database.
 
-  Examples:
 
+EXAMPLES
   # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
-  $ heroku pg:push mylocaldb postgresql-swimmingly-100
+
+    $ heroku pg:push mylocaldb postgresql-swimmingly-100 --app sushi
 
   # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
-  $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
+
+    $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
 ```
+
+_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/push.ts)_
 
 ## `heroku pg:reset [DATABASE]`
 
@@ -803,6 +892,8 @@ DESCRIPTION
   delete all data in DATABASE
 ```
 
+_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/reset.ts)_
+
 ## `heroku pg:settings [DATABASE]`
 
 show your current database settings
@@ -819,13 +910,15 @@ DESCRIPTION
   show your current database settings
 ```
 
-## `heroku pg:settings:auto-explain [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/index.ts)_
+
+## `heroku pg:settings:auto-explain [DATABASE] [VALUE]`
 
 Automatically log execution plans of queries without running EXPLAIN by hand.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -837,13 +930,15 @@ DESCRIPTION
   Restart your Heroku app and/or restart existing connections for logging to start taking place.
 ```
 
-## `heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain.ts)_
+
+## `heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE]`
 
 Shows actual run times on the execution plan.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-analyze [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -857,13 +952,15 @@ DESCRIPTION
   impacts to your database and should be used with caution.
 ```
 
-## `heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-analyze.ts)_
+
+## `heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE]`
 
 Includes buffer usage statistics when execution plans are logged.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-buffers [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -875,13 +972,15 @@ DESCRIPTION
   pg:settings:auto-explain:log-analyze turned on.
 ```
 
-## `heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-buffers.ts)_
+
+## `heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE]`
 
 Sets the minimum execution time in milliseconds for a statement's plan to be logged.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-min-duration [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -890,17 +989,17 @@ FLAGS
 DESCRIPTION
   Sets the minimum execution time in milliseconds for a statement's plan to be logged.
   Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
-
-  WARNING: Setting a low value may have performance impacts on your database as well as generate a large volume of logs.
 ```
 
-## `heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
+
+## `heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`
 
 Nested statements are included in the execution plan's log.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-nested-statements [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -910,13 +1009,15 @@ DESCRIPTION
   Nested statements are included in the execution plan's log.
 ```
 
-## `heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
+
+## `heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`
 
 Includes trigger execution statistics in execution plan logs.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-triggers [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -927,13 +1028,15 @@ DESCRIPTION
   This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-## `heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-triggers.ts)_
+
+## `heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`
 
 Include verbose details in execution plans.
 
 ```
 USAGE
-  $ heroku pg:settings:auto-explain:log-verbose [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -944,13 +1047,34 @@ DESCRIPTION
   This is equivalent to calling EXPLAIN VERBOSE.
 ```
 
-## `heroku pg:settings:log-lock-waits [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
+
+## `heroku pg:settings:log-connections [DATABASE] [VALUE]`
+
+Controls whether a log message is produced when a login attempt is made. Default is true.
+
+```
+USAGE
+  $ heroku pg:settings:log-connections [DATABASE] [VALUE] -a <value> [-r <value>]
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+
+DESCRIPTION
+  Controls whether a log message is produced when a login attempt is made. Default is true.
+  Setting log_connections to false stops emitting log messages for all attempts to login to the database.
+```
+
+_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/log-connections.ts)_
+
+## `heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`
 
 Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
 
 ```
 USAGE
-  $ heroku pg:settings:log-lock-waits [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:log-lock-waits [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -965,13 +1089,15 @@ DESCRIPTION
   transaction.
 ```
 
-## `heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/log-lock-waits.ts)_
+
+## `heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`
 
 The duration of each completed statement will be logged if the statement completes after the time specified by VALUE.
 
 ```
 USAGE
-  $ heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -984,13 +1110,15 @@ DESCRIPTION
   durations.
 ```
 
-## `heroku pg:settings:log-statement [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/log-min-duration-statement.ts)_
+
+## `heroku pg:settings:log-statement [DATABASE] [VALUE]`
 
 log_statement controls which SQL statements are logged.
 
 ```
 USAGE
-  $ heroku pg:settings:log-statement [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:log-statement [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1006,13 +1134,15 @@ DESCRIPTION
   all  - All statements are logged
 ```
 
-## `heroku pg:settings:track-functions [VALUE] [DATABASE]`
+_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/log-statement.ts)_
+
+## `heroku pg:settings:track-functions [DATABASE] [VALUE]`
 
 track_functions controls tracking of function call counts and time used. Default is none.
 
 ```
 USAGE
-  $ heroku pg:settings:track-functions [VALUE] [DATABASE] -a <value> [-r <value>]
+  $ heroku pg:settings:track-functions [DATABASE] [VALUE] -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1021,11 +1151,13 @@ FLAGS
 DESCRIPTION
   track_functions controls tracking of function call counts and time used. Default is none.
   Valid values for VALUE:
-  none - No functions are tracked
+  none - No functions are tracked (default)
   pl   - Only procedural language functions are tracked
   all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are
   not tracked
 ```
+
+_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/settings/track-functions.ts)_
 
 ## `heroku pg:unfollow DATABASE`
 
@@ -1044,6 +1176,8 @@ DESCRIPTION
   stop a replica from following and make it a writeable database
 ```
 
+_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/unfollow.ts)_
+
 ## `heroku pg:upgrade [DATABASE]`
 
 For an Essential-* plan, this command upgrades the database's PostgreSQL version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the PostgreSQL version.
@@ -1061,8 +1195,10 @@ FLAGS
 DESCRIPTION
   For an Essential-* plan, this command upgrades the database's PostgreSQL version. For a Standard-tier and higher plan,
   this command unfollows the leader database before upgrading the PostgreSQL version.
-  to upgrade to another PostgreSQL version, use pg:copy instead
+  To upgrade to another PostgreSQL version, use pg:copy instead
 ```
+
+_See code: [src/commands/pg/upgrade.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/upgrade.ts)_
 
 ## `heroku pg:vacuum-stats [DATABASE]`
 
@@ -1080,6 +1216,8 @@ DESCRIPTION
   show dead rows and whether an automatic vacuum is expected to be triggered
 ```
 
+_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/vacuum-stats.ts)_
+
 ## `heroku pg:wait [DATABASE]`
 
 blocks until database is available
@@ -1089,11 +1227,13 @@ USAGE
   $ heroku pg:wait [DATABASE] -a <value> [--wait-interval <value>] [--no-notify] [-r <value>]
 
 FLAGS
-  -a, --app=<value>        (required) app to run command against
-  -r, --remote=<value>     git remote of app to use
-  --no-notify              do not show OS notification
-  --wait-interval=<value>  how frequently to poll in seconds (to avoid rate limiting)
+  -a, --app=<value>            (required) app to run command against
+  -r, --remote=<value>         git remote of app to use
+      --no-notify              do not show OS notification
+      --wait-interval=<value>  how frequently to poll in seconds (to avoid rate limiting)
 
 DESCRIPTION
   blocks until database is available
 ```
+
+_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v9.0.0/packages/cli/src/commands/pg/wait.ts)_

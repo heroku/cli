@@ -10,7 +10,7 @@ const loadProcMock = () => ({
   other: './other-command',
 })
 
-describe('local', () => {
+describe('local', function () {
   describe('with the local:start alias', function () {
     test
       .stub(procfile, 'loadProc', loadProcMock)

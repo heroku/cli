@@ -117,6 +117,7 @@ describe('pipelines:info', function () {
         expect(ctx.stdout).to.not.contain('owner: foo@user.com')
       })
 
+    // eslint-disable-next-line mocha/no-sibling-hooks
     setup(test)
       .stdout()
       .stderr()
@@ -129,9 +130,9 @@ describe('pipelines:info', function () {
       })
   })
 
-  describe('when it has an owner', () => {
-    describe('and type is user', () => {
-      describe('with mixed pipeline ownership', () => {
+  describe('when it has an owner', function () {
+    describe('and type is user', function () {
+      describe('with mixed pipeline ownership', function () {
         const pipelineOwner = {id: '5678', type: 'user'}
 
         setup(test, pipelineOwner)
@@ -150,7 +151,7 @@ describe('pipelines:info', function () {
           })
       })
 
-      describe('with same pipeline ownership', () => {
+      describe('with same pipeline ownership', function () {
         const pipelineOwner = {id: '1234', type: 'user'}
 
         setup(test, pipelineOwner)
@@ -166,7 +167,7 @@ describe('pipelines:info', function () {
       })
     })
 
-    describe('and type is team', () => {
+    describe('and type is team', function () {
       describe('with mixed pipeline ownership', function () {
         const pipelineOwner = {id: '5678', type: 'team'}
 

@@ -2,7 +2,7 @@ import {test, expect} from '@oclif/test'
 
 import * as git from '../../../../src/lib/ci/git'
 
-describe('ci:rerun', () => {
+describe('ci:rerun', function () {
   test
     .command(['ci:rerun'])
     .catch(error => {
@@ -10,7 +10,7 @@ describe('ci:rerun', () => {
     })
     .it('errors when not specifying a pipeline or an app')
 
-  describe('when specifying a pipeline', () => {
+  describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const ghRepository = {
       user: 'heroku-fake', repo: 'my-repo', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add', branch: 'my-test-branch',
@@ -53,7 +53,7 @@ describe('ci:rerun', () => {
       },
     }
 
-    describe('when not specifying a run #', () => {
+    describe('when not specifying a run #', function () {
       test
         .stdout()
         .nock('https://api.heroku.com', api => {
@@ -127,7 +127,7 @@ describe('ci:rerun', () => {
         })
     })
 
-    describe('when specifying a run #', () => {
+    describe('when specifying a run #', function () {
       test
         .stdout()
         .nock('https://api.heroku.com', api => {

@@ -10,11 +10,15 @@ import Git from '../../../../src/lib/git/git'
 describe('git', function () {
   let mock: sinon.SinonMock
   let git: Git
-  beforeEach(() => {
+
+  beforeEach(function () {
     mock = sinon.mock(cp)
     git = new Git()
   })
-  afterEach(() => mock.restore())
+
+  afterEach(function () {
+    return mock.restore()
+  })
 
   it.skip('runs exec', function () {
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(null, 'foo')

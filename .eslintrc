@@ -1,19 +1,24 @@
 {
   // Global settings
-  "plugins": ["import"],
+  "plugins": ["import", "mocha"],
   "extends": [
     "oclif",
-    "oclif-typescript"
+    "oclif-typescript",
+    "plugin:mocha/recommended"
   ],
+  "ignorePatterns": ["**/test/**/*.js"],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-unused-vars": "warn", // TODO: fix issues and turn this back on
+    "@typescript-eslint/no-unused-vars": ["warn", {"ignoreRestSiblings": true}], // TODO: fix issues and turn this back on
     "camelcase":"off",
     "import/no-unresolved": "error",
     "indent": ["error", 2, {"MemberExpression": 1}],
     "func-names":"warn", // TODO: fix issues and turn this back on
-    "no-await-in-loop": "warn", // TODO: fix issues and turn this back on
+    "mocha/no-mocha-arrows": "warn",
+    "mocha/no-exports": "warn",
+    "mocha/no-setup-in-describe": "warn",
+    "no-await-in-loop": "off", // Perfect legit to use await in loops, we should leave it off
     "no-constant-condition": ["error", {"checkLoops": false }],
     "no-else-return": "warn", // TODO: fix issues and turn this back on
     "no-negated-condition":"warn", // TODO: fix issues and turn this back on
@@ -30,6 +35,7 @@
     "unicorn/filename-case": "off",
     "unicorn/import-style": "off",
     "unicorn/no-abusive-eslint-disable": "off",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "warn", // TODO: fix issues and turn this back on
     "unicorn/no-lonely-if":"off",

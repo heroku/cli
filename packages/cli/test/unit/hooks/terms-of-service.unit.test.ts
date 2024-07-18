@@ -13,12 +13,12 @@ const options = {
 
 const tosPath: string = join(options.config.cacheDir, 'terms-of-service')
 
-describe('terms-of-service hook', () => {
-  afterEach(() => {
+describe('terms-of-service hook', function () {
+  afterEach(function () {
     fs.removeSync(tosPath)
   })
 
-  describe('has never run before', () => {
+  describe('has never run before', function () {
     test
       .stderr()
       .do(() => checkTos(options))
@@ -27,8 +27,8 @@ describe('terms-of-service hook', () => {
       })
   })
 
-  describe('has run once before', () => {
-    beforeEach(() => {
+  describe('has run once before', function () {
+    beforeEach(function () {
       fs.createFileSync(tosPath)
     })
 

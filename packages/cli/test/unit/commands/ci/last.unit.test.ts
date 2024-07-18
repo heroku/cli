@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('ci:last', () => {
+describe('ci:last', function () {
   const testRunNumber = 10
   const testRunId = 'f53d34b4-c3a9-4608-a186-17257cf71d62'
 
@@ -11,7 +11,7 @@ describe('ci:last', () => {
     })
     .it('errors when not specifying a pipeline or an app')
 
-  describe('when specifying an application', () => {
+  describe('when specifying an application', function () {
     const application = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const pipeline = {id: '45450264-b207-467a-Abc1-999c34883645', name: 'aquafresh'}
 
@@ -50,7 +50,7 @@ describe('ci:last', () => {
       .it('errors when no pipelines exist')
   })
 
-  describe('when specifying a pipeline', () => {
+  describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
     test
@@ -125,7 +125,7 @@ describe('ci:last', () => {
       })
   })
 
-  describe('when test nodes is an empty array', () => {
+  describe('when test nodes is an empty array', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
     test

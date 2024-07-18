@@ -9,17 +9,17 @@ let sandbox: any
 let updated: string | Record<string, unknown>
 let editedConfig = ''
 
-describe('config:edit', () => {
-  describe('stringToConfig', () => {
-    it('handles config vars with empty string values', () => {
+describe('config:edit', function () {
+  describe('stringToConfig', function () {
+    it('handles config vars with empty string values', function () {
       expect(stringToConfig("foo=''")).to.deep.equal({foo: ''})
       expect(stringToConfig('foo=""')).to.deep.equal({foo: ''})
       expect(stringToConfig('foo=')).to.deep.equal({foo: ''})
     })
   })
 
-  describe('blank config vars', () => {
-    beforeEach(() => {
+  describe('blank config vars', function () {
+    beforeEach(function () {
       sandbox = sinon.createSandbox()
       sandbox.stub(Editor.prototype, 'edit')
         .callsFake(() => {
@@ -39,12 +39,12 @@ describe('config:edit', () => {
         .value(() => {})
     })
 
-    afterEach(() => {
+    afterEach(function () {
       sandbox.restore()
     })
 
-    describe('deleting config var', () => {
-      beforeEach(() => {
+    describe('deleting config var', function () {
+      beforeEach(function () {
         editedConfig = '\n'
       })
 
@@ -68,8 +68,8 @@ describe('config:edit', () => {
         })
     })
 
-    describe('setting config var to blank', () => {
-      beforeEach(() => {
+    describe('setting config var to blank', function () {
+      beforeEach(function () {
         editedConfig = "BLANK=\nNOT_BLANK=''\n"
       })
 
@@ -93,8 +93,8 @@ describe('config:edit', () => {
         })
     })
 
-    describe('setting specific var', () => {
-      beforeEach(() => {
+    describe('setting specific var', function () {
+      beforeEach(function () {
         editedConfig = 'a'
       })
 

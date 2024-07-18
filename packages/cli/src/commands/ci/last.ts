@@ -15,13 +15,14 @@ export default class CiLast extends Command {
 
   static flags = {
     app: flags.string({char: 'a', description: 'app name'}),
+    remote: flags.remote(),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
     pipeline: flags.pipeline({required: false}),
   }
 
   async run() {
     const {flags} = await this.parse(CiLast)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
     const headers = {Range: 'number ..; order=desc,max=1'}
     const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})
 

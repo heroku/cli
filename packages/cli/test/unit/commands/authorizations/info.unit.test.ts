@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 import {formatDistanceToNow} from 'date-fns'
-describe('authorizations:info', () => {
+describe('authorizations:info', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
   const authorization = {
     id: authorizationID,
@@ -48,7 +48,7 @@ describe('authorizations:info', () => {
       expect(ctx.stdout).to.contain('(in 1 day)')
     })
 
-  describe('with json flag', () => {
+  describe('with json flag', function () {
     testWithAuthorization()
       .command(['authorizations:info', authorizationID, '--json'])
       .it('shows the authorization as json', ctx => {

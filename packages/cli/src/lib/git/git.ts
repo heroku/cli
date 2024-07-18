@@ -1,6 +1,7 @@
 import {vars} from '@heroku-cli/command'
 import * as cp from 'child_process'
 import {ux} from '@oclif/core'
+import * as fs from 'fs'
 import {promisify} from 'util'
 const execFile = promisify(cp.execFile)
 
@@ -47,11 +48,55 @@ export default class Git {
     const remotes = await this.exec(['remote', '-v'])
     return remotes.split('\n')
       .map(r => r.split('\t'))
-      .find(r => r[0] === name)![1]
-      .split(' ')[0]
+      .find(r => r[0] === name)?.[1]
+      ?.split(' ')[0] ?? ''
   }
 
   url(app: string) {
     return this.httpGitUrl(app)
   }
+
+  async getBranch(symbolicRef: string) {
+    return this.exec(['symbolic-ref', '--short', symbolicRef])
+  }
+
+  async getRef(branch: string) {
+    return this.exec(['rev-parse', branch || 'HEAD'])
+  }
+
+  async getCommitTitle(ref: string) {
+    return this.exec(['log', ref || '', '-1', '--pretty=format:%s'])
+  }
+
+  async readCommit(commit: string) {
+    const branch = await this.getBranch('HEAD')
+    const ref = await this.getRef(commit)
+    const message = await this.getCommitTitle(ref)
+
+    return Promise.resolve({
+      branch: branch,
+      ref: ref,
+      message: message,
+    })
+  }
+
+  inGitRepo() {
+    try {
+      fs.lstatSync('.git')
+      return true
+    } catch (error: any) {
+      if (error.code !== 'ENOENT') throw error
+    }
+  }
+
+  hasGitRemote(remote: string) {
+    return this.remoteUrl(remote)
+      .then((remote?: string) => Boolean(remote))
+  }
+
+  createRemote(remote: string, url: string) {
+    return this.hasGitRemote(remote)
+      .then(exists => !exists ? this.exec(['remote', 'add', remote, url]) : null)
+  }
 }
+

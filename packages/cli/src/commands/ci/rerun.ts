@@ -18,6 +18,7 @@ export default class CiReRun extends Command {
 
   static flags = {
     app: flags.string({char: 'a', description: 'app name'}),
+    remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
   }
 
@@ -27,7 +28,7 @@ export default class CiReRun extends Command {
 
   async run() {
     const {flags, args} = await this.parse(CiReRun)
-    const pipeline = await getPipeline(flags, this)
+    const pipeline = await getPipeline(flags, this.heroku)
 
     let sourceTestRun: Heroku.TestRun
 

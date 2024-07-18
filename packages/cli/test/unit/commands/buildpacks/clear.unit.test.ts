@@ -2,10 +2,10 @@ import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
-import {unwrap} from '../../../helpers/buildpacks/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap'
 nock.disableNetConnect()
 
-describe('buildpacks:clear', () => {
+describe('buildpacks:clear', function () {
   test
     .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.put(api)

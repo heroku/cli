@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 import * as inquirer from '@inquirer/prompts'
 
-describe('domains', () => {
+describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
     acm_status: null,
     acm_status_reason: null,
