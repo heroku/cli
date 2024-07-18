@@ -4969,6 +4969,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.12.13":
+  version: 20.14.11
+  resolution: "@types/node@npm:20.14.11"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 24396dea2bc803c2d2ebfdd31a3e6e93818ba1a5933d63cd0f64fad1e2955a8280ba09338a48ffe68cd84748eec8bee27135045f15661aa389656f67fe0b0924
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
@@ -10443,6 +10452,7 @@ __metadata:
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^8.0.13
+    "@inquirer/prompts": ^5.0.5
     "@oclif/core": ^2.16.0
     "@oclif/plugin-commands": 2.2.28
     "@oclif/plugin-help": ^5
