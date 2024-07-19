@@ -14,6 +14,7 @@ apresharedkey
 armel
 armhf
 armv
+atleti
 atts
 auths
 authtoken
@@ -24,6 +25,7 @@ autoload
 autoloaded
 autoscale
 autovacuum
+awscli
 baseport
 bindkey
 binrun
@@ -78,6 +80,7 @@ extnamespace
 favorited
 favoriteid
 favoriting
+filebase
 filesize
 flagscompletions
 fooapp
@@ -198,6 +201,7 @@ notloggedin
 npmjs
 nullhdr
 nqry
+nsis
 nspname
 oclif
 oldname
@@ -246,6 +250,7 @@ psql
 psqlrc
 pxxxxxxxx
 qqjs
+raulb
 recache
 redii
 redises
@@ -285,6 +290,7 @@ slowdb
 snapcraft
 snapcraftctl
 sniendpoint
+snyk
 someplugin
 somethingelse
 someuser
@@ -302,6 +308,7 @@ testsource
 texcl
 timedout
 tikki
+tmpl
 toolbelt
 topo
 transactionid
@@ -325,10 +332,13 @@ usesysid
 urijs
 uxxxxxxxxx
 VERSINFO
+webfactory
+withfig
 wrapline
 writeout
 wubalubadubdub
 xact
+xlarge
 xvzf
 yetanotherapp
 yourdomain
