@@ -83,9 +83,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - run: yarn global add cspell
+      - run: npm install -g cspell
       - name: Run spell check on changed files
-        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --unique --no-progress --gitignore --no-must-find-files --file-list stdin
+        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --unique --gitignore --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
