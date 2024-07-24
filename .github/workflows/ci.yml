@@ -73,6 +73,7 @@ jobs:
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
         run: cd packages/cli && yarn test:acceptance
 
+# comment
   spell-check:
     runs-on: ubuntu-latest
     steps:
