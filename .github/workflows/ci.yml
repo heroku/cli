@@ -85,7 +85,7 @@ jobs:
           node-version: "20"
       - run: npm install -g cspell
       - name: Run spell check on changed files
-        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --quiet --gitignore --no-show-suggestions --no-must-find-files --file-list stdin
+        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --gitignore --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
