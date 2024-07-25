@@ -87,7 +87,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
+          cache: yarn
+      - run: yarn install --immutable --network-timeout 1500000
+      - run: yarn add -D cspell
       - name: Run spell check on changed files
         run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --no-progress --gitignore --no-must-find-files --file-list stdin
 
