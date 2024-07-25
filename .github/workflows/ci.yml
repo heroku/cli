@@ -74,7 +74,11 @@ jobs:
         run: cd packages/cli && yarn test:acceptance
 
   spell-check:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
         with: 
@@ -82,8 +86,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20"
-      - run: npm install
+          node-version: ${{ matrix.node-version }}
+      - run: yarn add -D cspell
       - name: Run spell check on changed files
         run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | cspell --no-progress --gitignore --no-must-find-files --file-list stdin
 
