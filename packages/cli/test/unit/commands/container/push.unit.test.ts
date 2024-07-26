@@ -45,7 +45,7 @@ describe('container push', function () {
     })
   })
 
-  context('when the app build_stack is container', function() {
+  context('when the app build_stack is container', function () {
     beforeEach(function () {
       api
         .get('/apps/testapp')
