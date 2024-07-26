@@ -38,7 +38,7 @@ describe('buildpacks:remove', function () {
       .stdout()
       .stderr()
       .command(['buildpacks:remove', '-i', '1', '-a', 'example'])
-      .it('# with one buildpack successfully removes index with langauge warn', ctx => {
+      .it('# with one buildpack successfully removes index with language warn', ctx => {
         expect(ctx.stdout).to.equal(
           `Buildpack removed.
 `)
