@@ -47,20 +47,29 @@ export default class Create extends Command {
 
   static example = heredoc`
   Create an add-on resource:
-  $heroku addons:create heroku-redis --app my-app
+
+  $ heroku addons:create heroku-redis --app my-app
+
+  Create a database add-on resource follower:
+
+  $ heroku addons:create heroku-postgresql:standard-0 --follow addon-haiku-name --app my-app
 
   Create an add-on resource with additional config items:
-  $heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
+
+  $ heroku addons:create heroku-redis:premium-0 --app my-app -- --timeout 60 --maxmemory_policy volatile-lru
   `
   static strict = false
   static hiddenAliases = ['addons:add']
   static flags = {
-    name: flags.string({description: 'name for the add-on resource'}),
+    app: flags.app({required: true}),
     as: flags.string({description: 'name for the initial add-on attachment'}),
     confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
-    wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
-    app: flags.app({required: true}),
+    follow: flags.string({description: 'database add-on to follow'}),
+    fork: flags.string({description: 'database add-on to fork'}),
+    name: flags.string({description: 'name for the add-on resource'}),
     remote: flags.remote(),
+    version: flags.string({description: 'version used for add-on provisioning'}),
+    wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
   }
 
   static args = {
@@ -69,7 +78,7 @@ export default class Create extends Command {
 
   public async run(): Promise<void> {
     const {flags, args, ...restParse} = await this.parse(Create)
-    const {app, name, as, wait, confirm} = flags
+    const {app, name, as, wait, confirm, fork, follow, version} = flags
     const servicePlan = args['service:plan']
     const argv = (restParse.argv as string[])
     // oclif duplicates specified args in argv
@@ -78,7 +87,7 @@ export default class Create extends Command {
     const config = parseConfig(argv)
     let addon
     try {
-      addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
+      addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {as, config, follow, fork, name, version})
       if (wait) {
         notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
       }

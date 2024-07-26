@@ -22,7 +22,7 @@ export default async function (
   plan: string,
   confirm: string | undefined,
   wait: boolean,
-  options: {name?: string, config: Record<string, string | boolean>, as?: string},
+  options: {name?: string, config: Record<string, string | boolean>, as?: string, fork?: string, follow?: string, version?: string},
 ) {
   async function createAddonRequest(confirmed?: string) {
     const body = {
@@ -31,6 +31,9 @@ export default async function (
       config: options.config,
       plan: {name: plan},
       attachment: {name: options.as},
+      fork: options.fork,
+      follow: options.follow,
+      version: options.version,
     }
 
     ux.action.start(`Creating ${plan} on ${color.app(app)}`)
