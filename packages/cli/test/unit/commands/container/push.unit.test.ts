@@ -45,6 +45,35 @@ describe('container push', function () {
     })
   })
 
+  context('when the app build_stack is container', function() {
+    beforeEach(function () {
+      api
+        .get('/apps/testapp')
+        .reply(200, {name: 'testapp', stack: {name: 'heroku-22'}, build_stack: {name: 'container'}})
+    })
+
+    it('allows push to the docker registry', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile'])
+      const build = sandbox.stub(DockerHelper, 'buildImage')
+        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [])
+      const push = sandbox.stub(DockerHelper, 'pushImage')
+        .withArgs('registry.heroku.com/testapp/web')
+
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ])
+
+      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(build)
+      sandbox.assert.calledOnce(push)
+    })
+  })
+
   context('when the app is a container app', function () {
     beforeEach(function () {
       api
