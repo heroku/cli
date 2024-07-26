@@ -1,5 +1,4 @@
 # custom dictionary for the heroku cli repository
-A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
 aaaab
 aaab
 aabb
@@ -11,6 +10,7 @@ amyapp
 aname
 appname
 apresharedkey
+arbitrars
 armel
 armhf
 armv
@@ -29,6 +29,7 @@ awscli
 baseport
 bindkey
 binrun
+blocklisted
 boop
 brewhook
 buildpack
@@ -142,6 +143,7 @@ mdesc
 mdeprovisioning
 mdyno
 merror
+metaas
 mexpired
 mfailed
 mfwd
@@ -254,6 +256,8 @@ raulb
 recache
 redii
 redises
+rediss
+regionize
 rejairieja
 relid
 reloptions
