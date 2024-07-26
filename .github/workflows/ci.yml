@@ -77,7 +77,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x]
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
@@ -87,10 +87,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn install --immutable --network-timeout 1500000
+      - run: yarn add cspell
       - name: Run spell check on changed files
-        run: git fetch origin main:refs/remotes/origin/main --quiet && git diff origin/main...HEAD --diff-filter=d --name-only | npx cspell --no-progress --gitignore --no-must-find-files --file-list stdin
+        run: |
+          git fetch origin main:refs/remotes/origin/main --quiet
+          git diff origin/main...HEAD --diff-filter=d --name-only | yarn run cspell --no-progress --gitignore --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
