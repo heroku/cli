@@ -21,7 +21,7 @@ export function ensureContainerStack(app: Heroku.App, cmd: string): void {
   if (buildStack !== allowedStack && appStack !== allowedStack) {
     let message = 'This command is for Docker apps only.'
     if (['push', 'release'].includes(cmd)) {
-      message += `Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app(app.name)} with ${color.yellow(appStack)}, run ${color.cmd('git push heroku main')} instead.`
+      message += ` Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app(app.name)} with ${color.yellow(appStack)}, run ${color.cmd('git push heroku main')} instead.`
     }
 
     ux.error(message, {exit: 1})
