@@ -79,43 +79,6 @@ describe('addons:create', function () {
       expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
     })
-    it('creates a follower add-on with proper output', async function () {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--follow',
-        'otherdb',
-        '--as',
-        'mydb',
-        'heroku-postgresql:standard-0',
-      ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
-      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
-    })
-    it('creates a fork add-on with proper output', async function () {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--fork',
-        'otherdb',
-        '--as',
-        'mydb',
-        'heroku-postgresql:standard-0',
-      ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
-      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
-    })
-    it('creates an add-on using a specific version with proper output', async function () {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--version',
-        '15',
-        'heroku-postgresql:standard-0',
-      ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
-      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
-    })
     it('creates an addon with = args', async function () {
       await runCommand(Cmd, [
         '--app',
@@ -141,6 +104,73 @@ describe('addons:create', function () {
         '--follow=otherdb',
         '--foo=true',
       ])
+    })
+  })
+  context('creating a follower db with flags', function () {
+    beforeEach(function () {
+      api.post('/apps/myapp/addons', {
+        attachment: {name: 'mydb'},
+        config: {follow: 'otherdb'},
+        plan: {name: 'heroku-postgresql:standard-0'},
+      })
+        .reply(200, addon)
+    })
+    it('creates a follower add-on with proper output', async function () {
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--follow',
+        'otherdb',
+        '--as',
+        'mydb',
+        'heroku-postgresql:standard-0',
+      ])
+      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
+      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
+    })
+  })
+  context('creating a fork db with flags', function () {
+    beforeEach(function () {
+      api.post('/apps/myapp/addons', {
+        attachment: {name: 'mydb'},
+        config: {fork: 'otherdb'},
+        plan: {name: 'heroku-postgresql:standard-0'},
+      })
+        .reply(200, addon)
+    })
+    it('creates a fork add-on with proper output', async function () {
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--fork',
+        'otherdb',
+        '--as',
+        'mydb',
+        'heroku-postgresql:standard-0',
+      ])
+      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
+      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
+    })
+  })
+  context('creating a db on a specific version with flags', function () {
+    beforeEach(function () {
+      api.post('/apps/myapp/addons', {
+        attachment: {name: 'mydb'},
+        config: {version: '15'},
+        plan: {name: 'heroku-postgresql:standard-0'},
+      })
+        .reply(200, addon)
+    })
+    it('creates an add-on using a specific version with proper output', async function () {
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--version',
+        '15',
+        'heroku-postgresql:standard-0',
+      ])
+      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
+      expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
     })
   })
   context('when add-on is async', function () {
