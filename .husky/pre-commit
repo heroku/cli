@@ -1,7 +1,9 @@
+#!/usr/bin/env sh
+
 # Spell check all staged files
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=d)
 if [ -n "$STAGED_FILES" ]; then
-cspell $STAGED_FILES --quiet --gitignore --no-must-find-files --no-show-suggestions
+yarn run cspell $STAGED_FILES --quiet --gitignore --no-must-find-files --no-show-suggestions
 if [ $? -ne 0 ]; then
 exit 1
 fi
