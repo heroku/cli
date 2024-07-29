@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0-beta.0](https://github.com/heroku/cli/compare/v9.0.0...v9.1.0-beta.0) (2024-07-29)
+
+
+### Features
+
+* **domains:** update custom domains functionality ([#2920](https://github.com/heroku/cli/issues/2920)) ([045eab4](https://github.com/heroku/cli/commit/045eab4f429870f5917f3ab24500dd159fccc7dc))
+
+
+
+
+
 # [9.0.0](https://github.com/heroku/cli/compare/v8.11.5...v9.0.0) (2024-07-16)
 
 **Note:** Version bump only for package heroku
