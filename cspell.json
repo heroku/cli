@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+    "version": "0.2",
+    "dictionaries": ["typescript", "cspell-dictionary"],
+    "dictionaryDefinitions": [
+      {
+        "name": "cspell-dictionary",
+        "path": "./cspell-dictionary.txt",
+      }
+    ],
+    "ignorePaths": ["./cspell-dictionary.txt"]
+  }
+  

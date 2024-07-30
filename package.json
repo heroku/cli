@@ -5,6 +5,7 @@
     "@types/psl": "^1.1.3",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
+    "cspell": "7.3.9",
     "eslint": "^7.32.0",
     "eslint-config-oclif": "^4.0.0",
     "eslint-config-oclif-typescript": "^1.0.2",
@@ -12,6 +13,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-mocha": "^10.4.3",
     "execa": "5.1.1",
+    "husky": "8.0.3",
     "lerna": "^6.4.1",
     "mkdirp": "^0.5.2",
     "oclif": "4.4.7",
@@ -39,7 +41,8 @@
     "test": "lerna run test --concurrency 4",
     "lint": "cd packages/cli && yarn lint",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache"
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache",
+    "postinstall": "husky install"
   },
   "workspaces": {
     "packages": [

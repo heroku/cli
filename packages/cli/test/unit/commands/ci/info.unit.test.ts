@@ -300,6 +300,6 @@ describe('ci:info', function () {
   })
 
   describe('when specifying an application', function () {
-    // TODO: Check it has a similar behaviour, but via pipeline couplings
+    // TODO: Check it has a similar behavior, but via pipeline couplings
   })
 })
