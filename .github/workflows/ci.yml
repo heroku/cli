@@ -73,6 +73,26 @@ jobs:
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
         run: cd packages/cli && yarn test:acceptance
 
+  spell-check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn add cspell@7.3.9
+      - name: Run spell check on changed files
+        run: |
+          git fetch origin main:refs/remotes/origin/main --quiet
+          git diff origin/main...HEAD --diff-filter=d --name-only | yarn run cspell --no-progress --gitignore --no-must-find-files --file-list stdin
+
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest

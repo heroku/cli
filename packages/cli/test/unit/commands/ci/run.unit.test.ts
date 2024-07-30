@@ -19,7 +19,7 @@ describe('ci:run', function () {
     }
     const newTestRun = {
       commit_branch: ghRepository.branch,
-      commit_message: 'lastest commit',
+      commit_message: 'latest commit',
       commit_sha: ghRepository.ref,
       id: 'b6512323-3a11-43ac-b4e4-9668b6a6b30c',
       number: 11,

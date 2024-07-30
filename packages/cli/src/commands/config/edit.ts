@@ -29,7 +29,7 @@ function removeDeleted(newConfig: UploadConfig, original: Config) {
   for (const k of Object.keys(original)) {
     // The api accepts empty strings
     // as valid env var values
-    // In JS an empty string is falsey
+    // In JS an empty string is false
     if (!newConfig[k] && newConfig[k] !== '') newConfig[k] = null
   }
 }

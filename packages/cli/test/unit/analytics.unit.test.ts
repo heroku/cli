@@ -215,7 +215,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
       user = netrc.machines[vars.apiHost]?.login || undefined
     })
 
-    it('retreives user heroku API key', async function () {
+    it('retrieves user heroku API key', async function () {
       const config = await Config.load()
       config.platform = 'win32'
       config.shell = 'fish'
