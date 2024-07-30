@@ -171,7 +171,7 @@ describe('container push', function () {
       sandbox.assert.calledOnce(push)
     })
 
-    it('pushes several dockerfiles recursively', async function () {
+    it('pushes specified dockerfiles recursively', async function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
@@ -187,6 +187,31 @@ describe('container push', function () {
         '--recursive',
         'web',
         'worker',
+      ])
+
+      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout.output).to.contain('Building worker (/path/to/Dockerfile.worker)')
+      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledTwice(build)
+      sandbox.assert.calledTwice(push)
+    })
+
+    it('pushes all dockerfiles recursively when process types are not specified', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
+      const build = sandbox.stub(DockerHelper, 'buildImage')
+      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
+      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
+      const push = sandbox.stub(DockerHelper, 'pushImage')
+      push.withArgs('registry.heroku.com/testapp/web')
+      push.withArgs('registry.heroku.com/testapp/worker')
+
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        '--recursive',
       ])
 
       expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
