@@ -1,3 +1,3 @@
 function test(){
-    const mispelledVarible = 'Testing misspelled wors and variables';
+    const misspelledVariable = 'Testing misspelled words and variables';
 }
