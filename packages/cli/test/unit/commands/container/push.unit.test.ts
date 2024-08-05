@@ -40,8 +40,37 @@ describe('container push', function () {
         error = error_
       })
       const {message, oclif} = error as unknown as CLIError
-      expect(message).to.equal(`This command is for Docker apps only. Run ${color.cyan('git push heroku main')} to deploy your ${color.cyan('testapp')} ${color.cyan('heroku-24')} app instead.`)
+      expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.cmd('git push heroku main')} instead.`)
       expect(oclif.exit).to.equal(1)
+    })
+  })
+
+  context('when the app build_stack is container', function () {
+    beforeEach(function () {
+      api
+        .get('/apps/testapp')
+        .reply(200, {name: 'testapp', stack: {name: 'heroku-22'}, build_stack: {name: 'container'}})
+    })
+
+    it('allows push to the docker registry', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile'])
+      const build = sandbox.stub(DockerHelper, 'buildImage')
+        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [])
+      const push = sandbox.stub(DockerHelper, 'pushImage')
+        .withArgs('registry.heroku.com/testapp/web')
+
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ])
+
+      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(build)
+      sandbox.assert.calledOnce(push)
     })
   })
 
@@ -142,7 +171,7 @@ describe('container push', function () {
       sandbox.assert.calledOnce(push)
     })
 
-    it('pushes several dockerfiles recursively', async function () {
+    it('pushes specified dockerfiles recursively', async function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
@@ -158,6 +187,31 @@ describe('container push', function () {
         '--recursive',
         'web',
         'worker',
+      ])
+
+      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout.output).to.contain('Building worker (/path/to/Dockerfile.worker)')
+      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledTwice(build)
+      sandbox.assert.calledTwice(push)
+    })
+
+    it('pushes all dockerfiles recursively when process types are not specified', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
+      const build = sandbox.stub(DockerHelper, 'buildImage')
+      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
+      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
+      const push = sandbox.stub(DockerHelper, 'pushImage')
+      push.withArgs('registry.heroku.com/testapp/web')
+      push.withArgs('registry.heroku.com/testapp/worker')
+
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        '--recursive',
       ])
 
       expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')

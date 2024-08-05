@@ -13,11 +13,15 @@ const stackLabelMap: { [key: string]: string} = {
  * @returns {null} null
  */
 export function ensureContainerStack(app: Heroku.App, cmd: string): void {
-  if (app.stack?.name !== 'container') {
-    const appLabel = (app.stack?.name && stackLabelMap[app.stack.name]) || app.stack?.name
+  const buildStack = app.build_stack?.name
+  const appStack = app.stack?.name
+  const allowedStack = 'container'
+
+  // either can be container stack and are allowed
+  if (buildStack !== allowedStack && appStack !== allowedStack) {
     let message = 'This command is for Docker apps only.'
     if (['push', 'release'].includes(cmd)) {
-      message += ` Run ${color.cyan('git push heroku main')} to deploy your ${color.cyan(app.name)} ${color.cyan(appLabel)} app instead.`
+      message += ` Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app(app.name)} with ${color.yellow(appStack)}, run ${color.cmd('git push heroku main')} instead.`
     }
 
     ux.error(message, {exit: 1})

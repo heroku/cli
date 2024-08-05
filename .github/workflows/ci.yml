@@ -77,7 +77,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x]
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
@@ -87,7 +87,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn add cspell
+      - run: yarn add cspell@7.3.9
       - name: Run spell check on changed files
         run: |
           git fetch origin main:refs/remotes/origin/main --quiet

@@ -16,6 +16,8 @@ async function selectJobs(jobs: DockerHelper.groupedDockerJobs, processTypes: st
   if (recursive) {
     if (processTypes.length > 0) {
       filteredJobs = DockerHelper.filterByProcessType(jobs, processTypes)
+    } else {
+      filteredJobs = jobs
     }
 
     selectedJobs = await DockerHelper.chooseJobs(filteredJobs)

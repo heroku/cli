@@ -241,7 +241,7 @@ export interface HerokuPlatformApiPipeline {
   [k: string]: any;
 }
 /**
- * A Repository is a reference to a remote DVCs codebase
+ * A Repository is a reference to a remote DVCS codebase
  */
 export interface KolkrabbiApiRepositories {
   /**
