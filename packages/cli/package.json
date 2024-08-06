@@ -387,6 +387,19 @@
     "test": "yarn pretest && yarn test:unit:justTest:ci",
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
-  },
   "types": "lib/index.d.ts"
-}
+   }
+ },
+   heroku plugins:install PLUGINNAME
+"$ npm install --global oclif"
+$ oclif generate mynewcli
+Generating mynewcli in /Users/me/oclif/mynewcli
+? Select a module type ESM
+? NPM package name mynewcli
+? Command bin name the CLI will export mynewcli
+<more prompts...>
+
+$ cd mynewcli
+$ ./bin/dev.js hello world
+hello world! (./src/commands/hello/world.ts)
+   },
