@@ -20,6 +20,7 @@ export default class Rotate extends Command {
     confirm: flags.string({char: 'c'}),
     force: flags.boolean({description: 'forces rotating the targeted credentials'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = {
