@@ -29,7 +29,7 @@ export default class AppsTransfer extends Command {
   static flags = {
     locked: flags.boolean({char: 'l', required: false, description: 'lock the app upon transfer'}),
     bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
-    app: flags.app(),
+    app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
     confirm: flags.string({char: 'c', hidden: true}),
   };
