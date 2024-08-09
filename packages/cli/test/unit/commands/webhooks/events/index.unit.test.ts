@@ -98,7 +98,7 @@ describe('webhooks:events', function () {
         .reply(200, [
           // the returned ordered from the api is not ordered by
           // "created_at" but the results displayed by the cli
-          // in thae table *are* ordered by "created_at"
+          // in the table *are* ordered by "created_at"
 
           // first date
           {

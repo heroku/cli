@@ -123,7 +123,7 @@ describe('pipelines:setup', function () {
           .stub(ux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup', pipeline.name.toUpperCase()])
-          .it('downcases capitalised pipeline names')
+          .it('downcases capitalized pipeline names')
 
         test
           .do(() => {

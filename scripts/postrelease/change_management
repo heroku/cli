@@ -18,7 +18,7 @@ const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
 const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
 const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
 
-// This is set by GitHub Actions automagically
+// This is set by GitHub Actions automatically
 // https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
 const RELEASE_COMMIT_SHA = process.env.GITHUB_SHA
 
