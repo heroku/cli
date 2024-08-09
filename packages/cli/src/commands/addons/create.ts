@@ -68,6 +68,7 @@ export default class Create extends Command {
   }
 
   public async run(): Promise<void> {
+    this.allowArbitraryFlags = true
     const {flags, args, ...restParse} = await this.parse(Create)
     const {app, name, as, wait, confirm} = flags
     const servicePlan = args['service:plan']
