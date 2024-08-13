@@ -76,8 +76,10 @@ export default class Create extends Command {
     // oclif duplicates specified args in argv
       .filter(arg => arg !== servicePlan)
 
-    ux.log(` ${color.yellow('›')}   For example: ${color.cyan(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
-    ux.log(` ${color.yellow('›')}   See https://devcenter.heroku.com/changelog-items/2925 for more info.`)
+    if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
+      ux.log(` ${color.yellow('›')}   For example: ${color.cyan(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
+      ux.log(` ${color.yellow('›')}   See https://devcenter.heroku.com/changelog-items/2925 for more info.`)
+    }
 
     const config = parseConfig(argv)
     let addon
