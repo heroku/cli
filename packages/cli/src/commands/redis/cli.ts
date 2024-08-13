@@ -117,7 +117,7 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
     })
   })
   const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
-  const stream: Duplex = await promisify(tunnel.forwardOut)('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
+  const stream: Duplex = await promisify(tunnel.forwardOut.bind(tunnel))('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
 
   let client: Duplex = stream
   if (preferNativeTls) {

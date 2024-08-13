@@ -375,6 +375,7 @@
   "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
+    "build:dev": "rm -rf lib && tsc --sourcemap",
     "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
