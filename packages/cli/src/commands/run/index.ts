@@ -4,7 +4,7 @@ import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 import Dyno from '../../lib/run/dyno'
-import {buildCommand} from '../../lib/run/helpers'
+import {buildCommand, revertSortedArgs} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run')
 
@@ -33,13 +33,14 @@ export default class Run extends Command {
 
   async run() {
     const {argv, flags} = await this.parse(Run)
+    const userArgvInputOrder = revertSortedArgs(process.argv, argv as string[])
 
     const opts = {
       'exit-code': flags['exit-code'],
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(argv as string[]),
+      command: buildCommand(userArgvInputOrder as string[]),
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
@@ -48,22 +49,25 @@ export default class Run extends Command {
       type: flags.type,
     }
 
-    if (!opts.command) {
-      throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
-    }
+    console.log('argv', argv)
+    console.log('opts.command', opts.command)
 
-    await this.heroku.get<Heroku.Account>('/account')
-    const dyno = new Dyno(opts)
-    try {
-      await dyno.start()
-      debug('done running')
-    } catch (error: any) {
-      debug(error)
-      if (error.exitCode) {
-        ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
-      } else {
-        throw error
-      }
-    }
+    // if (!opts.command) {
+    //   throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
+    // }
+
+    // await this.heroku.get<Heroku.Account>('/account')
+    // const dyno = new Dyno(opts)
+    // try {
+    //   await dyno.start()
+    //   debug('done running')
+    // } catch (error: any) {
+    //   debug(error)
+    //   if (error.exitCode) {
+    //     ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
+    //   } else {
+    //     throw error
+    //   }
+    // }
   }
 }
