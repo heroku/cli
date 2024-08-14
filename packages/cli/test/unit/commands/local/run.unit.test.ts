@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import * as runHelper from '../../../../src/lib/run/helpers'
 
 import * as foreman from '../../../../src/lib/local/fork-foreman'
 
@@ -12,6 +13,7 @@ describe('local:run', function () {
 
   describe('when arguments are given', function () {
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['echo', 'hello'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
@@ -21,6 +23,7 @@ describe('local:run', function () {
       .it('can handle one argument passed to foreman after the -- argument separator')
 
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['echo', 'hello', 'world'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
@@ -32,6 +35,7 @@ describe('local:run', function () {
 
   describe('when the environment flag is given', function () {
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['bin/migrate'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
@@ -41,6 +45,7 @@ describe('local:run', function () {
       .it('is passed to foreman an an --env flag before the `--` argument separator')
 
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['bin/migrate'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
@@ -52,6 +57,7 @@ describe('local:run', function () {
 
   describe('when the port flag is given', function () {
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['bin/serve'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
@@ -61,6 +67,7 @@ describe('local:run', function () {
       .it('is passed to foreman an a --port flag before the `--` argument separator')
 
     test
+      .stub(runHelper, 'revertSortedArgs', () => ['bin/serve'])
       .stub(foreman, 'fork', function () {
       // eslint-disable-next-line prefer-rest-params
         const argv = arguments[0]
