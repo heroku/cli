@@ -49,25 +49,22 @@ export default class Run extends Command {
       type: flags.type,
     }
 
-    console.log('argv', argv)
-    console.log('opts.command', opts.command)
+    if (!opts.command) {
+      throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
+    }
 
-    // if (!opts.command) {
-    //   throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
-    // }
-
-    // await this.heroku.get<Heroku.Account>('/account')
-    // const dyno = new Dyno(opts)
-    // try {
-    //   await dyno.start()
-    //   debug('done running')
-    // } catch (error: any) {
-    //   debug(error)
-    //   if (error.exitCode) {
-    //     ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
-    //   } else {
-    //     throw error
-    //   }
-    // }
+    await this.heroku.get<Heroku.Account>('/account')
+    const dyno = new Dyno(opts)
+    try {
+      await dyno.start()
+      debug('done running')
+    } catch (error: any) {
+      debug(error)
+      if (error.exitCode) {
+        ux.error(error.message, {code: error.exitCode, exit: error.exitCode})
+      } else {
+        throw error
+      }
+    }
   }
 }
