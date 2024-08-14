@@ -94,8 +94,8 @@ describe('addons:create', function () {
       ])
       expect(unwrap(stderr.output)).to.contain('Warning: You’re using a deprecated syntax with the [--rollback,--follow,--foo] flag')
       expect(unwrap(stderr.output)).to.contain("Add a '--' (end of options) separator before the flags you’re passing through.")
-      expect(unwrap(stdout.output)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
-      expect(unwrap(stdout.output)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
+      expect(unwrap(stderr.output)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
+      expect(unwrap(stderr.output)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
     })
     it('creates an addon with = args', async function () {
       await runCommand(Cmd, [
