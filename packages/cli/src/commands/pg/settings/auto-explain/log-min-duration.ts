@@ -12,7 +12,7 @@ export default class LogMinDuration extends PGSettingsCommand {
 
   static args = {
     database: Args.string(),
-    value: Args.integer(),
+    value: Args.string(),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'
