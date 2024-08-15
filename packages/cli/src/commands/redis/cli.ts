@@ -5,12 +5,10 @@ import * as readline from 'readline'
 import {Client} from 'ssh2'
 import Parser = require('redis-parser')
 import type {Writable} from 'node:stream'
-import portfinder = require('portfinder')
 import confirmCommand from '../../lib/confirmCommand'
 import * as tls from 'tls'
 import type {Socket} from 'node:net'
 import type {Duplex} from 'stream'
-import {promisify} from 'node:util'
 import * as net from 'net'
 import type {RedisFormationResponse} from '../../lib/redis/api'
 import apiFactory from '../../lib/redis/api'
@@ -105,34 +103,37 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
   })
 }
 
-async function bastionConnect(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean) {
-  const tunnel: Client = await new Promise(resolve => {
-    const ssh2 = new Client()
-    resolve(ssh2)
-    ssh2.once('ready', () => resolve(ssh2))
-    ssh2.connect({
+async function bastionConnect(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean) : Promise<void> {
+  return new Promise((resolve, reject) => {
+    const tunnel = new Client()
+    tunnel.on('ready', function () {
+      // eslint-disable-next-line no-mixed-operators
+      const localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
+      tunnel.forwardOut('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10), function (err, stream: Duplex) {
+        if (err) return reject(err)
+        stream.on('close', () => tunnel.end())
+        stream.on('end', () => client.end())
+
+        let client: Duplex
+        if (preferNativeTls) {
+          client = tls.connect({
+            socket: stream as Socket,
+            port: Number.parseInt(uri.port, 10),
+            host: uri.hostname,
+            rejectUnauthorized: false,
+          })
+        } else {
+          client = stream
+        }
+
+        redisCLI(uri, client).then(resolve).catch(reject)
+      })
+    }).connect({
       host: bastions.split(',')[0],
       username: 'bastion',
       privateKey: match(config, /_BASTION_KEY/) ?? '',
     })
   })
-  const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
-  const stream: Duplex = await promisify(tunnel.forwardOut.bind(tunnel))('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
-
-  let client: Duplex = stream
-  if (preferNativeTls) {
-    client = tls.connect({
-      socket: stream as Socket,
-      port: Number.parseInt(uri.port, 10),
-      host: uri.hostname,
-      rejectUnauthorized: false,
-    })
-  }
-
-  stream.on('close', () => tunnel.end())
-  stream.on('end', () => client.end())
-
-  return redisCLI(uri, client)
 }
 
 function match(config: Record<string, unknown>, lookup: RegExp): string | null {
@@ -145,7 +146,7 @@ function match(config: Record<string, unknown>, lookup: RegExp): string | null {
   return null
 }
 
-async function maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) {
+async function maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) : Promise<void> {
   const bastions = match(config, /_BASTIONS/)
   const hobby = redis.plan.indexOf('hobby') === 0
   const preferNativeTls = redis.prefer_native_tls
@@ -158,13 +159,20 @@ async function maybeTunnel(redis: RedisFormationResponse, config: Record<string,
   let client
   if (preferNativeTls) {
     client = tls.connect({
-      port: Number.parseInt(uri.port, 10), host: uri.hostname, rejectUnauthorized: false,
+      port: Number.parseInt(uri.port, 10),
+      host: uri.hostname,
+      rejectUnauthorized: false,
     })
   } else if (hobby) {
-    client = net.connect({port: Number.parseInt(uri.port, 10), host: uri.hostname})
+    client = net.connect({
+      port: Number.parseInt(uri.port, 10),
+      host: uri.hostname,
+    })
   } else {
     client = tls.connect({
-      port: Number.parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false,
+      port: Number.parseInt(uri.port, 10) + 1,
+      host: uri.hostname,
+      rejectUnauthorized: false,
     })
   }
 
