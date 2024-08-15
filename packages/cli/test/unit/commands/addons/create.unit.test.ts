@@ -6,6 +6,7 @@ import * as _ from 'lodash'
 import * as sinon from 'sinon'
 import * as nock from 'nock'
 import stripAnsi = require('strip-ansi')
+import {unwrap} from '../../../helpers/utils/unwrap'
 const lolex = require('lolex')
 
 describe('addons:create', function () {
@@ -78,6 +79,23 @@ describe('addons:create', function () {
       ])
       expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
+    })
+    it('creates an add-on with proper output using old syntax with deprecation message', async function () {
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--as',
+        'mydb',
+        'heroku-postgresql:standard-0',
+        '--rollback',
+        '--follow',
+        'otherdb',
+        '--foo',
+      ])
+      expect(unwrap(stderr.output)).to.contain('Warning: You’re using a deprecated syntax with the [--rollback,--follow,--foo] flag')
+      expect(unwrap(stderr.output)).to.contain("Add a '--' (end of options) separator before the flags you’re passing through.")
+      expect(unwrap(stderr.output)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
+      expect(unwrap(stderr.output)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
     })
     it('creates an addon with = args', async function () {
       await runCommand(Cmd, [
