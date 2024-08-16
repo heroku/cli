@@ -21,7 +21,7 @@ type Timezone = {
   CEST: string;
 }
 
-const TZ:Timezone = {
+const TZ: Timezone = {
   PST: 'America/Los_Angeles',
   PDT: 'America/Los_Angeles',
   MST: 'America/Boise',
@@ -57,19 +57,12 @@ export default class Schedule extends Command {
   };
 
   parseDate = function (at: string): BackupSchedule {
-    const m = at.match(/^([0-2]?[0-9]):00 ?(\S*)$/)
+    const m = at.match(/^(0?\d|1\d|2[0-3]):00 ?(\S*)$/)
     if (!m)
       throw new Error("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
     const [, hour, timezone] = m
-    let scheduledTZ = TZ[timezone.toUpperCase() as keyof Timezone]
-    if (!scheduledTZ) {
-      scheduledTZ = 'UTC'
-      if (timezone) {
-        ux.warn(`Unknown timezone ${color.yellow(timezone)}. Defaulting to UTC.`)
-      }
-    }
 
-    return {hour, timezone: scheduledTZ}
+    return {hour, timezone: TZ[timezone.toUpperCase() as keyof Timezone] || timezone || 'UTC'}
   };
 
   public async run(): Promise<void> {
