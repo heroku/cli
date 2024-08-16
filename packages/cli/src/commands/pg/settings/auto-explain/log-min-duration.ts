@@ -21,12 +21,12 @@ export default class LogMinDuration extends PGSettingsCommand {
     return numericConverter(val)
   }
 
-  protected explain(setting: Setting<number>) {
-    if (setting.value === -1) {
+  protected explain(setting: Setting<string>) {
+    if (setting.value === '-1') {
       return 'Execution plan logging has been disabled.'
     }
 
-    if (setting.value === 0) {
+    if (setting.value === '0') {
       return 'All queries will have their execution plans logged.'
     }
 
