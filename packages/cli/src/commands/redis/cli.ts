@@ -108,7 +108,6 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
 async function bastionConnect(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean) {
   const tunnel: Client = await new Promise(resolve => {
     const ssh2 = new Client()
-    resolve(ssh2)
     ssh2.once('ready', () => resolve(ssh2))
     ssh2.connect({
       host: bastions.split(',')[0],
