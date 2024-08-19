@@ -4,21 +4,22 @@ import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import {PgDatabase} from '../../../lib/pg/types'
+import {HTTPError} from 'http-call'
 
 type Timezone = {
-  PST: string;
-  PDT: string;
-  MST: string;
-  MDT: string;
-  CST: string;
-  CDT: string;
-  EST: string;
-  EDT: string;
-  Z: string;
-  GMT: string;
-  BST: string;
-  CET: string;
-  CEST: string;
+  PST: string
+  PDT: string
+  MST: string
+  MDT: string
+  CST: string
+  CDT: string
+  EST: string
+  EDT: string
+  Z: string
+  GMT: string
+  BST: string
+  CET: string
+  CEST: string
 }
 
 const TZ: Timezone = {
@@ -38,32 +39,34 @@ const TZ: Timezone = {
 }
 
 type BackupSchedule = {
-  hour: string;
-  timezone: string;
-  schedule_name?: string;
+  hour: string
+  timezone: string
+  schedule_name?: string
 }
 
 export default class Schedule extends Command {
-  static topic = 'pg';
-  static description = 'schedule daily backups for given database';
+  static topic = 'pg'
+  static description = 'schedule daily backups for given database'
   static flags = {
     at: flags.string({required: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'"}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string(),
-  };
+  }
 
   parseDate = function (at: string): BackupSchedule {
     const m = at.match(/^(0?\d|1\d|2[0-3]):00 ?(\S*)$/)
-    if (!m)
-      throw new Error("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-    const [, hour, timezone] = m
 
-    return {hour, timezone: TZ[timezone.toUpperCase() as keyof Timezone] || timezone || 'UTC'}
-  };
+    if (m) {
+      const [, hour, timezone] = m
+      return {hour, timezone: TZ[timezone.toUpperCase() as keyof Timezone] || timezone || 'UTC'}
+    }
+
+    return ux.error("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'", {exit: 1})
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Schedule)
@@ -76,7 +79,7 @@ export default class Schedule extends Command {
     const at = color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
 
     const pgResponse = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
-      .catch(error => {
+      .catch((error: HTTPError) => {
         if (error.statusCode !== 404)
           throw error
         ux.error(`${color.yellow(db.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
