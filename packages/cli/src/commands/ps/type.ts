@@ -129,12 +129,13 @@ export default class Type extends Command {
     // successfully launched larger dyno sizes
     let isLargerDyno = false
     const {body: largerDynoFeatureFlag} = await this.heroku.get<Heroku.AccountFeature>('/account/features/frontend-larger-dynos')
-      .catch((error: HTTPError) => {
-        if (error.statusCode === 404) {
+      .catch(error => {
+        const httpError = error as HTTPError
+        if (httpError.statusCode === 404) {
           return {body: {enabled: false}}
         }
 
-        throw error
+        throw httpError
       })
 
     const parse = async () => {
