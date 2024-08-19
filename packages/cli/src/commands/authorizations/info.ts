@@ -18,15 +18,9 @@ export default class AuthorizationsInfo extends Command {
   async run() {
     const {args, flags} = await this.parse(AuthorizationsInfo)
 
-    const {body: authentication, headers} = await this.heroku.get<Heroku.OAuthAuthorization>(
+    const {body: authentication} = await this.heroku.get<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${args.id}`,
     )
-
-    const apiWarnings = headers['warning-message'] as string || ''
-
-    if (apiWarnings) {
-      ux.warn(apiWarnings)
-    }
 
     if (flags.json) {
       ux.styledJSON(authentication)

@@ -20,17 +20,9 @@ export default class AuthorizationsRevoke extends Command {
     const {args} = await this.parse(AuthorizationsRevoke)
 
     ux.action.start('Revoking OAuth Authorization')
-
-    const {body: auth, headers} = await this.heroku.delete<Heroku.OAuthAuthorization>(
+    const {body: auth} = await this.heroku.delete<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${encodeURIComponent(args.id)}`,
     )
-
-    const apiWarnings = headers['warning-message'] as string || ''
-
-    if (apiWarnings) {
-      ux.warn(apiWarnings)
-    }
-
     ux.action.stop(`done, revoked authorization from ${color.cyan(auth.description)}`)
   }
 }
