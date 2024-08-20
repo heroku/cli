@@ -125,19 +125,6 @@ export default class Type extends Command {
     const argv = restParse.argv as string[]
     const {app} = flags
 
-    // will remove this flag once we have
-    // successfully launched larger dyno sizes
-    let isLargerDyno = false
-    const {body: largerDynoFeatureFlag} = await this.heroku.get<Heroku.AccountFeature>('/account/features/frontend-larger-dynos')
-      .catch(error => {
-        const httpError = error as HTTPError
-        if (httpError.statusCode === 404) {
-          return {body: {enabled: false}}
-        }
-
-        throw httpError
-      })
-
     const parse = async () => {
       if (!argv || argv.length === 0)
         return []
@@ -160,20 +147,6 @@ export default class Type extends Command {
     }
 
     const changes = await parse()
-
-    // checks for larger dyno sizes
-    // if the feature is not enabled
-    if (!largerDynoFeatureFlag.enabled) {
-      changes.forEach(({size}) => {
-        const largerDynoNames = /^(?!standard-[12]x$)(performance|private|shield)-(l-ram|xl|2xl)$/i
-        isLargerDyno = largerDynoNames.test(size)
-
-        if (isLargerDyno) {
-          const availableDynoSizes = 'eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l'
-          ux.error(`No such size as ${size}. Use ${availableDynoSizes}.`, {exit: 1})
-        }
-      })
-    }
 
     if (changes.length > 0) {
       ux.action.start(`Scaling dynos on ${color.magenta(app)}`)
