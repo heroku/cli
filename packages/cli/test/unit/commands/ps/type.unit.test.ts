@@ -78,10 +78,8 @@ describe('ps:type', function () {
     api.done()
   })
 
-  it('switches to performance-l-ram dyno when feature flag is enabled', async function () {
+  it('switches to performance-l-ram dyno', async function () {
     const api = nock('https://api.heroku.com')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload(true))
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')

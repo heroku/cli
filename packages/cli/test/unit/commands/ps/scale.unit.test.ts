@@ -37,30 +37,6 @@ describe('ps:scale', function () {
     api.done()
   })
 
-  it('scales up a new large dyno size if feature flag is enabled', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload(true))
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1', size: 'Performance-L-RAM'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
-      .get('/apps/myapp')
-      .reply(200, {name: 'myapp'})
-
-    await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      'web=1:Performance-L-RAM',
-    ])
-
-    api.done()
-
-    expect(stdout.output).to.eq('')
-    expect(stderr.output).to.equal(heredoc`
-      Scaling dynos...
-      Scaling dynos... done, now running web at 1:Performance-L-RAM
-    `)
-  })
-
   it('shows formation with shield dynos for apps in a shielded private space', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/formation')
