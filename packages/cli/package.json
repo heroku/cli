@@ -113,7 +113,6 @@
     "@types/validator": "^10.9.0",
     "@types/write-json-file": "^3.2.1",
     "@types/ws": "^6.0.1",
-    "aws-sdk": "^2.421.0",
     "bats": "^1.1.0",
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
