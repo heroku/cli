@@ -4,17 +4,8 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
-import heredoc from 'tsheredoc'
-import {CLIError} from '@oclif/core/lib/errors'
 
 describe('ps:scale', function () {
-  // will remove this flag once we have
-  // successfully launched larger dyno sizes
-  function featureFlagPayload(isEnabled = false) {
-    return {
-      enabled: isEnabled,
-    }
-  }
 
   afterEach(function () {
     return nock.cleanAll()

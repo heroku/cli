@@ -4,17 +4,9 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
-import {CLIError} from '@oclif/core/lib/errors'
 import heredoc from 'tsheredoc'
 
 describe('ps:type', function () {
-  // will remove this flag once we have
-  // successfully launched larger dyno sizes
-  function featureFlagPayload(isEnabled = false) {
-    return {
-      enabled: isEnabled,
-    }
-  }
 
   function app(args = {}) {
     const base = {name: 'myapp'}
