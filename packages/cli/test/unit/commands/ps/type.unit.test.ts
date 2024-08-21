@@ -4,18 +4,9 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
-import {CLIError} from '@oclif/core/lib/errors'
 import heredoc from 'tsheredoc'
 
 describe('ps:type', function () {
-  // will remove this flag once we have
-  // successfully launched larger dyno sizes
-  function featureFlagPayload(isEnabled = false) {
-    return {
-      enabled: isEnabled,
-    }
-  }
-
   function app(args = {}) {
     const base = {name: 'myapp'}
     return Object.assign(base, args)
@@ -78,10 +69,8 @@ describe('ps:type', function () {
     api.done()
   })
 
-  it('switches to performance-l-ram dyno when feature flag is enabled', async function () {
+  it('switches to performance-l-ram dyno', async function () {
     const api = nock('https://api.heroku.com')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload(true))
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
@@ -205,77 +194,5 @@ describe('ps:type', function () {
  Shield-L 0
 `)
     api.done()
-  })
-
-  it('errors when user requests larger dynos and feature flag is NOT enabled', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload())
-      .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'performance-l-ram'}, {type: 'web', quantity: 2, size: 'performance-l-ram'}])
-
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'web=performance-l-ram',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as CLIError
-
-      expect(message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.')
-      expect(oclif.exit).to.eq(1)
-    }
-
-    api.done()
-    expect(stdout.output).to.eq('')
-  })
-
-  it('errors when user requests larger dynos and feature flag is NOT enabled when changing all type sizes', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(200, featureFlagPayload())
-      .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'performance-2xl'}, {type: 'web', quantity: 2, size: 'performance-2xl'}])
-
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'performance-2xl',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as CLIError
-
-      expect(message).to.eq('No such size as performance-2xl. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.')
-      expect(oclif.exit).to.eq(1)
-    }
-
-    api.done()
-    expect(stdout.output).to.eq('')
-  })
-
-  it("errors when user requests larger dynos and feature flag doesn't exist", async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/account/features/frontend-larger-dynos')
-      .reply(404, {})
-      .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'performance-2xl'}, {type: 'web', quantity: 2, size: 'performance-2xl'}])
-
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'web=performance-l-ram',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as CLIError
-
-      expect(message).to.eq('No such size as performance-l-ram. Use eco, basic, standard-1x, standard-2x, performance-m, performance-l, private-s, private-m, private-l, shield-s, shield-m, shield-l.')
-      expect(oclif.exit).to.eq(1)
-    }
-
-    api.done()
-    expect(stdout.output).to.eq('')
   })
 })
