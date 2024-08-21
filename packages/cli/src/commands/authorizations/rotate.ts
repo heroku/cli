@@ -15,17 +15,9 @@ export default class AuthorizationsRotate extends Command {
     const {args} = await this.parse(AuthorizationsRotate)
 
     ux.action.start('Rotating OAuth Authorization')
-
-    const {body: authorization, headers} = await this.heroku.post<Heroku.OAuthAuthorization>(
+    const {body: authorization} = await this.heroku.post<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${encodeURIComponent(args.id)}/actions/regenerate-tokens`,
     )
-
-    const apiWarnings = headers['warning-message'] as string || ''
-
-    if (apiWarnings) {
-      ux.warn(apiWarnings)
-    }
-
     ux.action.stop()
 
     display(authorization)
