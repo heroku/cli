@@ -7,7 +7,6 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 
 describe('ps:type', function () {
-
   function app(args = {}) {
     const base = {name: 'myapp'}
     return Object.assign(base, args)
