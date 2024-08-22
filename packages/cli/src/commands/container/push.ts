@@ -92,7 +92,13 @@ export default class Push extends Command {
           ux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
         }
 
-        await DockerHelper.buildImage(job.dockerfile, job.resource, buildArgs, contextPath)
+        await DockerHelper.buildImage({
+          dockerfile: job.dockerfile,
+          resource: job.resource,
+          buildArgs,
+          path: contextPath,
+          arch: this.config.arch,
+        })
       }
     } catch (error) {
       ux.error(`docker build exited with ${error}`, {exit: 1})
