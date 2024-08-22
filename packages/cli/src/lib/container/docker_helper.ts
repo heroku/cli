@@ -4,6 +4,7 @@ import * as glob from 'glob'
 import * as Path from 'path'
 import * as inquirer from 'inquirer'
 import * as os from 'os'
+import {ux} from '@oclif/core'
 
 const DOCKERFILE_REGEX = /\bDockerfile(.\w*)?$/
 
@@ -140,6 +141,11 @@ export const chooseJobs = async function (jobs: groupedDockerJobs) {
   for (const processType in jobs) {
     if (Object.prototype.hasOwnProperty.call(jobs, processType)) {
       const group = jobs[processType]
+      if (group === undefined) {
+        ux.warn(`Dockerfile.${processType} not found`)
+        continue
+      }
+
       if (group.length > 1) {
         const prompt = [{
           type: 'list',

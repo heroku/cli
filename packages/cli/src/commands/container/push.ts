@@ -79,11 +79,6 @@ export default class Push extends Command {
     const jobs = await selectJobs(possibleJobs, processTypes as string[], recursive)
 
     if (jobs.length === 0) {
-      if (processTypes.length > 0) {
-        for (const processType of processTypes) {
-          ux.warn(`Dockerfile.${processType} not found`)
-        }
-      }
       ux.error('No images to push', {exit: 1})
     }
 
