@@ -7,7 +7,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "2.0.1",
-    "@heroku-cli/command": "^11.3.0",
+    "@heroku-cli/command": "^11.3.1",
     "@heroku-cli/notifications": "^1.2.4",
     "@heroku-cli/plugin-ps-exec": "^2.4.0",
     "@heroku-cli/schema": "^1.0.25",
