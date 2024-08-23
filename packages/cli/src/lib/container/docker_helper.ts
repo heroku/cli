@@ -174,7 +174,8 @@ type BuildImageParams = {
 export const buildImage = async function ({dockerfile, resource, buildArgs, path, arch}: BuildImageParams) {
   const cwd = path || Path.dirname(dockerfile)
   const args = ['build', '-f', dockerfile, '-t', resource]
-  // allows for pushing docker build from m1/m2 Macs
+  // Older Docker versions don't allow for this flag, but we are
+  // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
   if (arch === 'arm64') args.push('--platform', 'linux/amd64')
 
   for (const element of buildArgs) {
