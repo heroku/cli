@@ -337,7 +337,7 @@
     },
     "update": {
       "node": {
-        "version": "20.x"
+        "version": "20.17.0"
       },
       "s3": {
         "xz": true,
