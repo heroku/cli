@@ -205,8 +205,11 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
-      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
+      build.withArgs({
+        dockerfile: '/path/to/Dockerfile.web',
+        resource: 'registry.heroku.com/testapp/web',
+        buildArgs: [],
+      })
       const push = sandbox.stub(DockerHelper, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
