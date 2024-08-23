@@ -5374,10 +5374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.7":
-  version: 16.11.7
-  resolution: "@types/node@npm:16.11.7"
-  checksum: 2706403e6efc4aa40fdce8f0b5d9884d5600c3c8610aedc7fa5e7e298d30366f7e8b7296028d52898dca3edef4c3e827b03bf20952c4780f13fa4e79864f7a86
+"@types/node@npm:20.14.8":
+  version: 20.14.8
+  resolution: "@types/node@npm:20.14.8"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: a9128840005d4a0aba68826e22ac0fdd86bb9073f1d274217d3509b52f969d1aab83415c85a8461259f33cf34f9eee02fb13dca059865bed2ba2e728bc936a76
   languageName: node
   linkType: hard
 
@@ -11177,7 +11179,7 @@ __metadata:
     "@types/js-yaml": ^3.12.5
     "@types/lodash": ^4.14.123
     "@types/mocha": ^10.0.6
-    "@types/node": 16.11.7
+    "@types/node": 20.14.8
     "@types/node-fetch": ^2.1.6
     "@types/phoenix": ^1.4.0
     "@types/proxyquire": ^1.3.28
