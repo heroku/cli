@@ -56,7 +56,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [])
       const push = sandbox.stub(DockerHelper, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
@@ -70,6 +69,8 @@ describe('container push', function () {
       expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
+      expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
+      expect(build.getCall(0).args[0].resource).to.equal('registry.heroku.com/testapp/web')
       sandbox.assert.calledOnce(push)
     })
   })
@@ -133,7 +134,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [])
       const push = sandbox.stub(DockerHelper, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
@@ -147,6 +147,8 @@ describe('container push', function () {
       expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
+      expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
+      expect(build.getCall(0).args[0].resource).to.equal('registry.heroku.com/testapp/web')
       sandbox.assert.calledOnce(push)
     })
 
@@ -154,7 +156,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/worker', [])
       const push = sandbox.stub(DockerHelper, 'pushImage')
         .withArgs('registry.heroku.com/testapp/worker')
 
@@ -168,6 +169,8 @@ describe('container push', function () {
       expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
+      expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
+      expect(build.getCall(0).args[0].resource).to.equal('registry.heroku.com/testapp/worker')
       sandbox.assert.calledOnce(push)
     })
 
@@ -175,8 +178,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
-      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
       const push = sandbox.stub(DockerHelper, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
@@ -195,6 +196,8 @@ describe('container push', function () {
       expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledTwice(build)
+      expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile.web')
+      expect(build.getCall(1).args[0].dockerfile).to.equal('/path/to/Dockerfile.worker')
       sandbox.assert.calledTwice(push)
     })
 
@@ -228,8 +231,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
-      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
       const push = sandbox.stub(DockerHelper, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
@@ -246,6 +247,8 @@ describe('container push', function () {
       expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledTwice(build)
+      expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile.web')
+      expect(build.getCall(1).args[0].dockerfile).to.equal('/path/to/Dockerfile.worker')
       sandbox.assert.calledTwice(push)
     })
 
@@ -253,7 +256,6 @@ describe('container push', function () {
       const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper, 'buildImage')
-        .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [], '/custom/context/path')
       const push = sandbox.stub(DockerHelper, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
@@ -265,10 +267,15 @@ describe('container push', function () {
         'web',
       ])
 
+      const buildCallArgs = build.getCall(0).args[0]
+
       expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
       expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
+      expect(buildCallArgs.dockerfile).to.equal('/path/to/Dockerfile')
+      expect(buildCallArgs.resource).to.equal('registry.heroku.com/testapp/web')
+      expect(buildCallArgs.path).to.equal('/custom/context/path')
       sandbox.assert.calledOnce(push)
     })
 

@@ -169,9 +169,20 @@ export const chooseJobs = async function (jobs: groupedDockerJobs) {
   return chosenJobs
 }
 
-export const buildImage = async function (dockerfile: string, resource: string, buildArgs: string[], path?: string) {
+type BuildImageParams = {
+  dockerfile: string,
+  resource: string,
+  buildArgs: string[],
+  path?: string,
+  arch?: string,
+}
+
+export const buildImage = async function ({dockerfile, resource, buildArgs, path, arch}: BuildImageParams) {
   const cwd = path || Path.dirname(dockerfile)
-  const args = ['build', '-f', dockerfile, '-t', resource, '--platform', 'linux/amd64']
+  const args = ['build', '-f', dockerfile, '-t', resource]
+  // Older Docker versions don't allow for this flag, but we are
+  // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
+  if (arch === 'arm64') args.push('--platform', 'linux/amd64')
 
   for (const element of buildArgs) {
     if (element.length > 0) {
