@@ -1,4 +1,4 @@
-import {stdout} from 'stdout-stderr'
+import {stdout, stderr} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/container/push'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
@@ -196,6 +196,32 @@ describe('container push', function () {
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledTwice(build)
       sandbox.assert.calledTwice(push)
+    })
+
+    it('warns when a specified Dockerfile is missing', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile.web'])
+      const build = sandbox.stub(DockerHelper, 'buildImage')
+      build.withArgs('/path/to/Dockerfile.web', 'registry.heroku.com/testapp/web', [])
+      build.withArgs('/path/to/Dockerfile.worker', 'registry.heroku.com/testapp/worker', [])
+      const push = sandbox.stub(DockerHelper, 'pushImage')
+      push.withArgs('registry.heroku.com/testapp/web')
+      push.withArgs('registry.heroku.com/testapp/worker')
+
+      await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        '--recursive',
+        'web',
+        'worker',
+      ])
+
+      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stderr.output).to.contain('Dockerfile.worker not found')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(build)
+      sandbox.assert.calledOnce(push)
     })
 
     it('pushes all dockerfiles recursively when process types are not specified', async function () {
