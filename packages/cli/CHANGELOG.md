@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.3.0-alpha.3](https://github.com/heroku/cli/compare/v9.1.0...v9.3.0-alpha.3) (2024-08-26)
+
+
+### Bug Fixes
+
+* change type of value to string for log-min-duration ([#2977](https://github.com/heroku/cli/issues/2977)) ([3224705](https://github.com/heroku/cli/commit/322470531f0b806395c217d35c9524d6694387fb))
+* **cli:** fix missing dockerfile error ([#2988](https://github.com/heroku/cli/issues/2988)) ([1f880e8](https://github.com/heroku/cli/commit/1f880e85b6fe27c29672a959d93df0d1e3e8b05a))
+* **cli:** Update app and remote flags ([#2968](https://github.com/heroku/cli/issues/2968)) ([6b57765](https://github.com/heroku/cli/commit/6b577651e4f6b667f15e637cd080143b846c7eaf))
+* **pg:** Restoring behavior for backup scheduling ([#2981](https://github.com/heroku/cli/issues/2981)) ([bfac653](https://github.com/heroku/cli/commit/bfac6538617085d82e351227c68853d324b6b4a0))
+* **redis:cli:** remove call to resolve ssh2 in bastionConnect function ([#2980](https://github.com/heroku/cli/issues/2980)) ([d11c18f](https://github.com/heroku/cli/commit/d11c18fbd9f26208eb07713b53da716006e86a60))
+* **run:** reorder oclif sorted args ([#2976](https://github.com/heroku/cli/issues/2976)) ([aa560d3](https://github.com/heroku/cli/commit/aa560d33165b7c3085491a654cc16221b0274b58))
+* use linux/amd64 platform only for m1/m2 macs (arm64) ([#2986](https://github.com/heroku/cli/issues/2986)) ([1e0bf11](https://github.com/heroku/cli/commit/1e0bf1192bf18424cc85ec594248095b324e335b))
+* **W-16441506:** redis:cli command not working for private redis instances ([#2973](https://github.com/heroku/cli/issues/2973)) ([2d58422](https://github.com/heroku/cli/commit/2d58422cb4926a3d8bb909883fff9a8eeade098b))
+
+
+
+
+
 # [9.3.0-alpha.2](https://github.com/heroku/cli/compare/v9.1.0...v9.3.0-alpha.2) (2024-08-23)
 
 
