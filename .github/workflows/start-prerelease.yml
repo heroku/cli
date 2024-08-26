@@ -41,7 +41,7 @@ jobs:
       TAG_NAME: ${{ format('v{0}', needs.get-version-channel.outputs.version) }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 20.x
       - name: set git user
