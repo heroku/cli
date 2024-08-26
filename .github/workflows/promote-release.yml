@@ -67,7 +67,7 @@ jobs:
       TPS_API_TOKEN_PARAM: ${{ secrets.TPS_API_TOKEN_PARAM }}
       TPS_API_URL_PARAM: ${{ secrets.TPS_API_URL_PARAM }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: yarn --immutable --network-timeout 1000000
       - run: ./scripts/postrelease/change_management
 

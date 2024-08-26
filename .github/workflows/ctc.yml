@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ChangeManagement
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Call CTC API TO Create Lock
         id: create-lock
         run: |
