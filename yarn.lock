@@ -3430,42 +3430,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.0.8":
-  version: 2.1.5
-  resolution: "@oclif/core@npm:2.1.5"
-  dependencies:
-    "@types/cli-progress": ^3.11.0
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.11.2
-    debug: ^4.3.4
-    ejs: ^3.1.6
-    fs-extra: ^9.1.0
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    semver: ^7.3.7
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    tslib: ^2.5.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: 04429c9619c27fc7795b0072d1a86bbc460eaa58ee5264aead6ed9612c82aa0583b1d484ea5095f0cee2b94742005c02d80a35f550f93972c5a08c301e750a61
-  languageName: node
-  linkType: hard
-
 "@oclif/core@npm:^2.1.7":
   version: 2.3.2
   resolution: "@oclif/core@npm:2.3.2"
@@ -3681,6 +3645,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/core@npm:^4":
+  version: 4.0.19
+  resolution: "@oclif/core@npm:4.0.19"
+  dependencies:
+    ansi-escapes: ^4.3.2
+    ansis: ^3.3.2
+    clean-stack: ^3.0.1
+    cli-spinners: ^2.9.2
+    debug: ^4.3.5
+    ejs: ^3.1.10
+    get-package-type: ^0.1.0
+    globby: ^11.1.0
+    indent-string: ^4.0.0
+    is-wsl: ^2.2.0
+    lilconfig: ^3.1.2
+    minimatch: ^9.0.5
+    string-width: ^4.2.3
+    supports-color: ^8
+    widest-line: ^3.1.0
+    wordwrap: ^1.0.0
+    wrap-ansi: ^7.0.0
+  checksum: aafb73f63cd7377b93ac93264f63d311dc2811a559d248b2e10fbcc26c110d3c2625832a5bcec2483abfbe9525549324c3d79687eb2f327941be46625e3404e6
+  languageName: node
+  linkType: hard
+
 "@oclif/errors@npm:1.3.6, @oclif/errors@npm:^1.2.2, @oclif/errors@npm:^1.3.5, @oclif/errors@npm:^1.3.6":
   version: 1.3.6
   resolution: "@oclif/errors@npm:1.3.6"
@@ -3740,12 +3729,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-help@npm:^5":
-  version: 5.2.4
-  resolution: "@oclif/plugin-help@npm:5.2.4"
+"@oclif/plugin-help@npm:^6":
+  version: 6.2.10
+  resolution: "@oclif/plugin-help@npm:6.2.10"
   dependencies:
-    "@oclif/core": ^2.0.8
-  checksum: a2335e9b9ab806566082e4a52d259f206dbae6334afa9d816e09acdf6e51b4f37cff0ce72294ad532141895c4d1eb9c38e2fe4794e71abb59cd56e966be70b2e
+    "@oclif/core": ^4
+  checksum: 3af3eaefc36620a06ea32c7a267a1fca98bd13a3d3ea1f33c9ebc3eadd274d968f871cfe29e923dfab98ab0265570f7fcc364fc938bc395ba609f4ca707acc17
   languageName: node
   linkType: hard
 
@@ -6175,6 +6164,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansis@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "ansis@npm:3.3.2"
+  checksum: 6d3e8a68a93b03a1e7166cbe63cb6831780a7a9b0bc6c3bf0a33c7237d528d00558af84a54827322a85667d4b52d21f796b884f6120ec203b5ed3f9404ec0d05
+  languageName: node
+  linkType: hard
+
 "anymatch@npm:~3.1.2":
   version: 3.1.3
   resolution: "anymatch@npm:3.1.3"
@@ -7279,7 +7275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-progress@npm:^3.10.0, cli-progress@npm:^3.11.2, cli-progress@npm:^3.12.0":
+"cli-progress@npm:^3.10.0, cli-progress@npm:^3.12.0":
   version: 3.12.0
   resolution: "cli-progress@npm:3.12.0"
   dependencies:
@@ -8231,6 +8227,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:^4.3.5":
+  version: 4.3.6
+  resolution: "debug@npm:4.3.6"
+  dependencies:
+    ms: 2.1.2
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 1630b748dea3c581295e02137a9f5cbe2c1d85fea35c1e6597a65ca2b16a6fce68cec61b299d480787ef310ba927dc8c92d3061faba0ad06c6a724672f66be7f
+  languageName: node
+  linkType: hard
+
 "debuglog@npm:^1.0.1":
   version: 1.0.1
   resolution: "debuglog@npm:1.0.1"
@@ -8576,7 +8584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.6, ejs@npm:^3.1.7, ejs@npm:^3.1.8, ejs@npm:^3.1.9":
+"ejs@npm:^3.1.10, ejs@npm:^3.1.6, ejs@npm:^3.1.7, ejs@npm:^3.1.8, ejs@npm:^3.1.9":
   version: 3.1.10
   resolution: "ejs@npm:3.1.10"
   dependencies:
@@ -11150,7 +11158,7 @@ __metadata:
     "@inquirer/prompts": ^5.0.5
     "@oclif/core": ^2.16.0
     "@oclif/plugin-commands": 2.2.28
-    "@oclif/plugin-help": ^5
+    "@oclif/plugin-help": ^6
     "@oclif/plugin-legacy": ^1.3.0
     "@oclif/plugin-not-found": 2.3.16
     "@oclif/plugin-plugins": 2.4.3
@@ -12871,6 +12879,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lilconfig@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "lilconfig@npm:3.1.2"
+  checksum: 4e8b83ddd1d0ad722600994e6ba5d858ddca14f0587aa6b9c8185e17548149b5e13d4d583d811e9e9323157fa8c6a527e827739794c7502b59243c58e210b8c3
+  languageName: node
+  linkType: hard
+
 "lines-and-columns@npm:^1.1.6":
   version: 1.1.6
   resolution: "lines-and-columns@npm:1.1.6"
@@ -13565,6 +13580,15 @@ __metadata:
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 1a6c8d22618df9d2a88aabeef1de5622eb7b558e9f8010be791cb6b0fa6e102d39b11c28d75b855a1e377b12edc7db8ff12a99c20353441caa6a05e78deb5da9
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "minimatch@npm:9.0.5"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: 2c035575eda1e50623c731ec6c14f65a85296268f749b9337005210bb2b34e2705f8ef1a358b188f69892286ab99dc42c8fb98a57bde55c8d81b3023c19cea28
   languageName: node
   linkType: hard
 
@@ -17669,7 +17693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:8.1.1, supports-color@npm:^8.1.0, supports-color@npm:^8.1.1":
+"supports-color@npm:8.1.1, supports-color@npm:^8, supports-color@npm:^8.1.0, supports-color@npm:^8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
