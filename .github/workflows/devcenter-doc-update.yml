@@ -9,7 +9,7 @@ jobs:
     name: Update Devcenter command docs
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
