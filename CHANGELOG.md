@@ -3,8 +3,11 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [9.1.1](https://github.com/heroku/cli/compare/v9.1.0...v9.1.1) (2024-08-26)
+# [9.2.0](https://github.com/heroku/cli/compare/v9.1.0...v9.2.0) (2024-08-26)
 
+### Features
+
+* added backwards compatibility for passing flags to addons:create ([#2982](https://github.com/heroku/cli/pull/2982))
 
 ### Bug Fixes
 
