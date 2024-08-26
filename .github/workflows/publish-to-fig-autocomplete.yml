@@ -8,7 +8,7 @@ jobs:
   push-to-fig-autocomplete:
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
