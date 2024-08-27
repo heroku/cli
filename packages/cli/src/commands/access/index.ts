@@ -78,7 +78,7 @@ export default class AccessIndex extends Command {
   }
 
   public async run(): Promise<void> {
-    const {flags, argv, args} = await this.parse(AccessIndex)
+    const {flags} = await this.parse(AccessIndex)
     const {app: appName, json} = flags
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
