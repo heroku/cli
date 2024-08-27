@@ -1,7 +1,7 @@
 import {Args, ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {flags, Command} from '@heroku-cli/command'
+import {Command} from '@heroku-cli/command'
 
 export default class Remove extends Command {
   static description = 'remove an SSH key from the user'
