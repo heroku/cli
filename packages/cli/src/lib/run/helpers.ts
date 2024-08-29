@@ -1,20 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {ux} from '@oclif/core'
 
-// this function exists because oclif sorts argv
-export function revertSortedArgs(processArgs: Array<string>, argv: Array<string>) {
-  const originalInputOrder = []
-
-  // this reorders the arguments in the order the user inputted
-  for (const processArg of processArgs) {
-    if (argv.includes(processArg)) {
-      originalInputOrder.push(processArg)
-    }
-  }
-
-  return originalInputOrder
-}
-
 export function buildCommand(args: Array<string>) {
   if (args.length === 1) {
     // do not add quotes around arguments if there is only one argument

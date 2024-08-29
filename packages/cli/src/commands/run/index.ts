@@ -4,7 +4,7 @@ import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 import Dyno from '../../lib/run/dyno'
-import {buildCommand, revertSortedArgs} from '../../lib/run/helpers'
+import {buildCommand} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run')
 
@@ -33,14 +33,14 @@ export default class Run extends Command {
 
   async run() {
     const {argv, flags} = await this.parse(Run)
-    const userArgvInputOrder = revertSortedArgs(process.argv, argv as string[])
-
+    const maybeOptionsIndex = process.argv.indexOf('--')
+    const command = buildCommand((maybeOptionsIndex === -1 ? argv : process.argv.slice(maybeOptionsIndex + 1)) as string[])
     const opts = {
       'exit-code': flags['exit-code'],
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(userArgvInputOrder as string[]),
+      command,
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,
