@@ -39,4 +39,3 @@ oclif readme --no-aliases
 grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
 cat /tmp/heroku-cli-commands.md
 git checkout README.md
-devcenter push /tmp/heroku-cli-commands.md --trace
