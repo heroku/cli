@@ -31,7 +31,7 @@ title: Heroku CLI Commands
 id: 4088
 
 
-These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help \`, \`heroku --help\`, or \`heroku -h\`.
+These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with heroku help, heroku --help, or heroku -h.
 
 <!-- commands -->
 EOF
