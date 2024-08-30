@@ -7,12 +7,36 @@ on:
 jobs:
   update-devcenter-command-docs:
     name: Update Devcenter command docs
-    runs-on: pub-hk-ubuntu-22.04-small
+    runs-on: ubuntu-latest
+    environment: SignDebian
     steps:
       - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+      - name: Install Ruby
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: '3.1'
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
         run: |
           gem install devcenter
           devcenter help
+      - name: Build CLI
+        run: yarn build
+      - name: Compile documentation and push to devcenter
+        run: |
+          cd packages/cli
+          ./scripts/postrelease/dev_center_docs
+        env:
+          HEROKU_DEB_SECRET_KEY: ${{ secrets.HEROKU_DEB_SECRET_KEY }}
+          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
+      - name: Upload md file as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: heroku-cli-commands
+          path: /tmp/heroku-cli-commands.md
