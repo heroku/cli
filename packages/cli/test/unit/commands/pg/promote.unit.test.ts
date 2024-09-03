@@ -1,4 +1,4 @@
-import {stderr} from 'stdout-stderr'
+import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/pg/promote'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
@@ -16,8 +16,6 @@ describe('pg:promote when argument is database', function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-      .get('/apps/myapp/formation')
-      .reply(200, [])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
       .reply(200, {message: 'available', 'waiting?': false})
@@ -31,6 +29,8 @@ describe('pg:promote when argument is database', function () {
 
   it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachment', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments').reply(200, [
         {
           name: 'DATABASE',
@@ -83,6 +83,8 @@ describe('pg:promote when argument is database', function () {
 
   it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
@@ -121,6 +123,8 @@ describe('pg:promote when argument is database', function () {
 
   it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
@@ -159,6 +163,8 @@ describe('pg:promote when argument is database', function () {
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {name: 'DATABASE', addon: {name: 'postgres-2'}, namespace: null},
@@ -194,6 +200,8 @@ describe('pg:promote when argument is database', function () {
 
   it('promotes the db and does not create another attachment if current DATABASE has another', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
@@ -231,6 +239,8 @@ describe('pg:promote when argument is database', function () {
 
   it('does not promote the db if is already is DATABASE', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {name: 'DATABASE', addon: {name: addon.name}, namespace: null},
@@ -244,6 +254,48 @@ describe('pg:promote when argument is database', function () {
     ]).catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal(err)
     })
+  })
+
+  it('promotes when the db is not a follower and has no DATABASE attachment exists', async function () {
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [
+        {name: 'PURPLE', addon: {name: addon.name}, namespace: null},
+      ])
+      .post('/addon-attachments', {
+        name: 'DATABASE',
+        app: {name: 'myapp'},
+        addon: {name: addon.name},
+        namespace: null,
+        confirm: 'myapp',
+      })
+      .reply(201)
+      .get('/apps/myapp/formation')
+      .reply(200, [
+        {type: 'release'},
+      ])
+      .get('/apps/myapp/releases')
+      .reply(200, [
+        {description: 'Attach DATABASE', id: 1},
+        {description: 'Detach DATABASE', id: 2},
+      ])
+      .get('/apps/myapp/releases/1')
+      .reply(200, {status: 'succeeded'})
+      .get('/apps/myapp/releases/2')
+      .reply(200, {status: 'succeeded'})
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'dwh-db',
+    ])
+    expectOutput(stderr.output, heredoc(`
+      Ensuring an alternate alias for existing DATABASE_URL...
+      Promoting dwh-db to DATABASE_URL on ⬢ myapp...
+      Promoting dwh-db to DATABASE_URL on ⬢ myapp... done
+      Checking release phase...
+      Checking release phase... pg:promote succeeded.
+    `))
   })
 })
 
