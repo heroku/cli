@@ -29,34 +29,34 @@ export default class Promote extends Command {
     ux.action.start(`Ensuring an alternate alias for existing ${color.green('DATABASE_URL')}`)
     const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/apps/${app}/addon-attachments`)
     const current = attachments.find(a => a.name === 'DATABASE')
-    if (!current)
-      return
-    // eslint-disable-next-line eqeqeq
-    if (current.addon?.name === attachment.addon.name && current.namespace == attachment.namespace) {
-      if (attachment.namespace) {
-        ux.error(`${color.cyan(attachment.name)} is already promoted on ${color.app(app)}`)
-      } else {
-        ux.error(`${color.addon(attachment.addon.name)} is already promoted on ${color.app(app)}`)
+    if (current) {
+      // eslint-disable-next-line eqeqeq
+      if (current.addon?.name === attachment.addon.name && current.namespace == attachment.namespace) {
+        if (attachment.namespace) {
+          ux.error(`${color.cyan(attachment.name)} is already promoted on ${color.app(app)}`)
+        } else {
+          ux.error(`${color.addon(attachment.addon.name)} is already promoted on ${color.app(app)}`)
+        }
       }
-    }
 
-    const existing = attachments.filter(a => a.addon?.id === current.addon?.id && a.namespace === current.namespace)
-      .find(a => a.name !== 'DATABASE')
-    if (existing) {
-      ux.action.stop(color.green(existing.name + '_URL'))
-    } else {
-      // The current add-on occupying the DATABASE attachment has no
-      // other attachments. In order to promote this database without
-      // error, we can create a secondary attachment, just-in-time.
-      const {body: backup} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {
-        body: {
-          app: {name: app},
-          addon: {name: current.addon?.name},
-          namespace: current.namespace,
-          confirm: app,
-        },
-      })
-      ux.action.stop(color.green(backup.name + '_URL'))
+      const existing = attachments.filter(a => a.addon?.id === current.addon?.id && a.namespace === current.namespace)
+        .find(a => a.name !== 'DATABASE')
+      if (existing) {
+        ux.action.stop(color.green(existing.name + '_URL'))
+      } else {
+        // The current add-on occupying the DATABASE attachment has no
+        // other attachments. In order to promote this database without
+        // error, we can create a secondary attachment, just-in-time.
+        const {body: backup} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {
+          body: {
+            app: {name: app},
+            addon: {name: current.addon?.name},
+            namespace: current.namespace,
+            confirm: app,
+          },
+        })
+        ux.action.stop(color.green(backup.name + '_URL'))
+      }
     }
 
     if (!force) {
@@ -66,9 +66,9 @@ export default class Promote extends Command {
       if (status['waiting?']) {
         ux.error(heredoc(`
           Database cannot be promoted while in state: ${status.message}
-          
+
           Promoting this database can lead to application errors and outage. Please run ${color.cmd('heroku pg:wait')} to wait for database to become available.
-          
+
           To ignore this error, you can pass the --force flag to promote the database and risk application issues.
         `))
       }
@@ -92,7 +92,7 @@ export default class Promote extends Command {
       },
     })
     ux.action.stop()
-    const currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon?.id === current.addon?.id && a.name === 'DATABASE_CONNECTION_POOL')
+    const currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon?.id === current?.addon?.id && a.name === 'DATABASE_CONNECTION_POOL')
     if (currentPooler) {
       ux.action.start('Reattaching pooler to new leader')
       await this.heroku.post('/addon-attachments', {
@@ -114,9 +114,9 @@ export default class Promote extends Command {
       const unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
       ux.warn(heredoc(`
         Your database has been promoted but it is currently a follower database in read-only mode.
-        
+
         Promoting a database with ${color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
-        
+
         Use ${color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.yellow(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
       `))
     }
@@ -159,7 +159,7 @@ export default class Promote extends Command {
           if (detach && detach.status === 'succeeded') {
             msg += 'without an attached DATABASE_URL.'
           } else {
-            msg += `with ${current.addon?.name} attached as DATABASE_URL.`
+            msg += `with ${current?.addon?.name} attached as DATABASE_URL.`
           }
 
           msg += ' Check your release phase logs for failure causes.'
