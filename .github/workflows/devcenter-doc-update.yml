@@ -2,12 +2,25 @@ name: Update CLI Command DevCenter Documentation
 
 on:
   workflow_dispatch:
+    inputs:
+      isStableRelease:
+        type: boolean
+        description: Is this a stable/prod release?
+        required: true
+        default: false
   workflow_call:
+    inputs:
+      isStableRelease:
+        type: boolean
+        description: Is this a stable/prod release?
+        required: true
+        default: false
 
 jobs:
   update-devcenter-command-docs:
     name: Update Devcenter command docs
     runs-on: ubuntu-latest
+    if: fromJSON(inputs.isStableRelease)
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.x
