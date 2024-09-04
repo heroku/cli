@@ -6,12 +6,12 @@ export default class LogNestedStatements extends PGSettingsCommand {
   static description = "Nested statements are included in the execution plan's log."
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_nested_statements'
-
+  protected invariant = this.booleanInvariant
   protected convertValue(val: unknown): boolean {
     return booleanConverter(val as BooleanAsString)
   }

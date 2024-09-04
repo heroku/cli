@@ -11,12 +11,12 @@ export default class LogMinDuration extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'
-
+  protected invariant = this.numberInvariant
   protected convertValue(val: string): number {
     return numericConverter(val)
   }

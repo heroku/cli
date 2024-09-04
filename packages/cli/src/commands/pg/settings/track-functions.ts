@@ -1,8 +1,9 @@
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {PGSettingsCommand} from '../../../lib/pg/setter'
+import {type ArgTypes, PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
 
+const values = new Set(['none', 'pl', 'all'])
 // ref: https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-FUNCTIONS
 export default class TrackFunctions extends PGSettingsCommand {
   static description = heredoc(`
@@ -13,11 +14,20 @@ export default class TrackFunctions extends PGSettingsCommand {
     all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked`)
 
   static args = {
-    database: Args.string(),
-    value: Args.string({options: ['none', 'pl', 'all']}),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'track_functions'
+
+  protected invariant(args: ArgTypes): ArgTypes {
+    const {value, database} = args
+    if (values.has(database ?? '')) {
+      return {value: database, database: value}
+    }
+
+    return args
+  }
 
   protected convertValue(val: unknown): unknown {
     return val
