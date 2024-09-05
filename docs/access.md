@@ -25,7 +25,7 @@ DESCRIPTION
   list who has access to an app
 ```
 
-_See code: [src/commands/access/index.ts](https://github.com/heroku/cli/blob/v9.2.0/packages/cli/src/commands/access/index.ts)_
+_See code: [src/commands/access/index.ts](https://github.com/heroku/cli/blob/v9.2.1/packages/cli/src/commands/access/index.ts)_
 
 ## `heroku access:add EMAIL`
 
@@ -49,7 +49,7 @@ EXAMPLES
   $ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated
 ```
 
-_See code: [src/commands/access/add.ts](https://github.com/heroku/cli/blob/v9.2.0/packages/cli/src/commands/access/add.ts)_
+_See code: [src/commands/access/add.ts](https://github.com/heroku/cli/blob/v9.2.1/packages/cli/src/commands/access/add.ts)_
 
 ## `heroku access:remove`
 
@@ -70,7 +70,7 @@ EXAMPLES
   $ heroku access:remove user@email.com --app APP
 ```
 
-_See code: [src/commands/access/remove.ts](https://github.com/heroku/cli/blob/v9.2.0/packages/cli/src/commands/access/remove.ts)_
+_See code: [src/commands/access/remove.ts](https://github.com/heroku/cli/blob/v9.2.1/packages/cli/src/commands/access/remove.ts)_
 
 ## `heroku access:update EMAIL`
 
@@ -89,4 +89,4 @@ DESCRIPTION
   update existing collaborators on an team app
 ```
 
-_See code: [src/commands/access/update.ts](https://github.com/heroku/cli/blob/v9.2.0/packages/cli/src/commands/access/update.ts)_
+_See code: [src/commands/access/update.ts](https://github.com/heroku/cli/blob/v9.2.1/packages/cli/src/commands/access/update.ts)_
