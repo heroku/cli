@@ -3,7 +3,6 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {sortBy, compact} from 'lodash'
-import {HTTPError} from 'http-call'
 import heredoc from 'tsheredoc'
 
 const COST_MONTHLY: Record<string, number> = {
@@ -57,7 +56,6 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 
       return {
         // this rule does not realize `size` isn't used on an array
-        /* eslint-disable unicorn/explicit-length-check */
         type: color.green(d.type || ''),
         size: color.cyan(d.size),
         qty: color.yellow(`${d.quantity}`),

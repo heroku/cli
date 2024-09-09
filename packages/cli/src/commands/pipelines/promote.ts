@@ -43,7 +43,7 @@ function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
 
 function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
   return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
-    if (targets.every(isComplete)) { // eslint-disable-line unicorn/no-array-callback-reference
+    if (targets.every(isComplete)) {
       return targets
     }
 
@@ -116,7 +116,7 @@ async function getRelease(heroku: APIClient, app: string, releaseId: string): Pr
 }
 
 async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
-  if (targets.length !== 1 || targets.every(isComplete)) { // eslint-disable-line unicorn/no-array-callback-reference
+  if (targets.length !== 1 || targets.every(isComplete)) {
     return pollPromotionStatus(heroku, promotion.id, false)
   }
 
@@ -254,7 +254,7 @@ export default class Promote extends Command {
       return memo
     }, {})
 
-    if (promotionTargets.every(isSucceeded)) { // eslint-disable-line unicorn/no-array-callback-reference
+    if (promotionTargets.every(isSucceeded)) {
       ux.log('\nPromotion successful')
     } else {
       ux.warn('\nPromotion to some apps failed')
