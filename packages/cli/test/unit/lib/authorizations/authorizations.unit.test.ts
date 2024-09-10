@@ -49,6 +49,7 @@ describe('display', function () {
 
     setupDisplay(auth)
       .it('prints the styled authorization with access token info', ctx => {
+        const expirationDate = addSeconds(new Date(), 10000)
         expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
         expect(ctx.stdout).to.contain('Scope:       global,app\n')
         expect(ctx.stdout).to.contain('Description: a cool auth\n')
@@ -60,7 +61,6 @@ describe('display', function () {
         expect(ctx.stdout).to.contain(`Updated at:  ${updatedAt}`)
         expect(ctx.stdout).to.contain(`(${formatDistanceToNow(updatedAt)} ago)`)
 
-        const expirationDate = addSeconds(updatedAt, 10000)
         expect(ctx.stdout).to.contain(`Expires at:  ${expirationDate}`)
         expect(ctx.stdout).to.contain(`(in ${formatDistanceToNow(expirationDate)})`)
       })
