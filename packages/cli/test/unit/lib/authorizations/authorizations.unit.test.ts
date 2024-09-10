@@ -8,7 +8,7 @@ const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
     .stdout()
     .do(() => display(auth))
 
-describe('display', function () {
+describe.only('display', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const authDesc = 'a cool auth'
 
@@ -35,11 +35,12 @@ describe('display', function () {
   })
 
   context('with an auth access token', function () {
+    const updatedAt = new Date(0)
     const auth: Heroku.OAuthAuthorization = {
       id: authId,
       description: authDesc,
       scope: ['global', 'app'],
-      updated_at: `${new Date(0)}`,
+      updated_at: `${updatedAt}`,
       access_token: {
         token: '1234abcd-129f-42d2-854b-EfGhIjKlMn12',
         expires_in: 10000,
@@ -56,10 +57,10 @@ describe('display', function () {
         expect(ctx.stdout).to.not.contain('Redirect URI')
 
         expect(ctx.stdout).to.contain(`ID:          ${authId}\n`)
-        expect(ctx.stdout).to.contain(`Updated at:  ${new Date(0)}`)
-        expect(ctx.stdout).to.contain(`(${formatDistanceToNow(new Date(0))} ago)`)
+        expect(ctx.stdout).to.contain(`Updated at:  ${updatedAt}`)
+        expect(ctx.stdout).to.contain(`(${formatDistanceToNow(updatedAt)} ago)`)
 
-        const expirationDate = addSeconds(new Date(), 10000)
+        const expirationDate = addSeconds(updatedAt, 10000)
         expect(ctx.stdout).to.contain(`Expires at:  ${expirationDate}`)
         expect(ctx.stdout).to.contain(`(in ${formatDistanceToNow(expirationDate)})`)
       })
