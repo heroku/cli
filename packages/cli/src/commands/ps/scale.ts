@@ -4,7 +4,6 @@ import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {compact} from 'lodash'
 import heredoc from 'tsheredoc'
-import {HTTPError} from 'http-call'
 
 const emptyFormationErr = (app: string) => {
   return new Error(`No process types on ${color.magenta(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
