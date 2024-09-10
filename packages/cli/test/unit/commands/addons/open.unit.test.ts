@@ -9,15 +9,15 @@ import Cmd from '../../../../src/commands/addons/open'
 import * as path from 'node:path'
 
 describe('The addons:open command', function () {
-  // const urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async (_: string) => {})
   let urlOpenerStub: sinon.SinonStub
 
   beforeEach(function () {
     urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async () => {})
-    urlOpenerStub.reset()
   })
 
   afterEach(function () {
+    urlOpenerStub.reset()
+    urlOpenerStub.restore()
     nock.cleanAll()
   })
 

@@ -127,12 +127,12 @@ export default class Type extends Command {
       if (!argv || argv.length === 0)
         return []
       const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-      if (argv.find(a => a.match(/=/))) {
+      if (argv.some(a => a.match(/=/))) {
         return compact(argv.map(arg => {
           const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
           const type = match && match[1]
           const size = match && match[2]
-          if (!type || !size || !formation.find(p => p.type === type)) {
+          if (!type || !size || !formation.some(p => p.type === type)) {
             throw new Error(`Type ${color.red(type || '')} not found in process formation.\nTypes: ${color.yellow(formation.map(f => f.type)
               .join(', '))}`)
           }

@@ -61,7 +61,7 @@ export default class Copy extends Command {
       const {flags, args} = await this.parse(Copy)
       const {'wait-interval': waitInterval, verbose, confirm, app} = flags
       const pgbackups = backupsFactory(app, this.heroku)
-      const interval = Math.max(3, Number.parseInt(waitInterval || '0')) || 3
+      const interval = Math.max(3, Number.parseInt(waitInterval || '0', 10)) || 3
 
       const [source, target] = await Promise.all([getAttachmentInfo(this.heroku, args.source, app), getAttachmentInfo(this.heroku, args.target, app)])
       if (source.url === target.url)

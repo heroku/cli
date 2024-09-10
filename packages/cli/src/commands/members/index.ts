@@ -47,7 +47,7 @@ export default class MembersIndex extends Command {
       let teamInvites: Heroku.TeamInvitation[] = []
       if (teamInfo.type === 'team') {
         const {body: orgFeatures} = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
-        if (orgFeatures.find((feature => feature.name === 'team-invite-acceptance' && feature.enabled))) {
+        if (orgFeatures.some((feature => feature.name === 'team-invite-acceptance' && feature.enabled))) {
           const invitesResponse = await this.heroku.get<Heroku.TeamInvitation[]>(
             `/teams/${team}/invitations`,
             {headers: {
