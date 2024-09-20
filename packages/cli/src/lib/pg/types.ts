@@ -222,6 +222,7 @@ export type SettingKey =
   | 'auto_explain.log_buffers'
   | 'auto_explain.log_verbose'
   | 'auto_explain.log_nested_statements'
+  | 'auto_explain.log_format'
 export type Setting<T> = {
   value: T
   values: Record<string, string>
