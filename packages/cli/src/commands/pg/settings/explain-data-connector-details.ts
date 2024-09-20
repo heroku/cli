@@ -5,9 +5,8 @@ import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../.
 import type {Setting, SettingKey} from '../../../lib/pg/types'
 
 export default class ExplainDataConnectorDetails extends PGSettingsCommand {
-  static topic = 'pg'
   static description = heredoc(`
-  Displays stats on replication slots on your database. The default value is "off".
+  displays stats on replication slots on your database, the default value is "off"
   `)
 
   static flags = {
