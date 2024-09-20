@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 export default class LogFormat extends PGSettingsCommand {
   static topic = 'pg'
   static description = heredoc(`
-    Selects the EXPLAIN output format to be used.
+    selects the EXPLAIN output format to be used
     The allowed values are text, xml, json, and yaml. The default is text.
   `)
 
