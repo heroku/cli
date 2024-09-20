@@ -210,6 +210,7 @@ export type SettingKey =
   'log_lock_waits'
   | 'log_connections'
   | 'log_min_duration_statement'
+  | 'log_min_error_statement'
   | 'log_statement'
   | 'track_functions'
   | 'pgbouncer_max_client_conn'
