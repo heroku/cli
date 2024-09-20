@@ -216,6 +216,7 @@ export type SettingKey =
   | 'pgbouncer_max_client_conn'
   | 'pg_bouncer_max_db_conns'
   | 'pg_bouncer_default_pool_size'
+  | 'explain_data_connector_details'
   | 'auto_explain'
   | 'auto_explain.log_min_duration'
   | 'auto_explain.log_analyze'
