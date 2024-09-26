@@ -60,5 +60,5 @@ jobs:
     needs: [ get-version-channel, promote ]
     uses: ./.github/workflows/devcenter-doc-update.yml
     with:
-      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      isStableRelease: ${{ needs.get-version-channel.outputs.isStableRelease }}
     secrets: inherit
