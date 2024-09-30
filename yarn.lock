@@ -15418,11 +15418,11 @@ __metadata:
   linkType: hard
 
 "path-to-regexp@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "path-to-regexp@npm:1.7.0"
+  version: 1.9.0
+  resolution: "path-to-regexp@npm:1.9.0"
   dependencies:
     isarray: 0.0.1
-  checksum: bf5054aa006508b4f9fa9603f091ce90cb448f5a2714ce8b5dfefce761f107ca3a029401c28bf5824e4f38b71a605b3c24bd92e8a284c6436ab3060a497dd7ad
+  checksum: 5b2ac9cab2a9f82effd30a35164b20998b18d99d96608281dd2cab6e66c0e4536187970369b185ab21d3815da1ecb7dcb2d5f97a4bf0ee6e31a9612299fca147
   languageName: node
   linkType: hard
 
