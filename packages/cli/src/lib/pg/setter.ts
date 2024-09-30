@@ -5,6 +5,8 @@ import host from './host'
 import {essentialPlan} from './util'
 import {SettingKey, Setting, SettingsResponse} from './types'
 
+export type ArgTypes = {value: string | undefined, database: string | undefined};
+
 export abstract class PGSettingsCommand extends Command {
   protected abstract settingKey: SettingKey
   protected abstract convertValue(val: string): unknown
@@ -20,7 +22,7 @@ export abstract class PGSettingsCommand extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse()
     const {app} = flags
-    const {value, database} = args as {value: string | undefined, database: string | undefined}
+    const {value, database} = this.invariant(args as ArgTypes)
 
     const db = await addonResolver(this.heroku, app, database || 'DATABASE_URL')
 
@@ -40,6 +42,28 @@ export abstract class PGSettingsCommand extends Command {
       ux.log(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       ux.log(this.explain(setting))
     }
+  }
+
+  protected abstract invariant(args: ArgTypes): ArgTypes
+
+  protected booleanInvariant(args: ArgTypes): ArgTypes {
+    const {value, database} = args
+    try {
+      booleanConverter(database as BooleanAsString)
+      return {value: database, database: value}
+    } catch {
+      return args
+    }
+  }
+
+  protected numberInvariant(args: ArgTypes): ArgTypes {
+    const {database, value} = args
+
+    if (Number.isFinite(Number(database))) {
+      return {value: database, database: value}
+    }
+
+    return args
   }
 }
 

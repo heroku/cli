@@ -16,8 +16,8 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_verbose'
@@ -30,6 +30,7 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
     return 'Verbose execution plan logging has been disabled for auto_explain.'
   }
 
+  protected invariant = this.booleanInvariant
   protected convertValue(val: unknown): boolean {
     return booleanConverter(val as BooleanAsString)
   }

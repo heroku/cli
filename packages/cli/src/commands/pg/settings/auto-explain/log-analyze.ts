@@ -13,12 +13,12 @@ export default class LogAnalyze extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey = 'auto_explain.log_analyze' as SettingKey
-
+  protected invariant = this.booleanInvariant
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }

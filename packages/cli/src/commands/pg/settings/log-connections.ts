@@ -16,12 +16,12 @@ export default class LogConnections extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'log_connections'
-
+  protected invariant = this.booleanInvariant
   protected convertValue(val: unknown): unknown {
     return booleanConverter(val as BooleanAsString)
   }

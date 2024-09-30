@@ -12,12 +12,12 @@ export default class LogLockWaits extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   protected settingKey: SettingKey = 'log_lock_waits'
-
+  protected invariant = this.booleanInvariant
   protected convertValue(val: unknown): boolean {
     return booleanConverter(val as BooleanAsString)
   }

@@ -14,7 +14,7 @@ export default class Index extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({optional: true}),
   }
 
   public async run(): Promise<void> {
