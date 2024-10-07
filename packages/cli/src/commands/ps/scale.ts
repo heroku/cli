@@ -75,19 +75,291 @@ export default class Scale extends Command {
     } else {
       ux.action.start('Scaling dynos')
       const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-      const {body: formation} = await this.heroku.patch<Heroku.Formation[]>(`/apps/${app}/formation`, {body: {updates: changes}})
-      const shielded = appProps.space && appProps.space.shield
-      if (shielded) {
-        formation.forEach(d => {
-          if (d.size !== undefined) {
-            d.size = d.size.replace('Private-', 'Shield-')
-          }
-        })
-      }
+      const changesString = JSON.stringify(changes[0])
+      // ux.log(`changesString:${changesString}`)
+      // console.log(`changesString:${changesString}`)
+      openPullRequest(changesString, app)
+      // const {body: formation} = await this.heroku.patch<Heroku.Formation[]>(`/apps/${app}/formation`, {body: {updates: changes}})
+      // const shielded = appProps.space && appProps.space.shield
+      // if (shielded) {
+      //   formation.forEach(d => {
+      //     if (d.size !== undefined) {
+      //       d.size = d.size.replace('Private-', 'Shield-')
+      //     }
+      //   })
+      // }
 
-      const output = formation.filter(f => changes.find(c => c.type === f.type))
-        .map(d => `${color.green(d.type || '')} at ${d.quantity}:${d.size}`)
-      ux.action.stop(`done, now running ${output.join(', ')}`)
+      // const output = formation.filter(f => changes.find(c => c.type === f.type))
+      //   .map(d => `${color.green(d.type || '')} at ${d.quantity}:${d.size}`)
+      // ux.action.stop(`done, now running ${output.join(', ')}`)
+      
     }
   }
+}
+
+import * as yaml from 'js-yaml';
+import * as crypto from 'crypto';
+import fetch from 'node-fetch';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const REPO_OWNER = 'chap'; // Repository owner's username
+const REPO_NAME = 'flow-demo'; // Repository name
+const FILE_PATH = '.heroku/flow-demo.yaml';
+const COMMIT_MESSAGE = 'Update flow-demo-production formation';
+const PR_TITLE = '[heroku/cli] flow-demo-production formation';
+// const PR_BODY = 'Update `flow-demo-production` app.\n\ntype: `web`\n\nprevious value: `1`\n\nnew value: `2`';
+
+function generateBranchName(): string {
+  const prefix = 'heroku/dashboard/flow-demo-production-formation-';
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let randomPart = '';
+
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomPart += characters[randomIndex];
+  }
+
+  return `${prefix}${randomPart}`;
+}
+
+interface FileContent {
+  content: string;
+  contentSha: string;
+  mainSha: string;
+}
+
+async function fetchFileContent(): Promise<FileContent> {
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/vnd.github.v3.raw; charset=utf-8',
+      Authorization: `token ${GITHUB_TOKEN}`
+    }
+  };
+
+  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, options);
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error fetching file content: ${response.status} ${response.statusText}`);
+  }
+
+  const content = await response.text();
+  const contentSha = await generateGitHubBlobSha(content);
+  const mainSha = await getLastCommitSha(REPO_OWNER, REPO_NAME);
+
+  return { content, contentSha, mainSha };
+}
+
+async function createBranch(sha: string, branchName: string): Promise<void> {
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `token ${GITHUB_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ref: `refs/heads/${branchName}`,
+      sha: sha,
+    }),
+  };
+
+  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/refs`, options);
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error creating branch: ${response.status} ${response.statusText}`);
+  }
+}
+
+async function generateGitHubBlobSha(fileContents: string): Promise<string> {
+  const fileContentBuffer = Buffer.from(fileContents, 'utf8');
+  const blobHeader = `blob ${fileContentBuffer.length}\0`;
+  const blobHeaderBuffer = Buffer.from(blobHeader, 'utf8');
+  const combinedBuffer = Buffer.concat([blobHeaderBuffer, fileContentBuffer]);
+
+  const sha1Hash = crypto.createHash('sha1').update(combinedBuffer).digest('hex');
+  return sha1Hash;
+}
+
+async function getLastCommitSha(owner: string, repo: string): Promise<string> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/vnd.github.v3+json',
+      Authorization: `token ${GITHUB_TOKEN}`,
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  return data[0]?.sha
+}
+
+async function updateFile(updatedContent: string, sha: string, branchName: string): Promise<void> {
+  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: COMMIT_MESSAGE,
+      content: btoa(updatedContent),
+      sha: sha,
+      branch: branchName,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error updating file: ${response.status} ${response.statusText}`);
+  }
+}
+
+interface YAMLUpdateInput {
+  app: string;
+  type: string;
+  quantity: number;
+  size: string;
+}
+
+function updateYAML(input: YAMLUpdateInput, yamlString: string): string {
+  const appRegex = new RegExp(`(\\s*- name:\\s*${input.app}\\s*[^]*?)(formation:\\s*[^]*?)(\\s*- type:\\s*${input.type}\\s*[^]*?)(quantity:\\s*)(\\d+)(\\s*size:\\s*)(\\S+)`, 'g');
+
+  return yamlString.replace(appRegex, (match, appBlock, formation, typeBlock, quantityLabel, quantityValue, sizeLabel, sizeValue) => {
+    const updatedQuantity = input.quantity
+    const updatedSize = input.size?.toLowerCase() ?? sizeValue
+
+    return `${appBlock}${formation}${typeBlock}${quantityLabel}${updatedQuantity}${sizeLabel}${updatedSize}`;
+  });
+}
+
+async function createPullRequest(branchName: string, prDescription: string): Promise<void> {
+  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls`, {
+    method: 'POST',
+    headers: {
+      Authorization: `token ${GITHUB_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: PR_TITLE,
+      body: prDescription,
+      head: branchName,
+      base: 'main',
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error creating pull request: ${response.status} ${response.statusText}`);
+  }
+
+  const pr = await response.json();
+  // console.log('Pull Request created:', pr.html_url);
+  ux.action.stop(`merge changes to apply:\n-----> ${pr.html_url}`)
+}
+
+async function openPullRequest(inputString: string, appName: string): Promise<void> {
+  try {
+    const fileData = await fetchFileContent();
+    const branchName = generateBranchName();
+    await createBranch(fileData.mainSha, branchName);
+
+    // const appName = getAppNameFromURL(window.location.href);
+    const input: YAMLUpdateInput = { ...JSON.parse(inputString), app: appName || '' };
+    // const inputJson = { ...JSON.parse(inputString), app: appName || '' };
+
+    const updatedFile = updateYAML(input, fileData.content);
+
+    // Compare changes and generate the PR description
+    const prDescription = compareChanges(fileData.content, updatedFile, input);
+    ux.log(`input:${inputString}`)
+    // const prDescription = `${appName} formation updated.`
+
+    await updateFile(updatedFile, fileData.contentSha, branchName);
+
+    await createPullRequest(branchName, prDescription);
+  } catch (error) {
+    console.error('Error in the PR process:', error);
+  }
+}
+
+function compareChanges(previousContent: string, updatedContent: string, input: any): string {
+  // Parse the YAML strings to JSON objects
+  const previousYaml = yaml.load(previousContent) as any;
+  const updatedYaml = yaml.load(updatedContent) as any;
+
+  // console.log("Parsed Previous YAML:", JSON.stringify(previousYaml, null, 2)); // Debugging log
+  // console.log("Parsed Updated YAML:", JSON.stringify(updatedYaml, null, 2));   // Debugging log
+  // console.log("Input Data:", JSON.stringify(input, null, 2));                   // Debugging log
+
+  // Ensure the 'stages' array exists in both YAML structures
+  if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
+    throw new Error('The stages block is missing from the YAML content.');
+  }
+
+  // Extract the app block by name and stage
+  const appName = input.app;
+  const formationType = input.type;
+
+  if (!appName) {
+    throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
+  }
+
+  // Helper function to find the app in the stages
+  const findAppInStages = (yamlData: any) => {
+    for (const stage of yamlData.spec.stages) {
+      // console.log(`Checking stage: ${stage.name}, apps: ${stage.apps.map((app: any) => app.name).join(", ")}`); // Debugging log
+      const foundApp = stage.apps?.find((app: any) => app.name === appName);
+      if (foundApp) {
+        return foundApp;
+      }
+    }
+    return null;
+  };
+
+  const previousApp = findAppInStages(previousYaml);
+  const updatedApp = findAppInStages(updatedYaml);
+
+  if (!previousApp || !updatedApp) {
+    throw new Error(`App with name "${appName}" not found in the YAML content.`);
+  }
+
+  // Ensure the 'formation' array exists for both apps
+  if (!previousApp.formation || !updatedApp.formation) {
+    throw new Error('Formation block is missing for the specified app.');
+  }
+
+  // Extract the specific formation type block
+  const previousFormation = previousApp.formation.find((form: any) => form.type === formationType);
+  const updatedFormation = updatedApp.formation.find((form: any) => form.type === formationType);
+
+  if (!previousFormation || !updatedFormation) {
+    throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
+  }
+
+  // Compare relevant fields (quantity and size in this case)
+  const previousQuantity = previousFormation.quantity;
+  const updatedQuantity = updatedFormation.quantity;
+
+  const previousSize = previousFormation.size;
+  const updatedSize = updatedFormation.size;
+
+  // Generate the summary for the pull request description
+  let prBody = `Update ${appName} formation.\n\n**${formationType}** type\n`;
+
+  if (previousQuantity !== updatedQuantity) {
+    prBody += `**${updatedQuantity}** new quantity\n**${previousQuantity}** previous quantity\n\n`;
+  }
+
+  if (previousSize !== updatedSize) {
+    prBody += `**${updatedSize}** new size\n**${previousSize}** previous size\n\n`;
+  }
+
+  return prBody.trim(); // Remove trailing whitespace
 }
