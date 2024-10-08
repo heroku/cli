@@ -278,7 +278,7 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
 
     // Compare changes and generate the PR description
     const prDescription = compareChanges(fileData.content, updatedFile, input);
-    ux.log(`input:${inputString}`)
+    // ux.log(`input:${inputString}`)
     // const prDescription = `${appName} formation updated.`
 
     await updateFile(updatedFile, fileData.contentSha, branchName);
@@ -293,10 +293,6 @@ function compareChanges(previousContent: string, updatedContent: string, input: 
   // Parse the YAML strings to JSON objects
   const previousYaml = yaml.load(previousContent) as any;
   const updatedYaml = yaml.load(updatedContent) as any;
-
-  // console.log("Parsed Previous YAML:", JSON.stringify(previousYaml, null, 2)); // Debugging log
-  // console.log("Parsed Updated YAML:", JSON.stringify(updatedYaml, null, 2));   // Debugging log
-  // console.log("Input Data:", JSON.stringify(input, null, 2));                   // Debugging log
 
   // Ensure the 'stages' array exists in both YAML structures
   if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
@@ -314,7 +310,6 @@ function compareChanges(previousContent: string, updatedContent: string, input: 
   // Helper function to find the app in the stages
   const findAppInStages = (yamlData: any) => {
     for (const stage of yamlData.spec.stages) {
-      // console.log(`Checking stage: ${stage.name}, apps: ${stage.apps.map((app: any) => app.name).join(", ")}`); // Debugging log
       const foundApp = stage.apps?.find((app: any) => app.name === appName);
       if (foundApp) {
         return foundApp;
@@ -351,15 +346,20 @@ function compareChanges(previousContent: string, updatedContent: string, input: 
   const updatedSize = updatedFormation.size;
 
   // Generate the summary for the pull request description
-  let prBody = `Update ${appName} formation.\n\n**${formationType}** type\n`;
+  let prBody = `update formation of Heroku app \`${appName}\`\n\n`;
+
+  prBody += `#### ${formationType}\n`;
 
   if (previousQuantity !== updatedQuantity) {
-    prBody += `**${updatedQuantity}** new quantity\n**${previousQuantity}** previous quantity\n\n`;
+    prBody += `> **${updatedQuantity}** quantity (from ${previousQuantity})\n`;
   }
 
   if (previousSize !== updatedSize) {
-    prBody += `**${updatedSize}** new size\n**${previousSize}** previous size\n\n`;
+    prBody += `> **${updatedSize}** size (from ${previousSize})\n`;
   }
+
+  // Add additional information to check current formation
+  prBody += `\n\`\`\`\n# check current formation\n$ heroku ps:scale -a ${appName}\n\`\`\``;
 
   return prBody.trim(); // Remove trailing whitespace
 }
