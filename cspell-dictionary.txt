@@ -31,6 +31,8 @@ bindkey
 binrun
 blocklisted
 boop
+Bpcy
+Braintree
 brewhook
 buildpack
 buildpacks
@@ -52,6 +54,7 @@ credname
 creds
 crtfile
 csrfile
+currentpassword
 CWORD
 daservice
 datahdr
@@ -71,6 +74,7 @@ dynos
 dynosize
 ECCN
 echoerr
+Edmonds
 elif
 envfile
 envl
@@ -90,7 +94,9 @@ fpath
 fragilistic
 fruby
 ftest
+Gdvb
 getreqs
+Ghpcy
 githuborg
 hamurai
 herokai
@@ -99,6 +105,7 @@ herokudns
 herokumanager
 herokussl
 histfile
+HRKU
 howmany
 htcat
 iname
@@ -194,6 +201,7 @@ myworker
 ncalls
 netrc
 newname
+newpassword
 nodir
 noeviction
 notaninteger
