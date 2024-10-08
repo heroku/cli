@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {FirSpace} from '../../lib/types/fir'
+import {Space} from '../../lib/types/fir'
 
-type SpaceArray = Array<Required<FirSpace>>
+type SpaceArray = Array<Required<Space>>
 
 export default class Index extends Command {
   static topic = 'spaces'
