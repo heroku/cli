@@ -6,8 +6,8 @@ export default class Index extends Command {
   static topic = 'telemetry'
   static description = 'list telemetry drains'
   static flags = {
-    space: Flags.string({description: 'filter by space name', exclusive: ['app']}),
-    app: Flags.string({description: 'filter by app name', exclusive: ['space']}),
+    space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
+    app: Flags.app({description: 'filter by app name'}),
   };
 
   public async run(): Promise<void> {
@@ -28,8 +28,6 @@ export default class Index extends Command {
         },
       })
       this.display(spaceTelemetryDrains, 'Space')
-    } else {
-      throw new Error('Not Implemented')
     }
   }
 
