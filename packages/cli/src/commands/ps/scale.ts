@@ -311,77 +311,137 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
   }
 }
 
-function compareChanges(previousContent: string, updatedContent: string, input: any): string {
-  // Parse the YAML strings to JSON objects
-  const previousYaml = yaml.load(previousContent) as any;
-  const updatedYaml = yaml.load(updatedContent) as any;
+// function compareChanges(previousContent: string, updatedContent: string, input: any): string {
+  // import * as yaml from 'js-yaml';
 
-  // Ensure the 'stages' array exists in both YAML structures
-  if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
-    throw new Error('The stages block is missing from the YAML content.');
+  interface DynoCosts {
+    monthly: number;
+    hourly: number;
   }
-
-  // Extract the app block by name and stage
-  const appName = input.app;
-  const formationType = input.type;
-
-  if (!appName) {
-    throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
+  
+  interface Formation {
+    type: string;
+    quantity: number;
+    size: string;
   }
-
-  // Helper function to find the app in the stages
-  const findAppInStages = (yamlData: any) => {
-    for (const stage of yamlData.spec.stages) {
-      const foundApp = stage.apps?.find((app: any) => app.name === appName);
-      if (foundApp) {
-        return foundApp;
-      }
+  
+  interface App {
+    name: string;
+    formation: Formation[];
+  }
+  
+  interface Stage {
+    apps?: App[];
+  }
+  
+  interface Spec {
+    stages: Stage[];
+  }
+  
+  interface YamlData {
+    spec: Spec;
+  }
+  
+  interface Input {
+    app: string;
+    type: string;
+  }
+  
+  function compareChanges(previousContent: string, updatedContent: string, input: Input): string {
+    const dynoCosts: Record<string, DynoCosts> = {
+      'eco': { monthly: 5, hourly: 0.005 },
+      'basic': { monthly: 7, hourly: 0.01 },
+      'standard-1x': { monthly: 25, hourly: 0.03 },
+      'standard-2x': { monthly: 50, hourly: 0.06 },
+      'performance-m': { monthly: 250, hourly: 0.34 },
+      'performance-l': { monthly: 500, hourly: 0.69 },
+      'performance-l-ram': { monthly: 500, hourly: 0.69 },
+      'performance-xl': { monthly: 750, hourly: 1.04 },
+      'performance-2xl': { monthly: 1500, hourly: 2.08 }
+    };
+  
+    // Parse the YAML strings to JSON objects
+    const previousYaml = yaml.load(previousContent) as YamlData;
+    const updatedYaml = yaml.load(updatedContent) as YamlData;
+  
+    if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
+      throw new Error('The stages block is missing from the YAML content.');
     }
-    return null;
-  };
-
-  const previousApp = findAppInStages(previousYaml);
-  const updatedApp = findAppInStages(updatedYaml);
-
-  if (!previousApp || !updatedApp) {
-    throw new Error(`App with name "${appName}" not found in the YAML content.`);
+  
+    const appName = input.app;
+    const formationType = input.type;
+  
+    if (!appName) {
+      throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
+    }
+  
+    const findAppInStages = (yamlData: YamlData): App | null => {
+      for (const stage of yamlData.spec.stages) {
+        const foundApp = stage.apps?.find(app => app.name === appName);
+        if (foundApp) {
+          return foundApp;
+        }
+      }
+      return null;
+    };
+  
+    const previousApp = findAppInStages(previousYaml);
+    const updatedApp = findAppInStages(updatedYaml);
+  
+    if (!previousApp || !updatedApp) {
+      throw new Error(`App with name "${appName}" not found in the YAML content.`);
+    }
+  
+    if (!previousApp.formation || !updatedApp.formation) {
+      throw new Error('Formation block is missing for the specified app.');
+    }
+  
+    const previousFormation = previousApp.formation.find(form => form.type === formationType);
+    const updatedFormation = updatedApp.formation.find(form => form.type === formationType);
+  
+    if (!previousFormation || !updatedFormation) {
+      throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
+    }
+  
+    const previousQuantity = previousFormation.quantity;
+    const updatedQuantity = updatedFormation.quantity;
+  
+    const previousSize = previousFormation.size.toLowerCase();
+    const updatedSize = updatedFormation.size.toLowerCase();
+  
+    // Generate the summary for the pull request description
+    let prBody = `Update formation of <a href="https://dashboard.heroku.com/apps/${appName}/resources">Heroku app</a> \`${appName}\`.\n\n`;
+  
+    prBody += `type: ${formationType}\n`;
+  
+    if (previousQuantity !== updatedQuantity) {
+      prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
+    }
+  
+    if (previousSize !== updatedSize) {
+      prBody += `size: **${updatedSize}** (from ${previousSize})\n`;
+    }
+  
+    // Calculate the cost difference
+    const previousCost = previousQuantity * dynoCosts[previousSize].monthly;
+    const updatedCost = updatedQuantity * dynoCosts[updatedSize].monthly;
+    const costDifference = updatedCost - previousCost;
+  
+    // Determine the change in hourly rates
+    const previousHourlyRate = previousQuantity * dynoCosts[previousSize].hourly;
+    const updatedHourlyRate = updatedQuantity * dynoCosts[updatedSize].hourly;
+  
+    // Set the message for cost increase or decrease using GitHub-style blocks
+    if (costDifference > 0) {
+      prBody += `\n> [!WARNING]\n> App costs will INCREASE by **$${costDifference.toFixed(2)}**. \n$${previousHourlyRate.toFixed(2)}/hour vs $${updatedHourlyRate.toFixed(2)}/hour\n\n---\n\n`;
+    } else if (costDifference < 0) {
+      prBody += `\n> [!TIP]\n> App costs will DECREASE by **$${Math.abs(costDifference).toFixed(2)}**. \n$${previousHourlyRate.toFixed(2)}/hour vs $${updatedHourlyRate.toFixed(2)}/hour\n\n---\n\n`;
+    } else {
+      prBody += `\n> [!NOTE]\n> No change in costs. ($${previousHourlyRate.toFixed(2)}/hour)\n\n---\n\n`;
+    }
+  
+    prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
+  
+    return prBody.trim(); // Remove trailing whitespace
   }
-
-  // Ensure the 'formation' array exists for both apps
-  if (!previousApp.formation || !updatedApp.formation) {
-    throw new Error('Formation block is missing for the specified app.');
-  }
-
-  // Extract the specific formation type block
-  const previousFormation = previousApp.formation.find((form: any) => form.type === formationType);
-  const updatedFormation = updatedApp.formation.find((form: any) => form.type === formationType);
-
-  if (!previousFormation || !updatedFormation) {
-    throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
-  }
-
-  // Compare relevant fields (quantity and size in this case)
-  const previousQuantity = previousFormation.quantity;
-  const updatedQuantity = updatedFormation.quantity;
-
-  const previousSize = previousFormation.size;
-  const updatedSize = updatedFormation.size;
-
-  // Generate the summary for the pull request description
-  let prBody = `update formation of Heroku app \`${appName}\`\n\n`;
-
-  prBody += `#### ${formationType}\n`;
-
-  if (previousQuantity !== updatedQuantity) {
-    prBody += `> **${updatedQuantity}** quantity (from ${previousQuantity})\n`;
-  }
-
-  if (previousSize !== updatedSize) {
-    prBody += `> **${updatedSize}** size (from ${previousSize})\n`;
-  }
-
-  // Add additional information to check current formation
-  prBody += `\n\`\`\`\n# check current formation\n$ heroku ps:scale -a ${appName}\n\`\`\``;
-
-  return prBody.trim(); // Remove trailing whitespace
-}
+  
