@@ -2,6 +2,7 @@ import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
 import color from '@heroku-cli/color'
 import {fork as foreman} from '../../lib/local/fork-foreman'
+import {revertSortedArgs} from '../../lib/run/helpers'
 import * as fs from 'fs'
 
 export default class Run extends Command {
@@ -26,10 +27,10 @@ export default class Run extends Command {
   async run() {
     const execArgv: string[] = ['run']
     const {argv, flags} = await this.parse(Run)
-    const maybeOptionsIndex = process.argv.indexOf('--')
-    const commandArgs = (maybeOptionsIndex === -1 ? argv : process.argv.slice(maybeOptionsIndex + 1)) as string[]
+    const commandArgs = revertSortedArgs(process.argv, argv as string[])
+    const commandArgsDeduped = [...new Set(commandArgs.reverse())].reverse()
 
-    if (commandArgs.length === 0) {
+    if (commandArgsDeduped.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'
       this.error(errorMessage, {exit: -1})
     }
@@ -44,8 +45,9 @@ export default class Run extends Command {
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
-    execArgv.push(...commandArgs as string[]) // eslint-disable-line unicorn/no-array-push-push
+    execArgv.push(...commandArgsDeduped as string[]) // eslint-disable-line unicorn/no-array-push-push
 
-    await foreman(execArgv)
+    console.log('execArgv', execArgv)
+    // await foreman(execArgv)
   }
 }
