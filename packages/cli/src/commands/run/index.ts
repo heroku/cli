@@ -34,13 +34,12 @@ export default class Run extends Command {
   async run() {
     const {argv, flags} = await this.parse(Run)
     const command = revertSortedArgs(process.argv, argv as string[])
-    const dedupedCommand = [...new Set(command.reverse())].reverse()
     const opts = {
       'exit-code': flags['exit-code'],
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(dedupedCommand),
+      command: buildCommand(command),
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,

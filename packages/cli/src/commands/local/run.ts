@@ -28,9 +28,8 @@ export default class Run extends Command {
     const execArgv: string[] = ['run']
     const {argv, flags} = await this.parse(Run)
     const commandArgs = revertSortedArgs(process.argv, argv as string[])
-    const commandArgsDeduped = [...new Set(commandArgs.reverse())].reverse()
 
-    if (commandArgsDeduped.length === 0) {
+    if (commandArgs.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'
       this.error(errorMessage, {exit: -1})
     }
@@ -45,9 +44,8 @@ export default class Run extends Command {
     if (flags.port) execArgv.push('--port', flags.port)
 
     execArgv.push('--') // disable node-foreman flag parsing
-    execArgv.push(...commandArgsDeduped as string[]) // eslint-disable-line unicorn/no-array-push-push
+    execArgv.push(...commandArgs as string[]) // eslint-disable-line unicorn/no-array-push-push
 
-    console.log('execArgv', execArgv)
-    // await foreman(execArgv)
+    await foreman(execArgv)
   }
 }

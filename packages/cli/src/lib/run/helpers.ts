@@ -5,9 +5,22 @@ import {ux} from '@oclif/core'
 // and to capture all non-flag command inputs
 export function revertSortedArgs(processArgs: Array<string>, argv: Array<string>) {
   const originalInputOrder = []
-  // this reorders the arguments in the order the user inputted
+  const flagRegex = /^--?/
+  let isSeparatorPresent = false
+  let argIsFlag = false
+
+  // this for-loop performs 2 tasks
+  // 1. reorders the arguments in the order the user inputted
+  // 2. checks that no oclif flags are included in originalInputOrder
   for (const processArg of processArgs) {
-    if (argv.includes(processArg)) {
+    argIsFlag = flagRegex.test(processArg)
+
+    if (processArg === '--') {
+      isSeparatorPresent = true
+    }
+
+    if ((argv.includes(processArg) && (!isSeparatorPresent && !argIsFlag)) ||
+        (argv.includes(processArg) && (isSeparatorPresent))) {
       originalInputOrder.push(processArg)
     }
   }
