@@ -229,14 +229,36 @@ interface YAMLUpdateInput {
 }
 
 function updateYAML(input: YAMLUpdateInput, yamlString: string): string {
-  const appRegex = new RegExp(`(\\s*- name:\\s*${input.app}\\s*[^]*?)(formation:\\s*[^]*?)(\\s*- type:\\s*${input.type}\\s*[^]*?)(quantity:\\s*)(\\d+)(\\s*size:\\s*)(\\S+)`, 'g');
+  // Parse the YAML string into a JavaScript object
+  const yamlObject: any = yaml.load(yamlString);
 
-  return yamlString.replace(appRegex, (match, appBlock, formation, typeBlock, quantityLabel, quantityValue, sizeLabel, sizeValue) => {
-    const updatedQuantity = input.quantity
-    const updatedSize = input.size?.toLowerCase() ?? sizeValue
+  // Ensure the 'stages' array exists in the YAML structure
+  if (!yamlObject.spec?.stages) {
+    throw new Error('The stages block is missing from the YAML content.');
+  }
 
-    return `${appBlock}${formation}${typeBlock}${quantityLabel}${updatedQuantity}${sizeLabel}${updatedSize}`;
-  });
+  // Find the relevant app by name
+  const stage = yamlObject.spec.stages.find((stage: any) =>
+    stage.apps?.some((app: any) => app.name === input.app)
+  );
+  if (!stage) {
+    throw new Error(`App with name "${input.app}" not found.`);
+  }
+
+  // Find the relevant formation by type
+  const app = stage.apps.find((app: any) => app.name === input.app);
+  const formation = app.formation.find((f: any) => f.type === input.type);
+
+  if (!formation) {
+    throw new Error(`Formation of type "${input.type}" not found for app "${input.app}".`);
+  }
+
+  // Update the quantity and size based on input
+  formation.quantity = input.quantity;
+  formation.size = input.size.toLowerCase();
+
+  // Convert the updated object back to YAML
+  return yaml.dump(yamlObject);
 }
 
 async function createPullRequest(branchName: string, prDescription: string): Promise<void> {
