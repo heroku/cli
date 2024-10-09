@@ -2,6 +2,7 @@ import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
 import color from '@heroku-cli/color'
 import {fork as foreman} from '../../lib/local/fork-foreman'
+import {revertSortedArgs} from '../../lib/run/helpers'
 import * as fs from 'fs'
 
 export default class Run extends Command {
@@ -26,8 +27,7 @@ export default class Run extends Command {
   async run() {
     const execArgv: string[] = ['run']
     const {argv, flags} = await this.parse(Run)
-    const maybeOptionsIndex = process.argv.indexOf('--')
-    const commandArgs = (maybeOptionsIndex === -1 ? argv : process.argv.slice(maybeOptionsIndex + 1)) as string[]
+    const commandArgs = revertSortedArgs(process.argv, argv as string[])
 
     if (commandArgs.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'
