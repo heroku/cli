@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
+import {Space} from '../../lib/types/fir'
 
-type SpaceArray = Array<Required<Heroku.Space>>
+type SpaceArray = Array<Required<Space>>
 
 export default class Index extends Command {
   static topic = 'spaces'
@@ -16,7 +16,11 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {team, json} = flags
-    let {body: spaces} = await this.heroku.get<SpaceArray>('/spaces')
+    let {body: spaces} = await this.heroku.get<SpaceArray>('/spaces', {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.fir',
+      },
+    })
     if (team) {
       spaces = spaces.filter(s => s.team.name === team)
     }
@@ -54,6 +58,7 @@ export default class Index extends Command {
         Team: {get: space => space.team.name},
         Region: {get: space => space.region.name},
         State: {get: space => space.state},
+        Generation: {get: space => space.generation},
         createdAt: {
           header: 'Created At',
           get: space => space.created_at,
