@@ -26,9 +26,10 @@ export function renderInfo(space: Heroku.Space, json: boolean) {
         State: space.state,
         Shield: displayShieldState(space),
         'Outbound IPs': displayNat(space.outbound_ips),
+        Generation: space.generation,
         'Created at': space.created_at,
       },
-      ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Created at'],
+      ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],
     )
   }
 }
