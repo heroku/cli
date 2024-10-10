@@ -1,14 +1,19 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import debug from 'debug'
 import {renderInfo} from '../../lib/spaces/spaces'
 import {Notification, notify} from '@heroku-cli/notifications'
+import {IncomingHttpHeaders} from 'node:http'
+import {Space, SpaceNat} from '../../lib/types/fir'
 
 const spacesDebug = debug('spaces:wait')
+
+type SpaceWithOutboundIps = Space & {
+  outbound_ips?: SpaceNat
+}
 
 export default class Wait extends Command {
   static topic = 'spaces'
@@ -48,24 +53,27 @@ export default class Wait extends Command {
     const deadline = new Date(Date.now() + timeout)
     const action = new Spinner()
     action.start(`Waiting for space ${color.green(spaceName as string)} to allocate`)
-    let headers = {}
+
+    const headers: IncomingHttpHeaders = {
+      Accept: 'application/vnd.heroku+json; version=3.fir',
+    }
     if (!flags.json) {
-      headers = {'Accept-Expansion': 'region'}
+      headers['Accept-Expansion'] = 'region'
     }
 
-    let {body: space} = await this.heroku.get<Heroku.Space>(`/spaces/${spaceName}`, {headers})
+    let {body: space} = await this.heroku.get<SpaceWithOutboundIps>(`/spaces/${spaceName}`, {headers})
     while (space.state === 'allocating') {
       if (new Date() > deadline) {
         throw new Error('Timeout waiting for space to become allocated.')
       }
 
       await this.wait(interval)
-      const {body: updatedSpace} = await this.heroku.get<Heroku.Space>(`/spaces/${spaceName}`, {headers})
+      const {body: updatedSpace} = await this.heroku.get<SpaceWithOutboundIps>(`/spaces/${spaceName}`, {headers})
       space = updatedSpace
     }
 
     try {
-      const {body: nat} = await this.heroku.get<Heroku.SpaceNetworkAddressTranslation>(`/spaces/${spaceName}/nat`)
+      const {body: nat} = await this.heroku.get<SpaceNat>(`/spaces/${spaceName}/nat`, {headers: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
       space.outbound_ips = nat
     } catch (error) {
       spacesDebug(`Retrieving NAT details for the space failed with ${error}`)
