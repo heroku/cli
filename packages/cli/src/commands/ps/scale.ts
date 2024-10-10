@@ -414,7 +414,7 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
   
     prBody += `type: ${formationType}\n`;
   
-    if (previousQuantity !== updatedQuantity) {
+    if (String(previousQuantity) !== String(updatedQuantity)) {
       prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
     }
   
@@ -433,11 +433,11 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
   
     // Set the message for cost increase or decrease using GitHub-style blocks
     if (costDifference > 0) {
-      prBody += `\n> [!WARNING]\n> App costs will INCREASE by **$${costDifference.toFixed(2)}**. \n$${previousHourlyRate.toFixed(2)}/hour vs $${updatedHourlyRate.toFixed(2)}/hour\n\n---\n\n`;
+      prBody += `\n> [!WARNING]\n> App costs will INCREASE by **~${costDifference.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
     } else if (costDifference < 0) {
-      prBody += `\n> [!TIP]\n> App costs will DECREASE by **$${Math.abs(costDifference).toFixed(2)}**. \n$${previousHourlyRate.toFixed(2)}/hour vs $${updatedHourlyRate.toFixed(2)}/hour\n\n---\n\n`;
+      prBody += `\n> [!TIP]\n> App costs will DECREASE by **~${Math.abs(costDifference).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
     } else {
-      prBody += `\n> [!NOTE]\n> No change in costs. ($${previousHourlyRate.toFixed(2)}/hour)\n\n---\n\n`;
+      prBody += `\n> [!NOTE]\n> No change in costs. (${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour)\n\n`;
     }
   
     prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
