@@ -221,6 +221,8 @@ ossp
 otherapp
 otherdb
 otta
+otlpgrpc
+otlphttp
 papertrail
 passw
 pcxid
