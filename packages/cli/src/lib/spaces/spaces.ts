@@ -1,11 +1,7 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {Space, SpaceNat, SpaceRegion} from '../types/fir'
-
-type SpaceExpanded = Space & {
-  outbound_ips?: SpaceNat
-  region: SpaceRegion & {description?: string}
-}
+import {SpaceNat} from '../types/fir'
+import {SpaceWithOutboundIps} from '../types/spaces'
 
 export function displayShieldState(space: Heroku.Space) {
   return space.shield ? 'on' : 'off'
@@ -17,7 +13,7 @@ export function displayNat(nat?: Required<SpaceNat>) {
   return nat.sources.join(', ')
 }
 
-export function renderInfo(space: SpaceExpanded, json: boolean) {
+export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.log(JSON.stringify(space, null, 2))
   } else {

@@ -7,13 +7,10 @@ import debug from 'debug'
 import {renderInfo} from '../../lib/spaces/spaces'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {IncomingHttpHeaders} from 'node:http'
-import {Space, SpaceNat} from '../../lib/types/fir'
+import {SpaceNat} from '../../lib/types/fir'
+import {SpaceWithOutboundIps} from '../../lib/types/spaces'
 
 const spacesDebug = debug('spaces:wait')
-
-type SpaceWithOutboundIps = Space & {
-  outbound_ips?: SpaceNat
-}
 
 export default class Wait extends Command {
   static topic = 'spaces'
