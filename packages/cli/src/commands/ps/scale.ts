@@ -109,7 +109,7 @@ const PR_TITLE = '[heroku/cli] flow-demo-production formation';
 // const PR_BODY = 'Update `flow-demo-production` app.\n\ntype: `web`\n\nprevious value: `1`\n\nnew value: `2`';
 
 function generateBranchName(): string {
-  const prefix = 'heroku/dashboard/flow-demo-production-formation-';
+  const prefix = 'heroku/cli/flow-demo-production-formation-';
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
   let randomPart = '';
 
@@ -312,136 +312,135 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
 }
 
 // function compareChanges(previousContent: string, updatedContent: string, input: any): string {
-  // import * as yaml from 'js-yaml';
+// import * as yaml from 'js-yaml';
 
-  interface DynoCosts {
-    monthly: number;
-    hourly: number;
+interface DynoCosts {
+  monthly: number;
+  hourly: number;
+}
+
+interface Formation {
+  type: string;
+  quantity: number;
+  size: string;
+}
+
+interface App {
+  name: string;
+  formation: Formation[];
+}
+
+interface Stage {
+  apps?: App[];
+}
+
+interface Spec {
+  stages: Stage[];
+}
+
+interface YamlData {
+  spec: Spec;
+}
+
+interface Input {
+  app: string;
+  type: string;
+}
+
+function compareChanges(previousContent: string, updatedContent: string, input: Input): string {
+  const dynoCosts: Record<string, DynoCosts> = {
+    'eco': { monthly: 5, hourly: 0.005 },
+    'basic': { monthly: 7, hourly: 0.01 },
+    'standard-1x': { monthly: 25, hourly: 0.03 },
+    'standard-2x': { monthly: 50, hourly: 0.06 },
+    'performance-m': { monthly: 250, hourly: 0.34 },
+    'performance-l': { monthly: 500, hourly: 0.69 },
+    'performance-l-ram': { monthly: 500, hourly: 0.69 },
+    'performance-xl': { monthly: 750, hourly: 1.04 },
+    'performance-2xl': { monthly: 1500, hourly: 2.08 }
+  };
+
+  // Parse the YAML strings to JSON objects
+  const previousYaml = yaml.load(previousContent) as YamlData;
+  const updatedYaml = yaml.load(updatedContent) as YamlData;
+
+  if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
+    throw new Error('The stages block is missing from the YAML content.');
   }
-  
-  interface Formation {
-    type: string;
-    quantity: number;
-    size: string;
+
+  const appName = input.app;
+  const formationType = input.type;
+
+  if (!appName) {
+    throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
   }
-  
-  interface App {
-    name: string;
-    formation: Formation[];
-  }
-  
-  interface Stage {
-    apps?: App[];
-  }
-  
-  interface Spec {
-    stages: Stage[];
-  }
-  
-  interface YamlData {
-    spec: Spec;
-  }
-  
-  interface Input {
-    app: string;
-    type: string;
-  }
-  
-  function compareChanges(previousContent: string, updatedContent: string, input: Input): string {
-    const dynoCosts: Record<string, DynoCosts> = {
-      'eco': { monthly: 5, hourly: 0.005 },
-      'basic': { monthly: 7, hourly: 0.01 },
-      'standard-1x': { monthly: 25, hourly: 0.03 },
-      'standard-2x': { monthly: 50, hourly: 0.06 },
-      'performance-m': { monthly: 250, hourly: 0.34 },
-      'performance-l': { monthly: 500, hourly: 0.69 },
-      'performance-l-ram': { monthly: 500, hourly: 0.69 },
-      'performance-xl': { monthly: 750, hourly: 1.04 },
-      'performance-2xl': { monthly: 1500, hourly: 2.08 }
-    };
-  
-    // Parse the YAML strings to JSON objects
-    const previousYaml = yaml.load(previousContent) as YamlData;
-    const updatedYaml = yaml.load(updatedContent) as YamlData;
-  
-    if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
-      throw new Error('The stages block is missing from the YAML content.');
-    }
-  
-    const appName = input.app;
-    const formationType = input.type;
-  
-    if (!appName) {
-      throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
-    }
-  
-    const findAppInStages = (yamlData: YamlData): App | null => {
-      for (const stage of yamlData.spec.stages) {
-        const foundApp = stage.apps?.find(app => app.name === appName);
-        if (foundApp) {
-          return foundApp;
-        }
+
+  const findAppInStages = (yamlData: YamlData): App | null => {
+    for (const stage of yamlData.spec.stages) {
+      const foundApp = stage.apps?.find(app => app.name === appName);
+      if (foundApp) {
+        return foundApp;
       }
-      return null;
-    };
-  
-    const previousApp = findAppInStages(previousYaml);
-    const updatedApp = findAppInStages(updatedYaml);
-  
-    if (!previousApp || !updatedApp) {
-      throw new Error(`App with name "${appName}" not found in the YAML content.`);
     }
-  
-    if (!previousApp.formation || !updatedApp.formation) {
-      throw new Error('Formation block is missing for the specified app.');
-    }
-  
-    const previousFormation = previousApp.formation.find(form => form.type === formationType);
-    const updatedFormation = updatedApp.formation.find(form => form.type === formationType);
-  
-    if (!previousFormation || !updatedFormation) {
-      throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
-    }
-  
-    const previousQuantity = previousFormation.quantity;
-    const updatedQuantity = updatedFormation.quantity;
-  
-    const previousSize = previousFormation.size.toLowerCase();
-    const updatedSize = updatedFormation.size.toLowerCase();
-  
-    // Generate the summary for the pull request description
-    let prBody = `Update formation of <a href="https://dashboard.heroku.com/apps/${appName}/resources">Heroku app</a> \`${appName}\`.\n\n`;
-  
-    prBody += `type: ${formationType}\n`;
-  
-    if (String(previousQuantity) !== String(updatedQuantity)) {
-      prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
-    }
-  
-    if (previousSize !== updatedSize) {
-      prBody += `size: **${updatedSize}** (from ${previousSize})\n`;
-    }
-  
-    // Calculate the cost difference
-    const previousCost = previousQuantity * dynoCosts[previousSize].monthly;
-    const updatedCost = updatedQuantity * dynoCosts[updatedSize].monthly;
-    const costDifference = updatedCost - previousCost;
-  
-    // Determine the change in hourly rates
-    const previousHourlyRate = previousQuantity * dynoCosts[previousSize].hourly;
-    const updatedHourlyRate = updatedQuantity * dynoCosts[updatedSize].hourly;
-  
-    // Set the message for cost increase or decrease using GitHub-style blocks
-    if (costDifference > 0) {
-      prBody += `\n> [!WARNING]\n> App costs will INCREASE by **~${costDifference.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
-    } else if (costDifference < 0) {
-      prBody += `\n> [!TIP]\n> App costs will DECREASE by **~${Math.abs(costDifference).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
-    } else {
-      prBody += `\n> [!NOTE]\n> No change in costs. (${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour)\n\n`;
-    }
-  
-    prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
-  
-    return prBody.trim(); // Remove trailing whitespace
+    return null;
+  };
+
+  const previousApp = findAppInStages(previousYaml);
+  const updatedApp = findAppInStages(updatedYaml);
+
+  if (!previousApp || !updatedApp) {
+    throw new Error(`App with name "${appName}" not found in the YAML content.`);
   }
-  
+
+  if (!previousApp.formation || !updatedApp.formation) {
+    throw new Error('Formation block is missing for the specified app.');
+  }
+
+  const previousFormation = previousApp.formation.find(form => form.type === formationType);
+  const updatedFormation = updatedApp.formation.find(form => form.type === formationType);
+
+  if (!previousFormation || !updatedFormation) {
+    throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
+  }
+
+  const previousQuantity = previousFormation.quantity;
+  const updatedQuantity = updatedFormation.quantity;
+
+  const previousSize = previousFormation.size.toLowerCase();
+  const updatedSize = updatedFormation.size.toLowerCase();
+
+  // Generate the summary for the pull request description
+  let prBody = `Update formation of <a href="https://dashboard.heroku.com/apps/${appName}/resources">Heroku app</a> \`${appName}\`.\n\n`;
+
+  prBody += `type: ${formationType}\n`;
+
+  if (String(previousQuantity) !== String(updatedQuantity)) {
+    prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
+  }
+
+  if (previousSize !== updatedSize) {
+    prBody += `size: **${updatedSize}** (from ${previousSize})\n`;
+  }
+
+  // Calculate the cost difference
+  const previousCost = previousQuantity * dynoCosts[previousSize].monthly;
+  const updatedCost = updatedQuantity * dynoCosts[updatedSize].monthly;
+  const costDifference = updatedCost - previousCost;
+
+  // Determine the change in hourly rates
+  const previousHourlyRate = previousQuantity * dynoCosts[previousSize].hourly;
+  const updatedHourlyRate = updatedQuantity * dynoCosts[updatedSize].hourly;
+
+  // Set the message for cost increase or decrease using GitHub-style blocks
+  if (costDifference > 0) {
+    prBody += `\n> [!WARNING]\n> **~${costDifference.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month** INCREASE in app costs with this change\n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
+  } else if (costDifference < 0) {
+    prBody += `\n> [!TIP]\n> **~${Math.abs(costDifference).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month** DECREASE in app costs with this change\n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
+  } else {
+    prBody += `\n> [!NOTE]\n> No change in costs. (${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour)\n\n`;
+  }  
+
+  prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
+
+  return prBody.trim(); // Remove trailing whitespace
+}

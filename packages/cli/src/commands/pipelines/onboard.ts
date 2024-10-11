@@ -6,24 +6,34 @@ import {listPipelineApps} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
 import renderPipeline from '../../lib/pipelines/render-pipeline'
 
-export default class PipelinesInfo extends Command {
-  static description = 'show list of apps in a pipeline'
+export default class PipelinesOnboard extends Command {
+  static description = 'onboard to GitOps'
+  static defaultUrl = '.git/config:origin/.heroku/$pipelineName.pipeline.yaml'
+  static featureFlagName = 'alpha'
 
   static examples = [
-    '$ heroku pipelines:info my-pipeline',
+    '$ heroku pipelines:onboard my-pipeline https://github.com/chap/flow-demo/blob/main/.heroku/pipeline.yaml',
   ]
 
   static flags = {
-    json: flags.boolean({
-      description: 'output in json format',
+    url: flags.string({
+      description: 'file to create (defaults to .git/config:origin/.heroku/$pipelineName.pipeline.yaml)',
+      required: true,
+      default: '.git/config:origin/.heroku/$pipelineName.pipeline.yaml',
     }),
-    yaml: flags.boolean({
-      description: 'output in yaml format',
-    }),
-    'with-owners': flags.boolean({
-      description: 'shows owner of every app',
-      hidden: true,
-    }),
+    // remote: flags.remote(),
+    // stage: flags.string({
+
+    // json: flags.boolean({
+    //   description: 'output in json format',
+    // }),
+    // yaml: flags.boolean({
+    //   description: 'output in yaml format',
+    // }),
+    // 'with-owners': flags.boolean({
+    //   description: 'shows owner of every app',
+    //   hidden: true,
+    // }),
   }
 
   static args = {
@@ -31,24 +41,51 @@ export default class PipelinesInfo extends Command {
       description: 'pipeline to show list of apps for',
       required: true,
     }),
+    // url: Args.string({
+    //   description: 'file to create (defaults to .git/config:origin/.heroku/$pipelineName.pipeline.yaml)',
+    //   required: true,
+    //   default: PipelinesOnboard.defaultUrl,
+    // }),
   }
 
   async run() {
-    const {args, flags} = await this.parse(PipelinesInfo)
-    const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
-    const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
+    ux.action.start('Onboarding pipeline')
 
-    if (flags.json) {
-      ux.styledJSON({pipeline, apps: pipelineApps})
-    } else if (flags.yaml) {
-      // ux.styledJSON({pipeline, apps: pipelineApps})
-      toYAML(pipeline.id!)
-    } else {
-      await renderPipeline(this.heroku, pipeline, pipelineApps, {
-        withOwners: flags['with-owners'],
-        showOwnerWarning: true,
-      })
+    const {args, flags} = await this.parse(PipelinesOnboard)
+    const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
+    // const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
+
+    // if (flags.json) {
+    //   ux.styledJSON({pipeline, apps: pipelineApps})
+    // } else if (flags.yaml) {
+    //   // ux.styledJSON({pipeline, apps: pipelineApps})
+    //   toYAML(pipeline.id!)
+    // } else {
+    // await renderPipeline(this.heroku, pipeline, pipelineApps, {
+    //   withOwners: flags['with-owners'],
+    //   showOwnerWarning: true,
+    // })
+    // }
+
+    if (flags.url === PipelinesOnboard.defaultUrl) {
+      const currentDir = process.cwd();
+      const gitConfigPath = findGitConfig(currentDir);
+
+      if (gitConfigPath) {
+        const originUrl = extractOriginUrl(gitConfigPath);
+        if (originUrl) {
+          const filePath = '.heroku/app.yaml';  // This could be any file path you want to generate the URL for
+          flags.url = generateGitHubUrl(originUrl, filePath);
+          console.log(`creating file... ${flags.url}`);
+        } else {
+          console.error('No "origin" remote found in .git/config.');
+        }
+      } else {
+        console.error("No .git/config file found in the current or parent directories.");
+      }
     }
+
+    openPullRequest(pipeline!, flags.url)
   }
 }
 
@@ -278,7 +315,7 @@ async function convertToHerokuPipelineCRD(couplings: HerokuPipelineCoupling[], a
     metadata: {
       name: pipelineName,
       labels: {
-        generated: 'heroku cli',
+        generated: 'heroku-cli',
       },
     },
     spec: {
@@ -287,16 +324,16 @@ async function convertToHerokuPipelineCRD(couplings: HerokuPipelineCoupling[], a
   };
 }
 
-function outputYaml(obj: any) {
+function outputYaml(obj: any): string {
   const yaml = require('js-yaml');
   if (obj) {
-    console.log(yaml.dump(obj));
-  } else {
-    console.error('Error: Failed to convert pipeline data to CRD.');
+    return yaml.dump(obj)
   }
+
+  return ''
 }
 
-async function toYAML(pipelineId: string) {
+async function toYAML(pipelineId: string): Promise<string> {
   try {
     const [couplings, pipeline] = await Promise.all([
       fetchPipelineCouplings(pipelineId),
@@ -307,9 +344,10 @@ async function toYAML(pipelineId: string) {
     const appData = await fetchAppInfo(appIds);
 
     const herokuPipelineCRD = await convertToHerokuPipelineCRD(couplings, appData, pipeline.name, pipelineId);
-    outputYaml(herokuPipelineCRD);
+    return outputYaml(herokuPipelineCRD);
   } catch (error) {
     console.error('Error:', error);
+    return ''
   }
 }
 
@@ -364,12 +402,11 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const REPO_OWNER = 'chap'; // Repository owner's username
 const REPO_NAME = 'flow-demo'; // Repository name
 const FILE_PATH = '.heroku/flow-demo.yaml';
-const COMMIT_MESSAGE = 'Update flow-demo-production formation';
-const PR_TITLE = '[heroku/cli] flow-demo-production formation';
-// const PR_BODY = 'Update `flow-demo-production` app.\n\ntype: `web`\n\nprevious value: `1`\n\nnew value: `2`';
+const COMMIT_MESSAGE = 'Heroku pipeline onboarding.';
+const PR_TITLE = '[heroku/cli] pipeline onboarding';
 
 function generateBranchName(): string {
-  const prefix = 'heroku/dashboard/flow-demo-production-formation-';
+  const prefix = 'heroku/cli/pipeline-onboarding-';
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
   let randomPart = '';
 
@@ -460,8 +497,8 @@ async function getLastCommitSha(owner: string, repo: string): Promise<string> {
   return data[0]?.sha
 }
 
-async function updateFile(updatedContent: string, sha: string, branchName: string): Promise<void> {
-  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+async function updateFile(updatedContent: string, sha: string, branchName: string, url: string): Promise<void> {
+  const response = await fetch(generateGitHubApiUrl(url), {
     method: 'PUT',
     headers: {
       Authorization: `token ${GITHUB_TOKEN}`,
@@ -546,24 +583,38 @@ async function createPullRequest(branchName: string, prDescription: string): Pro
   ux.action.stop(`merge changes to apply:\n-----> ${pr.html_url}`)
 }
 
-async function openPullRequest(inputString: string, appName: string): Promise<void> {
+async function openPullRequest(pipeline: Heroku.Pipeline, url: string): Promise<void> {
   try {
-    const fileData = await fetchFileContent();
+
+    // const fileData = await fetchFileContent();
     const branchName = generateBranchName();
-    await createBranch(fileData.mainSha, branchName);
+    const mainSha = await getLastCommitSha(REPO_OWNER, REPO_NAME);
+    await createBranch(mainSha, branchName);
 
     // const appName = getAppNameFromURL(window.location.href);
-    const input: YAMLUpdateInput = { ...JSON.parse(inputString), app: appName || '' };
+    // const input: YAMLUpdateInput = { ...JSON.parse(inputString), app: appName || '' };
     // const inputJson = { ...JSON.parse(inputString), app: appName || '' };
 
-    const updatedFile = updateYAML(input, fileData.content);
+    // const updatedFile = updateYAML(input, fileData.content);
 
     // Compare changes and generate the PR description
-    const prDescription = compareChanges(fileData.content, updatedFile, input);
+    // const prDescription = compareChanges(fileData.content, updatedFile, input);
     // ux.log(`input:${inputString}`)
     // const prDescription = `${appName} formation updated.`
 
-    await updateFile(updatedFile, fileData.contentSha, branchName);
+    const pipelineYAML = await toYAML(pipeline.id!)
+    const contentSha = await generateGitHubBlobSha(pipelineYAML);
+    await updateFile(pipelineYAML, contentSha, branchName, url);
+
+    const prDescription = `Get started with Heroku GitOps in 2 steps:
+    
+1. Merge this Pull Request
+2. Enable GitOps feature:\n\`heroku features:enable ${PipelinesOnboard.featureFlagName} -pipeline ${pipeline.name!}\`
+
+While enabled, all Heroku settings must be configured via this repository.
+
+> [!WARNING]
+> Commits to the main branch may cause an increase in Heroku charges.\n> \n> Review branch protections and access controls for this repo before merging.`
 
     await createPullRequest(branchName, prDescription);
   } catch (error) {
@@ -574,134 +625,198 @@ async function openPullRequest(inputString: string, appName: string): Promise<vo
 // function compareChanges(previousContent: string, updatedContent: string, input: any): string {
   // import * as yaml from 'js-yaml';
 
-  interface DynoCosts {
-    monthly: number;
-    hourly: number;
+interface DynoCosts {
+  monthly: number;
+  hourly: number;
+}
+
+interface Formation {
+  type: string;
+  quantity: number;
+  size: string;
+}
+
+interface App {
+  name: string;
+  formation: Formation[];
+}
+
+interface Stage {
+  apps?: App[];
+}
+
+interface Spec {
+  stages: Stage[];
+}
+
+interface YamlData {
+  spec: Spec;
+}
+
+interface Input {
+  app: string;
+  type: string;
+}
+
+function compareChanges(previousContent: string, updatedContent: string, input: Input): string {
+  const dynoCosts: Record<string, DynoCosts> = {
+    'eco': { monthly: 5, hourly: 0.005 },
+    'basic': { monthly: 7, hourly: 0.01 },
+    'standard-1x': { monthly: 25, hourly: 0.03 },
+    'standard-2x': { monthly: 50, hourly: 0.06 },
+    'performance-m': { monthly: 250, hourly: 0.34 },
+    'performance-l': { monthly: 500, hourly: 0.69 },
+    'performance-l-ram': { monthly: 500, hourly: 0.69 },
+    'performance-xl': { monthly: 750, hourly: 1.04 },
+    'performance-2xl': { monthly: 1500, hourly: 2.08 }
+  };
+
+  // Parse the YAML strings to JSON objects
+  const previousYaml = yaml.load(previousContent) as YamlData;
+  const updatedYaml = yaml.load(updatedContent) as YamlData;
+
+  if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
+    throw new Error('The stages block is missing from the YAML content.');
   }
-  
-  interface Formation {
-    type: string;
-    quantity: number;
-    size: string;
+
+  const appName = input.app;
+  const formationType = input.type;
+
+  if (!appName) {
+    throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
   }
-  
-  interface App {
-    name: string;
-    formation: Formation[];
-  }
-  
-  interface Stage {
-    apps?: App[];
-  }
-  
-  interface Spec {
-    stages: Stage[];
-  }
-  
-  interface YamlData {
-    spec: Spec;
-  }
-  
-  interface Input {
-    app: string;
-    type: string;
-  }
-  
-  function compareChanges(previousContent: string, updatedContent: string, input: Input): string {
-    const dynoCosts: Record<string, DynoCosts> = {
-      'eco': { monthly: 5, hourly: 0.005 },
-      'basic': { monthly: 7, hourly: 0.01 },
-      'standard-1x': { monthly: 25, hourly: 0.03 },
-      'standard-2x': { monthly: 50, hourly: 0.06 },
-      'performance-m': { monthly: 250, hourly: 0.34 },
-      'performance-l': { monthly: 500, hourly: 0.69 },
-      'performance-l-ram': { monthly: 500, hourly: 0.69 },
-      'performance-xl': { monthly: 750, hourly: 1.04 },
-      'performance-2xl': { monthly: 1500, hourly: 2.08 }
-    };
-  
-    // Parse the YAML strings to JSON objects
-    const previousYaml = yaml.load(previousContent) as YamlData;
-    const updatedYaml = yaml.load(updatedContent) as YamlData;
-  
-    if (!previousYaml.spec.stages || !updatedYaml.spec.stages) {
-      throw new Error('The stages block is missing from the YAML content.');
-    }
-  
-    const appName = input.app;
-    const formationType = input.type;
-  
-    if (!appName) {
-      throw new Error(`App name is not defined in input: ${JSON.stringify(input)}`);
-    }
-  
-    const findAppInStages = (yamlData: YamlData): App | null => {
-      for (const stage of yamlData.spec.stages) {
-        const foundApp = stage.apps?.find(app => app.name === appName);
-        if (foundApp) {
-          return foundApp;
-        }
+
+  const findAppInStages = (yamlData: YamlData): App | null => {
+    for (const stage of yamlData.spec.stages) {
+      const foundApp = stage.apps?.find(app => app.name === appName);
+      if (foundApp) {
+        return foundApp;
       }
-      return null;
-    };
-  
-    const previousApp = findAppInStages(previousYaml);
-    const updatedApp = findAppInStages(updatedYaml);
-  
-    if (!previousApp || !updatedApp) {
-      throw new Error(`App with name "${appName}" not found in the YAML content.`);
     }
-  
-    if (!previousApp.formation || !updatedApp.formation) {
-      throw new Error('Formation block is missing for the specified app.');
-    }
-  
-    const previousFormation = previousApp.formation.find(form => form.type === formationType);
-    const updatedFormation = updatedApp.formation.find(form => form.type === formationType);
-  
-    if (!previousFormation || !updatedFormation) {
-      throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
-    }
-  
-    const previousQuantity = previousFormation.quantity;
-    const updatedQuantity = updatedFormation.quantity;
-  
-    const previousSize = previousFormation.size.toLowerCase();
-    const updatedSize = updatedFormation.size.toLowerCase();
-  
-    // Generate the summary for the pull request description
-    let prBody = `Update formation of <a href="https://dashboard.heroku.com/apps/${appName}/resources">Heroku app</a> \`${appName}\`.\n\n`;
-  
-    prBody += `type: ${formationType}\n`;
-  
-    if (String(previousQuantity) !== String(updatedQuantity)) {
-      prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
-    }
-  
-    if (previousSize !== updatedSize) {
-      prBody += `size: **${updatedSize}** (from ${previousSize})\n`;
-    }
-  
-    // Calculate the cost difference
-    const previousCost = previousQuantity * dynoCosts[previousSize].monthly;
-    const updatedCost = updatedQuantity * dynoCosts[updatedSize].monthly;
-    const costDifference = updatedCost - previousCost;
-  
-    // Determine the change in hourly rates
-    const previousHourlyRate = previousQuantity * dynoCosts[previousSize].hourly;
-    const updatedHourlyRate = updatedQuantity * dynoCosts[updatedSize].hourly;
-  
-    // Set the message for cost increase or decrease using GitHub-style blocks
-    if (costDifference > 0) {
-      prBody += `\n> [!WARNING]\n> App costs will INCREASE by **~${costDifference.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
-    } else if (costDifference < 0) {
-      prBody += `\n> [!TIP]\n> App costs will DECREASE by **~${Math.abs(costDifference).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
-    } else {
-      prBody += `\n> [!NOTE]\n> No change in costs. (${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour)\n\n`;
-    }
-  
-    prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
-  
-    return prBody.trim(); // Remove trailing whitespace
+    return null;
+  };
+
+  const previousApp = findAppInStages(previousYaml);
+  const updatedApp = findAppInStages(updatedYaml);
+
+  if (!previousApp || !updatedApp) {
+    throw new Error(`App with name "${appName}" not found in the YAML content.`);
   }
-  
+
+  if (!previousApp.formation || !updatedApp.formation) {
+    throw new Error('Formation block is missing for the specified app.');
+  }
+
+  const previousFormation = previousApp.formation.find(form => form.type === formationType);
+  const updatedFormation = updatedApp.formation.find(form => form.type === formationType);
+
+  if (!previousFormation || !updatedFormation) {
+    throw new Error(`Formation type "${formationType}" not found for app "${appName}".`);
+  }
+
+  const previousQuantity = previousFormation.quantity;
+  const updatedQuantity = updatedFormation.quantity;
+
+  const previousSize = previousFormation.size.toLowerCase();
+  const updatedSize = updatedFormation.size.toLowerCase();
+
+  // Generate the summary for the pull request description
+  let prBody = `Update formation of <a href="https://dashboard.heroku.com/apps/${appName}/resources">Heroku app</a> \`${appName}\`.\n\n`;
+
+  prBody += `type: ${formationType}\n`;
+
+  if (String(previousQuantity) !== String(updatedQuantity)) {
+    prBody += `quantity: **${updatedQuantity}** (from ${previousQuantity})\n`;
+  }
+
+  if (previousSize !== updatedSize) {
+    prBody += `size: **${updatedSize}** (from ${previousSize})\n`;
+  }
+
+  // Calculate the cost difference
+  const previousCost = previousQuantity * dynoCosts[previousSize].monthly;
+  const updatedCost = updatedQuantity * dynoCosts[updatedSize].monthly;
+  const costDifference = updatedCost - previousCost;
+
+  // Determine the change in hourly rates
+  const previousHourlyRate = previousQuantity * dynoCosts[previousSize].hourly;
+  const updatedHourlyRate = updatedQuantity * dynoCosts[updatedSize].hourly;
+
+  // Set the message for cost increase or decrease using GitHub-style blocks
+  if (costDifference > 0) {
+    prBody += `\n> [!WARNING]\n> App costs will INCREASE by **~${costDifference.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
+  } else if (costDifference < 0) {
+    prBody += `\n> [!TIP]\n> App costs will DECREASE by **~${Math.abs(costDifference).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/month**. \n${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour vs ${updatedHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour\n\n---\n\n`;
+  } else {
+    prBody += `\n> [!NOTE]\n> No change in costs. (${previousHourlyRate.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}/hour)\n\n`;
+  }
+
+  prBody += `Check current formation:\n\`\`\`\nheroku ps -a ${appName}\n\`\`\``;
+
+  return prBody.trim(); // Remove trailing whitespace
+}
+
+function generateGitHubApiUrl(githubUrl: string): string {
+  const urlPattern = /https:\/\/github.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)/;
+  const match = githubUrl.match(urlPattern);
+
+  if (!match) {
+      throw new Error("Invalid GitHub URL format");
+  }
+
+  const [, repoOwner, repoName, branch, filePath] = match;
+  return `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`;
+}
+
+
+
+
+
+
+
+import * as fs from 'fs';
+import * as path from 'path';
+
+function findGitConfig(directory: string): string | null {
+  const gitConfigPath = path.join(directory, '.git', 'config');
+  if (fs.existsSync(gitConfigPath)) {
+    return gitConfigPath;
+  }
+  const parentDir = path.dirname(directory);
+  if (parentDir !== directory) {
+    return findGitConfig(parentDir); // Search parent directories
+  }
+  return null;
+}
+
+function extractOriginUrl(configFilePath: string): string | null {
+  const configFile = fs.readFileSync(configFilePath, 'utf8');
+  const originPattern = /\[remote "origin"\]\s+url = (.+)/;
+  const match = configFile.match(originPattern);
+
+  if (match) {
+    const originUrl = match[1];
+    // Clean up SSH URL if necessary (convert SSH URL to HTTPS)
+    if (originUrl.startsWith('git@')) {
+      return originUrl.replace('git@', 'https://').replace(':', '/');
+    }
+    return originUrl;
+  }
+  return null;
+}
+
+function generateGitHubUrl(originUrl: string, filePath: string): string {
+  const originPattern = /https:\/\/([^\/]+)\/([^\/]+)\/([^\/]+)\.git/;
+  const match = originUrl.match(originPattern);
+
+  if (!match) {
+    throw new Error("Invalid origin URL format");
+  }
+
+  const [, domain, repoOwner, repoName] = match;
+  return `https://${domain}/${repoOwner}/${repoName}/blob/main/${filePath}`;
+}
+
+function stringPresent(url?: string | null): boolean {
+  return url !== null && url !== undefined && url.trim() !== '';
+}
