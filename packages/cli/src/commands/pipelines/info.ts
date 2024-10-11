@@ -277,8 +277,9 @@ async function convertToHerokuPipelineCRD(couplings: HerokuPipelineCoupling[], a
     kind: 'HerokuPipeline',
     metadata: {
       name: pipelineName,
-      labels:
-        generated: `heroku cli`
+      labels: [
+        generated: 'heroku cli'
+      ]
     },
     spec: {
       stages: orderedStages
