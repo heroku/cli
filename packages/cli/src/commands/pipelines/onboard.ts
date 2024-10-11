@@ -13,7 +13,7 @@ export default class PipelinesOnboard extends Command {
   static featureFlagName = 'gitops-alpha-1'
 
   static examples = [
-    '$ heroku pipelines:onboard my-pipeline https://github.com/chap/flow-demo/blob/main/.heroku/pipeline.yaml',
+    '$ heroku pipelines:onboard my-pipeline -url https://github.com/chap/flow-demo/blob/main/.heroku/pipeline.yaml',
   ]
 
   static flags = {
@@ -75,7 +75,7 @@ export default class PipelinesOnboard extends Command {
       if (gitConfigPath) {
         const originUrl = extractOriginUrl(gitConfigPath);
         if (originUrl) {
-          const filePath = '.heroku/app.yaml';  // This could be any file path you want to generate the URL for
+          const filePath = `.heroku/${pipeline.name}.pipeline.yaml`;  // This could be any file path you want to generate the URL for
           flags.url = generateGitHubUrl(originUrl, filePath);
           console.log(`creating file... ${flags.url}`);
         } else {
