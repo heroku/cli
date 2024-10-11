@@ -9,7 +9,8 @@ import renderPipeline from '../../lib/pipelines/render-pipeline'
 export default class PipelinesOnboard extends Command {
   static description = 'onboard to GitOps'
   static defaultUrl = '.git/config:origin/.heroku/$pipelineName.pipeline.yaml'
-  static featureFlagName = 'alpha'
+  // cspell:ignore gitops
+  static featureFlagName = 'gitops-alpha-1'
 
   static examples = [
     '$ heroku pipelines:onboard my-pipeline https://github.com/chap/flow-demo/blob/main/.heroku/pipeline.yaml',
