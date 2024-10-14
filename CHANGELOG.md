@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.3.1-beta.0](https://github.com/heroku/cli/compare/v9.3.0...v9.3.1-beta.0) (2024-10-14)
+
+
+### Bug Fixes
+
+* **run:** update args parsing logic ([#3030](https://github.com/heroku/cli/issues/3030)) ([6850e65](https://github.com/heroku/cli/commit/6850e655626fe9ce18d2a6c074e3518186cbe794))
+
+
+
+
+
 # [9.3.0](https://github.com/heroku/cli/compare/v9.2.1...v9.3.0) (2024-09-24)
 
 **Note:** Version bump only for package heroku
