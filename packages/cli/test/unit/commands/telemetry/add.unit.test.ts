@@ -91,7 +91,22 @@ describe('telemetry:index', function () {
     }
   })
 
-  it('correctly assembles telemetry configuration when all flags are correctly set')
+  it('correctly assembles telemetry configuration when all flags are correctly set', async function () {
+    const telemetryNock = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+      .post(`/spaces/${spaceId}/telemetry-drains`)
+      .reply(200, spaceTelemetryDrains)
+
+    await runCommand(Cmd, [
+      '--space',
+      spaceId,
+      '--endpoint',
+      'https://api.testendpoint.com',
+      '--transport',
+      'http',
+    ])
+
+    expect(telemetryNock).to.have.been.requestedWith(addAllDrainsConfig)
+  })
 
   it('sets ["logs", "metrics", "traces"] as the default value for the --signal flag', async function () {
     const telemetryNock = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
@@ -101,6 +116,10 @@ describe('telemetry:index', function () {
     await runCommand(Cmd, [
       '--space',
       spaceId,
+      '--endpoint',
+      'https://api.testendpoint.com',
+      '--transport',
+      'http',
     ])
 
     expect(telemetryNock).to.have.been.requestedWith(addAllDrainsConfig)
@@ -115,6 +134,10 @@ describe('telemetry:index', function () {
       spaceId,
       '--signal',
       'all',
+      '--endpoint',
+      'https://api.testendpoint.com',
+      '--transport',
+      'http',
     ])
 
     expect(telemetryNock).to.have.been.requestedWith(addAllDrainsConfig)
@@ -131,14 +154,36 @@ describe('telemetry:index', function () {
         spaceId,
         '--signal',
         'logs,foo',
+        '--endpoint',
+        'https://api.testendpoint.com',
+        '--transport',
+        'http',
       ])
     } catch (error) {
       const {message} = error as { message: string }
       expect(message).to.contain('Invalid signal option: foo. Signals must include some combination of "traces", "metrics", or "logs". The option "all" can be used on its own to include all three.')
     }
   })
-  it('returns an error when the --signal flag is set to "all" in combination with other options')
-  it('sets the transport protocol to http when an http endpoint is provided and no --transport flag value is added')
-  it('sets the transport protocol to gprc when a gprc endpoint is provided and no --transport flag value is added')
-  it('returns an error when a transport protocol other than gprc or http is set using the --transport flag')
+
+  it('returns an error when the --signal flag is set to "all" in combination with other options', async function () {
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+      .put(`/spaces/${spaceId}/telemetry-drains`)
+      .reply(200, spaceTelemetryDrains)
+
+    try {
+      await runCommand(Cmd, [
+        '--space',
+        spaceId,
+        '--signal',
+        'logs,all',
+        '--endpoint',
+        'https://api.testendpoint.com',
+        '--transport',
+        'http',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Invalid signal option: all. Signals must include some combination of "traces", "metrics", or "logs". The option "all" can be used on its own to include all three.')
+    }
+  })
 })

@@ -6,10 +6,12 @@ export default class Add extends Command {
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
 
   static flags = {
-    app: Flags.app({exactlyOne: ['app', 'remote', 'space']}),
+    app: Flags.app({exactlyOne: ['app', 'remote', 'space'], description: 'app to add drain to'}),
     remote: Flags.remote(),
-    space: Flags.string({char: 's'}),
-    signal: Flags.string({default: 'all'}),
+    space: Flags.string({char: 's', description: 'space to add drain to'}),
+    signal: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
+    endpoint: Flags.string({required: true, description: 'drain url'}),
+    transport: Flags.string({required: true, options: ['http', 'gprc']}),
   }
 
   private validateAndFormatSignal = function (signalInput: string | undefined): string[] {
@@ -26,12 +28,16 @@ export default class Add extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Add)
-    const {app, space, signal} = flags
+    const {app, space, signal, endpoint, transport} = flags
     const drainConfig = {
       signals: this.validateAndFormatSignal(signal),
+      exporter: {
+        endpoint,
+        type: `otlp${transport}`,
+      },
     }
 
-    await this.heroku.put<TelemetryDrains>(`/spaces/${space}/telemetry-drains`, {
+    await this.heroku.post<TelemetryDrains>(`/spaces/${space}/telemetry-drains`, {
       body: drainConfig,
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.fir',
