@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
+import {Space} from '../../lib/types/fir'
 import heredoc from 'tsheredoc'
 import {displayShieldState} from '../../lib/spaces/spaces'
 import {RegionCompletion} from '../../lib/autocomplete/completions'
@@ -28,15 +28,16 @@ export default class Create extends Command {
   `]
 
   static flags = {
-    space: flags.string({char: 's', description: 'name of space to create'}),
     channel: flags.string({hidden: true}),
-    region: flags.string({description: 'region name', completion: RegionCompletion}),
-    features: flags.string({hidden: true, description: 'a list of features separated by commas'}),
-    'log-drain-url': flags.string({hidden: true, description: 'direct log drain url'}),
-    shield: flags.boolean({hidden: true, description: 'create a Shield space'}),
     cidr: flags.string({description: 'RFC-1918 CIDR the space will use'}),
-    'kpi-url': flags.string({hidden: true, description: 'self-managed KPI endpoint to use'}),
     'data-cidr': flags.string({description: 'RFC-1918 CIDR used by Heroku Data resources for the space'}),
+    features: flags.string({hidden: true, description: 'a list of features separated by commas'}),
+    generation: flags.string({description: 'generation for space', default: 'cedar', options: ['cedar', 'fir']}),
+    'kpi-url': flags.string({hidden: true, description: 'self-managed KPI endpoint to use'}),
+    'log-drain-url': flags.string({hidden: true, description: 'direct log drain url'}),
+    region: flags.string({description: 'region name', completion: RegionCompletion}),
+    shield: flags.boolean({hidden: true, description: 'create a Shield space'}),
+    space: flags.string({char: 's', description: 'name of space to create'}),
     team: flags.team({required: true}),
   }
 
@@ -46,7 +47,7 @@ export default class Create extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Create)
-    const {channel, region, features, 'log-drain-url': logDrainUrl, shield, cidr, 'kpi-url': kpiUrl, 'data-cidr': dataCidr, team} = flags
+    const {channel, region, features, generation, 'log-drain-url': logDrainUrl, shield, cidr, 'kpi-url': kpiUrl, 'data-cidr': dataCidr, team} = flags
     const spaceName = flags.space || args.space
 
     if (!spaceName) {
@@ -61,10 +62,22 @@ export default class Create extends Command {
     const spaceType = shield ? 'Shield' : 'Standard'
 
     ux.action.start(`Creating space ${color.green(spaceName as string)} in team ${color.cyan(team as string)}`)
-    const {body: space} = await this.heroku.post<Required<Heroku.Space>>('/spaces', {
+    const {body: space} = await this.heroku.post<Required<Space>>('/spaces', {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
       body: {
-        name: spaceName, team: team, channel_name: channel, region: region, features: splitCsv(features),
-        log_drain_url: logDrainUrl, shield, cidr, kpi_url: kpiUrl, data_cidr: dataCidr,
+        channel_name: channel,
+        cidr,
+        data_cidr: dataCidr,
+        features: splitCsv(features),
+        generation,
+        kpi_url: kpiUrl,
+        log_drain_url: logDrainUrl,
+        name: spaceName,
+        region,
+        shield,
+        team,
       },
     })
     ux.action.stop()
@@ -74,7 +87,7 @@ export default class Create extends Command {
 
     ux.styledHeader(space.name)
     ux.styledObject({
-      ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), 'Created at': space.created_at,
-    }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Created at'])
+      ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: space.generation, 'Created at': space.created_at,
+    }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }
 }

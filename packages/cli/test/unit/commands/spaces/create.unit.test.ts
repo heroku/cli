@@ -14,12 +14,13 @@ describe('spaces:create', function () {
   })
 
   it('creates a Standard space', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        name: 'my-space',
-        team: 'my-team',
-        region: 'my-region',
         features: features,
+        generation: 'cedar',
+        name: 'my-space',
+        region: 'my-region',
+        team: 'my-team',
       })
       .reply(201, {
         shield: false,
@@ -27,6 +28,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
         region: {name: 'my-region'},
         features: ['one', 'two'],
+        generation: 'cedar',
         state: 'allocated',
         created_at: now,
         cidr: '10.0.0.0/16',
@@ -51,17 +53,19 @@ describe('spaces:create', function () {
       Data CIDR:  172.23.0.0/20
       State:      allocated
       Shield:     off
+      Generation: cedar
       Created at: ${now.toISOString()}
     `)
   })
 
   it('shows Standard Private Space Add-on cost warning', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        name: 'my-space',
-        team: 'my-team',
-        region: 'my-region',
         features: features,
+        generation: 'cedar',
+        name: 'my-space',
+        region: 'my-region',
+        team: 'my-team',
       })
       .reply(201, {
         shield: false,
@@ -69,6 +73,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
         region: {name: 'my-region'},
         features: ['one', 'two'],
+        generation: 'cedar',
         state: 'allocated',
         created_at: now,
         cidr: '10.0.0.0/16',
@@ -90,13 +95,14 @@ describe('spaces:create', function () {
   })
 
   it('creates a Shield space', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        name: 'my-space',
-        team: 'my-team',
-        region: 'my-region',
         features: features,
+        generation: 'cedar',
+        name: 'my-space',
+        region: 'my-region',
         shield: true,
+        team: 'my-team',
       })
       .reply(201, {
         shield: true,
@@ -104,6 +110,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
         region: {name: 'my-region'},
         features: ['one', 'two'],
+        generation: 'cedar',
         state: 'allocated',
         created_at: now,
         cidr: '10.0.0.0/16',
@@ -129,18 +136,20 @@ describe('spaces:create', function () {
       Data CIDR:  172.23.0.0/20
       State:      allocated
       Shield:     on
+      Generation: cedar
       Created at: ${now.toISOString()}
     `)
   })
 
   it('shows Shield Private Space Add-on cost warning', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        name: 'my-space',
-        team: 'my-team',
-        region: 'my-region',
         features: features,
+        generation: 'cedar',
+        name: 'my-space',
+        region: 'my-region',
         shield: true,
+        team: 'my-team',
       })
       .reply(201, {
         shield: true,
@@ -148,6 +157,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
         region: {name: 'my-region'},
         features: ['one', 'two'],
+        generation: 'cedar',
         state: 'allocated',
         created_at: now,
         cidr: '10.0.0.0/16',
@@ -170,14 +180,15 @@ describe('spaces:create', function () {
   })
 
   it('creates a space with custom cidr and data cidr', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        name: 'my-space',
-        team: 'my-team',
-        region: 'my-region',
         cidr: '10.0.0.0/24',
         data_cidr: '172.23.0.0/28',
         features: features,
+        generation: 'cedar',
+        name: 'my-space',
+        region: 'my-region',
+        team: 'my-team',
       })
       .reply(201, {
         shield: false,
@@ -211,6 +222,56 @@ describe('spaces:create', function () {
       Data CIDR:  172.23.0.0/28
       State:      allocated
       Shield:     off
+      Created at: ${now.toISOString()}
+    `)
+  })
+
+  it('creates a fir space', async function () {
+    const firSpace = {
+      cidr: '10.0.0.0/16',
+      created_at: now,
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'fir',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: false,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    }
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/spaces', {
+        features: firSpace.features,
+        generation: firSpace.generation,
+        name: firSpace.name,
+        region: firSpace.region.name,
+        team: firSpace.team.name,
+      })
+      .reply(201, firSpace)
+
+    await runCommand(Cmd, [
+      '--team',
+      firSpace.team.name,
+      '--space',
+      firSpace.name,
+      '--region',
+      firSpace.region.name,
+      '--features',
+      firSpace.features.join(','),
+      '--generation',
+      firSpace.generation,
+    ])
+
+    expect(stdout.output).to.eq(heredoc`
+      === ${firSpace.name}
+
+      Team:       ${firSpace.team.name}
+      Region:     ${firSpace.region.name}
+      CIDR:       ${firSpace.cidr}
+      Data CIDR:  ${firSpace.data_cidr}
+      State:      ${firSpace.state}
+      Shield:     off
+      Generation: ${firSpace.generation}
       Created at: ${now.toISOString()}
     `)
   })
