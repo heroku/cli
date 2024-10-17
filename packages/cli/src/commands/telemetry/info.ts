@@ -15,7 +15,7 @@ export default class Info extends Command {
 
     const {body: telemetryDrain} =  await this.heroku.get<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.fir',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
     this.display(telemetryDrain)

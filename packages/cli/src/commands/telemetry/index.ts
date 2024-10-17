@@ -17,14 +17,14 @@ export default class Index extends Command {
     if (app) {
       const {body: appTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/apps/${app}/telemetry-drains`, {
         headers: {
-          Accept: 'application/vnd.heroku+json; version=3.fir',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
       this.display(appTelemetryDrains, 'App')
     } else if (space) {
       const {body: spaceTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/spaces/${space}/telemetry-drains`, {
         headers: {
-          Accept: 'application/vnd.heroku+json; version=3.fir',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
       this.display(spaceTelemetryDrains, 'Space')

@@ -25,7 +25,7 @@ describe('telemetry:index', function () {
   })
 
   it('shows space telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/spaces/${spaceId}/telemetry-drains`)
       .reply(200, spaceTelemetryDrains)
 
@@ -42,7 +42,7 @@ describe('telemetry:index', function () {
   })
 
   it('shows app telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/apps/${appId}/telemetry-drains`)
       .reply(200, appTelemetryDrains)
 

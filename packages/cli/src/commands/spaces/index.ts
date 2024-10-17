@@ -18,7 +18,7 @@ export default class Index extends Command {
     const {team, json} = flags
     let {body: spaces} = await this.heroku.get<SpaceArray>('/spaces', {
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.fir',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
     if (team) {
