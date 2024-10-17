@@ -5,11 +5,11 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
-import * as Heroku from '@heroku-cli/schema'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 
 describe('spaces:info', function () {
-  let space: Required<Heroku.Space>
-  let shieldSpace: Required<Heroku.Space>
+  let space: SpaceWithOutboundIps
+  let shieldSpace: SpaceWithOutboundIps
 
   beforeEach(function () {
     space = fixtures.spaces['non-shield-space']
@@ -34,6 +34,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
+      Generation:   ${space.generation}
       Created at:   ${space.created_at}
     `))
   })
@@ -73,6 +74,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
+      Generation:   ${space.generation}
       Created at:   ${space.created_at}
     `))
   })
@@ -99,6 +101,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: disabled
+      Generation:   ${space.generation}
       Created at:   ${space.created_at}
     `))
   })
@@ -121,6 +124,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
+      Generation:   ${space.generation}
       Created at:   ${space.created_at}
     `))
   })
@@ -143,6 +147,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${shieldSpace.data_cidr}
       State:        ${shieldSpace.state}
       Shield:       on
+      Generation:   ${space.generation}
       Created at:   ${shieldSpace.created_at}
     `))
   })
@@ -164,6 +169,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
+      Generation:   ${space.generation}
       Created at:   ${space.created_at}
     `))
   })
