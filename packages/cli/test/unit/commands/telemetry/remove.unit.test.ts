@@ -5,60 +5,20 @@ import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-
-import {TelemetryDrain, TelemetryDrains} from '../../../../src/lib/types/telemetry'
+import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures'
+import {TelemetryDrains} from '../../../../src/lib/types/telemetry'
 
 describe('telemetry:remove', function () {
-  const appId = '87654321-5717-4562-b3fc-2c963f66afa6'
-  const spaceId = '12345678-5717-4562-b3fc-2c963f66afa6'
-  let appTelemetryDrain: TelemetryDrain
-  let appTelemetryDrainTwo: TelemetryDrain
-  let spaceTelemetryDrain: TelemetryDrain
+  let appId: string
+  let spaceId: string
   let appTelemetryDrains: TelemetryDrains
   let spaceTelemetryDrains: TelemetryDrains
 
   beforeEach(function () {
-    spaceTelemetryDrain = {
-      id: '44444321-5717-4562-b3fc-2c963f66afa6',
-      owner: {id: spaceId, type: 'space', name: 'myspace'},
-      capabilities: ['traces', 'metrics', 'logs'],
-      exporter: {
-        type: 'otlphttp',
-        endpoint: 'https://api.honeycomb.io/',
-        headers: {
-          'x-honeycomb-team': 'your-api-key',
-          'x-honeycomb-dataset': 'your-dataset',
-        },
-      },
-    }
-    appTelemetryDrain = {
-      id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      owner: {id: appId, type: 'app', name: 'myapp'},
-      capabilities: ['traces', 'metrics'],
-      exporter: {
-        type: 'otlphttp',
-        endpoint: 'https://api.honeycomb.io/',
-        headers: {
-          'x-honeycomb-team': 'your-api-key',
-          'x-honeycomb-dataset': 'your-dataset',
-        },
-      },
-    }
-    appTelemetryDrainTwo = {
-      id: '55555f64-5717-4562-b3fc-2c963f66afa6',
-      owner: {id: appId, type: 'app', name: 'myapp'},
-      capabilities: ['logs'],
-      exporter: {
-        type: 'otlphttp',
-        endpoint: 'https://api.papertrail.com/',
-        headers: {
-          'x-papertrail-team': 'your-api-key',
-          'x-papertrail-dataset': 'your-dataset',
-        },
-      },
-    }
-    appTelemetryDrains = [appTelemetryDrain, appTelemetryDrainTwo]
-    spaceTelemetryDrains = [spaceTelemetryDrain]
+    appId = appTelemetryDrain1.owner.id
+    spaceId = spaceTelemetryDrain1.owner.id
+    appTelemetryDrains = [appTelemetryDrain1, appTelemetryDrain2]
+    spaceTelemetryDrains = [spaceTelemetryDrain1]
   })
 
   afterEach(function () {
@@ -66,49 +26,49 @@ describe('telemetry:remove', function () {
   })
 
   it('deletes a space telemetry drain', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .get(`/telemetry-drains/${spaceTelemetryDrain.id}`)
-      .reply(200, spaceTelemetryDrain)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .delete(`/telemetry-drains/${spaceTelemetryDrain.id}`)
-      .reply(200, spaceTelemetryDrain)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
+      .reply(200, spaceTelemetryDrain1)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
+      .reply(200, spaceTelemetryDrain1)
 
     await runCommand(Cmd, [
-      spaceTelemetryDrain.id,
+      spaceTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${spaceTelemetryDrain.id}, which was configured for space ${spaceTelemetryDrain.owner.name}...
-      Removing telemetry drain ${spaceTelemetryDrain.id}, which was configured for space ${spaceTelemetryDrain.owner.name}... done
+      Removing telemetry drain ${spaceTelemetryDrain1.id}, which was configured for space ${spaceTelemetryDrain1.owner.name}...
+      Removing telemetry drain ${spaceTelemetryDrain1.id}, which was configured for space ${spaceTelemetryDrain1.owner.name}... done
     `))
   })
 
   it('deletes an app telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .get(`/telemetry-drains/${appTelemetryDrain.id}`)
-      .reply(200, appTelemetryDrain)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .delete(`/telemetry-drains/${appTelemetryDrain.id}`)
-      .reply(200, appTelemetryDrain)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/telemetry-drains/${appTelemetryDrain1.id}`)
+      .reply(200, appTelemetryDrain1)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .delete(`/telemetry-drains/${appTelemetryDrain1.id}`)
+      .reply(200, appTelemetryDrain1)
 
     await runCommand(Cmd, [
-      appTelemetryDrain.id,
+      appTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${appTelemetryDrain.id}, which was configured for app ${appTelemetryDrain.owner.name}...
-      Removing telemetry drain ${appTelemetryDrain.id}, which was configured for app ${appTelemetryDrain.owner.name}... done
+      Removing telemetry drain ${appTelemetryDrain1.id}, which was configured for app ${appTelemetryDrain1.owner.name}...
+      Removing telemetry drain ${appTelemetryDrain1.id}, which was configured for app ${appTelemetryDrain1.owner.name}... done
     `))
   })
 
   it('deletes all drains from an app', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/apps/${appId}/telemetry-drains`)
       .reply(200, appTelemetryDrains)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .delete(`/telemetry-drains/${appTelemetryDrain.id}`)
-      .reply(200, appTelemetryDrain)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .delete(`/telemetry-drains/${appTelemetryDrainTwo.id}`)
-      .reply(200, appTelemetryDrainTwo)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .delete(`/telemetry-drains/${appTelemetryDrain1.id}`)
+      .reply(200, appTelemetryDrain1)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .delete(`/telemetry-drains/${appTelemetryDrain2.id}`)
+      .reply(200, appTelemetryDrain2)
 
     await runCommand(Cmd, [
       '--app', appId,
@@ -120,12 +80,12 @@ describe('telemetry:remove', function () {
   })
 
   it('deletes all drains from a space', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/spaces/${spaceId}/telemetry-drains`)
       .reply(200, spaceTelemetryDrains)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
-      .delete(`/telemetry-drains/${spaceTelemetryDrain.id}`)
-      .reply(200, spaceTelemetryDrain)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
+      .reply(200, spaceTelemetryDrain1)
 
     await runCommand(Cmd, [
       '--space', spaceId,

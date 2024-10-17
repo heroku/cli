@@ -33,7 +33,7 @@ export default class Remove extends Command {
       ux.action.start(`Removing all telemetry drains from app ${app}`)
       const {body: telemetryDrains} = await this.heroku.get<TelemetryDrain[]>(`/apps/${app}/telemetry-drains`, {
         headers: {
-          Accept: 'application/vnd.heroku+json; version=3.fir',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
 
@@ -44,7 +44,7 @@ export default class Remove extends Command {
       ux.action.start(`Removing all telemetry drains from space ${space}`)
       const {body: telemetryDrains} = await this.heroku.get<TelemetryDrain[]>(`/spaces/${space}/telemetry-drains`, {
         headers: {
-          Accept: 'application/vnd.heroku+json; version=3.fir',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
 
@@ -59,7 +59,7 @@ export default class Remove extends Command {
   protected async removeDrain(telemetry_drain_id: string) {
     const {body: telemetryDrain} = await this.heroku.delete<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.fir',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
     return telemetryDrain
