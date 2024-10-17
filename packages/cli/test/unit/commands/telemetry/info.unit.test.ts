@@ -46,7 +46,7 @@ describe('telemetry:info', function () {
   })
 
   it('shows info for space telemetry drain', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/telemetry-drains/${spaceTelemetryDrain.id}`)
       .reply(200, spaceTelemetryDrain)
 
@@ -64,7 +64,7 @@ describe('telemetry:info', function () {
   })
 
   it('shows info for app telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get(`/telemetry-drains/${appTelemetryDrain.id}`)
       .reply(200, appTelemetryDrain)
 
