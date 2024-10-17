@@ -19,7 +19,7 @@ const app = {
 }
 
 const appStackChange = Object.assign({}, app, {
-  build_stack: {name: 'heroku-22'},
+  build_stack: {name: 'heroku-24'},
 })
 
 const appExtended = Object.assign({}, app, {
