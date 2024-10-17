@@ -10,7 +10,7 @@ const appId = appTelemetryDrain1.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
-describe('telemetry:index', function () {
+describe('telemetry:add', function () {
   afterEach(function () {
     return nock.cleanAll()
   })
