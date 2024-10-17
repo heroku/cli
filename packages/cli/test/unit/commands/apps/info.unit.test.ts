@@ -19,7 +19,7 @@ const app = {
 }
 
 const appStackChange = Object.assign({}, app, {
-  build_stack: {name: 'heroku-22'},
+  build_stack: {name: 'heroku-24'},
 })
 
 const appExtended = Object.assign({}, app, {
@@ -349,7 +349,7 @@ Region:           eu
 Repo Size:        1000 B
 Slug Size:        1000 B
 Space:            myspace
-Stack:            cedar-14 (next build will use heroku-22)
+Stack:            cedar-14 (next build will use heroku-24)
 Web URL:          https://myapp.herokuapp.com
 `)
       expect(unwrap(stderr)).to.contains('')

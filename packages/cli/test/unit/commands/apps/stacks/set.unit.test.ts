@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 
 const APP = 'myapp'
-const TO_STACK = 'heroku-22'
+const TO_STACK = 'heroku-24'
 const MAIN_REMOTE = 'main'
 const STAGE_REMOTE = 'staging'
 

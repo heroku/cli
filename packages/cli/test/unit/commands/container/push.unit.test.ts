@@ -49,7 +49,7 @@ describe('container push', function () {
     beforeEach(function () {
       api
         .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'heroku-22'}, build_stack: {name: 'container'}})
+        .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}, build_stack: {name: 'container'}})
     })
 
     it('allows push to the docker registry', async function () {

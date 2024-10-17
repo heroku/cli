@@ -11,8 +11,8 @@ function map(stack: string): string {
 export default class Set extends Command {
   static description = 'set the stack of an app'
 
-  static example = `$ heroku stack:set heroku-22 -a myapp
-Setting stack to heroku-22... done
+  static example = `$ heroku stack:set heroku-24 -a myapp
+Setting stack to heroku-24... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`
 

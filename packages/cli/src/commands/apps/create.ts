@@ -177,7 +177,7 @@ export default class Create extends Command {
 
   static examples = [
     `$ heroku apps:create
-Creating app... done, stack is heroku-22
+Creating app... done, stack is heroku-24
 https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
 # or just
