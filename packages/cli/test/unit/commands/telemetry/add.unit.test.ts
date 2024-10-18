@@ -96,7 +96,7 @@ describe('telemetry:add', function () {
       ])
     } catch (error) {
       const {message} = error as { message: string }
-      expect(message).to.contain('Invalid signal option: foo. Signals must include some combination of "traces", "metrics", or "logs". The option "all" can be used on its own to include all three.')
+      expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
     }
   })
 
@@ -115,7 +115,7 @@ describe('telemetry:add', function () {
       ])
     } catch (error) {
       const {message} = error as { message: string }
-      expect(message).to.contain('Invalid signal option: all. Signals must include some combination of "traces", "metrics", or "logs". The option "all" can be used on its own to include all three.')
+      expect(message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
     }
   })
 })
