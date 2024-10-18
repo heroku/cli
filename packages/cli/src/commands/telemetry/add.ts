@@ -31,7 +31,7 @@ export default class Add extends Command {
     const signalArray = signalInput.split(',')
     signalArray.forEach(signal => {
       if (!signalOptions.includes(signal)) {
-        ux.error(`Invalid signal option: ${signal}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
+        ux.error(`Invalid signal option: ${signalArray}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
       }
     })
     return signalArray
