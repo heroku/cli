@@ -41,8 +41,7 @@ export default class Info extends Command {
       headers['Accept-Expansion'] = 'region'
     }
 
-    const {body: updatedSpace} = await this.heroku.get<Space>(`/spaces/${spaceName}`, {headers})
-    const space: SpaceWithOutboundIps = updatedSpace
+    const {body: space} = await this.heroku.get<SpaceWithOutboundIps>(`/spaces/${spaceName}`, {headers})
     if (space.state === 'allocated') {
       try {
         const {body: outbound_ips} = await this.heroku.get<SpaceNat>(`/spaces/${spaceName}/nat`, {headers: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
