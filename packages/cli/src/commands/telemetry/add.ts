@@ -24,7 +24,6 @@ export default class Add extends Command {
     $ heroku telemetry:add --signal logs,traces --endpoint https://my-endpoint.com --transport http 'x-drain-example-team: API_KEY x-drain-example-dataset: METRICS_DATASET'
   `)
 
-
   private validateAndFormatSignal = function (signalInput: string | undefined): string[] {
     const signalOptions = ['traces', 'metrics', 'logs']
     if (!signalInput || signalInput === 'all') return signalOptions
