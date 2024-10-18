@@ -96,7 +96,7 @@ describe('telemetry:add', function () {
       ])
     } catch (error) {
       const {message} = error as { message: string }
-      expect(message).to.contain('Invalid signal option: foo. Run heroku telemetry:add --help to see signal options.')
+      expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
     }
   })
 
