@@ -5,7 +5,7 @@ const expect = require('chai').expect
 import * as nock from 'nock'
 import {teamInfo} from '../../../helpers/stubs/get'
 
-describe.only('heroku org:open', function () {
+describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope
   let urlOpenerStub: sinon.SinonStub
 
