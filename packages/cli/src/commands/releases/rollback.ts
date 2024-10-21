@@ -18,7 +18,7 @@ export default class Rollback extends Command {
   }
 
   static args = {
-    release: Args.string(),
+    release: Args.string({description: 'The ID of the release. If omitted, the last release is used.'}),
   }
 
   public async run(): Promise<void> {

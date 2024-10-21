@@ -18,7 +18,7 @@ export default class Wait extends Command {
   };
 
   static args = {
-    database: Args.string({required: false}),
+    database: Args.string({required: false, description: 'Name of the Redis database. If omitted, it will default to the primary Redis instance associated with the app.'}),
   };
 
   public async run(): Promise<void> {
