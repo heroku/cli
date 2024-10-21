@@ -13,7 +13,7 @@ export default class AuthorizationsRevoke extends Command {
   ]
 
   static args = {
-    id: Args.string({required: true}),
+    id: Args.string({required: true, description: 'The ID of the authorization.'}),
   }
 
   async run() {
