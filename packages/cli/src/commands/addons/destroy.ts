@@ -23,7 +23,7 @@ export default class Destroy extends Command {
   }
 
   static args = {
-    addonName: Args.string({required: true}),
+    addonName: Args.string({required: true, description: 'Unique identifier of add-on or globally unique name of the add-on.'}),
   }
 
   public async run(): Promise<void> {

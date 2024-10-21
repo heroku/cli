@@ -16,7 +16,7 @@ export default class Attach extends Command {
     };
 
     static args = {
-      addon_name: Args.string({required: true}),
+      addon_name: Args.string({required: true, description: 'Unique identifier of add-on or globally unique name of the add-on'}),
     };
 
     public async run(): Promise<void> {

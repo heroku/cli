@@ -12,7 +12,7 @@ export default class Detach extends Command {
   }
 
   static args = {
-    attachment_name: Args.string({required: true}),
+    attachment_name: Args.string({required: true, description: 'Unique identifier of this add-on attachment.'}),
   };
 
   public async run(): Promise<void> {
