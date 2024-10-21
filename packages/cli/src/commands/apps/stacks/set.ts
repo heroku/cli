@@ -24,7 +24,7 @@ Run git push heroku main to trigger a new build on myapp.`
   }
 
   static args = {
-    stack: Args.string({required: true}),
+    stack: Args.string({required: true, description: 'Unique name of stack or unique identifier of stack.'}),
   }
 
   async run() {
