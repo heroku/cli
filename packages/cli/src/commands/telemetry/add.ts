@@ -2,7 +2,7 @@ import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
 import heredoc from 'tsheredoc'
-
+import {validateAndFormatSignal} from '../../lib/telemetry/util'
 export default class Add extends Command {
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
 
@@ -24,18 +24,6 @@ export default class Add extends Command {
     $ heroku telemetry:add --signal logs,traces --endpoint https://my-endpoint.com --transport http 'x-drain-example-team: API_KEY x-drain-example-dataset: METRICS_DATASET'
   `)
 
-  private validateAndFormatSignal = function (signalInput: string | undefined): string[] {
-    const signalOptions = ['traces', 'metrics', 'logs']
-    if (!signalInput || signalInput === 'all') return signalOptions
-    const signalArray = signalInput.split(',')
-    signalArray.forEach(signal => {
-      if (!signalOptions.includes(signal)) {
-        ux.error(`Invalid signal option: ${signalArray}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
-      }
-    })
-    return signalArray
-  }
-
   private getTypeAndName = function (app: string | undefined, space: string | undefined) {
     if (app) {
       return {type: 'app', name: app}
@@ -54,7 +42,7 @@ export default class Add extends Command {
         type: typeAndName.type,
         id: typeAndName.name,
       },
-      signals: this.validateAndFormatSignal(signal),
+      signals: validateAndFormatSignal(signal),
       exporter: {
         endpoint,
         type: `otlp${transport}`,

@@ -37,7 +37,7 @@ export default class Index extends Command {
       telemetryDrains,
       {
         ID: {get: telemetryDrain => telemetryDrain.id},
-        Signals: {get: telemetryDrain => telemetryDrain.capabilities},
+        Signals: {get: telemetryDrain => telemetryDrain.signals},
         Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
         [ownerType]: {get: telemetryDrain => telemetryDrain.owner.name},
       },

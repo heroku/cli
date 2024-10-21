@@ -26,7 +26,7 @@ export default class Info extends Command {
     const drainType = telemetryDrain.owner.type.charAt(0).toUpperCase() + telemetryDrain.owner.type.slice(1)
     ux.styledObject({
       [drainType]: telemetryDrain.owner.name,
-      Signals: telemetryDrain.capabilities.join(', '),
+      Signals: telemetryDrain.signals.join(', '),
       Endpoint: telemetryDrain.exporter.endpoint,
       Kind: telemetryDrain.exporter.type,
       Headers: telemetryDrain.exporter.headers,
