@@ -49,8 +49,8 @@ export default class Add extends Command {
   }
 
   static args = {
-    CRT: Args.string({required: true}),
-    KEY: Args.string({required: true}),
+    CRT: Args.string({required: true, description: 'The absolute path of the certificate file on disk.'}),
+    KEY: Args.string({required: true, description: 'The absolute path of the key file on disk.'}),
   }
 
   public async run(): Promise<void> {

@@ -32,7 +32,7 @@ export default class Generate extends Command {
   }
 
   static args = {
-    domain: Args.string({required: true}),
+    domain: Args.string({required: true, description: 'The domain name to generate.'}),
   }
 
   private parsed = this.parse(Generate)
