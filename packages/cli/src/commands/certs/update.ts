@@ -23,8 +23,8 @@ export default class Update extends Command {
   }
 
   static args = {
-    CRT: Args.string({required: true}),
-    KEY: Args.string({required: true}),
+    CRT: Args.string({required: true, description: 'The absolute path of the certificate file on disk.'}),
+    KEY: Args.string({required: true, description: 'The absolute path of the key file on disk.'}),
   }
 
   static examples = [heredoc`
