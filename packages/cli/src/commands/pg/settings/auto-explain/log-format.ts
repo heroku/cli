@@ -10,8 +10,8 @@ export default class LogFormat extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string({options: ['text', 'json', 'yaml', 'xml']}),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    value: Args.string({options: ['text', 'json', 'yaml', 'xml'], description: 'Format that should be used for log output.'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_format'

@@ -16,8 +16,8 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    value: Args.string({description: 'Boolean indicating whether verbose execution plan logging should be enabled.'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_verbose'

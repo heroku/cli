@@ -22,7 +22,7 @@ export default class Push extends Command {
     Push from SOURCE into TARGET. TARGET must be empty.
 
     To empty a Heroku database for push run ${color.cmd('heroku pg:reset')}
-    
+
     SOURCE must be either the name of a database existing on your localhost or the
     fully qualified URL of a remote database.
   `
@@ -42,8 +42,8 @@ export default class Push extends Command {
   }
 
   static args = {
-    source: Args.string({required: true}),
-    target: Args.string({required: true}),
+    source: Args.string({required: true, description: 'The PostgreSQL connection string for the source database.'}),
+    target: Args.string({required: true, description: 'The config var exposed to the owning app containing the target database configuration.'}),
   }
 
   public async run(): Promise<void> {

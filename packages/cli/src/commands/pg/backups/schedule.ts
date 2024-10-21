@@ -54,7 +54,7 @@ export default class Schedule extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
   }
 
   parseDate = function (at: string): BackupSchedule {

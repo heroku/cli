@@ -13,7 +13,7 @@ export default class Cancel extends Command {
   }
 
   static args = {
-    backup_id: Args.string(),
+    backup_id: Args.string({description: 'Backup ID to cancel. If omitted, the last unfinished backup ID is used.'}),
   }
 
   public async run(): Promise<void> {

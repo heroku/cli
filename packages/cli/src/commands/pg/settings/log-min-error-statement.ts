@@ -11,7 +11,7 @@ export default class LogMinErrorStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
     value: Args.string({options: ['error', 'log', 'fatal', 'panic']}),
   }
 

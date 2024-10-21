@@ -22,8 +22,8 @@ export default class Window extends Command {
   };
 
   static args = {
-    window: Args.string({required: true}),
-    database: Args.string(),
+    window: Args.string({required: true, description: 'Timestamp of the maintenance window.'}),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
   };
 
   public async run(): Promise<void> {

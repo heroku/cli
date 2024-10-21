@@ -15,7 +15,7 @@ export default class Psql extends Command {
     };
 
     static args = {
-      database: Args.string(),
+      database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
     };
 
     static aliases = ['psql']
