@@ -8,7 +8,7 @@ export default class SessionsDestroy extends Command {
   static description = 'delete (logout) OAuth session by ID'
 
   static args = {
-    id: Args.string({required: true}),
+    id: Args.string({required: true, description: 'The ID of the OAuth session.'}),
   }
 
   async run() {
