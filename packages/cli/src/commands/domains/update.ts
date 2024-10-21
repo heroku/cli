@@ -19,7 +19,7 @@ export default class DomainsUpdate extends Command {
   }
 
   static args = {
-    hostname: Args.string({required: true}),
+    hostname: Args.string({required: true, description: 'Unique identifier of this domain or full hostname'}),
   }
 
   async run() {
