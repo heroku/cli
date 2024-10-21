@@ -19,7 +19,7 @@ export default class LabsEnable extends Command {
   }
 
   static args = {
-    feature: Args.string({required: true}),
+    feature: Args.string({required: true, description: 'Unique identifier of account feature or unique name of account feature.'}),
   }
 
   async run() {
