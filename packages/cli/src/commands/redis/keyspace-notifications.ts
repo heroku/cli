@@ -33,7 +33,7 @@ export default class KeyspaceNotifications extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'Name of the Redis database. If omitted, it will default to the primary Redis instance associated with the app.'}),
   }
 
   public async run(): Promise<void> {
