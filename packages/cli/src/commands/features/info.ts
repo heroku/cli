@@ -12,7 +12,7 @@ export default class Info extends Command {
   }
 
   static args = {
-    feature: Args.string({required: true}),
+    feature: Args.string({required: true, description: 'Unique identifier of app feature or unique name of app feature.'}),
   }
 
   async run() {
