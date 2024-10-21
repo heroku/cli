@@ -77,7 +77,7 @@ export default class PipelinesOnboard extends Command {
         if (originUrl) {
           const filePath = `.heroku/${pipeline.name}.pipeline.yaml`;  // This could be any file path you want to generate the URL for
           flags.url = generateGitHubUrl(originUrl, filePath);
-          console.log(`creating file... ${flags.url}`);
+          // console.log(`creating file... ${flags.url}`);
         } else {
           console.error('No "origin" remote found in .git/config.');
         }
@@ -607,15 +607,15 @@ async function openPullRequest(pipeline: Heroku.Pipeline, url: string): Promise<
     const contentSha = await generateGitHubBlobSha(pipelineYAML);
     await updateFile(pipelineYAML, contentSha, branchName, url);
 
-    const prDescription = `Get started with Heroku GitOps in 2 steps:
+    const prDescription = `Get started with Heroku GitOps:
     
-1. Merge this Pull Request
-2. Enable GitOps feature:\n\`heroku features:enable ${PipelinesOnboard.featureFlagName} -pipeline ${pipeline.name!}\`
+1. Merge this pull request
+2. Enable GitOps feature flag:\n\`heroku features:enable ${PipelinesOnboard.featureFlagName} -a ${pipeline.name!}\`
 
 While enabled, all Heroku settings must be configured via this repository.
 
 > [!WARNING]
-> Commits to the main branch may cause an increase in Heroku charges.\n> \n> Review branch protections and access controls for this repo before merging.`
+> Commits to the main branch may cause an increase in Heroku charges.\n> \n> Review [branch protections](https://github.com/${REPO_OWNER}/${REPO_NAME}/settings/branches) and access controls for this repo before merging.`
 
     await createPullRequest(branchName, prDescription);
   } catch (error) {
