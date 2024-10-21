@@ -66,7 +66,7 @@ describe('heroku certs:update', function () {
       ])
     } catch (error) {
       const {message, oclif} = error as CLIError
-      expect(stripAnsi(message)).to.equal('Missing 1 required arg:\nKEY\nSee more help with --help')
+      expect(stripAnsi(message)).to.equal('Missing 1 required arg:\nKEY  The absolute path of the key file on disk.\nSee more help with --help')
       expect(oclif.exit).to.equal(2)
     }
 
