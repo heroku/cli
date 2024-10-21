@@ -11,8 +11,8 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    value: Args.string({description: 'Number in milliseconds to wait for the statement to complete before it\'s time is logged.'}),
   }
 
   protected settingKey:SettingKey = 'log_min_duration_statement'

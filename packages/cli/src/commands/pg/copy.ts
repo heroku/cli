@@ -53,8 +53,8 @@ export default class Copy extends Command {
     };
 
     static args = {
-      source: Args.string({required: true}),
-      target: Args.string({required: true}),
+      source: Args.string({required: true, description: 'The config var exposed to the owning app containing the source database url.'}),
+      target: Args.string({required: true, description: 'The config var exposed to the owning app containing the target database url.'}),
     };
 
     public async run(): Promise<void> {

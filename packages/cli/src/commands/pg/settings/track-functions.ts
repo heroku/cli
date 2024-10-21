@@ -13,8 +13,8 @@ export default class TrackFunctions extends PGSettingsCommand {
     all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked`)
 
   static args = {
-    database: Args.string(),
-    value: Args.string({options: ['none', 'pl', 'all']}),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    value: Args.string({options: ['none', 'pl', 'all'], description: 'The function types to be tracked.'}),
   }
 
   protected settingKey: SettingKey = 'track_functions'

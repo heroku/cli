@@ -41,7 +41,7 @@ export default class Info extends Command {
   };
 
   static args = {
-    backup_id: Args.string(),
+    backup_id: Args.string({description: 'The ID of the backup to get info for. If omitted, the last backup is used.'}),
   };
 
   getBackup = async (id: string | undefined, app: string) => {

@@ -11,8 +11,8 @@ export default class LogTriggers extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    value: Args.string({description: 'Boolean indicating whether trigger execution statistics should be enabled.'}),
   }
 
   protected settingKey = 'auto_explain.log_triggers' as SettingKey

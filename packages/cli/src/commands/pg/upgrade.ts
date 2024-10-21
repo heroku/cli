@@ -24,7 +24,7 @@ export default class Upgrade extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
   }
 
   public async run(): Promise<void> {

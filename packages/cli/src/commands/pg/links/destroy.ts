@@ -19,8 +19,8 @@ export default class Destroy extends Command {
   };
 
   static args = {
-    database: Args.string({required: true}),
-    link: Args.string({required: true}),
+    database: Args.string({required: true, description: 'The config var exposed to the owning app containing the database configuration.'}),
+    link: Args.string({required: true, description: 'The name of the linked data store.'}),
   };
 
   public async run(): Promise<void> {
