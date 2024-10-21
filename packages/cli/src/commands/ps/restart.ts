@@ -18,7 +18,7 @@ export default class Restart extends Command {
   static help = 'if DYNO is not specified, restarts all dynos on app'
 
   static args = {
-    dyno: Args.string({required: false}),
+    dyno: Args.string({required: false, description: 'The ID of the Dyno'}),
   }
 
   static flags = {
