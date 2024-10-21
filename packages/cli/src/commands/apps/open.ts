@@ -19,7 +19,7 @@ export default class AppsOpen extends Command {
   }
 
   static args = {
-    path: Args.string({required: false}),
+    path: Args.string({required: false, description: 'Base URL path of app to open.'}),
   }
 
   async run() {
