@@ -34,7 +34,7 @@ export default class ClientsUpdate extends Command {
   }
 
   static args = {
-    id: Args.string({required: true}),
+    id: Args.string({required: true, description: 'The ID of the client to update.'}),
   }
 
   async run() {
