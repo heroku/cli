@@ -21,7 +21,7 @@ export default class CiConfigGet extends Command {
   }
 
   static args = {
-    key: Args.string({required: true}),
+    key: Args.string({required: true, description: 'The config var key name.'}),
   }
 
   async run() {
