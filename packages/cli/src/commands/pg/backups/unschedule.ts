@@ -14,7 +14,7 @@ export default class Unschedule extends Command {
   };
 
   static args = {
-    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({description: 'globally unique name or ID of the database attachment. If omitted, we use an arbitrary postgres database.'}),
   };
 
   public async run(): Promise<void> {

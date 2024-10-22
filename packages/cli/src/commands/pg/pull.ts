@@ -45,7 +45,7 @@ export default class Pull extends Command {
   }
 
   static args = {
-    source: Args.string({required: true, description: 'config var exposed to the owning app containing the source database configuration'}),
+    source: Args.string({required: true, description: 'unique name for the database add-on attachment. If omitted, we use DATABASE_URL.'}),
     target: Args.string({required: true, description: 'PostgreSQL connection string for the target destination'}),
   }
 
