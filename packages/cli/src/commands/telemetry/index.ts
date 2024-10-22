@@ -10,6 +10,8 @@ export default class Index extends Command {
     app: Flags.app({description: 'filter by app name'}),
   };
 
+  static example = '$ heroku telemetry'
+
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {app, space} = flags
@@ -37,7 +39,7 @@ export default class Index extends Command {
       telemetryDrains,
       {
         ID: {get: telemetryDrain => telemetryDrain.id},
-        Signals: {get: telemetryDrain => telemetryDrain.capabilities},
+        Signals: {get: telemetryDrain => telemetryDrain.signals},
         Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
         [ownerType]: {get: telemetryDrain => telemetryDrain.owner.name},
       },

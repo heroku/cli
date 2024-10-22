@@ -2,7 +2,7 @@ export type TelemetryDrains = TelemetryDrain[]
 
 export type TelemetryDrain = {
   id: string;
-  capabilities: string[];
+  signals: string[];
   owner: TelemetryDrainOwner;
   exporter: TelemetryExporter
 }
@@ -14,7 +14,10 @@ type TelemetryDrainOwner = {
 }
 
 type TelemetryExporter = {
-  type: 'otlphttp' | 'otlpgrpc';
+  type: string;
   endpoint: string;
   headers: unknown;
 }
+
+type TelemetryDrainWithOptionalKeys = Partial<TelemetryDrain, 'exporter'>
+type TelemetryExporterWithOptionalKeys = Partial<TelemetryExporter>

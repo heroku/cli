@@ -16,7 +16,7 @@ describe('telemetry:info', function () {
     spaceTelemetryDrain = {
       id: '44444321-5717-4562-b3fc-2c963f66afa6',
       owner: {id: spaceId, type: 'space', name: 'myspace'},
-      capabilities: ['traces', 'metrics', 'logs'],
+      signals: ['traces', 'metrics', 'logs'],
       exporter: {
         type: 'otlphttp',
         endpoint: 'https://api.honeycomb.io/',
@@ -29,7 +29,7 @@ describe('telemetry:info', function () {
     appTelemetryDrain = {
       id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
       owner: {id: appId, type: 'app', name: 'myapp'},
-      capabilities: ['traces', 'metrics'],
+      signals: ['traces', 'metrics'],
       exporter: {
         type: 'otlphttp',
         endpoint: 'https://api.honeycomb.io/',
@@ -56,7 +56,7 @@ describe('telemetry:info', function () {
     expectOutput(stdout.output, heredoc(`
       === ${spaceTelemetryDrain.id}
       Space:    ${spaceTelemetryDrain.owner.name}
-      Signals:  ${spaceTelemetryDrain.capabilities.join(', ')}
+      Signals:  ${spaceTelemetryDrain.signals.join(', ')}
       Endpoint: ${spaceTelemetryDrain.exporter.endpoint}
       Kind:     ${spaceTelemetryDrain.exporter.type}
       Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'
@@ -74,7 +74,7 @@ describe('telemetry:info', function () {
     expectOutput(stdout.output, heredoc(`
       === ${appTelemetryDrain.id}
       App:      ${appTelemetryDrain.owner.name}
-      Signals:  ${appTelemetryDrain.capabilities.join(', ')}
+      Signals:  ${appTelemetryDrain.signals.join(', ')}
       Endpoint: ${appTelemetryDrain.exporter.endpoint}
       Kind:     ${appTelemetryDrain.exporter.type}
       Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'

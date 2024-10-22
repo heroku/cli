@@ -1,13 +1,15 @@
 import {Command} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
-
+import {displayTelemetryDrain} from '../../lib/telemetry/util'
 export default class Info extends Command {
   static topic = 'telemetry'
   static description = 'show a telemetry drain\'s info'
   static args = {
     telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to show info for'}),
-  };
+  }
+
+  static example = '$ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e'
 
   public async run(): Promise<void> {
     const {args} = await this.parse(Info)
@@ -18,18 +20,6 @@ export default class Info extends Command {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    this.display(telemetryDrain)
-  }
-
-  protected display(telemetryDrain: TelemetryDrain) {
-    ux.styledHeader(telemetryDrain.id)
-    const drainType = telemetryDrain.owner.type.charAt(0).toUpperCase() + telemetryDrain.owner.type.slice(1)
-    ux.styledObject({
-      [drainType]: telemetryDrain.owner.name,
-      Signals: telemetryDrain.capabilities.join(', '),
-      Endpoint: telemetryDrain.exporter.endpoint,
-      Kind: telemetryDrain.exporter.type,
-      Headers: telemetryDrain.exporter.headers,
-    }, ['App', 'Space', 'Signals', 'Endpoint', 'Kind', 'Headers'])
+    displayTelemetryDrain(telemetryDrain)
   }
 }
