@@ -15,7 +15,7 @@ export default class ClientsInfo extends Command {
   }
 
   static args = {
-    id: Args.string({required: true, description: 'The ID of client to show.'}),
+    id: Args.string({required: true, description: 'ID of client to show'}),
   }
 
   async run() {

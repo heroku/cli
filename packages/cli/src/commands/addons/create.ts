@@ -64,7 +64,7 @@ export default class Create extends Command {
   }
 
   static args = {
-    'service:plan': Args.string({required: true, description: 'Unique identifier of this plan or unique name of this plan.'}),
+    'service:plan': Args.string({required: true, description: 'unique identifier or unique name of the service plan'}),
   }
 
   public async run(): Promise<void> {

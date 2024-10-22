@@ -17,7 +17,7 @@ export default class Info extends Command {
 
   static usage = `${topic}:info ADDON`
   static args = {
-    addon: Args.string({required: true, description: 'Unique identifier of add-on or globally unique name of the add-on.'}),
+    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
   }
 
   public async run(): Promise<void> {

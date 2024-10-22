@@ -14,8 +14,8 @@ export default class Kill extends Command {
   };
 
   static args = {
-    pid: Args.string({required: true, description: 'The process ID to kill.'}),
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    pid: Args.string({required: true, description: 'process ID to kill'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
   };
 
   public async run(): Promise<void> {

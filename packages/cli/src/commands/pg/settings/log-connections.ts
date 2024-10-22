@@ -16,8 +16,8 @@ export default class LogConnections extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
-    value: Args.string({description: 'Boolean value indicating whether a log message should be produced when a login attempt is made.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    value: Args.string({description: 'boolean value indicating whether a log message should be produced when a login attempt is made.'}),
   }
 
   protected settingKey: SettingKey = 'log_connections'

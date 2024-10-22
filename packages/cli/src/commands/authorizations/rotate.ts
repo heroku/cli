@@ -8,7 +8,7 @@ export default class AuthorizationsRotate extends Command {
   static description = 'updates an OAuth authorization token'
 
   static args = {
-    id: Args.string({required: true, description: 'The ID of the authorization.'}),
+    id: Args.string({required: true, description: 'ID of the authorization'}),
   }
 
   async run() {

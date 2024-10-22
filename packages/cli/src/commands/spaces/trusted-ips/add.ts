@@ -21,7 +21,7 @@ export default class Add extends Command {
   };
 
   static args = {
-    source: Args.string({required: true, description: 'IP address in CIDR notation.'}),
+    source: Args.string({required: true, description: 'IP address in CIDR notation'}),
   };
 
   public async run(): Promise<void> {

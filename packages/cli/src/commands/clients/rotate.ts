@@ -12,7 +12,7 @@ export default class ClientsRotate extends Command {
   }
 
   static args = {
-    id: Args.string({required: true, description: 'The ID of the client to rotate.'}),
+    id: Args.string({required: true, description: 'ID of the client to rotate'}),
   }
 
   async run() {

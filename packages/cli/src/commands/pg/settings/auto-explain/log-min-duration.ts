@@ -11,8 +11,8 @@ export default class LogMinDuration extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
-    value: Args.string({description: 'Number indicating the min duration in milliseconds for queries before execution plans will be logged. A value of -1 disables it. A value of 0 means all queries will have their execution plans logged.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    value: Args.string({description: 'number indicating the min duration in milliseconds for queries before execution plans will be logged. A value of -1 disables it. A value of 0 means all queries will have their execution plans logged.'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'

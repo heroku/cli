@@ -15,8 +15,8 @@ export default class ExplainDataConnectorDetails extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
-    value: Args.string({description: 'Boolean value indicating whether data replication slot details should be logged.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    value: Args.string({description: 'boolean value indicating whether data replication slot details should be logged.'}),
   }
 
   protected settingKey:SettingKey = 'explain_data_connector_details'

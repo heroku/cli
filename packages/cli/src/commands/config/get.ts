@@ -15,7 +15,7 @@ production`
   static strict = false
 
   static args = {
-    KEY: Args.string({required: true, description: 'The config value to display.'}),
+    KEY: Args.string({required: true, description: 'name of the config var to display the value for'}),
   }
 
   static flags = {

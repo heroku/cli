@@ -14,7 +14,7 @@ export default class AuthorizationsUpdate extends Command {
   }
 
   static args = {
-    id: Args.string({required: true, description: 'The ID of the authorization.'}),
+    id: Args.string({required: true, description: 'ID of the authorization'}),
   }
 
   async run() {

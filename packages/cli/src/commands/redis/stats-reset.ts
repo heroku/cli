@@ -15,7 +15,7 @@ export default class StatsReset extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'Name of the Redis database. If omitted, it will default to the primary Redis instance associated with the app.'}),
+    database: Args.string({description: 'name of the Redis database. If omitted, we use the primary Redis instance associated with the app.'}),
   }
 
   public async run(): Promise<void> {

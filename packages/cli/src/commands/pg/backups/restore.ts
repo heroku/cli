@@ -40,8 +40,8 @@ export default class Restore extends Command {
   }
 
   static args = {
-    backup: Args.string({description: 'The backup location to restore. Can be a URL or a backup from another app.'}),
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    backup: Args.string({description: 'backup location to restore. Can be a URL or a backup from another app.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
   }
 
   static examples = [
