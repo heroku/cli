@@ -14,7 +14,7 @@ export default class Ps extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({description: 'unique name for the database add-on attachment. If omitted, we use DATABASE_URL.'}),
   }
 
   public async run(): Promise<void> {

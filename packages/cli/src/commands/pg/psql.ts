@@ -15,7 +15,7 @@ export default class Psql extends Command {
     };
 
     static args = {
-      database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+      database: Args.string({description: 'unique name for the database add-on attachment. If omitted, we use DATABASE_URL.'}),
     };
 
     static aliases = ['psql']

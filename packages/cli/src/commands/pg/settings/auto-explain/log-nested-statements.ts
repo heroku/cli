@@ -6,7 +6,7 @@ export default class LogNestedStatements extends PGSettingsCommand {
   static description = "Nested statements are included in the execution plan's log."
 
   static args = {
-    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
     value: Args.string({description: 'boolean indicating whether nested statements will be included in execution plan logs.'}),
   }
 

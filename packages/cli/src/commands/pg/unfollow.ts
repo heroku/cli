@@ -19,7 +19,7 @@ export default class Unfollow extends Command {
   }
 
   static args = {
-    database: Args.string({required: true, description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({required: true, description: 'globally unique name or ID of the database add-on attachment'}),
   }
 
   public async run(): Promise<void> {

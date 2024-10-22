@@ -55,7 +55,7 @@ export default class Info extends Command {
     };
 
     static args = {
-      database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+      database: Args.string({description: 'globally unique name or ID of the database attachment. If omitted, all dbs\' info are shown.'}),
     };
 
     static aliases = ['pg']

@@ -43,7 +43,7 @@ export default class Push extends Command {
 
   static args = {
     source: Args.string({required: true, description: 'PostgreSQL connection string for the source database'}),
-    target: Args.string({required: true, description: 'config var exposed to the owning app containing the target database configuration'}),
+    target: Args.string({required: true, description: 'unique name for the database add-on attachment. If omitted, we use DATABASE_URL.'}),
   }
 
   public async run(): Promise<void> {

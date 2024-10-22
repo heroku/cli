@@ -19,7 +19,7 @@ export default class Destroy extends Command {
   };
 
   static args = {
-    database: Args.string({required: true, description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({required: true, description: 'globally unique name or ID of the database add-on attachment'}),
     link: Args.string({required: true, description: 'name of the linked data store'}),
   };
 

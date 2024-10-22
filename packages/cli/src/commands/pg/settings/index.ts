@@ -14,7 +14,7 @@ export default class Index extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
   }
 
   public async run(): Promise<void> {
