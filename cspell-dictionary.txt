@@ -98,7 +98,6 @@ Gdvb
 getreqs
 Ghpcy
 githuborg
-gprc
 hamurai
 herokai
 herokuapp

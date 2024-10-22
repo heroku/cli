@@ -12,7 +12,7 @@ export default class Add extends Command {
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signal: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     endpoint: Flags.string({required: true, description: 'drain url'}),
-    transport: Flags.string({required: true, options: ['http', 'gprc'], description: 'transport protocol for the drain'}),
+    transport: Flags.string({required: true, options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
   }
 
   static args = {

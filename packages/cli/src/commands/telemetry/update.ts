@@ -2,7 +2,7 @@ import {flags as Flags, Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry'
 import heredoc from 'tsheredoc'
-import {validateAndFormatSignal} from '../../lib/telemetry/util'
+import {displayTelemetryDrain, validateAndFormatSignal} from '../../lib/telemetry/util'
 
 export default class Update extends Command {
   static topic = 'telemetry'
@@ -13,9 +13,9 @@ export default class Update extends Command {
   }
 
   static flags = {
-    signal: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
+    signal: Flags.string({description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     endpoint: Flags.string({description: 'drain url'}),
-    transport: Flags.string({options: ['http', 'gprc'], description: 'transport protocol for the drain'}),
+    transport: Flags.string({options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
   }
 
   public async run(): Promise<void> {
@@ -51,13 +51,15 @@ export default class Update extends Command {
       drainConfig.exporter = exporter
     }
 
+    ux.action.start(`Updating telemetry drain ${telemetry_drain_id}`)
     const {body: telemetryDrain} = await this.heroku.patch<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
       body: drainConfig,
     })
-    ux.action.start(`Updating telemetry drain ${telemetry_drain_id}, which was configured for ${telemetryDrain.owner.type} ${telemetryDrain.owner.name}`)
     ux.action.stop()
+
+    displayTelemetryDrain(telemetryDrain)
   }
 }

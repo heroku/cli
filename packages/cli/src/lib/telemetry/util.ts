@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {TelemetryDrain} from '../types/telemetry'
 
 export function validateAndFormatSignal(signalInput: string | undefined): string[] {
   const signalOptions = ['traces', 'metrics', 'logs']
@@ -10,4 +11,16 @@ export function validateAndFormatSignal(signalInput: string | undefined): string
     }
   })
   return signalArray
+}
+
+export function displayTelemetryDrain(telemetryDrain: TelemetryDrain) {
+  ux.styledHeader(telemetryDrain.id)
+  const drainType = telemetryDrain.owner.type.charAt(0).toUpperCase() + telemetryDrain.owner.type.slice(1)
+  ux.styledObject({
+    [drainType]: telemetryDrain.owner.name,
+    Signals: telemetryDrain.signals.join(', '),
+    Endpoint: telemetryDrain.exporter.endpoint,
+    Kind: telemetryDrain.exporter.type,
+    Headers: telemetryDrain.exporter.headers,
+  }, ['App', 'Space', 'Signals', 'Endpoint', 'Kind', 'Headers'])
 }

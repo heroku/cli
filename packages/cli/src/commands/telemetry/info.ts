@@ -1,7 +1,7 @@
 import {Command} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
-
+import {displayTelemetryDrain} from '../../lib/telemetry/util'
 export default class Info extends Command {
   static topic = 'telemetry'
   static description = 'show a telemetry drain\'s info'
@@ -18,18 +18,6 @@ export default class Info extends Command {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    this.display(telemetryDrain)
-  }
-
-  protected display(telemetryDrain: TelemetryDrain) {
-    ux.styledHeader(telemetryDrain.id)
-    const drainType = telemetryDrain.owner.type.charAt(0).toUpperCase() + telemetryDrain.owner.type.slice(1)
-    ux.styledObject({
-      [drainType]: telemetryDrain.owner.name,
-      Signals: telemetryDrain.signals.join(', '),
-      Endpoint: telemetryDrain.exporter.endpoint,
-      Kind: telemetryDrain.exporter.type,
-      Headers: telemetryDrain.exporter.headers,
-    }, ['App', 'Space', 'Signals', 'Endpoint', 'Kind', 'Headers'])
+    displayTelemetryDrain(telemetryDrain)
   }
 }
