@@ -1,7 +1,7 @@
 import {ux} from '@oclif/core'
 import {TelemetryDrain} from '../types/telemetry'
 
-export function validateAndFormatSignal(signalInput: string | undefined): string[] {
+export function validateAndFormatSignals(signalInput: string | undefined): string[] {
   const signalOptions = ['traces', 'metrics', 'logs']
   if (!signalInput || signalInput === 'all') return signalOptions
   const signalArray = signalInput.split(',')

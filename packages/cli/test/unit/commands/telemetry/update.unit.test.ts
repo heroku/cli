@@ -20,7 +20,7 @@ describe('telemetry:update', function () {
 
     await runCommand(Cmd, [
       appTelemetryDrain1.id,
-      '--signal',
+      '--signals',
       'logs',
     ])
     expectOutput(stderr.output, heredoc(`
@@ -62,7 +62,7 @@ describe('telemetry:update', function () {
 
     await runCommand(Cmd, [
       appTelemetryDrain1.id,
-      '--signal',
+      '--signals',
       'logs',
       '--endpoint',
       'https://api-new.honeycomb.io/',
@@ -84,7 +84,7 @@ describe('telemetry:update', function () {
   })
 
   it('requires an updated attribute to be provided', async function () {
-    const errorMessage = 'Requires either --signal, --endpoint, --transport or HEADERS to be provided.'
+    const errorMessage = 'Requires either --signals, --endpoint, --transport or HEADERS to be provided.'
     await runCommand(Cmd, [appTelemetryDrain1.id]).catch(error => {
       expect(error.message).to.contain(errorMessage)
     })

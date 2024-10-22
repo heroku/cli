@@ -7,7 +7,9 @@ export default class Info extends Command {
   static description = 'show a telemetry drain\'s info'
   static args = {
     telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to show info for'}),
-  };
+  }
+
+  static example = '$ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e'
 
   public async run(): Promise<void> {
     const {args} = await this.parse(Info)
