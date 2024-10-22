@@ -6,7 +6,7 @@ import {displayTelemetryDrain, validateAndFormatSignal} from '../../lib/telemetr
 
 export default class Update extends Command {
   static topic = 'telemetry'
-  static description = 'updates a telemetry drain'
+  static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
   static args = {
     telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to update'}),
     headers: Args.string({description: 'custom headers to configure the drain in json format'}),
