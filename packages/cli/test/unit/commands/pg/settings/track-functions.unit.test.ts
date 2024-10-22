@@ -45,4 +45,18 @@ describe('pg:settings:track-functions', function () {
     No function calls will be tracked.
     `))
   })
+
+  it('shows settings for track_functions with database and value arg reversed', async function () {
+    pg.patch('/postgres/v0/databases/1/config').reply(200, {
+      track_functions: {
+        value: 'test_value',
+        values: {test_value: 'No function calls will be tracked.'},
+      },
+    })
+    await runCommand(Cmd, ['--app', 'myapp', 'pl', 'test-database'])
+    expect(stdout.output).to.equal(heredoc(`
+    track-functions has been set to test_value for postgres-1.
+    No function calls will be tracked.
+    `))
+  })
 })

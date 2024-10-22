@@ -19,14 +19,14 @@ export default class AutoExplain extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({optional: true}),
+    value: Args.string({optional: true}),
   }
 
   static strict = false
 
   protected settingKey: SettingKey = 'auto_explain'
-
+  protected invariant = this.booleanInvariant
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
   }
