@@ -17,8 +17,8 @@ export default class ClientsCreate extends Command {
   }
 
   static args = {
-    name: Args.string({required: true, description: 'The name of the client to create.'}),
-    redirect_uri: Args.string({required: true, description: 'The redirect_uri of the client to create.'}),
+    name: Args.string({required: true, description: 'name of the client to create'}),
+    redirect_uri: Args.string({required: true, description: 'redirect uri of the client to create'}),
   }
 
   async run() {

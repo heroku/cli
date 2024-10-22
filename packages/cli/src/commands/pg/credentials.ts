@@ -15,7 +15,7 @@ export default class Credentials extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
   }
 
   public async run(): Promise<void> {

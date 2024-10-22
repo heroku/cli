@@ -19,7 +19,7 @@ describe('authorizations:revoke', function () {
     test
       .command(['authorizations:revoke'])
       .catch(error => expect(error.message).to.equal(
-        'Missing 1 required arg:\nid  The ID of the authorization.\nSee more help with --help',
+        'Missing 1 required arg:\nid  ID of the authorization\nSee more help with --help',
       ))
       .it('shows required ID error')
   })

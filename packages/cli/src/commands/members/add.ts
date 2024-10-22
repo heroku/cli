@@ -12,7 +12,7 @@ export default class MembersAdd extends Command {
     };
 
     static args = {
-      email: Args.string({required: true, description: 'Email address of the team member.'}),
+      email: Args.string({required: true, description: 'email address of the team member'}),
     };
 
     public async run(): Promise<void> {

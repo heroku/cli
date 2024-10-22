@@ -42,8 +42,8 @@ export default class Push extends Command {
   }
 
   static args = {
-    source: Args.string({required: true, description: 'The PostgreSQL connection string for the source database.'}),
-    target: Args.string({required: true, description: 'The config var exposed to the owning app containing the target database configuration.'}),
+    source: Args.string({required: true, description: 'PostgreSQL connection string for the source database'}),
+    target: Args.string({required: true, description: 'config var exposed to the owning app containing the target database configuration'}),
   }
 
   public async run(): Promise<void> {

@@ -21,7 +21,7 @@ export default class AppsRename extends Command {
   }
 
   static args = {
-    newname: Args.string({required: true, description: 'The new unique name of the app.'}),
+    newname: Args.string({required: true, description: 'new unique name of the app'}),
   }
 
   async run() {

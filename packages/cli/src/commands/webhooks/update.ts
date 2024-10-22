@@ -23,7 +23,7 @@ export default class WebhooksUpdate extends BaseCommand {
   }
 
   static args = {
-    id: Args.string({required: true, description: 'The ID of the webhook event on an app.'}),
+    id: Args.string({required: true, description: 'ID of the webhook event on an app'}),
   }
 
   async run() {

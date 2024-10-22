@@ -23,8 +23,8 @@ export default class Create extends Command {
   }
 
   static args = {
-    remote: Args.string({required: true, description: 'The config var exposed to the owning app containing the remote heroku-redis or heroku-postgresql database URL.'}),
-    database: Args.string({required: true, description: 'The config var exposed to the owning app containing the database configuration.'}),
+    remote: Args.string({required: true, description: 'config var exposed to the owning app containing the remote heroku-redis or heroku-postgresql database URL'}),
+    database: Args.string({required: true, description: 'config var exposed to the owning app containing the database configuration'}),
   }
 
   public async run(): Promise<void> {

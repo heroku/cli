@@ -13,7 +13,7 @@ export default class LogStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
     value: Args.string({options: ['none', 'ddl', 'mod', 'all'], description: 'Which SQL statements to be logged.'}),
   }
 

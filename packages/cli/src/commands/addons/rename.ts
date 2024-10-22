@@ -7,8 +7,8 @@ export default class Rename extends Command {
   static description = 'rename an add-on';
 
   static args = {
-    addon_name: Args.string({required: true, description: 'Unique identifier of add-on or globally unique name of the add-on.'}),
-    new_name: Args.string({required: true, description: 'The new globally unique name of the add-on.'}),
+    addon_name: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
+    new_name: Args.string({required: true, description: 'new globally unique name of the add-on'}),
   };
 
   public async run(): Promise<void> {

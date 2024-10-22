@@ -8,7 +8,7 @@ export default class Remove extends Command {
   static example = `$ heroku keys:remove email@example.com
 Removing email@example.com SSH key... done`
   static args = {
-    key: Args.string({required: true, description: 'The email address of the user to remove keys for.'}),
+    key: Args.string({required: true, description: 'email address of the user to remove keys for'}),
   }
 
   async run() {

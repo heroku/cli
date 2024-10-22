@@ -17,7 +17,7 @@ export default class LabsInfo extends Command {
   static topic = 'labs'
 
   static args = {
-    feature: Args.string({required: true, description: 'Unique identifier of account feature or unique name of account feature.'}),
+    feature: Args.string({required: true, description: 'unique identifier or name of the account feature'}),
   }
 
   static flags = {

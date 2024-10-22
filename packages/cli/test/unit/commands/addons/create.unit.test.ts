@@ -50,7 +50,7 @@ describe('addons:create', function () {
       ])
         .catch((error: any) => {
           expect(error.message).to.equal('Missing 1 required arg:\n' +
-            'service:plan  Unique identifier of this plan or unique name of this plan.\n' +
+            'service:plan  unique identifier or unique name of this plan\n' +
             'See more help with --help')
         })
     })

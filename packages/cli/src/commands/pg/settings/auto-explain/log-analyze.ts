@@ -13,8 +13,8 @@ export default class LogAnalyze extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'The config var exposed to the owning app containing the database configuration.'}),
-    value: Args.string({description: 'Boolean indicating whether execution plans should be logged.'}),
+    database: Args.string({description: 'config var exposed to the owning app containing the database configuration'}),
+    value: Args.string({description: 'boolean indicating whether execution plans should be logged.'}),
   }
 
   protected settingKey = 'auto_explain.log_analyze' as SettingKey

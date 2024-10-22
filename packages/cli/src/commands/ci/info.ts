@@ -21,7 +21,7 @@ export default class CiInfo extends Command {
   }
 
   static args = {
-    'test-run': Args.string({required: true, description: 'The auto incrementing test run number.'}),
+    'test-run': Args.string({required: true, description: 'auto-incrementing test run number'}),
   }
 
   async run() {

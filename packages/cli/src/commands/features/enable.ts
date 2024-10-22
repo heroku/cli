@@ -11,7 +11,7 @@ export default class Enable extends Command {
   }
 
   static args = {
-    feature: Args.string({required: true, description: 'Unique identifier of app feature or unique name of app feature.'}),
+    feature: Args.string({required: true, description: 'unique identifier or name of the app feature'}),
   }
 
   async run() {

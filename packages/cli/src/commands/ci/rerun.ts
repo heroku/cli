@@ -23,7 +23,7 @@ export default class CiReRun extends Command {
   }
 
   static args = {
-    number: Args.string({required: false, description: 'The auto incrementing test run number.'}),
+    number: Args.string({required: false, description: 'auto-incrementing test run number'}),
   }
 
   async run() {
