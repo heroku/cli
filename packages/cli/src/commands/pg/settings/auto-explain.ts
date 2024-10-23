@@ -3,6 +3,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
 import {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 // ref: https://www.postgresql.org/docs/current/auto-explain.html
 export default class AutoExplain extends PGSettingsCommand {
@@ -19,7 +20,7 @@ export default class AutoExplain extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string(),
   }
 

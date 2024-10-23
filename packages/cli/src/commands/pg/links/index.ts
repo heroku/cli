@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import {getAddon, all} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
 import type {Link} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class Index extends Command {
   static topic = 'pg';
@@ -14,7 +15,7 @@ export default class Index extends Command {
   };
 
   static args = {
-    database: Args.string({description: 'globally unique name or ID of the database add-on attachment'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
   public async run(): Promise<void> {

@@ -6,6 +6,7 @@ import {essentialPlan} from '../../../lib/pg/util'
 import confirmCommand from '../../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 import pgHost from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class Destroy extends Command {
   static topic = 'pg';
@@ -19,7 +20,7 @@ export default class Destroy extends Command {
   };
 
   static args = {
-    database: Args.string({required: true, description: 'globally unique name or ID of the database add-on attachment'}),
+    database: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     link: Args.string({required: true, description: 'name of the linked data store'}),
   };
 

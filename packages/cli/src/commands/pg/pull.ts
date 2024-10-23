@@ -13,6 +13,7 @@ import {
   verifyExtensionsMatch,
 } from '../../lib/pg/push_pull'
 import {SpawnOptions, spawn} from 'node:child_process'
+import {nls} from '../../nls'
 const env = process.env
 
 export default class Pull extends Command {
@@ -45,7 +46,7 @@ export default class Pull extends Command {
   }
 
   static args = {
-    source: Args.string({required: true, description: 'unique name for the database add-on attachment. If omitted, we use DATABASE_URL.'}),
+    source: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     target: Args.string({required: true, description: 'PostgreSQL connection string for the target destination'}),
   }
 

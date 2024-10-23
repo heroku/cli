@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class LogLockWaits extends PGSettingsCommand {
   static topic = 'pg'
@@ -12,7 +13,7 @@ export default class LogLockWaits extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean value indicating whether a log message should be produced when a session waits longer than the deadlock_timeout to acquire a lock.'}),
   }
 

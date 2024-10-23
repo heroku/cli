@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import {essentialPlan} from '../../../lib/pg/util'
+import {nls} from '../../../nls'
 
 export default class Create extends Command {
     static topic = 'pg'
@@ -16,7 +17,7 @@ export default class Create extends Command {
     }
 
     static args = {
-      database: Args.string({description: 'globally unique name or ID of the database add-on attachment'}),
+      database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     }
 
     public async run(): Promise<void> {

@@ -4,6 +4,7 @@ import {SettingKey, SettingsResponse} from '../../../lib/pg/types'
 import {addonResolver} from '../../../lib/addons/resolve'
 import {essentialPlan} from '../../../lib/pg/util'
 import host from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class Index extends Command {
   static topic = 'pg'
@@ -14,7 +15,7 @@ export default class Index extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

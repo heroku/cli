@@ -8,6 +8,7 @@ import {databaseNameFromUrl} from '../../lib/pg/util'
 import confirmCommand from '../../lib/confirmCommand'
 import {PgDatabase} from '../../lib/pg/types'
 import heredoc from 'tsheredoc'
+import {nls} from '../../nls'
 
 export default class Unfollow extends Command {
   static topic = 'pg';
@@ -19,7 +20,7 @@ export default class Unfollow extends Command {
   }
 
   static args = {
-    database: Args.string({required: true, description: 'globally unique name or ID of the database add-on attachment'}),
+    database: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

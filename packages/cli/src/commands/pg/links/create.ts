@@ -7,6 +7,7 @@ import {getAddon} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import type {AddOnAttachmentWithConfigVarsAndPlan, Link} from '../../../lib/pg/types'
 import {essentialPlan} from '../../../lib/pg/util'
+import {nls} from '../../../nls'
 
 export default class Create extends Command {
   static topic = 'pg'
@@ -23,8 +24,8 @@ export default class Create extends Command {
   }
 
   static args = {
-    remote: Args.string({required: true, description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
-    database: Args.string({required: true, description: 'globally unique name or ID of the database add-on attachment'}),
+    remote: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
   }
 
   public async run(): Promise<void> {
