@@ -5,6 +5,7 @@ import pgHost from '../../../lib/pg/host'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import {PgDatabase} from '../../../lib/pg/types'
 import {HTTPError} from 'http-call'
+import {nls} from '../../../nls'
 
 type Timezone = {
   PST: string
@@ -54,7 +55,7 @@ export default class Schedule extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'globally unique name or ID of the database add-on attachment'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   parseDate = function (at: string): BackupSchedule {

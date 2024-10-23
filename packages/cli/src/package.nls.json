@@ -1,0 +1,6 @@
+{
+  "pg:database:arg:description": "config var containing the connection string, unique name, ID or alias of the database. To access another app's database, prepend the app name to the config var or alias with `APP_NAME::`.",
+  "pg:database:arg:description:default:suffix": "If omitted, we use DATABASE_URL.",
+  "pg:database:arg:description:arbitrary:suffix": "If omitted, we use an arbitrary postgres database attached to the app.",
+  "pg:database:arg:description:all-dbs:suffix": "If omitted, all dbs are used."
+}

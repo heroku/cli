@@ -7,6 +7,7 @@ import backupsFactory from '../../../lib/pg/backups'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import type {BackupTransfer} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 function dropboxURL(url: string) {
   if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
@@ -41,7 +42,7 @@ export default class Restore extends Command {
 
   static args = {
     backup: Args.string({description: 'backup location to restore. Can be a URL or a backup from another app.'}),
-    database: Args.string({description: 'globally unique name or ID of the database add-on attachment'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   static examples = [
