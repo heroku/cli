@@ -55,3 +55,10 @@ jobs:
       isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
       channel: ${{ needs.get-version-channel.outputs.channel }}
     secrets: inherit
+
+  publish-docs:
+    needs: [ get-version-channel, promote ]
+    uses: ./.github/workflows/devcenter-doc-update.yml
+    with:
+      isStableRelease: ${{ needs.get-version-channel.outputs.isStableRelease }}
+    secrets: inherit

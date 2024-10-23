@@ -4,15 +4,16 @@
 
 set +x
 
-if [[ -z "${CIRCLE_TAG}" ]]; then
+PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
+
+if [[ "${PACKAGE_VERSION}" == *"-"* ]]; then
   echo "Not on stable release, skipping devcenter docs update"
   exit
 fi
 
-echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
 cat << EOF > ~/.netrc
 machine api.heroku.com
-  login me@example.com
+  login heroku-cli@salesforce.com
   password $HEROKU_DEVCENTER_API_KEY
 EOF
 chmod 0600 ~/.netrc
@@ -21,7 +22,6 @@ set -ex
 export PATH="./node_modules/.bin:./bin:$PATH"
 export COLUMNS=80
 
-yarn
 run whoami
 cat <<EOF > README.md
 ---
@@ -29,11 +29,11 @@ title: Heroku CLI Commands
 id: 4088
 
 
-These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help \`, \`heroku --help\`, or \`heroku -h\`.
+These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help\`, \`heroku --help\`, or \`heroku -h\`.
 
 <!-- commands -->
 EOF
 oclif readme --no-aliases
-grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" | sed "/_See\ code\:/d" > /tmp/heroku-cli-commands.md
+grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
 git checkout README.md
 devcenter push /tmp/heroku-cli-commands.md --trace

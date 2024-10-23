@@ -210,11 +210,13 @@ export type SettingKey =
   'log_lock_waits'
   | 'log_connections'
   | 'log_min_duration_statement'
+  | 'log_min_error_statement'
   | 'log_statement'
   | 'track_functions'
   | 'pgbouncer_max_client_conn'
   | 'pg_bouncer_max_db_conns'
   | 'pg_bouncer_default_pool_size'
+  | 'explain_data_connector_details'
   | 'auto_explain'
   | 'auto_explain.log_min_duration'
   | 'auto_explain.log_analyze'
@@ -222,6 +224,7 @@ export type SettingKey =
   | 'auto_explain.log_buffers'
   | 'auto_explain.log_verbose'
   | 'auto_explain.log_nested_statements'
+  | 'auto_explain.log_format'
 export type Setting<T> = {
   value: T
   values: Record<string, string>
