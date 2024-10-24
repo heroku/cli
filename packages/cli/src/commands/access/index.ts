@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import { HerokuAPIError } from '@heroku-cli/command/lib/api-client'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
