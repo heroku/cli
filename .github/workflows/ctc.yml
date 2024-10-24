@@ -34,11 +34,11 @@ jobs:
           nick-fields/retry@v3
         if: ${{ env.STATUS_CODE == env.RETRY_LATER}}
         with:
-          max_attempts: 15
+          max_attempts: 12
           warning_on_retry: true
-          retry_wait_seconds: 3600
+          retry_wait_seconds: 300
           retry_on_exit_code: 1
-          timeout_minutes: 3600
+          timeout_seconds: 60
           command: |
             STATUS_CODE="$(curl --w '%{http_code}' \
               -X PUT \
