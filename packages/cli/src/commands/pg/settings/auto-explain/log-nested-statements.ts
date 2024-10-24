@@ -8,7 +8,7 @@ export default class LogNestedStatements extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean indicating whether nested statements will be included in execution plan logs.'}),
+    value: Args.string({description: 'boolean indicating if execution plan logs include nested statements'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_nested_statements'

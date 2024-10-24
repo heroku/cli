@@ -12,7 +12,7 @@ export default class LogFormat extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({options: ['text', 'json', 'yaml', 'xml'], description: 'format that should be used for log output.'}),
+    value: Args.string({options: ['text', 'json', 'yaml', 'xml'], description: 'format of the log output\n<options: text|json|yaml|xml>'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_format'

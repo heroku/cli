@@ -13,7 +13,7 @@ export default class LogMinDuration extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'number indicating the min duration in milliseconds for queries before execution plans will be logged. A value of -1 disables it. A value of 0 means all queries will have their execution plans logged.'}),
+    value: Args.string({description: 'minimum duration in milliseconds for queries before logging execution plans. A value of -1 disables it. A value of 0 logs all query execution plans'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'

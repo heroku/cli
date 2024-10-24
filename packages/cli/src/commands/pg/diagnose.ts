@@ -37,7 +37,7 @@ export default class Diagnose extends Command {
   }
 
   static args = {
-    'DATABASE|REPORT_ID': Args.string({description: 'config var exposed to the owning app containing the database url or the report ID.'}),
+    'DATABASE|REPORT_ID': Args.string({description: 'config var exposed to the owning app containing the database url or the report ID'}),
   }
 
   public async run(): Promise<void> {

@@ -17,7 +17,7 @@ export default class ExplainDataConnectorDetails extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean value indicating whether data replication slot details should be logged.'}),
+    value: Args.string({description: 'boolean indicating if data replication slot details get logged'}),
   }
 
   protected settingKey:SettingKey = 'explain_data_connector_details'

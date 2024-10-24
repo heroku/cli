@@ -13,7 +13,7 @@ export default class LogBuffersWaits extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean indicating whether buffer statistics should be enabled.'}),
+    value: Args.string({description: 'boolean indicating if buffer statistics should be enabled'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_buffers'

@@ -15,7 +15,7 @@ export default class TrackFunctions extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({options: ['none', 'pl', 'all'], description: 'The function types to be tracked.'}),
+    value: Args.string({options: ['none', 'pl', 'all'], description: 'function type to track\n<options: none|pl|all>'}),
   }
 
   protected settingKey: SettingKey = 'track_functions'

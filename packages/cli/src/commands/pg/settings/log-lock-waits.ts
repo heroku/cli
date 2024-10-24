@@ -14,7 +14,7 @@ export default class LogLockWaits extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean value indicating whether a log message should be produced when a session waits longer than the deadlock_timeout to acquire a lock.'}),
+    value: Args.string({description: 'boolean indicating if a message gets logged when a session waits longer than the deadlock_timeout to acquire a lock'}),
   }
 
   protected settingKey: SettingKey = 'log_lock_waits'

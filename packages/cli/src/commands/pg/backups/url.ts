@@ -15,7 +15,7 @@ export default class Url extends Command {
     };
 
     static args = {
-      backup_id: Args.string({description: 'ID of the backup to get the secret but publicly accessible URL for. If omitted, we use the last backup ID.'}),
+      backup_id: Args.string({description: 'ID of the backup to get the URL for. If omitted, we use the last backup ID.'}),
     };
 
     public async run(): Promise<void> {

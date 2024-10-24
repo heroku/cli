@@ -13,7 +13,7 @@ export default class LogTriggers extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean indicating whether trigger execution statistics should be enabled.'}),
+    value: Args.string({description: 'boolean indicating if the database has trigger execution statistics enabled'}),
   }
 
   protected settingKey = 'auto_explain.log_triggers' as SettingKey
