@@ -5,13 +5,15 @@ on:
   workflow_call:
 
 jobs:
-  create-ctc-lock:
+  # Use TPS service to get clearance to release from Salesforce Change-Traffic-Control:
+  # https://github.com/heroku/tps/blob/master/docs/ctc.md
+  check-tps-for-lock:
     runs-on: ubuntu-latest
     environment: ChangeManagement
     steps:
       - uses: actions/checkout@v3
-      - name: Call CTC API TO Create Lock
-        id: create-lock
+      - name: Check tps.heroku.tools for lock
+        id: check-lock
         run: |
           STATUS_CODE="$(curl --w '%{http_code}' \
             -X PUT \
@@ -24,7 +26,8 @@ jobs:
           echo "Response status code is $STATUS_CODE."
           echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
 
-      - name: Retry if TPS returns 409
+      - name: Retry if lock cannot be obtained
+        id: retry-lock
         env:
           RETRY_LATER: "409"
         uses:
@@ -53,7 +56,8 @@ jobs:
               echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
             fi
 
-      - name: Verify CTC Lock Did Not Fail for Other Reasons
+      - name: Verify lock status
+        id: verify-lock
         env:
           UPDATE_LOCK_SUCCESS: "200"
           NEW_LOCK_SUCCESS: "201"
