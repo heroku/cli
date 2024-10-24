@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ChangeManagement
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check tps.heroku.tools for lock
         id: check-lock
         run: |
@@ -31,7 +31,7 @@ jobs:
         env:
           RETRY_LATER: "409"
         uses:
-          nick-fields/retry@v2
+          nick-fields/retry@v3
         if: ${{ env.STATUS_CODE == env.RETRY_LATER}}
         with:
           max_attempts: 15
