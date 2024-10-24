@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class LogMinErrorStatement extends PGSettingsCommand {
   static description = heredoc(`
@@ -11,7 +12,7 @@ export default class LogMinErrorStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({options: ['error', 'log', 'fatal', 'panic']}),
   }
 

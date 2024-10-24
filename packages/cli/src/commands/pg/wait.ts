@@ -7,6 +7,7 @@ import pgHost from '../../lib/pg/host'
 import notify from '../../lib/notify'
 import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgStatus} from '../../lib/pg/types'
 import {HTTPError} from 'http-call'
+import {nls} from '../../nls'
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
@@ -23,7 +24,7 @@ export default class Wait extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
   }
 
   public async run(): Promise<void> {

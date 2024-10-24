@@ -27,7 +27,7 @@ export default class DomainsAdd extends Command {
   }
 
   static args = {
-    hostname: Args.string({required: true}),
+    hostname: Args.string({required: true, description: 'unique identifier of the domain or full hostname'}),
   }
 
   certSelect = async (certs: Array<Heroku.SniEndpoint>) => {

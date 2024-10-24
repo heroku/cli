@@ -16,7 +16,7 @@ export default class Wait extends Command {
     };
 
     static args = {
-      addon: Args.string(),
+      addon: Args.string({description: 'unique identifier or globally unique name of the add-on'}),
     };
 
     public async run(): Promise<void> {

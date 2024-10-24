@@ -5,6 +5,7 @@ import confirmCommand from '../../lib/confirmCommand'
 import pgHost from '../../lib/pg/host'
 import {getAddon} from '../../lib/pg/fetcher'
 import heredoc from 'tsheredoc'
+import {nls} from '../../nls'
 
 export default class Reset extends Command {
   static topic = 'pg';
@@ -17,7 +18,7 @@ export default class Reset extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
   public async run(): Promise<void> {

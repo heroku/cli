@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {database} from '../../lib/pg/fetcher'
 import {exec, execFile, interactive} from '../../lib/pg/psql'
+import {nls} from '../../nls'
 
 export default class Psql extends Command {
     static description = 'open a psql shell to the database';
@@ -15,7 +16,7 @@ export default class Psql extends Command {
     };
 
     static args = {
-      database: Args.string(),
+      database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     };
 
     static aliases = ['psql']

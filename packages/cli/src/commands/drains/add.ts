@@ -11,7 +11,7 @@ export default class Add extends Command {
   }
 
   static args = {
-    url: Args.string({required: true}),
+    url: Args.string({required: true, description: 'URL of the log drain'}),
   }
 
   async run() {

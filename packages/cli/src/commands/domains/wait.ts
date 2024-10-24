@@ -14,7 +14,7 @@ export default class DomainsWait extends Command {
   }
 
   static args = {
-    hostname: Args.string(),
+    hostname: Args.string({description: 'unique identifier of the domain or full hostname'}),
   }
 
   async run() {

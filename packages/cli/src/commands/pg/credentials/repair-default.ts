@@ -5,6 +5,7 @@ import {essentialPlan} from '../../../lib/pg/util'
 import confirmCommand from '../../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 import pgHost from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class RepairDefault extends Command {
   static topic = 'pg';
@@ -17,7 +18,7 @@ export default class RepairDefault extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
   public async run(): Promise<void> {

@@ -6,6 +6,7 @@ import {essentialPlan} from '../../../lib/pg/util'
 import confirmCommand from '../../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
 import pgHost from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class Destroy extends Command {
   static topic = 'pg';
@@ -19,8 +20,8 @@ export default class Destroy extends Command {
   };
 
   static args = {
-    database: Args.string({required: true}),
-    link: Args.string({required: true}),
+    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
+    link: Args.string({required: true, description: 'name of the linked data store'}),
   };
 
   public async run(): Promise<void> {

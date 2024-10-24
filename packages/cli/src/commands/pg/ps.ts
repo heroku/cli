@@ -3,6 +3,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {database} from '../../lib/pg/fetcher'
 import {exec} from '../../lib/pg/psql'
+import {nls} from '../../nls'
 
 export default class Ps extends Command {
   static topic = 'pg'
@@ -14,7 +15,7 @@ export default class Ps extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

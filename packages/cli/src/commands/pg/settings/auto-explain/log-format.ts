@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import {PGSettingsCommand} from '../../../../lib/pg/setter'
 import {Setting, SettingKey} from '../../../../lib/pg/types'
 import heredoc from 'tsheredoc'
+import {nls} from '../../../../nls'
 
 export default class LogFormat extends PGSettingsCommand {
   static description = heredoc(`
@@ -10,8 +11,8 @@ export default class LogFormat extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string({options: ['text', 'json', 'yaml', 'xml']}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({options: ['text', 'json', 'yaml', 'xml'], description: 'format of the log output\n<options: text|json|yaml|xml>'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_format'

@@ -7,7 +7,7 @@ export class GitCredentials extends Command {
   static description = 'internal command for git-credentials'
 
   static args = {
-    command: Args.string({required: true}),
+    command: Args.string({required: true, description: 'command name of the git credentials'}),
   }
 
   async run() {

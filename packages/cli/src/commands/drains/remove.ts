@@ -13,7 +13,7 @@ export default class Remove extends Command {
   static example = 'drains:remove [URL|TOKEN]'
 
   static args = {
-    url: Args.string({required: true}),
+    url: Args.string({required: true, description: 'URL of the log drain'}),
   }
 
   async run() {

@@ -13,6 +13,7 @@ import {
   verifyExtensionsMatch,
 } from '../../lib/pg/push_pull'
 import {SpawnOptions, spawn} from 'node:child_process'
+import {nls} from '../../nls'
 const env = process.env
 
 export default class Push extends Command {
@@ -22,7 +23,7 @@ export default class Push extends Command {
     Push from SOURCE into TARGET. TARGET must be empty.
 
     To empty a Heroku database for push run ${color.cmd('heroku pg:reset')}
-    
+
     SOURCE must be either the name of a database existing on your localhost or the
     fully qualified URL of a remote database.
   `
@@ -42,8 +43,8 @@ export default class Push extends Command {
   }
 
   static args = {
-    source: Args.string({required: true}),
-    target: Args.string({required: true}),
+    source: Args.string({required: true, description: 'PostgreSQL connection string for the source database'}),
+    target: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

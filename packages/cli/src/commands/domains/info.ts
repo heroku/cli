@@ -16,7 +16,7 @@ export default class DomainsInfo extends Command {
   }
 
   static args = {
-    hostname: Args.string({required: true}),
+    hostname: Args.string({required: true, description: 'unique identifier of the domain or full hostname'}),
   }
 
   async run() {

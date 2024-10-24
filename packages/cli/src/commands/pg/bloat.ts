@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {database} from '../../lib/pg/fetcher'
 import {exec} from '../../lib/pg/psql'
+import {nls} from '../../nls'
 
 const query = `
 WITH constants AS (
@@ -75,7 +76,7 @@ export default class Bloat extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
   public async run(): Promise<void> {

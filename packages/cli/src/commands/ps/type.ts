@@ -3,7 +3,6 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {sortBy, compact} from 'lodash'
-import {HTTPError} from 'http-call'
 import heredoc from 'tsheredoc'
 
 const COST_MONTHLY: Record<string, number> = {

@@ -19,7 +19,7 @@ export default class LabsDisable extends Command {
   static description = 'disables an experimental feature'
 
   static args = {
-    feature: Args.string({required: true}),
+    feature: Args.string({required: true, description: 'unique identifier or name of the account feature'}),
   }
 
   static flags: FlagInput = {

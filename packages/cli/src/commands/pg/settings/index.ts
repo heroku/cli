@@ -4,6 +4,7 @@ import {SettingKey, SettingsResponse} from '../../../lib/pg/types'
 import {addonResolver} from '../../../lib/addons/resolve'
 import {essentialPlan} from '../../../lib/pg/util'
 import host from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class Index extends Command {
   static topic = 'pg'
@@ -14,7 +15,7 @@ export default class Index extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

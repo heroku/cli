@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 // ref: https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-FUNCTIONS
 export default class TrackFunctions extends PGSettingsCommand {
@@ -13,8 +14,8 @@ export default class TrackFunctions extends PGSettingsCommand {
     all  - All functions, including SQL and C language functions, are tracked. Simple SQL-language that are inlined are not tracked`)
 
   static args = {
-    database: Args.string(),
-    value: Args.string({options: ['none', 'pl', 'all']}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({options: ['none', 'pl', 'all'], description: 'function type to track\n<options: none|pl|all>'}),
   }
 
   protected settingKey: SettingKey = 'track_functions'

@@ -15,7 +15,7 @@ export default class Docs extends Command {
     };
 
     static args = {
-      addon: Args.string({required: true}),
+      addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
     };
 
     public async run(): Promise<void> {
