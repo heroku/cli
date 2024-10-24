@@ -21,7 +21,7 @@ export default class AutoExplain extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string(),
+    value: Args.string({description: 'boolean indicating if execution plans of queries will be logged for future connections'}),
   }
 
   static strict = false

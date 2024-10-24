@@ -47,7 +47,7 @@ export default class Pull extends Command {
 
   static args = {
     source: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    target: Args.string({required: true, description: 'PostgreSQL connection string for the target destination'}),
+    target: Args.string({required: true, description: 'PostgreSQL connection string for the target database'}),
   }
 
   public async run(): Promise<void> {

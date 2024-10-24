@@ -28,7 +28,7 @@ export default class Maintenance extends Command {
   }
 
   static args = {
-    database: Args.string({required: false, description: 'name of the Redis database. If omitted, we use the primary Redis instance associated with the app.'}),
+    database: Args.string({required: false, description: 'name of the Key-Value Store database. If omitted, it defaults to the primary instance associated with the app.'}),
   }
 
   async run() {

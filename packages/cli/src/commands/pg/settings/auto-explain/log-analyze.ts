@@ -15,7 +15,7 @@ export default class LogAnalyze extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean indicating whether execution plans should be logged.'}),
+    value: Args.string({description: 'boolean indicating if execution plans get logged'}),
   }
 
   protected settingKey = 'auto_explain.log_analyze' as SettingKey

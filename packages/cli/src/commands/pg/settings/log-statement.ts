@@ -15,7 +15,7 @@ export default class LogStatement extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({options: ['none', 'ddl', 'mod', 'all'], description: 'Which SQL statements to be logged.'}),
+    value: Args.string({options: ['none', 'ddl', 'mod', 'all'], description: 'type of SQL statements to log\n<options: none|ddl|mod|all>'}),
   }
 
   protected settingKey: SettingKey = 'log_statement'

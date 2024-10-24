@@ -13,7 +13,7 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'number in milliseconds to wait for the statement to complete before it\'s time is logged.'}),
+    value: Args.string({description: 'milliseconds to wait for a statement to complete before logging it'}),
   }
 
   protected settingKey:SettingKey = 'log_min_duration_statement'

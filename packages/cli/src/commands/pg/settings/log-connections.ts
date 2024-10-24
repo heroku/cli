@@ -18,7 +18,7 @@ export default class LogConnections extends PGSettingsCommand {
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean value indicating whether a log message should be produced when a login attempt is made.'}),
+    value: Args.string({description: 'boolean indicating if database login attempts get logged'}),
   }
 
   protected settingKey: SettingKey = 'log_connections'
