@@ -95,7 +95,7 @@ export default class AccessIndex extends Command {
         })
         collaborators = buildCollaboratorsArray(collaborators, admins)
       } catch (error: any) {
-        if (error.statusCode !== 403)
+        if (error.http.statusCode !== 403)
           throw error
       }
     }
