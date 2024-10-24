@@ -193,6 +193,70 @@ describe('ps', function () {
     expect(stderr.output).to.equal('')
   })
 
+  it('shows extended info for Private Space app', async function () {
+    const api = nock('https://api.heroku.com')
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+      .get('/apps/myapp/dynos?extended=true')
+      .reply(200, [{
+        id: '100',
+        command: 'npm start',
+        size: 'Eco',
+        name: 'web.1',
+        type: 'web',
+        updated_at: hourAgo,
+        state: 'up',
+        release: {id: '10', version: '40'},
+        extended: {
+          az: null,
+          execution_plane: null,
+          fleet: null,
+          instance: 'instance',
+          ip: '10.0.0.1',
+          port: null,
+          region: 'us',
+          route: null,
+        },
+      }, {
+        id: '101',
+        command: 'bash',
+        size: 'Eco',
+        name: 'run.1',
+        type: 'run',
+        updated_at: hourAgo,
+        state: 'up',
+        release: {id: '10', version: '40'},
+        extended: {
+          az: null,
+          execution_plane: null,
+          fleet: null,
+          instance: 'instance',
+          ip: '10.0.0.1',
+          port: null,
+          region: 'us',
+          route: null,
+        },
+      }])
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--extended',
+    ])
+
+    api.done()
+
+    expect(heredoc(stdout.output)).to.equal(heredoc`
+      Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az Release Command   Route Size 
+      ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ── ─────── ───────── ───── ──── 
+      101 run.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      bash            Eco  
+      100 web.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      npm start       Eco  
+    `)
+    expect(stderr.output).to.equal('')
+  })
+
   it('shows shield dynos in extended info if app is in a shielded private space', async function () {
     const api = nock('https://api.heroku.com')
       .get('/account')
