@@ -13,15 +13,16 @@ jobs:
       - name: Call CTC API TO Create Lock
         id: create-lock
         run: |
-          CODE=`curl --w '%{http_code}' \
-          -X PUT \
-          -H "Accept: application/json" \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-          -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
-          ${{ secrets.TPS_API_URL_PARAM }}`
-          echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
-          echo "Response status code is $CODE."
+          STATUS_CODE="$(curl --w '%{http_code}' \
+            -X PUT \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
+            -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
+            https://tps.heroku.tools/api/ctc)"
+
+          echo "Response status code is $STATUS_CODE."
+          echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
 
       - name: Retry if TPS returns 409
         env:
@@ -36,20 +37,20 @@ jobs:
           retry_on_exit_code: 1
           timeout_minutes: 3600
           command: |
-            CODE=`curl --w '%{http_code}' \
-            -X PUT \
-            -H "Accept: application/json" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-            -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
-            ${{ secrets.TPS_API_URL_PARAM }}/api/ctc`
+            STATUS_CODE="$(curl --w '%{http_code}' \
+              -X PUT \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
+              -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
+              https://tps.heroku.tools/api/ctc)"
 
-            echo "Response status code is $CODE"
-            if [ $CODE == "409" ]
+            echo "Response status code is $STATUS_CODE"
+            if [ $STATUS_CODE == "409" ]
             then
               exit 1
             else
-              echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
+              echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
             fi
 
       - name: Verify CTC Lock Did Not Fail for Other Reasons
