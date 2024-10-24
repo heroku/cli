@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {type Setting, type SettingKey} from '../../../lib/pg/types'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
+import {nls} from '../../../nls'
 export default class LogStatement extends PGSettingsCommand {
   static description = heredoc(`
     log_statement controls which SQL statements are logged.
@@ -13,7 +14,7 @@ export default class LogStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({options: ['none', 'ddl', 'mod', 'all'], description: 'Which SQL statements to be logged.'}),
   }
 

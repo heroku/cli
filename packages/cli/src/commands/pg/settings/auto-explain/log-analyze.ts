@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter'
 import {SettingKey, Setting} from '../../../../lib/pg/types'
+import {nls} from '../../../../nls'
 
 export default class LogAnalyze extends PGSettingsCommand {
   static topic = 'pg'
@@ -13,7 +14,7 @@ export default class LogAnalyze extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string({description: 'add-on ID, config var name, provider ID, plan name or globally unique name of the database add-on. If omitted, we use DATABASE_URL.'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating whether execution plans should be logged.'}),
   }
 

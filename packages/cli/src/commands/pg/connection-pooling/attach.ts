@@ -6,6 +6,7 @@ import pghost from '../../../lib/pg/host'
 import heredoc from 'tsheredoc'
 import {essentialPlan} from '../../../lib/pg/util'
 import {getAddon} from '../../../lib/pg/fetcher'
+import {nls} from '../../../nls'
 
 export default class Attach extends Command {
     static topic = 'pg'
@@ -21,7 +22,7 @@ export default class Attach extends Command {
     }
 
     static args = {
-      database: Args.string({description: 'globally unique name or ID of the database add-on attachment'}),
+      database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     }
 
     public async run(): Promise<void> {
