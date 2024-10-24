@@ -79,6 +79,11 @@ export default class ContainerRelease extends Command {
       })
     }
 
+    const {body: oldReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
+      partial: true, headers: {Range: 'version ..; max=1, order=desc'},
+    })
+    const oldRelease = oldReleases[0]
+
     ux.action.start(`Releasing images ${argv.join(',')} to ${app}`)
     await this.heroku.patch(`/apps/${app}/formation`, {
       body: {updates: updateData}, headers: {
@@ -86,11 +91,6 @@ export default class ContainerRelease extends Command {
       },
     })
     ux.action.stop()
-
-    const {body: oldReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      partial: true, headers: {Range: 'version ..; max=2, order=desc'},
-    })
-    const oldRelease = oldReleases[0]
 
     const {body: updatedReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
       partial: true, headers: {Range: 'version ..; max=1, order=desc'},
