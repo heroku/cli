@@ -15,8 +15,8 @@ export default class Restart extends Command {
   static hiddenAliases = ['restart']
 
   static examples = [
-    '$ heroku ps:restart web.1',
-    '$ heroku ps:restart web',
+    '$ heroku ps:restart --dyno web.1',
+    '$ heroku ps:restart --type web',
     '$ heroku ps:restart',
   ]
 
@@ -34,7 +34,7 @@ export default class Restart extends Command {
     type: flags.string({
       description: 'restart all dynos of a process type (such as "web" or "worker")',
       completion: ProcessTypeCompletion,
-      exclusive: ['type'],
+      exclusive: ['dyno'],
     }),
   }
 
