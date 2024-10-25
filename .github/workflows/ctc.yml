@@ -20,7 +20,7 @@ jobs:
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-            -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
+            -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "cli"}}' \
             https://tps.heroku.tools/api/ctc)"
 
           echo "Response status code is $STATUS_CODE."
@@ -45,7 +45,7 @@ jobs:
               -H "Accept: application/json" \
               -H "Content-Type: application/json" \
               -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-              -d '{"lock": {"sha": "${{ github.sha }}", "app_id": "${{ secrets.TPS_API_APP_ID }}"}}' \
+              -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "cli"}}' \
               https://tps.heroku.tools/api/ctc)"
 
             echo "Response status code is $STATUS_CODE"
