@@ -10,6 +10,21 @@ describe('disclaimers ‘plugins:preinstall’ hook', function () {
     config = await Config.load({root: join(__dirname, '../../..')})
   })
 
+  context('when installing from a Github repository', function () {
+    it('doesn’t show the disclaimer', async function () {
+      stderr.start()
+      config.runHook('plugins:preinstall', {
+        plugin: {
+          url: 'https://github.com/heroku/heroku-api-plugin',
+          type: 'repo',
+        },
+      })
+      stderr.stop()
+
+      expect(stderr.output).not.to.include('This pilot feature is a Beta Service.')
+    })
+  })
+
   context('when installing a plugin different from ‘@heroku/plugin-ai’ or ‘@heroku-cli/plugin-ai’', function () {
     it('doesn’t show the disclaimer', async function () {
       stderr.start()

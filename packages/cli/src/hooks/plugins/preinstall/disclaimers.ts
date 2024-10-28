@@ -3,7 +3,7 @@ import {Hook, ux} from '@oclif/core'
 const hook: Hook<'plugins:preinstall'> = async function (options) {
   const npmPackageNames = ['@heroku/plugin-ai', '@heroku-cli/plugin-ai']
 
-  if (options.plugin.type === 'npm' && !npmPackageNames.includes(options.plugin.name)) return
+  if (options.plugin.type !== 'npm' || !npmPackageNames.includes(options.plugin.name)) return
 
   ux.warn(
     '\n\nThis pilot feature is a Beta Service. You may opt to try such Beta Service in your sole discretion. ' +
