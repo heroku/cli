@@ -15,9 +15,9 @@ export default class Restart extends Command {
   static hiddenAliases = ['restart']
 
   static examples = [
-    '$ heroku ps:restart --dyno web.1',
-    '$ heroku ps:restart --type web',
-    '$ heroku ps:restart',
+    '$ heroku ps:restart --app myapp --dyno web.1',
+    '$ heroku ps:restart --app myapp --type web',
+    '$ heroku ps:restart --app myapp',
   ]
 
   static args = {
