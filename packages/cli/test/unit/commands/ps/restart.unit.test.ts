@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
+import stripAnsi = require('strip-ansi')
 
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {
@@ -66,7 +67,7 @@ describe('ps:restart', function () {
       'myapp',
       'web.1',
     ])
-    expect(stderr.output).to.include('Warning: Passing DYNO as an arg is deprecated. Please use heroku ps:restart --dyno or heroku ps:restart --type instead.')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated. Please use heroku ps:restart --dyno or heroku ps:restart --type instead.')
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })
