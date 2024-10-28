@@ -318,7 +318,8 @@
         "./lib/hooks/init/performance_analytics"
       ],
       "prerun": [
-        "./lib/hooks/prerun/analytics"
+        "./lib/hooks/prerun/analytics",
+        "./lib/hooks/prerun/disclaimers"
       ],
       "postrun": [
         "./lib/hooks/postrun/performance_analytics"

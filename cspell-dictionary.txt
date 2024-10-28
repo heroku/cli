@@ -286,6 +286,7 @@ searchpath
 secrettoken
 segv
 selfsigned
+sfdc
 shellescape
 showenvs
 sigints
