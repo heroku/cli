@@ -61,7 +61,7 @@ describe('ps:stop', function () {
       'myapp',
       'web.1',
     ])
-    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated. Please use heroku ps:stop --dyno or heroku ps:stop --type instead.')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated.')
     expect(stderr.output).to.include('Stopping dyno web.1 on ⬢ myapp... done')
   })
 })

@@ -116,7 +116,7 @@ dyno:kill                                      stop app dyno
 dyno:resize                                    manage dyno sizes
 dyno:restart                                   restart app dynos
 dyno:scale                                     scale dyno quantity up or down
-dyno:stop                                      stop app dyno
+dyno:stop                                      stop app dyno or dyno type
 features                                       list available app features
 features:disable                               disables an app feature
 features:enable                                enables an app feature

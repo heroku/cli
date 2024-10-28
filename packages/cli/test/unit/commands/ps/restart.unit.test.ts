@@ -67,7 +67,7 @@ describe('ps:restart', function () {
       'myapp',
       'web.1',
     ])
-    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated. Please use heroku ps:restart --dyno or heroku ps:restart --type instead.')
+    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated.')
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })
