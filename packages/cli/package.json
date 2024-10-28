@@ -317,9 +317,11 @@
         "./lib/hooks/init/terms-of-service",
         "./lib/hooks/init/performance_analytics"
       ],
+      "plugins:preinstall": [
+        "./lib/hooks/plugins/preinstall/disclaimers"
+      ],
       "prerun": [
-        "./lib/hooks/prerun/analytics",
-        "./lib/hooks/prerun/disclaimers"
+        "./lib/hooks/prerun/analytics"
       ],
       "postrun": [
         "./lib/hooks/postrun/performance_analytics"
