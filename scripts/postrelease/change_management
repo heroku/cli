@@ -46,7 +46,7 @@ async function sendDeployNotification () {
     release: {
       actor_email: actorEmail,
       app_id: appId,
-      component_name: 'cli',
+      component_slug: 'cli',
       description: `Deploy ${sha} of heroku/cli in ${stage}`,
       sha,
       stage
