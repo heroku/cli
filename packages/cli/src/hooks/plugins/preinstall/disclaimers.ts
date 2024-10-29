@@ -20,6 +20,11 @@ const hook: Hook<'plugins:preinstall'> = async function (options) {
     'acceptable use policies. In addition, Customer’s use of each Platform may be subject to the Platform’s own terms and ' +
     'conditions, compliance with which Customer is solely responsible.\n',
   )
+
+  const response = await ux.prompt('Continue? (Y/N)')
+  if (response.toUpperCase() !== 'Y') {
+    ux.error('Canceled', {exit: 1})
+  }
 }
 
 export default hook
