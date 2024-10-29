@@ -112,11 +112,11 @@ domains:wait                                   wait for domain to be active for 
 drains                                         display the log drains of an app
 drains:add                                     adds a log drain to an app
 drains:remove                                  removes a log drain from an app
-dyno:kill                                      stop app dyno
+dyno:kill                                      stop app dyno or dyno type
 dyno:resize                                    manage dyno sizes
 dyno:restart                                   restart app dynos
 dyno:scale                                     scale dyno quantity up or down
-dyno:stop                                      stop app dyno
+dyno:stop                                      stop app dyno or dyno type
 features                                       list available app features
 features:disable                               disables an app feature
 features:enable                                enables an app feature
@@ -238,12 +238,12 @@ ps:autoscale:enable                            enable web dyno autoscaling
 ps:copy                                        Copy a file from a dyno to the local filesystem
 ps:exec                                        Create an SSH session to a dyno
 ps:forward                                     Forward traffic on a local port to a dyno
-ps:kill                                        stop app dyno
+ps:kill                                        stop app dyno or dyno type
 ps:resize                                      manage dyno sizes
 ps:restart                                     restart app dynos
 ps:scale                                       scale dyno quantity up or down
 ps:socks                                       Launch a SOCKS proxy into a dyno
-ps:stop                                        stop app dyno
+ps:stop                                        stop app dyno or dyno type
 ps:type                                        manage dyno sizes
 ps:wait                                        wait for all dynos to be running latest version after a release
 psql                                           open a psql shell to the database

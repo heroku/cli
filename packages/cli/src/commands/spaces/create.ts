@@ -24,6 +24,7 @@ export default class Create extends Command {
     CIDR:       10.0.0.0/16
     Data CIDR:  172.23.0.0/20
     State:      allocating
+    Generation: fir
     Created at: 2016-01-06T03:23:13Z
   `]
 
