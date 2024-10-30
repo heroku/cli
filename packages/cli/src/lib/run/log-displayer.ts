@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import color from '@heroku-cli/color'
 import colorize from './colorize'
 import {isFirApp} from '../apps/generation'
 import {LogSession} from '../types/fir'
@@ -42,6 +43,11 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
 
       // should only land here if --tail and no error status or message
     })
+
+    if (es.readyState === 0) {
+      ux.log(color.cyan.bold('Waiting for logs...'))
+      ux.log()
+    }
 
     es.addEventListener('message', function (e: { data: string }) {
       e.data.trim().split(/\n+/).forEach(line => {
