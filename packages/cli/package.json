@@ -317,6 +317,9 @@
         "./lib/hooks/init/terms-of-service",
         "./lib/hooks/init/performance_analytics"
       ],
+      "plugins:preinstall": [
+        "./lib/hooks/plugins/preinstall/disclaimers"
+      ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
       ],
