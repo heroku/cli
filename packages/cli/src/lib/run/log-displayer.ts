@@ -44,7 +44,8 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       // should only land here if --tail and no error status or message
     })
 
-    if (es.readyState === 0) {
+    // only display for fir apps
+    if (es.readyState === 0 && recreateSessionTimeout) {
       ux.log(color.cyan.bold('Waiting for logs...'))
       ux.log()
     }

@@ -240,6 +240,7 @@ describe('logDisplayer', function () {
         }).get('/stream')
           .query(true)
           .reply(200, heredoc`
+            Waiting for logs...\n\n
             id: 1002
             data: 2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1\n\n\n
             id: 1003
@@ -306,6 +307,7 @@ describe('logDisplayer', function () {
         }).get('/stream')
           .query(true)
           .reply(200, heredoc`
+            Waiting for logs...\n\n
             id: 1002
             data: 2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1\n\n\n
             id: 1003
