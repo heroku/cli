@@ -13,14 +13,15 @@ export default class Logs extends Command {
   static examples = [
     'heroku logs --app=my-app',
     'heroku logs --num=50 --app=my-app',
-    'heroku logs --dyno=web-123-456 --app=my-app',
-    'heroku logs --type=web --app=my-app',
+    'heroku logs --dyno-name=web-123-456 --app=my-app',
+    'heroku logs --process-type=web --app=my-app',
     'heroku logs --app=my-app --tail',
   ]
 
   static flags = {
     app: flags.app({required: true}),
-    dyno: flags.string({
+    'dyno-name': flags.string({
+      aliases: ['dyno'],
       char: 'd',
       description: 'only show output from this dyno (such as "web-123-456" or "worker.2")',
     }),
@@ -59,7 +60,8 @@ export default class Logs extends Command {
       default: false,
       description: 'continually stream logs (defaults to true for Fir generation apps)',
     }),
-    type: flags.string({
+    'process-type': flags.string({
+      char: 'p',
       description: 'only show output from this process type (such as "web" or "worker")',
       relationships: [
         {type: 'none', flags: ['dyno', 'ps']},
@@ -70,7 +72,7 @@ export default class Logs extends Command {
 
   async run() {
     const {flags} = await this.parse(Logs)
-    const {app, dyno, 'force-colors': forceColors, num, ps, source, tail, type} = flags
+    const {app, 'dyno-name': dyno, 'force-colors': forceColors, num, ps, source, tail, 'process-type': type} = flags
 
     if (forceColors)
       color.enabled = true
