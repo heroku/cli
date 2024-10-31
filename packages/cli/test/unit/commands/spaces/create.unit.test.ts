@@ -16,7 +16,7 @@ describe('spaces:create', function () {
   it('creates a Standard space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        // features: features,
+        features: features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -27,7 +27,7 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: {name: 'my-team'},
         region: {name: 'my-region'},
-        // features: ['one', 'two'],
+        features: ['one', 'two'],
         generation: 'cedar',
         state: 'allocated',
         created_at: now,
@@ -39,7 +39,7 @@ describe('spaces:create', function () {
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
-      // '--features=one, two',
+      '--features=one, two',
     ])
 
     api.done()
@@ -61,7 +61,7 @@ describe('spaces:create', function () {
   it('shows Standard Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        // features: features,
+        features: features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -72,7 +72,7 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: {name: 'my-team'},
         region: {name: 'my-region'},
-        // features: ['one', 'two'],
+        features: ['one', 'two'],
         generation: 'cedar',
         state: 'allocated',
         created_at: now,
@@ -84,7 +84,7 @@ describe('spaces:create', function () {
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
-      // '--features=one, two',
+      '--features=one, two',
     ])
 
     api.done()
@@ -97,7 +97,7 @@ describe('spaces:create', function () {
   it('creates a Shield space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        // features: features,
+        features: features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -109,7 +109,7 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: {name: 'my-team'},
         region: {name: 'my-region'},
-        // features: ['one', 'two'],
+        features: ['one', 'two'],
         generation: 'cedar',
         state: 'allocated',
         created_at: now,
@@ -121,7 +121,7 @@ describe('spaces:create', function () {
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
-      // '--features=one, two',
+      '--features=one, two',
       '--shield',
     ])
 
@@ -144,7 +144,7 @@ describe('spaces:create', function () {
   it('shows Shield Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        // features: features,
+        features: features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -156,7 +156,7 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: {name: 'my-team'},
         region: {name: 'my-region'},
-        // features: ['one', 'two'],
+        features: ['one', 'two'],
         generation: 'cedar',
         state: 'allocated',
         created_at: now,
@@ -168,7 +168,7 @@ describe('spaces:create', function () {
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
-      // '--features=one, two',
+      '--features=one, two',
       '--shield',
     ])
 
@@ -184,7 +184,7 @@ describe('spaces:create', function () {
       .post('/spaces', {
         cidr: '10.0.0.0/24',
         data_cidr: '172.23.0.0/28',
-        // features: features,
+        features: features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -195,7 +195,7 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: {name: 'my-team'},
         region: {name: 'my-region'},
-        // features: ['one', 'two'],
+        features: ['one', 'two'],
         state: 'allocated',
         created_at: now,
         cidr: '10.0.0.0/24',
@@ -206,7 +206,7 @@ describe('spaces:create', function () {
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
-      // '--features=one, two',
+      '--features=one, two',
       '--cidr=10.0.0.0/24',
       '--data-cidr=172.23.0.0/28',
     ])
@@ -231,7 +231,7 @@ describe('spaces:create', function () {
       cidr: '10.0.0.0/16',
       created_at: now,
       data_cidr: '172.23.0.0/20',
-      // features: ['one', 'two'],
+      features: ['one', 'two'],
       generation: 'fir',
       name: 'my-space',
       region: {name: 'my-region'},
@@ -241,7 +241,7 @@ describe('spaces:create', function () {
     }
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        // features: firSpace.features,
+        features: firSpace.features,
         generation: firSpace.generation,
         name: firSpace.name,
         region: firSpace.region.name,
@@ -256,8 +256,8 @@ describe('spaces:create', function () {
       firSpace.name,
       '--region',
       firSpace.region.name,
-      // '--features',
-      // firSpace.features.join(','),
+      '--features',
+      firSpace.features.join(','),
       '--generation',
       firSpace.generation,
     ])
