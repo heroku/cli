@@ -6,7 +6,7 @@ import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import heredoc from 'tsheredoc'
 export default class Restart extends Command {
   static description = heredoc(`
-    restart app dynos
+    restart an app dyno or process type
     if neither --dyno nor --type are specified, restarts all dynos on app
   `)
 
@@ -15,34 +15,35 @@ export default class Restart extends Command {
   static hiddenAliases = ['restart']
 
   static examples = [
-    '$ heroku ps:restart --app myapp --dyno web.1',
-    '$ heroku ps:restart --app myapp --type web',
+    '$ heroku ps:restart --app myapp --dyno-name web.1',
+    '$ heroku ps:restart --app myapp --process-type web',
     '$ heroku ps:restart --app myapp',
   ]
 
   static args = {
-    dyno: Args.string({required: false, deprecated: true}),
+    dyno: Args.string({description: 'name of the dyno to restart', required: false, deprecated: true}),
   }
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-    dyno: flags.string({
+    'dyno-name': flags.string({
       char: 'd',
-      description: 'restart a specific dyno (such as "web-123-456" or "worker.2")',
+      description: 'name of the dyno to restart',
     }),
-    type: flags.string({
-      description: 'restart all dynos of a process type (such as "web" or "worker")',
+    'process-type': flags.string({
+      char: 'p',
+      description: 'name of the process type to restart',
       completion: ProcessTypeCompletion,
-      exclusive: ['dyno'],
+      exclusive: ['dyno-name'],
     }),
   }
 
   async run() {
     const {args, flags} = await this.parse(Restart)
     const app = flags.app
-    const dyno = flags.dyno || args.dyno
-    const type = flags.type
+    const dyno = flags['dyno-name'] || args.dyno
+    const type = flags['process-type']
     let msg = 'Restarting'
     let restartUrl
 
@@ -51,7 +52,7 @@ export default class Restart extends Command {
       restartUrl = `/apps/${app}/formations/${encodeURIComponent(type)}`
     } else if (dyno) {
       if (args.dyno) {
-        ux.warn(`Passing DYNO as an arg is deprecated. Please use ${color.cmd('heroku ps:restart --dyno')} or ${color.cmd('heroku ps:restart --type')} instead.`)
+        ux.warn(`DYNO is a deprecated argument. Use ${color.cmd('--dyno-name')} or ${color.cmd('--process-type')} instead.`)
       }
 
       msg += ` dyno ${color.cyan(dyno)}`
