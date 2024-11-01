@@ -39,7 +39,7 @@ describe('ps:type', function () {
     ])
 
     expectOutput(stdout.output, heredoc`
-      === Dyno Types
+      === Process Types
 
        Type Size              Qty Cost/hour Max cost/month 
        ──── ───────────────── ─── ───────── ────────────── 
@@ -89,7 +89,7 @@ describe('ps:type', function () {
     api.done()
 
     expect(stdout.output).to.eq(heredoc`
-      === Dyno Types
+      === Process Types
 
        Type Size              Qty Cost/hour Max cost/month 
        ──── ───────────────── ─── ───────── ────────────── 
@@ -123,7 +123,7 @@ describe('ps:type', function () {
       'basic',
     ])
 
-    expectOutput(stdout.output, `=== Dyno Types
+    expectOutput(stdout.output, `=== Process Types
  Type   Size  Qty Cost/hour Max cost/month
  ────── ───── ─── ───────── ──────────────
  web    Basic 1   ~$0.010   $7
@@ -155,7 +155,7 @@ describe('ps:type', function () {
       'worker=standard-2x',
     ])
 
-    expectOutput(stdout.output, `=== Dyno Types
+    expectOutput(stdout.output, `=== Process Types
  Type   Size        Qty Cost/hour Max cost/month
  ────── ─────────── ─── ───────── ──────────────
  web    Standard-1X 1   ~$0.035   $25
@@ -182,7 +182,7 @@ describe('ps:type', function () {
       'myapp',
     ])
 
-    expectOutput(stdout.output, `=== Dyno Types
+    expectOutput(stdout.output, `=== Process Types
  Type Size     Qty Cost/hour Max cost/month
  ──── ──────── ─── ───────── ──────────────
  web  Shield-M 0
