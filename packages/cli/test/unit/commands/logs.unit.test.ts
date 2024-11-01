@@ -59,11 +59,11 @@ describe('logs', function () {
     })
   })
 
-  context('with --dyno option', function () {
+  context('with --dyno-name option', function () {
     it('calls logDisplayer function with dyno filter set', async function () {
       await runCommand(Cmd, [
         '--app=my-app',
-        '--dyno=web.2',
+        '--dyno-name=web.2',
       ])
 
       expect(logDisplayerStub.calledWith(sinon.match.any, {
@@ -81,7 +81,7 @@ describe('logs', function () {
     it('calls logDisplayer function with type filter set', async function () {
       await runCommand(Cmd, [
         '--app=my-app',
-        '--type=web',
+        '--process-type=web',
       ])
 
       expect(logDisplayerStub.calledWith(sinon.match.any, {
@@ -113,34 +113,34 @@ describe('logs', function () {
     })
   })
 
-  context('with both --dyno and --ps options', function () {
+  context('with both --dyno-name and --ps options', function () {
     it('shows an error and doesn’t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',
-          '--dyno=web.1',
+          '--dyno-name=web.1',
           '--ps=worker',
         ])
       } catch (error: unknown) {
         const {message} = error as CLIError
-        expect(message).to.include('--dyno=web.1 cannot also be provided when using --ps')
+        expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --ps')
       }
 
       expect(logDisplayerStub.notCalled).to.be.true
     })
   })
 
-  context('with both --dyno and --type options', function () {
+  context('with both --dyno-name and --type options', function () {
     it('shows an error and doesn’t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',
-          '--dyno=web.1',
-          '--type=worker',
+          '--dyno-name=web.1',
+          '--process-type=worker',
         ])
       } catch (error: unknown) {
         const {message} = error as CLIError
-        expect(message).to.include('--dyno=web.1 cannot also be provided when using --type')
+        expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --process-type')
       }
 
       expect(logDisplayerStub.notCalled).to.be.true
@@ -153,11 +153,11 @@ describe('logs', function () {
         await runCommand(Cmd, [
           '--app=my-app',
           '--ps=web',
-          '--type=worker',
+          '--process-type=worker',
         ])
       } catch (error: unknown) {
         const {message} = error as CLIError
-        expect(message).to.include('--ps=web cannot also be provided when using --type')
+        expect(message).to.include('--ps=web cannot also be provided when using --process-type')
       }
 
       expect(logDisplayerStub.notCalled).to.be.true

@@ -80,7 +80,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     throw emptyFormationErr(app)
   }
 
-  ux.styledHeader('Dyno Types')
+  ux.styledHeader('Process Types')
   ux.table(formationTableData, {
     type: {},
     size: {},
@@ -88,7 +88,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     'cost/hour': {},
     'max cost/month': {},
   })
-
+  ux.log()
   ux.styledHeader('Dyno Totals')
   ux.table(dynoTotalsTableData, {
     type: {},
