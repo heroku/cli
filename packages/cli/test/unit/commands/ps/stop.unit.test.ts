@@ -13,7 +13,7 @@ describe('ps:stop', function () {
       '--app',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.include('Please specify a process type or dyno to stop.')
+      expect(error.message).to.include('Please specify a process type or dyno name to stop.')
     })
   })
 

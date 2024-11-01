@@ -46,7 +46,7 @@ export default class Logs extends Command {
       hidden: true,
       description: 'hidden alias for type',
       relationships: [
-        {type: 'none', flags: ['dyno']},
+        {type: 'none', flags: ['dyno-name']},
       ],
       completion: ProcessTypeCompletion,
     }),
@@ -64,7 +64,7 @@ export default class Logs extends Command {
       char: 'p',
       description: 'only show output from this process type (such as "web" or "worker")',
       relationships: [
-        {type: 'none', flags: ['dyno', 'ps']},
+        {type: 'none', flags: ['dyno-name', 'ps']},
       ],
       completion: ProcessTypeCompletion,
     }),
