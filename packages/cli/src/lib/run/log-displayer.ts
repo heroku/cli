@@ -44,12 +44,6 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       // should only land here if --tail and no error status or message
     })
 
-    // only display for fir apps
-    if (es.readyState === 0 && recreateSessionTimeout) {
-      ux.log(color.cyan.bold('Waiting for logs...'))
-      ux.log()
-    }
-
     es.addEventListener('message', function (e: { data: string }) {
       e.data.trim().split(/\n+/).forEach(line => {
         ux.log(colorize(line))
@@ -81,17 +75,19 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
     source: options.source,
   }
 
-  if (firApp)
+  if (firApp) {
+    process.stderr.write(color.cyan.bold('Fetching logs...\n\n'))
     Object.assign(requestBodyParameters, {
       dyno: options.dyno,
       type: options.type,
     })
-  else
+  } else {
     Object.assign(requestBodyParameters, {
       dyno: options.dyno || options.type,
       lines: options.lines,
       tail: options.tail,
     })
+  }
 
   let recreateLogSession = false
   do {
