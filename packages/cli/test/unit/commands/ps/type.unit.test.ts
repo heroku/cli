@@ -52,6 +52,7 @@ describe('ps:type', function () {
        web  Performance-L-RAM 1   ~$0.694   $500           
        web  Performance-XL    1   ~$1.042   $750           
        web  Performance-2XL   1   ~$2.083   $1500          
+
       === Dyno Totals
        Type              Total 
        ───────────────── ───── 
@@ -94,6 +95,7 @@ describe('ps:type', function () {
        Type Size              Qty Cost/hour Max cost/month 
        ──── ───────────────── ─── ───────── ────────────── 
        web  Performance-L-RAM 1   ~$0.694   $500           
+
       === Dyno Totals
 
        Type              Total 
@@ -128,6 +130,7 @@ describe('ps:type', function () {
  ────── ───── ─── ───────── ──────────────
  web    Basic 1   ~$0.010   $7
  worker Basic 2   ~$0.019   $14
+
 === Dyno Totals
  Type  Total
  ───── ─────
@@ -160,6 +163,7 @@ describe('ps:type', function () {
  ────── ─────────── ─── ───────── ──────────────
  web    Standard-1X 1   ~$0.035   $25
  worker Standard-2X 2   ~$0.139   $100
+
 === Dyno Totals
  Type        Total
  ─────────── ─────
@@ -187,6 +191,7 @@ describe('ps:type', function () {
  ──── ──────── ─── ───────── ──────────────
  web  Shield-M 0
  web  Shield-L 0
+
 === Dyno Totals
  Type     Total
  ──────── ─────

@@ -112,11 +112,11 @@ domains:wait                                   wait for domain to be active for 
 drains                                         display the log drains of an app
 drains:add                                     adds a log drain to an app
 drains:remove                                  removes a log drain from an app
-dyno:kill                                      stop app dyno or dyno type
+dyno:kill                                      stop an app dyno or process type
 dyno:resize                                    manage dyno sizes
 dyno:restart                                   restart an app dyno or process type
 dyno:scale                                     scale dyno quantity up or down
-dyno:stop                                      stop app dyno or dyno type
+dyno:stop                                      stop an app dyno or process type
 features                                       list available app features
 features:disable                               disables an app feature
 features:enable                                enables an app feature
