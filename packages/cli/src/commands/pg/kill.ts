@@ -15,7 +15,7 @@ export default class Kill extends Command {
   };
 
   static args = {
-    pid: Args.string({required: true, description: 'process ID to kill'}),
+    pid: Args.string({required: true, description: 'ID of the process'}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
