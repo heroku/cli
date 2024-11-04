@@ -17,7 +17,7 @@ export default class Stop extends Command {
   static help = 'stop app dyno or dyno type'
 
   static args = {
-    dyno: Args.string({required: true, description: 'ID of the Dyno'}),
+    dyno: Args.string({required: true, description: 'ID of the dyno'}),
   }
 
   static flags = {
