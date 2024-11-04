@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import color from '@heroku-cli/color'
 import colorize from './colorize'
 import {isFirApp} from '../apps/generation'
 import {LogSession} from '../types/fir'
@@ -74,17 +75,19 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
     source: options.source,
   }
 
-  if (firApp)
+  if (firApp) {
+    process.stderr.write(color.cyan.bold('Fetching logs...\n\n'))
     Object.assign(requestBodyParameters, {
       dyno: options.dyno,
       type: options.type,
     })
-  else
+  } else {
     Object.assign(requestBodyParameters, {
       dyno: options.dyno || options.type,
       lines: options.lines,
       tail: options.tail,
     })
+  }
 
   let recreateLogSession = false
   do {

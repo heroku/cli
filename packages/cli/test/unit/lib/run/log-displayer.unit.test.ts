@@ -4,7 +4,7 @@ import {Config} from '@oclif/core'
 import {CLIError} from '@oclif/core/lib/errors'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import {stdout} from 'stdout-stderr'
+import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import logDisplayer from '../../../../src/lib/run/log-displayer'
 import {cedarApp, firApp} from '../../../fixtures/apps/fixtures'
@@ -380,12 +380,14 @@ describe('logDisplayer', function () {
 
       try {
         stdout.start()
+        stderr.start()
         await logDisplayer(heroku, {
           app: 'my-fir-app',
           tail: false,
         })
       } catch (error: unknown) {
         stdout.stop()
+        stderr.stop()
         const {message} = error as Error
         expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
       }
@@ -403,6 +405,9 @@ describe('logDisplayer', function () {
 
       logSession1.done()
       logSession2.done()
+
+      // it displays message about fetching logs for fir apps
+      expect(stderr.output).to.eq('Fetching logs...\n\n')
     })
   })
 })
