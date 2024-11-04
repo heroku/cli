@@ -12,7 +12,7 @@ export default class Plans extends Command {
     };
 
     static args = {
-      service: Args.string({required: true, description: 'unique identifier or unique name of the add-on'}),
+      service: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
     };
 
     public async run(): Promise<void> {
