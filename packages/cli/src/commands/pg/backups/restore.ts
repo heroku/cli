@@ -41,7 +41,7 @@ export default class Restore extends Command {
   }
 
   static args = {
-    backup: Args.string({description: 'URL or backup ID from another app to restore'}),
+    backup: Args.string({description: 'URL or backup ID from another app'}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
