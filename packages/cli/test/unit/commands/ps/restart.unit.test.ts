@@ -31,7 +31,7 @@ describe('ps:restart', function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
-      '--type',
+      '--process-type',
       'web',
     ])
     expectOutput(stderr.output, heredoc(`
@@ -48,7 +48,7 @@ describe('ps:restart', function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
-      '--dyno',
+      '--dyno-name',
       'web.1',
     ])
     expectOutput(stderr.output, heredoc(`
@@ -67,7 +67,7 @@ describe('ps:restart', function () {
       'myapp',
       'web.1',
     ])
-    expect(stripAnsi(stderr.output)).to.include('Warning: Passing DYNO as an arg is deprecated.')
+    expect(stripAnsi(stderr.output)).to.include('DYNO is a deprecated argument.')
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })

@@ -17,6 +17,10 @@ on:
         default: false
 
 jobs:
+  check-for-moratorium:
+    if: fromJSON(inputs.isStableCandidate)
+    uses: ./.github/workflows/ctc.yml
+
   get-version-channel:
     runs-on: ubuntu-latest
     outputs:

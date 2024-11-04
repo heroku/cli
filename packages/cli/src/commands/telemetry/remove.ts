@@ -27,8 +27,8 @@ export default class Remove extends Command {
     }
 
     if (telemetry_drain_id) {
-      const telemetryDrain = await this.removeDrain(telemetry_drain_id)
-      ux.action.start(`Removing telemetry drain ${telemetry_drain_id}, which was configured for ${telemetryDrain.owner.type} ${telemetryDrain.owner.name}`)
+      ux.action.start(`Removing telemetry drain ${telemetry_drain_id}`)
+      await this.removeDrain(telemetry_drain_id)
     } else if (app) {
       ux.action.start(`Removing all telemetry drains from app ${app}`)
       const {body: telemetryDrains} = await this.heroku.get<TelemetryDrain[]>(`/apps/${app}/telemetry-drains`, {

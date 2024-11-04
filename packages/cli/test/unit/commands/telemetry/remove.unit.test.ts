@@ -37,8 +37,8 @@ describe('telemetry:remove', function () {
       spaceTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${spaceTelemetryDrain1.id}, which was configured for space ${spaceTelemetryDrain1.owner.name}...
-      Removing telemetry drain ${spaceTelemetryDrain1.id}, which was configured for space ${spaceTelemetryDrain1.owner.name}... done
+      Removing telemetry drain ${spaceTelemetryDrain1.id}...
+      Removing telemetry drain ${spaceTelemetryDrain1.id}... done
     `))
   })
 
@@ -54,8 +54,8 @@ describe('telemetry:remove', function () {
       appTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${appTelemetryDrain1.id}, which was configured for app ${appTelemetryDrain1.owner.name}...
-      Removing telemetry drain ${appTelemetryDrain1.id}, which was configured for app ${appTelemetryDrain1.owner.name}... done
+      Removing telemetry drain ${appTelemetryDrain1.id}...
+      Removing telemetry drain ${appTelemetryDrain1.id}... done
     `))
   })
 

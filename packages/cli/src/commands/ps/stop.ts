@@ -6,31 +6,32 @@ import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import heredoc from 'tsheredoc'
 
 export default class Stop extends Command {
-  static description = 'stop app dyno or dyno type'
+  static description = 'stop an app dyno or process type'
   static topic = 'ps'
   static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill']
   static hiddenAliases = ['stop', 'kill']
 
   static examples = [
-    '$ heroku ps:stop --app myapp --dyno run.1828',
-    '$ heroku ps:stop --app myapp --type run',
+    '$ heroku ps:stop --app myapp --dyno-name run.1828',
+    '$ heroku ps:stop --app myapp --process-type run',
   ]
 
   static args = {
-    dyno: Args.string({required: false, deprecated: true}),
+    dyno: Args.string({description: 'name of the dyno to stop', required: false, deprecated: true}),
   }
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-    dyno: flags.string({
+    'dyno-name': flags.string({
       char: 'd',
-      description: 'stop a specific dyno (such as "web-123-456" or "worker.2")',
+      description: 'name of the dyno to stop',
     }),
-    type: flags.string({
-      description: 'stop all dynos of a process type (such as "web" or "worker")',
+    'process-type': flags.string({
+      char: 'p',
+      description: 'name of the process type to stop',
       completion: ProcessTypeCompletion,
-      exclusive: ['dyno'],
+      exclusive: ['dyno-name'],
     }),
   }
 
@@ -38,8 +39,8 @@ export default class Stop extends Command {
     const {args, flags} = await this.parse(Stop)
 
     const app = flags.app
-    const dyno = flags.dyno || args.dyno
-    const type = flags.type
+    const dyno = flags['dyno-name'] || args.dyno
+    const type = flags['process-type']
     let msg = 'Stopping'
     let stopUrl = ''
 
@@ -48,14 +49,14 @@ export default class Stop extends Command {
       stopUrl = `/apps/${app}/formations/${encodeURIComponent(type)}/actions/stop`
     } else if (dyno) {
       if (args.dyno) {
-        ux.warn(`Passing DYNO as an arg is deprecated. Please use ${color.cmd('heroku ps:stop --dyno')} or ${color.cmd('heroku ps:stop --type')} instead.`)
+        ux.warn(`DYNO is a deprecated argument. Use ${color.cmd('--dyno-name')} or ${color.cmd('--process-type')} instead.`)
       }
 
       msg += ` dyno ${color.cyan(dyno)}`
       stopUrl = `/apps/${app}/dynos/${encodeURIComponent(dyno)}/actions/stop`
     } else {
       ux.error(heredoc(`
-        Please specify a process type or dyno to stop.
+        Please specify a process type or dyno name to stop.
         See more help with --help
       `))
     }
