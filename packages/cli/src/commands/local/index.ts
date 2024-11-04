@@ -15,7 +15,7 @@ export default class Index extends Command {
   static aliases = ['local:start']
 
   static args = {
-    processname: Args.string({required: false, description: 'name of the process to run'}),
+    processname: Args.string({required: false, description: 'name of the process'}),
   }
 
   static examples = [
