@@ -34,10 +34,10 @@ describe('telemetry:index', function () {
       spaceId,
     ])
     expectOutput(stdout.output, heredoc(`
-      === Space Telemetry Drains
-       Id                                   Signals                         Endpoint                  Space
-       ──────────────────────────────────── ─────────────────────────────── ───────────────────────── ───────
-       44444321-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics', 'logs' ] https://api.honeycomb.io/ myspace
+      === ${spaceId} Telemetry Drains
+       Id                                   Signals                         Endpoint                 
+       ──────────────────────────────────── ─────────────────────────────── ─────────────────────────
+       44444321-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics', 'logs' ] https://api.honeycomb.io/
     `))
   })
 
@@ -51,11 +51,25 @@ describe('telemetry:index', function () {
       appId,
     ])
     expectOutput(stdout.output, heredoc(`
-      === App Telemetry Drains
-       Id                                   Signals                 Endpoint                    App
-       ──────────────────────────────────── ─────────────────────── ─────────────────────────── ─────
-       3fa85f64-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics' ] https://api.honeycomb.io/   myapp
-       55555f64-5717-4562-b3fc-2c963f66afa6 [ 'logs' ]              https://api.papertrail.com/ myapp
+      === ${appId} Telemetry Drains
+       Id                                   Signals                 Endpoint                   
+       ──────────────────────────────────── ─────────────────────── ───────────────────────────
+       3fa85f64-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics' ] https://api.honeycomb.io/
+       55555f64-5717-4562-b3fc-2c963f66afa6 [ 'logs' ]              https://api.papertrail.com/
+    `))
+  })
+
+  it('shows a message when there are no telemetry drains', async function () {
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}/telemetry-drains`)
+      .reply(200, [])
+
+    await runCommand(Cmd, [
+      '--app',
+      appId,
+    ])
+    expectOutput(stdout.output, heredoc(`
+      There are no telemetry drains in ${appId}
     `))
   })
 })

@@ -3,6 +3,8 @@ import {Args, ux} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
 import heredoc from 'tsheredoc'
 import {validateAndFormatSignals} from '../../lib/telemetry/util'
+import {App, Space} from '@heroku-cli/schema'
+
 export default class Add extends Command {
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
 
@@ -21,26 +23,29 @@ export default class Add extends Command {
 
   static example = heredoc(`
     Add a telemetry drain to an app to collect logs and traces:
-    $ heroku telemetry:add --signals logs,traces --endpoint https://my-endpoint.com --transport http 'x-drain-example-team: API_KEY x-drain-example-dataset: METRICS_DATASET'
+    $ heroku telemetry:add --app myapp --signals logs,traces --endpoint https://my-endpoint.com --transport http '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
   `)
-
-  private getTypeAndName = function (app: string | undefined, space: string | undefined) {
-    if (app) {
-      return {type: 'app', name: app}
-    }
-
-    return {type: 'space', name: space}
-  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
     const {app, space, signals, endpoint, transport} = flags
     const {headers} = args
-    const typeAndName = this.getTypeAndName(app, space)
+    let id
+    if (app) {
+      const {body: herokuApp} = await this.heroku.get<App>(
+        `/apps/${app}`, {
+          headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+        })
+      id = herokuApp.id
+    } else {
+      const {body: herokuSpace} = await this.heroku.get<Space>(`/spaces/${space}`)
+      id = herokuSpace.id
+    }
+
     const drainConfig = {
       owner: {
-        type: typeAndName.type,
-        id: typeAndName.name,
+        type: app ? 'app' : 'space',
+        id,
       },
       signals: validateAndFormatSignals(signals),
       exporter: {
@@ -50,24 +55,13 @@ export default class Add extends Command {
       },
     }
 
-    if (app) {
-      const {body: drain} = await this.heroku.post<TelemetryDrain>(`/apps/${app}/telemetry-drains`, {
-        body: drainConfig,
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
+    const {body: drain} = await this.heroku.post<TelemetryDrain>('/telemetry-drains', {
+      body: drainConfig,
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
 
-      ux.log(`successfully added drain ${drain.exporter.endpoint}`)
-    } else if (space) {
-      const {body: drain} = await this.heroku.post<TelemetryDrain>(`/spaces/${space}/telemetry-drains`, {
-        body: drainConfig,
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
-
-      ux.log(`successfully added drain ${drain.exporter.endpoint}`)
-    }
+    ux.log(`successfully added drain ${drain.exporter.endpoint}`)
   }
 }

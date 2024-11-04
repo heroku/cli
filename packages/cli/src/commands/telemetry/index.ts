@@ -15,34 +15,39 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {app, space} = flags
-
+    let drains: TelemetryDrains = []
     if (app) {
       const {body: appTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/apps/${app}/telemetry-drains`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
-      this.display(appTelemetryDrains, 'App')
+      drains = appTelemetryDrains
     } else if (space) {
       const {body: spaceTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/spaces/${space}/telemetry-drains`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
-      this.display(spaceTelemetryDrains, 'Space')
+      drains = spaceTelemetryDrains
     }
+
+    this.display(drains, app || space)
   }
 
-  protected display(telemetryDrains: TelemetryDrains, ownerType: 'App' | 'Space') {
-    ux.styledHeader(`${ownerType} Telemetry Drains`)
-    ux.table(
-      telemetryDrains,
-      {
-        ID: {get: telemetryDrain => telemetryDrain.id},
-        Signals: {get: telemetryDrain => telemetryDrain.signals},
-        Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
-        [ownerType]: {get: telemetryDrain => telemetryDrain.owner.name},
-      },
-    )
+  protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {
+    if (telemetryDrains.length === 0) {
+      ux.log(`There are no telemetry drains in ${owner}`)
+    } else {
+      ux.styledHeader(`${owner} Telemetry Drains`)
+      ux.table(
+        telemetryDrains,
+        {
+          ID: {get: telemetryDrain => telemetryDrain.id},
+          Signals: {get: telemetryDrain => telemetryDrain.signals},
+          Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
+        },
+      )
+    }
   }
 }
