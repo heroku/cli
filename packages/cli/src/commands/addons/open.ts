@@ -80,7 +80,7 @@ export default class Open extends Command {
   }
 
   public static args = {
-    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on.'}),
+    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
   }
 
   public static async openUrl(url: string): Promise<void> {
