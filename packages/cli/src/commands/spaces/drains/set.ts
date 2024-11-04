@@ -13,7 +13,7 @@ export default class Set extends Command {
   }
 
   static args = {
-    url: Args.string({required: true, description: 'url to replace the log drain with'}),
+    url: Args.string({required: true, description: 'URL to replace the log drain with'}),
   }
 
   public async run(): Promise<void> {
