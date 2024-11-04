@@ -13,7 +13,7 @@ export default class Info extends Command {
   }
 
   static args = {
-    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary instance associated with the app.'}),
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
 
   public async run(): Promise<void> {
