@@ -5,54 +5,59 @@ on:
   workflow_call:
 
 jobs:
-  create-ctc-lock:
+  # Use TPS service to get clearance to release from Salesforce Change-Traffic-Control:
+  # https://github.com/heroku/tps/blob/master/docs/ctc.md
+  check-tps-for-lock:
     runs-on: ubuntu-latest
     environment: ChangeManagement
     steps:
       - uses: actions/checkout@v4
-      - name: Call CTC API TO Create Lock
-        id: create-lock
+      - name: Check tps.heroku.tools for lock
+        id: check-lock
         run: |
-          CODE=`curl --w '%{http_code}' \
-          -X PUT \
-          -H "Accept: application/json" \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-          -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ secrets.TPS_API_APP_ID }}"}}' \
-          ${{ secrets.TPS_API_URL_PARAM }}/api/ctc`
-          echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
-          echo "Response status code is $CODE."
-
-      - name: Retry if TPS returns 409
-        env:
-          RETRY_LATER: "409"
-        uses:
-          nick-fields/retry@v2
-        if: ${{ env.STATUS_CODE == env.RETRY_LATER}}
-        with:
-          max_attempts: 15
-          warning_on_retry: true
-          retry_wait_seconds: 3600
-          retry_on_exit_code: 1
-          timeout_minutes: 3600
-          command: |
-            CODE=`curl --w '%{http_code}' \
+          STATUS_CODE="$(curl --w '%{http_code}' \
             -X PUT \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
             -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
-            -d '{"lock": {"sha": "${{ github.sha }}", "component_name": "${{ secrets.TPS_API_APP_ID }}"}}' \
-            ${{ secrets.TPS_API_URL_PARAM }}/api/ctc`
+            -d '{"lock": {"sha": "${{ github.sha }}", "component_slug": "cli"}}' \
+            https://tps.heroku.tools/api/ctc)"
 
-            echo "Response status code is $CODE"
-            if [ $CODE == "409" ]
+          echo "Response status code is $STATUS_CODE."
+          echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
+
+      - name: Retry if lock cannot be obtained
+        id: retry-lock
+        env:
+          RETRY_LATER: "409"
+        uses:
+          nick-fields/retry@v3
+        if: ${{ env.STATUS_CODE == env.RETRY_LATER}}
+        with:
+          max_attempts: 12
+          warning_on_retry: true
+          retry_wait_seconds: 300
+          retry_on_exit_code: 1
+          timeout_seconds: 60
+          command: |
+            STATUS_CODE="$(curl --w '%{http_code}' \
+              -X PUT \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Token ${{ secrets.TPS_API_TOKEN_PARAM }}" \
+              -d '{"lock": {"sha": "${{ github.sha }}", "component_slug": "cli"}}' \
+              https://tps.heroku.tools/api/ctc)"
+
+            echo "Response status code is $STATUS_CODE"
+            if [ $STATUS_CODE == "409" ]
             then
               exit 1
             else
-              echo "STATUS_CODE=$CODE" >> $GITHUB_ENV
+              echo "STATUS_CODE=$STATUS_CODE" >> $GITHUB_ENV
             fi
 
-      - name: Verify CTC Lock Did Not Fail for Other Reasons
+      - name: Verify lock status
+        id: verify-lock
         env:
           UPDATE_LOCK_SUCCESS: "200"
           NEW_LOCK_SUCCESS: "201"
