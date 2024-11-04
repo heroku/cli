@@ -15,7 +15,7 @@ export default class Delete extends Command {
   }
 
   static args = {
-    backup_id: Args.string({required: true, description: 'ID of the backup to delete'}),
+    backup_id: Args.string({required: true, description: 'ID of the backup'}),
   }
 
   static examples = [
