@@ -34,7 +34,7 @@ function stubAppAndAccount() {
     .reply(200, {id: '1234'})
 }
 
-describe.only('ps', function () {
+describe('ps', function () {
   afterEach(function () {
     nock.cleanAll()
   })
