@@ -29,7 +29,7 @@ export default class Download extends Command {
   };
 
   static args = {
-    backup_id: Args.string(),
+    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
   };
 
   public async run(): Promise<void> {

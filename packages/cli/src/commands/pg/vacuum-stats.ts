@@ -3,6 +3,7 @@ import {Args, ux} from '@oclif/core'
 import {database} from '../../lib/pg/fetcher'
 import {exec} from '../../lib/pg/psql'
 import heredoc from 'tsheredoc'
+import {nls} from '../../nls'
 
 export default class VacuumStats extends Command {
   static topic = 'pg';
@@ -13,7 +14,7 @@ export default class VacuumStats extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

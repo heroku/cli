@@ -12,7 +12,7 @@ export default class ClientsRotate extends Command {
   }
 
   static args = {
-    id: Args.string({required: true}),
+    id: Args.string({required: true, description: 'ID of the OAuth client'}),
   }
 
   async run() {

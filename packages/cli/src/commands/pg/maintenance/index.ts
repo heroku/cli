@@ -4,6 +4,7 @@ import {getAddon} from '../../../lib/pg/fetcher'
 import {essentialPlan} from '../../../lib/pg/util'
 import pgHost from '../../../lib/pg/host'
 import {MaintenanceApiResponse} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class Index extends Command {
   static topic = 'pg';
@@ -14,7 +15,7 @@ export default class Index extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

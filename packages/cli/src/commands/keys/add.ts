@@ -45,7 +45,7 @@ Uploading SSH public key /my/key.pub... done`
   }
 
   static args = {
-    key: Args.string(),
+    key: Args.string({description: 'absolute path to the key located on disk. If omitted, we use the default rsa key.'}),
   }
 
   async run() {

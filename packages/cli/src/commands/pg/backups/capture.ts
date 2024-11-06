@@ -7,6 +7,7 @@ import {getAddon} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
 import heredoc from 'tsheredoc'
 import {HTTPError} from 'http-call'
+import {nls} from '../../../nls'
 
 export default class Capture extends Command {
   static topic = 'pg';
@@ -19,7 +20,7 @@ export default class Capture extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
   public async run(): Promise<void> {

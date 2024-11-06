@@ -5,6 +5,7 @@ import pghost from '../../lib/pg/host'
 import {getAddon} from '../../lib/pg/fetcher'
 import {CredentialInfo, CredentialsInfo} from '../../lib/pg/types'
 import {presentCredentialAttachments} from '../../lib/pg/util'
+import {nls} from '../../nls'
 
 export default class Credentials extends Command {
   static topic = 'pg'
@@ -15,7 +16,7 @@ export default class Credentials extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

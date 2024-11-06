@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import {arbitraryAppDB, getAddon} from '../../../lib/pg/fetcher'
 import {TransferSchedule} from '../../../lib/pg/types'
 import pgHost from '../../../lib/pg/host'
+import {nls} from '../../../nls'
 
 export default class Unschedule extends Command {
   static topic = 'pg';
@@ -14,7 +15,7 @@ export default class Unschedule extends Command {
   };
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:arbitrary:suffix')}`}),
   };
 
   public async run(): Promise<void> {

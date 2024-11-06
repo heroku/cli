@@ -7,6 +7,7 @@ import heredoc from 'tsheredoc'
 import {getAttachment, getRelease} from '../../lib/pg/fetcher'
 import pgHost from '../../lib/pg/host'
 import {PgStatus, PgDatabase} from '../../lib/pg/types'
+import {nls} from '../../nls'
 
 export default class Promote extends Command {
   static topic = 'pg';
@@ -18,7 +19,7 @@ export default class Promote extends Command {
   }
 
   static args = {
-    database: Args.string({required: true}),
+    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
   }
 
   public async run(): Promise<void> {

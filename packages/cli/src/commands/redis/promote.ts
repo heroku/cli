@@ -11,7 +11,7 @@ export default class Promote extends Command {
   }
 
   static args = {
-    database: Args.string({required: false}),
+    database: Args.string({required: false, description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
 
   public async run(): Promise<void> {
