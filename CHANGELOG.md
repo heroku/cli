@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.0.0-alpha.1](https://github.com/heroku/cli/compare/v10.0.0-alpha.0...v10.0.0-alpha.1) (2024-11-04)
+
+
+### Features
+
+* **cli:** Adding disclaimer for plugin AI install ([#3065](https://github.com/heroku/cli/issues/3065)) ([80ab352](https://github.com/heroku/cli/commit/80ab352a5b68e96dba6d5a0ed900f6e1c166d98f))
+
+
+
+
+
 # [10.0.0-alpha.0](https://github.com/heroku/cli/compare/v9.3.2...v10.0.0-alpha.0) (2024-10-24)
 
 
