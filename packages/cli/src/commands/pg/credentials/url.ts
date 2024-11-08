@@ -7,6 +7,7 @@ import pgHost from '../../../lib/pg/host'
 import {URL} from 'url'
 import type {CredentialInfo} from '../../../lib/pg/types'
 import heredoc from 'tsheredoc'
+import {nls} from '../../../nls'
 
 export default class Url extends Command {
   static topic = 'pg'
@@ -22,7 +23,7 @@ export default class Url extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

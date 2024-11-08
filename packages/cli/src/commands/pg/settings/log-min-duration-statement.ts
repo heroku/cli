@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class LogMinDurationStatement extends PGSettingsCommand {
   static description = heredoc(`
@@ -11,8 +12,8 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({description: 'milliseconds to wait for a statement to complete before logging it'}),
   }
 
   protected settingKey:SettingKey = 'log_min_duration_statement'

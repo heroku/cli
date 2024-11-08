@@ -7,6 +7,7 @@ import confirmCommand from '../../../lib/confirmCommand'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import {legacyEssentialPlan} from '../../../lib/pg/util'
+import {nls} from '../../../nls'
 
 export default class Rotate extends Command {
   static topic = 'pg'
@@ -24,7 +25,7 @@ export default class Rotate extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

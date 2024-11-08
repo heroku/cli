@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {BooleanAsString, PGSettingsCommand, booleanConverter} from '../../../../lib/pg/setter'
 import {Setting, SettingKey} from '../../../../lib/pg/types'
+import {nls} from '../../../../nls'
 
 export default class LogBuffersWaits extends PGSettingsCommand {
   static topic = 'pg'
@@ -11,8 +12,8 @@ export default class LogBuffersWaits extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({description: 'boolean indicating if the database has buffer statistics enabled'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_buffers'

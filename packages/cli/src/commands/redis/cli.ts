@@ -180,7 +180,7 @@ export default class Cli extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
 
   static examples = [

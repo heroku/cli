@@ -15,7 +15,7 @@ export default class WebhooksInfo extends BaseCommand {
   }
 
   static args = {
-    id: Args.string({required: true}),
+    id: Args.string({required: true, description: 'ID of the webhook'}),
   }
 
   async run() {
