@@ -12,7 +12,7 @@ function commonSetup() {
     .stderr()
     .nock(API_HOST, api => api
       .get(`/apps/${APP_NAME}`)
-      .reply(200, {id: APP_ID, name: APP_NAME}),
+      .reply(200, {id: APP_ID, name: APP_NAME, generation: 'cedar'}),
     )
 }
 
@@ -130,4 +130,18 @@ describe('with a Hobby dyno', function () {
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
     .catch(error => expect(error.message).to.contain('Autoscaling is only available with Performance or Private dynos'))
     .it('rejected non-performance dynos')
+})
+
+describe('with a fir app', function () {
+  test
+    .stderr()
+    .nock(API_HOST, api => api
+      .get(`/apps/${APP_NAME}`)
+      .reply(200, {id: APP_ID, name: APP_NAME, generation: 'fir'})
+      .get(`/apps/${APP_NAME}/formation`)
+      .reply(200, [{id: FORMATION_ID, type: 'web', size: 'Performance-L'}]),
+    )
+    .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+    .catch(error => expect(error.message).to.contain('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.'))
+    .it('rejected fir app')
 })
