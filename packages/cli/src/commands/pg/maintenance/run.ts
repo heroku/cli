@@ -6,6 +6,7 @@ import {essentialPlan} from '../../../lib/pg/util'
 import pgHost from '../../../lib/pg/host'
 import {MaintenanceApiResponse} from '../../../lib/pg/types'
 import * as Heroku from '@heroku-cli/schema'
+import {nls} from '../../../nls'
 
 export default class Run extends Command {
   static topic = 'pg'
@@ -17,7 +18,7 @@ export default class Run extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

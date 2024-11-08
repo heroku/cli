@@ -22,7 +22,7 @@ export default class Remove extends Command {
   }
 
   static args = {
-    source: Args.string({required: true}),
+    source: Args.string({required: true, description: 'IP address in CIDR notation'}),
   }
 
   public async run(): Promise<void> {

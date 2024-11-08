@@ -7,7 +7,7 @@ describe('ci:info', function () {
   test
     .command(['ci:info'])
     .catch(error => {
-      expect(error.message).to.contain('Missing 1 required arg:\ntest-run\nSee more help with --help')
+      expect(error.message).to.equal('Missing 1 required arg:\ntest-run  auto-incremented test run number\nSee more help with --help')
     })
     .it('errors when not specifying a test run')
 

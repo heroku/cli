@@ -21,7 +21,7 @@ export default class Timeout extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
 
   public async run(): Promise<void> {

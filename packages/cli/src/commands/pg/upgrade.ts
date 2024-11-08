@@ -8,6 +8,7 @@ import {legacyEssentialPlan, databaseNameFromUrl} from '../../lib/pg/util'
 import {PgDatabase} from '../../lib/pg/types'
 import * as Heroku from '@heroku-cli/schema'
 import confirmCommand from '../../lib/confirmCommand'
+import {nls} from '../../nls'
 
 export default class Upgrade extends Command {
   static topic = 'pg';
@@ -24,7 +25,7 @@ export default class Upgrade extends Command {
   }
 
   static args = {
-    database: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
   public async run(): Promise<void> {

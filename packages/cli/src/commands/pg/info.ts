@@ -6,6 +6,7 @@ import pghost from '../../lib/pg/host'
 import {getAddon, all} from '../../lib/pg/fetcher'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
 import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgDatabaseTenant} from '../../lib/pg/types'
+import {nls} from '../../nls'
 
 type DBObject = {
   addon: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData,
@@ -55,7 +56,7 @@ export default class Info extends Command {
     };
 
     static args = {
-      database: Args.string(),
+      database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
     };
 
     static aliases = ['pg']

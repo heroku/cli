@@ -7,6 +7,7 @@ import backupsFactory from '../../../lib/pg/backups'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import host from '../../../lib/pg/host'
 import type {BackupTransfer} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 function dropboxURL(url: string) {
   if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
@@ -40,9 +41,36 @@ export default class Restore extends Command {
   }
 
   static args = {
-    backup: Args.string(),
-    database: Args.string(),
+    backup: Args.string({description: 'URL or backup ID from another app'}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+
+  static examples = [
+    heredoc(`
+    # Basic Restore from Backup ID
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app
+    `),
+    heredoc(`
+    # Restore from Another App
+    $ heroku pg:backups:restore example-app::b101 DATABASE_URL --app my-heroku-app
+    `),
+    heredoc(`
+    # Restore from a Public URL
+    $ heroku pg:backups:restore 'https://s3.amazonaws.com/my-bucket/mydb.dump' DATABASE_URL --app my-heroku-app
+    `),
+    heredoc(`
+    # Verbose Output
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app --verbose
+    `),
+    heredoc(`
+    # Restore with Confirmation Prompt
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app --confirm my-heroku-app
+    `),
+    heredoc(`
+    # Restore with a Specific Database Name
+    $ heroku pg:backups:restore b101 HEROKU_POSTGRESQL_PINK --app my-heroku-app
+    `),
+  ]
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Restore)

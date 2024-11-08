@@ -3,6 +3,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../lib/pg/types'
+import {nls} from '../../../nls'
 
 export default class LogConnections extends PGSettingsCommand {
   static topic = 'pg'
@@ -16,8 +17,8 @@ export default class LogConnections extends PGSettingsCommand {
   }
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({description: 'boolean indicating if database login attempts get logged'}),
   }
 
   protected settingKey: SettingKey = 'log_connections'

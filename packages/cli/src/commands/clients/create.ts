@@ -17,8 +17,8 @@ export default class ClientsCreate extends Command {
   }
 
   static args = {
-    name: Args.string({required: true}),
-    redirect_uri: Args.string({required: true}),
+    name: Args.string({required: true, description: 'name of the OAuth client'}),
+    redirect_uri: Args.string({required: true, description: 'redirect URL of the OAuth client'}),
   }
 
   async run() {

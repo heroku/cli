@@ -26,8 +26,8 @@ export default class Upgrade extends Command {
   }
 
   static args = {
-    addon: Args.string({required: true}),
-    plan: Args.string(),
+    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
+    plan: Args.string({description: 'unique identifier or name of the plan'}),
   }
 
   private parsed = this.parse(Upgrade)

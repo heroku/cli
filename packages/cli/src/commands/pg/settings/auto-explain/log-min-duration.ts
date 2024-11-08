@@ -2,6 +2,7 @@ import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter'
 import {Setting, SettingKey} from '../../../../lib/pg/types'
+import {nls} from '../../../../nls'
 
 export default class LogMinDuration extends PGSettingsCommand {
   static topic = 'pg'
@@ -11,8 +12,8 @@ export default class LogMinDuration extends PGSettingsCommand {
   `)
 
   static args = {
-    database: Args.string(),
-    value: Args.string(),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({description: 'minimum duration in milliseconds for queries before logging execution plans. A value of -1 disables it. A value of 0 logs all query execution plans.'}),
   }
 
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'
