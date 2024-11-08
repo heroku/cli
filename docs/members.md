@@ -26,7 +26,7 @@ DESCRIPTION
   list members of a team
 ```
 
-_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/members/index.ts)_
+_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v9.4.0-beta.0/packages/cli/src/commands/members/index.ts)_
 
 ## `heroku members:add EMAIL`
 
@@ -36,6 +36,9 @@ adds a user to a team
 USAGE
   $ heroku members:add EMAIL -r <value> -t <value>
 
+ARGUMENTS
+  EMAIL  email address of the team member
+
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
   -t, --team=<value>  (required) team to use
@@ -44,7 +47,7 @@ DESCRIPTION
   adds a user to a team
 ```
 
-_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/members/add.ts)_
+_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v9.4.0-beta.0/packages/cli/src/commands/members/add.ts)_
 
 ## `heroku members:remove`
 
@@ -61,7 +64,7 @@ DESCRIPTION
   removes a user from a team
 ```
 
-_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/members/remove.ts)_
+_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v9.4.0-beta.0/packages/cli/src/commands/members/remove.ts)_
 
 ## `heroku members:set`
 
@@ -79,4 +82,4 @@ DESCRIPTION
   sets a members role in a team
 ```
 
-_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/members/set.ts)_
+_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v9.4.0-beta.0/packages/cli/src/commands/members/set.ts)_
