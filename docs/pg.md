@@ -72,6 +72,11 @@ show database information
 USAGE
   $ heroku pg [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use all
+            databases.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -99,7 +104,7 @@ DESCRIPTION
   list database backups
 ```
 
-_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/index.ts)_
+_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/index.ts)_
 
 ## `heroku pg:backups:cancel [BACKUP_ID]`
 
@@ -109,6 +114,9 @@ cancel an in-progress backup or restore (default newest)
 USAGE
   $ heroku pg:backups:cancel [BACKUP_ID] -a <value> [-r <value>]
 
+ARGUMENTS
+  BACKUP_ID  ID of the backup. If omitted, we use the last unfinished backup ID.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -117,7 +125,7 @@ DESCRIPTION
   cancel an in-progress backup or restore (default newest)
 ```
 
-_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/cancel.ts)_
+_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/cancel.ts)_
 
 ## `heroku pg:backups:capture [DATABASE]`
 
@@ -126,6 +134,11 @@ capture a new backup
 ```
 USAGE
   $ heroku pg:backups:capture [DATABASE] -a <value> [--wait-interval <value>] [-v] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>            (required) app to run command against
@@ -137,7 +150,7 @@ DESCRIPTION
   capture a new backup
 ```
 
-_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/capture.ts)_
+_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/capture.ts)_
 
 ## `heroku pg:backups:delete BACKUP_ID`
 
@@ -146,6 +159,9 @@ delete a backup
 ```
 USAGE
   $ heroku pg:backups:delete BACKUP_ID -a <value> [-c <value>] [-r <value>]
+
+ARGUMENTS
+  BACKUP_ID  ID of the backup
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -159,7 +175,7 @@ EXAMPLES
   $ heroku pg:backup:delete --app APP_ID BACKUP_ID
 ```
 
-_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/delete.ts)_
+_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/delete.ts)_
 
 ## `heroku pg:backups:download [BACKUP_ID]`
 
@@ -168,6 +184,9 @@ downloads database backup
 ```
 USAGE
   $ heroku pg:backups:download [BACKUP_ID] -a <value> [-o <value>] [-r <value>]
+
+ARGUMENTS
+  BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -178,7 +197,7 @@ DESCRIPTION
   downloads database backup
 ```
 
-_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/download.ts)_
+_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/download.ts)_
 
 ## `heroku pg:backups:info [BACKUP_ID]`
 
@@ -188,6 +207,9 @@ get information about a specific backup
 USAGE
   $ heroku pg:backups:info [BACKUP_ID] -a <value> [-r <value>]
 
+ARGUMENTS
+  BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -196,7 +218,7 @@ DESCRIPTION
   get information about a specific backup
 ```
 
-_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/info.ts)_
+_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/info.ts)_
 
 ## `heroku pg:backups:restore [BACKUP] [DATABASE]`
 
@@ -206,6 +228,12 @@ restore a backup (default latest) to a database
 USAGE
   $ heroku pg:backups:restore [BACKUP] [DATABASE] -a <value> [--wait-interval <value>] [-e <value>] [-v] [-c <value>]
     [-r <value>]
+
+ARGUMENTS
+  BACKUP    URL or backup ID from another app
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>            (required) app to run command against
@@ -218,9 +246,34 @@ FLAGS
 
 DESCRIPTION
   restore a backup (default latest) to a database
+
+EXAMPLES
+  # Basic Restore from Backup ID
+
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app
+
+  # Restore from Another App
+
+    $ heroku pg:backups:restore example-app::b101 DATABASE_URL --app my-heroku-app
+
+  # Restore from a Public URL
+
+    $ heroku pg:backups:restore 'https://s3.amazonaws.com/my-bucket/mydb.dump' DATABASE_URL --app my-heroku-app
+
+  # Verbose Output
+
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app --verbose
+
+  # Restore with Confirmation Prompt
+
+    $ heroku pg:backups:restore b101 DATABASE_URL --app my-heroku-app --confirm my-heroku-app
+
+  # Restore with a Specific Database Name
+
+    $ heroku pg:backups:restore b101 HEROKU_POSTGRESQL_PINK --app my-heroku-app
 ```
 
-_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/restore.ts)_
+_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/restore.ts)_
 
 ## `heroku pg:backups:schedule [DATABASE]`
 
@@ -229,6 +282,11 @@ schedule daily backups for given database
 ```
 USAGE
   $ heroku pg:backups:schedule [DATABASE] --at <value> -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -240,7 +298,7 @@ DESCRIPTION
   schedule daily backups for given database
 ```
 
-_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/schedule.ts)_
+_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/schedule.ts)_
 
 ## `heroku pg:backups:schedules`
 
@@ -258,7 +316,7 @@ DESCRIPTION
   list backup schedule
 ```
 
-_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/schedules.ts)_
+_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/schedules.ts)_
 
 ## `heroku pg:backups:unschedule [DATABASE]`
 
@@ -268,6 +326,11 @@ stop daily backups
 USAGE
   $ heroku pg:backups:unschedule [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use a
+            random database attached to the app.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -276,7 +339,7 @@ DESCRIPTION
   stop daily backups
 ```
 
-_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/unschedule.ts)_
+_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/unschedule.ts)_
 
 ## `heroku pg:backups:url [BACKUP_ID]`
 
@@ -286,6 +349,9 @@ get secret but publicly accessible URL of a backup
 USAGE
   $ heroku pg:backups:url [BACKUP_ID] -a <value> [-r <value>]
 
+ARGUMENTS
+  BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -294,7 +360,7 @@ DESCRIPTION
   get secret but publicly accessible URL of a backup
 ```
 
-_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/backups/url.ts)_
+_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/backups/url.ts)_
 
 ## `heroku pg:bloat [DATABASE]`
 
@@ -304,6 +370,11 @@ show table and index bloat in your database ordered by most wasteful
 USAGE
   $ heroku pg:bloat [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -312,7 +383,7 @@ DESCRIPTION
   show table and index bloat in your database ordered by most wasteful
 ```
 
-_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/bloat.ts)_
+_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/bloat.ts)_
 
 ## `heroku pg:blocking [DATABASE]`
 
@@ -322,6 +393,11 @@ display queries holding locks other queries are waiting to be released
 USAGE
   $ heroku pg:blocking [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -330,7 +406,7 @@ DESCRIPTION
   display queries holding locks other queries are waiting to be released
 ```
 
-_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/blocking.ts)_
+_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/blocking.ts)_
 
 ## `heroku pg:connection-pooling:attach [DATABASE]`
 
@@ -339,6 +415,11 @@ add an attachment to a database using connection pooling
 ```
 USAGE
   $ heroku pg:connection-pooling:attach [DATABASE] -a <value> [--as <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -352,7 +433,7 @@ EXAMPLES
   $ heroku pg:connection-pooling:attach postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/connection-pooling/attach.ts)_
+_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/connection-pooling/attach.ts)_
 
 ## `heroku pg:copy SOURCE TARGET`
 
@@ -362,6 +443,10 @@ copy all data from source db to target
 USAGE
   $ heroku pg:copy SOURCE TARGET -a <value> [--wait-interval <value>] [--verbose] [--confirm <value>] [-r
     <value>]
+
+ARGUMENTS
+  SOURCE  config var exposed to the owning app containing the source database URL
+  TARGET  config var exposed to the owning app containing the target database URL
 
 FLAGS
   -a, --app=<value>            (required) app to run command against
@@ -374,7 +459,7 @@ DESCRIPTION
   copy all data from source db to target
 ```
 
-_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/copy.ts)_
+_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/copy.ts)_
 
 ## `heroku pg:credentials [DATABASE]`
 
@@ -384,6 +469,11 @@ show information on credentials in the database
 USAGE
   $ heroku pg:credentials [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -392,7 +482,7 @@ DESCRIPTION
   show information on credentials in the database
 ```
 
-_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials.ts)_
+_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials.ts)_
 
 ## `heroku pg:credentials:create [DATABASE]`
 
@@ -401,6 +491,11 @@ create credential within database
 ```
 USAGE
   $ heroku pg:credentials:create [DATABASE] -n <value> -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -414,7 +509,7 @@ DESCRIPTION
   heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
 ```
 
-_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials/create.ts)_
+_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials/create.ts)_
 
 ## `heroku pg:credentials:destroy [DATABASE]`
 
@@ -423,6 +518,11 @@ destroy credential within database
 ```
 USAGE
   $ heroku pg:credentials:destroy [DATABASE] -n <value> -a <value> [-c <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -437,7 +537,7 @@ EXAMPLES
   $ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
 ```
 
-_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials/destroy.ts)_
+_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials/destroy.ts)_
 
 ## `heroku pg:credentials:repair-default [DATABASE]`
 
@@ -446,6 +546,11 @@ repair the permissions of the default credential within database
 ```
 USAGE
   $ heroku pg:credentials:repair-default [DATABASE] -a <value> [-c <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -459,7 +564,7 @@ EXAMPLES
   $ heroku pg:credentials:repair-default postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials/repair-default.ts)_
+_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials/repair-default.ts)_
 
 ## `heroku pg:credentials:rotate [DATABASE]`
 
@@ -468,6 +573,11 @@ rotate the database credentials
 ```
 USAGE
   $ heroku pg:credentials:rotate [DATABASE] -a <value> [--all | -n <value>] [-c <value>] [--force] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -481,7 +591,7 @@ DESCRIPTION
   rotate the database credentials
 ```
 
-_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials/rotate.ts)_
+_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials/rotate.ts)_
 
 ## `heroku pg:credentials:url [DATABASE]`
 
@@ -490,6 +600,11 @@ show information on a database credential
 ```
 USAGE
   $ heroku pg:credentials:url [DATABASE] -a <value> [-n <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -500,7 +615,7 @@ DESCRIPTION
   show information on a database credential
 ```
 
-_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/credentials/url.ts)_
+_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/credentials/url.ts)_
 
 ## `heroku pg:diagnose [DATABASE|REPORT_ID]`
 
@@ -509,6 +624,9 @@ run or view diagnostics report
 ```
 USAGE
   $ heroku pg:diagnose [DATABASE|REPORT_ID] -a <value> [--json] [-r <value>]
+
+ARGUMENTS
+  DATABASE|REPORT_ID  config var exposed to the owning app containing the database URL or the report ID
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -521,7 +639,7 @@ DESCRIPTION
   if REPORT_ID is specified instead, a previous report is displayed
 ```
 
-_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/diagnose.ts)_
+_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/diagnose.ts)_
 
 ## `heroku pg:info [DATABASE]`
 
@@ -530,6 +648,11 @@ show database information
 ```
 USAGE
   $ heroku pg:info [DATABASE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use all
+            databases.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -542,7 +665,7 @@ ALIASES
   $ heroku pg
 ```
 
-_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/info.ts)_
+_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/info.ts)_
 
 ## `heroku pg:kill PID [DATABASE]`
 
@@ -551,6 +674,12 @@ kill a query
 ```
 USAGE
   $ heroku pg:kill PID [DATABASE] -a <value> [-f] [-r <value>]
+
+ARGUMENTS
+  PID       ID of the process
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -561,7 +690,7 @@ DESCRIPTION
   kill a query
 ```
 
-_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/kill.ts)_
+_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/kill.ts)_
 
 ## `heroku pg:killall [DATABASE]`
 
@@ -571,6 +700,11 @@ terminates all connections for all credentials
 USAGE
   $ heroku pg:killall [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -579,7 +713,7 @@ DESCRIPTION
   terminates all connections for all credentials
 ```
 
-_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/killall.ts)_
+_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/killall.ts)_
 
 ## `heroku pg:links [DATABASE]`
 
@@ -589,6 +723,11 @@ lists all databases and information on link
 USAGE
   $ heroku pg:links [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -597,7 +736,7 @@ DESCRIPTION
   lists all databases and information on link
 ```
 
-_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/links/index.ts)_
+_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/links/index.ts)_
 
 ## `heroku pg:links:create REMOTE DATABASE`
 
@@ -606,6 +745,12 @@ create a link between data stores
 ```
 USAGE
   $ heroku pg:links:create REMOTE DATABASE -a <value> [--as <value>] [-r <value>]
+
+ARGUMENTS
+  REMOTE    config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::`
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -618,7 +763,7 @@ DESCRIPTION
   heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
 ```
 
-_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/links/create.ts)_
+_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/links/create.ts)_
 
 ## `heroku pg:links:destroy DATABASE LINK`
 
@@ -627,6 +772,11 @@ destroys a link between data stores
 ```
 USAGE
   $ heroku pg:links:destroy DATABASE LINK -a <value> [-c <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::`
+  LINK      name of the linked data store
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -640,7 +790,7 @@ EXAMPLES
   $ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
 ```
 
-_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/links/destroy.ts)_
+_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/links/destroy.ts)_
 
 ## `heroku pg:locks [DATABASE]`
 
@@ -649,6 +799,11 @@ display queries with active locks
 ```
 USAGE
   $ heroku pg:locks [DATABASE] -a <value> [-t] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -659,7 +814,7 @@ DESCRIPTION
   display queries with active locks
 ```
 
-_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/locks.ts)_
+_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/locks.ts)_
 
 ## `heroku pg:maintenance [DATABASE]`
 
@@ -669,6 +824,11 @@ show current maintenance information
 USAGE
   $ heroku pg:maintenance [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -677,7 +837,7 @@ DESCRIPTION
   show current maintenance information
 ```
 
-_See code: [src/commands/pg/maintenance/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/maintenance/index.ts)_
+_See code: [src/commands/pg/maintenance/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/maintenance/index.ts)_
 
 ## `heroku pg:maintenance:run [DATABASE]`
 
@@ -686,6 +846,11 @@ start maintenance
 ```
 USAGE
   $ heroku pg:maintenance:run [DATABASE] -a <value> [-f] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -696,7 +861,7 @@ DESCRIPTION
   start maintenance
 ```
 
-_See code: [src/commands/pg/maintenance/run.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/maintenance/run.ts)_
+_See code: [src/commands/pg/maintenance/run.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/maintenance/run.ts)_
 
 ## `heroku pg:maintenance:window WINDOW [DATABASE]`
 
@@ -705,6 +870,12 @@ Set weekly maintenance window.
 ```
 USAGE
   $ heroku pg:maintenance:window WINDOW [DATABASE] -a <value> [-r <value>]
+
+ARGUMENTS
+  WINDOW    timestamp of the maintenance window
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -719,7 +890,7 @@ EXAMPLES
   $ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100
 ```
 
-_See code: [src/commands/pg/maintenance/window.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/maintenance/window.ts)_
+_See code: [src/commands/pg/maintenance/window.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/maintenance/window.ts)_
 
 ## `heroku pg:outliers [DATABASE]`
 
@@ -728,6 +899,11 @@ show 10 queries that have longest execution time in aggregate
 ```
 USAGE
   $ heroku pg:outliers [DATABASE] -a <value> [--reset] [-t] [-n <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -740,7 +916,7 @@ DESCRIPTION
   show 10 queries that have longest execution time in aggregate
 ```
 
-_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/outliers.ts)_
+_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/outliers.ts)_
 
 ## `heroku pg:promote DATABASE`
 
@@ -749,6 +925,10 @@ sets DATABASE as your DATABASE_URL
 ```
 USAGE
   $ heroku pg:promote DATABASE -a <value> [-f] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -759,7 +939,7 @@ DESCRIPTION
   sets DATABASE as your DATABASE_URL
 ```
 
-_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/promote.ts)_
+_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/promote.ts)_
 
 ## `heroku pg:ps [DATABASE]`
 
@@ -768,6 +948,11 @@ view active queries with execution time
 ```
 USAGE
   $ heroku pg:ps [DATABASE] -a <value> [-v] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -778,7 +963,7 @@ DESCRIPTION
   view active queries with execution time
 ```
 
-_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/ps.ts)_
+_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/ps.ts)_
 
 ## `heroku pg:psql [DATABASE]`
 
@@ -787,6 +972,11 @@ open a psql shell to the database
 ```
 USAGE
   $ heroku pg:psql [DATABASE] -a <value> [-c <value>] [-f <value>] [--credential <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>         (required) app to run command against
@@ -802,7 +992,7 @@ ALIASES
   $ heroku psql
 ```
 
-_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/psql.ts)_
+_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/psql.ts)_
 
 ## `heroku pg:pull SOURCE TARGET`
 
@@ -811,6 +1001,12 @@ pull Heroku database into local or remote database
 ```
 USAGE
   $ heroku pg:pull SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
+
+ARGUMENTS
+  SOURCE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+          app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+          DATABASE_URL.
+  TARGET  PostgreSQL connection string for the target database
 
 FLAGS
   -a, --app=<value>                 (required) app to run command against
@@ -841,7 +1037,7 @@ EXAMPLES
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 ```
 
-_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/pull.ts)_
+_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/pull.ts)_
 
 ## `heroku pg:push SOURCE TARGET`
 
@@ -850,6 +1046,12 @@ push local or remote into Heroku database
 ```
 USAGE
   $ heroku pg:push SOURCE TARGET -a <value> [--exclude-table-data <value>] [-r <value>]
+
+ARGUMENTS
+  SOURCE  PostgreSQL connection string for the source database
+  TARGET  config var containing the connection string, unique name, ID, or alias of the database. To access another
+          app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+          DATABASE_URL.
 
 FLAGS
   -a, --app=<value>                 (required) app to run command against
@@ -876,7 +1078,7 @@ EXAMPLES
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
 ```
 
-_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/push.ts)_
+_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/push.ts)_
 
 ## `heroku pg:reset [DATABASE]`
 
@@ -885,6 +1087,11 @@ delete all data in DATABASE
 ```
 USAGE
   $ heroku pg:reset [DATABASE] -a <value> [-e <value>] [-c <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>         (required) app to run command against
@@ -896,7 +1103,7 @@ DESCRIPTION
   delete all data in DATABASE
 ```
 
-_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/reset.ts)_
+_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/reset.ts)_
 
 ## `heroku pg:settings [DATABASE]`
 
@@ -906,6 +1113,11 @@ show your current database settings
 USAGE
   $ heroku pg:settings [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -914,7 +1126,7 @@ DESCRIPTION
   show your current database settings
 ```
 
-_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/index.ts)_
+_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/index.ts)_
 
 ## `heroku pg:settings:auto-explain [DATABASE] [VALUE]`
 
@@ -923,6 +1135,12 @@ Automatically log execution plans of queries without running EXPLAIN by hand.
 ```
 USAGE
   $ heroku pg:settings:auto-explain [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if execution plans of queries will be logged for future connections
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -934,7 +1152,7 @@ DESCRIPTION
   Restart your Heroku app and/or restart existing connections for logging to start taking place.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain.ts)_
+_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain.ts)_
 
 ## `heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE]`
 
@@ -943,6 +1161,12 @@ Shows actual run times on the execution plan.
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if execution plans get logged
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -956,7 +1180,7 @@ DESCRIPTION
   impacts to your database and should be used with caution.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-analyze.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-analyze.ts)_
 
 ## `heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE]`
 
@@ -965,6 +1189,12 @@ Includes buffer usage statistics when execution plans are logged.
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if the database has buffer statistics enabled
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -976,7 +1206,7 @@ DESCRIPTION
   pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-buffers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-buffers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-format [DATABASE] [VALUE]`
 
@@ -985,6 +1215,13 @@ selects the EXPLAIN output format to be used
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-format [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     (text|json|yaml|xml) format of the log output
+            <options: text|json|yaml|xml>
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -995,7 +1232,7 @@ DESCRIPTION
   The allowed values are text, xml, json, and yaml. The default is text.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-format.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-format.ts)_
 
 ## `heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE]`
 
@@ -1004,6 +1241,13 @@ Sets the minimum execution time in milliseconds for a statement's plan to be log
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     minimum duration in milliseconds for queries before logging execution plans. A value of -1 disables it. A
+            value of 0 logs all query execution plans.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1014,7 +1258,7 @@ DESCRIPTION
   Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
 
 ## `heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`
 
@@ -1024,6 +1268,12 @@ Nested statements are included in the execution plan's log.
 USAGE
   $ heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if execution plan logs include nested statements
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -1032,7 +1282,7 @@ DESCRIPTION
   Nested statements are included in the execution plan's log.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
 
 ## `heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`
 
@@ -1041,6 +1291,12 @@ Includes trigger execution statistics in execution plan logs.
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if the database has trigger execution statistics enabled
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1051,7 +1307,7 @@ DESCRIPTION
   This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-triggers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-triggers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`
 
@@ -1060,6 +1316,12 @@ Include verbose details in execution plans.
 ```
 USAGE
   $ heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if the database has verbose execution plan logging enabled
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1070,7 +1332,7 @@ DESCRIPTION
   This is equivalent to calling EXPLAIN VERBOSE.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
 
 ## `heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE]`
 
@@ -1080,6 +1342,12 @@ displays stats on replication slots on your database, the default value is "off"
 USAGE
   $ heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if data replication slot details get logged
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -1088,7 +1356,7 @@ DESCRIPTION
   displays stats on replication slots on your database, the default value is "off"
 ```
 
-_See code: [src/commands/pg/settings/explain-data-connector-details.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/explain-data-connector-details.ts)_
+_See code: [src/commands/pg/settings/explain-data-connector-details.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/explain-data-connector-details.ts)_
 
 ## `heroku pg:settings:log-connections [DATABASE] [VALUE]`
 
@@ -1097,6 +1365,12 @@ Controls whether a log message is produced when a login attempt is made. Default
 ```
 USAGE
   $ heroku pg:settings:log-connections [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if database login attempts get logged
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1107,7 +1381,7 @@ DESCRIPTION
   Setting log_connections to false stops emitting log messages for all attempts to login to the database.
 ```
 
-_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/log-connections.ts)_
+_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/log-connections.ts)_
 
 ## `heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`
 
@@ -1116,6 +1390,13 @@ Controls whether a log message is produced when a session waits longer than the 
 ```
 USAGE
   $ heroku pg:settings:log-lock-waits [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     boolean indicating if a message gets logged when a session waits longer than the deadlock_timeout to acquire
+            a lock
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1130,7 +1411,7 @@ DESCRIPTION
   transaction.
 ```
 
-_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/log-lock-waits.ts)_
+_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/log-lock-waits.ts)_
 
 ## `heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`
 
@@ -1139,6 +1420,12 @@ The duration of each completed statement will be logged if the statement complet
 ```
 USAGE
   $ heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     milliseconds to wait for a statement to complete before logging it
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1151,7 +1438,7 @@ DESCRIPTION
   durations.
 ```
 
-_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/log-min-duration-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/log-min-duration-statement.ts)_
 
 ## `heroku pg:settings:log-min-error-statement [DATABASE] [VALUE]`
 
@@ -1160,6 +1447,12 @@ log-min-error-statement controls the logging of SQL statements that cause an err
 ```
 USAGE
   $ heroku pg:settings:log-min-error-statement [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     (error|log|fatal|panic)
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1171,7 +1464,7 @@ DESCRIPTION
   Use this setting to prevent logging SQL queries that contain sensitive information. Default is "error".
 ```
 
-_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/log-min-error-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/log-min-error-statement.ts)_
 
 ## `heroku pg:settings:log-statement [DATABASE] [VALUE]`
 
@@ -1180,6 +1473,13 @@ log_statement controls which SQL statements are logged.
 ```
 USAGE
   $ heroku pg:settings:log-statement [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     (none|ddl|mod|all) type of SQL statements to log
+            <options: none|ddl|mod|all>
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1195,7 +1495,7 @@ DESCRIPTION
   all  - All statements are logged
 ```
 
-_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/log-statement.ts)_
+_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/log-statement.ts)_
 
 ## `heroku pg:settings:track-functions [DATABASE] [VALUE]`
 
@@ -1204,6 +1504,13 @@ track_functions controls tracking of function call counts and time used. Default
 ```
 USAGE
   $ heroku pg:settings:track-functions [DATABASE] [VALUE] -a <value> [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+  VALUE     (none|pl|all) function type to track
+            <options: none|pl|all>
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -1218,7 +1525,7 @@ DESCRIPTION
   not tracked
 ```
 
-_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/settings/track-functions.ts)_
+_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/settings/track-functions.ts)_
 
 ## `heroku pg:unfollow DATABASE`
 
@@ -1227,6 +1534,10 @@ stop a replica from following and make it a writeable database
 ```
 USAGE
   $ heroku pg:unfollow DATABASE -a <value> [-c <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -1237,7 +1548,7 @@ DESCRIPTION
   stop a replica from following and make it a writeable database
 ```
 
-_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/unfollow.ts)_
+_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/unfollow.ts)_
 
 ## `heroku pg:upgrade [DATABASE]`
 
@@ -1246,6 +1557,11 @@ For an Essential-* plan, this command upgrades the database's PostgreSQL version
 ```
 USAGE
   $ heroku pg:upgrade [DATABASE] -a <value> [-c <value>] [-v <value>] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -1259,7 +1575,7 @@ DESCRIPTION
   To upgrade to another PostgreSQL version, use pg:copy instead
 ```
 
-_See code: [src/commands/pg/upgrade.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/upgrade.ts)_
+_See code: [src/commands/pg/upgrade.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/upgrade.ts)_
 
 ## `heroku pg:vacuum-stats [DATABASE]`
 
@@ -1269,6 +1585,11 @@ show dead rows and whether an automatic vacuum is expected to be triggered
 USAGE
   $ heroku pg:vacuum-stats [DATABASE] -a <value> [-r <value>]
 
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
+            DATABASE_URL.
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -1277,7 +1598,7 @@ DESCRIPTION
   show dead rows and whether an automatic vacuum is expected to be triggered
 ```
 
-_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/vacuum-stats.ts)_
+_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/vacuum-stats.ts)_
 
 ## `heroku pg:wait [DATABASE]`
 
@@ -1286,6 +1607,11 @@ blocks until database is available
 ```
 USAGE
   $ heroku pg:wait [DATABASE] -a <value> [--wait-interval <value>] [--no-notify] [-r <value>]
+
+ARGUMENTS
+  DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
+            app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use all
+            databases.
 
 FLAGS
   -a, --app=<value>            (required) app to run command against
@@ -1297,4 +1623,4 @@ DESCRIPTION
   blocks until database is available
 ```
 
-_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/pg/wait.ts)_
+_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/pg/wait.ts)_
