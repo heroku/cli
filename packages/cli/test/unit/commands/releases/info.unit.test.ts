@@ -72,8 +72,8 @@ describe('releases:info', function () {
 
       === v10 Config vars
 
-      BAR=bar
       FOO=foo
+      BAR=bar
     `))
   })
 
