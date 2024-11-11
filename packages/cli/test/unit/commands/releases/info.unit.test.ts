@@ -1,4 +1,4 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {stdout} from 'stdout-stderr'
 import Cmd  from '../../../../src/commands/releases/info'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'

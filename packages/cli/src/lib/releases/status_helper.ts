@@ -4,6 +4,8 @@ export const description = function (release: {status?: string, [k: string]: any
     return 'release command executing'
   case 'failed':
     return 'release command failed'
+  case 'expired':
+    return 'release command expired'
   default:
     return ''
   }
@@ -15,7 +17,9 @@ export const color = function (s?: string) {
     return 'yellow'
   case 'failed':
     return 'red'
+  case 'expired':
+    return 'gray'
   default:
-    return 'white'
+    return 'cyan'
   }
 }
