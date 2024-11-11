@@ -24,7 +24,7 @@ DESCRIPTION
   display your SSH keys
 ```
 
-_See code: [src/commands/keys/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/keys/index.ts)_
+_See code: [src/commands/keys/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/keys/index.ts)_
 
 ## `heroku keys:add [KEY]`
 
@@ -33,6 +33,9 @@ add an SSH key for a user
 ```
 USAGE
   $ heroku keys:add [KEY] [-y]
+
+ARGUMENTS
+  KEY  absolute path to the key located on disk. If omitted, we use the default rsa key.
 
 FLAGS
   -y, --yes  automatically answer yes for all prompts
@@ -50,7 +53,7 @@ EXAMPLES
   Uploading SSH public key /my/key.pub... done
 ```
 
-_See code: [src/commands/keys/add.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/keys/add.ts)_
+_See code: [src/commands/keys/add.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/keys/add.ts)_
 
 ## `heroku keys:clear`
 
@@ -64,7 +67,7 @@ DESCRIPTION
   remove all SSH keys for current user
 ```
 
-_See code: [src/commands/keys/clear.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/keys/clear.ts)_
+_See code: [src/commands/keys/clear.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/keys/clear.ts)_
 
 ## `heroku keys:remove KEY`
 
@@ -74,6 +77,9 @@ remove an SSH key from the user
 USAGE
   $ heroku keys:remove KEY
 
+ARGUMENTS
+  KEY  email address of the user
+
 DESCRIPTION
   remove an SSH key from the user
 
@@ -82,4 +88,4 @@ EXAMPLES
   Removing email@example.com SSH key... done
 ```
 
-_See code: [src/commands/keys/remove.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/keys/remove.ts)_
+_See code: [src/commands/keys/remove.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/keys/remove.ts)_
