@@ -22,6 +22,7 @@ jobs:
     uses: ./.github/workflows/ctc.yml
 
   get-version-channel:
+    needs: [check-for-moratorium]
     runs-on: ubuntu-latest
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
@@ -36,7 +37,7 @@ jobs:
           path: './packages/cli/package.json'
 
   publish-npm:
-    needs: [get-version-channel]
+    needs: [check-for-moratorium, get-version-channel]
     # if NOT isStableCandidate confirm dist tag is in package.json version
     if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm.yml
@@ -46,12 +47,12 @@ jobs:
     secrets: inherit
 
   pack-upload:
-    needs: [ publish-npm ]
+    needs: [check-for-moratorium, publish-npm]
     uses: ./.github/workflows/pack-upload.yml
     secrets: inherit
 
   promote:
-    needs: [get-version-channel, pack-upload]
+    needs: [check-for-moratorium, get-version-channel, pack-upload]
     if: needs.pack-upload.result == 'success'
     uses: ./.github/workflows/promote-release.yml
     with:
@@ -61,7 +62,7 @@ jobs:
     secrets: inherit
 
   publish-docs:
-    needs: [ get-version-channel, promote ]
+    needs: [check-for-moratorium, get-version-channel, promote]
     uses: ./.github/workflows/devcenter-doc-update.yml
     with:
       isStableRelease: ${{ needs.get-version-channel.outputs.isStableRelease }}
