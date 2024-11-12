@@ -10,7 +10,7 @@ export default class Rollback extends Command {
   static hiddenAliases = ['rollback']
   static description = `Roll back to a previous release.
 
-    If RELEASE is not specified, it will roll back one release.
+    If RELEASE is not specified, it will roll back to the last eligible release.
     `
   static flags = {
     remote: flags.remote(),
@@ -18,7 +18,7 @@ export default class Rollback extends Command {
   }
 
   static args = {
-    release: Args.string({description: 'ID of the release. If omitted, we use the last release ID.'}),
+    release: Args.string({description: 'ID of the release. If omitted, we use the last eligible release.'}),
   }
 
   public async run(): Promise<void> {
@@ -26,8 +26,19 @@ export default class Rollback extends Command {
     const {app} = flags
     const release = await findByPreviousOrId(this.heroku, app, args.release)
 
-    ux.action.start(`Rolling back ${color.magenta(app)} to ${color.green('v' + release.version)}`)
-    const {body: latest} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {body: {release: release.id}})
+    if (!release) {
+      ux.error(`No eligible release found for ${color.app(app)} to roll back to.`)
+    }
+
+    ux.action.start(`Rolling back ${color.app(app)} to ${color.green('v' + release.version)}`)
+    const {body: latest} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
+      body: {
+        release: release.id,
+      },
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
     const streamUrl = latest.output_stream_url
     ux.action.stop(`done, ${color.green('v' + latest.version)}`)
     ux.warn("Rollback affects code and config vars; it doesn't add or remove addons.")

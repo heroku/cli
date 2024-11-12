@@ -42,7 +42,11 @@ export default class Info extends Command {
 
         ux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
         ux.styledObject({
-          'Add-ons': release.addon_plan_names, Change: releaseChange, By: userEmail, When: release.created_at,
+          'Add-ons': release.addon_plan_names,
+          Change: releaseChange,
+          By: userEmail,
+          'Eligible for Rollback?': release.eligible_for_rollback ? 'Yes' : 'No',
+          When: release.created_at,
         })
         ux.log()
         ux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
