@@ -25,7 +25,7 @@ DESCRIPTION
   list your OAuth clients
 ```
 
-_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/index.ts)_
+_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/index.ts)_
 
 ## `heroku clients:create NAME REDIRECT_URI`
 
@@ -34,6 +34,10 @@ create a new OAuth client
 ```
 USAGE
   $ heroku clients:create NAME REDIRECT_URI [-j] [-s]
+
+ARGUMENTS
+  NAME          name of the OAuth client
+  REDIRECT_URI  redirect URL of the OAuth client
 
 FLAGS
   -j, --json   output in json format
@@ -46,7 +50,7 @@ EXAMPLES
   $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
-_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/create.ts)_
+_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/create.ts)_
 
 ## `heroku clients:destroy ID`
 
@@ -56,11 +60,14 @@ delete client by ID
 USAGE
   $ heroku clients:destroy ID
 
+ARGUMENTS
+  ID  ID of the OAuth client
+
 DESCRIPTION
   delete client by ID
 ```
 
-_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/destroy.ts)_
+_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/destroy.ts)_
 
 ## `heroku clients:info ID`
 
@@ -69,6 +76,9 @@ show details of an oauth client
 ```
 USAGE
   $ heroku clients:info ID [-j] [-s]
+
+ARGUMENTS
+  ID  ID of the OAuth client
 
 FLAGS
   -j, --json   output in json format
@@ -81,7 +91,7 @@ EXAMPLES
   $ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
 ```
 
-_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/info.ts)_
+_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/info.ts)_
 
 ## `heroku clients:rotate ID`
 
@@ -91,6 +101,9 @@ rotate OAuth client secret
 USAGE
   $ heroku clients:rotate ID [-j] [-s]
 
+ARGUMENTS
+  ID  ID of the OAuth client
+
 FLAGS
   -j, --json   output in json format
   -s, --shell  output in shell format
@@ -99,7 +112,7 @@ DESCRIPTION
   rotate OAuth client secret
 ```
 
-_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/rotate.ts)_
+_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/rotate.ts)_
 
 ## `heroku clients:update ID`
 
@@ -108,6 +121,9 @@ update OAuth client
 ```
 USAGE
   $ heroku clients:update ID [-n <value>] [--url <value>]
+
+ARGUMENTS
+  ID  ID of the OAuth client
 
 FLAGS
   -n, --name=<value>  change the client name
@@ -120,4 +136,4 @@ EXAMPLES
   $ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback
 ```
 
-_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/clients/update.ts)_
+_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/clients/update.ts)_

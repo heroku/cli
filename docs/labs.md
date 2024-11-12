@@ -25,7 +25,7 @@ DESCRIPTION
   list experimental features
 ```
 
-_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/labs/index.ts)_
+_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/labs/index.ts)_
 
 ## `heroku labs:disable FEATURE`
 
@@ -34,6 +34,9 @@ disables an experimental feature
 ```
 USAGE
   $ heroku labs:disable FEATURE [-a <value>] [-r <value>] [--confirm <value>]
+
+ARGUMENTS
+  FEATURE  unique identifier or name of the account feature
 
 FLAGS
   -a, --app=<value>      app to run command against
@@ -44,7 +47,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -54,6 +57,9 @@ enables an experimental feature
 USAGE
   $ heroku labs:enable FEATURE [-a <value>] [-r <value>]
 
+ARGUMENTS
+  FEATURE  unique identifier or name of the account feature
+
 FLAGS
   -a, --app=<value>     app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -62,7 +68,7 @@ DESCRIPTION
   enables an experimental feature
 ```
 
-_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/labs/enable.ts)_
+_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/labs/enable.ts)_
 
 ## `heroku labs:info FEATURE`
 
@@ -71,6 +77,9 @@ show feature info
 ```
 USAGE
   $ heroku labs:info FEATURE [-a <value>] [-r <value>] [--json]
+
+ARGUMENTS
+  FEATURE  unique identifier or name of the account feature
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -81,4 +90,4 @@ DESCRIPTION
   show feature info
 ```
 
-_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v9.3.2/packages/cli/src/commands/labs/info.ts)_
+_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v9.4.0/packages/cli/src/commands/labs/info.ts)_
