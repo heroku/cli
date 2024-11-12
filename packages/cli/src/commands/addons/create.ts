@@ -75,7 +75,7 @@ export default class Create extends Command {
     const argv = (restParse.argv as string[])
     // oclif duplicates specified args in argv
       .filter(arg => arg !== servicePlan)
-    const inferenceRegex = /heroku-inference.*/
+    const inferenceRegex = /^heroku-inference/
     const isInferenceAddon = inferenceRegex.test(servicePlan)
 
     if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
