@@ -10,10 +10,12 @@ import heredoc from 'tsheredoc'
 import {Account} from '../../lib/types/fir'
 
 function getProcessNumber(s: string) : number {
-  if (s.includes('-') || !s.includes('.'))
+  const [processType, dynoNumber] = (s.match(/^([^.]+)\.(.*)$/) || []).slice(1, 3)
+
+  if (!processType || !dynoNumber?.match(/^\d+$/))
     return 0
 
-  return Number.parseInt(s.split('.', 2)[1], 10)
+  return Number.parseInt(dynoNumber, 10)
 }
 
 function uniqueValues(value: string, index: number, self: string[]) : boolean {

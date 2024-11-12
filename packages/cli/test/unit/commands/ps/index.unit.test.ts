@@ -74,7 +74,7 @@ describe('ps', function () {
       .reply(200, [
         {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-ur8z1', type: 'web', updated_at: hourAgo, state: 'up'},
         {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-5om2v', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'npm start ./worker.js', size: '2X-Compute', name: 'worker.4ed720fa31-w4llb', type: 'worker', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start ./worker.js', size: '2X-Compute', name: 'node-worker.4ed720fa31-w4llb', type: 'node-worker', updated_at: hourAgo, state: 'up'},
       ])
     stubAppAndAccount()
 
@@ -86,14 +86,14 @@ describe('ps', function () {
     api.done()
 
     expect(stdout.output).to.equal(heredoc`
+      === node-worker (2X-Compute): npm start ./worker.js (1)
+
+      node-worker.4ed720fa31-w4llb: up ${hourAgoStr} (~ 1h ago)
+
       === web (1X-Classic): npm start (2)
 
       web.4ed720fa31-5om2v: up ${hourAgoStr} (~ 1h ago)
       web.4ed720fa31-ur8z1: up ${hourAgoStr} (~ 1h ago)
-
-      === worker (2X-Compute): npm start ./worker.js (1)
-
-      worker.4ed720fa31-w4llb: up ${hourAgoStr} (~ 1h ago)
 
     `)
     expect(stderr.output).to.equal('')
