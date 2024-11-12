@@ -47,7 +47,7 @@ EXAMPLES
   $ heroku addons --app acme-inc-www
 ```
 
-_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/index.ts)_
+_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/index.ts)_
 
 ## `heroku addons:attach ADDON_NAME`
 
@@ -57,6 +57,9 @@ attach an existing add-on resource to an app
 USAGE
   $ heroku addons:attach ADDON_NAME -a <value> [--as <value>] [--credential <value>] [--confirm <value>] [-r
     <value>]
+
+ARGUMENTS
+  ADDON_NAME  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>         (required) app to run command against
@@ -69,7 +72,7 @@ DESCRIPTION
   attach an existing add-on resource to an app
 ```
 
-_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/attach.ts)_
+_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/attach.ts)_
 
 ## `heroku addons:create SERVICE:PLAN`
 
@@ -79,6 +82,9 @@ Create a new add-on resource.
 USAGE
   $ heroku addons:create SERVICE:PLAN... -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait]
     [-r <value>]
+
+ARGUMENTS
+  SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -101,7 +107,7 @@ EXAMPLES
   $heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
 ```
 
-_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/create.ts)_
+_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/create.ts)_
 
 ## `heroku addons:destroy ADDONNAME`
 
@@ -110,6 +116,9 @@ permanently destroy an add-on resource
 ```
 USAGE
   $ heroku addons:destroy ADDONNAME... [-f] [-c <value>] [--wait] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDONNAME...  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>      app to run command against
@@ -125,7 +134,7 @@ EXAMPLES
   addons:destroy [ADDON]... [flags]
 ```
 
-_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/destroy.ts)_
+_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/destroy.ts)_
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
@@ -135,6 +144,9 @@ detach an existing add-on resource from an app
 USAGE
   $ heroku addons:detach ATTACHMENT_NAME -a <value> [-r <value>]
 
+ARGUMENTS
+  ATTACHMENT_NAME  unique identifier of the add-on attachment
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -143,7 +155,7 @@ DESCRIPTION
   detach an existing add-on resource from an app
 ```
 
-_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/detach.ts)_
+_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/detach.ts)_
 
 ## `heroku addons:docs ADDON`
 
@@ -152,6 +164,9 @@ open an add-on's Dev Center documentation in your browser
 ```
 USAGE
   $ heroku addons:docs ADDON [--show-url] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -162,7 +177,7 @@ DESCRIPTION
   open an add-on's Dev Center documentation in your browser
 ```
 
-_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/docs.ts)_
+_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/docs.ts)_
 
 ## `heroku addons:downgrade ADDON [PLAN]`
 
@@ -171,6 +186,10 @@ change add-on plan.
 ```
 USAGE
   $ heroku addons:downgrade ADDON [PLAN] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
+  PLAN   unique identifier or name of the plan
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -204,6 +223,9 @@ show detailed add-on resource and attachment information
 USAGE
   $ heroku addons:info ADDON
 
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
+
 FLAGS
   -a, --app=<value>     app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -212,7 +234,7 @@ DESCRIPTION
   show detailed add-on resource and attachment information
 ```
 
-_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/info.ts)_
+_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/info.ts)_
 
 ## `heroku addons:open ADDON`
 
@@ -221,6 +243,9 @@ open an add-on's dashboard in your browser
 ```
 USAGE
   $ heroku addons:open ADDON [--show-url] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -231,7 +256,7 @@ DESCRIPTION
   open an add-on's dashboard in your browser
 ```
 
-_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/open.ts)_
+_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/open.ts)_
 
 ## `heroku addons:plans SERVICE`
 
@@ -241,6 +266,9 @@ list all available plans for an add-on service
 USAGE
   $ heroku addons:plans SERVICE [--json]
 
+ARGUMENTS
+  SERVICE  unique identifier or globally unique name of the add-on
+
 FLAGS
   --json  output in json format
 
@@ -248,7 +276,7 @@ DESCRIPTION
   list all available plans for an add-on service
 ```
 
-_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/plans.ts)_
+_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/plans.ts)_
 
 ## `heroku addons:rename ADDON_NAME NEW_NAME`
 
@@ -258,11 +286,15 @@ rename an add-on
 USAGE
   $ heroku addons:rename ADDON_NAME NEW_NAME
 
+ARGUMENTS
+  ADDON_NAME  unique identifier or globally unique name of the add-on
+  NEW_NAME    new globally unique name of the add-on
+
 DESCRIPTION
   rename an add-on
 ```
 
-_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/rename.ts)_
+_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/rename.ts)_
 
 ## `heroku addons:services`
 
@@ -279,7 +311,7 @@ DESCRIPTION
   list all available add-on services
 ```
 
-_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/services.ts)_
+_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/services.ts)_
 
 ## `heroku addons:upgrade ADDON [PLAN]`
 
@@ -288,6 +320,10 @@ change add-on plan.
 ```
 USAGE
   $ heroku addons:upgrade ADDON [PLAN] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
+  PLAN   unique identifier or name of the plan
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -313,7 +349,7 @@ EXAMPLES
   $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
 
-_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/upgrade.ts)_
+_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/upgrade.ts)_
 
 ## `heroku addons:wait [ADDON]`
 
@@ -322,6 +358,9 @@ show provisioning status of the add-ons on the app
 ```
 USAGE
   $ heroku addons:wait [ADDON] [--wait-interval <value>] [-a <value>] [-r <value>]
+
+ARGUMENTS
+  ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>            app to run command against
@@ -332,4 +371,4 @@ DESCRIPTION
   show provisioning status of the add-ons on the app
 ```
 
-_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/addons/wait.ts)_
+_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/wait.ts)_

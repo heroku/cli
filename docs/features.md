@@ -25,7 +25,7 @@ DESCRIPTION
   list available app features
 ```
 
-_See code: [src/commands/features/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/features/index.ts)_
+_See code: [src/commands/features/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/features/index.ts)_
 
 ## `heroku features:disable FEATURE`
 
@@ -35,6 +35,9 @@ disables an app feature
 USAGE
   $ heroku features:disable FEATURE -a <value> [-r <value>]
 
+ARGUMENTS
+  FEATURE  unique identifier or name of the app feature
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -43,7 +46,7 @@ DESCRIPTION
   disables an app feature
 ```
 
-_See code: [src/commands/features/disable.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/features/disable.ts)_
+_See code: [src/commands/features/disable.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/features/disable.ts)_
 
 ## `heroku features:enable FEATURE`
 
@@ -53,6 +56,9 @@ enables an app feature
 USAGE
   $ heroku features:enable FEATURE -a <value> [-r <value>]
 
+ARGUMENTS
+  FEATURE  unique identifier or name of the app feature
+
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
@@ -61,7 +67,7 @@ DESCRIPTION
   enables an app feature
 ```
 
-_See code: [src/commands/features/enable.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/features/enable.ts)_
+_See code: [src/commands/features/enable.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/features/enable.ts)_
 
 ## `heroku features:info FEATURE`
 
@@ -70,6 +76,9 @@ display information about a feature
 ```
 USAGE
   $ heroku features:info FEATURE -a <value> [-r <value>] [--json]
+
+ARGUMENTS
+  FEATURE  unique identifier or name of the app feature
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -80,4 +89,4 @@ DESCRIPTION
   display information about a feature
 ```
 
-_See code: [src/commands/features/info.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/features/info.ts)_
+_See code: [src/commands/features/info.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/features/info.ts)_

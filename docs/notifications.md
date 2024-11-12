@@ -24,4 +24,4 @@ DESCRIPTION
   display notifications
 ```
 
-_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.1/packages/cli/src/commands/notifications/index.ts)_
+_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/notifications/index.ts)_
