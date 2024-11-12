@@ -14,6 +14,9 @@ describe('addons:create', function () {
   const addon = {
     id: 201, name: 'db3-swiftly-123', addon_service: {name: 'heroku-db3'}, app: {name: 'myapp', id: 101}, config_vars: ['DATABASE_URL'], plan: {price: {cents: 10000, unit: 'month'}}, state: 'provisioned', provision_message: 'provision message',
   }
+  const inferenceAddon = {
+    id: 201, name: 'claude-3-5-sonnet-acute-43973', addon_service: {name: 'heroku-inference-claude'}, app: {name: 'myapp', id: 101}, config_vars: ['INFERENCE_KEY', 'INFERENCE_MODEL_ID', 'INFERENCE_URL'], plan: {price: {cents: 0, unit: 'month'}}, state: 'provisioned', provision_message: 'provision message',
+  }
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com:443')
@@ -371,6 +374,25 @@ describe('addons:create', function () {
       ])
       expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)\n')
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123\nUse heroku addons:docs heroku-db3 to view documentation\n')
+    })
+  })
+
+  context('creating an inference addon', function () {
+    beforeEach(function () {
+      api.post('/apps/myapp/addons', {
+        plan: {name: 'heroku-inference:claude-3-5-sonnet'}, name: 'foobar', attachment: {}, config: {},
+      })
+        .reply(200, inferenceAddon)
+    })
+    it('displays disclaimer when creating inference addon', async function () {
+      await runCommand(Cmd, [
+        'heroku-inference:claude-3-5-sonnet',
+        '--app',
+        'myapp',
+        '--name',
+        'foobar',
+      ])
+      expect(stderr.output).to.contain('This pilot feature is a Beta Service.')
     })
   })
 })
