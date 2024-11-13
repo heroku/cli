@@ -1,0 +1,78 @@
+#!/bin/bash
+set -eu
+set -o pipefail
+
+if [ -z "${TPS_HOSTNAME:-}" ]; then
+  TPS_HOSTNAME="tps.heroku.tools"
+fi
+
+if [ -z "${TPS_API_TOKEN:-}" ]; then
+  echo "Requires environment variable: TPS_API_TOKEN" >&2
+  exit 1
+fi
+
+# Argument overrides the environment variable
+component_slug="${1:-$COMPONENT_SLUG}"
+if [ -z "$component_slug" ]; then
+  echo "Requires first argument: Heroku component slug" >&2
+  exit 1
+fi
+
+release_sha="${2:-$RELEASE_SHA}"
+if [ -z "$release_sha" ]; then
+  echo "Requires second argument: SHA of the commit being released" >&2
+  exit 1
+fi
+
+actor_email="${3:-$ACTOR_EMAIL}"
+if [ -z "$actor_email" ]; then
+  echo "Requires third argument: email of actor performing the release" >&2
+  exit 1
+fi
+
+app_id="${3:-$APP_ID}"
+if [ -z "$app_id" ]; then
+  echo "Requires fourth argument: UUID of app being released" >&2
+  exit 1
+fi
+
+stage="${3:-$STAGE}"
+if [ -z "$stage" ]; then
+  echo "Requires fifth argument: stage of the release" >&2
+  exit 1
+fi
+
+description="Deploy ${release_sha} of ${component_slug} in ${stage}"
+
+response_status=0
+
+tpsRecordRelease() {
+  response_status="$(curl --silent \
+    -o tpsRecordRelease_response.txt -w "%{response_code}" \
+    -X POST \
+    -H "Accept: */*" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${TPS_API_TOKEN}" \
+    -d "{\"release\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\", \"actor_email\": \"${actor_email}\", \"app_id\": \"${app_id}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
+    https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
+}
+
+echo "Recording release with ${TPS_HOSTNAME}…" >&2
+retry_count=0
+set +e
+tpsRecordRelease
+until [ "$response_status" == "200" -o "$response_status" == "201" ]
+do
+  tpsRecordRelease
+  ((retry_count++))
+  if [ $retry_count -gt 120 ]
+  then
+    echo "❌  Could not record release for \"$component_name\" after retrying for 30-minutes." >&2
+    exit 2
+  fi
+  echo Response status $response_status: $(cat tpsRecordRelease_response.txt) >&2
+  echo "⏳  Retry in 15-seconds…" >&2
+  sleep 15
+done
+set -e
+echo "✅  Release recorded" >&2
