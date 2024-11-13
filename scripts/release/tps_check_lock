@@ -1,0 +1,52 @@
+#!/bin/bash
+set -eu
+set -o pipefail
+
+if [ -z "$TPS_API_TOKEN" ]; then
+  echo "Requires environment variable: TPS_API_TOKEN" >&2
+  exit 1
+fi
+
+# Argument overrides the environment variable
+component_slug="${1:-$COMPONENT_SLUG}"
+if [ -z "$component_slug" ]; then
+  echo "Requires first argument: Heroku component slug" >&2
+  exit 1
+fi
+
+release_sha="${2:-$RELEASE_SHA}"
+if [ -z "$release_sha" ]; then
+  echo "Requires second argument: SHA of the commit being released" >&2
+  exit 1
+fi
+
+response_status=0
+
+tpsGetLock() {
+  response_status="$(curl --w '%{http_code}' \
+            -X PUT \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token ${TPS_API_TOKEN}" \
+            -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
+            https://tps.heroku.tools/api/ctc)"
+}
+
+echo "Requesting deployment lock from tps.heroku.tools…" >&2
+retry_count=0
+set +e
+tpsGetLock
+until [ "$response_status" == "200" -a "$response_status" == "201" ]
+do
+  tpsGetLock
+  ((retry_count++))
+  if [ $retry_count -gt 40 ]
+  then
+    echo "❌  Could not aquire deployment lock for \"$component_name\" after retrying for 10-minutes." >&2
+    exit 2
+  fi
+  echo "⏳  Response status \"$response_status\". Retry in 15-seconds…" >&2
+  sleep 15
+done
+set -e
+echo "✅  Lock acquired" >&2
