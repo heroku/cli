@@ -5,6 +5,7 @@ import {ux} from '@oclif/core'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 import push from '../git/push'
+import {OciImage, Release} from '../../lib/types/fir'
 
 const validUrl = require('valid-url')
 
@@ -26,14 +27,41 @@ export class BuildpackCommand {
     this.registry = new BuildpackRegistry()
   }
 
-  async fetch(app: string): Promise<any[]> {
-    const buildpacks = await this.heroku.get(`/apps/${app}/buildpack-installations`)
+  async fetch(app: string, isFirApp = false): Promise<any[]> {
+    let buildpacks: any
+    if (isFirApp) {
+      const {body: releases} = await this.heroku.request<Release[]>(`/apps/${app}/releases`, {
+        partial: true,
+        headers: {
+          Range: 'version ..; max=10, order=desc',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        },
+      })
+      const latestImageId = releases[0].oci_image?.id
+      const {body: ociImages} = await this.heroku.get<OciImage[]>(`/apps/${app}/oci-images/${latestImageId}`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        },
+      })
+      buildpacks = ociImages[0].buildpacks.map((b, index) => {
+        return {
+          buildpack: {
+            url: b.id || b.homepage,
+            name: b.id,
+          },
+          ordinal: index,
+        }
+      })
+    } else {
+      const buildpacksBody = await this.heroku.get(`/apps/${app}/buildpack-installations`)
+      buildpacks = buildpacksBody.body
+    }
+
     return this.mapBuildpackResponse(buildpacks)
   }
 
-  mapBuildpackResponse(buildpacks: {body: any}): BuildpackResponse[] {
-    const body = buildpacks.body
-    return body.map((bp: BuildpackResponse) => {
+  mapBuildpackResponse(buildpacks: BuildpackResponse[]): BuildpackResponse[] {
+    return buildpacks.map((bp: BuildpackResponse) => {
       bp.buildpack.url = bp.buildpack.url.replace(/^urn:buildpack:/, '')
       return bp
     })
@@ -55,7 +83,7 @@ export class BuildpackCommand {
     }
 
     Result.match({
-      Ok: _ => {},
+      Ok: () => {},
       Err: err => {
         ux.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})
       },
@@ -117,7 +145,7 @@ export class BuildpackCommand {
   }
 
   async put(app: string, buildpackUpdates: {buildpack: string}[]): Promise<BuildpackResponse[]> {
-    const buildpacks = await this.heroku.put(`/apps/${app}/buildpack-installations`, {
+    const {body: buildpacks} = await this.heroku.put<any>(`/apps/${app}/buildpack-installations`, {
       headers: {Range: ''},
       body: {updates: buildpackUpdates},
     })
