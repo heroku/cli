@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.5.0-beta.0](https://github.com/heroku/cli/compare/v9.4.0...v9.5.0-beta.0) (2024-11-13)
+
+
+### Features
+
+* **addons:** add inference disclaimer ([#3076](https://github.com/heroku/cli/issues/3076)) ([6d33a56](https://github.com/heroku/cli/commit/6d33a5653df971680826d7b6006932a5920a4b93))
+
+
+
+
+
 # [9.4.0](https://github.com/heroku/cli/compare/v9.3.2...v9.4.0) (2024-11-11)
 
 
