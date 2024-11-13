@@ -2,6 +2,12 @@
 set -eu
 set -o pipefail
 
+# Usage: ./scripts/release/tps_check_lock
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA
+#
+# Alternate Usage: ./scripts/release/tps_check_lock <component-slug> <release-id>
+# Required env vars: TPS_API_TOKEN
+
 if [ -z "${TPS_HOSTNAME:-}" ]; then
   TPS_HOSTNAME="tps.heroku.tools"
 fi

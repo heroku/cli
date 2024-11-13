@@ -2,6 +2,15 @@
 set -eu
 set -o pipefail
 
+# Usage: ./scripts/postrelease/tps_record_release
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL, APP_ID, STAGE
+
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id>
+# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL, APP_ID, STAGE
+
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email> <app-uuid> <stage>
+# Required env vars: TPS_API_TOKEN
+
 if [ -z "${TPS_HOSTNAME:-}" ]; then
   TPS_HOSTNAME="tps.heroku.tools"
 fi
