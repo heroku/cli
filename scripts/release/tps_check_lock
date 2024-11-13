@@ -2,7 +2,7 @@
 set -eu
 set -o pipefail
 
-if [ -z "$TPS_API_TOKEN" ]; then
+if [ -z "${TPS_API_TOKEN:-}" ]; then
   echo "Requires environment variable: TPS_API_TOKEN" >&2
   exit 1
 fi
