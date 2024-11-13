@@ -20,6 +20,7 @@ jobs:
   check-for-moratorium:
     if: fromJSON(inputs.isStableCandidate)
     run: ./scripts/release/tps_lock_check cli ${{ github.sha }}
+    environment: ChangeManagement
     env:
       TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
 
