@@ -23,7 +23,7 @@ fi
 response_status=0
 
 tpsGetLock() {
-  response_status="$(curl --w '%{http_code}' \
+  response_status="$(curl --write-out '%{http_code}' \
             -X PUT \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
