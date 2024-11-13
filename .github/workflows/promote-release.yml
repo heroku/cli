@@ -58,6 +58,8 @@ jobs:
   change-management:
     needs: [ promote ]
     if: fromJSON(inputs.isStableRelease)
+    # Failure to record the release should not fail the workflow
+    continue-on-error: true
     steps:
       # Checkout required to get github.sha
       - uses: actions/checkout@v3
