@@ -2,6 +2,10 @@
 set -eu
 set -o pipefail
 
+if [ -z "${TPS_HOSTNAME:-}" ]; then
+  TPS_HOSTNAME="tps.heroku.tools"
+fi
+
 if [ -z "${TPS_API_TOKEN:-}" ]; then
   echo "Requires environment variable: TPS_API_TOKEN" >&2
   exit 1
@@ -23,16 +27,17 @@ fi
 response_status=0
 
 tpsGetLock() {
-  response_status="$(curl --write-out '%{http_code}' \
+  response_status="$(curl --silent \
+            --write-out '%{http_code}' \
             -X PUT \
-            -H "Accept: application/json" \
+            -H "Accept: */*" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Token ${TPS_API_TOKEN}" \
+            -H "Authorization: Bearer ${TPS_API_TOKEN}" \
             -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
-            https://tps.heroku.tools/api/ctc)"
+            https://${TPS_HOSTNAME}/api/ctc)"
 }
 
-echo "Requesting deployment lock from tps.heroku.tools…" >&2
+echo "Requesting deployment lock from ${TPS_HOSTNAME}…" >&2
 retry_count=0
 set +e
 tpsGetLock
