@@ -28,20 +28,20 @@ response_status=0
 
 tpsGetLock() {
   response_status="$(curl --silent \
-            --write-out '%{http_code}' \
-            -X PUT \
-            -H "Accept: */*" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${TPS_API_TOKEN}" \
-            -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
-            https://${TPS_HOSTNAME}/api/ctc)"
+    --write-out '%{http_code}' \
+    -X PUT \
+    -H "Accept: */*" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${TPS_API_TOKEN}" \
+    -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
+    https://${TPS_HOSTNAME}/api/ctc)"
 }
 
 echo "Requesting deployment lock from ${TPS_HOSTNAME}…" >&2
 retry_count=0
 set +e
 tpsGetLock
-until [ "$response_status" == "200" -a "$response_status" == "201" ]
+until [ "$response_status" == "200" -o "$response_status" == "201" ]
 do
   tpsGetLock
   ((retry_count++))
