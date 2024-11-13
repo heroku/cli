@@ -28,7 +28,7 @@ response_status=0
 
 tpsGetLock() {
   response_status="$(curl --silent \
-    --write-out '%{http_code}' \
+    -o tpsGetLock_response.txt -w "%{response_code}" \
     -X PUT \
     -H "Accept: */*" \
     -H "Content-Type: application/json" \
@@ -50,7 +50,8 @@ do
     echo "❌  Could not aquire deployment lock for \"$component_name\" after retrying for 10-minutes." >&2
     exit 2
   fi
-  echo "⏳  Response status \"$response_status\". Retry in 15-seconds…" >&2
+  echo Response status $response_status: $(cat tpsGetLock_response.txt) >&2
+  echo "⏳  Retry in 15-seconds…" >&2
   sleep 15
 done
 set -e
