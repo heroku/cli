@@ -3,12 +3,12 @@ set -eu
 set -o pipefail
 
 # Usage: ./scripts/postrelease/tps_record_release
-# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL, STAGE
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL
 
 # Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id>
-# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL, STAGE
+# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL
 
-# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email> <stage>
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email>
 # Required env vars: TPS_API_TOKEN
 
 if [ -z "${TPS_HOSTNAME:-}" ]; then
@@ -39,14 +39,8 @@ if [ -z "$actor_email" ]; then
   exit 1
 fi
 
-stage="${4:-$STAGE}"
-if [ -z "$stage" ]; then
-  echo "Requires fifth argument or env var STAGE: stage of the release" >&2
-  exit 1
-fi
-
 # No app_id for cli releases
-# app_id="${5:-$APP_ID}"
+# app_id="${4:-$APP_ID}"
 # if [ -z "$app_id" ]; then
 #   echo "Requires fourth argument: UUID of app being released" >&2
 #   exit 1
@@ -63,7 +57,7 @@ tpsRecordRelease() {
     -H "Accept: */*" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
-    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
+    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"production\", \"description\": \"${description}\"}}" \
     https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
 }
 
