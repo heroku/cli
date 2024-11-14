@@ -53,7 +53,7 @@ do
   ((retry_count++))
   if [ $retry_count -gt 40 ]
   then
-    echo "❌  Could not get deployment lock for \"$component_name\" after retrying for 10-minutes." >&2
+    echo "❌  Could not get deployment lock for \"$component_slug\" after retrying for 10-minutes." >&2
     exit 2
   fi
   echo Response status $response_status: $(cat tpsGetLock_response.txt) >&2

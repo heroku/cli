@@ -63,7 +63,7 @@ tpsRecordRelease() {
     -H "Accept: */*" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
-    -d "{\"release\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
+    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
     https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
 }
 
@@ -77,7 +77,7 @@ do
   ((retry_count++))
   if [ $retry_count -gt 120 ]
   then
-    echo "❌  Could not record release for \"$component_name\" after retrying for 30-minutes." >&2
+    echo "❌  Could not record release for \"$component_slug\" after retrying for 30-minutes." >&2
     exit 2
   fi
   echo Response status $response_status: $(cat tpsRecordRelease_response.txt) >&2
