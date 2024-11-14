@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe.only('pipelines:diff', function () {
+describe('pipelines:diff', function () {
   const apiUrl = 'https://api.heroku.com'
   const kolkrabbiApi = 'https://kolkrabbi.heroku.com'
   const githubApi = 'https://api.github.com'
