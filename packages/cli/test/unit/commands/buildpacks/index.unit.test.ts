@@ -229,7 +229,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
 
   test
     .nock('https://api.heroku.com', {
-      reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}
+      reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'},
     }, (api: nock.Scope) => {
       api.get(`/apps/${firApp.name}`).reply(200, firApp)
       api.get(`/apps/${firApp.name}/releases`).reply(200, releases)
