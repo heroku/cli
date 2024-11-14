@@ -23,7 +23,7 @@ export default class Index extends Command {
     })
     const buildpacks = await buildpacksCommand.fetch(flags.app, app.generation === 'fir')
     if (buildpacks.length === 0) {
-      this.log(`${flags.app} has no Buildpack URL set.`)
+      this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {
       ux.styledHeader(`${color.app(flags.app)} Buildpack${buildpacks.length > 1 ? 's' : ''}`)
       buildpacksCommand.display(buildpacks, '')

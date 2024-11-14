@@ -76,7 +76,6 @@
     "tslib": "1.14.1",
     "tunnel-ssh": "4.1.6",
     "urijs": "^1.19.11",
-    "valid-url": "^1.0.9",
     "validator": "^13.7.0",
     "word-wrap": "^1.2.5",
     "ws": "^6.2.2"

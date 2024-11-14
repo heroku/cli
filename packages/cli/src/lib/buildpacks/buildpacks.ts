@@ -6,8 +6,7 @@ import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 import push from '../git/push'
 import {OciImage, Release} from '../../lib/types/fir'
-
-const validUrl = require('valid-url')
+import {isURL} from 'validator'
 
 export type BuildpackResponse = {
   buildpack: {
@@ -37,7 +36,8 @@ export class BuildpackCommand {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
-      const latestImageId = releases[0].oci_image?.id
+      if (releases.length === 0 || releases[0].oci_image === null) return []
+      const latestImageId = releases[0].oci_image.id
       const {body: ociImages} = await this.heroku.get<OciImage[]>(`/apps/${app}/oci-images/${latestImageId}`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
@@ -53,8 +53,8 @@ export class BuildpackCommand {
         }
       })
     } else {
-      const buildpacksBody = await this.heroku.get(`/apps/${app}/buildpack-installations`)
-      buildpacks = buildpacksBody.body
+      const {body: buildpackInstallations} = await this.heroku.get(`/apps/${app}/buildpack-installations`)
+      buildpacks = buildpackInstallations
     }
 
     return this.mapBuildpackResponse(buildpacks)
@@ -78,7 +78,7 @@ export class BuildpackCommand {
   }
 
   async registryNameToUrl(buildpack: string): Promise<string> {
-    if (validUrl.isWebUri(buildpack)) {
+    if (isURL(buildpack)) {
       return buildpack
     }
 
