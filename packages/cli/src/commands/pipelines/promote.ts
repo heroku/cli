@@ -7,7 +7,7 @@ import fetch from 'node-fetch'
 import * as Stream from 'stream'
 import * as util from 'util'
 
-import {listPipelineApps} from '../../lib/api'
+import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api'
 import keyBy from '../../lib/pipelines/key-by'
 
 export const sleep  = (time: number) => {
@@ -18,7 +18,7 @@ function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
 }
 
-function findAppInPipeline(apps: Array<Heroku.App>, target: string) {
+function findAppInPipeline(apps: Array<AppWithPipelineCoupling>, target: string) {
   const found = apps.find(app => (app.name === target) || (app.id === target))
   assert(found, `Cannot find app ${color.app(target)}`)
 
@@ -69,7 +69,7 @@ async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.Pipel
   return coupling
 }
 
-async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<Heroku.App>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
+async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<AppWithPipelineCoupling>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
   const options = {
     headers: {},
     body: {
@@ -103,7 +103,7 @@ function assertValidPromotion(app: string, source: string, target?: string) {
   }
 }
 
-function assertApps(app: string, targetApps: Array<Heroku.App>, targetStage: string) {
+function assertApps(app: string, targetApps: Array<AppWithPipelineCoupling>, targetStage: string) {
   if (targetApps.length === 0) {
     throw new Error(`Cannot promote from ${color.app(app)} as there are no downstream apps in ${targetStage} stage`)
   }
@@ -193,7 +193,7 @@ export default class Promote extends Command {
     const sourceStage = coupling.stage
 
     let promotionActionName = ''
-    let targetApps: Array<Heroku.App> = []
+    let targetApps: Array<AppWithPipelineCoupling> = []
     if (flags.to) {
       // The user specified a specific set of apps they want to target
       // We don't have to infer the apps or the stage they want to promote to
@@ -203,7 +203,7 @@ export default class Promote extends Command {
 
       // Now let's make sure that we can find every target app they specified
       // The only requirement is that the app be in this pipeline. They can be at any stage.
-      targetApps = targetAppNames.reduce((acc: Array<Heroku.App>, targetAppNameOrId) => {
+      targetApps = targetAppNames.reduce((acc: Array<AppWithPipelineCoupling>, targetAppNameOrId) => {
         assertNotPromotingToSelf(appNameOrId, targetAppNameOrId)
         const app = findAppInPipeline(allApps, targetAppNameOrId)
         if (app) {
@@ -219,7 +219,7 @@ export default class Promote extends Command {
 
       assertValidPromotion(appNameOrId, sourceStage!, targetStage)
 
-      targetApps = allApps.filter(app => app.coupling.stage === targetStage)
+      targetApps = allApps.filter(app => app.pipelineCoupling.stage === targetStage)
 
       assertApps(appNameOrId, targetApps, targetStage)
 
