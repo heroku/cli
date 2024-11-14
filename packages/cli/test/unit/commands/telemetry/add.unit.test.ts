@@ -31,7 +31,7 @@ describe('telemetry:add', function () {
       ])
     } catch (error) {
       const {message} = error as { message: string }
-      expect(message).to.contain('Exactly one of the following must be provided: --app, --remote, --space')
+      expect(message).to.contain('Exactly one of the following must be provided: --app, --space')
     }
   })
 
