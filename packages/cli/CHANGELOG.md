@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.0.0-alpha.2](https://github.com/heroku/cli/compare/v10.0.0-alpha.1...v10.0.0-alpha.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* access command error handling ([#3077](https://github.com/heroku/cli/issues/3077)) ([79188e5](https://github.com/heroku/cli/commit/79188e571b3b7cdbca85ce9012be92a93938dee3))
+
+
+### Features
+
+* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
+
+
+
+
+
 # [10.0.0-alpha.1](https://github.com/heroku/cli/compare/v10.0.0-alpha.0...v10.0.0-alpha.1) (2024-11-04)
 
 

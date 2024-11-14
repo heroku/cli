@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "10.0.0-alpha.1",
+  "version": "10.0.0-alpha.2",
   "author": "Heroku",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -9,7 +9,7 @@
     "@heroku-cli/color": "2.0.1",
     "@heroku-cli/command": "^11.3.1",
     "@heroku-cli/notifications": "^1.2.4",
-    "@heroku-cli/plugin-ps-exec": "^2.4.0",
+    "@heroku-cli/plugin-ps-exec": "2.6.0-beta.0",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
