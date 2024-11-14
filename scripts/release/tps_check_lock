@@ -41,6 +41,8 @@ tpsGetLock() {
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
     -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
     https://${TPS_HOSTNAME}/api/ctc)"
+  
+  echo Response status $response_status: $(cat tpsGetLock_response.txt) >&2
 }
 
 echo "Requesting deployment lock from ${TPS_HOSTNAME}…" >&2
@@ -56,7 +58,6 @@ do
     echo "❌  Could not get deployment lock for \"$component_slug\" after retrying for 10-minutes." >&2
     exit 2
   fi
-  echo Response status $response_status: $(cat tpsGetLock_response.txt) >&2
   echo "⏳  Retry in 15-seconds…" >&2
   sleep 15
 done

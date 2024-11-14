@@ -60,6 +60,8 @@ tpsRecordRelease() {
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
     -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
     https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
+
+  echo Response status $response_status: $(cat tpsRecordRelease_response.txt) >&2
 }
 
 echo "Recording release with ${TPS_HOSTNAME}…" >&2
@@ -75,7 +77,6 @@ do
     echo "❌  Could not record release for \"$component_slug\" after retrying for 30-minutes." >&2
     exit 2
   fi
-  echo Response status $response_status: $(cat tpsRecordRelease_response.txt) >&2
   echo "⏳  Retry in 15-seconds…" >&2
   sleep 15
 done
