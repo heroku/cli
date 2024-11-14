@@ -20,13 +20,13 @@ fi
 # Argument overrides the environment variable
 component_slug="${1:-$COMPONENT_SLUG}"
 if [ -z "$component_slug" ]; then
-  echo "Requires first argument: Heroku component slug" >&2
+  echo "Requires first argument or env var COMPONENT_SLUG: Heroku component slug" >&2
   exit 1
 fi
 
 release_sha="${2:-$RELEASE_SHA}"
 if [ -z "$release_sha" ]; then
-  echo "Requires second argument: SHA of the commit being released" >&2
+  echo "Requires second argument or env var RELEASE_SHA: SHA of the commit being released" >&2
   exit 1
 fi
 
