@@ -9,8 +9,7 @@ export default class Add extends Command {
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
 
   static flags = {
-    app: Flags.string({char: 'a', exactlyOne: ['app', 'remote', 'space'], description: 'app to add a drain to'}),
-    remote: Flags.remote({description: 'git remote of app to add a drain to'}),
+    app: Flags.string({char: 'a', exactlyOne: ['app', 'space'], description: 'app to add a drain to'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     endpoint: Flags.string({required: true, description: 'drain url'}),
