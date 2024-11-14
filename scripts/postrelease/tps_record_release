@@ -46,6 +46,7 @@ fi
 #   exit 1
 # fi
 
+stage="production"
 description="Deploy ${release_sha} of ${component_slug} in ${stage}"
 
 response_status=0
@@ -57,7 +58,7 @@ tpsRecordRelease() {
     -H "Accept: */*" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
-    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"production\", \"description\": \"${description}\"}}" \
+    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
     https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
 }
 
