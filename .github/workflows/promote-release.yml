@@ -67,7 +67,6 @@ jobs:
     environment: ChangeManagement
     env:
       ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
-      APP_ID: ${{ secrets.TPS_API_APP_ID }}
       STAGE: ${{ secrets.TPS_API_STAGE }}
       TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
 

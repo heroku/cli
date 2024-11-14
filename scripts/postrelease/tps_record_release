@@ -3,12 +3,12 @@ set -eu
 set -o pipefail
 
 # Usage: ./scripts/postrelease/tps_record_release
-# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL, APP_ID, STAGE
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL, STAGE
 
 # Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id>
-# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL, APP_ID, STAGE
+# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL, STAGE
 
-# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email> <app-uuid> <stage>
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email> <stage>
 # Required env vars: TPS_API_TOKEN
 
 if [ -z "${TPS_HOSTNAME:-}" ]; then
@@ -39,17 +39,18 @@ if [ -z "$actor_email" ]; then
   exit 1
 fi
 
-app_id="${3:-$APP_ID}"
-if [ -z "$app_id" ]; then
-  echo "Requires fourth argument: UUID of app being released" >&2
-  exit 1
-fi
-
-stage="${3:-$STAGE}"
+stage="${4:-$STAGE}"
 if [ -z "$stage" ]; then
   echo "Requires fifth argument: stage of the release" >&2
   exit 1
 fi
+
+# No app_id for cli releases
+# app_id="${5:-$APP_ID}"
+# if [ -z "$app_id" ]; then
+#   echo "Requires fourth argument: UUID of app being released" >&2
+#   exit 1
+# fi
 
 description="Deploy ${release_sha} of ${component_slug} in ${stage}"
 
@@ -62,7 +63,7 @@ tpsRecordRelease() {
     -H "Accept: */*" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${TPS_API_TOKEN}" \
-    -d "{\"release\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\", \"actor_email\": \"${actor_email}\", \"app_id\": \"${app_id}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
+    -d "{\"release\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
     https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
 }
 
@@ -70,7 +71,7 @@ echo "Recording release with ${TPS_HOSTNAME}…" >&2
 retry_count=0
 set +e
 tpsRecordRelease
-until [ "$response_status" == "200" -o "$response_status" == "201" ]
+until [ "$response_status" == "204" ]
 do
   tpsRecordRelease
   ((retry_count++))
