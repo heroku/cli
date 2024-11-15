@@ -51,7 +51,6 @@ set +e
 tpsGetLock
 until [ "$response_status" == "200" -o "$response_status" == "201" ]
 do
-  tpsGetLock
   ((retry_count++))
   if [ $retry_count -gt 40 ]
   then
@@ -60,6 +59,7 @@ do
   fi
   echo "⏳  Retry in 15-seconds…" >&2
   sleep 15
+  tpsGetLock
 done
 set -e
 echo "✅  Lock acquired" >&2

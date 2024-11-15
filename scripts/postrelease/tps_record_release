@@ -70,7 +70,6 @@ set +e
 tpsRecordRelease
 until [ "$response_status" == "204" ]
 do
-  tpsRecordRelease
   ((retry_count++))
   if [ $retry_count -gt 120 ]
   then
@@ -79,6 +78,7 @@ do
   fi
   echo "⏳  Retry in 15-seconds…" >&2
   sleep 15
+  tpsRecordRelease
 done
 set -e
 echo "✅  Release recorded" >&2
