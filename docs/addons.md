@@ -86,6 +86,9 @@ USAGE
 ARGUMENTS
   SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
+ARGUMENTS
+  SERVICE:PLAN  unique identifier or unique name of the add-on service plan
+
 FLAGS
   -a, --app=<value>      (required) app to run command against
   -r, --remote=<value>   git remote of app to use
@@ -120,6 +123,9 @@ USAGE
 ARGUMENTS
   ADDONNAME...  unique identifier or globally unique name of the add-on
 
+ARGUMENTS
+  ADDONNAME  unique identifier or globally unique name of the add-on
+
 FLAGS
   -a, --app=<value>      app to run command against
   -c, --confirm=<value>
@@ -134,7 +140,11 @@ EXAMPLES
   addons:destroy [ADDON]... [flags]
 ```
 
+<<<<<<< HEAD
 _See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/destroy.ts)_
+=======
+_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v9.5.0/packages/cli/src/commands/addons/destroy.ts)_
+>>>>>>> main
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
