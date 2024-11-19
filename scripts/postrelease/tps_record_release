@@ -1,0 +1,84 @@
+#!/bin/bash
+set -eu
+set -o pipefail
+
+# Usage: ./scripts/postrelease/tps_record_release
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA, ACTOR_EMAIL
+
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id>
+# Required env vars: TPS_API_TOKEN, ACTOR_EMAIL
+
+# Alternate Usage: ./scripts/postrelease/tps_record_release <component-slug> <release-id> <email>
+# Required env vars: TPS_API_TOKEN
+
+if [ -z "${TPS_HOSTNAME:-}" ]; then
+  TPS_HOSTNAME="tps.heroku.tools"
+fi
+
+if [ -z "${TPS_API_TOKEN:-}" ]; then
+  echo "Requires environment variable: TPS_API_TOKEN" >&2
+  exit 1
+fi
+
+# Argument overrides the environment variable
+component_slug="${1:-$COMPONENT_SLUG}"
+if [ -z "$component_slug" ]; then
+  echo "Requires first argument or env var COMPONENT_SLUG: Heroku component slug" >&2
+  exit 1
+fi
+
+release_sha="${2:-$RELEASE_SHA}"
+if [ -z "$release_sha" ]; then
+  echo "Requires second argument or env var RELEASE_SHA: SHA of the commit being released" >&2
+  exit 1
+fi
+
+actor_email="${3:-$ACTOR_EMAIL}"
+if [ -z "$actor_email" ]; then
+  echo "Requires third argument or env var ACTOR_EMAIL: email of actor performing the release" >&2
+  exit 1
+fi
+
+# No app_id for cli releases
+# app_id="${4:-$APP_ID}"
+# if [ -z "$app_id" ]; then
+#   echo "Requires fourth argument: UUID of app being released" >&2
+#   exit 1
+# fi
+
+stage="production"
+description="Deploy ${release_sha} of ${component_slug} in ${stage}"
+
+response_status=0
+
+tpsRecordRelease() {
+  response_status="$(curl --silent \
+    -o tpsRecordRelease_response.txt -w "%{response_code}" \
+    -X POST \
+    -H "Accept: */*" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${TPS_API_TOKEN}" \
+    -d "{\"component_slug\": \"${component_slug}\", \"release\": {\"sha\": \"${release_sha}\", \"actor_email\": \"${actor_email}\", \"stage\": \"${stage}\", \"description\": \"${description}\"}}" \
+    https://${TPS_HOSTNAME}/api/component/${component_slug}/releases)"
+
+  echo Response status $response_status: $(cat tpsRecordRelease_response.txt) >&2
+}
+
+echo "Recording release with ${TPS_HOSTNAME}…" >&2
+retry_count=0
+set +e
+tpsRecordRelease
+until [ "$response_status" == "204" ]
+do
+  ((retry_count++))
+  if [ $retry_count -gt 120 ]
+  then
+    echo "❌  Could not record release for \"$component_slug\" after retrying for 30-minutes." >&2
+    exit 2
+  fi
+  echo "⏳  Retry in 15-seconds…" >&2
+  sleep 15
+  tpsRecordRelease
+done
+set -e
+echo "✅  Release recorded" >&2

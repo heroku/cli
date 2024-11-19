@@ -19,7 +19,10 @@ on:
 jobs:
   check-for-moratorium:
     if: fromJSON(inputs.isStableCandidate)
-    uses: ./.github/workflows/ctc.yml
+    run: ./scripts/release/tps_check_lock cli ${{ github.sha }}
+    environment: ChangeManagement
+    env:
+      TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
 
   get-version-channel:
     runs-on: ubuntu-latest

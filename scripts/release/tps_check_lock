@@ -1,0 +1,65 @@
+#!/bin/bash
+set -eu
+set -o pipefail
+
+# Usage: ./scripts/release/tps_check_lock
+# Required env vars: TPS_API_TOKEN, COMPONENT_SLUG, RELEASE_SHA
+#
+# Alternate Usage: ./scripts/release/tps_check_lock <component-slug> <release-id>
+# Required env vars: TPS_API_TOKEN
+
+if [ -z "${TPS_HOSTNAME:-}" ]; then
+  TPS_HOSTNAME="tps.heroku.tools"
+fi
+
+if [ -z "${TPS_API_TOKEN:-}" ]; then
+  echo "Requires environment variable: TPS_API_TOKEN" >&2
+  exit 1
+fi
+
+# Argument overrides the environment variable
+component_slug="${1:-$COMPONENT_SLUG}"
+if [ -z "$component_slug" ]; then
+  echo "Requires first argument or env var COMPONENT_SLUG: Heroku component slug" >&2
+  exit 1
+fi
+
+release_sha="${2:-$RELEASE_SHA}"
+if [ -z "$release_sha" ]; then
+  echo "Requires second argument or env var RELEASE_SHA: SHA of the commit being released" >&2
+  exit 1
+fi
+
+response_status=0
+
+tpsGetLock() {
+  response_status="$(curl --silent \
+    -o tpsGetLock_response.txt -w "%{response_code}" \
+    -X PUT \
+    -H "Accept: */*" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${TPS_API_TOKEN}" \
+    -d "{\"lock\": {\"sha\": \"${release_sha}\", \"component_slug\": \"${component_slug}\"}}" \
+    https://${TPS_HOSTNAME}/api/ctc)"
+  
+  echo Response status $response_status: $(cat tpsGetLock_response.txt) >&2
+}
+
+echo "Requesting deployment lock from ${TPS_HOSTNAME}…" >&2
+retry_count=0
+set +e
+tpsGetLock
+until [ "$response_status" == "200" -o "$response_status" == "201" ]
+do
+  ((retry_count++))
+  if [ $retry_count -gt 40 ]
+  then
+    echo "❌  Could not get deployment lock for \"$component_slug\" after retrying for 10-minutes." >&2
+    exit 2
+  fi
+  echo "⏳  Retry in 15-seconds…" >&2
+  sleep 15
+  tpsGetLock
+done
+set -e
+echo "✅  Lock acquired" >&2

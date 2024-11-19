@@ -58,18 +58,16 @@ jobs:
   change-management:
     needs: [ promote ]
     if: fromJSON(inputs.isStableRelease)
-    runs-on: ubuntu-latest
+    # Failure to record the release should not fail the workflow
+    continue-on-error: true
+    steps:
+      # Checkout required to get github.sha
+      - uses: actions/checkout@v3
+      - run: ./scripts/postrelease/tps_record_release cli ${{ github.sha }}
     environment: ChangeManagement
     env:
-      TPS_API_APP_ID: ${{ secrets.TPS_API_APP_ID }}
-      TPS_API_RELEASE_ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
-      TPS_API_STAGE: ${{ secrets.TPS_API_STAGE }}
-      TPS_API_TOKEN_PARAM: ${{ secrets.TPS_API_TOKEN_PARAM }}
-      TPS_API_URL_PARAM: ${{ secrets.TPS_API_URL_PARAM }}
-    steps:
-      - uses: actions/checkout@v3
-      - run: yarn --immutable --network-timeout 1000000
-      - run: ./scripts/postrelease/change_management
+      ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
+      TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
 
   create-fig-autocomplete-pr:
     if: fromJSON(inputs.isStableRelease)
