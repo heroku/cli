@@ -46,3 +46,8 @@ jobs:
           ./scripts/postrelease/dev_center_docs
         env:
           HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
+      - name: Upload md file as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: heroku-cli-commands
+          path: /tmp/heroku-cli-commands.md
