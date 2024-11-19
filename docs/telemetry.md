@@ -28,7 +28,7 @@ EXAMPLES
   $ heroku telemetry
 ```
 
-_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/telemetry/index.ts)_
+_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.0/packages/cli/src/commands/telemetry/index.ts)_
 
 ## `heroku telemetry:add HEADERS`
 
@@ -36,15 +36,14 @@ Add and configure a new telemetry drain. Defaults to collecting all telemetry un
 
 ```
 USAGE
-  $ heroku telemetry:add HEADERS --endpoint <value> --transport http|grpc [-a <value>] [-r <value>] [-s <value>]
-    [--signals <value>]
+  $ heroku telemetry:add HEADERS --endpoint <value> --transport http|grpc [-a <value>] [-s <value>] [--signals
+    <value>]
 
 ARGUMENTS
   HEADERS  custom headers to configure the drain in json format
 
 FLAGS
   -a, --app=<value>         app to add a drain to
-  -r, --remote=<value>      git remote of app to add a drain to
   -s, --space=<value>       space to add a drain to
       --endpoint=<value>    (required) drain url
       --signals=<value>     [default: all] comma-delimited list of signals to collect (traces, metrics, logs). Use "all"
@@ -62,7 +61,7 @@ EXAMPLES
       '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
 ```
 
-_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/telemetry/add.ts)_
+_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.0/packages/cli/src/commands/telemetry/add.ts)_
 
 ## `heroku telemetry:info TELEMETRY_DRAIN_ID`
 
@@ -82,7 +81,7 @@ EXAMPLES
   $ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e
 ```
 
-_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/telemetry/info.ts)_
+_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.0/packages/cli/src/commands/telemetry/info.ts)_
 
 ## `heroku telemetry:remove [TELEMETRY_DRAIN_ID]`
 
@@ -103,7 +102,7 @@ DESCRIPTION
   remove a telemetry drain
 ```
 
-_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/telemetry/remove.ts)_
+_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.0/packages/cli/src/commands/telemetry/remove.ts)_
 
 ## `heroku telemetry:update TELEMETRY_DRAIN_ID [HEADERS]`
 
@@ -132,4 +131,4 @@ EXAMPLES
   $ heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com
 ```
 
-_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/telemetry/update.ts)_
+_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.0/packages/cli/src/commands/telemetry/update.ts)_
