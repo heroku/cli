@@ -1137,12 +1137,6 @@ USAGE
   $ heroku pg:settings:auto-explain [DATABASE...] [VALUE...] -a <value> [-r <value>]
 
 ARGUMENTS
-  DATABASE...  config var containing the connection string, unique name, ID, or alias of the database. To access another
-               app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
-               DATABASE_URL.
-  VALUE...     boolean indicating if execution plans of queries will be logged for future connections
-
-ARGUMENTS
   DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
             app's database, prepend the app name to the config var or alias with `APP_NAME::` . If omitted, we use
             DATABASE_URL.

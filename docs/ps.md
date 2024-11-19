@@ -167,9 +167,6 @@ USAGE
 ARGUMENTS
   DYNO  name of the dyno to stop
 
-ARGUMENTS
-  DYNO  ID of the dyno
-
 FLAGS
   -a, --app=<value>           (required) app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
@@ -227,9 +224,6 @@ USAGE
 
 ARGUMENTS
   DYNO  name of the dyno to restart
-
-ARGUMENTS
-  DYNO  ID of the dyno
 
 FLAGS
   -a, --app=<value>           (required) app to run command against
@@ -321,9 +315,6 @@ USAGE
 
 ARGUMENTS
   DYNO  name of the dyno to stop
-
-ARGUMENTS
-  DYNO  ID of the dyno
 
 FLAGS
   -a, --app=<value>           (required) app to run command against

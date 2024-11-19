@@ -80,11 +80,8 @@ Create a new add-on resource.
 
 ```
 USAGE
-  $ heroku addons:create SERVICE:PLAN... -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait]
+  $ heroku addons:create SERVICE:PLAN -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait]
     [-r <value>]
-
-ARGUMENTS
-  SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
 ARGUMENTS
   SERVICE:PLAN  unique identifier or unique name of the add-on service plan
@@ -118,10 +115,7 @@ permanently destroy an add-on resource
 
 ```
 USAGE
-  $ heroku addons:destroy ADDONNAME... [-f] [-c <value>] [--wait] [-a <value>] [-r <value>]
-
-ARGUMENTS
-  ADDONNAME...  unique identifier or globally unique name of the add-on
+  $ heroku addons:destroy ADDONNAME [-f] [-c <value>] [--wait] [-a <value>] [-r <value>]
 
 ARGUMENTS
   ADDONNAME  unique identifier or globally unique name of the add-on
@@ -140,11 +134,7 @@ EXAMPLES
   addons:destroy [ADDON]... [flags]
 ```
 
-<<<<<<< HEAD
 _See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/addons/destroy.ts)_
-=======
-_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v9.5.0/packages/cli/src/commands/addons/destroy.ts)_
->>>>>>> main
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
