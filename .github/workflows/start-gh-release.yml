@@ -10,6 +10,7 @@ on:
 jobs:
   check-for-moratorium:
     uses: ./.github/workflows/tps-check-lock.yml
+    secrets: inherit
 
   get-source-branch-name:
     needs: [check-for-moratorium]

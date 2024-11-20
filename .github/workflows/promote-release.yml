@@ -59,6 +59,7 @@ jobs:
     needs: [ promote ]
     if: fromJSON(inputs.isStableRelease)
     uses: ./.github/workflows/tps-record-release.yml
+    secrets: inherit
     with:
       isStableRelease: ${{ fromJSON(inputs.isStableRelease) }}
 

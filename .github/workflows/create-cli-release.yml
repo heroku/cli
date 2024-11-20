@@ -18,8 +18,9 @@ on:
 
 jobs:
   check-for-moratorium:
-    if: fromJSON(inputs.isStableCandidate)
+    if: ${{ fromJSON(inputs.isStableCandidate) }}
     uses: ./.github/workflows/tps-check-lock.yml
+    secrets: inherit
 
   get-version-channel:
     needs: [check-for-moratorium]
