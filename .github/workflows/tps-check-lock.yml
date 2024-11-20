@@ -1,25 +1,10 @@
 name: Check for moratorium
 
-on:
-  workflow_dispatch:
-    inputs:
-      isStableCandidate:
-        type: boolean
-        description: Is this a stable/prod candidate?
-        required: true
-        default: false
-  workflow_call:
-    inputs:
-      isStableCandidate:
-        type: boolean
-        description: Is this a stable/prod candidate?
-        required: true
-        default: false
+on: [workflow_dispatch, workflow_call]
 
 jobs:
   moratoriumCheck:
     runs-on: ubuntu-latest
-    if: ${{ fromJSON(inputs.isStableCandidate) }}
     environment: ChangeManagement
     steps:
       - env:
