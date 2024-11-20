@@ -98,7 +98,7 @@ export default class Create extends Command {
     })
     ux.action.stop()
 
-    ux.warn(`${color.bold('Spend Alert.')} During the limited GA period, each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
+    ux.warn(`${color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
     ux.warn(`Use ${color.cmd('heroku spaces:wait')} to track allocation.`)
 
     ux.styledHeader(space.name)
