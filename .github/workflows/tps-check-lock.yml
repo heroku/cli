@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ChangeManagement
     steps:
+      # checkout required to get github.sha
+      - uses: actions/checkout@v3
       - env:
           TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
         run: ./scripts/release/tps_check_lock cli ${{ github.sha }}
