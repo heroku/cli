@@ -1,19 +1,23 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import Dyno from '../../lib/run/dyno'
 import {buildCommand} from '../../lib/run/helpers'
+import heredoc from 'tsheredoc'
 
 const debug = debugFactory('heroku:run:inside')
 
 export default class RunInside extends Command {
-  static description = 'run a one-off process inside an existing heroku dyno'
+  static description = 'run a one-off process inside an existing heroku dyno (for Fir-generation apps only)'
 
-  static hidden = true;
-
-  static examples = [
-    '$ heroku run:inside web.1 bash',
-  ]
+  static example = heredoc`
+    Run bash
+      $ heroku run:inside web-848cd4f64d-pvpr2 bash
+    Run a command supplied by a script
+      $ heroku run:inside web-848cd4f64d-pvpr2 -- myscript.sh
+    Run a command declared for the worker process type in a Procfile
+      $ heroku run:inside worker
+    `
 
   static flags = {
     app: flags.app({required: true}),
@@ -22,20 +26,21 @@ export default class RunInside extends Command {
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
   }
 
+  static args = {
+    DYNO_NAME: Args.string({required: true, description: 'name of the dyno to run command inside'}),
+    COMMAND: Args.string({required: true, description: 'command to run'}),
+  }
+
   static strict = false
 
   async run() {
-    const {flags, argv} = await this.parse(RunInside)
-
-    if (argv.length < 2) {
-      throw new Error('Usage: heroku run:inside DYNO COMMAND\n\nExample: heroku run:inside web.1 bash')
-    }
+    const {flags, args} = await this.parse(RunInside)
 
     const opts = {
       'exit-code': flags['exit-code'],
       app: flags.app,
-      command: buildCommand(argv.slice(1) as string[]),
-      dyno: argv[0] as string,
+      command: buildCommand([args.COMMAND]),
+      dyno: args.DYNO_NAME,
       heroku: this.heroku,
       listen: flags.listen,
     }
