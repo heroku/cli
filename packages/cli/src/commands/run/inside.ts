@@ -3,17 +3,21 @@ import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import Dyno from '../../lib/run/dyno'
 import {buildCommand} from '../../lib/run/helpers'
+import heredoc from 'tsheredoc'
 
 const debug = debugFactory('heroku:run:inside')
 
 export default class RunInside extends Command {
-  static description = 'run a one-off process inside an existing heroku dyno'
+  static description = 'run a one-off process inside an existing heroku dyno (for Fir-generation apps only)'
 
-  static hidden = true;
-
-  static examples = [
-    '$ heroku run:inside web.1 bash',
-  ]
+  static example = heredoc`
+    Run bash
+      $ heroku run:inside web-848cd4f64d-pvpr2 bash
+    Run a command supplied by a script
+      $ heroku run:inside web-848cd4f64d-pvpr2 -- myscript.sh
+    Run a command declared for the worker process type in a Procfile
+      $ heroku run:inside worker
+    `
 
   static flags = {
     app: flags.app({required: true}),
