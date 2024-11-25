@@ -42,16 +42,30 @@ export default class AppsRename extends Command {
     }
 
     if (git.inGitRepo()) {
-    // delete git remotes pointing to this app
-      await _(await git.listRemotes())
-        .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
-        .map(r => r[0])
-        .uniq()
-        .map(r => {
-          return git.rmRemote(r)
-            .then(() => git.createRemote(r, gitUrl))
-            .then(() => ux.log(`Git remote ${r} updated`))
-        }).value()
+      /**
+       * It is possible to have as many git remotes as
+       * you want, and they can all point to the same url.
+       * The only requirement is that the "name" is unique.
+       */
+      const remotes = await git.listRemotes()
+      const httpsUrl = git.gitUrl(oldApp)
+      const sshUrl = git.sshGitUrl(oldApp)
+      const targetRemotesBySSHUrl = remotes.get(sshUrl)
+      const targetRemotesByHttpsUrl = remotes.get(httpsUrl)
+
+      const doRename = async (remotes: {name: string}[] | undefined, url: string) => {
+        for (const remote of remotes ?? []) {
+          const {name} = remote
+          await git.rmRemote(name)
+          await git.createRemote(name, url.replace(oldApp, newApp))
+          ux.log(`Git remote ${name} updated`)
+        }
+      }
+
+      await Promise.all([
+        doRename(targetRemotesByHttpsUrl, httpsUrl),
+        doRename(targetRemotesBySSHUrl, sshUrl),
+      ])
     }
 
     ux.warn("Don't forget to update git remotes for all other local checkouts of the app.")
