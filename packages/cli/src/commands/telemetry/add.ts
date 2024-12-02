@@ -22,7 +22,7 @@ export default class Add extends Command {
 
   static example = heredoc(`
     Add a telemetry drain to an app to collect logs and traces:
-    $ heroku telemetry:add --app myapp --signals logs,traces --endpoint https://my-endpoint.com --transport http '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
+    $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
   `)
 
   public async run(): Promise<void> {
