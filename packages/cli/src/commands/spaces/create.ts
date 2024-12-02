@@ -62,6 +62,21 @@ export default class Create extends Command {
     const dollarAmountHourly = shield ? '$4.17' : '$1.39'
     const spaceType = shield ? 'Shield' : 'Standard'
 
+    if (generation === 'fir') {
+      ux.warn(heredoc`
+        Fir Pilot Features
+        Fir is currently a pilot service that is subject to the Beta Services Terms
+        ( https://www.salesforce.com/company/legal/) or a written Unified Pilot Agreement
+        if executed by Customer, and applicable terms in the Product Terms Directory
+        ( https://ptd.salesforce.com/?_ga=2.247987783.1372150065.1709219475-629000709.1639001992 ).
+        Use of this pilot or beta service is at the Customer's sole discretion.
+
+        Please note that we’re actively developing and adding new features, and not all
+        existing features are currently available. See the Dev Center
+        ( https://devcenter.heroku.com/articles/generations ) for more info.
+      `)
+    }
+
     ux.action.start(`Creating space ${color.green(spaceName as string)} in team ${color.cyan(team as string)}`)
     const {body: space} = await this.heroku.post<Required<Space>>('/spaces', {
       headers: {

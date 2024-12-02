@@ -261,7 +261,7 @@ describe('spaces:create', function () {
       '--generation',
       firSpace.generation,
     ])
-
+    expect(stderr.output).to.include('Fir is currently a pilot service')
     expect(stdout.output).to.eq(heredoc`
       === ${firSpace.name}
 
