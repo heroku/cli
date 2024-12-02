@@ -9,12 +9,12 @@ export default class Update extends Command {
   static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
   static args = {
     telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to update'}),
-    headers: Args.string({description: 'custom headers to configure the drain in json format'}),
   }
 
   static flags = {
-    signals: Flags.string({description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     endpoint: Flags.string({description: 'drain url'}),
+    headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
+    signals: Flags.string({description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     transport: Flags.string({options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
   }
 
@@ -24,9 +24,9 @@ export default class Update extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Update)
-    const {telemetry_drain_id, headers} = args
-    const {signals, endpoint, transport} = flags
-    if (!(headers || signals || endpoint || transport)) {
+    const {telemetry_drain_id} = args
+    const {endpoint, headers, signals, transport} = flags
+    if (!(endpoint || headers || signals || transport)) {
       ux.error(heredoc(`
         Requires either --signals, --endpoint, --transport or HEADERS to be provided.
         See more help with --help
