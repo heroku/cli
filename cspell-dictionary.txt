@@ -260,6 +260,7 @@ psubscribe
 psut
 psql
 psqlrc
+pvpr
 pxxxxxxxx
 qqjs
 raulb
