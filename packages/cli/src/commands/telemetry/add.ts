@@ -10,25 +10,25 @@ export default class Add extends Command {
 
   static flags = {
     app: Flags.string({char: 'a', exactlyOne: ['app', 'space'], description: 'app to add a drain to'}),
+    headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    endpoint: Flags.string({required: true, description: 'drain url'}),
-    transport: Flags.string({required: true, options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
+    transport: Flags.string({default: 'http', options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
   }
 
   static args = {
-    headers: Args.string({required: true, description: 'custom headers to configure the drain in json format'}),
+    endpoint: Args.string({required: true, description: 'drain url'}),
   }
 
   static example = heredoc(`
     Add a telemetry drain to an app to collect logs and traces:
-    $ heroku telemetry:add --app myapp --signals logs,traces --endpoint https://my-endpoint.com --transport http '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
+    $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
   `)
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
-    const {app, space, signals, endpoint, transport} = flags
-    const {headers} = args
+    const {app, headers, space, signals, transport} = flags
+    const {endpoint} = args
     let id
     if (app) {
       const {body: herokuApp} = await this.heroku.get<App>(
@@ -41,6 +41,7 @@ export default class Add extends Command {
       id = herokuSpace.id
     }
 
+    const exporterHeaders = headers || '{}'
     const drainConfig = {
       owner: {
         type: app ? 'app' : 'space',
@@ -50,7 +51,7 @@ export default class Add extends Command {
       exporter: {
         endpoint,
         type: `otlp${transport}`,
-        headers: JSON.parse(headers),
+        headers: JSON.parse(exporterHeaders),
       },
     }
 

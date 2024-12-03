@@ -27,6 +27,8 @@ describe('telemetry:add', function () {
   it('returns an error if an app, remote, or space is not set', async function () {
     try {
       await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
         '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
       ])
     } catch (error) {
@@ -38,7 +40,7 @@ describe('telemetry:add', function () {
   it('returns an error if values are provided for both the app and the space flags', async function () {
     try {
       await runCommand(Cmd, [
-        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+        testEndpoint,
         '--app',
         firApp.name || '',
         '--space',
@@ -59,15 +61,13 @@ describe('telemetry:add', function () {
       .reply(200, spaceTelemetryDrain1)
 
     await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
       '--app',
       appId,
       '--signals',
       'logs',
-      '--endpoint',
-      testEndpoint,
-      '--transport',
-      'http',
     ])
 
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
@@ -82,15 +82,13 @@ describe('telemetry:add', function () {
       .reply(200, spaceTelemetryDrain1)
 
     await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
       '--space',
       spaceId,
       '--signals',
       'logs',
-      '--endpoint',
-      testEndpoint,
-      '--transport',
-      'http',
     ])
 
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
@@ -102,15 +100,13 @@ describe('telemetry:add', function () {
       .reply(200, space)
     try {
       await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
         '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
         '--space',
         spaceId,
         '--signals',
         'logs,foo',
-        '--endpoint',
-        testEndpoint,
-        '--transport',
-        'http',
       ])
     } catch (error) {
       const {message} = error as { message: string }
@@ -124,15 +120,13 @@ describe('telemetry:add', function () {
       .reply(200, space)
     try {
       await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
         '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
         '--space',
         spaceId,
         '--signals',
         'logs,all',
-        '--endpoint',
-        testEndpoint,
-        '--transport',
-        'http',
       ])
     } catch (error) {
       const {message} = error as { message: string }
