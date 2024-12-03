@@ -18,10 +18,12 @@ on:
 
 jobs:
   check-for-moratorium:
-    if: fromJSON(inputs.isStableCandidate)
-    uses: ./.github/workflows/ctc.yml
+    if: ${{ fromJSON(inputs.isStableCandidate) }}
+    uses: ./.github/workflows/tps-check-lock.yml
+    secrets: inherit
 
   get-version-channel:
+    needs: [check-for-moratorium]
     runs-on: ubuntu-latest
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
@@ -36,7 +38,7 @@ jobs:
           path: './packages/cli/package.json'
 
   publish-npm:
-    needs: [get-version-channel]
+    needs: [get-version-channel, check-for-moratorium]
     # if NOT isStableCandidate confirm dist tag is in package.json version
     if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
     uses: ./.github/workflows/publish-npm.yml
@@ -46,12 +48,12 @@ jobs:
     secrets: inherit
 
   pack-upload:
-    needs: [ publish-npm ]
+    needs: [publish-npm, check-for-moratorium]
     uses: ./.github/workflows/pack-upload.yml
     secrets: inherit
 
   promote:
-    needs: [get-version-channel, pack-upload]
+    needs: [get-version-channel, pack-upload, check-for-moratorium]
     if: needs.pack-upload.result == 'success'
     uses: ./.github/workflows/promote-release.yml
     with:
@@ -61,8 +63,8 @@ jobs:
     secrets: inherit
 
   publish-docs:
-    needs: [ get-version-channel, promote ]
+    needs: [get-version-channel, promote, check-for-moratorium]
     uses: ./.github/workflows/devcenter-doc-update.yml
     with:
-      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      isStableRelease: ${{ fromJSON(inputs.isStableCandidate) }}
     secrets: inherit

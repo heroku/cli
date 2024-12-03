@@ -20,7 +20,7 @@ jobs:
   update-devcenter-command-docs:
     name: Update Devcenter command docs
     runs-on: ubuntu-latest
-    if: fromJSON(inputs.isStableRelease)
+    if: ${{ fromJSON(inputs.isStableRelease) }}
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 16.x

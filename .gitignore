@@ -26,4 +26,5 @@ node_modules
 
 # TEMP
 /packages/**/converted/*
-
+tpsGetLock_response.txt
+tpsRecordRelease_response.txt
