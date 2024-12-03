@@ -84,7 +84,7 @@ describe('spaces:create', function () {
 
     api.done()
 
-    expect(stderr.output).to.include('Warning: Spend Alert. During the limited GA period, each Heroku Standard')
+    expect(stderr.output).to.include('Warning: Spend Alert. Each Heroku Standard')
     expect(stderr.output).to.include('Private Space costs ~$1.39/hour (max $1000/month), pro-rated to the')
     expect(stderr.output).to.include('second.')
   })
@@ -164,7 +164,7 @@ describe('spaces:create', function () {
 
     api.done()
 
-    expect(stderr.output).to.include('Warning: Spend Alert. During the limited GA period, each Heroku Shield')
+    expect(stderr.output).to.include('Warning: Spend Alert. Each Heroku Shield')
     expect(stderr.output).to.include('Private Space costs ~$4.17/hour (max $3000/month), pro-rated to the')
     expect(stderr.output).to.include('second.')
   })
