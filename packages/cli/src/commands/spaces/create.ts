@@ -66,14 +66,14 @@ export default class Create extends Command {
       ux.warn(heredoc`
         Fir Pilot Features
         Fir is currently a pilot service that is subject to the Beta Services Terms
-        ( https://www.salesforce.com/company/legal/) or a written Unified Pilot Agreement
+        (https://www.salesforce.com/company/legal/) or a written Unified Pilot Agreement
         if executed by Customer, and applicable terms in the Product Terms Directory
-        ( https://ptd.salesforce.com/?_ga=2.247987783.1372150065.1709219475-629000709.1639001992 ).
+        (https://ptd.salesforce.com/?_ga=2.247987783.1372150065.1709219475-629000709.1639001992).
         Use of this pilot or beta service is at the Customer's sole discretion.
 
         Please note that we’re actively developing and adding new features, and not all
         existing features are currently available. See the Dev Center
-        ( https://devcenter.heroku.com/articles/generations ) for more info.
+        (https://devcenter.heroku.com/articles/generations) for more info.
       `)
     }
 
