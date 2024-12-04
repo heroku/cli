@@ -5,6 +5,7 @@ run a one-off process inside a Heroku dyno
 
 * [`heroku run`](#heroku-run)
 * [`heroku run:detached`](#heroku-rundetached)
+* [`heroku run:inside DYNO_NAME COMMAND`](#heroku-runinside-dyno_name-command)
 
 ## `heroku run`
 
@@ -35,7 +36,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.1/packages/cli/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -60,4 +61,35 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.0.0-alpha.2/packages/cli/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.1/packages/cli/src/commands/run/detached.ts)_
+
+## `heroku run:inside DYNO_NAME COMMAND`
+
+run a one-off process inside an existing heroku dyno (for Fir-generation apps only)
+
+```
+USAGE
+  $ heroku run:inside DYNO_NAME... COMMAND... -a <value> [-r <value>] [-x]
+
+ARGUMENTS
+  DYNO_NAME...  name of the dyno to run command inside
+  COMMAND...    command to run
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+  -x, --exit-code       passthrough the exit code of the remote command
+
+DESCRIPTION
+  run a one-off process inside an existing heroku dyno (for Fir-generation apps only)
+
+EXAMPLES
+  Run bash
+    $ heroku run:inside web-848cd4f64d-pvpr2 bash
+  Run a command supplied by a script
+    $ heroku run:inside web-848cd4f64d-pvpr2 -- myscript.sh
+  Run a command declared for the worker process type in a Procfile
+    $ heroku run:inside worker
+```
+
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.0.0-beta.1/packages/cli/src/commands/run/inside.ts)_
