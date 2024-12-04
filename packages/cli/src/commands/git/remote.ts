@@ -13,7 +13,7 @@ extra arguments will be passed to git remote add
     $ heroku git:remote -a example
 
     # set git remote heroku-staging to https://git.heroku.com/example.git
-    $ heroku git:remote --remote heroku-staging -a example`
+    $ heroku git:remote --remote heroku-staging -a example-staging`
 
   static flags = {
     app: flags.string({char: 'a', description: 'the Heroku app to use'}),

@@ -58,18 +58,10 @@ jobs:
   change-management:
     needs: [ promote ]
     if: fromJSON(inputs.isStableRelease)
-    runs-on: ubuntu-latest
-    environment: ChangeManagement
-    env:
-      TPS_API_APP_ID: ${{ secrets.TPS_API_APP_ID }}
-      TPS_API_RELEASE_ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
-      TPS_API_STAGE: ${{ secrets.TPS_API_STAGE }}
-      TPS_API_TOKEN_PARAM: ${{ secrets.TPS_API_TOKEN_PARAM }}
-      TPS_API_URL_PARAM: ${{ secrets.TPS_API_URL_PARAM }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: yarn --immutable --network-timeout 1000000
-      - run: ./scripts/postrelease/change_management
+    uses: ./.github/workflows/tps-record-release.yml
+    secrets: inherit
+    with:
+      isStableRelease: ${{ fromJSON(inputs.isStableRelease) }}
 
   create-fig-autocomplete-pr:
     if: fromJSON(inputs.isStableRelease)
