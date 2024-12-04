@@ -25,6 +25,6 @@ jobs:
       # checkout required to get github.sha
       - uses: actions/checkout@v3
       - env:
-          ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL
+          ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
           TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
         run: ./scripts/postrelease/tps_record_release cli ${{ github.sha }}
