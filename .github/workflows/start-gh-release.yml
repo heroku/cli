@@ -8,12 +8,7 @@ on:
       - closed
 
 jobs:
-  check-for-moratorium:
-    uses: ./.github/workflows/tps-check-lock.yml
-    secrets: inherit
-
   get-source-branch-name:
-    needs: [check-for-moratorium]
     # GHA does not provide short name for branch being merged in. This shortens it so we can validate it with startsWith()
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
@@ -26,9 +21,14 @@ jobs:
         id: sourceName
         run: echo "sourceName=${GITHUB_HEAD_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-  start-release:
-    needs: [get-source-branch-name, check-for-moratorium]
+  validate-release:
+    needs: [get-source-branch-name]
     if: startsWith(needs.get-source-branch-name.outputs.sourceName, 'release-')
+    uses: ./.github/workflows/tps-check-lock.yml
+    secrets: inherit
+
+  start-release:
+    needs: [validate-release]
     uses: ./.github/workflows/tag-create-github-release.yml
     secrets: inherit
 
