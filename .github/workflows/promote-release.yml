@@ -61,7 +61,7 @@ jobs:
     uses: ./.github/workflows/tps-record-release.yml
     secrets: inherit
     with:
-      isStableRelease: ${{ fromJSON(inputs.isStableRelease) }}
+      isStableCandidate: ${{ fromJSON(inputs.isStableRelease) }}
 
   create-fig-autocomplete-pr:
     if: fromJSON(inputs.isStableRelease)
