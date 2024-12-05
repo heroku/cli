@@ -28,11 +28,13 @@ export function revertSortedArgs(processArgs: Array<string>, argv: Array<string>
   return originalInputOrder
 }
 
-export function buildCommand(args: Array<string>) {
+export function buildCommand(args: Array<string>, prependLauncher: boolean = false) {
+  const prependText = prependLauncher ? 'launcher ' : ''
+
   if (args.length === 1) {
     // do not add quotes around arguments if there is only one argument
     // `heroku run "rake test"` should work like `heroku run rake test`
-    return args[0]
+    return `${prependText}${args[0]}`
   }
 
   let cmd = ''
@@ -44,7 +46,7 @@ export function buildCommand(args: Array<string>) {
     cmd = cmd + ' ' + arg
   }
 
-  return cmd.trim()
+  return `${prependText}${cmd.trim()}`
 }
 
 export function buildEnvFromFlag(flag: string) {
