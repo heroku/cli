@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.5.1-alpha.0](https://github.com/heroku/cli/compare/v9.5.0...v9.5.1-alpha.0) (2024-12-05)
+
+
+### Bug Fixes
+
+* **git:remote:** update example text to reflect staging app ([#3095](https://github.com/heroku/cli/issues/3095)) ([d4ce1ba](https://github.com/heroku/cli/commit/d4ce1ba422539a8a6a029eca4413700535327785))
+
+
+
+
+
 # [9.5.0](https://github.com/heroku/cli/compare/v9.4.0...v9.5.0) (2024-11-13)
 
 

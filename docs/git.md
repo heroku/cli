@@ -31,7 +31,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v9.5.0/packages/cli/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v9.5.1-alpha.0/packages/cli/src/commands/git/clone.ts)_
 
 ## `heroku git:remote`
 
@@ -54,7 +54,7 @@ EXAMPLES
   # set git remote heroku to https://git.heroku.com/example.git
       $ heroku git:remote -a example
       # set git remote heroku-staging to https://git.heroku.com/example.git
-      $ heroku git:remote --remote heroku-staging -a example
+      $ heroku git:remote --remote heroku-staging -a example-staging
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v9.5.0/packages/cli/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v9.5.1-alpha.0/packages/cli/src/commands/git/remote.ts)_
