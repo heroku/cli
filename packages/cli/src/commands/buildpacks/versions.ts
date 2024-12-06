@@ -24,7 +24,7 @@ export default class Versions extends Command {
     const registry = new BuildpackRegistry()
 
     Result.match({
-      Ok: _ => {},
+      Ok: () => {},
       Err: err => {
         this.error(`Could not find the buildpack.\n${err}`)
       },

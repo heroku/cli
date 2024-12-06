@@ -1,8 +1,9 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {keyBy} from 'lodash'
+import {App, PipelineCoupling, Release} from './types/fir'
 
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
+export const SDK_HEADER = 'application/vnd.heroku+json; version=3.sdk'
 export const FILTERS_HEADER = `${V3_HEADER}.filters`
 export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 const CI_HEADER = `${V3_HEADER}.ci`
@@ -54,8 +55,14 @@ export function findPipelineByName(heroku: APIClient, idOrName: string) {
   })
 }
 
+export interface PipelineCouplingSdk extends Required<PipelineCoupling> {
+  generation: 'fir' | 'cedar'
+}
+
 export function getCoupling(heroku: APIClient, app: string) {
-  return heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
+  return heroku.get<PipelineCouplingSdk>(`/apps/${app}/pipeline-couplings`, {
+    headers: {Accept: SDK_HEADER},
+  })
 }
 
 export function getPipeline(heroku: APIClient, id: string) {
@@ -76,7 +83,7 @@ export function getTeam(heroku: APIClient, teamId: any) {
 }
 
 function getAppFilter(heroku: APIClient, appIds: Array<string>) {
-  return heroku.request<Array<Heroku.App>>('/filters/apps', {
+  return heroku.request<Array<App>>('/filters/apps', {
     method: 'POST',
     headers: {Accept: FILTERS_HEADER, Range: 'id ..; max=1000;'},
     body: {in: {id: appIds}},
@@ -92,22 +99,25 @@ export function getAppSetup(heroku: APIClient, buildId: any) {
 }
 
 function listCouplings(heroku: APIClient, pipelineId: string) {
-  return heroku.get<Array<Heroku.PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`)
+  return heroku.get<Array<PipelineCouplingSdk>>(`/pipelines/${pipelineId}/pipeline-couplings`, {
+    headers: {Accept: SDK_HEADER},
+  })
 }
 
-export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<Heroku.App>> {
-  return listCouplings(heroku, pipelineId).then(({body: couplings}) => {
-    const appIds = couplings.map(coupling => (coupling.app && coupling.app.id) || '')
+export interface AppWithPipelineCoupling extends App {
+  pipelineCoupling: PipelineCouplingSdk
+  [k: string]: unknown
+}
 
-    return getAppFilter(heroku, appIds).then(({body: apps}) => {
-      const couplingsByAppId = keyBy(couplings, coupling => coupling.app && coupling.app.id)
-      return apps.map(app => {
-        return {
-          ...app,
-          coupling: couplingsByAppId[app.id!],
-        }
-      })
-    })
+export async function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<AppWithPipelineCoupling>> {
+  const {body: couplings} = await listCouplings(heroku, pipelineId)
+  const appIds = couplings.map(coupling => coupling.app.id || '')
+  const {body: apps} = await getAppFilter(heroku, appIds)
+  return apps.map(app => {
+    return {
+      ...app,
+      pipelineCoupling: couplings.find(coupling => coupling.app.id === app.id),
+    } as AppWithPipelineCoupling
   })
 }
 
@@ -128,8 +138,8 @@ export function updateCoupling(heroku: APIClient, app: string, stage: string) {
 }
 
 export function getReleases(heroku: APIClient, appId: string) {
-  return heroku.get<Array<Heroku.Release>>(`/apps/${appId}/releases`, {
-    headers: {Accept: V3_HEADER, Range: 'version ..; order=desc'},
+  return heroku.get<Array<Release>>(`/apps/${appId}/releases`, {
+    headers: {Accept: SDK_HEADER, Range: 'version ..; order=desc'},
     partial: true,
   })
 }

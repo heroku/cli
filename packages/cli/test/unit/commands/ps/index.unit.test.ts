@@ -11,13 +11,13 @@ const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 
 function stubAccountQuota(code: number, body: Record<string, unknown>) {
-  nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.process-tier'}})
+  nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp')
     .reply(200, {process_tier: 'eco', owner: {id: '1234'}, id: '6789'})
-  nock('https://api.heroku.com')
+  nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp/dynos')
     .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
-  nock('https://api.heroku.com')
+  nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/account')
     .reply(200, {id: '1234'})
   nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}})
@@ -26,10 +26,10 @@ function stubAccountQuota(code: number, body: Record<string, unknown>) {
 }
 
 function stubAppAndAccount() {
-  nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}})
+  nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp')
     .reply(200, {process_tier: 'basic', owner: {id: '1234'}, id: '6789'})
-  nock('https://api.heroku.com')
+  nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/account')
     .reply(200, {id: '1234'})
 }
@@ -40,7 +40,7 @@ describe('ps', function () {
   })
 
   it('shows dyno list', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
         {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
@@ -68,8 +68,39 @@ describe('ps', function () {
     expect(stderr.output).to.equal('')
   })
 
+  it('shows dyno list for Fir apps', async function () {
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get('/apps/myapp/dynos')
+      .reply(200, [
+        {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-ur8z1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-5om2v', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start ./worker.js', size: '2X-Compute', name: 'node-worker.4ed720fa31-w4llb', type: 'node-worker', updated_at: hourAgo, state: 'up'},
+      ])
+    stubAppAndAccount()
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+    ])
+
+    api.done()
+
+    expect(stdout.output).to.equal(heredoc`
+      === node-worker (2X-Compute): npm start ./worker.js (1)
+
+      node-worker.4ed720fa31-w4llb: up ${hourAgoStr} (~ 1h ago)
+
+      === web (1X-Classic): npm start (2)
+
+      web.4ed720fa31-5om2v: up ${hourAgoStr} (~ 1h ago)
+      web.4ed720fa31-ur8z1: up ${hourAgoStr} (~ 1h ago)
+
+    `)
+    expect(stderr.output).to.equal('')
+  })
+
   it('shows shield dynos in dyno list for apps in a shielded private space', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp')
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos')
@@ -101,7 +132,7 @@ describe('ps', function () {
   })
 
   it('errors when no dynos found', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
         {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
@@ -126,7 +157,7 @@ describe('ps', function () {
   })
 
   it('shows dyno list as json', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
       .get('/apps/myapp')
@@ -148,7 +179,7 @@ describe('ps', function () {
   })
 
   it('shows extended info', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
       .get('/apps/myapp')
@@ -194,7 +225,7 @@ describe('ps', function () {
   })
 
   it('shows extended info for Private Space app', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
       .get('/apps/myapp')
@@ -258,7 +289,7 @@ describe('ps', function () {
   })
 
   it('shows shield dynos in extended info if app is in a shielded private space', async function () {
-    const api = nock('https://api.heroku.com')
+    const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
       .get('/apps/myapp')
@@ -432,10 +463,10 @@ describe('ps', function () {
   })
 
   it('does not print out for apps that are not owned', async function () {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp')
       .reply(200, {
         process_tier: 'eco', owner: {id: '5678'},
@@ -443,7 +474,7 @@ describe('ps', function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}})
       .get('/accounts/1234/actions/get-quota')
       .reply(200, {account_quota: 1000, quota_used: 1, apps: []})
-    const dynos = nock('https://api.heroku.com')
+    const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
     const ecoExpression = heredoc`
@@ -465,13 +496,13 @@ describe('ps', function () {
   })
 
   it('does not print out for non-eco apps', async function () {
-    nock('https://api.heroku.com')
+    nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/account')
       .reply(200, {id: '1234'})
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}})
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp')
       .reply(200, {process_tier: 'eco', owner: {id: 1234}})
-    const dynos = nock('https://api.heroku.com')
+    const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
     const ecoExpression = heredoc`
@@ -511,7 +542,7 @@ describe('ps', function () {
   })
 
   it('logs to stdout and exits zero when no dynos', async function () {
-    const dynos = nock('https://api.heroku.com')
+    const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [])
     stubAppAndAccount()

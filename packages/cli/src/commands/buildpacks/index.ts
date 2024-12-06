@@ -1,5 +1,7 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {App} from '../../lib/types/fir'
+import color from '@heroku-cli/color'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 
@@ -14,12 +16,16 @@ export default class Index extends Command {
   async run() {
     const {flags} = await this.parse(Index)
     const buildpacksCommand = new BuildpackCommand(this.heroku)
-
-    const buildpacks = await buildpacksCommand.fetch(flags.app)
+    const {body: app} = await this.heroku.get<App>(`/apps/${flags.app}`, {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
+    const buildpacks = await buildpacksCommand.fetch(flags.app, app.generation === 'fir')
     if (buildpacks.length === 0) {
-      this.log(`${flags.app} has no Buildpack URL set.`)
+      this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {
-      ux.styledHeader(`${flags.app} Buildpack URL${buildpacks.length > 1 ? 's' : ''}`)
+      ux.styledHeader(`${color.app(flags.app)} Buildpack${buildpacks.length > 1 ? 's' : ''}`)
       buildpacksCommand.display(buildpacks, '')
     }
   }

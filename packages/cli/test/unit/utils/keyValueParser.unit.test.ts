@@ -5,8 +5,8 @@ const exampleInput1 = 'Domain Name=ztestdomain7'
 const exampleInput2 = 'exampleKey=value'
 const exampleInput3 = 'example key=example value'
 
-describe('keyValueParser', () => {
-  it('parses and extracts key/value pairs', () => {
+describe('keyValueParser', function () {
+  it('parses and extracts key/value pairs', function () {
     const {key: exampleKey1, value: exampleValue1} = parseKeyValue(exampleInput1)
     const {key: exampleKey2, value: exampleValue2} = parseKeyValue(exampleInput2)
     const {key: exampleKey3, value: exampleValue3} = parseKeyValue(exampleInput3)

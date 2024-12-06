@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {App, Formation} from '../../../lib/types/fir'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
@@ -26,12 +27,25 @@ export default class Enable extends Command {
     ux.action.start('Enabling dyno autoscaling')
 
     const [appResponse, formationResponse] = await Promise.all([
-      this.heroku.get<Heroku.App>(`/apps/${flags.app}`),
-      this.heroku.get<Heroku.Formation[]>(`/apps/${flags.app}/formation`),
+      this.heroku.get<App>(`/apps/${flags.app}`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        },
+      }),
+      this.heroku.get<Formation[]>(`/apps/${flags.app}/formation`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        },
+      }),
     ])
     const app = appResponse.body
     const formations = formationResponse.body
     const webFormation = formations.find((f: any) => f.type === 'web')
+
+    if (app.generation === 'fir') {
+      throw new Error('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.')
+    }
+
     if (!webFormation) throw new Error(`${flags.app} does not have any web dynos to scale`)
 
     const {size} = webFormation

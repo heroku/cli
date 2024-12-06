@@ -15,6 +15,25 @@ const app = {
   stack: {name: 'cedar-14'},
   owner: {email: 'foo@foo.com'},
   space: {name: 'myspace'},
+  generation: {id: '123', name: 'cedar'},
+  internal_routing: true,
+}
+
+const firApp = {
+  id: 'app-id',
+  name: 'myapp',
+  database_size: 1000,
+  create_status: 'complete',
+  repo_size: 1000,
+  slug_size: null,
+  git_url: 'https://git.heroku.com/myapp',
+  web_url: 'https://myapp.herokuapp.com',
+  region: {name: 'eu'},
+  build_stack: {name: 'cedar-14'},
+  stack: {name: 'cedar-14'},
+  owner: {email: 'foo@foo.com'},
+  space: {name: 'myspace'},
+  generation: {id: '123', name: 'fir'},
   internal_routing: true,
 }
 
@@ -30,6 +49,10 @@ const appExtended = Object.assign({}, app, {
 })
 
 const appAcm = Object.assign({}, app, {
+  acm: true,
+})
+
+const firAppAcm = Object.assign({}, firApp, {
   acm: true,
 })
 
@@ -57,6 +80,24 @@ Owner:            foo@foo.com
 Region:           eu
 Repo Size:        1000 B
 Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
+`
+
+const BASE_INFO_FIR = `=== myapp
+
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
 Space:            myspace
 Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
@@ -351,6 +392,60 @@ Slug Size:        1000 B
 Space:            myspace
 Stack:            cedar-14 (next build will use heroku-24)
 Web URL:          https://myapp.herokuapp.com
+`)
+      expect(unwrap(stderr)).to.contains('')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api =>
+      api
+        .get('/apps/myapp')
+        .reply(200, firAppAcm),
+    )
+    .nock('https://api.heroku.com:443', api =>
+      api
+        .get('/apps/myapp/addons')
+        .reply(200, addons)
+        .get('/apps/myapp/collaborators')
+        .reply(200, collaborators)
+        .get('/apps/myapp/dynos')
+        .reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}]),
+    )
+    .command(['apps:info', '-a', 'myapp'])
+    .it('shows fir app info without slug size', ({stdout, stderr}) => {
+      expect(stdout).to.equal(BASE_INFO_FIR)
+      expect(unwrap(stderr)).to.contains('')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .nock('https://api.heroku.com', api =>
+      api
+        .get('/apps/myapp')
+        .reply(200, firAppAcm),
+    )
+    .nock('https://api.heroku.com:443', api =>
+      api
+        .get('/apps/myapp/addons').reply(200, addons)
+        .get('/apps/myapp/collaborators').reply(200, collaborators)
+        .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}]),
+    )
+    .command(['apps:info', 'myapp', '--shell'])
+    .it('shows fir app info in shell format without slug size', ({stdout, stderr}) => {
+      expect(stdout).to.equal(`auto_cert_mgmt=true
+addons=heroku-redis,papertrail
+collaborators=foo2@foo.com
+database_size=1000 B
+git_url=https://git.heroku.com/myapp
+web_url=https://myapp.herokuapp.com
+repo_size=1000 B
+owner=foo@foo.com
+region=eu
+dynos={ web: 1 }
+stack=cedar-14
 `)
       expect(unwrap(stderr)).to.contains('')
     })

@@ -577,7 +577,7 @@ describe('heroku certs:auto', function () {
 
     beforeEach(function () {
       clock = lolex.install()
-      clock.setTimeout = function (fn, _timeout) {
+      clock.setTimeout = function (fn) {
         fn()
         return 1
       }

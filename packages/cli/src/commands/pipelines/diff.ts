@@ -1,11 +1,11 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import HTTP from 'http-call'
 
-import {getCoupling, getReleases, listPipelineApps, V3_HEADER} from '../../lib/api'
+import {getCoupling, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
+import {OciImage, Slug} from '../../lib/types/fir'
 
 interface AppInfo {
   name: string;
@@ -85,7 +85,7 @@ export default class PipelinesDiff extends Command {
 
   kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
-  getAppInfo = async (appName: string, appId: string): Promise<AppInfo> => {
+  getAppInfo = async (appName: string, appId: string, generation: string): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
       .catch(() => {
@@ -93,23 +93,33 @@ export default class PipelinesDiff extends Command {
       })
 
     // Find the commit hash of the latest release for this app
-    let slug: Heroku.Slug
+    let slug: Slug
+    let ociImages: Array<OciImage>
+    let commit: string | undefined
+
     try {
       const {body: releases} = await getReleases(this.heroku, appId)
       const release = releases.find(r => r.status === 'succeeded')
-      if (!release || !release.slug) {
+      if (!release || !(release.slug || release.oci_image)) {
         throw new Error(`no release found for ${appName}`)
       }
 
-      slug = await this.heroku.get<Heroku.Slug>(`/apps/${appId}/slugs/${release.slug.id}`, {
-        headers: {Accept: V3_HEADER},
-      }).then(res => res.body)
-    // tslint:disable-next-line: no-unused
+      if (generation === 'cedar' && release.slug) {
+        slug = await this.heroku.get<Slug>(`/apps/${appId}/slugs/${release.slug.id}`, {
+          headers: {Accept: SDK_HEADER},
+        }).then(res => res.body)
+        commit = slug.commit!
+      } else if (generation === 'fir' && release.oci_image) {
+        ociImages = await this.heroku.get<Array<OciImage>>(`/apps/${appId}/oci-images/${release.oci_image.id}`, {
+          headers: {Accept: SDK_HEADER},
+        }).then(res => res.body)
+        commit = ociImages[0]?.commit
+      }
     } catch {
       return {name: appName, repo: githubApp.repo, hash: undefined}
     }
 
-    return {name: appName, repo: githubApp.repo, hash: slug.commit!}
+    return {name: appName, repo: githubApp.repo, hash: commit}
   }
 
   async run() {
@@ -125,10 +135,11 @@ export default class PipelinesDiff extends Command {
       return
     }
 
-    const targetAppId = coupling.app!.id!
+    const targetAppId = coupling.app.id!
+    const generation = coupling.generation
 
     ux.action.start('Fetching apps from pipeline')
-    const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
+    const allApps = await listPipelineApps(this.heroku, coupling.pipeline.id!)
     ux.action.stop()
 
     const sourceStage = coupling.stage
@@ -138,23 +149,21 @@ export default class PipelinesDiff extends Command {
     }
 
     const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1]
-    if (!downstreamStage || PROMOTION_ORDER.indexOf(sourceStage) < 0) { // eslint-disable-line unicorn/prefer-includes
+    if (!downstreamStage || !PROMOTION_ORDER.includes(sourceStage)) {
       return ux.error(`Unable to diff ${targetAppName}`)
     }
 
-    const downstreamApps = allApps.filter(function (app) {
-      return app.coupling.stage === downstreamStage
-    })
+    const downstreamApps = allApps.filter(app => app.pipelineCoupling.stage === downstreamStage)
 
     if (downstreamApps.length === 0) {
       return ux.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`)
     }
 
     // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
-    const appInfoPromises = [this.getAppInfo(targetAppName, targetAppId)]
+    const appInfoPromises = [this.getAppInfo(targetAppName, targetAppId, generation)]
     downstreamApps.forEach(app => {
       if (app.name && app.id) {
-        appInfoPromises.push(this.getAppInfo(app.name, app.id))
+        appInfoPromises.push(this.getAppInfo(app.name, app.id, generation))
       }
     })
     ux.action.start('Fetching release info for all apps')

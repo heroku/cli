@@ -6,11 +6,11 @@ List installed plugins.
 * [`heroku plugins`](#heroku-plugins)
 * [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin)
 * [`heroku plugins:inspect PLUGIN...`](#heroku-pluginsinspect-plugin)
-* [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin-1)
+* [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin)
 * [`heroku plugins:link PLUGIN`](#heroku-pluginslink-plugin)
 * [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin)
-* [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin-1)
-* [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin-2)
+* [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin)
+* [`heroku plugins:uninstall PLUGIN...`](#heroku-pluginsuninstall-plugin)
 * [`heroku plugins:update`](#heroku-pluginsupdate)
 
 ## `heroku plugins`
@@ -42,7 +42,7 @@ USAGE
   $ heroku plugins:add plugins:install PLUGIN...
 
 ARGUMENTS
-  PLUGIN  Plugin to install.
+  PLUGIN...  Plugin to install.
 
 FLAGS
   -f, --force    Run yarn install with force flag.
@@ -80,7 +80,7 @@ USAGE
   $ heroku plugins:inspect PLUGIN...
 
 ARGUMENTS
-  PLUGIN  [default: .] Plugin to inspect.
+  PLUGIN...  [default: .] Plugin to inspect.
 
 FLAGS
   -h, --help     Show CLI help.
@@ -107,7 +107,7 @@ USAGE
   $ heroku plugins:install PLUGIN...
 
 ARGUMENTS
-  PLUGIN  Plugin to install.
+  PLUGIN...  Plugin to install.
 
 FLAGS
   -f, --force    Run yarn install with force flag.

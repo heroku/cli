@@ -28,16 +28,13 @@ export default class Add extends Command {
     const {flags, args} = await this.parse(Add)
     const {space} = flags
     const url = `/spaces/${space}/inbound-ruleset`
-    const options = {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-    }
-    const {body: ruleset} = await this.heroku.get<Heroku.InboundRuleset>(url, options)
+    const {body: ruleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
     if (!this.isUniqueRule(ruleset, args.source)) {
       throw new Error(`A rule already exists for ${args.source}.`)
     }
 
     ruleset.rules.push({action: 'allow', source: args.source})
-    await this.heroku.put(url, {...options, body: ruleset})
+    await this.heroku.put(url, {body: ruleset})
     ux.log(`Added ${color.cyan.bold(args.source)} to trusted IP ranges on ${color.cyan.bold(space)}`)
     ux.warn('It may take a few moments for the changes to take effect.')
   }

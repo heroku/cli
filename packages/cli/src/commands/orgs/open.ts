@@ -17,7 +17,7 @@ export default class OrgsOpen extends Command {
     }
 
     public async run(): Promise<void> {
-      const {flags, argv, args} = await this.parse(OrgsOpen)
+      const {flags} = await this.parse(OrgsOpen)
       const team = flags.team
       const {body: org} = await this.heroku.get<Heroku.Team>(`/teams/${team}`)
       await OrgsOpen.openUrl(`https://dashboard.heroku.com/teams/${org.name}`)

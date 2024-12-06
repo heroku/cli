@@ -31,10 +31,7 @@ export default class Index extends Command {
       throw new Error('Space name required.\nUSAGE: heroku trusted-ips my-space')
     }
 
-    const {body: rules} = await this.heroku.get<Required<Heroku.InboundRuleset>>(`/spaces/${space}/inbound-ruleset`,
-      {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-      })
+    const {body: rules} = await this.heroku.get<Required<Heroku.InboundRuleset>>(`/spaces/${space}/inbound-ruleset`)
 
     if (flags.json) {
       ux.log(JSON.stringify(rules, null, 2))

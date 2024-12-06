@@ -15,7 +15,7 @@ jobs:
     outputs:
       sourceName: ${{ steps.sourceName.outputs.sourceName }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Remove 'refs/heads/' from GITHUB_HEAD_REF
         shell: bash
         id: sourceName

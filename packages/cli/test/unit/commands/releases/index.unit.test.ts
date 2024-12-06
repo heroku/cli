@@ -107,11 +107,6 @@ describe('releases', function () {
       },
     },
   ]
-  const slug = {
-    process_types: {
-      release: 'bundle exec rake db:migrate',
-    },
-  }
 
   it('shows releases', async function () {
     process.stdout.isTTY = true
@@ -134,7 +129,7 @@ describe('releases', function () {
  v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
 `)
     assertLineWidths(stdout.output, 80)
-    // expect(stderr.output).to.equal('')
+    expect(stderr.output).to.equal('')
     api.done()
   })
 

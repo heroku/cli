@@ -22,7 +22,7 @@ export default class Add extends Command {
       {hostname: 'particleboard.heroku.com'},
     )
 
-    if (favorites.find(f => f.resource_name === app)) {
+    if (favorites.some(f => f.resource_name === app)) {
       throw new Error(`${color.app(app)} is already a favorite app.`)
     }
 

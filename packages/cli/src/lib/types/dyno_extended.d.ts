@@ -1,6 +1,6 @@
-import {Dyno} from '@heroku-cli/schema'
+import {Dyno} from './fir'
 
-export interface DynoExtended extends Required<Dyno> {
+export interface DynoExtended extends Dyno {
   /**
    * Extended information.
    */
@@ -14,4 +14,5 @@ export interface DynoExtended extends Required<Dyno> {
     region: string | null,
     route: string | null,
   }
+  [name: string]: unknown
 }

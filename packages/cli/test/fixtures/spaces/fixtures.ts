@@ -1,12 +1,14 @@
 import * as Heroku from '@heroku-cli/schema'
 import type {SpaceTopology} from '../../../src/commands/spaces/topology'
+import {SpaceWithOutboundIps} from '../../../src/lib/types/spaces'
 
-export const spaces: Record<string, Required<Heroku.Space>> = {
+export const spaces: Record<string, SpaceWithOutboundIps> = {
   'non-shield-space': {
     id: '1234',
     name: 'my-unshielded-space',
     shield: false,
     region: {
+      id: '1',
       description: 'virginia',
       name: 'us',
     },
@@ -19,6 +21,7 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     organization: {
       name: 'my-org',
     },
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },
@@ -27,6 +30,7 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     name: 'my-shielded-space',
     shield: true,
     region: {
+      id: '1',
       description: 'virginia',
       name: 'us',
     },
@@ -39,6 +43,7 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     organization: {
       name: 'my-org',
     },
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },
@@ -48,6 +53,7 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     name: 'my-unshielded-space',
     shield: false,
     region: {
+      id: '1',
       description: 'virginia',
       name: 'us',
     },
@@ -60,6 +66,7 @@ export const spaces: Record<string, Required<Heroku.Space>> = {
     organization: {
       name: 'my-org',
     },
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },

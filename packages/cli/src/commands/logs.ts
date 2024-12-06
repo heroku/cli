@@ -1,49 +1,89 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// tslint:disable:file-name-casing
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-
 import logDisplayer from '../lib/run/log-displayer'
+import heredoc from 'tsheredoc'
 
 export default class Logs extends Command {
-  static description = `display recent log output
-disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
+  static description = heredoc`
+    display recent log output
+    disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
+  `
 
   static examples = [
-    '$ heroku logs --app=my-app',
-    '$ heroku logs --num=50',
-    '$ heroku logs --dyno=web --app=my-app',
-    '$ heroku logs --app=my-app --tail',
+    'heroku logs --app=my-app',
+    'heroku logs --num=50 --app=my-app',
+    'heroku logs --dyno-name=web-123-456 --app=my-app',
+    'heroku logs --process-type=web --app=my-app',
+    'heroku logs --app=my-app --tail',
   ]
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
-    num: flags.integer({char: 'n', description: 'number of lines to display'}),
-    ps: flags.string({char: 'p', description: 'hidden alias for dyno', hidden: true}),
-    dyno: flags.string({
+    'dyno-name': flags.string({
+      aliases: ['dyno'],
       char: 'd',
-      description: 'only show output from this dyno type (such as "web" or "worker")',
+      description: 'only show output from this dyno (such as "web-123-456" or "worker.2")',
+    }),
+    'force-colors': flags.boolean({
+      description: 'force use of colors (even on non-tty output)',
+    }),
+    // supports-color NPM package will parse ARGV looking for flag `--no-color`, but
+    // we need to define it here for OClif not to error out on an inexistent flag.
+    'no-color': flags.boolean({
+      default: false,
+      hidden: true,
+      relationships: [
+        {type: 'none', flags: ['force-colors']},
+      ],
+    }),
+    num: flags.integer({
+      char: 'n',
+      description: 'number of lines to display (ignored for Fir generation apps)',
+    }),
+    ps: flags.string({
+      char: 'p',
+      hidden: true,
+      description: 'hidden alias for type',
+      relationships: [
+        {type: 'none', flags: ['dyno-name']},
+      ],
       completion: ProcessTypeCompletion,
     }),
-    source: flags.string({char: 's', description: 'only show output from this source (such as "app" or "heroku")'}),
-    tail: flags.boolean({char: 't', description: 'continually stream logs'}),
-    'force-colors': flags.boolean({description: 'force use of colors (even on non-tty output)'}),
+    remote: flags.remote(),
+    source: flags.string({
+      char: 's',
+      description: 'only show output from this source (such as "app" or "heroku")',
+    }),
+    tail: flags.boolean({
+      char: 't',
+      default: false,
+      description: 'continually stream logs (defaults to true for Fir generation apps)',
+    }),
+    'process-type': flags.string({
+      char: 'p',
+      description: 'only show output from this process type (such as "web" or "worker")',
+      relationships: [
+        {type: 'none', flags: ['dyno-name', 'ps']},
+      ],
+      completion: ProcessTypeCompletion,
+    }),
   }
 
   async run() {
     const {flags} = await this.parse(Logs)
+    const {app, 'dyno-name': dyno, 'force-colors': forceColors, num, ps, source, tail, 'process-type': type} = flags
 
-    color.enabled = flags['force-colors'] || color.enabled
+    if (forceColors)
+      color.enabled = true
 
     await logDisplayer(this.heroku, {
-      app: flags.app,
-      // @ts-ignore
-      dyno: flags.dyno || flags.ps,
-      lines: flags.num || 100,
-      tail: flags.tail,
-      source: flags.source,
+      app,
+      dyno,
+      lines: num || 100,
+      source,
+      tail,
+      type: type || ps,
     })
   }
 }

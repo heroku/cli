@@ -5,11 +5,12 @@ import {ux} from '@oclif/core'
 import {sortBy} from 'lodash'
 
 import {getOwner, warnMixedOwnership} from './ownership'
+import {AppWithPipelineCoupling} from '../api'
 
 export default async function renderPipeline(
   heroku: APIClient,
   pipeline: Heroku.Pipeline,
-  pipelineApps: Array<Heroku.App>,
+  pipelineApps: Array<AppWithPipelineCoupling>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   {withOwners, showOwnerWarning} = {withOwners: false, showOwnerWarning: false}) {
   ux.styledHeader(pipeline.name!)
@@ -23,7 +24,7 @@ export default async function renderPipeline(
 
   ux.log('')
 
-  const columns: ux.Table.table.Columns<Heroku.App> = {
+  const columns: ux.Table.table.Columns<AppWithPipelineCoupling> = {
     name: {
       header: 'app name',
       get(row) {
@@ -33,7 +34,7 @@ export default async function renderPipeline(
     'coupling.stage': {
       header: 'stage',
       get(row) {
-        return row.coupling.stage
+        return row.pipelineCoupling.stage
       },
     },
   }
@@ -45,16 +46,16 @@ export default async function renderPipeline(
         const email = row.owner && row.owner.email
 
         if (email) {
-          return email.endsWith('@herokumanager.com') ? `${row.split('@')[0]} (team)` : email
+          return email.endsWith('@herokumanager.com') ? `${email.split('@')[0]} (team)` : email
         }
       },
     }
   }
 
-  const developmentApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'development'), ['name'])
-  const reviewApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'review'), ['name'])
-  const stagingApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'staging'), ['name'])
-  const productionApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'production'), ['name'])
+  const developmentApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'development'), ['name'])
+  const reviewApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'review'), ['name'])
+  const stagingApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'staging'), ['name'])
+  const productionApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'production'), ['name'])
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
   ux.table(apps, columns)

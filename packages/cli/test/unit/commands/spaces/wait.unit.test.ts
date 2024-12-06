@@ -7,11 +7,11 @@ import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import * as sinon from 'sinon'
-import {Space} from '@heroku-cli/schema'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 
 describe('spaces:wait', function () {
-  let allocatingSpace: Required<Space>
-  let allocatedSpace: Required<Space>
+  let allocatingSpace: SpaceWithOutboundIps
+  let allocatedSpace: SpaceWithOutboundIps
   let sandbox: sinon.SinonSandbox
   let notifySpy: sinon.SinonSpy
 
@@ -56,6 +56,7 @@ describe('spaces:wait', function () {
       State:        ${allocatedSpace.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
+      Generation:   ${allocatedSpace.generation.name}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true
@@ -114,6 +115,7 @@ describe('spaces:wait', function () {
       Data CIDR:    ${allocatedSpace.data_cidr}
       State:        ${allocatedSpace.state}
       Shield:       off
+      Generation:   ${allocatedSpace.generation.name}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true

@@ -1,7 +1,6 @@
-import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {flags, Command} from '@heroku-cli/command'
+import {Command} from '@heroku-cli/command'
 
 export default class Clear extends Command {
   static description = 'remove all SSH keys for current user'

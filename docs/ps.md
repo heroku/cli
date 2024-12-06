@@ -9,12 +9,12 @@ Client tools for Heroku Exec
 * [`heroku ps:copy FILE`](#heroku-pscopy-file)
 * [`heroku ps:exec`](#heroku-psexec)
 * [`heroku ps:forward PORT`](#heroku-psforward-port)
-* [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
+* [`heroku ps:kill [DYNO]`](#heroku-pskill-dyno)
 * [`heroku ps:resize`](#heroku-psresize)
 * [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)
 * [`heroku ps:scale`](#heroku-psscale)
 * [`heroku ps:socks`](#heroku-pssocks)
-* [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
+* [`heroku ps:stop [DYNO]`](#heroku-psstop-dyno)
 * [`heroku ps:type`](#heroku-pstype)
 * [`heroku ps:wait`](#heroku-pswait)
 
@@ -156,23 +156,25 @@ DESCRIPTION
   $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
-## `heroku ps:kill DYNO`
+## `heroku ps:kill [DYNO]`
 
-stop app dyno
+stop an app dyno or process type
 
 ```
 USAGE
-  $ heroku ps:kill DYNO -a <value> [-r <value>]
+  $ heroku ps:kill [DYNO] -a <value> [-r <value>] [-p <value> | -d <value>]
 
 ARGUMENTS
-  DYNO  ID of the dyno
+  DYNO  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>           (required) app to run command against
+  -d, --dyno-name=<value>     name of the dyno to stop
+  -p, --process-type=<value>  name of the process type to stop
+  -r, --remote=<value>        git remote of app to use
 
 DESCRIPTION
-  stop app dyno
+  stop an app dyno or process type
 
 ALIASES
   $ heroku dyno:stop
@@ -180,9 +182,9 @@ ALIASES
   $ heroku dyno:kill
 
 EXAMPLES
-  $ heroku ps:stop run.1828
+  $ heroku ps:stop --app myapp --dyno-name run.1828
 
-  $ heroku ps:stop run
+  $ heroku ps:stop --app myapp --process-type run
 ```
 
 ## `heroku ps:resize`
@@ -214,31 +216,35 @@ ALIASES
 
 ## `heroku ps:restart [DYNO]`
 
-restart app dynos
+restart an app dyno or process type
 
 ```
 USAGE
-  $ heroku ps:restart [DYNO] -a <value> [-r <value>]
+  $ heroku ps:restart [DYNO] -a <value> [-r <value>] [-p <value> | -d <value>]
 
 ARGUMENTS
-  DYNO  ID of the dyno
+  DYNO  name of the dyno to restart
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>           (required) app to run command against
+  -d, --dyno-name=<value>     name of the dyno to restart
+  -p, --process-type=<value>  name of the process type to restart
+  -r, --remote=<value>        git remote of app to use
 
 DESCRIPTION
-  restart app dynos
+  restart an app dyno or process type
+  if neither --dyno nor --type are specified, restarts all dynos on app
+
 
 ALIASES
   $ heroku dyno:restart
 
 EXAMPLES
-  $ heroku ps:restart web.1
+  $ heroku ps:restart --app myapp --dyno-name web.1
 
-  $ heroku ps:restart web
+  $ heroku ps:restart --app myapp --process-type web
 
-  $ heroku ps:restart
+  $ heroku ps:restart --app myapp
 ```
 
 _See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/restart.ts)_
@@ -299,23 +305,25 @@ DESCRIPTION
   Use CTRL+C to stop the proxy
 ```
 
-## `heroku ps:stop DYNO`
+## `heroku ps:stop [DYNO]`
 
-stop app dyno
+stop an app dyno or process type
 
 ```
 USAGE
-  $ heroku ps:stop DYNO -a <value> [-r <value>]
+  $ heroku ps:stop [DYNO] -a <value> [-r <value>] [-p <value> | -d <value>]
 
 ARGUMENTS
-  DYNO  ID of the dyno
+  DYNO  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
+  -a, --app=<value>           (required) app to run command against
+  -d, --dyno-name=<value>     name of the dyno to stop
+  -p, --process-type=<value>  name of the process type to stop
+  -r, --remote=<value>        git remote of app to use
 
 DESCRIPTION
-  stop app dyno
+  stop an app dyno or process type
 
 ALIASES
   $ heroku dyno:stop
@@ -323,9 +331,9 @@ ALIASES
   $ heroku dyno:kill
 
 EXAMPLES
-  $ heroku ps:stop run.1828
+  $ heroku ps:stop --app myapp --dyno-name run.1828
 
-  $ heroku ps:stop run
+  $ heroku ps:stop --app myapp --process-type run
 ```
 
 _See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/stop.ts)_

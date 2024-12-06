@@ -57,7 +57,7 @@ export default class Errors extends Command {
   async run() {
     const {flags} = await this.parse(Errors)
 
-    const hours = Number.parseInt(flags.hours)
+    const hours = Number.parseInt(flags.hours, 10)
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(Date.now() - (hours * 60 * 60 * 1000)).toISOString()
     const DATE_QUERY = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`

@@ -88,7 +88,7 @@ USAGE
   $ heroku releases:rollback [RELEASE] -a <value> [-r <value>]
 
 ARGUMENTS
-  RELEASE  ID of the release. If omitted, we use the last release ID.
+  RELEASE  ID of the release. If omitted, we use the last eligible release.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -97,7 +97,7 @@ FLAGS
 DESCRIPTION
   Roll back to a previous release.
 
-  If RELEASE is not specified, it will roll back one release.
+  If RELEASE is not specified, it will roll back to the last eligible release.
 ```
 
 _See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/releases/rollback.ts)_

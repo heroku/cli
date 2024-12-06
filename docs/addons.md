@@ -80,11 +80,11 @@ Create a new add-on resource.
 
 ```
 USAGE
-  $ heroku addons:create SERVICE:PLAN -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait] [-r
-    <value>]
+  $ heroku addons:create SERVICE:PLAN... -a <value> [--name <value>] [--as <value>] [--confirm <value>] [--wait]
+    [-r <value>]
 
 ARGUMENTS
-  SERVICE:PLAN  unique identifier or unique name of the add-on service plan
+  SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -115,10 +115,10 @@ permanently destroy an add-on resource
 
 ```
 USAGE
-  $ heroku addons:destroy ADDONNAME [-f] [-c <value>] [--wait] [-a <value>] [-r <value>]
+  $ heroku addons:destroy ADDONNAME... [-f] [-c <value>] [--wait] [-a <value>] [-r <value>]
 
 ARGUMENTS
-  ADDONNAME  unique identifier or globally unique name of the add-on
+  ADDONNAME...  unique identifier or globally unique name of the add-on
 
 FLAGS
   -a, --app=<value>      app to run command against
