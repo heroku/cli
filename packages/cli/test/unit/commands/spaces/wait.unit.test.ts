@@ -56,7 +56,7 @@ describe('spaces:wait', function () {
       State:        ${allocatedSpace.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
-      Generation:   ${allocatedSpace.generation}
+      Generation:   ${allocatedSpace.generation.name}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true
@@ -115,7 +115,7 @@ describe('spaces:wait', function () {
       Data CIDR:    ${allocatedSpace.data_cidr}
       State:        ${allocatedSpace.state}
       Shield:       off
-      Generation:   ${allocatedSpace.generation}
+      Generation:   ${allocatedSpace.generation.name}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true

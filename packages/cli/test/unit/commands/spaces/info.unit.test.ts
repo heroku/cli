@@ -34,7 +34,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${space.created_at}
     `))
   })
@@ -74,7 +74,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${space.created_at}
     `))
   })
@@ -101,7 +101,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: disabled
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${space.created_at}
     `))
   })
@@ -124,7 +124,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${space.created_at}
     `))
   })
@@ -147,7 +147,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${shieldSpace.data_cidr}
       State:        ${shieldSpace.state}
       Shield:       on
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${shieldSpace.created_at}
     `))
   })
@@ -169,7 +169,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation}
+      Generation:   ${space.generation.name}
       Created at:   ${space.created_at}
     `))
   })
