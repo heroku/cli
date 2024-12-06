@@ -21,7 +21,7 @@ export const spaces: Record<string, SpaceWithOutboundIps> = {
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },
@@ -43,7 +43,7 @@ export const spaces: Record<string, SpaceWithOutboundIps> = {
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },
@@ -66,7 +66,7 @@ export const spaces: Record<string, SpaceWithOutboundIps> = {
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
+    generation: {id: '123', name: 'cedar'},
     created_at: '2016-01-06T03:23:13Z',
     updated_at: '2016-01-06T03:23:13Z',
   },
