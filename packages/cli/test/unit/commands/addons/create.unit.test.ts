@@ -392,7 +392,7 @@ describe('addons:create', function () {
         '--name',
         'foobar',
       ])
-      expect(stderr.output).to.contain('This pilot feature is a Beta Service.')
+      expect(stderr.output).to.contain('Heroku Managed Inference and Agent is a pilot or beta service')
     })
   })
 })
