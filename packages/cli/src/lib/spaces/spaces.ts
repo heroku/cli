@@ -28,7 +28,7 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
         State: space.state,
         Shield: displayShieldState(space),
         'Outbound IPs': displayNat(space.outbound_ips),
-        Generation: space.generation,
+        Generation: space.generation.name,
         'Created at': space.created_at,
       },
       ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],

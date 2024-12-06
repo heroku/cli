@@ -2407,7 +2407,10 @@ export interface Space {
   *
   * @example "fir"
   */
-  generation: string;
+  generation: {
+    id: string,
+    name: string,
+ }
 }
 /**
  *
