@@ -35,8 +35,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **cli:** Adding disclaimer for plugin AI install ([#3065](https://github.com/heroku/cli/issues/3065)) ([80ab352](https://github.com/heroku/cli/commit/80ab352a5b68e96dba6d5a0ed900f6e1c166d98f))
-
+* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
 
 
 

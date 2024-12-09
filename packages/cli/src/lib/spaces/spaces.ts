@@ -1,17 +1,19 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {SpaceNat} from '../types/fir'
+import {SpaceWithOutboundIps} from '../types/spaces'
 
 export function displayShieldState(space: Heroku.Space) {
   return space.shield ? 'on' : 'off'
 }
 
-export function displayNat(nat?: Required<Heroku.SpaceNetworkAddressTranslation>) {
+export function displayNat(nat?: Required<SpaceNat>) {
   if (!nat) return
   if (nat.state !== 'enabled') return nat.state
   return nat.sources.join(', ')
 }
 
-export function renderInfo(space: Heroku.Space, json: boolean) {
+export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.log(JSON.stringify(space, null, 2))
   } else {
@@ -26,9 +28,10 @@ export function renderInfo(space: Heroku.Space, json: boolean) {
         State: space.state,
         Shield: displayShieldState(space),
         'Outbound IPs': displayNat(space.outbound_ips),
+        Generation: space.generation.name,
         'Created at': space.created_at,
       },
-      ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Created at'],
+      ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],
     )
   }
 }

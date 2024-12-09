@@ -1,9 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import {renderInfo} from '../../lib/spaces/spaces'
 import debug from 'debug'
+import {IncomingHttpHeaders} from 'node:http'
+import {Space, SpaceNat} from '../../lib/types/fir'
+import {SpaceWithOutboundIps} from '../../lib/types/spaces'
 
 const spacesDebug = debug('spaces:info')
 
@@ -32,15 +34,17 @@ export default class Info extends Command {
       `))
     }
 
-    let headers = {}
+    const headers: IncomingHttpHeaders = {
+      Accept: 'application/vnd.heroku+json; version=3.fir',
+    }
     if (!flags.json) {
-      headers = {'Accept-Expansion': 'region'}
+      headers['Accept-Expansion'] = 'region'
     }
 
-    const {body: space} = await this.heroku.get<Heroku.Space>(`/spaces/${spaceName}`, {headers})
+    const {body: space} = await this.heroku.get<SpaceWithOutboundIps>(`/spaces/${spaceName}`, {headers})
     if (space.state === 'allocated') {
       try {
-        const {body: outbound_ips} = await this.heroku.get<Heroku.SpaceNetworkAddressTranslation>(`/spaces/${spaceName}/nat`)
+        const {body: outbound_ips} = await this.heroku.get<SpaceNat>(`/spaces/${spaceName}/nat`, {headers: {Accept: 'application/vnd.heroku+json; version=3.fir'}})
         space.outbound_ips = outbound_ips
       } catch (error) {
         spacesDebug(`Retrieving NAT details for the space failed with ${error}`)

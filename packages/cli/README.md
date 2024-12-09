@@ -71,6 +71,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku spaces`](docs/spaces.md) - list available spaces
 * [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
+* [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku version`](docs/version.md)
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app

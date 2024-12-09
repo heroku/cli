@@ -35,7 +35,38 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
+* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
+
+
+
+
+
+# [10.0.0-alpha.1](https://github.com/heroku/cli/compare/v10.0.0-alpha.0...v10.0.0-alpha.1) (2024-11-04)
+
+
+### Features
+
 * **cli:** Adding disclaimer for plugin AI install ([#3065](https://github.com/heroku/cli/issues/3065)) ([80ab352](https://github.com/heroku/cli/commit/80ab352a5b68e96dba6d5a0ed900f6e1c166d98f))
+
+
+
+
+
+# [10.0.0-alpha.0](https://github.com/heroku/cli/compare/v9.3.2...v10.0.0-alpha.0) (2024-10-24)
+
+
+### Features
+
+* add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
+* add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
+* add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
+* add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
+* Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
+* **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
+* **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
+* separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
+* update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
 
 
 

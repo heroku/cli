@@ -75,7 +75,7 @@ USAGE
   $ heroku config:get KEY...
 
 ARGUMENTS
-  KEY  key name of the config var value
+  KEY...  key name of the config var value
 
 FLAGS
   -a, --app=<value>     (required) app to run command against

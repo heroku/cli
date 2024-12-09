@@ -56,7 +56,6 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 
       return {
         // this rule does not realize `size` isn't used on an array
-        /* eslint-disable unicorn/explicit-length-check */
         type: color.green(d.type || ''),
         size: color.cyan(d.size),
         qty: color.yellow(`${d.quantity}`),
@@ -81,7 +80,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     throw emptyFormationErr(app)
   }
 
-  ux.styledHeader('Dyno Types')
+  ux.styledHeader('Process Types')
   ux.table(formationTableData, {
     type: {},
     size: {},
@@ -89,7 +88,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     'cost/hour': {},
     'max cost/month': {},
   })
-
+  ux.log()
   ux.styledHeader('Dyno Totals')
   ux.table(dynoTotalsTableData, {
     type: {},
@@ -128,12 +127,12 @@ export default class Type extends Command {
       if (!argv || argv.length === 0)
         return []
       const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-      if (argv.find(a => a.match(/=/))) {
+      if (argv.some(a => a.match(/=/))) {
         return compact(argv.map(arg => {
           const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
           const type = match && match[1]
           const size = match && match[2]
-          if (!type || !size || !formation.find(p => p.type === type)) {
+          if (!type || !size || !formation.some(p => p.type === type)) {
             throw new Error(`Type ${color.red(type || '')} not found in process formation.\nTypes: ${color.yellow(formation.map(f => f.type)
               .join(', '))}`)
           }

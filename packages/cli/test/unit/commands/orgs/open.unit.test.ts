@@ -1,4 +1,3 @@
-import {stdout, stderr} from 'stdout-stderr'
 import Cmd  from '../../../../src/commands/orgs/open'
 import runCommand from '../../../helpers/runCommand'
 const sinon = require('sinon')
@@ -8,7 +7,11 @@ import {teamInfo} from '../../../helpers/stubs/get'
 
 describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope
-  const urlOpenerStub = sinon.stub(Cmd, 'openUrl').callsFake(async (_: string) => {})
+  let urlOpenerStub: sinon.SinonStub
+
+  before(function () {
+    urlOpenerStub = sinon.stub(Cmd, 'openUrl')
+  })
 
   beforeEach(function () {
     apiGetOrgInfo = teamInfo()
@@ -19,15 +22,15 @@ describe('heroku org:open', function () {
     nock.cleanAll()
   })
 
-  it('shows an error if team flag is not passed', function () {
-    runCommand(Cmd, [])
+  it('shows an error if team flag is not passed', async function () {
+    await runCommand(Cmd, [])
       .catch(error => {
         expect(error).to.be.instanceOf(Error)
       })
   })
 
-  it('opens org in dashboard via browser if team flag is passed', function () {
-    return runCommand(Cmd, [
+  it('opens org in dashboard via browser if team flag is passed', async function () {
+    await runCommand(Cmd, [
       '--team',
       'myteam',
     ])

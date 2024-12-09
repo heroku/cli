@@ -4,15 +4,20 @@ import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers'
 
 describe('helpers.buildCommand()', function () {
   [
-    {args: ['echo foo'], expected: 'echo foo'},
-    {args: ['echo', 'foo bar'], expected: 'echo "foo bar"'},
-    {args: ['echo', 'foo', 'bar'], expected: 'echo foo bar'},
-    {args: ['echo', '{"foo": "bar"}'], expected: 'echo "{\\"foo\\": \\"bar\\"}"'},
-    {args: ['echo', '{"foo":"bar"}'], expected: 'echo "{\\"foo\\":\\"bar\\"}"'},
+    {args: ['echo foo'], prependLauncher: false, expected: 'echo foo'},
+    {args: ['echo foo'], prependLauncher: true, expected: 'launcher echo foo'},
+    {args: ['echo', 'foo bar'], prependLauncher: false, expected: 'echo "foo bar"'},
+    {args: ['echo', 'foo bar'], prependLauncher: true, expected: 'launcher echo "foo bar"'},
+    {args: ['echo', 'foo', 'bar'], prependLauncher: false, expected: 'echo foo bar'},
+    {args: ['echo', 'foo', 'bar'], prependLauncher: true, expected: 'launcher echo foo bar'},
+    {args: ['echo', '{"foo": "bar"}'], prependLauncher: false, expected: 'echo "{\\"foo\\": \\"bar\\"}"'},
+    {args: ['echo', '{"foo": "bar"}'], prependLauncher: true, expected: 'launcher echo "{\\"foo\\": \\"bar\\"}"'},
+    {args: ['echo', '{"foo":"bar"}'], prependLauncher: false, expected: 'echo "{\\"foo\\":\\"bar\\"}"'},
+    {args: ['echo', '{"foo":"bar"}'], prependLauncher: true, expected: 'launcher echo "{\\"foo\\":\\"bar\\"}"'},
   ].forEach(example => {
     test
-      .it(`parses \`${example.args.join(' ')}\` as ${example.expected}`, () => {
-        expect(buildCommand(example.args)).to.equal(example.expected)
+      .it(`parses \`${example.args.join(' ')}\` ${example.prependLauncher ? 'with' : 'without'} \`prependLauncher\` as \`${example.expected}\``, () => {
+        expect(buildCommand(example.args, example.prependLauncher)).to.equal(example.expected)
       })
   })
 })

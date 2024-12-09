@@ -51,14 +51,17 @@ create a new space
 
 ```
 USAGE
-  $ heroku spaces:create [SPACE] -t <value> [-s <value>] [--region <value>] [--cidr <value>] [--data-cidr <value>]
+  $ heroku spaces:create [SPACE] -t <value> [--cidr <value>] [--data-cidr <value>] [--generation cedar|fir]
+    [--region <value>] [-s <value>]
 
 FLAGS
-  -s, --space=<value>      name of space to create
-  -t, --team=<value>       (required) team to use
-      --cidr=<value>       RFC-1918 CIDR the space will use
-      --data-cidr=<value>  RFC-1918 CIDR used by Heroku Data resources for the space
-      --region=<value>     region name
+  -s, --space=<value>        name of space to create
+  -t, --team=<value>         (required) team to use
+      --cidr=<value>         RFC-1918 CIDR the space will use
+      --data-cidr=<value>    RFC-1918 CIDR used by Heroku Data resources for the space
+      --generation=<option>  [default: cedar] generation for space
+                             <options: cedar|fir>
+      --region=<value>       region name
 
 DESCRIPTION
   create a new space
@@ -75,6 +78,7 @@ EXAMPLES
   CIDR:       10.0.0.0/16
   Data CIDR:  172.23.0.0/20
   State:      allocating
+  Generation: cedar
   Created at: 2016-01-06T03:23:13Z
 ```
 

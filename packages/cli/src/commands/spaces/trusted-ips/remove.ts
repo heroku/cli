@@ -29,8 +29,7 @@ export default class Remove extends Command {
     const {flags, args} = await this.parse(Remove)
     const space = flags.space
     const url = `/spaces/${space}/inbound-ruleset`
-    const opts = {headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}}
-    const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url, opts)
+    const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url)
     if (rules.rules?.length === 0) {
       throw new Error('No IP ranges are configured. Nothing to do.')
     }
@@ -41,7 +40,7 @@ export default class Remove extends Command {
       throw new Error(`No IP range matching ${args.source} was found.`)
     }
 
-    await this.heroku.put(url, {...opts, body: rules})
+    await this.heroku.put(url, {body: rules})
     ux.log(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
     ux.warn('It may take a few moments for the changes to take effect.')
   }
