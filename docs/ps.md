@@ -46,7 +46,7 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
-_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/index.ts)_
+_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/index.ts)_
 
 ## `heroku ps:autoscale:disable`
 
@@ -64,7 +64,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -86,7 +86,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -247,7 +247,7 @@ EXAMPLES
   $ heroku ps:restart --app myapp
 ```
 
-_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/restart.ts)_
+_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/restart.ts)_
 
 ## `heroku ps:scale`
 
@@ -280,7 +280,7 @@ EXAMPLES
   web=3:Standard-2X worker=1:Standard-1X
 ```
 
-_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/scale.ts)_
+_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/scale.ts)_
 
 ## `heroku ps:socks`
 
@@ -336,7 +336,7 @@ EXAMPLES
   $ heroku ps:stop --app myapp --process-type run
 ```
 
-_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/stop.ts)_
+_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/stop.ts)_
 
 ## `heroku ps:type`
 
@@ -365,7 +365,7 @@ ALIASES
   $ heroku dyno:resize
 ```
 
-_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/type.ts)_
+_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/type.ts)_
 
 ## `heroku ps:wait`
 
@@ -386,4 +386,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v9.5.1/packages/cli/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/ps/wait.ts)_
