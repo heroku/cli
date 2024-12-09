@@ -1671,13 +1671,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps-exec@npm:2.6.0-beta.0":
-  version: 2.6.0-beta.0
-  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.0-beta.0"
+"@heroku-cli/plugin-ps-exec@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.0"
   dependencies:
     "@heroku-cli/heroku-exec-util": 0.9.0
     "@heroku/heroku-cli-util": ^8.0.13
-  checksum: 76eca0e67a313d651f098656f83adeb34b5754c6a9ea66fdae27abb038a3a256e6a3168864d7e181dc213fdeadeece4ed060b32833c2fb86f3280cf8e373c6fd
+  checksum: 94e33a23b16f62068830bf12d28c16b7132cef8e58d6f9d658aedb65142642f4cf4c5603fe97c51b0ab3b2aaaa9c397a955e5328dd9cd899190dd6e2cb5f5987
   languageName: node
   linkType: hard
 
@@ -10511,7 +10511,7 @@ __metadata:
     "@heroku-cli/color": 2.0.1
     "@heroku-cli/command": ^11.3.1
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-ps-exec": 2.6.0-beta.0
+    "@heroku-cli/plugin-ps-exec": 2.6.0
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
