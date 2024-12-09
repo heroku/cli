@@ -1,7 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {uniq} from 'lodash'
 import confirmCommand from '../../lib/confirmCommand'
 import * as git from '../../lib/ci/git'
 
@@ -31,20 +30,18 @@ export default class Destroy extends Command {
     ux.action.start(`Destroying ${color.app(app)} (including all add-ons)`)
     await this.heroku.delete(`/apps/${app}`)
 
+    /**
+     * It is possible to have as many git remotes as
+     * you want, and they can all point to the same url.
+     * The only requirement is that the "name" is unique.
+     */
     if (git.inGitRepo()) {
       // delete git remotes pointing to this app
-      await git.listRemotes()
-        .then(remotes => {
-          const transformed = remotes
-            .filter(r => git.gitUrl(app) === r[1] || git.sshGitUrl(app) === r[1])
-            .map(r => r[0])
-
-          const uniqueRemotes = uniq(transformed)
-
-          uniqueRemotes.forEach(element => {
-            git.rmRemote(element)
-          })
-        })
+      const remotes = await git.listRemotes()
+      await Promise.all([
+        remotes.get(git.gitUrl(app))?.map(({name}) => git.rmRemote(name)),
+        remotes.get(git.sshGitUrl(app))?.map(({name}) => git.rmRemote(name)),
+      ])
     }
 
     ux.action.stop()
