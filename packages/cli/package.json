@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "9.5.1",
+  "version": "9.6.0",
   "author": "Heroku",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
