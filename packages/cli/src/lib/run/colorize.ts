@@ -277,7 +277,8 @@ function colorizePG(body: string) {
 }
 
 export default function colorize(line: string) {
-  if (process.env.HEROKU_LOGS_COLOR === '0') return line
+  if (process.env.HEROKU_LOGS_COLOR === '0' || process.env.HEROKU_COLOR === '0')
+    return line
 
   const parsed = line.match(lineRegex)
   if (!parsed) return line

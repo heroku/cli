@@ -29,7 +29,7 @@ describe('releases:rollback', function () {
   it('rolls back to the latest release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded'}, {id: 'previous_release', version: 40, status: 'succeeded'}])
+      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded', eligible_for_rollback: true}, {id: 'previous_release', version: 40, status: 'succeeded', eligible_for_rollback: true}])
       .post('/apps/myapp/releases', {release: 'previous_release'})
       .reply(200, {})
 
@@ -44,7 +44,7 @@ describe('releases:rollback', function () {
   it('does not roll back to a failed release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded'}, {id: 'failed_release', version: 40, status: 'failed'}, {id: 'succeeded_release', version: 39, status: 'succeeded'}])
+      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded', eligible_for_rollback: true}, {id: 'failed_release', version: 40, status: 'failed', eligible_for_rollback: false}, {id: 'succeeded_release', version: 39, status: 'succeeded', eligible_for_rollback: true}])
       .post('/apps/myapp/releases', {release: 'succeeded_release'})
       .reply(200, {})
 
@@ -76,7 +76,7 @@ describe('releases:rollback', function () {
     api.done()
 
     const stderr_output = unwrap(stderr.output)
-    expect(stderr_output).to.contain('Rolling back myapp to v40... done, v40')
+    expect(stderr_output).to.contain('Rolling back ⬢ myapp to v40... done, v40')
     expect(stderr_output).to.contain("Rollback affects code and config vars; it doesn't add or remove addons.")
     expect(stderr_output).to.contain('To undo, run: heroku rollback v39')
     expect(stdout.output).to.equal('Running release command...\nRelease Output Content')

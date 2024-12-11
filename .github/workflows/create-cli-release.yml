@@ -17,13 +17,6 @@ on:
         default: false
 
 jobs:
-  check-for-moratorium:
-    if: fromJSON(inputs.isStableCandidate)
-    run: ./scripts/release/tps_check_lock cli ${{ github.sha }}
-    environment: ChangeManagement
-    env:
-      TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
-
   get-version-channel:
     runs-on: ubuntu-latest
     outputs:
@@ -32,7 +25,7 @@ jobs:
       # final check to ensure package.json doesn't have a dist tag, ex: '-beta'
       isStableRelease: ${{ fromJSON(inputs.isStableCandidate) && !steps.getVersion.outputs.channel }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: getVersion
         uses: ./.github/actions/get-version-and-channel/
         with:
@@ -49,7 +42,7 @@ jobs:
     secrets: inherit
 
   pack-upload:
-    needs: [ publish-npm ]
+    needs: [publish-npm]
     uses: ./.github/workflows/pack-upload.yml
     secrets: inherit
 
@@ -64,8 +57,8 @@ jobs:
     secrets: inherit
 
   publish-docs:
-    needs: [ get-version-channel, promote ]
+    needs: [get-version-channel, promote]
     uses: ./.github/workflows/devcenter-doc-update.yml
     with:
-      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      isStableRelease: ${{ fromJSON(inputs.isStableCandidate) }}
     secrets: inherit

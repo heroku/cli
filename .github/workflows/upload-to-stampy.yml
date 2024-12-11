@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Stampy
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: download Windows installers from s3
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}

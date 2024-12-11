@@ -312,13 +312,27 @@ export default class Dyno extends Duplex {
         sshProc.stdout.on('data', this._readData())
       }
 
-      // @ts-ignore
-      sshProc.stderr.on('data', data => {
-        lastErr = data
+      sshProc.stderr?.on('data', data => {
+        lastErr = data.toString()
 
         // suppress host key and permission denied messages
-        if (this._isDebug() || (data.includes("Warning: Permanently added '[127.0.0.1]") && data.includes('Permission denied (publickey).'))) {
+        const messages = [
+          "Warning: Permanently added '[127.0.0.1]"
+        ]
+
+        const killMessages = [
+          'too many authentication failures',
+          'No more authentication methods to try',
+          'Permission denied (publickey).',
+        ]
+        if (this._isDebug() || [...killMessages, ...messages].some(message => data.includes(message))) {
           process.stderr.write(data)
+        }
+
+        if (killMessages.some(message => data.includes(message))) {
+          sshProc.kill()
+          localServer.close()
+          this.reject?.(lastErr)
         }
       })
       sshProc.on('close', () => {

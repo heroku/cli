@@ -1,15 +1,21 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
 import {ago} from '../../lib/time'
 import {APIClient} from '@heroku-cli/command'
 import {AccountQuota} from '../../lib/types/account_quota'
+import {AppProcessTier} from '../../lib/types/app_process_tier'
 import {DynoExtended} from '../../lib/types/dyno_extended'
 import heredoc from 'tsheredoc'
+import {Account} from '../../lib/types/fir'
 
 function getProcessNumber(s: string) : number {
-  return Number.parseInt(s.split('.', 2)[1], 10)
+  const [processType, dynoNumber] = (s.match(/^([^.]+)\.(.*)$/) || []).slice(1, 3)
+
+  if (!processType || !dynoNumber?.match(/^\d+$/))
+    return 0
+
+  return Number.parseInt(dynoNumber, 10)
 }
 
 function uniqueValues(value: string, index: number, self: string[]) : boolean {
@@ -51,7 +57,7 @@ function truncate(s: string) {
 function printExtended(dynos: DynoExtended[]) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
-  ux.table(
+  ux.table<DynoExtended>(
     sortedDynos,
     {
       ID: {get: (dyno: DynoExtended) => dyno.id},
@@ -75,7 +81,7 @@ function printExtended(dynos: DynoExtended[]) {
   )
 }
 
-async function printAccountQuota(heroku: APIClient, app: Required<Heroku.App>, account: Required<Heroku.Account>) {
+async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account: Account) {
   if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
     return
   }
@@ -188,18 +194,24 @@ export default class Index extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
     json: flags.boolean({description: 'display as json'}),
-    extended: flags.boolean({char: 'x', hidden: true}), // should be removed? Platform API doesn't serialize extended attributes even if the query param `extended=true` is sent.
+    extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
   }
 
   public async run(): Promise<void> {
     const {flags, ...restParse} = await this.parse(Index)
     const {app, json, extended} = flags
     const types = restParse.argv as string[]
-    const suffix = extended ? '?extended=true' : '' // read previous comment, including this on the request doesn't make any difference.
+    const suffix = extended ? '?extended=true' : ''
     const promises = {
-      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`),
-      appInfo: this.heroku.request<Required<Heroku.App>>(`/apps/${app}`, {headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}}),
-      accountInfo: this.heroku.request<Required<Heroku.Account>>('/account'),
+      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
+      appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
+      accountInfo: this.heroku.request<Account>('/account', {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
     }
     const [{body: dynos}, {body: appInfo}, {body: accountInfo}] = await Promise.all([promises.dynos, promises.appInfo, promises.accountInfo])
     const shielded = appInfo.space && appInfo.space.shield

@@ -3,9 +3,9 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import {getTeam} from '../api'
+import {AppWithPipelineCoupling, getTeam} from '../api'
 
-export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: Heroku.Pipeline, owner: string) {
+export function warnMixedOwnership(pipelineApps: Array<AppWithPipelineCoupling>, pipeline: Heroku.Pipeline, owner: string) {
   const hasMixedOwnership = pipelineApps.some(app => {
     return (app.owner && app.owner.id) !== pipeline.owner.id
   })
@@ -20,7 +20,7 @@ export function warnMixedOwnership(pipelineApps: Array<Heroku.App>, pipeline: He
   }
 }
 
-export function getOwner(heroku: APIClient, apps: Array<Heroku.App>, pipeline: Heroku.Pipeline) {
+export function getOwner(heroku: APIClient, apps: Array<AppWithPipelineCoupling>, pipeline: Heroku.Pipeline) {
   let owner
   let ownerPromise
 
