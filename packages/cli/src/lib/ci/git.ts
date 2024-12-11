@@ -127,11 +127,7 @@ function inGitRepo() {
 }
 
 async function rmRemote(remote: string) {
-  try {
-    await runGit('remote', 'rm', remote)
-  } catch (error) {
-    debugger
-  }
+  await runGit('remote', 'rm', remote)
 }
 
 async function hasGitRemote(remote: string) {
