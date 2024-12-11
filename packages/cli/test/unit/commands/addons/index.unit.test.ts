@@ -9,9 +9,14 @@ import * as Heroku from '@heroku-cli/schema'
 
 describe('addons', function () {
   describe('--all', function () {
-    const addons = [
-      fixtures.addons['www-db'], fixtures.addons['www-redis'], fixtures.addons['api-redis'],
-    ]
+    let addons: Heroku.AddOn[]
+
+    beforeEach(function () {
+      addons = [
+        fixtures.addons['www-db'], fixtures.addons['www-redis'], fixtures.addons['api-redis'],
+      ]
+    })
+
     context('with add-ons', function () {
       beforeEach(function () {
         nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})

@@ -15,6 +15,7 @@ describe('spaces', function () {
     region: {name: 'my-region'},
     state: 'allocated',
     created_at: now.toISOString(),
+    generation: 'cedar',
   }]
 
   afterEach(function () {
@@ -30,9 +31,9 @@ describe('spaces', function () {
 
     api.done()
     expect(heredoc(stdout.output)).to.eq(heredoc`
-      Name     Team    Region    State     Created At               
-      ──────── ─────── ───────── ───────── ──────────────────────── 
-      my-space my-team my-region allocated ${now.toISOString()} 
+      Name     Team    Region    State     Generation Created At               
+      ──────── ─────── ───────── ───────── ────────── ──────────────────────── 
+      my-space my-team my-region allocated cedar      ${now.toISOString()} 
     `)
   })
 
@@ -55,15 +56,17 @@ describe('spaces', function () {
         team: {name: 'other-team'},
         region: {name: 'my-region'},
         state: 'allocated',
-        created_at: now.toISOString()}]))
+        created_at: now.toISOString(),
+        generation: 'cedar',
+      }]))
 
     await runCommand(Cmd, ['--team', 'my-team'])
 
     api.done()
     expect(heredoc(stdout.output)).to.eq(heredoc`
-      Name     Team    Region    State     Created At               
-      ──────── ─────── ───────── ───────── ──────────────────────── 
-      my-space my-team my-region allocated ${now.toISOString()} 
+      Name     Team    Region    State     Generation Created At               
+      ──────── ─────── ───────── ───────── ────────── ──────────────────────── 
+      my-space my-team my-region allocated cedar      ${now.toISOString()} 
     `)
   })
 

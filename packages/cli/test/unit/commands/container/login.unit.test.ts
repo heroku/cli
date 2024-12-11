@@ -30,7 +30,7 @@ describe('container:login', function () {
   })
 
   it('logs to the docker registry with an old version', async function () {
-    const version = sandbox.stub(DockerHelper, 'version').returns(new Promise(function (resolve, _) {
+    const version = sandbox.stub(DockerHelper, 'version').returns(new Promise(function (resolve) {
       resolve([17, 0])
     }))
 

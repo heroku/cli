@@ -37,7 +37,7 @@ export default class Add extends Command {
     if (flags.index === undefined) {
       spliceIndex = buildpacks.length
     } else {
-      // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
+      // eslint-disable-next-line unicorn/no-array-method-this-argument
       const foundIndex = buildpackCommand.findIndex(buildpacks, flags.index)
       spliceIndex = (foundIndex === -1) ? buildpacks.length : foundIndex
     }

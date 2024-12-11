@@ -58,16 +58,10 @@ jobs:
   change-management:
     needs: [ promote ]
     if: fromJSON(inputs.isStableRelease)
-    # Failure to record the release should not fail the workflow
-    continue-on-error: true
-    steps:
-      # Checkout required to get github.sha
-      - uses: actions/checkout@v3
-      - run: ./scripts/postrelease/tps_record_release cli ${{ github.sha }}
-    environment: ChangeManagement
-    env:
-      ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
-      TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
+    uses: ./.github/workflows/tps-record-release.yml
+    secrets: inherit
+    with:
+      isStableCandidate: ${{ fromJSON(inputs.isStableRelease) }}
 
   create-fig-autocomplete-pr:
     if: fromJSON(inputs.isStableRelease)

@@ -210,7 +210,6 @@ describe('container push', function () {
         resource: 'registry.heroku.com/testapp/web',
         buildArgs: [],
       })
-
       const push = sandbox.stub(DockerHelper, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')

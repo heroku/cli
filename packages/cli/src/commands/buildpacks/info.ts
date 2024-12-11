@@ -19,7 +19,7 @@ export default class Info extends Command {
     const registry = new BuildpackRegistry()
 
     Result.match({
-      Ok: _ => {},
+      Ok: () => {},
       Err: err => {
         this.error(`Could not publish the buildpack.\n${err}`)
       },

@@ -87,8 +87,10 @@ export default class Index extends Command {
     const url = `/apps/${app}/releases${extended ? '?extended=true' : ''}`
 
     const {body: releases} = await this.heroku.request<Heroku.Release[]>(url, {
-      partial: true, headers: {
+      partial: true,
+      headers: {
         Range: `version ..; max=${num || 15}, order=desc`,
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
 
@@ -136,7 +138,7 @@ export default class Index extends Command {
       let header = `${app} Releases`
       const currentRelease = releases.find(r => r.current === true)
       if (currentRelease) {
-        header += ' - ' + color.blue(`Current: v${currentRelease.version}`)
+        header += ' - ' + color.cyan(`Current: v${currentRelease.version}`)
       }
 
       ux.styledHeader(header)

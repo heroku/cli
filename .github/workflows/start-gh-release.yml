@@ -15,15 +15,20 @@ jobs:
     outputs:
       sourceName: ${{ steps.sourceName.outputs.sourceName }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Remove 'refs/heads/' from GITHUB_HEAD_REF
         shell: bash
         id: sourceName
         run: echo "sourceName=${GITHUB_HEAD_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-  start-release:
-    needs: [ get-source-branch-name ]
+  validate-release:
+    needs: [get-source-branch-name]
     if: startsWith(needs.get-source-branch-name.outputs.sourceName, 'release-')
+    uses: ./.github/workflows/tps-check-lock.yml
+    secrets: inherit
+
+  start-release:
+    needs: [validate-release]
     uses: ./.github/workflows/tag-create-github-release.yml
     secrets: inherit
 
