@@ -17,6 +17,8 @@ function runGit(...args: string[]): Promise <string> {
   return new Promise((resolve, reject) => {
     git.on('exit', (exitCode: number) => {
       if (exitCode === 0) {
+        // not all git commands write data to stdout
+        resolve(exitCode.toString(10))
         return
       }
 
@@ -92,8 +94,27 @@ function gitUrl(app?: string) {
   return `https://${vars.httpGitHost}/${app}.git`
 }
 
-async function listRemotes() {
-  return runGit('remote', '-v').then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)))
+/**
+ * Lists remotes by their url and returns an
+ * array of objects containing the name and kind
+ *
+ * @return A map of remotes whose key is the url
+ * and value is an array of objects containing
+ * the 'name' (heroku, heroku-dev, etc.) and 'kind' (fetch, push, etc.)
+ */
+async function listRemotes(): Promise<Map<string, {name: string, kind: string}[]>> {
+  const gitRemotes = await runGit('remote', '-v')
+  const lines = gitRemotes.trim().split('\n')
+  const remotes = lines.map(line => line.trim().split(/\s+/)).map(([name, url, kind]) => ({name, url, kind}))
+  const remotesByUrl = new Map<string, {name: string, kind: string}[]>()
+
+  remotes.forEach(remote => {
+    const {url, ...nameAndKind} = remote
+    const entry = remotesByUrl.get(url) ?? []
+    entry.push(nameAndKind)
+    remotesByUrl.set(url, entry)
+  })
+  return remotesByUrl
 }
 
 function inGitRepo() {
@@ -105,25 +126,22 @@ function inGitRepo() {
   }
 }
 
-function rmRemote(remote: string) {
-  return runGit('remote', 'rm', remote)
+async function rmRemote(remote: string) {
+  await runGit('remote', 'rm', remote)
 }
 
-function hasGitRemote(remote: string) {
-  return runGit('remote')
-    .then(remotes => remotes.split('\n'))
-    .then(remotes => remotes.find(r => r === remote))
+async function hasGitRemote(remote: string) {
+  const remotes = await runGit('remote')
+  return remotes.split('\n').find(r => r === remote)
 }
 
-function createRemote(remote: string, url: string) {
-  return hasGitRemote(remote)
-    .then(exists => {
-      if (!exists) {
-        return runGit('remote', 'add', remote, url)
-      }
+async function createRemote(remote: string, url: string) {
+  const exists = await hasGitRemote(remote)
+  if (!exists) {
+    return runGit('remote', 'add', remote, url)
+  }
 
-      return null
-    })
+  return null
 }
 
 export {
