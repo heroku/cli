@@ -1,8 +1,9 @@
+import {HTTP, HTTPError} from 'http-call'
+
 async function call(url: string, out: NodeJS.WriteStream, retries: number) {
-  const http = require('http-call').HTTP
   const maxRetries = 30
   try {
-    const {response} = await http.stream(url)
+    const {response} = await HTTP.stream(url)
     response.on('data', function (d: string) {
       out.write(d)
     })
@@ -11,7 +12,7 @@ async function call(url: string, out: NodeJS.WriteStream, retries: number) {
       response.on('end', resolve)
     })
   } catch (error: any) {
-    if (error.statusCode === 404 && retries <= maxRetries) {
+    if (error instanceof HTTPError && error.statusCode === 404 && retries <= maxRetries) {
       return new Promise(function (resolve, reject) {
         setTimeout(function () {
           call(url, out, retries + 1).then(resolve, reject)
