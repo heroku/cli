@@ -93,9 +93,9 @@ jobs:
       - name: List all the downloaded files (for debugging)
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+#      - run: |
+#          sudo apt-get update
+#          sudo apt-get install -y awscli
       - name: yarn install
         run: yarn --immutable --network-timeout 1000000
       - name: Upload production artifacts
