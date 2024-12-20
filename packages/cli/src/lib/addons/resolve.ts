@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import {HTTP, HTTPError} from 'http-call'
+import {HTTP, HTTPError} from '@heroku/http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from '../pg/types'

@@ -4,7 +4,7 @@ import {Args, ux} from '@oclif/core'
 import {formatPriceText} from '../../lib/addons/util'
 import {addonResolver} from '../../lib/addons/resolve'
 import type {AddOn, Plan} from '@heroku-cli/schema'
-import {HTTP} from 'http-call'
+import {HTTP} from '@heroku/http-call'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
 
