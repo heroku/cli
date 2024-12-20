@@ -20,4 +20,4 @@ DESCRIPTION
   display current status of the Heroku platform
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v10.0.0/packages/cli/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v10.0.1-beta.0/packages/cli/src/commands/status.ts)_
