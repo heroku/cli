@@ -6,6 +6,7 @@ import HTTP from '@heroku/http-call'
 import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import type {OciImage, Slug, Pipeline, PipelineCoupling} from '../../lib/types/fir'
+import type {Commit, GitHubDiff} from '../../lib/types/github'
 
 interface AppInfo {
   name: string;

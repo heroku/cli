@@ -1,4 +1,4 @@
-interface GitHubUser {
+export interface GitHubUser {
   login: string;
   id: number;
   node_id: string;
@@ -20,13 +20,13 @@ interface GitHubUser {
   site_admin: boolean;
 }
 
-interface CommitPerson {
+export interface CommitPerson {
   name: string;
   email: string;
   date: string;
 }
 
-interface Verification {
+export interface Verification {
   verified: boolean;
   reason: string;
   signature: string;
@@ -34,7 +34,7 @@ interface Verification {
   verified_at: string;
 }
 
-interface CommitDetails {
+export interface CommitDetails {
   author: CommitPerson;
   committer: CommitPerson;
   message: string;
@@ -47,13 +47,13 @@ interface CommitDetails {
   verification: Verification;
 }
 
-interface CommitParent {
+export interface CommitParent {
   sha: string;
   url: string;
   html_url: string;
 }
 
-interface CommitFile {
+export interface CommitFile {
   sha: string;
   filename: string;
   status: string;
@@ -66,7 +66,7 @@ interface CommitFile {
   patch: string;
 }
 
-interface Commit {
+export interface Commit {
   sha: string;
   node_id: string;
   commit: CommitDetails;
@@ -78,7 +78,7 @@ interface Commit {
   parents: CommitParent[];
 }
 
-interface GitHubDiff {
+export interface GitHubDiff {
   url: string;
   html_url: string;
   permalink_url: string;

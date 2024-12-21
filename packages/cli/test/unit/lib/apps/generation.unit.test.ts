@@ -40,7 +40,7 @@ describe('app generation guard helper functions', function () {
       it('makes a request for app info and returns true', async function () {
         api
           .get('/apps/my-app')
-          .reply(200, {generation: 'cedar'})
+          .reply(200, {generation: {name: 'cedar'}})
 
         expect(await isCedarApp('my-app', heroku)).to.be.true
       })
@@ -50,7 +50,7 @@ describe('app generation guard helper functions', function () {
       it('makes a request for app info and returns false', async function () {
         api
           .get('/apps/my-app')
-          .reply(200, {generation: 'fir'})
+          .reply(200, {generation: {name: 'fir'}})
 
         expect(await isCedarApp('my-app', heroku)).to.be.false
       })
@@ -107,7 +107,7 @@ describe('app generation guard helper functions', function () {
       it('makes a request for app info and returns true', async function () {
         api
           .get('/apps/my-app')
-          .reply(200, {generation: 'fir'})
+          .reply(200, {generation: {name: 'fir'}})
 
         expect(await isFirApp('my-app', heroku)).to.be.true
       })
