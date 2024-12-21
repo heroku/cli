@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {App, PipelineCoupling, Release} from './types/fir'
+import {App, Pipeline, PipelineCoupling, Release} from './types/fir'
 
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const SDK_HEADER = 'application/vnd.heroku+json; version=3.sdk'
@@ -66,7 +66,7 @@ export function getCoupling(heroku: APIClient, app: string) {
 }
 
 export function getPipeline(heroku: APIClient, id: string) {
-  return heroku.request<Heroku.Pipeline>(`/pipelines/${id}`, {
+  return heroku.request<Pipeline>(`/pipelines/${id}`, {
     method: 'GET',
     headers: {Accept: PIPELINES_HEADER},
   })
@@ -138,7 +138,7 @@ export function updateCoupling(heroku: APIClient, app: string, stage: string) {
 }
 
 export function getReleases(heroku: APIClient, appId: string) {
-  return heroku.get<Array<Release>>(`/apps/${appId}/releases`, {
+  return heroku.get<Array<Heroku.Release>>(`/apps/${appId}/releases`, {
     headers: {Accept: SDK_HEADER, Range: 'version ..; order=desc'},
     partial: true,
   })

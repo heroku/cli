@@ -5,8 +5,9 @@ import {ux} from '@oclif/core'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 import push from '../git/push'
-import {OciImage, Release} from '../../lib/types/fir'
+import {OciImage} from '../../lib/types/fir'
 import {isURL} from 'validator'
+import * as Heroku from '@heroku-cli/schema'
 
 export type BuildpackResponse = {
   buildpack: {
@@ -29,7 +30,7 @@ export class BuildpackCommand {
   async fetch(app: string, isFirApp = false): Promise<any[]> {
     let buildpacks: any
     if (isFirApp) {
-      const {body: releases} = await this.heroku.request<Release[]>(`/apps/${app}/releases`, {
+      const {body: releases} = await this.heroku.request<Heroku.Release[]>(`/apps/${app}/releases`, {
         partial: true,
         headers: {
           Range: 'version ..; max=10, order=desc',

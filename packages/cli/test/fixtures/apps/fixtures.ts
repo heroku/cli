@@ -26,12 +26,7 @@ export const cedarApp: Partial<App> = {
   internal_routing: null,
   updated_at: '2024-10-17T16:20:42Z',
   web_url: 'https://my-cedar-app-a6b0f2f1519f.herokuapp.com/',
-  generation: 'cedar',
-  base_image_name: null,
-  buildpacks: null,
-  current_build_architecture: [
-    'amd64',
-  ],
+  generation: {name: 'cedar'},
 }
 
 export const firApp: Partial<App> = {
@@ -60,21 +55,5 @@ export const firApp: Partial<App> = {
   internal_routing: null,
   updated_at: '2024-10-17T16:20:42Z',
   web_url: 'https://my-fir-app-c07499750516.herokuapp.com/',
-  generation: 'fir',
-  base_image_name: 'docker.io/heroku/heroku:24',
-  buildpacks: [
-    {
-      id: 'heroku/ruby',
-      version: '3.0.0',
-      homepage: 'https://github.com/heroku/buildpacks-ruby',
-    },
-    {
-      id: 'heroku/procfile',
-      version: '3.1.2',
-      homepage: 'https://github.com/heroku/buildpacks-procfile',
-    },
-  ],
-  current_build_architecture: [
-    'arm64',
-  ],
+  generation: {name: 'fir'},
 }

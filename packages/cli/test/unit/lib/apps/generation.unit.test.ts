@@ -60,13 +60,13 @@ describe('app generation guard helper functions', function () {
   describe('isCedarApp with an App object parameter', function () {
     context('when object is a Cedar app', function () {
       it('returns true', async function () {
-        expect(await isCedarApp({generation: 'cedar'} as App, heroku)).to.be.true
+        expect(await isCedarApp({generation: {name: 'cedar'}} as App, heroku)).to.be.true
       })
     })
 
     context('when object is a Fir app', function () {
       it('returns false', async function () {
-        expect(await isCedarApp({generation: 'fir'} as App, heroku)).to.be.false
+        expect(await isCedarApp({generation: {name: 'fir'}} as App, heroku)).to.be.false
       })
     })
   })
@@ -117,13 +117,13 @@ describe('app generation guard helper functions', function () {
   describe('isFirApp with an App object parameter', function () {
     context('when object is a Cedar app', function () {
       it('returns false', async function () {
-        expect(await isFirApp({generation: 'cedar'} as App, heroku)).to.be.false
+        expect(await isFirApp({generation: {name: 'cedar'}} as App, heroku)).to.be.false
       })
     })
 
     context('when object is a Fir app', function () {
       it('returns true', async function () {
-        expect(await isFirApp({generation: 'fir'} as App, heroku)).to.be.true
+        expect(await isFirApp({generation: {name: 'fir'}} as App, heroku)).to.be.true
       })
     })
   })

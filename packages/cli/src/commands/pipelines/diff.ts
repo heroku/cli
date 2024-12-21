@@ -3,9 +3,9 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import HTTP from '@heroku/http-call'
 
-import {getCoupling, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
+import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import {OciImage, Slug} from '../../lib/types/fir'
+import type {OciImage, Slug, Pipeline, PipelineCoupling} from '../../lib/types/fir'
 
 interface AppInfo {
   name: string;
@@ -35,19 +35,26 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
   // Do the actual GitHub diff
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
-    const headers: { authorization: string; 'user-agent'?: string} = {authorization: 'token ' + githubToken}
-
-    if (herokuUserAgent) {
-      headers['user-agent'] = herokuUserAgent
+    const headers = {
+      authorization: 'token ' + githubToken,
+      'Content-Type': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
     }
 
-    const githubDiff: any = await HTTP.get(`https://api.github.com/repos/${path}`, {
-      headers,
-    }).then(res => res.body)
+    if (herokuUserAgent) {
+      Reflect.set(headers, 'user-agent', herokuUserAgent)
+    }
+
+    let githubDiff: GitHubDiff
+    try {
+      ({body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers}))
+    } catch {
+      throw new Error(`unable to perform diff for ${targetApp.name} and ${downstreamApp.name}. Are you sure you have pushed your latest commits to GitHub?`)
+    }
 
     ux.log('')
     ux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
-    const mapped = githubDiff.commits.map((commit: any) => {
+    const mapped = githubDiff.commits.map((commit: Commit) => {
       return {
         sha: commit.sha.slice(0, 7),
         date: commit.commit.author.date,
@@ -64,7 +71,6 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       message: {},
     })
     ux.log(`\nhttps://github.com/${path}`)
-  // tslint:disable-next-line: no-unused
   } catch {
     ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
     ux.log('are you sure you have pushed your latest commits to GitHub?')
@@ -126,20 +132,27 @@ export default class PipelinesDiff extends Command {
     const {flags} = await this.parse(PipelinesDiff)
     const targetAppName = flags.app
 
-    const coupling = await getCoupling(this.heroku, targetAppName)
-      .then(res => res.body)
-      .catch(() => {})
-
-    if (!coupling) {
+    let coupling: PipelineCoupling | undefined
+    try {
+      ({body: coupling} = await getCoupling(this.heroku, targetAppName))
+    } catch {
       ux.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
       return
     }
 
-    const targetAppId = coupling.app.id!
-    const generation = coupling.generation
+    let pipeline: Pipeline
+    try {
+      ({body: pipeline} = await getPipeline(this.heroku, coupling.pipeline!.id!))
+    } catch {
+      ux.error(`Unable to fetch pipeline ${coupling.pipeline!.name}`)
+      return
+    }
+
+    const targetAppId = coupling!.app!.id!
+    const generation = pipeline!.generation!.name!
 
     ux.action.start('Fetching apps from pipeline')
-    const allApps = await listPipelineApps(this.heroku, coupling.pipeline.id!)
+    const allApps = await listPipelineApps(this.heroku, coupling!.pipeline!.id!)
     ux.action.stop()
 
     const sourceStage = coupling.stage
