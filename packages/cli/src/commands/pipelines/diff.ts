@@ -5,7 +5,7 @@ import HTTP from '@heroku/http-call'
 
 import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import type {OciImage, Slug, Pipeline, PipelineCoupling} from '../../lib/types/fir'
+import type {OciImage, Slug, PipelineCoupling} from '../../lib/types/fir'
 import type {Commit, GitHubDiff} from '../../lib/types/github'
 
 interface AppInfo {
@@ -46,12 +46,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       Reflect.set(headers, 'user-agent', herokuUserAgent)
     }
 
-    let githubDiff: GitHubDiff
-    try {
-      ({body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers}))
-    } catch {
-      throw new Error(`unable to perform diff for ${targetApp.name} and ${downstreamApp.name}. Are you sure you have pushed your latest commits to GitHub?`)
-    }
+    const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
 
     ux.log('')
     ux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
@@ -141,13 +136,7 @@ export default class PipelinesDiff extends Command {
       return
     }
 
-    let pipeline: Pipeline
-    try {
-      ({body: pipeline} = await getPipeline(this.heroku, coupling.pipeline!.id!))
-    } catch {
-      ux.error(`Unable to fetch pipeline ${coupling.pipeline!.name}`)
-      return
-    }
+    const {body: pipeline} = await getPipeline(this.heroku, coupling.pipeline!.id!)
 
     const targetAppId = coupling!.app!.id!
     const generation = pipeline!.generation!.name!
