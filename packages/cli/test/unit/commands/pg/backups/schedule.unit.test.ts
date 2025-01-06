@@ -6,7 +6,6 @@ import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 import {CLIError} from '@oclif/core/lib/errors'
-import {HTTPError} from 'http-call'
 
 describe('pg:backups:schedule', function () {
   let api: nock.Scope
