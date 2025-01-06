@@ -1,5 +1,5 @@
 import type {APIClient} from '@heroku-cli/command'
-import type {HTTP} from 'http-call'
+import type {HTTP} from '@heroku/http-call'
 
 const responseByAppId: Map<string, Promise<HTTP<Record<string, string>>>> = new Map()
 

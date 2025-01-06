@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {HTTP} from 'http-call'
+import {HTTP} from '@heroku/http-call'
 import {sum} from 'lodash'
 import errorInfo from '../../lib/apps/error_info'
 import * as Heroku from '@heroku-cli/schema'

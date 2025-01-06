@@ -1,4 +1,4 @@
-import HTTP from 'http-call'
+import HTTP from '@heroku/http-call'
 const GITHUB_API = 'https://api.github.com'
 
 export default class GitHubAPI {

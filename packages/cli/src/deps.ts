@@ -1,4 +1,4 @@
-import {HTTP} from 'http-call'
+import {HTTP} from '@heroku/http-call'
 import UserConfig from './user-config'
 import FS = require('fs-extra')
 
@@ -18,7 +18,7 @@ export default {
     return fetch('fs-extra')
   },
   get HTTP(): typeof HTTP {
-    return fetch('http-call').HTTP
+    return fetch('@heroku/http-call').HTTP
   },
   get file(): typeof file {
     return fetch('./file')

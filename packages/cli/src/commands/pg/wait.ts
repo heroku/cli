@@ -6,7 +6,7 @@ import {all, getAddon} from '../../lib/pg/fetcher'
 import pgHost from '../../lib/pg/host'
 import notify from '../../lib/notify'
 import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgStatus} from '../../lib/pg/types'
-import {HTTPError} from 'http-call'
+import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../nls'
 
 const wait = (ms: number) => new Promise(resolve => {

@@ -1,4 +1,4 @@
-import {HTTP} from 'http-call'
+import {HTTP} from '@heroku/http-call'
 
 const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com'
 

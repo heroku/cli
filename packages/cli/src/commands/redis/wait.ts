@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api'
-import {HTTPError} from 'http-call'
+import {HTTPError} from '@heroku/http-call'
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
