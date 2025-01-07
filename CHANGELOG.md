@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.1.0](https://github.com/heroku/cli/compare/v10.0.0...v10.1.0) (2025-01-07)
+
+
+### Bug Fixes
+
+* apps:rename and apps:destroy incorrectly handles git remotes ([#3110](https://github.com/heroku/cli/issues/3110)) ([9290130](https://github.com/heroku/cli/commit/9290130143207c8ab7e14f5d96e05506f88d45fc))
+
+
+### Features
+
+* update versions of http-call, heroku-cli/command, and ps-exec ([#3161](https://github.com/heroku/cli/issues/3161)) ([29b9580](https://github.com/heroku/cli/commit/29b9580fba59956e4818abe30cbc28516def0c8a))
+
+
+
+
+
 # [10.0.0](https://github.com/heroku/cli/compare/v9.5.1...v10.0.0) (2024-12-09)
 
 
@@ -58,6 +74,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * only print slug size for apps:info for non-fir apps ([#3129](https://github.com/heroku/cli/issues/3129)) ([91b48f2](https://github.com/heroku/cli/commit/91b48f2f5e01fa3cc58ac2c58ec0adae7ac1b480))
 * run:inside hangs (doesn't error) when no/invalid SSH key ([#3130](https://github.com/heroku/cli/issues/3130)) ([b44fcf8](https://github.com/heroku/cli/commit/b44fcf813ccd0f32d75bdaf9648670b1bb89c512))
 * show only generation name in spaces:info output ([#3128](https://github.com/heroku/cli/issues/3128)) ([48c5b8e](https://github.com/heroku/cli/commit/48c5b8ee7d9264109128ddbb08efac9164c08db9))
+
+
 
 
 ## [9.5.1](https://github.com/heroku/cli/compare/v9.5.0...v9.5.1) (2024-12-05)
