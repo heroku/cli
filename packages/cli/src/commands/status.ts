@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
 import {capitalize} from '@oclif/core/lib/util'
 import {formatDistanceToNow} from 'date-fns'
-import HTTP from 'http-call'
+import HTTP from '@heroku/http-call'
 
 import {maxBy} from '../lib/status/util'
 

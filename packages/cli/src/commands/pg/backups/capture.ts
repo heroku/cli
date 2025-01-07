@@ -6,7 +6,7 @@ import {BackupTransfer, PgDatabase} from '../../../lib/pg/types'
 import {getAddon} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
 import heredoc from 'tsheredoc'
-import {HTTPError} from 'http-call'
+import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls'
 
 export default class Capture extends Command {

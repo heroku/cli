@@ -4,7 +4,7 @@ import {Args, ux} from '@oclif/core'
 import pgHost from '../../../lib/pg/host'
 import {getAttachment} from '../../../lib/pg/fetcher'
 import {PgDatabase} from '../../../lib/pg/types'
-import {HTTPError} from 'http-call'
+import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls'
 
 type Timezone = {

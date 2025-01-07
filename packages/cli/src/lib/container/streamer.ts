@@ -1,5 +1,5 @@
 async function call(url: string, out: NodeJS.WriteStream, retries: number) {
-  const http = require('http-call').HTTP
+  const http = require('@heroku/http-call').HTTP
   const maxRetries = 30
   try {
     const {response} = await http.stream(url)

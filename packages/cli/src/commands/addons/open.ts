@@ -5,7 +5,7 @@ import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve'
 import * as fs from 'node:fs/promises'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import {HTTP, HTTPError} from 'http-call'
+import {HTTP, HTTPError} from '@heroku/http-call'
 import {AddOnAttachment} from '@heroku-cli/schema'
 import * as open from 'open'
 

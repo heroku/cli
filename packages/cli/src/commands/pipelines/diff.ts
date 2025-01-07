@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import HTTP from 'http-call'
+import HTTP from '@heroku/http-call'
 
 import {getCoupling, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'

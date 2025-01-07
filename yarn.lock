@@ -1607,23 +1607,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^11.3.1":
-  version: 11.3.1
-  resolution: "@heroku-cli/command@npm:11.3.1"
+"@heroku-cli/command@npm:^11.4.0":
+  version: 11.4.0
+  resolution: "@heroku-cli/command@npm:11.4.0"
   dependencies:
     "@heroku-cli/color": ^2.0.1
+    "@heroku/http-call": ^5.4.0
     "@oclif/core": ^2.16.0
     cli-ux: ^6.0.9
-    debug: ^4.3.4
+    debug: ^4.4.0
     fs-extra: ^9.1.0
     heroku-client: ^3.1.0
-    http-call: ^5.3.0
     netrc-parser: ^3.1.6
     open: ^8.4.2
     uuid: ^8.3.0
     yargs-parser: ^18.1.3
     yargs-unparser: ^2.0.0
-  checksum: 8dad0aec09ce7ebcee688ca52b4f6085b5272dd87d32ee7b4e7cc9d633deb42031ad73674de027671da698cc8851e8ba7d93f4f6dac334488291ccd87dbd07d3
+  checksum: fb4ddfdbc43d4e9ccdb5ce697c52cb2984f83705a7e24ab38d50264fb5d0b923f2b6c71863b15e49086a1df50c15fc91aeebe1a49a096b540404aedcdaf7d9d3
   languageName: node
   linkType: hard
 
@@ -1645,9 +1645,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/heroku-exec-util@npm:0.9.0":
-  version: 0.9.0
-  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.0"
+"@heroku-cli/heroku-exec-util@npm:0.9.1":
+  version: 0.9.1
+  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.1"
   dependencies:
     "@heroku/heroku-cli-util": ^8.0.13
     "@heroku/socksv5": ^0.0.9
@@ -1658,7 +1658,7 @@ __metadata:
     smooth-progress: 1.1.0
     ssh2: 1.4.0
     temp: 0.9.1
-  checksum: f0411e5a41e2a1774abb0c47f9356fd7bcb1fb36a80b95caec2c0e73756585dc01c1eb9d609669046a38e01d6b719664705ab6907dd96a0a762329af71bd2d98
+  checksum: 7b51fbd7fadaf02bf8567d58ae8f1cc72710eb282600959e613f54c5fe0e852728d2c2cef99c4f780324b6a69d2a75f4d225b2bfd341bbeda5a6a288a1231c84
   languageName: node
   linkType: hard
 
@@ -1671,13 +1671,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps-exec@npm:2.6.0":
-  version: 2.6.0
-  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.0"
+"@heroku-cli/plugin-ps-exec@npm:2.6.1":
+  version: 2.6.1
+  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.1"
   dependencies:
-    "@heroku-cli/heroku-exec-util": 0.9.0
+    "@heroku-cli/heroku-exec-util": 0.9.1
     "@heroku/heroku-cli-util": ^8.0.13
-  checksum: 94e33a23b16f62068830bf12d28c16b7132cef8e58d6f9d658aedb65142642f4cf4c5603fe97c51b0ab3b2aaaa9c397a955e5328dd9cd899190dd6e2cb5f5987
+  checksum: d5e0fe9e6a80a029b917fdfcd34ec6ca0f78900c9cfb4817ee3a751e9c409d3c5450c6c9f1a890bdf7b5e30fc9fa9090b9c5dc5b0c4821b190dca6f097d9db7f
   languageName: node
   linkType: hard
 
@@ -1726,6 +1726,19 @@ __metadata:
     tslib: ^1.9.0
     tunnel-agent: ^0.6.0
   checksum: 08c6aa7911011a33b834bc62f5e1095ff67db94a0dd2e9d5dd372a18cfddbc4737b27f491bfe88d66208862c305209fd21f41d0af249404f24b44c024953343e
+  languageName: node
+  linkType: hard
+
+"@heroku/http-call@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "@heroku/http-call@npm:5.4.0"
+  dependencies:
+    content-type: ^1.0.5
+    debug: ^4.4.0
+    is-retry-allowed: ^2.2.0
+    is-stream: ^2.0.0
+    tunnel-agent: ^0.6.0
+  checksum: 46e522a6f1d1ae44d857db202862aa0ca800804af7ba04b13a46a99f7bb1233adaf47d7d22dbf4fcd7443e78603e3793b3d6662486e8eb1c9ab6e3569e116f25
   languageName: node
   linkType: hard
 
@@ -7214,6 +7227,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"content-type@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "content-type@npm:1.0.5"
+  checksum: 566271e0a251642254cde0f845f9dd4f9856e52d988f4eb0d0dcffbb7a1f8ec98de7a5215fc628f3bce30fe2fb6fd2bc064b562d721658c59b544e2d34ea2766
+  languageName: node
+  linkType: hard
+
 "conventional-changelog-angular@npm:^5.0.12":
   version: 5.0.13
   resolution: "conventional-changelog-angular@npm:5.0.13"
@@ -7681,6 +7701,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 822d74e209cd910ef0802d261b150314bbcf36c582ccdbb3e70f0894823c17e49a50d3e66d96b633524263975ca16b6a833f3e3b7e030c157169a5fabac63160
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "debug@npm:4.4.0"
+  dependencies:
+    ms: ^2.1.3
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: fb42df878dd0e22816fc56e1fdca9da73caa85212fbe40c868b1295a6878f9101ae684f4eeef516c13acfc700f5ea07f1136954f43d4cd2d477a811144136479
   languageName: node
   linkType: hard
 
@@ -10331,13 +10363,14 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 2.0.1
-    "@heroku-cli/command": ^11.3.1
+    "@heroku-cli/command": ^11.4.0
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-ps-exec": 2.6.0
+    "@heroku-cli/plugin-ps-exec": 2.6.1
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^8.0.13
+    "@heroku/http-call": ^5.4.0
     "@inquirer/prompts": ^5.0.5
     "@oclif/core": ^2.16.0
     "@oclif/plugin-commands": 2.2.28
@@ -10406,7 +10439,6 @@ __metadata:
     glob: ^10.3.10
     globby: ^10.0.2
     got: ^11.8.6
-    http-call: 5.3.0
     inquirer: ^8.2.6
     lodash: ^4.17.11
     lolex: ^3.1.0
@@ -10521,20 +10553,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-call@npm:5.3.0, http-call@npm:^5.2.2, http-call@npm:^5.2.4, http-call@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "http-call@npm:5.3.0"
-  dependencies:
-    content-type: ^1.0.4
-    debug: ^4.1.1
-    is-retry-allowed: ^1.1.0
-    is-stream: ^2.0.0
-    parse-json: ^4.0.0
-    tunnel-agent: ^0.6.0
-  checksum: 06e9342e1fc9d805ab666c862cac58ece953e0a72007410f4fba9aef40075f4c8bf0fdebbcfa1648433db05003ce1e00496ddb92e8dcff319a976638b2be4057
-  languageName: node
-  linkType: hard
-
 "http-call@npm:^5.1.2":
   version: 5.2.4
   resolution: "http-call@npm:5.2.4"
@@ -10546,6 +10564,20 @@ __metadata:
     parse-json: ^4.0.0
     tunnel-agent: ^0.6.0
   checksum: 61fe14c84a83b205e1bd53306899b1d6cfd4767140bd9e4ce3b362e21da770c16f235fd09207937fafde7cbbce621a991423338c07acd4c6db64b8cc3be649fb
+  languageName: node
+  linkType: hard
+
+"http-call@npm:^5.2.2, http-call@npm:^5.2.4, http-call@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "http-call@npm:5.3.0"
+  dependencies:
+    content-type: ^1.0.4
+    debug: ^4.1.1
+    is-retry-allowed: ^1.1.0
+    is-stream: ^2.0.0
+    parse-json: ^4.0.0
+    tunnel-agent: ^0.6.0
+  checksum: 06e9342e1fc9d805ab666c862cac58ece953e0a72007410f4fba9aef40075f4c8bf0fdebbcfa1648433db05003ce1e00496ddb92e8dcff319a976638b2be4057
   languageName: node
   linkType: hard
 
@@ -11261,6 +11293,13 @@ __metadata:
   version: 1.2.0
   resolution: "is-retry-allowed@npm:1.2.0"
   checksum: 50d700a89ae31926b1c91b3eb0104dbceeac8790d8b80d02f5c76d9a75c2056f1bb24b5268a8a018dead606bddf116b2262e5ac07401eb8b8783b266ed22558d
+  languageName: node
+  linkType: hard
+
+"is-retry-allowed@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "is-retry-allowed@npm:2.2.0"
+  checksum: 3d1103a9290b5d03626756a41054844633eac78bc5d3e3a95b13afeae94fa3cfbcf7f0b5520d83f75f48a25ce7b142fdbac4217dc4b0630f3ea55e866ec3a029
   languageName: node
   linkType: hard
 
