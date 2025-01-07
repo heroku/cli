@@ -13,8 +13,5 @@ jobs:
       AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-          aws configure set preview.cloudfront true
+      - run: aws configure set preview.cloudfront true
       - run: ./scripts/postrelease/invalidate_cdn_cache
