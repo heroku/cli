@@ -5,6 +5,10 @@ describe('pipelines:diff', function () {
   const kolkrabbiApi = 'https://kolkrabbi.heroku.com'
   const githubApi = 'https://api.github.com'
 
+  const pipelineWithGeneration = {
+    generation: {name: 'cedar'},
+  }
+
   const pipeline = {
     id: '123-pipeline-456',
     name: 'example-pipeline',
@@ -186,6 +190,11 @@ describe('pipelines:diff', function () {
           .post('/filters/apps')
           .reply(200, [targetApp])
       })
+      .nock(apiUrl, api => {
+        api
+          .get(`/pipelines/${targetCoupling.pipeline.id}`)
+          .reply(200, pipelineWithGeneration)
+      })
       .command(['pipelines:diff', `--app=${targetApp.name}`])
       .catch(error => {
         expect(error.message).to.contain('no downstream apps')
@@ -206,6 +215,11 @@ describe('pipelines:diff', function () {
             .reply(200, downstreamApp1Github)
             .get(`/apps/${downstreamApp2.id}/github`)
             .reply(200, downstreamApp2Github)
+        })
+        .nock(apiUrl, api => {
+          api
+            .get(`/pipelines/${targetCoupling.pipeline.id}`)
+            .reply(200, pipelineWithGeneration)
         })
     }
 
@@ -282,6 +296,11 @@ describe('pipelines:diff', function () {
               {slug: {id: downstreamSlugId}, status: 'succeeded'},
             ])
         })
+        .nock(apiUrl, api => {
+          api
+            .get(`/pipelines/${targetCoupling.pipeline.id}`)
+            .reply(200, pipelineWithGeneration)
+        })
     }
 
     mockedTest(test)
@@ -351,6 +370,11 @@ describe('pipelines:diff', function () {
               {status: 'failed'},
               {oci_image: {id: downstreamOciImageId}, status: 'succeeded'},
             ])
+        })
+        .nock(apiUrl, api => {
+          api
+            .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
+            .reply(200, {generation: {name: 'fir'}})
         })
     }
 

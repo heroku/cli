@@ -672,11 +672,9 @@ export interface App {
   */
   current_build_architecture: unknown[];
  /**
-  * the generation of the app
-  *
-  * @example "fir"
+  * Generation of the Heroku platform for this app
   */
-  readonly generation: string;
+  readonly generation: AppGeneration;
  /**
   * git repo URL of app
   *
@@ -2262,6 +2260,20 @@ export interface Buildpack {
   * @example "https://github.com/heroku/buildpacks-ruby"
   */
   homepage?: string;
+}
+export interface AppGeneration {
+ /**
+  * unique identifier of the generation of the Heroku platform for this app
+  *
+  * @example "01234567-89ab-cdef-0123-456789abcdef"
+  */
+  readonly id?: string;
+ /**
+  * unique name of the generation of the Heroku platform for this app
+  *
+  * @example "cedar"
+  */
+  readonly name?: string;
 }
 /**
  *
@@ -5481,6 +5493,10 @@ export interface Pipeline {
   * @example "2012-01-01T12:00:00Z"
   */
   readonly updated_at?: string;
+  /**
+   * the generation of the Heroku platform for this pipeline
+   */
+  generation?: PipelineGeneration | null;
 }
 export interface PipelineCouplingCreatePayload {
  /**
@@ -5787,7 +5803,7 @@ export interface PipelinePromotionCreatePayload {
  * the app being promoted from
  */
 export interface PipelinePromotionCreatePayloadSource {
- /**
+  /**
   * the app which was promoted from
   */
   app?: PipelinePromotionCreatePayloadSourceApp;
@@ -5893,6 +5909,25 @@ export interface PipelineOwner {
   * @example "team"
   */
   type: string;
+}
+/**
+ *
+ * [Heroku Platform API - generation](https://devcenter.heroku.com/articles/platform-api-reference#generation)
+ * the generation of the Heroku platform for this pipeline
+ */
+export interface PipelineGeneration {
+ /**
+  * unique identifier of the generation of the Heroku platform for this pipeline
+  *
+  * @example "01234567-89ab-cdef-0123-456789abcdef"
+  */
+  readonly id: string;
+ /**
+  * unique name of the generation of the Heroku platform for this pipeline
+  *
+  * @example "fir"
+  */
+  readonly name: string;
 }
 export interface PipelineCreatePayload {
  /**

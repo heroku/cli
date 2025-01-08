@@ -18,10 +18,10 @@ async function getApp(appOrName: App | string, herokuApi?: APIClient): Promise<A
 
 export async function isFirApp(appOrName: App | string, herokuApi?: APIClient) {
   const app = await getApp(appOrName, herokuApi)
-  return app.generation === 'fir'
+  return app.generation.name === 'fir'
 }
 
 export async function isCedarApp(appOrName: App | string, herokuApi?: APIClient) {
   const app = await getApp(appOrName, herokuApi)
-  return app.generation === 'cedar'
+  return app.generation.name === 'cedar'
 }
