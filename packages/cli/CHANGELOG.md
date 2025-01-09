@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.2](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2) (2025-01-09)
+
+
+### Bug Fixes
+
+* pipeline diff fails on v10 ([#3154](https://github.com/heroku/cli/issues/3154)) ([acb4b76](https://github.com/heroku/cli/commit/acb4b765ac32a698d145cac20c2afbf2f187e7e0))
+* **W-17568149:** pg:settings:log-min-duration-statement command is submitting a string instead of number ([#3167](https://github.com/heroku/cli/issues/3167)) ([d645f0e](https://github.com/heroku/cli/commit/d645f0e65394ac9508490cc7ffae613681e120be))
+
+
+
+
+
 ## [10.0.1](https://github.com/heroku/cli/compare/v10.0.0...v10.0.1) (2025-01-07)
 
 
