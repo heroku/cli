@@ -65,5 +65,6 @@ jobs:
 
   create-fig-autocomplete-pr:
     if: fromJSON(inputs.isStableRelease)
+    secrets: inherit
     ## Calls publish-to-fig-autocomplete workflow during post release jobs
     uses: ./.github/workflows/publish-to-fig-autocomplete.yml
