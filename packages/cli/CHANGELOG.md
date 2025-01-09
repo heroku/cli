@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.2-beta.0](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2-beta.0) (2025-01-09)
+
+
+### Bug Fixes
+
+* pipeline diff fails on v10 ([#3154](https://github.com/heroku/cli/issues/3154)) ([acb4b76](https://github.com/heroku/cli/commit/acb4b765ac32a698d145cac20c2afbf2f187e7e0))
+
+
+
+
+
 ## [10.0.1](https://github.com/heroku/cli/compare/v10.0.0...v10.0.1) (2025-01-07)
 
 
