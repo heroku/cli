@@ -19,7 +19,7 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
   protected settingKey:SettingKey = 'log_min_duration_statement'
 
   protected convertValue(val: unknown): number {
-    return val as number
+    return Number.parseInt(val as string, 10)
   }
 
   protected explain(setting: Setting<unknown>) {

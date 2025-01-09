@@ -1418,7 +1418,7 @@ export interface AddOnWebhookCreatePayload {
  /**
   * a custom `Authorization` header that Heroku will include with all webhook notifications
   *
-  * @example "Bearer 9266671b2767f804c9d5809c2d384ed57d8f8ce1abd1043e1fb3fbbcb8c3"
+  * @example "Bearer <the_token>"
   */
   authorization?: null | string;
  /**
@@ -1434,7 +1434,7 @@ export interface AddOnWebhookCreatePayload {
  /**
   * a value that Heroku will use to sign all webhook notification requests (the signature is included in the request’s `Heroku-Webhook-Hmac-SHA256` header)
   *
-  * @example "dcbff0c4430a2960a2552389d587bc58d30a37a8cf3f75f8fb77abe667ad"
+  * @example "<the_token>"
   */
   secret?: null | string;
  /**
@@ -1500,7 +1500,7 @@ export interface AddOnWebhookUpdatePayload {
  /**
   * a custom `Authorization` header that Heroku will include with all webhook notifications
   *
-  * @example "Bearer 9266671b2767f804c9d5809c2d384ed57d8f8ce1abd1043e1fb3fbbcb8c3"
+  * @example "Bearer <the_token>"
   */
   authorization?: null | string;
  /**
@@ -1516,7 +1516,7 @@ export interface AddOnWebhookUpdatePayload {
  /**
   * a value that Heroku will use to sign all webhook notification requests (the signature is included in the request’s `Heroku-Webhook-Hmac-SHA256` header)
   *
-  * @example "dcbff0c4430a2960a2552389d587bc58d30a37a8cf3f75f8fb77abe667ad"
+  * @example "<the_token>"
   */
   secret?: null | string;
  /**
@@ -2131,7 +2131,7 @@ export interface AppWebhookCreatePayload {
  /**
   * a custom `Authorization` header that Heroku will include with all webhook notifications
   *
-  * @example "Bearer 9266671b2767f804c9d5809c2d384ed57d8f8ce1abd1043e1fb3fbbcb8c3"
+  * @example "Bearer <the_token>"
   */
   authorization?: null | string;
  /**
@@ -2147,7 +2147,7 @@ export interface AppWebhookCreatePayload {
  /**
   * a value that Heroku will use to sign all webhook notification requests (the signature is included in the request’s `Heroku-Webhook-Hmac-SHA256` header)
   *
-  * @example "dcbff0c4430a2960a2552389d587bc58d30a37a8cf3f75f8fb77abe667ad"
+  * @example "<the_token>"
   */
   secret?: null | string;
  /**
@@ -2195,7 +2195,7 @@ export interface AppWebhookUpdatePayload {
  /**
   * a custom `Authorization` header that Heroku will include with all webhook notifications
   *
-  * @example "Bearer 9266671b2767f804c9d5809c2d384ed57d8f8ce1abd1043e1fb3fbbcb8c3"
+  * @example "Bearer <the_token>"
   */
   authorization?: null | string;
  /**
@@ -2211,7 +2211,7 @@ export interface AppWebhookUpdatePayload {
  /**
   * a value that Heroku will use to sign all webhook notification requests (the signature is included in the request’s `Heroku-Webhook-Hmac-SHA256` header)
   *
-  * @example "dcbff0c4430a2960a2552389d587bc58d30a37a8cf3f75f8fb77abe667ad"
+  * @example "<the_token>"
   */
   secret?: null | string;
  /**
