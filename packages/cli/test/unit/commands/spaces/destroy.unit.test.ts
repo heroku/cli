@@ -37,8 +37,8 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-
-    expect(stderr.output).to.eq(heredoc`     ›   Warning: Destructive Action
+    const replacer = /([»›])/g
+    expect(stderr.output.replace(replacer, '')).to.eq(heredoc(`     ›   Warning: Destructive Action
      ›   This command will destroy the space my-space
      ›   === WARNING: Outbound IPs Will Be Reused
      ›   ⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs 
@@ -58,7 +58,7 @@ describe('spaces:destroy', function () {
 
     Destroying space my-space...
     Destroying space my-space... done
-    `)
+    `.replace(replacer, '')))
   })
 
   it('shows simple NAT warning for non-fir generation space', async function () {
@@ -79,8 +79,8 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-
-    expect(stderr.output).to.eq(heredoc`     ›   Warning: Destructive Action
+    const replacer = /([»›])/g
+    expect(stderr.output.replace(replacer, '')).to.eq(heredoc(`     ›   Warning: Destructive Action
      ›   This command will destroy the space my-space
      ›   === WARNING: Outbound IPs Will Be Reused
      ›   ⚠️ Deleting this space frees up the following outbound IPv4 IPs for reuse:
@@ -99,6 +99,6 @@ describe('spaces:destroy', function () {
 
     Destroying space my-space...
     Destroying space my-space... done
-    `)
+    `.replace(replacer, '')))
   })
 })
