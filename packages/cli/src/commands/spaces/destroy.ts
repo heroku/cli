@@ -1,11 +1,10 @@
 import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import confirmCommand from '../../lib/confirmCommand'
 import {displayNat} from '../../lib/spaces/spaces'
-import chalk from 'chalk'
+import color from '@heroku-cli/color'
 
 type RequiredSpaceWithNat = Required<Heroku.Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
@@ -45,17 +44,17 @@ export default class Destroy extends Command {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
         natWarning = heredoc`
-          ${chalk.dim('===')} ${chalk.bold('WARNING: Outbound IPs Will Be Reused')}
-          ${chalk.yellow('⚠️ The following outbound IPs (IPv4 and IPv6) will become available for reuse:')}
-          ${chalk.bold(displayNat(space.outbound_ips) ?? '')}
+          ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
+          ${color.yellow('⚠️ The following outbound IPs (IPv4 and IPv6) will become available for reuse:')}
+          ${color.bold(displayNat(space.outbound_ips) ?? '')}
 
-          ${chalk.dim('Please update the following configurations:')}
-          ${chalk.dim('=')} IP allowlists
-          ${chalk.dim('=')} Firewall rules
-          ${chalk.dim('=')} Security group configurations
-          ${chalk.dim('=')} Network ACLs
+          ${color.dim('Please update the following configurations:')}
+          ${color.dim('=')} IP allowlists
+          ${color.dim('=')} Firewall rules
+          ${color.dim('=')} Security group configurations
+          ${color.dim('=')} Network ACLs
 
-          ${chalk.yellow('Ensure all IPv4 and IPv6 addresses are removed from your security configurations.')}
+          ${color.yellow('Ensure all IPv4 and IPv6 addresses are removed from your security configurations.')}
         `
       }
     }
