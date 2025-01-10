@@ -45,7 +45,7 @@ export default class Destroy extends Command {
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
         natWarning = heredoc`
           ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
-          ${color.yellow('⚠️ The following outbound IPs (IPv4 and IPv6) will become available for reuse:')}
+          ${color.yellow('⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs for reuse:')}
           ${color.bold(displayNat(space.outbound_ips) ?? '')}
 
           ${color.dim('Please update the following configurations:')}
