@@ -5,6 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import confirmCommand from '../../lib/confirmCommand'
 import {displayNat} from '../../lib/spaces/spaces'
+import chalk from 'chalk'
 
 type RequiredSpaceWithNat = Required<Heroku.Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
@@ -43,7 +44,19 @@ export default class Destroy extends Command {
     if (space.state === 'allocated') {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
-        natWarning = `The Outbound IPs for this space will be reused!\nEnsure that external services no longer allow these Outbound IPs: ${displayNat(space.outbound_ips)}\n`
+        natWarning = heredoc`
+          ${chalk.dim('===')} ${chalk.bold('WARNING: Outbound IPs Will Be Reused')}
+          ${chalk.yellow('⚠️ The following outbound IPs (IPv4 and IPv6) will become available for reuse:')}
+          ${chalk.bold(displayNat(space.outbound_ips) ?? '')}
+
+          ${chalk.dim('Please update the following configurations:')}
+          ${chalk.dim('=')} IP allowlists
+          ${chalk.dim('=')} Firewall rules
+          ${chalk.dim('=')} Security group configurations
+          ${chalk.dim('=')} Network ACLs
+
+          ${chalk.yellow('Ensure all IPv4 and IPv6 addresses are removed from your security configurations.')}
+        `
       }
     }
 
