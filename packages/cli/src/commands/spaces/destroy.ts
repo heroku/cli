@@ -45,27 +45,20 @@ export default class Destroy extends Command {
     if (space.state === 'allocated') {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
-        if (space.generation?.name === 'fir') {
-          natWarning = heredoc`
-          ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
-          ${color.yellow('⚠️ The following outbound IPs (IPv4 and IPv6) will become available for reuse:')}
-          ${color.bold(displayNat(space.outbound_ips) ?? '')}
+        const ipv6 = space.generation?.name === 'fir' ? ' and IPv6' : ''
+        natWarning = heredoc`
+        ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
+        ${color.yellow(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}
+        ${color.bold(displayNat(space.outbound_ips) ?? '')}
 
-          ${color.dim('Please update the following configurations:')}
-          ${color.dim('=')} IP allowlists
-          ${color.dim('=')} Firewall rules
-          ${color.dim('=')} Security group configurations
-          ${color.dim('=')} Network ACLs
+        ${color.dim('Update the following configurations:')}
+        ${color.dim('=')} IP allowlists
+        ${color.dim('=')} Firewall rules
+        ${color.dim('=')} Security group configurations
+        ${color.dim('=')} Network ACLs
 
-          ${color.yellow('Ensure all IPv4 and IPv6 addresses are removed from your security configurations.')}
-        `
-        } else {
-          natWarning = heredoc`
-          ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
-          ${color.yellow('⚠️ The following outbound IPs will become available for reuse:')}
-          ${color.bold(displayNat(space.outbound_ips) ?? '')}
-        `
-        }
+        ${color.yellow(`Ensure that you remove the listed IPv4${ipv6} addresses from your security configurations.`)}
+      `
       }
     }
 

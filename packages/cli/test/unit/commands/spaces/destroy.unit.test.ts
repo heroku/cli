@@ -41,21 +41,21 @@ describe('spaces:destroy', function () {
     expect(stderr.output).to.eq(heredoc`     ›   Warning: Destructive Action
      ›   This command will destroy the space my-space
      ›   === WARNING: Outbound IPs Will Be Reused
-     ›   ⚠️ The following outbound IPs (IPv4 and IPv6) will become available for 
-     ›   reuse:
+     ›   ⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs 
+     ›   for reuse:
      ›   1.1.1.1, 2.2.2.2
      ›
-     ›   Please update the following configurations:
+     ›   Update the following configurations:
      ›   = IP allowlists
      ›   = Firewall rules
      ›   = Security group configurations
      ›   = Network ACLs
      ›
-     ›   Ensure all IPv4 and IPv6 addresses are removed from your security 
-     ›   configurations.
+     ›   Ensure that you remove the listed IPv4 and IPv6 addresses from your 
+     ›   security configurations.
      ›
      ›
-    
+
     Destroying space my-space...
     Destroying space my-space... done
     `)
@@ -83,11 +83,20 @@ describe('spaces:destroy', function () {
     expect(stderr.output).to.eq(heredoc`     ›   Warning: Destructive Action
      ›   This command will destroy the space my-space
      ›   === WARNING: Outbound IPs Will Be Reused
-     ›   ⚠️ The following outbound IPs will become available for reuse:
+     ›   ⚠️ Deleting this space frees up the following outbound IPv4 IPs for reuse:
      ›   1.1.1.1, 2.2.2.2
      ›
+     ›   Update the following configurations:
+     ›   = IP allowlists
+     ›   = Firewall rules
+     ›   = Security group configurations
+     ›   = Network ACLs
      ›
-    
+     ›   Ensure that you remove the listed IPv4 addresses from your security 
+     ›   configurations.
+     ›
+     ›
+
     Destroying space my-space...
     Destroying space my-space... done
     `)
