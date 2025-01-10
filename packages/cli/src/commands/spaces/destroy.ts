@@ -54,7 +54,7 @@ export default class Destroy extends Command {
           ${color.dim('=')} Security group configurations
           ${color.dim('=')} Network ACLs
 
-          ${color.yellow('Ensure all IPv4 and IPv6 addresses are removed from your security configurations.')}
+          ${color.yellow('Ensure that you remove the listed IPv4 and IPv6 addresses from your security configurations.')}
         `
       }
     }
