@@ -48,7 +48,7 @@ export default class Destroy extends Command {
           ${color.yellow('⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs for reuse:')}
           ${color.bold(displayNat(space.outbound_ips) ?? '')}
 
-          ${color.dim('Please update the following configurations:')}
+          ${color.dim('Update the following configurations:')}
           ${color.dim('=')} IP allowlists
           ${color.dim('=')} Firewall rules
           ${color.dim('=')} Security group configurations
