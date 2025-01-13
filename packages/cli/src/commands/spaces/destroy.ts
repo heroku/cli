@@ -1,12 +1,13 @@
 import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import confirmCommand from '../../lib/confirmCommand'
 import {displayNat} from '../../lib/spaces/spaces'
+import color from '@heroku-cli/color'
+import {Space} from '../../lib/types/fir'
 
-type RequiredSpaceWithNat = Required<Heroku.Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
+type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
 export default class Destroy extends Command {
   static topic = 'spaces'
@@ -40,10 +41,24 @@ export default class Destroy extends Command {
 
     let natWarning = ''
     const {body: space} = await this.heroku.get<RequiredSpaceWithNat>(`/spaces/${spaceName}`)
+
     if (space.state === 'allocated') {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
-        natWarning = `The Outbound IPs for this space will be reused!\nEnsure that external services no longer allow these Outbound IPs: ${displayNat(space.outbound_ips)}\n`
+        const ipv6 = space.generation?.name === 'fir' ? ' and IPv6' : ''
+        natWarning = heredoc`
+        ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
+        ${color.yellow(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}
+        ${color.bold(displayNat(space.outbound_ips) ?? '')}
+
+        ${color.dim('Update the following configurations:')}
+        ${color.dim('=')} IP allowlists
+        ${color.dim('=')} Firewall rules
+        ${color.dim('=')} Security group configurations
+        ${color.dim('=')} Network ACLs
+
+        ${color.yellow(`Ensure that you remove the listed IPv4${ipv6} addresses from your security configurations.`)}
+      `
       }
     }
 
