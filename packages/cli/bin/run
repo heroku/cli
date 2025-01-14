@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 
+const {Config} = require('@oclif/core')
+const root = require.resolve('../package.json')
+const config = new Config({root})
+
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
 const now = new Date()
 const cliStartTime = now.getTime()
 const globalTelemetry = require('../lib/global_telemetry')
+const yargs = require('yargs-parser')(process.argv.slice(2))
 
 process.once('beforeExit', async code => {
   // capture as successful exit
@@ -38,13 +43,32 @@ process.on('SIGTERM', async () => {
 globalTelemetry.initializeInstrumentation()
 
 const oclif = require('@oclif/core')
+const oclifFlush = require('@oclif/core/flush')
+const oclifError = require('@oclif/core/handle')
+const { promptUser } = require('./heroku-prompts')
+const { herokuRepl } = require('./heroku-repl')
 
-oclif.run().then(require('@oclif/core/flush')).catch(async error => {
-  // capture any errors raised by oclif
-  const cliError = error
-  cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.sendTelemetry(cliError)
+const main = async () => {
+  try {
+    await config.load()
+    const {_: [commandName, ...args], ...flags} = yargs
+    if (!args.length && !Object.keys(flags).length) {
+      return await herokuRepl(config)
+    }
+    if (flags.prompt) {
+      delete flags.prompt
+      await promptUser(config, commandName, args, flags)
+    }
+    await oclif.run([commandName, ...args], config)
+    await oclifFlush()
+  } catch (error) {
+    // capture any errors raised by oclif
+    const cliError = error
+    cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+    await globalTelemetry.sendTelemetry(cliError)
 
-  return require('@oclif/core/handle')(error)
-})
+    oclifError(error)
+  }
+};
 
+void main();
