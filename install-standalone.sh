@@ -17,7 +17,7 @@
 
   echoerr() { echo "\$@" 1>&2; }
 
-  if [[ ! ":\$PATH:" == *":/usr/local/bin:"* ]]; then
+  if [[ ! ":$PATH:" == *":/usr/local/bin:"* ]]; then
     echoerr "Your path is missing /usr/local/bin, you need to add this to use this installer."
     exit 1
   fi
