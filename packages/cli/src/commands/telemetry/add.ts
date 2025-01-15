@@ -50,7 +50,7 @@ export default class Add extends Command {
       signals: validateAndFormatSignals(signals),
       exporter: {
         endpoint,
-        type: `otlp${transport}`,
+        type: (transport === 'grpc') ? 'otlp' : 'otlphttp',
         headers: JSON.parse(exporterHeaders),
       },
     }
