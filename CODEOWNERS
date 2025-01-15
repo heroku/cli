@@ -2,6 +2,6 @@
 # Each line is a file pattern followed by one or more owners.
 
 # These owners will be the default owners for everything in the repo.
-* @heroku/front-end
+* @heroku/frontend-dev-tooling
 #ECCN:Open Source
 #GUSINFO:Heroku Front End Dept (FE Infra & Arch),Heroku CLI
