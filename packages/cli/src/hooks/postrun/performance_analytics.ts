@@ -12,6 +12,7 @@ const performance_analytics: Hook<'postrun'> = async function () {
   const cmdStartTime = global.cliTelemetry.commandRunDuration
   global.cliTelemetry.commandRunDuration = telemetry.computeDuration(cmdStartTime)
   global.cliTelemetry.lifecycleHookCompletion.postrun = true
+  await Reflect.get(globalThis, 'recordPromise')
 }
 
 export default performance_analytics

@@ -36,15 +36,18 @@ export default class AnalyticsCommand {
 
   http: typeof deps.HTTP
 
+  initialize: Promise<void>;
+
   constructor(config: Interfaces.Config) {
     this.config = config
     this.http = deps.HTTP.create({
       headers: {'user-agent': config.userAgent},
     })
+    this.initialize = this.init()
   }
 
   async record(opts: RecordOpts) {
-    await this.init()
+    await this.initialize
     const plugin = opts.Command.plugin
     if (!plugin) {
       debug('no plugin found for analytics')
