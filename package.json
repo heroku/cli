@@ -22,9 +22,7 @@
     "tmp": "^0.2.1"
   },
   "resolutions": {
-    "ansi-regex": "4.1.1",
-    "word-wrap": "1.2.5",
-    "ip": "2.0.1"
+    "ansi-regex": "4.1.1"
   },
   "standard": {
     "env": "mocha",
