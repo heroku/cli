@@ -17,11 +17,6 @@
 
   echoerr() { echo "\$@" 1>&2; }
 
-  if [[ ! ":\$PATH:" == *":/usr/local/bin:"* ]]; then
-    echoerr "Your path is missing /usr/local/bin, you need to add this to use this installer."
-    exit 1
-  fi
-
   if [ "\$(uname)" == "Darwin" ]; then
     OS=darwin
   elif [ "\$(expr substr \$(uname -s) 1 5)" == "Linux" ]; then
@@ -40,6 +35,11 @@
     ARCH=arm64
   else
     echoerr "unsupported arch: \$ARCH"
+    exit 1
+  fi
+
+  if [[ ! ":$PATH:" == *":/usr/local/bin:"* ]]; then
+    echoerr "Your path is missing /usr/local/bin, you need to add this to use this installer."
     exit 1
   fi
 
