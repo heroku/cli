@@ -9746,7 +9746,7 @@ __metadata:
     mocha: ^10.8.2
     netrc-parser: 3.1.6
     nock: ^13.5.1
-    node-fetch: ^2.6.7
+    node-fetch: ^2.7.0
     nyc: ^15.1.0
     oclif: 4.14.36
     open: ^8.4.2
@@ -12301,7 +12301,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.2.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
+"node-fetch@npm:2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
