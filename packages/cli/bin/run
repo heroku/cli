@@ -58,8 +58,10 @@ const main = async () => {
     if (flags.prompt) {
       delete flags.prompt
       await promptUser(config, commandName, args, flags)
+      await oclif.run([commandName, ...args], config)
+    } else {
+      await oclif.run(undefined, config)
     }
-    await oclif.run([commandName, ...args], config)
     await oclifFlush()
   } catch (error) {
     // capture any errors raised by oclif
