@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.3-alpha.3](https://github.com/heroku/cli/compare/v10.0.2...v10.0.3-alpha.0) (2025-01-30)
+
+
+### Bug Fixes
+
+* send correct value to api for grpc telemetry drains ([#3178](https://github.com/heroku/cli/issues/3178)) ([48b7f8a](https://github.com/heroku/cli/commit/48b7f8ad341f0bad7136c35ae840b1249aecd805))
+* Unable to list drains for a space in fir ([#3170](https://github.com/heroku/cli/issues/3170)) ([1ee8f62](https://github.com/heroku/cli/commit/1ee8f625acf586096f6f609926656a4cb046481a))
+
+
+
+
+
 ## [10.0.2](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2) (2025-01-09)
 
 
