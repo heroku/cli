@@ -16,6 +16,10 @@ module.exports.herokuRepl = async function (config) {
 
   for await (const input of commandGenerator()) {
     const [command, ...argv] = input
+    if (command === '.exit') {
+      process.exit(0)
+    }
+
     if (command.startsWith('set')) {
       flagsByName.set(argv[0], argv[1])
       process.stderr.write(`setting --app to "${argv[1]}"\n$ `)
