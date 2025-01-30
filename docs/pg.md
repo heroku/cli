@@ -78,7 +78,7 @@ ARGUMENTS
             databases.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -97,14 +97,14 @@ USAGE
   $ heroku pg:backups -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   list database backups
 ```
 
-_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/index.ts)_
+_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/index.ts)_
 
 ## `heroku pg:backups:cancel [BACKUP_ID]`
 
@@ -118,14 +118,14 @@ ARGUMENTS
   BACKUP_ID  ID of the backup. If omitted, we use the last unfinished backup ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   cancel an in-progress backup or restore (default newest)
 ```
 
-_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/cancel.ts)_
+_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/cancel.ts)_
 
 ## `heroku pg:backups:capture [DATABASE]`
 
@@ -141,7 +141,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>         git remote of app to use
   -v, --verbose
   --wait-interval=<value>
@@ -150,7 +150,7 @@ DESCRIPTION
   capture a new backup
 ```
 
-_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/capture.ts)_
+_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/capture.ts)_
 
 ## `heroku pg:backups:delete BACKUP_ID`
 
@@ -164,7 +164,7 @@ ARGUMENTS
   BACKUP_ID  ID of the backup
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -175,7 +175,7 @@ EXAMPLES
   $ heroku pg:backup:delete --app APP_ID BACKUP_ID
 ```
 
-_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/delete.ts)_
+_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/delete.ts)_
 
 ## `heroku pg:backups:download [BACKUP_ID]`
 
@@ -189,7 +189,7 @@ ARGUMENTS
   BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -o, --output=<value>  location to download to. Defaults to latest.dump
   -r, --remote=<value>  git remote of app to use
 
@@ -197,7 +197,7 @@ DESCRIPTION
   downloads database backup
 ```
 
-_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/download.ts)_
+_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/download.ts)_
 
 ## `heroku pg:backups:info [BACKUP_ID]`
 
@@ -211,14 +211,14 @@ ARGUMENTS
   BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   get information about a specific backup
 ```
 
-_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/info.ts)_
+_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/info.ts)_
 
 ## `heroku pg:backups:restore [BACKUP] [DATABASE]`
 
@@ -236,7 +236,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -e, --extensions=<value>     comma-separated list of extensions to pre-install in the public schema
                                defaults to saving the latest database to DATABASE_URL
@@ -273,7 +273,7 @@ EXAMPLES
     $ heroku pg:backups:restore b101 HEROKU_POSTGRESQL_PINK --app my-heroku-app
 ```
 
-_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/restore.ts)_
+_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/restore.ts)_
 
 ## `heroku pg:backups:schedule [DATABASE]`
 
@@ -289,7 +289,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --at=<value>      (required) at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00
                         [TIMEZONE]'
@@ -298,7 +298,7 @@ DESCRIPTION
   schedule daily backups for given database
 ```
 
-_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/schedule.ts)_
+_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/schedule.ts)_
 
 ## `heroku pg:backups:schedules`
 
@@ -309,14 +309,14 @@ USAGE
   $ heroku pg:backups:schedules -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   list backup schedule
 ```
 
-_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/schedules.ts)_
+_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/schedules.ts)_
 
 ## `heroku pg:backups:unschedule [DATABASE]`
 
@@ -332,14 +332,14 @@ ARGUMENTS
             random database attached to the app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   stop daily backups
 ```
 
-_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/unschedule.ts)_
+_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/unschedule.ts)_
 
 ## `heroku pg:backups:url [BACKUP_ID]`
 
@@ -353,14 +353,14 @@ ARGUMENTS
   BACKUP_ID  ID of the backup. If omitted, we use the last backup ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   get secret but publicly accessible URL of a backup
 ```
 
-_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/backups/url.ts)_
+_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/backups/url.ts)_
 
 ## `heroku pg:bloat [DATABASE]`
 
@@ -376,14 +376,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show table and index bloat in your database ordered by most wasteful
 ```
 
-_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/bloat.ts)_
+_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/bloat.ts)_
 
 ## `heroku pg:blocking [DATABASE]`
 
@@ -399,14 +399,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   display queries holding locks other queries are waiting to be released
 ```
 
-_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/blocking.ts)_
+_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/blocking.ts)_
 
 ## `heroku pg:connection-pooling:attach [DATABASE]`
 
@@ -422,7 +422,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --as=<value>      name for add-on attachment
 
@@ -433,7 +433,7 @@ EXAMPLES
   $ heroku pg:connection-pooling:attach postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/connection-pooling/attach.ts)_
+_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/connection-pooling/attach.ts)_
 
 ## `heroku pg:copy SOURCE TARGET`
 
@@ -449,7 +449,7 @@ ARGUMENTS
   TARGET  config var exposed to the owning app containing the target database URL
 
 FLAGS
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>         git remote of app to use
   --confirm=<value>
   --verbose
@@ -459,7 +459,7 @@ DESCRIPTION
   copy all data from source db to target
 ```
 
-_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/copy.ts)_
+_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/copy.ts)_
 
 ## `heroku pg:credentials [DATABASE]`
 
@@ -475,14 +475,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show information on credentials in the database
 ```
 
-_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials.ts)_
+_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials.ts)_
 
 ## `heroku pg:credentials:create [DATABASE]`
 
@@ -498,7 +498,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -n, --name=<value>    (required) name of the new credential within the database
   -r, --remote=<value>  git remote of app to use
 
@@ -509,7 +509,7 @@ DESCRIPTION
   heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
 ```
 
-_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials/create.ts)_
+_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials/create.ts)_
 
 ## `heroku pg:credentials:destroy [DATABASE]`
 
@@ -525,7 +525,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -n, --name=<value>     (required) unique identifier for the credential
   -r, --remote=<value>   git remote of app to use
@@ -537,7 +537,7 @@ EXAMPLES
   $ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
 ```
 
-_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials/destroy.ts)_
+_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials/destroy.ts)_
 
 ## `heroku pg:credentials:repair-default [DATABASE]`
 
@@ -553,7 +553,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -564,7 +564,7 @@ EXAMPLES
   $ heroku pg:credentials:repair-default postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials/repair-default.ts)_
+_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials/repair-default.ts)_
 
 ## `heroku pg:credentials:rotate [DATABASE]`
 
@@ -580,7 +580,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -n, --name=<value>     which credential to rotate (default credentials if not specified and --all is not used)
   -r, --remote=<value>   git remote of app to use
@@ -591,7 +591,7 @@ DESCRIPTION
   rotate the database credentials
 ```
 
-_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials/rotate.ts)_
+_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials/rotate.ts)_
 
 ## `heroku pg:credentials:url [DATABASE]`
 
@@ -607,7 +607,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -n, --name=<value>    [default: default] which credential to show (default credentials if not specified)
   -r, --remote=<value>  git remote of app to use
 
@@ -615,7 +615,7 @@ DESCRIPTION
   show information on a database credential
 ```
 
-_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/credentials/url.ts)_
+_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/credentials/url.ts)_
 
 ## `heroku pg:diagnose [DATABASE|REPORT_ID]`
 
@@ -629,7 +629,7 @@ ARGUMENTS
   DATABASE|REPORT_ID  config var exposed to the owning app containing the database URL or the report ID
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            format output as JSON
 
@@ -639,7 +639,7 @@ DESCRIPTION
   if REPORT_ID is specified instead, a previous report is displayed
 ```
 
-_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/diagnose.ts)_
+_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/diagnose.ts)_
 
 ## `heroku pg:info [DATABASE]`
 
@@ -655,7 +655,7 @@ ARGUMENTS
             databases.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -665,7 +665,7 @@ ALIASES
   $ heroku pg
 ```
 
-_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/info.ts)_
+_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/info.ts)_
 
 ## `heroku pg:kill PID [DATABASE]`
 
@@ -682,7 +682,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -690,7 +690,7 @@ DESCRIPTION
   kill a query
 ```
 
-_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/kill.ts)_
+_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/kill.ts)_
 
 ## `heroku pg:killall [DATABASE]`
 
@@ -706,14 +706,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   terminates all connections for all credentials
 ```
 
-_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/killall.ts)_
+_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/killall.ts)_
 
 ## `heroku pg:links [DATABASE]`
 
@@ -729,14 +729,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   lists all databases and information on link
 ```
 
-_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/links/index.ts)_
+_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/links/index.ts)_
 
 ## `heroku pg:links:create REMOTE DATABASE`
 
@@ -753,7 +753,7 @@ ARGUMENTS
             app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --as=<value>      name of link to create
 
@@ -763,7 +763,7 @@ DESCRIPTION
   heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
 ```
 
-_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/links/create.ts)_
+_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/links/create.ts)_
 
 ## `heroku pg:links:destroy DATABASE LINK`
 
@@ -779,7 +779,7 @@ ARGUMENTS
   LINK      name of the linked data store
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -790,7 +790,7 @@ EXAMPLES
   $ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
 ```
 
-_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/links/destroy.ts)_
+_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/links/destroy.ts)_
 
 ## `heroku pg:locks [DATABASE]`
 
@@ -806,7 +806,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
   -t, --truncate        truncates queries to 40 characters
 
@@ -814,7 +814,7 @@ DESCRIPTION
   display queries with active locks
 ```
 
-_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/locks.ts)_
+_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/locks.ts)_
 
 ## `heroku pg:maintenance [DATABASE]`
 
@@ -830,14 +830,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show current maintenance information
 ```
 
-_See code: [src/commands/pg/maintenance/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/maintenance/index.ts)_
+_See code: [src/commands/pg/maintenance/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/maintenance/index.ts)_
 
 ## `heroku pg:maintenance:run [DATABASE]`
 
@@ -853,7 +853,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -861,7 +861,7 @@ DESCRIPTION
   start maintenance
 ```
 
-_See code: [src/commands/pg/maintenance/run.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/maintenance/run.ts)_
+_See code: [src/commands/pg/maintenance/run.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/maintenance/run.ts)_
 
 ## `heroku pg:maintenance:window WINDOW [DATABASE]`
 
@@ -878,7 +878,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -890,7 +890,7 @@ EXAMPLES
   $ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100
 ```
 
-_See code: [src/commands/pg/maintenance/window.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/maintenance/window.ts)_
+_See code: [src/commands/pg/maintenance/window.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/maintenance/window.ts)_
 
 ## `heroku pg:outliers [DATABASE]`
 
@@ -906,7 +906,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -n, --num=<value>     the number of queries to display (default: 10)
   -r, --remote=<value>  git remote of app to use
   -t, --truncate        truncate queries to 40 characters
@@ -916,7 +916,7 @@ DESCRIPTION
   show 10 queries that have longest execution time in aggregate
 ```
 
-_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/outliers.ts)_
+_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/outliers.ts)_
 
 ## `heroku pg:promote DATABASE`
 
@@ -931,7 +931,7 @@ ARGUMENTS
             app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -f, --force
   -r, --remote=<value>  git remote of app to use
 
@@ -939,7 +939,7 @@ DESCRIPTION
   sets DATABASE as your DATABASE_URL
 ```
 
-_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/promote.ts)_
+_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/promote.ts)_
 
 ## `heroku pg:ps [DATABASE]`
 
@@ -955,7 +955,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -963,7 +963,7 @@ DESCRIPTION
   view active queries with execution time
 ```
 
-_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/ps.ts)_
+_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/ps.ts)_
 
 ## `heroku pg:psql [DATABASE]`
 
@@ -979,7 +979,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>         (required) [default: heroku-vscode] app to run command against
   -c, --command=<value>     SQL command to run
   -f, --file=<value>        SQL file to run
   -r, --remote=<value>      git remote of app to use
@@ -992,7 +992,7 @@ ALIASES
   $ heroku psql
 ```
 
-_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/psql.ts)_
+_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/psql.ts)_
 
 ## `heroku pg:pull SOURCE TARGET`
 
@@ -1009,7 +1009,7 @@ ARGUMENTS
   TARGET  PostgreSQL connection string for the target database
 
 FLAGS
-  -a, --app=<value>                 (required) app to run command against
+  -a, --app=<value>                 (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>              git remote of app to use
       --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -1037,7 +1037,7 @@ EXAMPLES
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 ```
 
-_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/pull.ts)_
+_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/pull.ts)_
 
 ## `heroku pg:push SOURCE TARGET`
 
@@ -1054,7 +1054,7 @@ ARGUMENTS
           DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>                 (required) app to run command against
+  -a, --app=<value>                 (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>              git remote of app to use
       --exclude-table-data=<value>  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -1078,7 +1078,7 @@ EXAMPLES
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
 ```
 
-_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/push.ts)_
+_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/push.ts)_
 
 ## `heroku pg:reset [DATABASE]`
 
@@ -1094,7 +1094,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>         (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -e, --extensions=<value>  comma-separated list of extensions to pre-install in the public schema
   -r, --remote=<value>      git remote of app to use
@@ -1103,7 +1103,7 @@ DESCRIPTION
   delete all data in DATABASE
 ```
 
-_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/reset.ts)_
+_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/reset.ts)_
 
 ## `heroku pg:settings [DATABASE]`
 
@@ -1119,14 +1119,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show your current database settings
 ```
 
-_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/index.ts)_
+_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/index.ts)_
 
 ## `heroku pg:settings:auto-explain [DATABASE] [VALUE]`
 
@@ -1143,7 +1143,7 @@ ARGUMENTS
   VALUE...     boolean indicating if execution plans of queries will be logged for future connections
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1152,7 +1152,7 @@ DESCRIPTION
   Restart your Heroku app and/or restart existing connections for logging to start taking place.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain.ts)_
+_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain.ts)_
 
 ## `heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE]`
 
@@ -1169,7 +1169,7 @@ ARGUMENTS
   VALUE     boolean indicating if execution plans get logged
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1180,7 +1180,7 @@ DESCRIPTION
   impacts to your database and should be used with caution.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-analyze.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-analyze.ts)_
 
 ## `heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE]`
 
@@ -1197,7 +1197,7 @@ ARGUMENTS
   VALUE     boolean indicating if the database has buffer statistics enabled
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1206,7 +1206,7 @@ DESCRIPTION
   pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-buffers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-buffers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-format [DATABASE] [VALUE]`
 
@@ -1224,7 +1224,7 @@ ARGUMENTS
             <options: text|json|yaml|xml>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1232,7 +1232,7 @@ DESCRIPTION
   The allowed values are text, xml, json, and yaml. The default is text.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-format.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-format.ts)_
 
 ## `heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE]`
 
@@ -1250,7 +1250,7 @@ ARGUMENTS
             value of 0 logs all query execution plans.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1258,7 +1258,7 @@ DESCRIPTION
   Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
 
 ## `heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`
 
@@ -1275,14 +1275,14 @@ ARGUMENTS
   VALUE     boolean indicating if execution plan logs include nested statements
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   Nested statements are included in the execution plan's log.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
 
 ## `heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`
 
@@ -1299,7 +1299,7 @@ ARGUMENTS
   VALUE     boolean indicating if the database has trigger execution statistics enabled
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1307,7 +1307,7 @@ DESCRIPTION
   This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-triggers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-triggers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`
 
@@ -1324,7 +1324,7 @@ ARGUMENTS
   VALUE     boolean indicating if the database has verbose execution plan logging enabled
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1332,7 +1332,7 @@ DESCRIPTION
   This is equivalent to calling EXPLAIN VERBOSE.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
 
 ## `heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE]`
 
@@ -1349,14 +1349,14 @@ ARGUMENTS
   VALUE     boolean indicating if data replication slot details get logged
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   displays stats on replication slots on your database, the default value is "off"
 ```
 
-_See code: [src/commands/pg/settings/explain-data-connector-details.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/explain-data-connector-details.ts)_
+_See code: [src/commands/pg/settings/explain-data-connector-details.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/explain-data-connector-details.ts)_
 
 ## `heroku pg:settings:log-connections [DATABASE] [VALUE]`
 
@@ -1373,7 +1373,7 @@ ARGUMENTS
   VALUE     boolean indicating if database login attempts get logged
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1381,7 +1381,7 @@ DESCRIPTION
   Setting log_connections to false stops emitting log messages for all attempts to login to the database.
 ```
 
-_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/log-connections.ts)_
+_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/log-connections.ts)_
 
 ## `heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`
 
@@ -1399,7 +1399,7 @@ ARGUMENTS
             a lock
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1411,7 +1411,7 @@ DESCRIPTION
   transaction.
 ```
 
-_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/log-lock-waits.ts)_
+_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/log-lock-waits.ts)_
 
 ## `heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`
 
@@ -1428,7 +1428,7 @@ ARGUMENTS
   VALUE     milliseconds to wait for a statement to complete before logging it
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1438,7 +1438,7 @@ DESCRIPTION
   durations.
 ```
 
-_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/log-min-duration-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/log-min-duration-statement.ts)_
 
 ## `heroku pg:settings:log-min-error-statement [DATABASE] [VALUE]`
 
@@ -1455,7 +1455,7 @@ ARGUMENTS
   VALUE     (error|log|fatal|panic)
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1464,7 +1464,7 @@ DESCRIPTION
   Use this setting to prevent logging SQL queries that contain sensitive information. Default is "error".
 ```
 
-_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/log-min-error-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/log-min-error-statement.ts)_
 
 ## `heroku pg:settings:log-statement [DATABASE] [VALUE]`
 
@@ -1482,7 +1482,7 @@ ARGUMENTS
             <options: none|ddl|mod|all>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1495,7 +1495,7 @@ DESCRIPTION
   all  - All statements are logged
 ```
 
-_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/log-statement.ts)_
+_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/log-statement.ts)_
 
 ## `heroku pg:settings:track-functions [DATABASE] [VALUE]`
 
@@ -1513,7 +1513,7 @@ ARGUMENTS
             <options: none|pl|all>
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1525,7 +1525,7 @@ DESCRIPTION
   not tracked
 ```
 
-_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/settings/track-functions.ts)_
+_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/settings/track-functions.ts)_
 
 ## `heroku pg:unfollow DATABASE`
 
@@ -1540,7 +1540,7 @@ ARGUMENTS
             app's database, prepend the app name to the config var or alias with `APP_NAME::`
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -1548,7 +1548,7 @@ DESCRIPTION
   stop a replica from following and make it a writeable database
 ```
 
-_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/unfollow.ts)_
+_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/unfollow.ts)_
 
 ## `heroku pg:upgrade [DATABASE]`
 
@@ -1564,7 +1564,7 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  PostgreSQL version to upgrade to
@@ -1575,7 +1575,7 @@ DESCRIPTION
   To upgrade to another PostgreSQL version, use pg:copy instead
 ```
 
-_See code: [src/commands/pg/upgrade.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/upgrade.ts)_
+_See code: [src/commands/pg/upgrade.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/upgrade.ts)_
 
 ## `heroku pg:vacuum-stats [DATABASE]`
 
@@ -1591,14 +1591,14 @@ ARGUMENTS
             DATABASE_URL.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   show dead rows and whether an automatic vacuum is expected to be triggered
 ```
 
-_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/vacuum-stats.ts)_
+_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/vacuum-stats.ts)_
 
 ## `heroku pg:wait [DATABASE]`
 
@@ -1614,7 +1614,7 @@ ARGUMENTS
             databases.
 
 FLAGS
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>         git remote of app to use
       --no-notify              do not show OS notification
       --wait-interval=<value>  how frequently to poll in seconds (to avoid rate limiting)
@@ -1623,4 +1623,4 @@ DESCRIPTION
   blocks until database is available
 ```
 
-_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/pg/wait.ts)_
+_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/pg/wait.ts)_
