@@ -1,6 +1,9 @@
-# All files require review from the Dev Tools team
+# All files require review from the Heroku Front-End Dev Tools team.
 
+# Comment line immediately above ownership line is reserved for related GUS information.
+# Please exercise caution while editing.
+
+#GUSINFO: Heroku FE Dev Tools,Heroku CLI & Plugins
 * @heroku/frontend-dev-tooling
 
 #ECCN:Open Source
-#GUSINFO:Heroku Front End Dept (FE Infra & Arch),Heroku CLI
