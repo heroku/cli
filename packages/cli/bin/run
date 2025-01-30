@@ -52,14 +52,14 @@ const main = async () => {
   try {
     await config.load()
     const {_: [commandName, ...args], ...flags} = yargs
-    if (!args.length && !Object.keys(flags).length) {
+    if (!commandName && !args.length && !Object.keys(flags).length) {
       return await herokuRepl(config)
     }
     if (flags.prompt) {
       delete flags.prompt
       await promptUser(config, commandName, args, flags)
     }
-    await oclif.run([commandName, ...args], config)
+    await oclif.run(undefined, config)
     await oclifFlush()
   } catch (error) {
     // capture any errors raised by oclif
