@@ -48,7 +48,7 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -76,7 +76,7 @@ EXAMPLES
   $ heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -98,7 +98,7 @@ EXAMPLES
   $ heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -123,7 +123,7 @@ EXAMPLES
   $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -148,7 +148,7 @@ EXAMPLES
   $ heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update HOSTNAME`
 
@@ -174,7 +174,7 @@ EXAMPLES
   $ heroku domains:update www.example.com --cert mycert
 ```
 
-_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/update.ts)_
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -196,4 +196,4 @@ DESCRIPTION
   wait for domain to be active for an app
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.3/packages/cli/src/commands/domains/wait.ts)_
