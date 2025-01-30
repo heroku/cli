@@ -7,7 +7,7 @@ LABEL "com.github.actions.color"="purple"
 
 LABEL "repository"="http://github.com/heroku/cli"
 LABEL "homepage"="http://github.com/actions"
-LABEL "maintainer"="Jeff Dickey"
+LABEL "maintainer"="Heroku"
 
 ADD entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
