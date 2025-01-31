@@ -50,9 +50,9 @@ export async function readJSON(file: string) {
   return deps.fs.readJSON(file)
 }
 
-export async function outputJSON(file: string, data: any, options: FS.WriteOptions = {}) {
+export async function outputJSON(file: string, data: any) {
   debug('outputJSON', file)
-  return deps.fs.outputJSON(file, data, {spaces: 2, ...options})
+  return deps.fs.outputJSON(file, data, {spaces: 2})
 }
 
 export function realpathSync(p: string) {
