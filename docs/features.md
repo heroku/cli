@@ -17,7 +17,7 @@ USAGE
   $ heroku features -a <value> [-r <value>] [--json]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            output in json format
 
@@ -25,7 +25,7 @@ DESCRIPTION
   list available app features
 ```
 
-_See code: [src/commands/features/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/features/index.ts)_
+_See code: [src/commands/features/index.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/features/index.ts)_
 
 ## `heroku features:disable FEATURE`
 
@@ -39,14 +39,14 @@ ARGUMENTS
   FEATURE  unique identifier or name of the app feature
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   disables an app feature
 ```
 
-_See code: [src/commands/features/disable.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/features/disable.ts)_
+_See code: [src/commands/features/disable.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/features/disable.ts)_
 
 ## `heroku features:enable FEATURE`
 
@@ -60,14 +60,14 @@ ARGUMENTS
   FEATURE  unique identifier or name of the app feature
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   enables an app feature
 ```
 
-_See code: [src/commands/features/enable.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/features/enable.ts)_
+_See code: [src/commands/features/enable.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/features/enable.ts)_
 
 ## `heroku features:info FEATURE`
 
@@ -81,7 +81,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the app feature
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            output in json format
 
@@ -89,4 +89,4 @@ DESCRIPTION
   display information about a feature
 ```
 
-_See code: [src/commands/features/info.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/features/info.ts)_
+_See code: [src/commands/features/info.ts](https://github.com/heroku/cli/blob/v10.0.3-alpha.0/packages/cli/src/commands/features/info.ts)_
