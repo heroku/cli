@@ -133,11 +133,11 @@ describe('apps:create', function () {
       },
     }
 
-    let readFileStub: ReturnType<typeof sinon.stub>
-    let safeLoadStub: ReturnType<typeof sinon.stub>
+    let readFileStub: sinon.SinonStub
+    let safeLoadStub: sinon.SinonStub
 
     beforeEach(async function () {
-      readFileStub = sinon.stub(fse, 'readFile').returns(Promise.resolve((Buffer.from(''))))
+      readFileStub = sinon.stub(fse, 'readFile').resolves(Buffer.from(''))
       safeLoadStub = sinon.stub(yaml, 'load').returns(manifest)
 
       proxyquire('../../../../src/commands/apps/create', {
