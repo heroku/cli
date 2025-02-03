@@ -82,6 +82,7 @@
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@oclif/test": "^2.3.28",
     "@types/ansi-styles": "^3.2.1",
     "@types/bytes": "^3.1.4",
@@ -127,10 +128,11 @@
     "read-pkg": "^4.0.1",
     "rimraf": "5.0.5",
     "sinon": "^19.0.2",
+    "source-map-support": "^0.5.21",
     "std-mocks": "^2.0.0",
     "strip-ansi": "6.0.1",
     "tmp": "^0.2.3",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "4.8.4"
   },
   "engines": {
@@ -378,6 +380,9 @@
     "build": "rm -rf lib && tsc",
     "build:dev": "rm -rf lib && tsc --sourcemap",
     "lint": "eslint . --ext .ts --config ../../.eslintrc --ignore-path ../../.eslintignore-lib",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
+    "coverage:html": "nyc --reporter=html --reporter=text-summary npm run test",
+    "coverage:check": "nyc --check-coverage --branches 80 --statements 80 --functions 80 --lines 80 npm run test",
     "postpublish": "rm -f oclif.manifest.json",
     "prepack": "yarn run build && oclif manifest",
     "pretest": "tsc -p test --noEmit && cd ../.. && yarn build",
@@ -385,7 +390,7 @@
     "test:integration": "yarn pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
     "test:smoke": "yarn pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
     "test:unit:justTest:local": "nyc mocha \"test/**/*.unit.test.ts\"",
-    "test:unit:justTest:ci": "nyc mocha --forbid-only \"test/**/*.unit.test.ts\"",
+    "test:unit:justTest:ci": "nyc --reporter=lcov --reporter=text-summary mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test": "yarn pretest && yarn test:unit:justTest:ci",
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
