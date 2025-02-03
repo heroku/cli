@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Get the last line of the version output
+last_line=$(npm show node@20 version | tail -n 1)
+
+# Extract the second token using awk and remove quotes
+version=$(echo "$last_line" | awk '{print $2}' | tr -d "'")
+
+if [ -z "$version" ]; then
+    echo "Error: Could not extract version number" >&2
+    exit 1
+fi
+
+# Update the nodejs line in .tool-versions file
+# If nodejs line exists, replace it; if not, append it
+if grep -q "^nodejs" .tool-versions; then
+    sed -i '' "s/^nodejs.*$/nodejs $version/" .tool-versions
+else
+    echo "nodejs $version" >> .tool-versions
+fi
+
+echo "Updated nodejs version to $version in .tool-versions"
