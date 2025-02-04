@@ -7,8 +7,8 @@ import runCommand from '../../../helpers/runCommand'
 const proxyquire = require('proxyquire')
 let all = []
 let addon
-let allSinonStub: ReturnType<typeof sinon.stub>
-let addonSinonStub: ReturnType<typeof sinon.stub>
+let allSinonStub: sinon.SinonStub
+let addonSinonStub: sinon.SinonStub
 
 const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
   const {allResult, addonResult} = resultsObject
