@@ -23,7 +23,7 @@ DESCRIPTION
   display the current maintenance status of app
 ```
 
-_See code: [src/commands/maintenance/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/maintenance/index.ts)_
+_See code: [src/commands/maintenance/index.ts](https://github.com/heroku/cli/blob/v10.0.3/packages/cli/src/commands/maintenance/index.ts)_
 
 ## `heroku maintenance:off`
 
@@ -41,7 +41,7 @@ DESCRIPTION
   take the app out of maintenance mode
 ```
 
-_See code: [src/commands/maintenance/off.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/maintenance/off.ts)_
+_See code: [src/commands/maintenance/off.ts](https://github.com/heroku/cli/blob/v10.0.3/packages/cli/src/commands/maintenance/off.ts)_
 
 ## `heroku maintenance:on`
 
@@ -59,4 +59,4 @@ DESCRIPTION
   put the app into maintenance mode
 ```
 
-_See code: [src/commands/maintenance/on.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/maintenance/on.ts)_
+_See code: [src/commands/maintenance/on.ts](https://github.com/heroku/cli/blob/v10.0.3/packages/cli/src/commands/maintenance/on.ts)_

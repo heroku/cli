@@ -22,4 +22,4 @@ DESCRIPTION
   Use heroku members:* to manage team members.
 ```
 
-_See code: [src/commands/teams/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/teams/index.ts)_
+_See code: [src/commands/teams/index.ts](https://github.com/heroku/cli/blob/v10.0.3/packages/cli/src/commands/teams/index.ts)_
