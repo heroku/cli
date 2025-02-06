@@ -1,130 +1,82 @@
-import {APIClient} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
 import {expect} from 'chai'
+import {APIClient} from '@heroku-cli/command'
 import * as nock from 'nock'
-import {isCedarApp, isFirApp} from '../../../../src/lib/apps/generation'
-import {App} from '../../../../src/lib/types/fir'
+import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation'
+import {Config} from '@oclif/core'
 
-describe('app generation guard helper functions', function () {
-  let api: nock.Scope
-  let heroku: APIClient
-
-  before(async function () {
-    const config = await Config.load()
-    heroku = new APIClient(config)
-  })
-
-  describe('isCedarApp with an app name (string) parameter', function () {
-    beforeEach(async function () {
-      api = nock('https://api.heroku.com', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      })
+describe('generation', function () {
+  describe('getGeneration', function () {
+    it('identifies fir generation from string format web-xxxxxxxxx-xxxxx', function () {
+      expect(getGeneration('web-abc56789ee1-12345')).to.equal('fir')
     })
 
-    afterEach(function () {
-      api.done()
+    it('identifies cedar generation from string format web.n', function () {
+      expect(getGeneration('web.0')).to.equal('cedar')
+      expect(getGeneration('web.100')).to.equal('cedar')
     })
 
-    context('when the API client parameter is missing', function () {
-      it('throws an error', async function () {
-        try {
-          await isCedarApp('my-app')
-        } catch (error: unknown) {
-          const {message} = error as Error
-          expect(message).to.equal('herokuApi parameter is required when passing an app name')
-        }
-      })
+    it('identifies fir generation from object with generation property', function () {
+      const app = {generation: 'fir'}
+      expect(getGeneration(app)).to.equal('fir')
     })
 
-    context('when name targets a Cedar app', function () {
-      it('makes a request for app info and returns true', async function () {
-        api
-          .get('/apps/my-app')
-          .reply(200, {generation: {name: 'cedar'}})
-
-        expect(await isCedarApp('my-app', heroku)).to.be.true
-      })
+    it('identifies cedar generation from object with generation property', function () {
+      const app = {generation: 'cedar'}
+      expect(getGeneration(app)).to.equal('cedar')
     })
 
-    context('when name targets a Fir app', function () {
-      it('makes a request for app info and returns false', async function () {
-        api
-          .get('/apps/my-app')
-          .reply(200, {generation: {name: 'fir'}})
+    it('returns undefined for invalid generation format', function () {
+      expect(getGeneration('invalid-format')).to.be.undefined
+    })
 
-        expect(await isCedarApp('my-app', heroku)).to.be.false
-      })
+    it('handles undefined generation', function () {
+      const app = {generation: undefined}
+      expect(getGeneration(app)).to.be.undefined
     })
   })
 
-  describe('isCedarApp with an App object parameter', function () {
-    context('when object is a Cedar app', function () {
-      it('returns true', async function () {
-        expect(await isCedarApp({generation: {name: 'cedar'}} as App, heroku)).to.be.true
-      })
+  describe('getGenerationByAppId', function () {
+    beforeEach(function () {
+      nock.cleanAll()
     })
 
-    context('when object is a Fir app', function () {
-      it('returns false', async function () {
-        expect(await isCedarApp({generation: {name: 'fir'}} as App, heroku)).to.be.false
-      })
-    })
-  })
+    it('fetches and returns fir generation for app', async function () {
+      const config = await Config.load()
+      const api = new APIClient(config)
+      const app = {generation: 'fir'}
 
-  describe('isFirApp with an app name (string) parameter', function () {
-    beforeEach(async function () {
-      api = nock('https://api.heroku.com', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      })
-    })
+      nock('https://api.heroku.com')
+        .get('/apps/test-app')
+        .reply(200, app)
 
-    afterEach(function () {
-      api.done()
+      const generation = await getGenerationByAppId('test-app', api)
+      expect(generation).to.equal('fir')
     })
 
-    context('when the API client parameter is missing', function () {
-      it('throws an error', async function () {
-        try {
-          await isFirApp('my-app')
-        } catch (error: unknown) {
-          const {message} = error as Error
-          expect(message).to.equal('herokuApi parameter is required when passing an app name')
-        }
-      })
+    it('fetches and returns cedar generation for app', async function () {
+      const config = await Config.load()
+      const api = new APIClient(config)
+      const app = {generation: 'cedar'}
+
+      nock('https://api.heroku.com')
+        .get('/apps/test-app')
+        .reply(200, app)
+
+      const generation = await getGenerationByAppId('test-app', api)
+      expect(generation).to.equal('cedar')
     })
 
-    context('when name targets a Cedar app', function () {
-      it('makes a request for app info and returns false', async function () {
-        api
-          .get('/apps/my-app')
-          .reply(200, {generation: 'cedar'})
+    it('handles app without generation', async function () {
+      const config = await Config.load()
+      const api = new APIClient(config)
+      const app = {}
 
-        expect(await isFirApp('my-app', heroku)).to.be.false
-      })
-    })
+      nock('https://api.heroku.com')
+        .get('/apps/test-app')
+        .reply(200, app)
 
-    context('when name targets a Fir app', function () {
-      it('makes a request for app info and returns true', async function () {
-        api
-          .get('/apps/my-app')
-          .reply(200, {generation: {name: 'fir'}})
-
-        expect(await isFirApp('my-app', heroku)).to.be.true
-      })
-    })
-  })
-
-  describe('isFirApp with an App object parameter', function () {
-    context('when object is a Cedar app', function () {
-      it('returns false', async function () {
-        expect(await isFirApp({generation: {name: 'cedar'}} as App, heroku)).to.be.false
-      })
-    })
-
-    context('when object is a Fir app', function () {
-      it('returns true', async function () {
-        expect(await isFirApp({generation: {name: 'fir'}} as App, heroku)).to.be.true
-      })
+      const generation = await getGenerationByAppId('test-app', api)
+      expect(generation).to.be.undefined
     })
   })
 })

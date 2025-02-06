@@ -7,6 +7,7 @@ import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} fro
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
 import type {OciImage, Slug, PipelineCoupling} from '../../lib/types/fir'
 import type {Commit, GitHubDiff} from '../../lib/types/github'
+import {GenerationKind, getGeneration} from '../../lib/apps/generation'
 
 interface AppInfo {
   name: string;
@@ -87,7 +88,7 @@ export default class PipelinesDiff extends Command {
 
   kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
-  getAppInfo = async (appName: string, appId: string, generation: string): Promise<AppInfo> => {
+  getAppInfo = async (appName: string, appId: string, generation: GenerationKind): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
       .catch(() => {
@@ -139,7 +140,7 @@ export default class PipelinesDiff extends Command {
     const {body: pipeline} = await getPipeline(this.heroku, coupling.pipeline!.id!)
 
     const targetAppId = coupling!.app!.id!
-    const generation = pipeline!.generation!.name!
+    const generation = getGeneration(pipeline)!
 
     ux.action.start('Fetching apps from pipeline')
     const allApps = await listPipelineApps(this.heroku, coupling!.pipeline!.id!)

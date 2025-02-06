@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {Space} from '../../lib/types/fir'
+import {getGeneration} from '../../lib/apps/generation'
 
 type SpaceArray = Array<Required<Space>>
 
@@ -58,7 +59,7 @@ export default class Index extends Command {
         Team: {get: space => space.team.name},
         Region: {get: space => space.region.name},
         State: {get: space => space.state},
-        Generation: {get: space => space.generation},
+        Generation: {get: space => getGeneration(space)},
         createdAt: {
           header: 'Created At',
           get: space => space.created_at,

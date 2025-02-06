@@ -6,6 +6,7 @@ import confirmCommand from '../../lib/confirmCommand'
 import {displayNat} from '../../lib/spaces/spaces'
 import color from '@heroku-cli/color'
 import {Space} from '../../lib/types/fir'
+import {getGeneration} from '../../lib/apps/generation'
 
 type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
@@ -45,7 +46,7 @@ export default class Destroy extends Command {
     if (space.state === 'allocated') {
       ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
-        const ipv6 = space.generation?.name === 'fir' ? ' and IPv6' : ''
+        const ipv6 = getGeneration(space) === 'fir' ? ' and IPv6' : ''
         natWarning = heredoc`
         ${color.dim('===')} ${color.bold('WARNING: Outbound IPs Will Be Reused')}
         ${color.yellow(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}

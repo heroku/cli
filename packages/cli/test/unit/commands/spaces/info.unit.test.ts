@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
+import {getGeneration} from '../../../../src/lib/apps/generation'
 
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps
@@ -34,7 +35,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${space.created_at}
     `))
   })
@@ -74,7 +75,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${space.created_at}
     `))
   })
@@ -101,7 +102,7 @@ describe('spaces:info', function () {
       State:        ${space.state}
       Shield:       off
       Outbound IPs: disabled
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${space.created_at}
     `))
   })
@@ -124,7 +125,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${space.created_at}
     `))
   })
@@ -147,7 +148,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${shieldSpace.data_cidr}
       State:        ${shieldSpace.state}
       Shield:       on
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${shieldSpace.created_at}
     `))
   })
@@ -169,7 +170,7 @@ describe('spaces:info', function () {
       Data CIDR:    ${space.data_cidr}
       State:        ${space.state}
       Shield:       off
-      Generation:   ${space.generation.name}
+      Generation:   ${getGeneration(space)}
       Created at:   ${space.created_at}
     `))
   })

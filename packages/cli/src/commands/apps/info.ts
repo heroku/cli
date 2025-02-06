@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as util from 'util'
 import * as _ from 'lodash'
 import {filesize} from 'filesize'
+import {getGeneration} from '../../lib/apps/generation'
 const {countBy, snakeCase} = _
 
 function formatDate(date: Date) {
@@ -71,7 +72,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   data['Git URL'] = info.app.git_url
   data['Web URL'] = info.app.web_url
   data['Repo Size'] = filesize(info.app.repo_size, {standard: 'jedec', round: 0})
-  if (info.app.generation.name !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {standard: 'jedec', round: 0})
+  if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {standard: 'jedec', round: 0})
   data.Owner = info.app.owner.email
   data.Region = info.app.region.name
   data.Dynos = countBy(info.dynos, 'type')
@@ -159,7 +160,7 @@ repo_size=5000000
       print('git_url', info.app.git_url)
       print('web_url', info.app.web_url)
       print('repo_size', filesize(info.app.repo_size, {standard: 'jedec', round: 0}))
-      if (info.app.generation.name !== 'fir') print('slug_size', filesize(info.app.slug_size, {standard: 'jedec', round: 0}))
+      if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size, {standard: 'jedec', round: 0}))
       print('owner', info.app.owner.email)
       print('region', info.app.region.name)
       print('dynos', util.inspect(countBy(info.dynos, 'type')))
