@@ -5,8 +5,6 @@ import colorize from './colorize'
 import {LogSession} from '../types/fir'
 import {getGenerationByAppId} from '../apps/generation'
 
-const EventSource = require('@heroku/eventsource')
-
 interface LogDisplayerOptions {
   app: string,
   dyno?: string
@@ -16,47 +14,79 @@ interface LogDisplayerOptions {
   type?: string
 }
 
-function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number) {
-  return new Promise<void>(function (resolve, reject) {
-    const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
-    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
-    const es = new EventSource(logplexURL, {
-      proxy,
-      headers: {
-        'User-Agent': userAgent,
-      },
-    })
-
-    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
-      if (err && (err.status || err.message)) {
-        const msg = (isTail && (err.status === 404 || err.status === 403)) ?
-          'Log stream timed out. Please try again.' :
-          `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
-        reject(new Error(msg))
-        es.close()
-      }
-
-      if (!isTail) {
-        resolve()
-        es.close()
-      }
-
-      // should only land here if --tail and no error status or message
-    })
-
-    es.addEventListener('message', function (e: { data: string }) {
-      e.data.trim().split(/\n+/).forEach(line => {
-        ux.log(colorize(line))
-      })
-    })
-
-    if (isTail && recreateSessionTimeout) {
-      setTimeout(() => {
-        reject(new Error('Fir log stream timeout'))
-        es.close()
-      }, recreateSessionTimeout)
-    }
+async function readLogs(logplexURL: string, isTail?:boolean, recreateSessionTimeout?: number) {
+  // node 20+ will automatically use HTTP_PROXY/HTTPS_PROXY env variables with fetch
+  const response = await fetch(logplexURL, {
+    headers: {
+      'User-Agent': process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run',
+      Accept: 'text/event-stream',
+    },
   })
+
+  if (!response.ok) {
+    const msg = (isTail && (response.status === 404 || response.status === 403)) ?
+      'Log stream timed out. Please try again.' :
+      `Logs stream failed with: ${response.status} ${response.statusText}`
+    throw new Error(msg)
+  }
+
+  if (!response.body) {
+    throw new Error('No response body received')
+  }
+
+  const reader = response.body.getReader()
+
+  // logplex sessions seem to timeout after 15 min anyway
+  let timeoutId: NodeJS.Timeout | undefined
+  if (isTail && recreateSessionTimeout) {
+    timeoutId = setTimeout(() => {
+      reader.cancel()
+      throw new Error('Fir log stream timeout')
+    }, recreateSessionTimeout)
+  }
+
+  try {
+    await beginReading(reader)
+  } catch (error) {
+    reader.cancel()
+    throw error
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+  }
+}
+
+async function beginReading(reader: ReadableStreamDefaultReader<Uint8Array>): Promise<void> {
+  let buffer = ''
+  const decoder = new TextDecoder()
+  while (true) {
+    const {value, done} = await reader.read()
+
+    if (done) {
+      return
+    }
+    // could also use Buffer.from(value).toString() here
+    // but Buffer has a slight disadvantage in performance
+
+    buffer += decoder.decode(value, {stream: true})
+    const lines = buffer.split('\n')
+    buffer = lines.pop() || ''
+
+    for (const line of lines) {
+      if (line.trim()) {
+        // Parse SSE format if the data is in that format
+
+        if (line.match(/^id: (.+)$/)) {
+          continue
+        }
+
+        const match = line.match(/^data: (.+)$/)
+        const data = match ? match[1] : line
+        ux.log(colorize(data))
+      }
+    }
+  }
 }
 
 async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
