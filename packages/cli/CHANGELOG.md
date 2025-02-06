@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.1.0](https://github.com/heroku/cli/compare/v10.0.2...v10.1.0) (2025-02-06)
+
+
+### Features
+
+* update command warning message for Fir spaces ([#3171](https://github.com/heroku/cli/issues/3171)) ([43d9164](https://github.com/heroku/cli/commit/43d9164f017967e6fceef025b45a65b24e095ecb))
+
+
+
+
+### Bug Fixes
+
+* send correct value to API for GRPC telemetry drains ([#3178](https://github.com/heroku/cli/issues/3178)) ([48b7f8a](https://github.com/heroku/cli/commit/48b7f8ad341f0bad7136c35ae840b1249aecd805))
+* unable to list drains for a space in Fir ([#3170](https://github.com/heroku/cli/issues/3170)) ([1ee8f62](https://github.com/heroku/cli/commit/1ee8f625acf586096f6f609926656a4cb046481a))
+* update install-standalone script ([#3179](https://github.com/heroku/cli/issues/3179)) ([f6b8ea6](https://github.com/heroku/cli/commit/f6b8ea6c67a33a4029018da6961ca0ff9293b786))
+
+
+
+
+
 ## [10.0.2](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2) (2025-01-09)
 
 
