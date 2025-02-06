@@ -2,6 +2,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {SpaceNat} from '../types/fir'
 import {SpaceWithOutboundIps} from '../types/spaces'
+import {getGeneration} from '../apps/generation'
 
 export function displayShieldState(space: Heroku.Space) {
   return space.shield ? 'on' : 'off'
@@ -28,7 +29,7 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
         State: space.state,
         Shield: displayShieldState(space),
         'Outbound IPs': displayNat(space.outbound_ips),
-        Generation: space.generation.name,
+        Generation: getGeneration(space),
         'Created at': space.created_at,
       },
       ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],

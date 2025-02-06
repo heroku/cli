@@ -4,6 +4,7 @@ import {App} from '../../lib/types/fir'
 import color from '@heroku-cli/color'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
+import {getGeneration} from '../../lib/apps/generation'
 
 export default class Index extends Command {
   static description = 'display the buildpacks for an app'
@@ -21,7 +22,7 @@ export default class Index extends Command {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    const buildpacks = await buildpacksCommand.fetch(flags.app, app.generation === 'fir')
+    const buildpacks = await buildpacksCommand.fetch(flags.app, getGeneration(app) === 'fir')
     if (buildpacks.length === 0) {
       this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {

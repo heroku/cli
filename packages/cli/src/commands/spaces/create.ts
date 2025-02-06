@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import {displayShieldState} from '../../lib/spaces/spaces'
 import {RegionCompletion} from '../../lib/autocomplete/completions'
 import {splitCsv} from '../../lib/spaces/parsers'
+import {getGeneration} from '../../lib/apps/generation'
 
 export default class Create extends Command {
   static topic = 'spaces'
@@ -103,7 +104,7 @@ export default class Create extends Command {
 
     ux.styledHeader(space.name)
     ux.styledObject({
-      ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: space.generation, 'Created at': space.created_at,
+      ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }
 }

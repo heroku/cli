@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {App, Formation} from '../../../lib/types/fir'
+import {getGeneration} from '../../../lib/apps/generation'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
@@ -42,7 +43,7 @@ export default class Enable extends Command {
     const formations = formationResponse.body
     const webFormation = formations.find((f: any) => f.type === 'web')
 
-    if (app.generation === 'fir') {
+    if (getGeneration(app) === 'fir') {
       throw new Error('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.')
     }
 

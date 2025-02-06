@@ -8,6 +8,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import * as sinon from 'sinon'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
+import {getGeneration} from '../../../../src/lib/apps/generation'
 
 describe('spaces:wait', function () {
   let allocatingSpace: SpaceWithOutboundIps
@@ -56,7 +57,7 @@ describe('spaces:wait', function () {
       State:        ${allocatedSpace.state}
       Shield:       off
       Outbound IPs: 123.456.789.123
-      Generation:   ${allocatedSpace.generation.name}
+      Generation:   ${getGeneration(allocatedSpace)}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true
@@ -115,7 +116,7 @@ describe('spaces:wait', function () {
       Data CIDR:    ${allocatedSpace.data_cidr}
       State:        ${allocatedSpace.state}
       Shield:       off
-      Generation:   ${allocatedSpace.generation.name}
+      Generation:   ${getGeneration(allocatedSpace)}
       Created at:   ${allocatedSpace.created_at}
     `))
     expect(notifySpy.called).to.be.true
