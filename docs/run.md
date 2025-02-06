@@ -36,7 +36,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.1.0-beta.0/packages/cli/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -61,7 +61,7 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.1.0-beta.0/packages/cli/src/commands/run/detached.ts)_
 
 ## `heroku run:inside DYNO_NAME COMMAND`
 
@@ -98,4 +98,4 @@ EXAMPLES
     $ heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app
 ```
 
-_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.0.2/packages/cli/src/commands/run/inside.ts)_
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.1.0-beta.0/packages/cli/src/commands/run/inside.ts)_
