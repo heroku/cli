@@ -23,7 +23,7 @@ on:
 jobs:
   run-direwolf-tests:
     name: Run Direwolf CLI tests
-    runs-on: pub-hk-ubuntu-22.04-small
+    runs-on: pub-hk-ubuntu-24.04-ip
     timeout-minutes: 20
     environment: direwolf
     steps:
@@ -31,7 +31,7 @@ jobs:
     - name: Install jq
       run: |
         sudo apt-get update
-        sudo apt-get install -y awscli jq
+        sudo apt-get install -y jq
     - name: run direwolf suite
       run: ./scripts/direwolf-test-run
       env:
