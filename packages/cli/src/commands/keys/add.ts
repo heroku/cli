@@ -58,8 +58,14 @@ Uploading SSH public key /my/key.pub... done`
     }
 
     const findKey = async function () {
-      const defaultKey = path.join(sshdir, 'id_rsa.pub')
-      if (!(await fs.pathExists(defaultKey))) {
+      const defaultKeyPath = path.join(sshdir, 'id_rsa.pub')
+      const defaultKeyExists = await fs.pathExists(defaultKeyPath)
+
+      const keys = (await fs.readdir(sshdir))
+        .map(k => path.join(sshdir, k))
+        .filter(k => path.extname(k) === '.pub')
+
+      if (!defaultKeyExists && keys.length === 0) {
         ux.warn('Could not find an existing SSH key at ' + path.join('~', '.ssh', 'id_rsa.pub'))
 
         if (!flags.yes) {
@@ -68,15 +74,12 @@ Uploading SSH public key /my/key.pub... done`
         }
 
         await generate()
-        return defaultKey
+        return defaultKeyPath
       }
 
-      let keys = await fs.readdir(sshdir)
-      keys = keys.map(k => path.join(sshdir, k))
-      keys = keys.filter(k => path.extname(k) === '.pub')
       if (keys.length === 1) {
         const key = keys[0]
-        ux.warn(`Found an SSH public key at ${color.cyan(key)}`)
+        ux.info(`Found an SSH public key at ${color.cyan(key)}`)
 
         if (!flags.yes) {
           const resp = await confirmPrompt('Would you like to upload it to Heroku?')
@@ -108,4 +111,3 @@ Uploading SSH public key /my/key.pub... done`
     ux.action.stop()
   }
 }
-
