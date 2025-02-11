@@ -1,16 +1,24 @@
 import confirmCommand from '../confirmCommand'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-const printf = require('printf')
+import {HTTPError} from '@heroku/http-call'
+import printf = require('printf')
 
-export const trapConfirmationRequired = async function<T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) {
-  return await fn(confirm)
-    .catch((error: any) => {
-      if (!error.body || error.body.id !== 'confirmation_required')
-        throw error
-      return confirmCommand(app, confirm, error.body.message)
-        .then(() => fn(app))
-    })
+export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
+  try {
+    return await fn(confirm)
+  } catch (error) {
+    if (!isHttpError(error) || error.body?.id !== 'confirmation_required') {
+      throw error
+    }
+
+    await confirmCommand(app, confirm, error.body.message)
+    return fn(app)
+  }
+}
+
+function isHttpError(error: unknown): error is HTTPError {
+  return Boolean(error) && error instanceof Error && Reflect.has(error as object, 'body')
 }
 
 // This function assumes that price.cents will reflect price per month.
