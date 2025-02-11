@@ -5,8 +5,9 @@ import {expect} from 'chai'
 import * as _ from 'lodash'
 import * as sinon from 'sinon'
 import * as nock from 'nock'
-import stripAnsi = require('strip-ansi')
 import {unwrap} from '../../../helpers/utils/unwrap'
+import {HTTPError} from '@heroku/http-call'
+import stripAnsi = require('strip-ansi')
 const lolex = require('lolex')
 
 describe('addons:create', function () {
@@ -232,7 +233,7 @@ describe('addons:create', function () {
         provisioningResponse.done()
         provisionedResponse.done()
       })
-      it('notifies when provisioning failure occurs', function () {
+      it('notifies when provisioning failure occurs', async function () {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
         const asyncAddon = _.clone(addon)
         asyncAddon.state = 'provisioning'
@@ -246,24 +247,25 @@ describe('addons:create', function () {
         deprovisionedAddon.state = 'deprovisioned'
         api.get('/apps/myapp/addons/db3-swiftly-123')
           .reply(200, deprovisionedAddon)
-        return runCommand(Cmd, [
-          '--app',
-          'myapp',
-          '--as',
-          'mydb',
-          '--wait',
-          'heroku-postgresql:standard-0',
-          '--',
-          '--wait',
-        ])
-          .catch(() => {
-            expect(notifySpy.called).to.equal(true)
-            expect(notifySpy.calledOnce).to.equal(true)
-          })
+        try {
+          return await runCommand(Cmd, [
+            '--app',
+            'myapp',
+            '--as',
+            'mydb',
+            '--wait',
+            'heroku-postgresql:standard-0',
+            '--',
+            '--wait',
+          ])
+        } catch {
+          expect(notifySpy.called).to.equal(true)
+          expect(notifySpy.calledOnce).to.equal(true)
+        }
       })
     })
     context('when add-on provision errors', function () {
-      it('shows that it failed to provision', function () {
+      it('shows that it failed to provision', async function () {
         const deprovisionedAddon = _.clone(addon)
         deprovisionedAddon.state = 'deprovisioned'
         api.post('/apps/myapp/addons', {
@@ -277,12 +279,12 @@ describe('addons:create', function () {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        return cmdPromise.then(() => {
+        try {
+          await cmdPromise
           throw new Error('unreachable')
-        })
-          .catch(error => {
-            expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned')
-          })
+        } catch (error) {
+          expect((error as HTTPError).message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        }
       })
     })
   })
@@ -311,6 +313,7 @@ describe('addons:create', function () {
           expect(stripAnsi(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
         })
     })
+
     it('succeeds if confirmation does match', async function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'}, config: {follow: 'otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'}, confirm: 'myapp',
