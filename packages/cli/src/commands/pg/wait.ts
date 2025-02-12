@@ -39,6 +39,7 @@ export default class Wait extends Command {
       let status
       let waiting = false
       let retries = 20
+      const notFoundMessage = 'Waiting for provisioning to start...'
 
       while (true) {
         try {
@@ -51,7 +52,7 @@ export default class Wait extends Command {
           pgDebug(httpError)
           if (!retries || httpError.statusCode !== 404) throw httpError
           retries--
-          status = {'waiting?': true}
+          status = {'waiting?': true, message: notFoundMessage}
         }
 
         if (status['error?']) {
