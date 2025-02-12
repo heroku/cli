@@ -39,7 +39,7 @@ export default class Wait extends Command {
       let status
       let waiting = false
       let retries = 20
-      const notFoundMessage = 'Waiting for provisioning to start...'
+      const notFoundMessage = 'Waiting to provision...'
 
       while (true) {
         try {
