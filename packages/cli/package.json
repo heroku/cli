@@ -12,6 +12,7 @@
     "@heroku-cli/plugin-ps-exec": "2.6.1",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
+    "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "^8.0.13",
     "@heroku/http-call": "^5.4.0",
     "@inquirer/prompts": "^5.0.5",
