@@ -2,7 +2,6 @@ const path = require('path')
 
 globalThis.setInterval = () => ({unref: () => {}})
 const tm = globalThis.setTimeout
-globalThis.originalSetTimeout = tm
 globalThis.setTimeout = cb => {
   return tm(cb)
 }

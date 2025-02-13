@@ -1698,6 +1698,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku/eventsource@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@heroku/eventsource@npm:1.0.7"
+  dependencies:
+    original: ^1.0.0
+  checksum: f7a01f77c7624ab283f6bc7cc023742a06c6acc3e19ac74ca4da884b4e7cfe633e64dc4c41d6f94faf03c2268281918fe3d720a080490f9ff3b006a5ff4d4170
+  languageName: node
+  linkType: hard
+
 "@heroku/heroku-cli-util@npm:^8.0.13":
   version: 8.0.13
   resolution: "@heroku/heroku-cli-util@npm:8.0.13"
@@ -10324,6 +10333,7 @@ __metadata:
     "@heroku-cli/plugin-ps-exec": 2.6.1
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
+    "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^8.0.13
     "@heroku/http-call": ^5.4.0
     "@inquirer/prompts": ^5.0.5
@@ -13541,6 +13551,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"original@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "original@npm:1.0.2"
+  dependencies:
+    url-parse: ^1.4.3
+  checksum: 8dca9311dab50c8953366127cb86b7c07bf547d6aa6dc6873a75964b7563825351440557e5724d9c652c5e99043b8295624f106af077f84bccf19592e421beb9
+  languageName: node
+  linkType: hard
+
 "os-homedir@npm:^1.0.0":
   version: 1.0.2
   resolution: "os-homedir@npm:1.0.2"
@@ -14291,6 +14310,13 @@ __metadata:
     tmp: ^0.1.0
     write-json-file: ^4.1.1
   checksum: 7962df855b7a0405550ae39beb5c133574a11db475635d4fb6311c469d83cf9cae03efa4c8a0e02b82a4cae9d7bec072383354249f12ab136dc8590e57a40dbd
+  languageName: node
+  linkType: hard
+
+"querystringify@npm:^2.1.1":
+  version: 2.2.0
+  resolution: "querystringify@npm:2.2.0"
+  checksum: 5641ea231bad7ef6d64d9998faca95611ed4b11c2591a8cae741e178a974f6a8e0ebde008475259abe1621cb15e692404e6b6626e927f7b849d5c09392604b15
   languageName: node
   linkType: hard
 
@@ -16759,6 +16785,16 @@ __metadata:
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: f9b95004560754d30fd7dbee44b47414d662dc9863f1cf5632a7c7983648df11d23c0be73b9b4f9554463b61d5b0a520b70df9e1ee963ebb4af02e6da2cc80f3
+  languageName: node
+  linkType: hard
+
+"url-parse@npm:^1.4.3":
+  version: 1.5.10
+  resolution: "url-parse@npm:1.5.10"
+  dependencies:
+    querystringify: ^2.1.1
+    requires-port: ^1.0.0
+  checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
   languageName: node
   linkType: hard
 
