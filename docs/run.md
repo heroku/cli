@@ -17,7 +17,7 @@ USAGE
     [--no-notify]
 
 FLAGS
-  -a, --app=<value>     (required) parent app used by review apps
+  -a, --app=<value>     (required) [default: heroku-vscode] parent app used by review apps
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
@@ -36,7 +36,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -47,7 +47,7 @@ USAGE
   $ heroku run:detached -a <value> [-r <value>] [-e <value>] [-s <value>] [-t] [--type <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
@@ -61,7 +61,7 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/run/detached.ts)_
 
 ## `heroku run:inside DYNO_NAME COMMAND`
 
@@ -76,7 +76,7 @@ ARGUMENTS
   COMMAND...    command to run (Heroku automatically prepends ‘launcher’ to the command)
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
   -x, --exit-code       passthrough the exit code of the remote command
       --no-launcher     don’t prepend ‘launcher’ before a command
@@ -98,4 +98,4 @@ EXAMPLES
     $ heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app
 ```
 
-_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/run/inside.ts)_
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/run/inside.ts)_

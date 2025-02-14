@@ -17,7 +17,7 @@ USAGE
   $ heroku releases -a <value> [-n <value>] [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -n, --num=<value>     number of releases to show
   -r, --remote=<value>  git remote of app to use
       --json            output releases in json format
@@ -33,7 +33,7 @@ EXAMPLES
   v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
 
-_See code: [src/commands/releases/index.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/releases/index.ts)_
+_See code: [src/commands/releases/index.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/releases/index.ts)_
 
 ## `heroku releases:info [RELEASE]`
 
@@ -47,7 +47,7 @@ ARGUMENTS
   RELEASE  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output in shell format
       --json            output in json format
@@ -56,7 +56,7 @@ DESCRIPTION
   view detailed information for a release
 ```
 
-_See code: [src/commands/releases/info.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/releases/info.ts)_
+_See code: [src/commands/releases/info.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/releases/info.ts)_
 
 ## `heroku releases:output [RELEASE]`
 
@@ -70,14 +70,14 @@ ARGUMENTS
   RELEASE  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   View the release command output
 ```
 
-_See code: [src/commands/releases/output.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/releases/output.ts)_
+_See code: [src/commands/releases/output.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/releases/output.ts)_
 
 ## `heroku releases:rollback [RELEASE]`
 
@@ -91,7 +91,7 @@ ARGUMENTS
   RELEASE  ID of the release. If omitted, we use the last eligible release.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -100,4 +100,4 @@ DESCRIPTION
   If RELEASE is not specified, it will roll back to the last eligible release.
 ```
 
-_See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/releases/rollback.ts)_
+_See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/releases/rollback.ts)_

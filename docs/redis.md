@@ -29,7 +29,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -53,7 +53,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -66,7 +66,7 @@ EXAMPLES
   $ heroku redis:cli --app=my-app --confirm my-database
 ```
 
-_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/cli.ts)_
+_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/cli.ts)_
 
 ## `heroku redis:credentials [DATABASE]`
 
@@ -81,7 +81,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --reset           reset credentials
 
@@ -89,7 +89,7 @@ DESCRIPTION
   display credentials information
 ```
 
-_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/credentials.ts)_
+_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/credentials.ts)_
 
 ## `heroku redis:info [DATABASE]`
 
@@ -104,7 +104,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -115,7 +115,7 @@ ALIASES
   $ heroku redis
 ```
 
-_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/info.ts)_
+_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/info.ts)_
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
 
@@ -130,7 +130,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -c, --config=<value>  (required) set keyspace notifications configuration
   -r, --remote=<value>  git remote of app to use
 
@@ -154,7 +154,7 @@ DESCRIPTION
   pass an empty string ('') to disable keyspace notifications
 ```
 
-_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/keyspace-notifications.ts)_
+_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/keyspace-notifications.ts)_
 
 ## `heroku redis:maintenance [DATABASE]`
 
@@ -169,7 +169,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -f, --force           start maintenance without entering application maintenance mode
   -r, --remote=<value>  git remote of app to use
   -w, --window=<value>  set weekly UTC maintenance window (format: "Day HH:MM", where MM is 00 or 30)
@@ -180,7 +180,7 @@ DESCRIPTION
   Set or change the maintenance window for your Redis instance
 ```
 
-_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/maintenance.ts)_
+_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/maintenance.ts)_
 
 ## `heroku redis:maxmemory [DATABASE]`
 
@@ -195,7 +195,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -p, --policy=<value>  (required) set policy name
   -r, --remote=<value>  git remote of app to use
 
@@ -213,7 +213,7 @@ DESCRIPTION
   volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
-_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/maxmemory.ts)_
+_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/maxmemory.ts)_
 
 ## `heroku redis:promote [DATABASE]`
 
@@ -228,14 +228,14 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   sets DATABASE as your REDIS_URL
 ```
 
-_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/promote.ts)_
+_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/promote.ts)_
 
 ## `heroku redis:stats-reset [DATABASE]`
 
@@ -250,7 +250,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -258,7 +258,7 @@ DESCRIPTION
   reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
 ```
 
-_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/stats-reset.ts)_
+_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/stats-reset.ts)_
 
 ## `heroku redis:timeout [DATABASE]`
 
@@ -273,7 +273,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>   git remote of app to use
   -s, --seconds=<value>  (required) set timeout value
 
@@ -282,7 +282,7 @@ DESCRIPTION
   A value of zero means that connections will not be closed.
 ```
 
-_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/timeout.ts)_
+_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/timeout.ts)_
 
 ## `heroku redis:upgrade [DATABASE]`
 
@@ -297,7 +297,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [default: heroku-vscode] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  (required)
@@ -306,7 +306,7 @@ DESCRIPTION
   perform in-place version upgrade
 ```
 
-_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/upgrade.ts)_
+_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/upgrade.ts)_
 
 ## `heroku redis:wait [DATABASE]`
 
@@ -321,7 +321,7 @@ ARGUMENTS
             app.
 
 FLAGS
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>         git remote of app to use
       --wait-interval=<value>  how frequently to poll in seconds
 
@@ -329,4 +329,4 @@ DESCRIPTION
   wait for Redis instance to be available
 ```
 
-_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/redis/wait.ts)_
+_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v10.1.1-beta.0/packages/cli/src/commands/redis/wait.ts)_
