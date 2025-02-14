@@ -17,7 +17,7 @@ USAGE
   $ heroku access -a <value> [-r <value>] [--json]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            output in json format
 
@@ -25,7 +25,7 @@ DESCRIPTION
   list who has access to an app
 ```
 
-_See code: [src/commands/access/index.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/access/index.ts)_
+_See code: [src/commands/access/index.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/access/index.ts)_
 
 ## `heroku access:add EMAIL`
 
@@ -39,7 +39,7 @@ ARGUMENTS
   EMAIL  email address of the team member
 
 FLAGS
-  -a, --app=<value>          (required) app to run command against
+  -a, --app=<value>          (required) [default: heroku-vscode] app to run command against
   -p, --permissions=<value>  list of permissions comma separated
   -r, --remote=<value>       git remote of app to use
 
@@ -52,7 +52,7 @@ EXAMPLES
   $ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated
 ```
 
-_See code: [src/commands/access/add.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/access/add.ts)_
+_See code: [src/commands/access/add.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/access/add.ts)_
 
 ## `heroku access:remove`
 
@@ -63,7 +63,7 @@ USAGE
   $ heroku access:remove -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -73,7 +73,7 @@ EXAMPLES
   $ heroku access:remove user@email.com --app APP
 ```
 
-_See code: [src/commands/access/remove.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/access/remove.ts)_
+_See code: [src/commands/access/remove.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/access/remove.ts)_
 
 ## `heroku access:update EMAIL`
 
@@ -87,7 +87,7 @@ ARGUMENTS
   EMAIL  email address of the team member
 
 FLAGS
-  -a, --app=<value>          (required) app to run command against
+  -a, --app=<value>          (required) [default: heroku-vscode] app to run command against
   -p, --permissions=<value>  (required) comma-delimited list of permissions to update (deploy,manage,operate)
   -r, --remote=<value>       git remote of app to use
 
@@ -95,4 +95,4 @@ DESCRIPTION
   update existing collaborators on an team app
 ```
 
-_See code: [src/commands/access/update.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/access/update.ts)_
+_See code: [src/commands/access/update.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/access/update.ts)_
