@@ -27,7 +27,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 
@@ -46,7 +46,7 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
-_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/index.ts)_
+_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/index.ts)_
 
 ## `heroku ps:autoscale:disable`
 
@@ -57,14 +57,14 @@ USAGE
   $ heroku ps:autoscale:disable -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -75,7 +75,7 @@ USAGE
   $ heroku ps:autoscale:enable -a <value> --min <value> --max <value> [-r <value>] [--p95 <value>] [--notifications]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
       --max=<value>     (required) maximum number of dynos
       --min=<value>     (required) minimum number of dynos
@@ -86,7 +86,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -168,7 +168,7 @@ ARGUMENTS
   DYNO  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) app to run command against
+  -a, --app=<value>           (required) [default: heroku-vscode] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -196,7 +196,7 @@ USAGE
   $ heroku ps:resize -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -226,7 +226,7 @@ ARGUMENTS
   DYNO  name of the dyno to restart
 
 FLAGS
-  -a, --app=<value>           (required) app to run command against
+  -a, --app=<value>           (required) [default: heroku-vscode] app to run command against
   -d, --dyno-name=<value>     name of the dyno to restart
   -p, --process-type=<value>  name of the process type to restart
   -r, --remote=<value>        git remote of app to use
@@ -247,7 +247,7 @@ EXAMPLES
   $ heroku ps:restart --app myapp
 ```
 
-_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/restart.ts)_
+_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/restart.ts)_
 
 ## `heroku ps:scale`
 
@@ -258,7 +258,7 @@ USAGE
   $ heroku ps:scale -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -280,7 +280,7 @@ EXAMPLES
   web=3:Standard-2X worker=1:Standard-1X
 ```
 
-_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/scale.ts)_
+_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/scale.ts)_
 
 ## `heroku ps:socks`
 
@@ -317,7 +317,7 @@ ARGUMENTS
   DYNO  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) app to run command against
+  -a, --app=<value>           (required) [default: heroku-vscode] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -336,7 +336,7 @@ EXAMPLES
   $ heroku ps:stop --app myapp --process-type run
 ```
 
-_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/stop.ts)_
+_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/stop.ts)_
 
 ## `heroku ps:type`
 
@@ -347,7 +347,7 @@ USAGE
   $ heroku ps:type -a <value> [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -365,7 +365,7 @@ ALIASES
   $ heroku dyno:resize
 ```
 
-_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/type.ts)_
+_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/type.ts)_
 
 ## `heroku ps:wait`
 
@@ -377,7 +377,7 @@ USAGE
 
 FLAGS
   -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) app to run command against
+  -a, --app=<value>            (required) [default: heroku-vscode] app to run command against
   -r, --remote=<value>         git remote of app to use
   -t, --type=<value>           wait for one specific dyno type
   -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)
@@ -386,4 +386,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/ps/wait.ts)_
