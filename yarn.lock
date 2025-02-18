@@ -1607,9 +1607,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^11.4.0":
-  version: 11.4.0
-  resolution: "@heroku-cli/command@npm:11.4.0"
+"@heroku-cli/command@npm:^11.5.0":
+  version: 11.5.0
+  resolution: "@heroku-cli/command@npm:11.5.0"
   dependencies:
     "@heroku-cli/color": ^2.0.1
     "@heroku/http-call": ^5.4.0
@@ -1623,7 +1623,7 @@ __metadata:
     uuid: ^8.3.0
     yargs-parser: ^18.1.3
     yargs-unparser: ^2.0.0
-  checksum: fb4ddfdbc43d4e9ccdb5ce697c52cb2984f83705a7e24ab38d50264fb5d0b923f2b6c71863b15e49086a1df50c15fc91aeebe1a49a096b540404aedcdaf7d9d3
+  checksum: f1323bd909487ee29720768674946c7336938b04f2d017d0ed4bf78e9eb34290862f946517879f7a64a930decc713186bbb1dcfa7b042b2e8eb2a769247bd7cd
   languageName: node
   linkType: hard
 
@@ -10328,7 +10328,7 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 2.0.1
-    "@heroku-cli/command": ^11.4.0
+    "@heroku-cli/command": ^11.5.0
     "@heroku-cli/notifications": ^1.2.4
     "@heroku-cli/plugin-ps-exec": 2.6.1
     "@heroku-cli/schema": ^1.0.25
