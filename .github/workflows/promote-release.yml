@@ -62,8 +62,3 @@ jobs:
     secrets: inherit
     with:
       isStableCandidate: ${{ fromJSON(inputs.isStableRelease) }}
-
-  create-fig-autocomplete-pr:
-    if: fromJSON(inputs.isStableRelease)
-    ## Calls publish-to-fig-autocomplete workflow during post release jobs
-    uses: ./.github/workflows/publish-to-fig-autocomplete.yml
