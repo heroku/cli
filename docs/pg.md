@@ -238,8 +238,7 @@ ARGUMENTS
 FLAGS
   -a, --app=<value>            (required) app to run command against
   -c, --confirm=<value>
-  -e, --extensions=<value>     comma-separated list of extensions to pre-install in the public schema
-                               defaults to saving the latest database to DATABASE_URL
+  -e, --extensions=<value>     comma-separated list of extensions to pre-install in the default public schema or an optional custom schema (for example: hstore or myschema.hstore)
   -r, --remote=<value>         git remote of app to use
   -v, --verbose
       --wait-interval=<value>  [default: 3]
@@ -1096,7 +1095,7 @@ ARGUMENTS
 FLAGS
   -a, --app=<value>         (required) app to run command against
   -c, --confirm=<value>
-  -e, --extensions=<value>  comma-separated list of extensions to pre-install in the public schema
+  -e, --extensions=<value>  comma-separated list of extensions to pre-install in the default public schema or an optional custom schema (for example: hstore or myschema.hstore)
   -r, --remote=<value>      git remote of app to use
 
 DESCRIPTION

@@ -108,6 +108,7 @@ herokussl
 histfile
 HRKU
 howmany
+hstore
 htcat
 iname
 indexrelid
@@ -195,6 +196,7 @@ mylowercaseapp
 myotherapp
 mypath
 myplugin
+myschema
 myscript
 myteam
 mywork

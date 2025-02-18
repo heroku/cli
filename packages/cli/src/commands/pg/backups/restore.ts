@@ -30,8 +30,9 @@ export default class Restore extends Command {
     extensions: flags.string({
       char: 'e',
       description: heredoc(`
-      comma-separated list of extensions to pre-install in the public schema
-      defaults to saving the latest database to DATABASE_URL
+        comma-separated list of extensions to pre-install in the default 
+        public schema or an optional custom schema 
+        (for example: hstore or myschema.hstore)
       `),
     }),
     verbose: flags.boolean({char: 'v'}),
