@@ -56,6 +56,12 @@ jobs:
       channel: ${{ needs.get-version-channel.outputs.channel }}
     secrets: inherit
 
+  create-fig-autocomplete-pr:
+    needs: [promote]
+    if: fromJSON(inputs.isStableRelease)
+    ## Calls publish-to-fig-autocomplete workflow during post release jobs
+    uses: ./.github/workflows/publish-to-fig-autocomplete.yml
+
   publish-docs:
     needs: [get-version-channel, promote]
     uses: ./.github/workflows/devcenter-doc-update.yml
