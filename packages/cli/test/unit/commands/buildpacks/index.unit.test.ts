@@ -131,7 +131,7 @@ describe('buildpacks', function () {
     .it('# displays the buildpack URL', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
+        === ⬢ ${cedarApp.name} Classic Buildpack (from the Heroku Buildpack Registry)
 
         https://github.com/heroku/heroku-buildpack-ruby
       `))
@@ -148,7 +148,7 @@ describe('buildpacks', function () {
     .it('# maps buildpack urns to names', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
+        === ⬢ ${cedarApp.name} Classic Buildpack (from the Heroku Buildpack Registry)
 
         heroku/ruby
       `))
@@ -165,7 +165,7 @@ describe('buildpacks', function () {
     .it('# does not map buildpack s3 to names', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
+        === ⬢ ${cedarApp.name} Classic Buildpack (from the Heroku Buildpack Registry)
 
         https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
       `))
@@ -200,7 +200,7 @@ describe('buildpacks', function () {
     .it('# with two buildpack URLs set displays the buildpack URL', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
+        === ⬢ ${cedarApp.name} Classic Buildpacks (from the Heroku Buildpack Registry)
 
         1. https://github.com/heroku/heroku-buildpack-java
         2. https://github.com/heroku/heroku-buildpack-ruby
@@ -221,7 +221,7 @@ describe('buildpacks', function () {
     .it('# returns the buildpack registry name back', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
+        === ⬢ ${cedarApp.name} Classic Buildpacks (from the Heroku Buildpack Registry)
 
         1. heroku/java
         2. rust-lang/rust
@@ -239,7 +239,7 @@ describe('buildpacks', function () {
     .it('# displays the buildpack URL with classic buildpack source', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-      === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
+      === ⬢ ${cedarApp.name} Classic Buildpack (from the Heroku Buildpack Registry)
 
       https://github.com/heroku/heroku-buildpack-ruby
     `))
@@ -259,7 +259,7 @@ describe('buildpacks', function () {
     .it('# returns cnb buildpack ids for fir apps with OCI source', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-      === ⬢ ${firApp.name} Cloud Native Buildpack (from latest release OCI image)
+      === ⬢ ${firApp.name} Cloud Native Buildpack (from the latest release's OCI image)
 
       heroku/ruby
     `))
@@ -279,7 +279,7 @@ describe('buildpacks', function () {
     .it('# with multiple buildpack URLs shows plural form and source', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-      === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
+      === ⬢ ${cedarApp.name} Classic Buildpacks (from the Heroku Buildpack Registry)
 
       1. https://github.com/heroku/heroku-buildpack-java
       2. https://github.com/heroku/heroku-buildpack-ruby

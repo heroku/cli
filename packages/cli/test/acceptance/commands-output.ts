@@ -51,7 +51,7 @@ authorizations:revoke                          revoke OAuth authorization
 authorizations:rotate                          updates an OAuth authorization token
 authorizations:update                          updates an OAuth authorization
 autocomplete                                   display autocomplete installation instructions
-buildpacks                                     List the buildpacks on an app. For Fir apps, buildpacks are retrieved from the latest release's OCI image data. For Cedar apps, buildpacks are retrieved from the classic buildpack registry.
+buildpacks                                     list the buildpacks on an app
 buildpacks:add                                 add new app buildpack, inserting into list of buildpacks if necessary
 buildpacks:clear                               clear all buildpacks set on the app
 buildpacks:info                                fetch info about a buildpack
