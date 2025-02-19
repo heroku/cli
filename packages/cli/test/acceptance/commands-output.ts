@@ -51,7 +51,7 @@ authorizations:revoke                          revoke OAuth authorization
 authorizations:rotate                          updates an OAuth authorization token
 authorizations:update                          updates an OAuth authorization
 autocomplete                                   display autocomplete installation instructions
-buildpacks                                     display the buildpacks for an app
+buildpacks                                     list the buildpacks on an app
 buildpacks:add                                 add new app buildpack, inserting into list of buildpacks if necessary
 buildpacks:clear                               clear all buildpacks set on the app
 buildpacks:info                                fetch info about a buildpack
