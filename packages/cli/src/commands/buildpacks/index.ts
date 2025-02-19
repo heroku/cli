@@ -7,7 +7,7 @@ import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 import {getGeneration} from '../../lib/apps/generation'
 
 export default class Index extends Command {
-  static description = 'List the buildpacks on an app. For Fir apps, buildpacks are retrieved from the latest release\'s OCI image data. For Cedar apps, buildpacks are retrieved from the classic buildpack registry.'
+  static description = 'list the buildpacks on an app'
 
   static flags = {
     app: Flags.app({required: true}),
