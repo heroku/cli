@@ -131,7 +131,7 @@ describe('buildpacks', function () {
     .it('# displays the buildpack URL', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Buildpack
+        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
 
         https://github.com/heroku/heroku-buildpack-ruby
       `))
@@ -148,7 +148,7 @@ describe('buildpacks', function () {
     .it('# maps buildpack urns to names', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Buildpack
+        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
 
         heroku/ruby
       `))
@@ -165,7 +165,7 @@ describe('buildpacks', function () {
     .it('# does not map buildpack s3 to names', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Buildpack
+        === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
 
         https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
       `))
@@ -200,7 +200,7 @@ describe('buildpacks', function () {
     .it('# with two buildpack URLs set displays the buildpack URL', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Buildpacks
+        === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
 
         1. https://github.com/heroku/heroku-buildpack-java
         2. https://github.com/heroku/heroku-buildpack-ruby
@@ -221,11 +221,28 @@ describe('buildpacks', function () {
     .it('# returns the buildpack registry name back', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${cedarApp.name} Buildpacks
+        === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
 
         1. heroku/java
         2. rust-lang/rust
       `))
+    })
+
+  test
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
+      api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
+      Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
+    })
+    .stdout()
+    .stderr()
+    .command(['buildpacks', '-a', cedarApp.name])
+    .it('# displays the buildpack URL with classic buildpack source', ctx => {
+      expect(ctx.stderr).to.equal('')
+      expect(ctx.stdout).to.equal(heredoc(`
+      === ⬢ ${cedarApp.name} Classic Buildpack (from buildpack registry)
+
+      https://github.com/heroku/heroku-buildpack-ruby
+    `))
     })
 
   test
@@ -238,14 +255,48 @@ describe('buildpacks', function () {
     })
     .stdout()
     .stderr()
-    .command(['buildpacks', '-a', cedarApp.name])
-    .it('# returns cnb buildpack ids for fir apps', ctx => {
+    .command(['buildpacks', '-a', firApp.name])
+    .it('# returns cnb buildpack ids for fir apps with OCI source', ctx => {
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(heredoc(`
-        === ⬢ ${firApp.name} Buildpack
+      === ⬢ ${firApp.name} Cloud Native Buildpack (from latest release OCI image)
 
-        heroku/ruby
-      `))
+      heroku/ruby
+    `))
+    })
+
+  test
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
+      api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
+      Stubber.get(api, [
+        'https://github.com/heroku/heroku-buildpack-java',
+        'https://github.com/heroku/heroku-buildpack-ruby',
+      ])
+    })
+    .stdout()
+    .stderr()
+    .command(['buildpacks', '-a', cedarApp.name])
+    .it('# with multiple buildpack URLs shows plural form and source', ctx => {
+      expect(ctx.stderr).to.equal('')
+      expect(ctx.stdout).to.equal(heredoc(`
+      === ⬢ ${cedarApp.name} Classic Buildpacks (from buildpack registry)
+
+      1. https://github.com/heroku/heroku-buildpack-java
+      2. https://github.com/heroku/heroku-buildpack-ruby
+    `))
+    })
+
+  test
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
+      api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
+      Stubber.get(api)
+    })
+    .stdout()
+    .stderr()
+    .command(['buildpacks', '-a', cedarApp.name])
+    .it('# with no buildpack URL set shows appropriate message', ctx => {
+      expect(ctx.stderr).to.equal('')
+      expect(ctx.stdout).to.equal(`⬢ ${cedarApp.name} has no Buildpacks.\n`)
     })
 
   test
@@ -257,11 +308,9 @@ describe('buildpacks', function () {
     })
     .stdout()
     .stderr()
-    .command(['buildpacks', '-a', cedarApp.name])
-    .it('# returns nothing when no releases', ctx => {
+    .command(['buildpacks', '-a', firApp.name])
+    .it('# returns nothing when no releases for fir app', ctx => {
       expect(ctx.stderr).to.equal('')
-      expect(ctx.stdout).to.equal(heredoc(`
-        ⬢ ${cedarApp.name} has no Buildpacks.
-      `))
+      expect(ctx.stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)
     })
 })
