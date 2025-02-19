@@ -58,7 +58,7 @@ export default class Logs extends Command {
     tail: flags.boolean({
       char: 't',
       default: false,
-      description: 'continually stream logs (defaults to true for Fir generation apps)',
+      description: 'continually stream logs (always enabled for Fir-generation apps)',
     }),
     'process-type': flags.string({
       char: 'p',
