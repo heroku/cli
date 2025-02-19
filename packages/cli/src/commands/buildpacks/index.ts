@@ -30,7 +30,7 @@ export default class Index extends Command {
       const pluralizedBuildpacks = buildpacks.length > 1 ? 'Buildpacks' : 'Buildpack'
       let header = `${color.app(flags.app)}`
       if (isFirApp) {
-        header += ` Cloud Native ${pluralizedBuildpacks} (from latest release OCI image)`
+        header += ` Cloud Native ${pluralizedBuildpacks} (from the latest release OCI image)`
       } else {
         header += ` Classic ${pluralizedBuildpacks} (from buildpack registry)`
       }
