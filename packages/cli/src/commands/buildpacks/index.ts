@@ -32,7 +32,7 @@ export default class Index extends Command {
       if (isFirApp) {
         header += ` Cloud Native ${pluralizedBuildpacks} (from the latest release OCI image)`
       } else {
-        header += ` Classic ${pluralizedBuildpacks} (from buildpack registry)`
+        header += ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
       }
 
       ux.styledHeader(header)
