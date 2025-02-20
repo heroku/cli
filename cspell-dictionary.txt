@@ -10,7 +10,6 @@ amyapp
 aname
 appname
 apresharedkey
-arbitrars
 armel
 armhf
 armv

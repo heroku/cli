@@ -96,7 +96,7 @@ Run all tests with `yarn test`.
 
 ## Debugging
 
-Using WebStorm (from Jetbrains / IntelliJ), you can run/debug an individual test case.
+Using WebStorm (from JetBrains / IntelliJ), you can run/debug an individual test case.
 
 - Create a new run/debug configuration
 - Select the 'Mocha' type
