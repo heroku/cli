@@ -22,7 +22,8 @@
     "tmp": "^0.2.1"
   },
   "resolutions": {
-    "ansi-regex": "4.1.1"
+    "ansi-regex": "4.1.1",
+    "cpu-features": "0.0.9"
   },
   "standard": {
     "env": "mocha",
