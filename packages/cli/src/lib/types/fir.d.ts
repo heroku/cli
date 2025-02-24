@@ -544,63 +544,6 @@ export interface AddOn {
 }
 /**
  *
- * [Heroku Platform API - add-on-service](https://devcenter.heroku.com/articles/platform-api-reference#add-on-service)
- * Add-on services represent add-ons that may be provisioned for apps. Endpoints under add-on services can be accessed without authentication.
- */
-export interface AddOnService {
- /**
-  * npm package name of the add-on service's Heroku CLI plugin
-  *
-  * @example "heroku-papertrail"
-  */
-  readonly cli_plugin_name: string | null;
- /**
-  * when add-on-service was created
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
-  readonly created_at: string;
- /**
-  * human-readable name of the add-on service provider
-  *
-  * @example "Heroku Postgres"
-  */
-  readonly human_name: string;
- /**
-  * unique identifier of this add-on-service
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
-  readonly id: string;
- /**
-  * unique name of this add-on-service
-  *
-  * @example "heroku-postgresql"
-  */
-  readonly name: string;
- /**
-  * release status for add-on service
-  *
-  * @example "ga"
-  */
-  readonly state: 'alpha' | 'beta' | 'ga' | 'shutdown';
- /**
-  * whether or not apps can have access to more than one instance of this add-on at the same time
-  */
-  readonly supports_multiple_installations: boolean;
- /**
-  * whether or not apps can have access to add-ons billed to a different app
-  */
-  readonly supports_sharing: boolean;
- /**
-  * when add-on-service was updated
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
-  readonly updated_at: string;
-}
-/**
- *
  * billing entity associated with this add-on
  */
 export interface BillingEntity {
@@ -629,127 +572,129 @@ export interface BillingEntity {
  * An app represents the program that you would like to deploy and run on Heroku.
  */
 export interface App {
- /**
-  * ACM status of this app
-  */
+  /**
+   * ACM status of this app
+   */
   readonly acm: boolean;
- /**
-  * when app was archived
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was archived
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly archived_at: null | string;
- /**
-  * name of the image used for the base layers of the OCI image
-  *
-  * @example "heroku/heroku:22-cnb"
-  */
+  /**
+   * name of the image used for the base layers of the OCI image
+   *
+   * @example "heroku/heroku:22-cnb"
+   */
   readonly base_image_name: null | string;
- /**
-  * identity of the stack that will be used for new builds
-  */
+  /**
+   * identity of the stack that will be used for new builds
+   */
   build_stack: BuildStack;
- /**
-  * description from buildpack of app
-  *
-  * @example "Ruby/Rack"
-  */
+  /**
+   * description from buildpack of app
+   *
+   * @example "Ruby/Rack"
+   */
   readonly buildpack_provided_description: null | string;
- /**
-  * buildpacks of the OCI image
-  */
+  /**
+   * buildpacks of the OCI image
+   */
   buildpacks: null | Buildpack[];
- /**
-  * when app was created
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was created
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly created_at: string;
- /**
-  * current build architecture for the app
-  *
-  * @example "[arm64]"
-  */
-  current_build_architecture: unknown[];
- /**
-  * Generation of the Heroku platform for this app
-  */
-  readonly generation: AppGeneration;
- /**
-  * git repo URL of app
-  *
-  * @example "https://git.heroku.com/example.git"
-  */
+  /**
+   * current build architecture for the app
+   *
+   * @example "[arm64]"
+   */
+  current_build_architecture: [];
+  /**
+   * the generation of the app
+   *
+   * @example "fir"
+   */
+  readonly generation: string;
+  /**
+   * git repo URL of app
+   *
+   * @example "https://git.heroku.com/example.git"
+   */
   readonly git_url: string;
- /**
-  * unique identifier of app
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of app
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id: string;
- /**
-  * describes whether a Private Spaces app is externally routable or not
-  */
+  /**
+   * describes whether a Private Spaces app is externally routable or not
+   */
   internal_routing: boolean | null;
- /**
-  * maintenance status of app
-  */
+  /**
+   * maintenance status of app
+   */
   maintenance: boolean;
- /**
-  * unique name of app
-  *
-  * @example "example"
-  */
+  /**
+   * unique name of app
+   *
+   * @example "example"
+   */
   name: string;
- /**
-  * identity of app owner
-  */
+  /**
+   * identity of app owner
+   */
   owner: AppOwner;
- /**
-  * identity of team
-  */
+  /**
+   * identity of team
+   */
   organization: null | AppOrganization;
- /**
-  * identity of team
-  */
+  /**
+   * identity of team
+   */
   team: null | AppTeam;
- /**
-  * identity of app region
-  */
+  /**
+   * identity of app region
+   */
   region: AppRegion;
- /**
-  * when app was released
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was released
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly released_at: null | string;
- /**
-  * git repo size in bytes of app
-  */
+  /**
+   * git repo size in bytes of app
+   */
   readonly repo_size: number | null;
- /**
-  * slug size in bytes of app
-  */
+  /**
+   * slug size in bytes of app
+   */
   readonly slug_size: number | null;
- /**
-  * identity of space
-  */
+  /**
+   * identity of space
+   */
   space: null | Space;
- /**
-  * identity of app stack
-  */
+  /**
+   * identity of app stack
+   */
   stack: Stack;
- /**
-  * when app was updated
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was updated
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly updated_at: string;
- /**
-  * web URL of app
-  *
-  * @example "https://example.herokuapp.com/"
-  */
+  /**
+   * web URL of app
+   *
+   * @example "https://example.herokuapp.com/"
+   */
   readonly web_url: null | string;
 }
 /**
@@ -876,6 +821,80 @@ export interface AddonService {
   * @example "heroku-postgresql"
   */
   readonly name: string;
+}
+/**
+ *
+ * [Heroku Platform API - add-on-service](https://devcenter.heroku.com/articles/platform-api-reference#add-on-service)
+ * Add-on services represent add-ons that may be provisioned for apps. Endpoints under add-on services can be accessed without authentication.
+ */
+export interface AddOnService {
+  /**
+   * npm package name of the add-on service's Heroku CLI plugin
+   *
+   * @example "heroku-papertrail"
+   */
+  readonly cli_plugin_name: string | null;
+  /**
+   * when add-on-service was created
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
+  readonly created_at: string;
+  /**
+   * human-readable name of the add-on service provider
+   *
+   * @example "Heroku Postgres"
+   */
+  readonly human_name: string;
+  /**
+   * unique identifier of this add-on-service
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
+  readonly id: string;
+  /**
+   * unique name of this add-on-service
+   *
+   * @example "heroku-postgresql"
+   */
+  readonly name: string;
+  /**
+   * release status for add-on service
+   *
+   * @example "ga"
+   */
+  readonly state: 'alpha' | 'beta' | 'ga' | 'shutdown';
+  /**
+   * whether or not apps can have access to more than one instance of this add-on at the same time
+   */
+  readonly supports_multiple_installations: boolean;
+  /**
+   * whether or not apps can have access to add-ons billed to a different app
+   */
+  readonly supports_sharing: boolean;
+  /**
+   * when add-on-service was updated
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
+  readonly updated_at: string;
+  /**
+   * generations supported by this add-on
+   */
+  supported_generations: Array<{
+    /**
+     * unique name of generation
+     *
+     * @example "fir"
+     */
+    readonly name?: string;
+    /**
+     * unique identifier of generation
+     *
+     * @example "01234567-89ab-cdef-0123-456789abcdef"
+     */
+    readonly id?: string;
+  }>;
 }
 /**
  *
@@ -2354,75 +2373,72 @@ export interface AppRegion {
  * A space is an isolated, highly available, secure app execution environment.
  */
 export interface Space {
- /**
-  * when space was created
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when space was created
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly created_at: string;
- /**
-  * unique identifier of space
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of space
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id: string;
- /**
-  * unique name of space
-  *
-  * @example "nasa"
-  */
+  /**
+   * unique name of space
+   *
+   * @example "nasa"
+   */
   name: string;
- /**
-  * organization that owns this space
-  */
+  /**
+   * organization that owns this space
+   */
   organization: Organization;
- /**
-  * team that owns this space
-  */
+  /**
+   * team that owns this space
+   */
   team: SpaceTeam;
- /**
-  * identity of space region
-  */
+  /**
+   * identity of space region
+   */
   region: SpaceRegion;
- /**
-  * true if this space has shield enabled
-  *
-  * @example true
-  */
+  /**
+   * true if this space has shield enabled
+   *
+   * @example true
+   */
   readonly shield: boolean;
- /**
-  * availability of this space
-  *
-  * @example "allocated"
-  */
+  /**
+   * availability of this space
+   *
+   * @example "allocated"
+   */
   readonly state: 'allocating' | 'allocated' | 'deleting';
- /**
-  * when space was updated
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when space was updated
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly updated_at: string;
- /**
-  * The RFC-1918 CIDR the Private Space will use. It must be a /16 in 10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16
-  *
-  * @example "172.20.20.30/16"
-  */
+  /**
+   * The RFC-1918 CIDR the Private Space will use. It must be a /16 in 10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16
+   *
+   * @example "172.20.20.30/16"
+   */
   cidr: string;
- /**
-  * The RFC-1918 CIDR that the Private Space will use for the Heroku-managed peering connection that's automatically created when using Heroku Data add-ons. It must be between a /16 and a /20
-  *
-  * @example "10.2.0.0/16"
-  */
+  /**
+   * The RFC-1918 CIDR that the Private Space will use for the Heroku-managed peering connection that's automatically created when using Heroku Data add-ons. It must be between a /16 and a /20
+   *
+   * @example "10.2.0.0/16"
+   */
   data_cidr: string;
- /**
-  * generation for space
-  *
-  * @example "fir"
-  */
-  generation: {
-    id: string,
-    name: string,
- }
+  /**
+   * generation for space
+   *
+   * @example "fir"
+   */
+  generation: string;
 }
 /**
  *
@@ -3262,60 +3278,96 @@ export interface DomainUpdatePayload {
  * Dyno sizes are the values and details of sizes that can be assigned to dynos. This information can also be found at : [https://devcenter.heroku.com/articles/dyno-types](https://devcenter.heroku.com/articles/dyno-types).
  */
 export interface DynoSize {
- /**
-  * CPU architecture of this dyno
-  *
-  * @example "arm64"
-  */
+  /**
+   * CPU architecture of this dyno
+   *
+   * @example "arm64"
+   */
   readonly architecture: string;
- /**
-  * minimum vCPUs, non-dedicated may get more depending on load
-  *
-  * @example 1
-  */
+  /**
+   * minimum vCPUs, non-dedicated may get more depending on load
+   *
+   * @example 1
+   */
   readonly compute: number;
- /**
-  * price information for this dyno size
-  */
+  /**
+   * whether this dyno size's product tier can use auto-scaling
+   *
+   * @example true
+   */
+  readonly can_autoscale: boolean;
+  /**
+   * price information for this dyno size
+   */
   readonly cost: null | Record<string, unknown>;
- /**
-  * whether this dyno will be dedicated to one user
-  */
+  /**
+   * whether this dyno will be dedicated to one user
+   */
   readonly dedicated: boolean;
- /**
-  * unit of consumption for Heroku Enterprise customers to 2 decimal places
-  *
-  * @example 0.28
-  */
+  /**
+   * unit of consumption for Heroku Enterprise customers to 2 decimal places
+   *
+   * @example 0.28
+   */
   readonly precise_dyno_units: number;
- /**
-  * unique identifier of this dyno size
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of the dyno size
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id: string;
- /**
-  * amount of RAM in GB
-  *
-  * @example 0.5
-  */
+  /**
+   * amount of RAM in GB
+   *
+   * @example 0.5
+   */
   readonly memory: number;
- /**
-  * the name of this dyno-size
-  *
-  * @example "eco"
-  */
+  /**
+   * name of the dyno size
+   *
+   * @example "eco"
+   */
   readonly name: string;
- /**
-  * whether this dyno can only be provisioned in a private space
-  */
+  /**
+   * whether this dyno can only be provisioned in a private space
+   */
   readonly private_space_only: boolean;
- /**
-  * generation for space
-  *
-  * @example "fir"
-  */
-  generation: string;
+  /**
+   * Generation of the Heroku platform for this dyno size
+   */
+  readonly generation: DynoSizeGeneration;
+  /**
+   * infrastructure tier for this dyno
+   *
+   * @example "production"
+   */
+  readonly infrastructure_tier: string;
+  /**
+   * product tier for this dyno
+   *
+   * @example "standard"
+   */
+  readonly product_dyno_tier: string;
+}
+
+/**
+ *
+ * [Heroku Platform API - generation](https://devcenter.heroku.com/articles/platform-api-reference#generation)
+ * Generation of the Heroku platform for this dyno size
+ */
+export interface DynoSizeGeneration {
+  /**
+   * unique identifier of the generation of the Heroku platform for this dyno size
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
+  readonly id?: string;
+  /**
+   * unique name of the generation of the Heroku platform for this dyno size
+   *
+   * @example "cedar"
+   */
+  readonly name?: string;
 }
 /**
  *
@@ -4000,129 +4052,129 @@ export interface In {
  * A team app encapsulates the team specific functionality of Heroku apps.
  */
 export interface TeamApp {
- /**
-  * when app was archived
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was archived
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly archived_at?: null | string;
- /**
-  * name of the image used for the base layers of the OCI image
-  *
-  * @example "heroku/heroku:22-cnb"
-  */
+  /**
+   * name of the image used for the base layers of the OCI image
+   *
+   * @example "heroku/heroku:22-cnb"
+   */
   readonly base_image_name?: null | string;
- /**
-  * identity of the stack that will be used for new builds
-  */
+  /**
+   * identity of the stack that will be used for new builds
+   */
   build_stack?: BuildStack;
- /**
-  * description from buildpack of app
-  *
-  * @example "Ruby/Rack"
-  */
+  /**
+   * description from buildpack of app
+   *
+   * @example "Ruby/Rack"
+   */
   readonly buildpack_provided_description?: null | string;
- /**
-  * buildpacks of the OCI image
-  */
+  /**
+   * buildpacks of the OCI image
+   */
   buildpacks?: null | Buildpack[];
- /**
-  * current build architecture for the app
-  *
-  * @example "[arm64]"
-  */
-  current_build_architecture?: unknown[];
- /**
-  * when app was created
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * current build architecture for the app
+   *
+   * @example "[arm64]"
+   */
+  current_build_architecture?: [];
+  /**
+   * when app was created
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly created_at?: string;
- /**
-  * the generation of the app
-  *
-  * @example "fir"
-  */
+  /**
+   * the generation of the app
+   *
+   * @example "fir"
+   */
   readonly generation?: string;
- /**
-  * git repo URL of app
-  *
-  * @example "https://git.heroku.com/example.git"
-  */
+  /**
+   * git repo URL of app
+   *
+   * @example "https://git.heroku.com/example.git"
+   */
   readonly git_url?: string;
- /**
-  * unique identifier of app
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of app
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id?: string;
- /**
-  * describes whether a Private Spaces app is externally routable or not
-  */
+  /**
+   * describes whether a Private Spaces app is externally routable or not
+   */
   internal_routing?: boolean | null;
- /**
-  * is the current member a collaborator on this app.
-  */
+  /**
+   * is the current member a collaborator on this app.
+   */
   joined?: boolean;
- /**
-  * are other team members forbidden from joining this app.
-  */
+  /**
+   * are other team members forbidden from joining this app.
+   */
   locked?: boolean;
- /**
-  * maintenance status of app
-  */
+  /**
+   * maintenance status of app
+   */
   maintenance?: boolean;
- /**
-  * unique name of app
-  *
-  * @example "example"
-  */
+  /**
+   * unique name of app
+   *
+   * @example "example"
+   */
   name?: string;
- /**
-  * team that owns this app
-  */
+  /**
+   * team that owns this app
+   */
   team?: null | Team;
- /**
-  * identity of app owner
-  */
+  /**
+   * identity of app owner
+   */
   owner?: null | TeamAppOwner;
- /**
-  * identity of app region
-  */
+  /**
+   * identity of app region
+   */
   region?: TeamAppRegion;
- /**
-  * when app was released
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was released
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly released_at?: null | string;
- /**
-  * git repo size in bytes of app
-  */
+  /**
+   * git repo size in bytes of app
+   */
   readonly repo_size?: number | null;
- /**
-  * slug size in bytes of app
-  */
+  /**
+   * slug size in bytes of app
+   */
   readonly slug_size?: number | null;
- /**
-  * identity of space
-  */
+  /**
+   * identity of space
+   */
   space?: null | TeamAppSpace;
- /**
-  * identity of app stack
-  */
+  /**
+   * identity of app stack
+   */
   stack?: Stack;
- /**
-  * when app was updated
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when app was updated
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly updated_at?: string;
- /**
-  * web URL of app
-  *
-  * @example "https://example.herokuapp.com/"
-  */
+  /**
+   * web URL of app
+   *
+   * @example "https://example.herokuapp.com/"
+   */
   readonly web_url?: null | string;
 }
 /**
@@ -5465,38 +5517,38 @@ export interface PipelineCouplingApp {
  * A pipeline allows grouping of apps into different stages.
  */
 export interface Pipeline {
- /**
-  * when pipeline was created
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when pipeline was created
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly created_at?: string;
- /**
-  * unique identifier of pipeline
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of pipeline
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id?: string;
- /**
-  * name of pipeline
-  *
-  * @example "example"
-  */
+  /**
+   * name of pipeline
+   *
+   * @example "example"
+   */
   name?: string;
- /**
-  * Owner of a pipeline.
-  */
+  /**
+   * Owner of a pipeline.
+   */
   owner?: PipelineOwner | null;
- /**
-  * when pipeline was updated
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when pipeline was updated
+   *
+   * @example "2012-01-01T12:00:00Z"
+   */
   readonly updated_at?: string;
   /**
    * the generation of the Heroku platform for this pipeline
    */
-  generation?: PipelineGeneration | null;
+  generation?: PipelineGeneration;
 }
 export interface PipelineCouplingCreatePayload {
  /**
@@ -8242,37 +8294,37 @@ export interface VpnConnectionUpdatePayload {
 /**
  *
  * [Heroku Platform API - generation](https://devcenter.heroku.com/articles/platform-api-reference#generation)
- * Generations are the different application execution environments available in the Heroku platform.
+ * A generation represents a version of the Heroku platform that includes the app execution environment, routing, telemetry, and build systems.
  */
 export interface Generation {
- /**
-  * when generation was introduced
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when generation was created
+   *
+   * @example "2024-12-01T12:00:00Z"
+   */
   readonly created_at: string;
- /**
-  * unique identifier of generation
-  *
-  * @example "01234567-89ab-cdef-0123-456789abcdef"
-  */
+  /**
+   * unique identifier of generation
+   *
+   * @example "01234567-89ab-cdef-0123-456789abcdef"
+   */
   readonly id: string;
- /**
-  * unique name of generation
-  *
-  * @example "fir"
-  */
+  /**
+   * unique name of generation
+   *
+   * @example "fir"
+   */
   readonly name: string;
- /**
-  * when generation was last modified
-  *
-  * @example "2012-01-01T12:00:00Z"
-  */
+  /**
+   * when generation was updated
+   *
+   * @example "2024-12-01T12:00:00Z"
+   */
   readonly updated_at: string;
- /**
-  * features unsupported by this generation
-  */
-  unsupported_features: string[] | null;
+  /**
+   * features unsupported by this generation
+   */
+  unsupported_features: string[];
 }
 /**
  *

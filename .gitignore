@@ -3,6 +3,7 @@
 .oclif.manifest.json
 /packages/**/oclif.manifest.json
 /cli
+/.nyc_output
 /coverage
 /dist
 /lib
@@ -15,7 +16,7 @@ node_modules
 .idea
 .vscode
 **/.nyc_output
-
+**/coverage/
 .pnp.*
 .yarn/*
 !.yarn/patches

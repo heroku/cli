@@ -22,7 +22,7 @@
   elif [ "\$(expr substr \$(uname -s) 1 5)" == "Linux" ]; then
     OS=linux
   else
-    echoerr "This installer is only supported on Linux and MacOS"
+    echoerr "This installer is only supported on Linux and macOS"
     exit 1
   fi
 

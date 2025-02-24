@@ -28,7 +28,7 @@ describe('spaces:destroy', function () {
         region: {name: 'my-region'},
         state: 'allocated',
         created_at: now,
-        generation: {name: 'fir'},
+        generation: 'fir',
       })
       .get('/spaces/my-space/nat')
       .reply(200, {state: 'enabled', sources: ['1.1.1.1', '2.2.2.2']})
@@ -70,7 +70,7 @@ describe('spaces:destroy', function () {
         region: {name: 'my-region'},
         state: 'allocated',
         created_at: now,
-        generation: {name: 'cedar'},
+        generation: 'cedar',
       })
       .get('/spaces/my-space/nat')
       .reply(200, {state: 'enabled', sources: ['1.1.1.1', '2.2.2.2']})

@@ -6,7 +6,7 @@ import * as nock from 'nock'
 import * as confirmCommand from '../../../../src/lib/confirmCommand'
 import * as sinon from 'sinon'
 
-let confirmStub: ReturnType<typeof sinon.stub>
+let confirmStub: sinon.SinonStub
 
 describe('addons:attach', function () {
   beforeEach(function () {

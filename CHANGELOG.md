@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.2.0](https://github.com/heroku/cli/compare/v10.1.0...v10.2.0) (2025-02-19)
+
+
+### Bug Fixes
+
+* update pg:restore and pg:reset documentation for --extensions flag ([#3220](https://github.com/heroku/cli/issues/3220)) ([c5196eb](https://github.com/heroku/cli/commit/c5196eb6e1df9910f17c6134adbbe7b5dbe46e4a))
+* **W-17544077:** SSH key install via SSH happy path in docs didn't work ([#3210](https://github.com/heroku/cli/issues/3210)) ([5ad2958](https://github.com/heroku/cli/commit/5ad295812dec2a60f7cd129b7f8d97493ab34253))
+* **W-17544106:** pg:wait command addon not found warning ([#3216](https://github.com/heroku/cli/issues/3216)) ([abb6a13](https://github.com/heroku/cli/commit/abb6a13fad21a2d2d1cab1286c35686af3ccd038))
+* **W-17545010:** Error when trying to clone a redis instance ([#3215](https://github.com/heroku/cli/issues/3215)) ([be1e862](https://github.com/heroku/cli/commit/be1e86214873d32c437db9e67e9af8f4393a610e))
+* bump heroku-cli-command ([#3224](https://github.com/heroku/cli/pull/3224)) ([01c9b3](https://github.com/heroku/cli/commit/01c9b33d727ccb0ff07c0538b664448ed614ed9c))
+
+### Features
+
+* **utils:** add a getGeneration helper function and apply it across the CLI ([#3206](https://github.com/heroku/cli/issues/3206)) ([081fcd6](https://github.com/heroku/cli/commit/081fcd666dac3fdbfe31588759fbe4530a814132))
+* update help text for logs command ([#3225](https://github.com/heroku/cli/issues/3225)) ([e1475a2](https://github.com/heroku/cli/commit/e1475a20556d4d17fc1aabc03a04bc7632132e8e))
+
+
+
+
+
+# [10.1.0](https://github.com/heroku/cli/compare/v10.0.2...v10.1.0) (2025-02-06)
+
+
+### Features
+
+* update command warning message for Fir spaces ([#3171](https://github.com/heroku/cli/issues/3171)) ([43d9164](https://github.com/heroku/cli/commit/43d9164f017967e6fceef025b45a65b24e095ecb))
+
+
+
+
+### Bug Fixes
+
+* send correct value to API for GRPC telemetry drains ([#3178](https://github.com/heroku/cli/issues/3178)) ([48b7f8a](https://github.com/heroku/cli/commit/48b7f8ad341f0bad7136c35ae840b1249aecd805))
+* unable to list drains for a space in Fir ([#3170](https://github.com/heroku/cli/issues/3170)) ([1ee8f62](https://github.com/heroku/cli/commit/1ee8f625acf586096f6f609926656a4cb046481a))
+* update install-standalone script ([#3179](https://github.com/heroku/cli/issues/3179)) ([f6b8ea6](https://github.com/heroku/cli/commit/f6b8ea6c67a33a4029018da6961ca0ff9293b786))
+
+
+
+
+
 ## [10.0.2](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2) (2025-01-09)
 
 

@@ -26,7 +26,7 @@ export const cedarApp: Partial<App> = {
   internal_routing: null,
   updated_at: '2024-10-17T16:20:42Z',
   web_url: 'https://my-cedar-app-a6b0f2f1519f.herokuapp.com/',
-  generation: {name: 'cedar'},
+  generation: 'cedar',
 }
 
 export const firApp: Partial<App> = {
@@ -55,5 +55,5 @@ export const firApp: Partial<App> = {
   internal_routing: null,
   updated_at: '2024-10-17T16:20:42Z',
   web_url: 'https://my-fir-app-c07499750516.herokuapp.com/',
-  generation: {name: 'fir'},
+  generation: 'fir',
 }

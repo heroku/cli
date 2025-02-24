@@ -1,7 +1,9 @@
-# Lines starting with '#' are comments.
-# Each line is a file pattern followed by one or more owners.
+# All files require review from the Heroku Front-End Dev Tools team.
 
-# These owners will be the default owners for everything in the repo.
+# Comment line immediately above ownership line is reserved for related GUS information.
+# Please exercise caution while editing.
+
+#GUSINFO: Heroku FE Dev Tools,Heroku CLI & Plugins
 * @heroku/frontend-dev-tooling
+
 #ECCN:Open Source
-#GUSINFO:Heroku Front End Dept (FE Infra & Arch),Heroku CLI

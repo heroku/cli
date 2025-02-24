@@ -127,7 +127,7 @@ export default class Open extends Command {
     const sso: HTTP<AddonSso> = await this.heroku.request(`/apps/${app}/addons/${args.addon}/sso`, {
       method: 'GET',
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.add-ons-sso',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
     const {method, action} = sso.body

@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
+import {getGeneration} from '../../../../src/lib/apps/generation'
 
 describe('spaces:create', function () {
   const now = new Date()
@@ -238,7 +239,7 @@ describe('spaces:create', function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
         features: firSpace.features,
-        generation: firSpace.generation,
+        generation: getGeneration(firSpace),
         name: firSpace.name,
         region: firSpace.region.name,
         team: firSpace.team.name,
@@ -255,7 +256,7 @@ describe('spaces:create', function () {
       '--features',
       firSpace.features.join(','),
       '--generation',
-      firSpace.generation,
+      getGeneration(firSpace)!,
     ])
     expect(stderr.output).to.include('Fir is currently a pilot service')
     expect(stdout.output).to.eq(heredoc`
@@ -267,7 +268,7 @@ describe('spaces:create', function () {
       Data CIDR:  ${firSpace.data_cidr}
       State:      ${firSpace.state}
       Shield:     off
-      Generation: ${firSpace.generation}
+      Generation: ${getGeneration(firSpace)!}
       Created at: ${now.toISOString()}
     `)
   })

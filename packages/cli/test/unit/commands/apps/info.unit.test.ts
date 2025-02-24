@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import type {App} from '../../../../src/lib/types/fir'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
 const app = {
@@ -15,7 +16,7 @@ const app = {
   stack: {name: 'cedar-14'},
   owner: {email: 'foo@foo.com'},
   space: {name: 'myspace'},
-  generation: {id: '123', name: 'cedar'},
+  generation: 'cedar',
   internal_routing: true,
 }
 
@@ -28,12 +29,12 @@ const firApp = {
   slug_size: null,
   git_url: 'https://git.heroku.com/myapp',
   web_url: 'https://myapp.herokuapp.com',
-  region: {name: 'eu'},
+  region: {name: 'eu', id: ''},
   build_stack: {name: 'cedar-14'},
   stack: {name: 'cedar-14'},
-  owner: {email: 'foo@foo.com'},
+  owner: {email: 'foo@foo.com', id: ''},
   space: {name: 'myspace'},
-  generation: {id: '123', name: 'fir'},
+  generation: 'fir',
   internal_routing: true,
 }
 

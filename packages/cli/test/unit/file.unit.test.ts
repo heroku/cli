@@ -4,13 +4,13 @@ import * as file from '../../src/file'
 import * as fs from 'fs-extra'
 
 describe('file functions', function () {
-  let renameStub: any
-  let removeStub: any
-  let readdirStub: any
-  let statStub: any
+  let renameStub: sinon.SinonStub
+  let removeStub: sinon.SinonStub
+  let readdirStub: sinon.SinonStub
+  let statStub: sinon.SinonStub
   let statMock: fs.Stats
-  let outputJSONStub: any
-  let realpathSyncStub: any
+  let outputJSONStub: sinon.SinonStub
+  let realpathSyncStub: sinon.SinonStub
 
   beforeEach(function () {
     renameStub = sinon.stub(fs, 'rename').resolves()

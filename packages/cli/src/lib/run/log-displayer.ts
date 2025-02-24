@@ -2,8 +2,8 @@ import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import colorize from './colorize'
-import {isFirApp} from '../apps/generation'
 import {LogSession} from '../types/fir'
+import {getGenerationByAppId} from '../apps/generation'
 
 const EventSource = require('@heroku/eventsource')
 
@@ -68,7 +68,7 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
     }
   })
 
-  const firApp = await isFirApp(options.app, heroku)
+  const firApp = (await getGenerationByAppId(options.app, heroku)) === 'fir'
   const isTail = firApp || options.tail
 
   const requestBodyParameters = {
