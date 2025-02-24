@@ -93,6 +93,13 @@ jobs:
           git fetch origin main:refs/remotes/origin/main --quiet
           git diff origin/main...HEAD --diff-filter=d --name-only | yarn run cspell --no-progress --gitignore --no-must-find-files --file-list stdin
 
+  pr-title-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
