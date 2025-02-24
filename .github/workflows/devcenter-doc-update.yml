@@ -32,7 +32,7 @@ jobs:
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
         run: |
-          gem install devcenter
+          gem install devcenter --user-install
           devcenter help
 #      - name: Build CLI
 #        run: yarn build
