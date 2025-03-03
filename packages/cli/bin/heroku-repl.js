@@ -1,6 +1,13 @@
 const readline = require('node:readline/promises')
 const yargs = require('yargs-parser')
 const util = require('util')
+const path = require('node:path')
+const fs = require('node:fs')
+
+const historyFile = path.join(process.env.HOME || process.env.USERPROFILE, '.heroku_repl_history')
+const stateFile = path.join(process.env.HOME || process.env.USERPROFILE, '.heroku_repl_state')
+
+const maxHistory = 1000
 
 const completionCommandByName = new Map([
   ['app', ['apps', ['--all', '--json']]],
@@ -10,23 +17,43 @@ const completionCommandByName = new Map([
   ['pipeline', ['pipelines', ['--json']]],
   ['addon', ['addons', ['--json']]],
   ['domain', ['domains', ['--json']]],
-  ['dyno', ['dynos', ['--json']]],
+  ['dyno', ['ps', ['--json']]],
   ['release', ['releases', ['--json']]],
-  ['slug', ['slugs', [' --json']]],
-  ['stack', ['stacks', ['--json']]],
+  ['stack', ['apps:stacks', ['--json']]],
 ])
 
 const completionResultsByName = new Map()
 
 class HerokuRepl {
+  /**
+   * The OClif config object containing
+   * the command metadata and the means
+   * to execute commands
+   */
   #config
-  #flagsByName = new Map()
+
+  /**
+   * A map of key/value pairs used for
+   * the 'set' and 'unset' command
+   */
+  #setValues = new Map()
+
+  /**
+   * The history of the REPL commands used
+   */
   #history = []
+
+  /**
+   * The write stream for the history file
+   */
+  #historyStream
+
   #rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     prompt: 'heroku > ',
     removeHistoryDuplicates: true,
+    historySize: maxHistory,
     completer: async line => {
       const [command, ...parts] = line.split(' ')
       if (command === 'set') {
@@ -44,9 +71,52 @@ class HerokuRepl {
   })
 
   constructor(config) {
+    this.#prepareHistory()
+    this.#loadState()
     this.#config = config
+
     this.#rl.on('line', this.#onLine)
     this.#rl.prompt()
+  }
+
+  /**
+   * Prepares the REPL history by loading
+   * the previous history from the history file
+   * and opening a write stream for new entries.
+   *
+   * @returns {Promise<void>} a promise that resolves when the history has been loaded
+   */
+  #prepareHistory() {
+    this.#historyStream = fs.createWriteStream(historyFile, {
+      flags: 'a',
+      encoding: 'utf8',
+    })
+
+    // Load existing history first
+    if (fs.existsSync(historyFile)) {
+      this.#history = fs.readFileSync(historyFile, 'utf8')
+        .split('\n')
+        .filter(line => line.trim())
+        .reverse()
+        .splice(0, maxHistory)
+
+      this.#rl.history.push(...this.#history)
+    }
+  }
+
+  #loadState() {
+    if (fs.existsSync(stateFile)) {
+      try {
+        const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'))
+        for (const entry of Object.entries(state)) {
+          this.#updateFlagsByName('set', entry, true)
+        }
+
+        process.stdout.write('session restored')
+      } catch {
+        // noop
+      }
+    }
   }
 
   /**
@@ -57,6 +127,8 @@ class HerokuRepl {
   async done() {
     await new Promise(resolve => {
       this.#rl.once('close', () => {
+        this.#historyStream.close()
+        fs.writeFileSync(stateFile, JSON.stringify(Object.fromEntries(this.#setValues)), 'utf8')
         resolve()
       })
     })
@@ -77,6 +149,7 @@ class HerokuRepl {
 
     if (input) {
       this.#history.push(input)
+      this.#historyStream.write(input + '\n')
 
       const [command, ...args] = input.split(' ')
       if (command === 'exit') {
@@ -104,7 +177,7 @@ class HerokuRepl {
 
       try {
         const {flags} = cmd
-        for (const [key, value] of this.#flagsByName) {
+        for (const [key, value] of this.#setValues) {
           if (Reflect.has(flags, key)) {
             args.push(`--${key}`, value)
           }
@@ -119,24 +192,37 @@ class HerokuRepl {
     this.#rl.prompt()
   }
 
-  #updateFlagsByName(command, args) {
+  #updateFlagsByName(command, args, omitConfirmation) {
     if (command === 'set') {
       const [key, value] = args
       if (key && value) {
-        this.#flagsByName.set(key, value)
-        process.stdout.write(`setting --${key} to ${value}\n`)
+        this.#setValues.set(key, value)
+
+        if (!omitConfirmation) {
+          process.stdout.write(`setting --${key} to ${value}\n`)
+        }
+
         if (key === 'app') {
           this.#rl.setPrompt(`${value} > `)
         }
       } else {
-        console.table(Array.from(this.#flagsByName))
+        const values = []
+        for (const [flag, value] of this.#setValues) {
+          values.push({flag, value})
+        }
+
+        console.table(values)
       }
     }
 
     if (command === 'unset') {
       const [key] = args
-      process.stdout.write(`unsetting --${key}\n`)
-      this.#flagsByName.delete(key)
+
+      if (!omitConfirmation) {
+        process.stdout.write(`unsetting --${key}\n`)
+      }
+
+      this.#setValues.delete(key)
       if (key === 'app') {
         this.#rl.setPrompt('heroku > ')
       }
