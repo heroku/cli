@@ -7,10 +7,10 @@ abcr
 addonname
 allkeys
 amyapp
+amannn
 aname
 appname
 apresharedkey
-arbitrars
 armel
 armhf
 armv
@@ -108,6 +108,7 @@ herokussl
 histfile
 HRKU
 howmany
+hstore
 htcat
 iname
 indexrelid
@@ -195,6 +196,7 @@ mylowercaseapp
 myotherapp
 mypath
 myplugin
+myschema
 myscript
 myteam
 mywork

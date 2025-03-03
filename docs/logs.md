@@ -21,7 +21,7 @@ FLAGS
   -p, --process-type=<value>  only show output from this process type (such as "web" or "worker")
   -r, --remote=<value>        git remote of app to use
   -s, --source=<value>        only show output from this source (such as "app" or "heroku")
-  -t, --tail                  continually stream logs (defaults to true for Fir generation apps)
+  -t, --tail                  continually stream logs (always enabled for Fir-generation apps)
       --force-colors          force use of colors (even on non-tty output)
 
 DESCRIPTION
@@ -41,4 +41,4 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v10.1.0/packages/cli/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v10.2.0/packages/cli/src/commands/logs.ts)_

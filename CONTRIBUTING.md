@@ -6,7 +6,7 @@ This page lists the operational governance model of this project, as well as the
 
 ## Salesforce Sponsored
 
-The intent and goal of open sourcing this project is to increase the contributor and user base. However, only Salesforce employees will be given `admin` rights and will be the final arbitrars of what contributions are accepted or not.
+The intent and goal of open sourcing this project is to increase the contributor and user base. However, only Salesforce employees will be given `admin` rights and will be the final arbiters of what contributions are accepted or not.
 
 # Issues, requests & ideas
 

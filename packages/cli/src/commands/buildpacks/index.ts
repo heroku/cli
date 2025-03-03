@@ -7,7 +7,7 @@ import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
 import {getGeneration} from '../../lib/apps/generation'
 
 export default class Index extends Command {
-  static description = 'display the buildpacks for an app'
+  static description = 'list the buildpacks on an app'
 
   static flags = {
     app: Flags.app({required: true}),
@@ -22,11 +22,20 @@ export default class Index extends Command {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    const buildpacks = await buildpacksCommand.fetch(flags.app, getGeneration(app) === 'fir')
+    const isFirApp = getGeneration(app) === 'fir'
+    const buildpacks = await buildpacksCommand.fetch(flags.app, isFirApp)
     if (buildpacks.length === 0) {
       this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {
-      ux.styledHeader(`${color.app(flags.app)} Buildpack${buildpacks.length > 1 ? 's' : ''}`)
+      const pluralizedBuildpacks = buildpacks.length > 1 ? 'Buildpacks' : 'Buildpack'
+      let header = `${color.app(flags.app)}`
+      if (isFirApp) {
+        header += ` Cloud Native ${pluralizedBuildpacks} (from the latest release's OCI image)`
+      } else {
+        header += ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
+      }
+
+      ux.styledHeader(header)
       buildpacksCommand.display(buildpacks, '')
     }
   }

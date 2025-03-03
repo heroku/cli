@@ -1607,9 +1607,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^11.4.0":
-  version: 11.4.0
-  resolution: "@heroku-cli/command@npm:11.4.0"
+"@heroku-cli/command@npm:^11.5.0":
+  version: 11.5.0
+  resolution: "@heroku-cli/command@npm:11.5.0"
   dependencies:
     "@heroku-cli/color": ^2.0.1
     "@heroku/http-call": ^5.4.0
@@ -1623,7 +1623,7 @@ __metadata:
     uuid: ^8.3.0
     yargs-parser: ^18.1.3
     yargs-unparser: ^2.0.0
-  checksum: fb4ddfdbc43d4e9ccdb5ce697c52cb2984f83705a7e24ab38d50264fb5d0b923f2b6c71863b15e49086a1df50c15fc91aeebe1a49a096b540404aedcdaf7d9d3
+  checksum: f1323bd909487ee29720768674946c7336938b04f2d017d0ed4bf78e9eb34290862f946517879f7a64a930decc713186bbb1dcfa7b042b2e8eb2a769247bd7cd
   languageName: node
   linkType: hard
 
@@ -1645,9 +1645,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/heroku-exec-util@npm:0.9.1":
-  version: 0.9.1
-  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.1"
+"@heroku-cli/heroku-exec-util@npm:0.9.2":
+  version: 0.9.2
+  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.2"
   dependencies:
     "@heroku/heroku-cli-util": ^8.0.13
     "@heroku/socksv5": ^0.0.9
@@ -1656,9 +1656,9 @@ __metadata:
     keypair: 1.0.4
     node-forge: 1.3.0
     smooth-progress: 1.1.0
-    ssh2: 1.4.0
+    ssh2: 1.16.0
     temp: 0.9.1
-  checksum: 7b51fbd7fadaf02bf8567d58ae8f1cc72710eb282600959e613f54c5fe0e852728d2c2cef99c4f780324b6a69d2a75f4d225b2bfd341bbeda5a6a288a1231c84
+  checksum: 0930fcaeb37b009d41dbe42266b32bfec193001bad75af0ba502891c64e30329af9a263be6036669ae74d87fd5158eb31f2faa40d75197184b4643dc923652fa
   languageName: node
   linkType: hard
 
@@ -1671,13 +1671,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps-exec@npm:2.6.1":
-  version: 2.6.1
-  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.1"
+"@heroku-cli/plugin-ps-exec@npm:2.6.2":
+  version: 2.6.2
+  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.2"
   dependencies:
-    "@heroku-cli/heroku-exec-util": 0.9.1
-    "@heroku/heroku-cli-util": ^8.0.13
-  checksum: d5e0fe9e6a80a029b917fdfcd34ec6ca0f78900c9cfb4817ee3a751e9c409d3c5450c6c9f1a890bdf7b5e30fc9fa9090b9c5dc5b0c4821b190dca6f097d9db7f
+    "@heroku-cli/heroku-exec-util": 0.9.2
+    "@heroku/heroku-cli-util": ^8.0.15
+  checksum: 858893bbb80fdc65aa162556daaf1a69be8cb8ba1ac8a13d95f4e16cdb11307fd1fad0573cd6ac8a7819a30e662f55be7cb73590a28288116956c4a774bb297b
   languageName: node
   linkType: hard
 
@@ -1726,6 +1726,28 @@ __metadata:
     tslib: ^1.9.0
     tunnel-agent: ^0.6.0
   checksum: 08c6aa7911011a33b834bc62f5e1095ff67db94a0dd2e9d5dd372a18cfddbc4737b27f491bfe88d66208862c305209fd21f41d0af249404f24b44c024953343e
+  languageName: node
+  linkType: hard
+
+"@heroku/heroku-cli-util@npm:^8.0.15":
+  version: 8.0.15
+  resolution: "@heroku/heroku-cli-util@npm:8.0.15"
+  dependencies:
+    "@heroku-cli/color": ^1.1.3
+    ansi-escapes: ^3.1.0
+    ansi-styles: ^3.2.1
+    cardinal: ^2.0.1
+    chalk: ^2.4.1
+    got: ^11.8.6
+    heroku-client: ^3.1.0
+    lodash: ^4.17.10
+    netrc-parser: ^3.1.4
+    opn: ^3.0.3
+    strip-ansi: ^4.0.0
+    supports-color: ^9.4.0
+    tslib: ^1.9.0
+    tunnel-agent: ^0.6.0
+  checksum: 0ecc8e0c0928a7064f59cdce8991aedb8016b2c7e73a10715c2be54cd546d9a27feba9983afab9a5dadfd997542d35de70051e767164a79b9b82f1dc1ff27098
   languageName: node
   linkType: hard
 
@@ -5284,12 +5306,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ssh2@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "@types/ssh2@npm:1.15.0"
+"@types/ssh2@npm:^1.15.4":
+  version: 1.15.4
+  resolution: "@types/ssh2@npm:1.15.4"
   dependencies:
     "@types/node": ^18.11.18
-  checksum: d1c82b3fd1fee59d102fad44932c2f8bf6047506b9ca20856eed7484b1466a9901a9a3fbbfe41d7de71e8882b4cd5f634624773e69d63f0b8ab83a7a85731dce
+  checksum: 1b748e1a5fdaf06557d183b8d19df4449b5b25cc18930aff426402e82be816717a099f7a43e104b177144b20c2e22da2bba3ba716d64c53cd54be33187cf85a1
   languageName: node
   linkType: hard
 
@@ -7414,14 +7436,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cpu-features@npm:~0.0.9":
-  version: 0.0.9
-  resolution: "cpu-features@npm:0.0.9"
+"cpu-features@npm:~0.0.10":
+  version: 0.0.10
+  resolution: "cpu-features@npm:0.0.10"
   dependencies:
     buildcheck: ~0.0.6
-    nan: ^2.17.0
+    nan: ^2.19.0
     node-gyp: latest
-  checksum: 1ff6045a16d32d9667d5dd69c7d485944494d3378ac9381c52bca772bd0c948812eaeda55a76ef09212b0c0e0c575e5d53221899ce51692b1196089452c5aef1
+  checksum: ab17e25cea0b642bdcfd163d3d872be4cc7d821e854d41048557799e990d672ee1cc7bd1d4e7c4de0309b1683d4c001d36ba8569b5035d1e7e2ff2d681f681d7
   languageName: node
   linkType: hard
 
@@ -10328,9 +10350,9 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 2.0.1
-    "@heroku-cli/command": ^11.4.0
+    "@heroku-cli/command": ^11.5.0
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-ps-exec": 2.6.1
+    "@heroku-cli/plugin-ps-exec": 2.6.2
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
@@ -10376,7 +10398,7 @@ __metadata:
     "@types/shell-escape": ^0.2.0
     "@types/shell-quote": ^1.7.5
     "@types/sinon": ^17.0.3
-    "@types/ssh2": ^1.15.0
+    "@types/ssh2": ^1.15.4
     "@types/std-mocks": ^1.0.4
     "@types/strftime": ^0.9.8
     "@types/supports-color": ^8.1.3
@@ -10433,7 +10455,7 @@ __metadata:
     smooth-progress: ^1.1.0
     source-map-support: ^0.5.21
     sparkline: ^0.2.0
-    ssh2: ^1.15.0
+    ssh2: ^1.16.0
     std-mocks: ^2.0.0
     stdout-stderr: ^0.1.13
     strftime: ^0.10.0
@@ -12754,30 +12776,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.14.1":
-  version: 2.17.0
-  resolution: "nan@npm:2.17.0"
+"nan@npm:^2.14.1, nan@npm:^2.15.0, nan@npm:^2.19.0, nan@npm:^2.20.0":
+  version: 2.22.1
+  resolution: "nan@npm:2.22.1"
   dependencies:
     node-gyp: latest
-  checksum: ec609aeaf7e68b76592a3ba96b372aa7f5df5b056c1e37410b0f1deefbab5a57a922061e2c5b369bae9c7c6b5e6eecf4ad2dac8833a1a7d3a751e0a7c7f849ed
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.15.0":
-  version: 2.16.0
-  resolution: "nan@npm:2.16.0"
-  dependencies:
-    node-gyp: latest
-  checksum: cb16937273ea55b01ea47df244094c12297ce6b29b36e845d349f1f7c268b8d7c5abd126a102c5678a1e1afd0d36bba35ea0cc959e364928ce60561c9306064a
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.17.0, nan@npm:^2.18.0":
-  version: 2.19.0
-  resolution: "nan@npm:2.19.0"
-  dependencies:
-    node-gyp: latest
-  checksum: 29a894a003c1954c250d690768c30e69cd91017e2e5eb21b294380f7cace425559508f5ffe3e329a751307140b0bd02f83af040740fa4def1a3869be6af39600
+  checksum: 984c07db9f94b7faf19c643d20a7bf66bb311e4c21d62204bb3a09310081550773441bacc928427c2438b9169e3dbd671cf0c8f1765eb4d87c5bd556d38af76b
   languageName: node
   linkType: hard
 
@@ -15519,6 +15523,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssh2@npm:1.16.0, ssh2@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "ssh2@npm:1.16.0"
+  dependencies:
+    asn1: ^0.2.6
+    bcrypt-pbkdf: ^1.0.2
+    cpu-features: ~0.0.10
+    nan: ^2.20.0
+  dependenciesMeta:
+    cpu-features:
+      optional: true
+    nan:
+      optional: true
+  checksum: c024c4a432aae2457852037f31c0d9bec323fb062ace3a31e4a6dd6c55842246c80e7d20ff93ffed22dde1e523250d8438bc2f7d4a1450cf4fa4887818176f0e
+  languageName: node
+  linkType: hard
+
 "ssh2@npm:1.4.0":
   version: 1.4.0
   resolution: "ssh2@npm:1.4.0"
@@ -15533,23 +15554,6 @@ __metadata:
     nan:
       optional: true
   checksum: 354ed1a4ed5df39e4d898b9ad02f0207851c2256adfddd34ca53971a67b793e72b4581d8812b2155c9d70bceb69b4c582445e743a013867516595c31e922d674
-  languageName: node
-  linkType: hard
-
-"ssh2@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "ssh2@npm:1.15.0"
-  dependencies:
-    asn1: ^0.2.6
-    bcrypt-pbkdf: ^1.0.2
-    cpu-features: ~0.0.9
-    nan: ^2.18.0
-  dependenciesMeta:
-    cpu-features:
-      optional: true
-    nan:
-      optional: true
-  checksum: 56baa07dc0dd8d97aefa05033b8a95d220a34b2f203aa9116173d7adc5e9fd46be22d7cfed99cdd9f5548862ae44abd1ec136e20ea856d5c470a0df0e5aea9d1
   languageName: node
   linkType: hard
 
@@ -15919,6 +15923,13 @@ __metadata:
   dependencies:
     has-flag: ^4.0.0
   checksum: c052193a7e43c6cdc741eb7f378df605636e01ad434badf7324f17fb60c69a880d8d8fcdcb562cf94c2350e57b937d7425ab5b8326c67c2adc48f7c87c1db406
+  languageName: node
+  linkType: hard
+
+"supports-color@npm:^9.4.0":
+  version: 9.4.0
+  resolution: "supports-color@npm:9.4.0"
+  checksum: cb8ff8daeaf1db642156f69a9aa545b6c01dd9c4def4f90a49f46cbf24be0c245d392fcf37acd119cd1819b99dad2cc9b7e3260813f64bcfd7f5b18b5a1eefb8
   languageName: node
   linkType: hard
 
