@@ -66,7 +66,7 @@ export type RedisFormationWaitResponse = {
 type HttpVerb = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'
 
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
-  const HOST = process.env.HEROKU_DATA_HOST || process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
+  const HOST = process.env.HEROKU_DATA_HOST || 'api.data.heroku.com'
   const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
   return {
