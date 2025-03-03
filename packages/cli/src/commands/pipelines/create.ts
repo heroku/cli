@@ -7,6 +7,7 @@ import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inqui
 import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api'
 import infer from '../../lib/pipelines/infer'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
+import {getGeneration, getGenerationByAppId} from '../../lib/apps/generation'
 
 export default class Create extends Command {
   static description = `create a new pipeline
@@ -22,12 +23,6 @@ export default class Create extends Command {
 
   static flags = {
     app: flags.app({required: true}),
-    generation: flags.string({
-      description: 'generation of the the app execution environment',
-      completion: ['fir', 'cedar'],
-      default: 'cedar',
-      options: ['fir', 'cedar'],
-    }),
     remote: flags.remote(),
     stage: flags.string({
       name: 'stage',
@@ -96,7 +91,8 @@ export default class Create extends Command {
     if (answers.stage) stage = answers.stage
 
     ux.action.start(`Creating ${name} pipeline`)
-    const {body: pipeline} = await createPipeline(this.heroku, name, owner, flags.generation)
+    const generation = await getGenerationByAppId(app, this.heroku)
+    const {body: pipeline} = await createPipeline(this.heroku, name, owner, generation)
     ux.action.stop()
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
