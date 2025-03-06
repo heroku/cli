@@ -7,7 +7,7 @@ export default class Index extends Command {
   static description = 'list telemetry drains'
   static flags = {
     space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
-    app: Flags.string({description: 'filter by app name'}),
+    app: Flags.string({char: 'a', description: 'filter by app name'}),
   };
 
   static example = '$ heroku telemetry'
