@@ -2,11 +2,12 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, ux} from '@oclif/core'
-import {prompt} from 'inquirer'
+import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../lib/api'
+import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api'
 import infer from '../../lib/pipelines/infer'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
+import {getGenerationByAppId} from '../../lib/apps/generation'
 
 export default class Create extends Command {
   static description = `create a new pipeline
@@ -46,9 +47,9 @@ export default class Create extends Command {
 
     let name
     let stage
-    let owner: any
+    let owner: Owner
     const guesses = infer(flags.app)
-    const questions: any = []
+    const questions: (InputQuestion | ListQuestion)[] = []
 
     const app = flags.app
 
@@ -79,18 +80,19 @@ export default class Create extends Command {
     const ownerType = teamName ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
-    owner = teamName ? await getTeam(this.heroku, teamName) : await getAccountInfo(this.heroku)
-    owner = owner.body
+    const response = teamName ? await getTeam(this.heroku, teamName) : await getAccountInfo(this.heroku)
+    owner = response.body
     const ownerID = owner.id
 
     owner = {id: ownerID, type: ownerType}
 
-    const answers: any = await prompt(questions)
+    const answers: Answers = await prompt(questions)
     if (answers.name) name = answers.name
     if (answers.stage) stage = answers.stage
 
     ux.action.start(`Creating ${name} pipeline`)
-    const {body: pipeline}: any = await createPipeline(this.heroku, name, owner)
+    const generation = await getGenerationByAppId(app, this.heroku)
+    const {body: pipeline} = await createPipeline(this.heroku, name, owner, generation)
     ux.action.stop()
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
