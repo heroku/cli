@@ -14959,6 +14959,7 @@ __metadata:
     qqjs: 0.3.11
     standard: 17.1.0
     tmp: ^0.2.1
+    yargs-parser: ^21.1.1
   languageName: unknown
   linkType: soft
 

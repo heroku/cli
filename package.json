@@ -48,5 +48,8 @@
       "packages/*"
     ]
   },
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "dependencies": {
+    "yargs-parser": "^21.1.1"
+  }
 }
