@@ -7,7 +7,7 @@ import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inqui
 import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api'
 import infer from '../../lib/pipelines/infer'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
-import {getGeneration, getGenerationByAppId} from '../../lib/apps/generation'
+import {getGenerationByAppId} from '../../lib/apps/generation'
 
 export default class Create extends Command {
   static description = `create a new pipeline
