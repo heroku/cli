@@ -77,7 +77,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
       }
 
       // don't send an empty body, Cloudfront will reject the request
-      if (Object.keys(body).length === 0) {
+      if (Object.keys(body).length === 0 && method === 'GET') {
         return heroku.request<T>(path, {
           hostname: HOST,
           method,
