@@ -31,7 +31,7 @@ export default class StatsReset extends Command {
 
     ux.action.start(`Resetting stats on ${color.addon(addon.name || '')}`)
     const {body: response} = await redisApi(app, database, false, this.heroku)
-      .request<RedisApiResponse>(`/redis/v0/databases/${addon.id}/stats/reset`, 'POST')
+      .request<RedisApiResponse>(`/redis/v0/databases/${addon.id}/stats/reset`, 'POST', {})
     ux.action.stop(response.message)
   }
 }
