@@ -71,9 +71,18 @@ export default (app: string, database: string | undefined, json: boolean, heroku
 
   return {
     request<T>(path: string, method: HttpVerb = 'GET', body = {}) {
-      const headers = {Accept: 'application/json'}
+      const headers = {Accept: 'application/vnd.heroku+json; version=3'}
       if (process.env.HEROKU_HEADERS) {
         Object.assign(headers, JSON.parse(process.env.HEROKU_HEADERS))
+      }
+
+      // don't send an empty body, Cloudfront will reject the request
+      if (Object.keys(body).length === 0) {
+        return heroku.request<T>(path, {
+          hostname: HOST,
+          method,
+          headers,
+        })
       }
 
       return heroku.request<T>(path, {
