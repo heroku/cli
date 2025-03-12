@@ -8,6 +8,8 @@ export const FILTERS_HEADER = `${V3_HEADER}.filters`
 export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 const CI_HEADER = `${V3_HEADER}.ci`
 
+export type Owner = Pick<Heroku.Account, 'id' | 'type'> | Pick<Heroku.Team, 'id' | 'type'>
+
 export function createAppSetup(heroku: APIClient, body: {body: any}) {
   return heroku.post<Heroku.AppSetup>('/app-setups', {body})
 }
@@ -22,11 +24,11 @@ export function createCoupling(heroku: APIClient, pipeline: any, app: string, st
   return postCoupling(heroku, pipeline.id, app, stage)
 }
 
-export function createPipeline(heroku: APIClient, name: any, owner: any) {
+export function createPipeline(heroku: APIClient, name: string, owner: Owner, generationName: string = 'cedar') {
   return heroku.request<Heroku.Pipeline>('/pipelines', {
     method: 'POST',
     headers: {Accept: PIPELINES_HEADER},
-    body: {name, owner},
+    body: {name, owner, generation: {name: generationName}},
   })
 }
 

@@ -36,7 +36,7 @@ export default class Wait extends Command {
       let waiting = false
       while (true) {
         try {
-          status = await api.request<RedisFormationWaitResponse>(`/redis/v0/databases/${addon.name}/wait`, 'GET').then(response => response.body)
+          status = await api.request<RedisFormationWaitResponse>(`/redis/v0/databases/${addon.name}/wait`).then(response => response.body)
         } catch (error) {
           const httpError = error as HTTPError
           if (httpError.statusCode !== 404)

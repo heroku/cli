@@ -368,6 +368,7 @@
       "heroku-pipelines": null,
       "heroku-ps-wait": null,
       "heroku-redis": null,
+      "heroku-repo": "@heroku-cli/plugin-heroku-repo",
       "heroku-skynet-cli": "@heroku/skynet",
       "heroku-splunk": "@heroku/splunk",
       "heroku-sudo": "@heroku/sudo",
