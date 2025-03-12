@@ -38,9 +38,8 @@ export default class Retry extends Command {
         ux.log('Running release command...')
         try {
           await streamer(retry.output_stream_url, process.stdout)
-        } catch (error: unknown) {
-          // Type guard to check if error is an object with statusCode
-          if (error && typeof error === 'object' && 'statusCode' in error && error.statusCode === 404) {
+        } catch (error: any) {
+          if (error.statusCode === 404) {
             ux.warn('Release command starting. Use `heroku releases:output` to view the log.')
             return
           }
