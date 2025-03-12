@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.3.0-beta.0](https://github.com/heroku/cli/compare/v10.2.0...v10.3.0-beta.0) (2025-03-12)
+
+
+### Bug Fixes
+
+* add shortcode for --app flag in telemetry command ([#3246](https://github.com/heroku/cli/issues/3246)) ([8bf8a7e](https://github.com/heroku/cli/commit/8bf8a7e26ce2e7e37d08188c7f063937b3a02493))
+* **redis:** Remove empty object body from GET requests to Redis API ([#3251](https://github.com/heroku/cli/issues/3251)) ([0938ee7](https://github.com/heroku/cli/commit/0938ee787043562b26324a49af0b0e6f86c5876a))
+* remove limited GA phrasing from spaces:create ([#3245](https://github.com/heroku/cli/issues/3245)) ([369f736](https://github.com/heroku/cli/commit/369f73695786720a6d121b5551f2c5a50327672d))
+
+
+### Features
+
+* add alias for heroku-sudo plugin ([#3250](https://github.com/heroku/cli/issues/3250)) ([810341b](https://github.com/heroku/cli/commit/810341bcace555568559655d0ad54e8763899329))
+* **W-17752806:** Pipeline creation must support the generation property ([#3221](https://github.com/heroku/cli/issues/3221)) ([779c8b4](https://github.com/heroku/cli/commit/779c8b4b5d29c8ef45ebc57622d35b67f40ea8e5))
+
+
+
+
+
 # [10.2.0](https://github.com/heroku/cli/compare/v10.1.0...v10.2.0) (2025-02-19)
 
 
@@ -18,7 +37,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * **utils:** add a getGeneration helper function and apply it across the CLI ([#3206](https://github.com/heroku/cli/issues/3206)) ([081fcd6](https://github.com/heroku/cli/commit/081fcd666dac3fdbfe31588759fbe4530a814132))
 * update help text for logs command ([#3225](https://github.com/heroku/cli/issues/3225)) ([e1475a2](https://github.com/heroku/cli/commit/e1475a20556d4d17fc1aabc03a04bc7632132e8e))
-
 
 
 
