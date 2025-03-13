@@ -4,26 +4,26 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-describe('releases:retry', async function () {
+describe('releases:retry', function () {
   afterEach(function () {
     return nock.cleanAll()
   })
 
   const release = [{
-    slug: { id: 'slug_uuid' },
+    slug: {id: 'slug_uuid'},
     version: 40,
-    description: 'A release'
+    description: 'A release',
   }]
 
   const releaseWithoutSlug = [{
     slug: null,
     version: 40,
-    description: 'A release'
+    description: 'A release',
   }]
 
   const releaseRetry = {
     slug: 'slug_uuid',
-    description: 'Retry of v40: A release'
+    description: 'Retry of v40: A release',
   }
 
   it('errors when there are no releases yet', async function () {

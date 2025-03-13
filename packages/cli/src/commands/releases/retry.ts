@@ -32,8 +32,8 @@ export default class Retry extends Command {
     const {body: retry} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
       body: {
         slug: release?.slug?.id,
-        description: `Retry of v${release.version}: ${release.description}`
-      }
+        description: `Retry of v${release.version}: ${release.description}`,
+      },
     })
 
     ux.action.stop(`done, ${color.green('v' + retry.version)}`)
