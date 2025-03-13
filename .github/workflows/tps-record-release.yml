@@ -23,7 +23,7 @@ jobs:
     environment: ChangeManagement
     steps:
       # checkout required to get github.sha
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - env:
           ACTOR_EMAIL: ${{ secrets.TPS_API_RELEASE_ACTOR_EMAIL }}
           TPS_API_TOKEN: ${{ secrets.TPS_API_TOKEN_PARAM }}
