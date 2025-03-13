@@ -4,17 +4,8 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
-const isTTY = process.stderr.isTTY
-
 describe('releases:retry', async function () {
-  beforeEach(function () {
-    process.stderr.isTTY = true
-    process.stderr.columns = 1000
-    console.log("isTTY", isTTY)
-    console.log("columns", process.stderr.columns)
-  })
   afterEach(function () {
-    process.stderr.isTTY = isTTY
     return nock.cleanAll()
   })
 
