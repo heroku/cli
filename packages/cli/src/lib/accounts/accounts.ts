@@ -1,6 +1,6 @@
 import {parse, stringify} from 'yaml'
 import * as fs from 'fs'
-import * as os from 'os'
+import * as os from 'node:os'
 import * as path from 'node:path'
 import netrc, {Netrc} from 'netrc-parser'
 
@@ -13,11 +13,8 @@ function configDir() {
   return path.join(os.homedir(), '.config', 'heroku')
 }
 
-const basedir = path.join(configDir(), 'accounts')
-
-const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
-
 function account(name: string) {
+  const basedir = path.join(configDir(), 'accounts')
   const file = fs.readFileSync(path.join(basedir, name), 'utf8')
   const account = parse(file)
   if (account[':username']) {
@@ -32,6 +29,7 @@ function account(name: string) {
 }
 
 export function list() {
+  const basedir = path.join(configDir(), 'accounts')
   try {
     return fs.readdirSync(basedir)
       .map(name => Object.assign(account(name), {name}))
@@ -41,6 +39,7 @@ export function list() {
 }
 
 export function current() {
+  const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
   if (netrcFile.machines['api.heroku.com']) {
     const current = list().find(a => a.username === netrcFile.machines['api.heroku.com'].login)
     return current ? current.name : null
@@ -50,6 +49,7 @@ export function current() {
 }
 
 export function add(name: string, username: string, password: string) {
+  const basedir = path.join(configDir(), 'accounts')
   fs.mkdirSync(basedir, {recursive: true})
 
   fs.writeFileSync(
@@ -61,10 +61,12 @@ export function add(name: string, username: string, password: string) {
 }
 
 export function remove(name: string) {
+  const basedir = path.join(configDir(), 'accounts')
   fs.unlinkSync(path.join(basedir, name))
 }
 
 export function set(name: string) {
+  const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
   const current = account(name)
   netrcFile.machines['git.heroku.com'] = {}
   netrcFile.machines['api.heroku.com'] = {}
