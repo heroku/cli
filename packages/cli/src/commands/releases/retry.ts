@@ -9,7 +9,7 @@ export default class Retry extends Command {
   static topic = 'releases';
   static description = 'retry the latest release-phase command';
   static examples = ['heroku releases:retry --app happy-samurai-42']
-  static help = 'Copies the latest release into a new one, retrying the latest release-phase command.'
+  static help = 'Copies the latest release into a new one, retrying the latest release-phase command. App must have release-phase command.'
   static flags = {
     app: flags.app({required: true}),
   };
@@ -21,6 +21,10 @@ export default class Retry extends Command {
 
     if (!release) {
       return ux.error('No release found for this app')
+    }
+
+    if (!release.slug) {
+      return ux.error('This command only works for apps using a release-phase command')
     }
 
     ux.action.start(`Retrying ${color.green('v' + release.version)} on ${color.app(app)}`)

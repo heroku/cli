@@ -15,6 +15,12 @@ describe('releases:retry', async function () {
     description: 'A release'
   }]
 
+  const releaseWithoutSlug = [{
+    slug: null,
+    version: 40,
+    description: 'A release'
+  }]
+
   const releaseRetry = {
     slug: 'slug_uuid',
     description: 'Retry of v40: A release'
@@ -68,25 +74,16 @@ describe('releases:retry', async function () {
     expect(stdout.output).to.contains('Release Output Content')
   })
 
-  it('has a missing output', async function () {
-    const busl = nock('https://busl.test')
-      .get('/streams/release.log')
-      .reply(404, '')
-
+  it('errors if app does not use release-phase', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
-      .reply(200, release)
-      .post('/apps/myapp/releases', releaseRetry)
-      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
+      .reply(200, releaseWithoutSlug)
 
     await runCommand(Cmd, [
       '--app',
       'myapp',
-    ])
-
-    api.done()
-    busl.done()
-    expect(stdout.output).to.equal('Running release command...\n')
-    expect(stderr.output).to.contains('Release command starting. Use `heroku releases:output` to view the log.')
+    ]).catch((error: any) => {
+      expect(error.message).to.eq('This command only works for apps using a release-phase command')
+    })
   })
 })
