@@ -15,10 +15,17 @@ describe('releases:retry', function () {
     description: 'A release',
   }]
 
-  const releaseWithoutSlug = [{
-    slug: null,
-    version: 40,
-    description: 'A release',
+  const formationWithReleasePhase = [
+    {
+      type: 'release',
+    },
+    {
+      type: 'web',
+    },
+  ]
+
+  const formationWithoutReleasePhase = [{
+    type: 'web',
   }]
 
   const releaseRetry = {
@@ -29,6 +36,8 @@ describe('releases:retry', function () {
   it('errors when there are no releases yet', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
+      .reply(200, [])
+      .get('/apps/myapp/formation')
       .reply(200, [])
 
     await runCommand(Cmd, [
@@ -43,6 +52,8 @@ describe('releases:retry', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
       .reply(200, release)
+      .get('/apps/myapp/formation')
+      .reply(200, formationWithReleasePhase)
       .post('/apps/myapp/releases', releaseRetry)
       .reply(200, {})
 
@@ -60,6 +71,8 @@ describe('releases:retry', function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
       .reply(200, release)
+      .get('/apps/myapp/formation')
+      .reply(200, formationWithReleasePhase)
       .post('/apps/myapp/releases', releaseRetry)
       .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
 
@@ -75,9 +88,11 @@ describe('releases:retry', function () {
   })
 
   it('errors if app does not use release-phase', async function () {
-    const api = nock('https://api.heroku.com')
+    nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
-      .reply(200, releaseWithoutSlug)
+      .reply(200, release)
+      .get('/apps/myapp/formation')
+      .reply(200, formationWithoutReleasePhase)
 
     await runCommand(Cmd, [
       '--app',

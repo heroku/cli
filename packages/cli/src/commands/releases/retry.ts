@@ -18,12 +18,14 @@ export default class Retry extends Command {
     const {flags} = await this.parse(Retry)
     const {app} = flags
     const release = await findByLatestOrId(this.heroku, app)
+    const {body: formations} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
+    const releasePhase = formations.filter(formation => formation.type === 'release')
 
     if (!release) {
       return ux.error('No release found for this app')
     }
 
-    if (!release.slug) {
+    if (releasePhase.length === 0) {
       return ux.error('This command only works for apps using a release-phase command')
     }
 
@@ -43,7 +45,7 @@ export default class Retry extends Command {
       await stream(retry.output_stream_url)
         .catch(error => {
           if (error.statusCode === 404 || error.response?.statusCode === 404) {
-            ux.warn('Release command starting. Use `heroku releases:output` to view the log.')
+            ux.warn(`Release command starting. Use ${color.cmd('heroku releases:output --app ' + app)} to view the log.`)
             return
           }
 
