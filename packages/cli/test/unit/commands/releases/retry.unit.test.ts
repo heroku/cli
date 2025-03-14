@@ -44,7 +44,7 @@ describe('releases:retry', function () {
       '--app',
       'myapp',
     ]).catch((error: any) => {
-      expect(error.message).to.eq('No release found for this app')
+      expect(error.message).to.eq('No release found for this app.')
     })
   })
 
@@ -98,7 +98,7 @@ describe('releases:retry', function () {
       '--app',
       'myapp',
     ]).catch((error: any) => {
-      expect(error.message).to.eq('This command only works for apps using a release-phase command')
+      expect(error.message).to.eq('App must have a release-phase command to use this command.')
     })
   })
 })
