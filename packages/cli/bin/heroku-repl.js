@@ -1,4 +1,4 @@
-const readline = require('node:readline/promises')
+const readline = require('node:readline')
 const yargs = require('yargs-parser')
 const util = require('util')
 const path = require('node:path')
@@ -74,9 +74,6 @@ class HerokuRepl {
     this.#prepareHistory()
     this.#loadState()
     this.#config = config
-
-    this.#rl.on('line', this.#onLine)
-    this.#rl.prompt()
   }
 
   /**
@@ -101,6 +98,7 @@ class HerokuRepl {
         .splice(0, maxHistory)
 
       this.#rl.history.push(...this.#history)
+      this.#rl.history
     }
   }
 
@@ -144,52 +142,58 @@ class HerokuRepl {
    * @param {string} line the line to process
    * @returns {Promise<void>} a promise that resolves when the line has been processed
    */
-  #onLine = async line => {
-    const input = line.trim()
+  async start() {
+    this.#rl.on('line', this.#processLine)
+    this.#rl.prompt()
+  }
 
-    if (input) {
-      this.#history.push(input)
-      this.#historyStream.write(input + '\n')
+  #processLine = async input => {
+    this.#history.push(input)
+    this.#historyStream.write(input + '\n')
 
-      const [command, ...args] = input.split(' ')
-      if (command === 'exit') {
-        process.exit(0)
-      }
-
-      if (command === 'history') {
-        process.stdout.write(this.#history.join('\n'))
-        this.#rl.prompt()
-        return
-      }
-
-      if (command === 'set' || command === 'unset') {
-        this.#updateFlagsByName(command, args)
-        this.#rl.prompt()
-        return
-      }
-
-      const cmd = this.#config.findCommand(command)
-
-      if (!cmd) {
-        process.stderr.write(`"${command}" is not a valid command\n`)
-        this.#rl.prompt()
-      }
-
-      try {
-        const {flags} = cmd
-        for (const [key, value] of this.#setValues) {
-          if (Reflect.has(flags, key)) {
-            args.push(`--${key}`, value)
-          }
-        }
-
-        await this.#config.runCommand(command, args.filter(Boolean))
-      } catch (error) {
-        console.error(error.message)
-      }
+    const [command, ...args] = input.split(' ')
+    if (command === 'exit') {
+      process.exit(0)
     }
 
-    this.#rl.prompt()
+    if (command === 'history') {
+      process.stdout.write(this.#history.join('\n'))
+      return
+    }
+
+    if (command === 'set' || command === 'unset') {
+      this.#updateFlagsByName(command, args)
+      return
+    }
+
+    const cmd = this.#config.findCommand(command)
+
+    if (!cmd) {
+      console.error(`"${command}" is not a valid command`)
+      return
+    }
+
+    try {
+      const {flags} = cmd
+      for (const [key, value] of this.#setValues) {
+        if (Reflect.has(flags, key)) {
+          args.push(`--${key}`, value)
+        }
+      }
+
+      this.#rl.pause()
+      this.#rl.off('line', this.#processLine)
+      await this.#config.runCommand(command, args.filter(Boolean))
+    } catch (error) {
+      console.error(error.message)
+    } finally {
+      // this.#rl.pause()
+      process.stdin.setRawMode(true)
+      this.#rl.resume()
+      this.#rl.on('line', this.#processLine)
+      // Force readline to refresh the current line
+      this.#rl.write(null, {ctrl: true, name: 'u'})
+    }
   }
 
   #updateFlagsByName(command, args, omitConfirmation) {
@@ -397,7 +401,7 @@ class HerokuRepl {
       await fn()
       return output.join('')
     } finally {
-    // Restore original stdout
+      // Restore original stdout
       process.stdout.write = originalWrite
     }
   }
@@ -485,5 +489,6 @@ class HerokuRepl {
 }
 module.exports.herokuRepl = async function (config) {
   const repl = new HerokuRepl(config)
+  await repl.start()
   return repl.done()
 }
