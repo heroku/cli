@@ -3,6 +3,10 @@ import {ux} from '@oclif/core'
 import {current, list} from '../../lib/accounts/accounts'
 
 export default class AccountsIndex extends Command {
+  static description = 'list the Heroku accounts in your cache'
+
+  static example = 'heroku accounts'
+
   async run() {
     const accounts = list()
     if (accounts.length === 0) {
