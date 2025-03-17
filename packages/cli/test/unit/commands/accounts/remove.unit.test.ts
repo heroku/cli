@@ -3,7 +3,6 @@ import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/remove'
 import * as accounts from '../../../../src/lib/accounts/accounts'
-import {stdout} from 'stdout-stderr'
 
 describe('accounts:remove', function () {
   let currentStub: sinon.SinonStub
