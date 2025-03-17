@@ -87,7 +87,7 @@ describe('accounts', function () {
     })
   })
 
-  describe('accounts.current()', function () {
+  describe('current()', function () {
     it('should return null when no api.heroku.com machine exists', function () {
       netrcLoadSyncStub.returns({machines: {}})
 
