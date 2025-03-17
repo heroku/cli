@@ -4,9 +4,13 @@ import * as Heroku from '@heroku-cli/schema'
 import {add, list} from '../../lib/accounts/accounts'
 
 export default class Add extends Command {
+  static description = 'add a new Heroku account to your cache'
+
   static args = {
     name: Args.string({description: 'name of account to add', required: true}),
   }
+
+  static example = 'heroku accounts:add my-account'
 
   async run() {
     const {args} = await this.parse(Add)
@@ -15,7 +19,7 @@ export default class Add extends Command {
     let account: Heroku.Account
     let email = ''
 
-    if (list().find(a => a.name === name)) {
+    if (list().some(a => a.name === name)) {
       ux.error(`${name} already exists`)
     }
 
