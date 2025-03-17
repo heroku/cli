@@ -65,7 +65,7 @@ describe('accounts:add', function () {
         .reply(401)
 
       await runCommand(Cmd, ['testAccountName'])
-        .catch(error =>  {
+        .catch((error: Error) =>  {
           expect(error.message).to.equal('You need to be logged in to run this command.')
         })
     })

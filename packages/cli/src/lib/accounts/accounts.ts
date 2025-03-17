@@ -38,7 +38,7 @@ export function list() {
   }
 }
 
-export function current() {
+export function current(): string | null {
   const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
   if (netrcFile.machines['api.heroku.com']) {
     const current = list().find(a => a.username === netrcFile.machines['api.heroku.com'].login)
