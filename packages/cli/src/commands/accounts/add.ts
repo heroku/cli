@@ -11,7 +11,7 @@ export default class Add extends Command {
   async run() {
     const {args} = await this.parse(Add)
     const {name} = args
-    const logInMessage = 'You need to be logged in to run this command.'
+    const logInMessage = 'You need to be logged in to run this command'
     let account: Heroku.Account
     let email = ''
 
