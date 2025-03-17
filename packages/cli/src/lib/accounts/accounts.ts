@@ -2,6 +2,7 @@ import {parse, stringify} from 'yaml'
 import * as fs from 'fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
+import * as Heroku from '@heroku-cli/schema'
 import netrc, {Netrc} from 'netrc-parser'
 
 function configDir() {
@@ -13,7 +14,7 @@ function configDir() {
   return path.join(os.homedir(), '.config', 'heroku')
 }
 
-function account(name: string) {
+function account(name: string): Heroku.Account {
   const basedir = path.join(configDir(), 'accounts')
   const file = fs.readFileSync(path.join(basedir, name), 'utf8')
   const account = parse(file)
@@ -28,7 +29,7 @@ function account(name: string) {
   return account
 }
 
-export function list() {
+export function list(): Heroku.Account[] | [] {
   const basedir = path.join(configDir(), 'accounts')
   try {
     return fs.readdirSync(basedir)
@@ -42,7 +43,7 @@ export function current(): string | null {
   const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
   if (netrcFile.machines['api.heroku.com']) {
     const current = list().find(a => a.username === netrcFile.machines['api.heroku.com'].login)
-    return current ? current.name : null
+    return current && current.name ? current.name : null
   }
 
   return null
