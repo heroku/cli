@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as Heroku from '@heroku-cli/schema'
-import netrc, {Netrc} from 'netrc-parser'
+import Netrc from 'netrc-parser'
 
 function configDir() {
   const legacyDir = path.join(os.homedir(), '.heroku')
@@ -40,9 +40,8 @@ export function list(): Heroku.Account[] | [] {
 }
 
 export function current(): string | null {
-  const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
-  if (netrcFile.machines['api.heroku.com']) {
-    const current = list().find(a => a.username === netrcFile.machines['api.heroku.com'].login)
+  if (Netrc.machines['api.heroku.com']) {
+    const current = list().find(a => a.username === Netrc.machines['api.heroku.com'].login)
     return current && current.name ? current.name : null
   }
 
@@ -67,14 +66,13 @@ export function remove(name: string) {
 }
 
 export function set(name: string) {
-  const netrcFile: Netrc = netrc.loadSync() as unknown as Netrc
   const current = account(name)
-  netrcFile.machines['git.heroku.com'] = {}
-  netrcFile.machines['api.heroku.com'] = {}
-  netrcFile.machines['git.heroku.com'].login = current.username
-  netrcFile.machines['api.heroku.com'].login = current.username
-  netrcFile.machines['git.heroku.com'].password = current.password
-  netrcFile.machines['api.heroku.com'].password = current.password
+  Netrc.machines['git.heroku.com'] = {}
+  Netrc.machines['api.heroku.com'] = {}
+  Netrc.machines['git.heroku.com'].login = current.username
+  Netrc.machines['api.heroku.com'].login = current.username
+  Netrc.machines['git.heroku.com'].password = current.password
+  Netrc.machines['api.heroku.com'].password = current.password
 
-  netrcFile.saveSync()
+  Netrc.saveSync()
 }
