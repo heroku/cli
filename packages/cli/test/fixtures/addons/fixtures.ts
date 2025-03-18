@@ -115,6 +115,51 @@ export const plans: Record<string, Heroku.Plan> = {
     state: 'ga',
     updated_at: '2015-06-25T16:10:02Z',
   },
+  'heroku-inference:plan-1': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: true,
+    description: 'Heroku Inference Plan 1',
+    human_name: 'Plan 1',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5ff',
+    name: 'heroku-inference:plan-1',
+    price: {
+      cents: 0,
+      unit: 'month',
+      metered: true,
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
+  'heroku-inference:plan-2': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: false,
+    description: 'Heroku Inference Plan 2',
+    human_name: 'Plan 2',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5gg',
+    name: 'heroku-inference:plan-2',
+    price: {
+      cents: 0,
+      unit: 'month',
+      metered: true,
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
+  'heroku-inference:plan-3': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: false,
+    description: 'Heroku Inference Plan 3',
+    human_name: 'Plan 3',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5hh',
+    name: 'heroku-inference:plan-3',
+    price: {
+      cents: 0,
+      unit: 'month',
+      metered: true,
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
 }
 
 export const addons: Record<string, Heroku.AddOn> = {
