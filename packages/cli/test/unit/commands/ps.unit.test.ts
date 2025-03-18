@@ -49,7 +49,7 @@ describe('spaces:ps', function () {
     apiSpace.done()
   })
 
-  it('shows space dynos', async () => {
+  it('shows space dynos', async function () {
     api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos')
       .reply(200, spaceDynos)
@@ -80,7 +80,7 @@ describe('spaces:ps', function () {
     `))
   })
 
-  it('shows shield space dynos', async () => {
+  it('shows shield space dynos', async function () {
     api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos')
       .reply(200, privateDynos)
@@ -99,7 +99,7 @@ describe('spaces:ps', function () {
     `))
   })
 
-  it('shows private space dynos', async () => {
+  it('shows private space dynos', async function () {
     api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos')
       .reply(200, privateDynos)
@@ -118,7 +118,7 @@ describe('spaces:ps', function () {
     `))
   })
 
-  it('shows space dynos with --json', async () => {
+  it('shows space dynos with --json', async function () {
     api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/dynos')
       .reply(200, spaceDynos)
