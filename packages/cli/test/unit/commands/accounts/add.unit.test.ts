@@ -42,7 +42,7 @@ describe('accounts:add', function () {
 
       await runCommand(Cmd, ['testAccountName'])
         .catch(error =>  {
-          expect(error.message).to.equal('You need to be logged in to run this command.')
+          expect(error.message).to.equal('You need to be logged in to run this command')
         })
     })
 
@@ -53,7 +53,7 @@ describe('accounts:add', function () {
 
       await runCommand(Cmd, ['testAccountName'])
         .catch(error =>  {
-          expect(error.message).to.equal('You need to be logged in to run this command.')
+          expect(error.message).to.equal('You need to be logged in to run this command')
         })
     })
   })
@@ -66,7 +66,7 @@ describe('accounts:add', function () {
 
       await runCommand(Cmd, ['testAccountName'])
         .catch((error: Error) =>  {
-          expect(error.message).to.equal('You need to be logged in to run this command.')
+          expect(error.message).to.equal('You need to be logged in to run this command')
         })
     })
   })
