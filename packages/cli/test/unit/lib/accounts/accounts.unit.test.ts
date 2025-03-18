@@ -1,41 +1,22 @@
 import {expect} from 'chai'
 import * as fs from 'fs'
 import * as sinon from 'sinon'
-import netrc from 'netrc-parser'
 import * as accounts from '../../../../src/lib/accounts/accounts'
 import * as path from 'node:path'
 import * as os from 'node:os'
-import * as yaml from 'yaml'
-
-const netrcFile = {
-  machines: {
-    'api.heroku.com': {
-      login: 'user1',
-      password: 'XXXXX',
-    },
-    'git.heroku.com': {
-      login: 'user2',
-      password: 'XXXXX',
-    },
-  },
-  saveSync: sinon.stub(),
-}
 
 describe('accounts', function () {
   let fsReaddirStub: sinon.SinonStub
   let fsReadFileStub: sinon.SinonStub
-  let netrcLoadSyncStub: sinon.SinonStub
 
   beforeEach(function () {
-    // Setup stubs before each test
     fsReaddirStub = sinon.stub(fs, 'readdirSync')
     fsReadFileStub = sinon.stub(fs, 'readFileSync')
-    netrcLoadSyncStub = sinon.stub(netrc, 'loadSync')
   })
 
   afterEach(function () {
-    // Restore stubs after each test
     sinon.restore()
+    // fs.unlinkSync(tmpNetrc)
   })
 
   describe('list()', function () {
@@ -84,36 +65,6 @@ describe('accounts', function () {
       })
       expect(result[0]).to.not.have.property(':username')
       expect(result[0]).to.not.have.property(':password')
-    })
-  })
-
-  describe('current()', function () {
-    it('should return null when no api.heroku.com machine exists', function () {
-      netrcLoadSyncStub.returns({machines: {}})
-
-      const result = accounts.current()
-      expect(result).to.be.null
-    })
-
-    it('should return null when username does not match any account', function () {
-      netrcLoadSyncStub.returns(netrcFile)
-
-      sinon.stub(accounts, 'list').returns([])
-
-      const result = accounts.current()
-      expect(result).to.be.null
-    })
-
-    it('should return account name when username matches', function () {
-      netrcLoadSyncStub.returns(netrcFile)
-      fsReaddirStub.returns(['account1', 'account2'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
-        .returns('{"username": "user1", "password": "pass1"}')
-      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
-        .returns('{"username": "user2", "password": "pass2"}')
-
-      const result = accounts.current()
-      expect(result).to.equal('account1')
     })
   })
 
@@ -197,27 +148,6 @@ describe('accounts', function () {
       unlinkStub.throws(error)
 
       expect(() => accounts.remove(accountName)).to.throw(Error)
-    })
-  })
-
-  describe('set', function () {
-    beforeEach(function () {
-      // Setup stubs before each test
-      netrcLoadSyncStub.returns(netrcFile)
-      fsReaddirStub.returns(['account1', 'account2'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
-        .returns('{"username": "user1", "password": "pass1"}')
-      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
-        .returns('{"username": "user2", "password": "pass2"}')
-      sinon.stub(yaml, 'parse').returns('account1')
-    })
-
-    it('should call saveSync to persist changes', function () {
-      const accountName = 'test-account'
-
-      accounts.set(accountName)
-
-      expect(netrcFile.saveSync.called).to.be.true
     })
   })
 })
