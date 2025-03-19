@@ -12,7 +12,7 @@ export default class Current extends Command {
     if (account) {
       ux.styledHeader(`Current account is ${account}`)
     } else {
-      ux.error('No account currently set')
+      ux.error('No account is currently set.')
     }
   }
 }
