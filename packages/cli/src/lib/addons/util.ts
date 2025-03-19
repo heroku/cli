@@ -27,6 +27,7 @@ function isHttpError(error: unknown): error is HTTPError {
 export const formatPrice = function ({price, hourly}: {price: Heroku.AddOn['price'] | number, hourly?: boolean}) {
   if (!price) return
   if (price.contract) return 'contract'
+  if (price.metered) return 'metered'
   if (price.cents === 0) return 'free'
 
   // we are using a standardized 720 hours/month
