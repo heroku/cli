@@ -26,7 +26,7 @@ describe('accounts:current', function () {
     currentStub.returns(null)
     await runCommand(Cmd, [])
       .catch((error: Error) => {
-        expect(error.message).to.contain('No account currently set')
+        expect(error.message).to.contain('No account is currently set.')
       })
   })
 })

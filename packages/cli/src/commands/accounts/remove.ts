@@ -6,7 +6,7 @@ export default class Remove extends Command {
   static description = 'remove a Heroku account from your cache'
 
   static args = {
-    name: Args.string({description: 'name of account to remove', required: true}),
+    name: Args.string({description: 'name of Heroku account to remove', required: true}),
   }
 
   static example = 'heroku accounts:remove my-account'
