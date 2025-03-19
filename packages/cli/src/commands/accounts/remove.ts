@@ -16,11 +16,11 @@ export default class Remove extends Command {
     const {name} = args
 
     if (!list().some(a => a.name === name)) {
-      ux.error(`${name} does not exist`)
+      ux.error(`${name} does not exist.`)
     }
 
     if (current() === name) {
-      ux.error(`${name} is the current account`)
+      ux.error(`${name} is the current account.`)
     }
 
     remove(name)

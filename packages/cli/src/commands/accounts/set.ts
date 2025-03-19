@@ -16,7 +16,7 @@ export default class Set extends Command {
     const {name} = args
 
     if (!list().some(a => a.name === name)) {
-      ux.error(`${name} does not exist as a Heroku account.`)
+      ux.error(`${name} does not exist in your accounts cache.`)
     }
 
     set(name)

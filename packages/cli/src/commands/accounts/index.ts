@@ -10,7 +10,7 @@ export default class AccountsIndex extends Command {
   async run() {
     const accounts = list()
     if (accounts.length === 0) {
-      ux.error('No accounts')
+      ux.error('No accounts found in cache.')
     }
 
     for (const account of accounts) {
