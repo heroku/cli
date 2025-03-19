@@ -4,10 +4,10 @@ import * as Heroku from '@heroku-cli/schema'
 import {add, list} from '../../lib/accounts/accounts'
 
 export default class Add extends Command {
-  static description = 'add a new Heroku account to your cache'
+  static description = 'add a Heroku account to your cache'
 
   static args = {
-    name: Args.string({description: 'name of account to add', required: true}),
+    name: Args.string({description: 'name of Heroku account to add', required: true}),
   }
 
   static example = 'heroku accounts:add my-account'
@@ -15,7 +15,7 @@ export default class Add extends Command {
   async run() {
     const {args} = await this.parse(Add)
     const {name} = args
-    const logInMessage = 'You need to be logged in to run this command'
+    const logInMessage = 'You must be logged in to run this command.'
     let account: Heroku.Account
     let email = ''
 

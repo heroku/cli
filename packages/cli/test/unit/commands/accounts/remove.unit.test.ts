@@ -31,7 +31,7 @@ describe('accounts:remove', function () {
     listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
     await runCommand(Cmd, ['test-account-3'])
       .catch((error: Error) => {
-        expect(error.message).to.contain('test-account-3 does not exist')
+        expect(error.message).to.contain('test-account-3 does not exist.')
       })
   })
 
@@ -40,7 +40,7 @@ describe('accounts:remove', function () {
     listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
     await runCommand(Cmd, ['test-account'])
       .catch((error: Error) => {
-        expect(error.message).to.contain('test-account is the current account')
+        expect(error.message).to.contain('test-account is the current account.')
       })
   })
 })
