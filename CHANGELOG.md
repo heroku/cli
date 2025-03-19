@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.3.1-alpha.0](https://github.com/heroku/cli/compare/v10.3.0...v10.3.1-alpha.0) (2025-03-19)
+
+
+### Features
+
+* **REPL:** added session and history restoration ([8b3bc32](https://github.com/heroku/cli/commit/8b3bc32c7bf0ca9fa22cd9c5188aafb9162a75dd))
+
+
+
+
+
 # [10.3.0](https://github.com/heroku/cli/compare/v10.2.0...v10.3.0) (2025-03-12)
 
 
