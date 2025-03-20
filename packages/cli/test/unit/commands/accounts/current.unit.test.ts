@@ -4,6 +4,8 @@ import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/current'
 import * as accounts from '../../../../src/lib/accounts/accounts'
 import {stdout} from 'stdout-stderr'
+import heredoc from 'tsheredoc'
+import stripAnsi = require('strip-ansi')
 
 describe('accounts:current', function () {
   let currentStub: sinon.SinonStub
@@ -26,7 +28,7 @@ describe('accounts:current', function () {
     currentStub.returns(null)
     await runCommand(Cmd, [])
       .catch((error: Error) => {
-        expect(error.message).to.contain('No account is currently set.')
+        expect(stripAnsi(error.message)).to.equal('You haven\'t set an account. Run heroku login to confirm you\'re logged in to Heroku.')
       })
   })
 })

@@ -16,7 +16,7 @@ export default class Remove extends Command {
     const {name} = args
 
     if (!list().some(a => a.name === name)) {
-      ux.error(`${name} does not exist.`)
+      ux.error(`${name} doesn't exist in your accounts cache.`)
     }
 
     if (current() === name) {
