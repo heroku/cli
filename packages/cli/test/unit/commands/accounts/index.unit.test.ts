@@ -29,7 +29,7 @@ describe('accounts', function () {
     listStub.returns([])
     await runCommand(Cmd, [])
       .catch((error: Error) => {
-        expect(error.message).to.contain('No accounts found in cache.')
+        expect(error.message).to.contain('You don\'t have any accounts in your cache.')
       })
   })
 })
