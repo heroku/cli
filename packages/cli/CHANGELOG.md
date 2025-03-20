@@ -5,18 +5,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [10.4.0](https://github.com/heroku/cli/compare/v10.3.0...v10.4.0) (2025-03-20)
 
-**Note:** Version bump only for package heroku
+### Features
 
-
-
-
-
-## [10.3.1](https://github.com/heroku/cli/compare/v10.3.0...v10.3.1) (2025-03-20)
-
-**Note:** Version bump only for package heroku
-
-
-
+* If addon is metered, print metered label and link to elements page ([#3258](https://github.com/heroku/cli/pull/3258)) ([72a4863](https://github.com/heroku/cli/commit/72a4863c8f4c139ea0d641576dc1ca361af30541))
+* chore: migrate retry command to oclif/core & move to cli core ([#3256](https://github.com/heroku/cli/pull/3256)) ([fb612fa](https://github.com/heroku/cli/commit/fb612fafa6c3b562ed015ea1d09fbff4589728fc))
 
 
 # [10.3.0](https://github.com/heroku/cli/compare/v10.2.0...v10.3.0) (2025-03-12)
