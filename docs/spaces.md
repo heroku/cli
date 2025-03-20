@@ -43,7 +43,7 @@ DESCRIPTION
   list available spaces
 ```
 
-_See code: [src/commands/spaces/index.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/index.ts)_
+_See code: [src/commands/spaces/index.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/index.ts)_
 
 ## `heroku spaces:create`
 
@@ -82,7 +82,7 @@ EXAMPLES
   Created at: 2016-01-06T03:23:13Z
 ```
 
-_See code: [src/commands/spaces/create.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/create.ts)_
+_See code: [src/commands/spaces/create.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/create.ts)_
 
 ## `heroku spaces:destroy`
 
@@ -105,7 +105,7 @@ EXAMPLES
   Destroying my-space... done
 ```
 
-_See code: [src/commands/spaces/destroy.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/destroy.ts)_
+_See code: [src/commands/spaces/destroy.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/destroy.ts)_
 
 ## `heroku spaces:info`
 
@@ -126,7 +126,7 @@ EXAMPLES
   $ heroku spaces:info my-space
 ```
 
-_See code: [src/commands/spaces/info.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/info.ts)_
+_See code: [src/commands/spaces/info.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/info.ts)_
 
 ## `heroku spaces:peerings`
 
@@ -144,7 +144,7 @@ DESCRIPTION
   list peering connections for a space
 ```
 
-_See code: [src/commands/spaces/peerings/index.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/peerings/index.ts)_
+_See code: [src/commands/spaces/peerings/index.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/peerings/index.ts)_
 
 ## `heroku spaces:peerings:accept`
 
@@ -166,7 +166,7 @@ EXAMPLES
       Accepting and configuring peering connection pcx-4bd27022
 ```
 
-_See code: [src/commands/spaces/peerings/accept.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/peerings/accept.ts)_
+_See code: [src/commands/spaces/peerings/accept.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/peerings/accept.ts)_
 
 ## `heroku spaces:peerings:destroy`
 
@@ -189,7 +189,7 @@ EXAMPLES
   Tearing down peering connection pcx-4bd27022... done
 ```
 
-_See code: [src/commands/spaces/peerings/destroy.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/peerings/destroy.ts)_
+_See code: [src/commands/spaces/peerings/destroy.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/peerings/destroy.ts)_
 
 ## `heroku spaces:peerings:info`
 
@@ -230,7 +230,7 @@ EXAMPLES
   Unavailable CIDRs: 10.1.0.0/16
 ```
 
-_See code: [src/commands/spaces/peerings/info.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/peerings/info.ts)_
+_See code: [src/commands/spaces/peerings/info.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/peerings/info.ts)_
 
 ## `heroku spaces:ps`
 
@@ -248,7 +248,7 @@ DESCRIPTION
   list dynos for a space
 ```
 
-_See code: [src/commands/spaces/ps.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/ps.ts)_
+_See code: [src/commands/spaces/ps.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/ps.ts)_
 
 ## `heroku spaces:rename`
 
@@ -270,7 +270,7 @@ EXAMPLES
   Renaming space old-space-name to new-space-name... done
 ```
 
-_See code: [src/commands/spaces/rename.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/rename.ts)_
+_See code: [src/commands/spaces/rename.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/rename.ts)_
 
 ## `heroku spaces:topology`
 
@@ -288,7 +288,7 @@ DESCRIPTION
   show space topology
 ```
 
-_See code: [src/commands/spaces/topology.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/topology.ts)_
+_See code: [src/commands/spaces/topology.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/topology.ts)_
 
 ## `heroku spaces:transfer`
 
@@ -310,7 +310,7 @@ EXAMPLES
   Transferring space-name to team-name... done
 ```
 
-_See code: [src/commands/spaces/transfer.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/transfer.ts)_
+_See code: [src/commands/spaces/transfer.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/transfer.ts)_
 
 ## `heroku spaces:trusted-ips`
 
@@ -333,7 +333,7 @@ DESCRIPTION
   a time to the commands listed below. For example 1.2.3.4/20 and 5.6.7.8/20 can be added with:
 ```
 
-_See code: [src/commands/spaces/trusted-ips/index.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/trusted-ips/index.ts)_
+_See code: [src/commands/spaces/trusted-ips/index.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/trusted-ips/index.ts)_
 
 ## `heroku spaces:trusted-ips:add SOURCE`
 
@@ -359,7 +359,7 @@ EXAMPLES
     Added 192.168.0.1/24 to trusted IP ranges on my-space
 ```
 
-_See code: [src/commands/spaces/trusted-ips/add.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/trusted-ips/add.ts)_
+_See code: [src/commands/spaces/trusted-ips/add.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/trusted-ips/add.ts)_
 
 ## `heroku spaces:trusted-ips:remove SOURCE`
 
@@ -385,7 +385,7 @@ EXAMPLES
       Removed 192.168.2.0/24 from trusted IP ranges on my-space
 ```
 
-_See code: [src/commands/spaces/trusted-ips/remove.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/trusted-ips/remove.ts)_
+_See code: [src/commands/spaces/trusted-ips/remove.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/trusted-ips/remove.ts)_
 
 ## `heroku spaces:vpn:config NAME`
 
@@ -422,7 +422,7 @@ EXAMPLES
    Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
 ```
 
-_See code: [src/commands/spaces/vpn/config.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/config.ts)_
+_See code: [src/commands/spaces/vpn/config.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/config.ts)_
 
 ## `heroku spaces:vpn:connect NAME`
 
@@ -453,7 +453,7 @@ EXAMPLES
   ▸    Use spaces:vpn:wait to track allocation.
 ```
 
-_See code: [src/commands/spaces/vpn/connect.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/connect.ts)_
+_See code: [src/commands/spaces/vpn/connect.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/connect.ts)_
 
 ## `heroku spaces:vpn:connections`
 
@@ -478,7 +478,7 @@ EXAMPLES
    office active UP/UP
 ```
 
-_See code: [src/commands/spaces/vpn/connections.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/connections.ts)_
+_See code: [src/commands/spaces/vpn/connections.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/connections.ts)_
 
 ## `heroku spaces:vpn:destroy NAME`
 
@@ -502,7 +502,7 @@ EXAMPLES
   Tearing down VPN Connection vpn-connection-name in space example-space
 ```
 
-_See code: [src/commands/spaces/vpn/destroy.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/destroy.ts)_
+_See code: [src/commands/spaces/vpn/destroy.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/destroy.ts)_
 
 ## `heroku spaces:vpn:info NAME`
 
@@ -538,7 +538,7 @@ EXAMPLES
    Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message
 ```
 
-_See code: [src/commands/spaces/vpn/info.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/info.ts)_
+_See code: [src/commands/spaces/vpn/info.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/info.ts)_
 
 ## `heroku spaces:vpn:update NAME`
 
@@ -567,7 +567,7 @@ EXAMPLES
   Updating VPN Connection in space my-space... done
 ```
 
-_See code: [src/commands/spaces/vpn/update.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/update.ts)_
+_See code: [src/commands/spaces/vpn/update.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/update.ts)_
 
 ## `heroku spaces:vpn:wait NAME`
 
@@ -599,7 +599,7 @@ EXAMPLES
   Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
 ```
 
-_See code: [src/commands/spaces/vpn/wait.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/vpn/wait.ts)_
+_See code: [src/commands/spaces/vpn/wait.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/vpn/wait.ts)_
 
 ## `heroku spaces:wait`
 
@@ -619,4 +619,4 @@ DESCRIPTION
   wait for a space to be created
 ```
 
-_See code: [src/commands/spaces/wait.ts](https://github.com/heroku/cli/blob/v10.3.0/packages/cli/src/commands/spaces/wait.ts)_
+_See code: [src/commands/spaces/wait.ts](https://github.com/heroku/cli/blob/v10.4.0-beta.0/packages/cli/src/commands/spaces/wait.ts)_
