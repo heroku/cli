@@ -16,20 +16,13 @@ export default class Add extends Command {
     const {args} = await this.parse(Add)
     const {name} = args
     const logInMessage = 'You must be logged in to run this command.'
-    let account: Heroku.Account
-    let email = ''
 
     if (list().some(a => a.name === name)) {
       ux.error(`${name} already exists`)
     }
 
-    try {
-      account = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
-      email = account.body.email || ''
-    } catch (error: any) {
-      if (error.statusCode === 401) ux.error(logInMessage)
-      throw error
-    }
+    const {body: account} = await this.heroku.get<Heroku.Account>('/account')
+    const email = account.email || ''
 
     const token = this.heroku.auth || ''
 

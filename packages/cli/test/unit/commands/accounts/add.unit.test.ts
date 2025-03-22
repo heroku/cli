@@ -57,17 +57,4 @@ describe('accounts:add', function () {
         })
     })
   })
-
-  describe('when the user is not logged in', function () {
-    it('should prompt the user to log in', async function () {
-      process.env.HEROKU_API_KEY = ''
-      api.get('/account')
-        .reply(401)
-
-      await runCommand(Cmd, ['testAccountName'])
-        .catch((error: Error) =>  {
-          expect(error.message).to.equal('You must be logged in to run this command.')
-        })
-    })
-  })
 })
