@@ -16,7 +16,7 @@ jobs:
     environment: ReleaseHomebrew
     steps:
       - uses: actions/checkout@v4
-      - uses: webfactory/ssh-agent@v0.5.4
+      - uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: yarn install
