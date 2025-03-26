@@ -6,9 +6,7 @@ on:
 
 jobs:
   pack_deb:
-    # ubuntu started using a compression method after this version that debian currently does not support
-    # https://github.com/heroku/cli/pull/2245#issue-1590017122
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       HEROKU_AUTHOR: 'Heroku'
     steps:
