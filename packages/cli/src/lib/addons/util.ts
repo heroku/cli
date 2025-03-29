@@ -41,7 +41,7 @@ export const formatPriceText = function (price: Heroku.AddOn['price']) {
   const priceHourly = formatPrice({price, hourly: true})
   const priceMonthly = formatPrice({price, hourly: false})
   if (!priceHourly) return ''
-  if (priceHourly === 'free' || priceHourly === 'contract') return `${color.green(priceHourly)}`
+  if (priceHourly === 'free' || priceHourly === 'contract' || priceHourly === 'metered') return `${color.green(priceHourly)}`
 
   return `${color.green(priceHourly)} (max ${priceMonthly})`
 }
