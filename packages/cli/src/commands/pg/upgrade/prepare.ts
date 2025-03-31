@@ -31,17 +31,16 @@ export default class Upgrade extends Command {
     const {flags, args} = await this.parse(Upgrade)
     const {app, version, confirm} = flags
     const {database} = args
-    let v: string
-    v = version ?? '16'
+    const v = version ?? '16'
 
     const db = await getAddon(this.heroku, app, database)
     if (legacyEssentialPlan(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
-    
+
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
-    if (replica.following) 
+    if (replica.following)
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
-  
+
     await confirmCommand(app, confirm, heredoc(`
         Destructive action
         This command prepares the upgrade for ${color.addon(db.name)} to PostgreSQL version ${v} and schedules to upgrade it during the next available maintenance window.
