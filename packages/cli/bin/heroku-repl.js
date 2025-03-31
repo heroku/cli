@@ -11,7 +11,7 @@ const historyFile = path.join(process.env.HOME || process.env.USERPROFILE, '.her
 const stateFile = path.join(process.env.HOME || process.env.USERPROFILE, '.heroku_repl_state')
 
 const maxHistory = 1000
-
+const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
 /**
  * Map of commands used to provide completion
  * data. The key is the flag or arg name to
@@ -81,6 +81,10 @@ class HerokuRepl {
     removeHistoryDuplicates: true,
     historySize: maxHistory,
     completer: async line => {
+      if (mcpMode) {
+        return [[], line]
+      }
+
       const [command, ...parts] = line.split(' ')
       if (command === 'set') {
         return this.#buildSetCompletions(parts)
@@ -102,8 +106,11 @@ class HerokuRepl {
    * @param {Config} config The oclif core config object
    */
   constructor(config) {
-    this.#prepareHistory()
-    this.#loadState()
+    if (!mcpMode) {
+      this.#prepareHistory()
+      this.#loadState()
+    }
+
     this.#config = config
   }
 
@@ -161,7 +168,7 @@ class HerokuRepl {
   async done() {
     await new Promise(resolve => {
       this.#rl.once('close', () => {
-        this.#historyStream.close()
+        this.#historyStream?.close()
         fs.writeFileSync(stateFile, JSON.stringify(Object.fromEntries(this.#setValues)), 'utf8')
         resolve()
       })
@@ -191,7 +198,7 @@ class HerokuRepl {
    */
   #processLine = async input => {
     this.#history.push(input)
-    this.#historyStream.write(input + '\n')
+    this.#historyStream?.write(input + '\n')
 
     const [command, ...args] = input.split(' ')
     if (command === 'exit') {
@@ -230,14 +237,32 @@ class HerokuRepl {
       // the REPL to enter an invalid state. We need
       // to pause the readline interface and restore
       // it when the command is done.
-      process.stdin.setRawMode(false)
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(false)
+      }
+
       this.#rl.pause()
       this.#rl.off('line', this.#processLine)
+      if (mcpMode) {
+        process.stdout.write('<<<BEGIN RESULTS>>>\n')
+      }
+
       await this.#config.runCommand(command, args.filter(Boolean))
     } catch (error) {
-      console.error(error.message)
+      if (mcpMode) {
+        process.stderr.write(`<<<ERROR>>>\n${error.message}\n<<<END ERROR>>>\n`)
+      } else {
+        console.error(error.message)
+      }
     } finally {
-      process.stdin.setRawMode(true)
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(true)
+      }
+
+      if (mcpMode) {
+        process.stdout.write('<<<END RESULTS>>>\n')
+      }
+
       this.#rl.resume()
       this.#rl.on('line', this.#processLine)
       // Force readline to refresh the current line
