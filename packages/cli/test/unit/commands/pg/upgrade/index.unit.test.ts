@@ -1,11 +1,11 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/pg/upgrade'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import Cmd from '../../../../../src/commands/pg/upgrade'
+import runCommand from '../../../../helpers/runCommand'
+import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../../fixtures/addons/fixtures'
 
 describe('pg:upgrade', function () {
   const hobbyAddon = fixtures.addons['www-db']
