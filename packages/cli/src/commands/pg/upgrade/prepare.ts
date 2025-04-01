@@ -55,6 +55,6 @@ export default class Upgrade extends Command {
     const data = {version}
     ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
     await this.heroku.post(`/client/v11/databases/${db.id}/upgrade/prepare`, {hostname: pgHost(), body: data})
-    ux.action.stop(`done\nYour database is scheduled for upgrade during your next available maintenance window.\nRun ${color.cmd('heroku pg:upgrade:wait')} to track its status.\nYou can also run this upgrade manually before the maintenance window with ${color.cmd('heroku pg:upgrade:wait')}. You can only run the upgrade after it's fully prepared, which can take up to a day.`)
+    ux.action.stop(`done\nYour database is scheduled for upgrade during your next available maintenance window.\nRun ${color.cmd('heroku pg:upgrade:wait')} to track its status.\nYou can also run this upgrade manually before the maintenance window with ${color.cmd('heroku pg:upgrade:run')}. You can only run the upgrade after it's fully prepared, which can take up to a day.`)
   }
 }
