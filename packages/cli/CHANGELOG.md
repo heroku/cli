@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.4.1](https://github.com/heroku/cli/compare/v10.4.0...v10.4.1) (2025-04-01)
+
+
+### Bug Fixes
+
+* make heroku data env var override redis host too. ([#3239](https://github.com/heroku/cli/issues/3239)) ([7fee08f](https://github.com/heroku/cli/commit/7fee08f0292c077134e7523c5c0b48da698f2081))
+
+
+
+
+
 # [10.4.0](https://github.com/heroku/cli/compare/v10.3.0...v10.4.0) (2025-03-20)
 
 ### Features
