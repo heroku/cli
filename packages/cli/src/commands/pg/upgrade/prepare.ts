@@ -32,7 +32,7 @@ export default class Upgrade extends Command {
 
     const db = await getAddon(this.heroku, app, database)
     if (legacyEssentialPlan(db))
-      ux.error(`You can only use ${color.cmd('pg:upgrade')} commands on Essential-* and higher plans`)
+      ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     if (essentialNumPlan(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
@@ -55,6 +55,6 @@ export default class Upgrade extends Command {
     const data = {version}
     ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
     await this.heroku.post(`/client/v11/databases/${db.id}/upgrade/prepare`, {hostname: pgHost(), body: data})
-    ux.action.stop(`Done\nUse ${color.cmd('heroku pg:upgrade:wait')} to track status \nYou can also run this upgrade manually before the maintenance window with ${color.cmd('heroku pg:upgrade:wait')}. Keep in mind you may only run the upgrade once it is fully prepared, which may take up to a day.`)
+    ux.action.stop(`done\nYour database is scheduled for upgrade during your next available maintenance window.\nRun ${color.cmd('heroku pg:upgrade:wait')} to track its status.\nYou can also run this upgrade manually before the maintenance window with ${color.cmd('heroku pg:upgrade:wait')}. You can only run the upgrade after it's fully prepared, which can take up to a day.`)
   }
 }
