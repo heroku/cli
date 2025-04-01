@@ -131,7 +131,7 @@ describe('pg:upgrade:prepare', function () {
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
-      You can also run this upgrade manually before the maintenance window with heroku pg:upgrade:wait. You can only run the upgrade after it's fully prepared, which can take up to a day.
+      You can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it's fully prepared, which can take up to a day.
     `))
   })
 
@@ -167,7 +167,7 @@ describe('pg:upgrade:prepare', function () {
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
-      You can also run this upgrade manually before the maintenance window with heroku pg:upgrade:wait. You can only run the upgrade after it's fully prepared, which can take up to a day.
+      You can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it's fully prepared, which can take up to a day.
     `))
   })
 })
