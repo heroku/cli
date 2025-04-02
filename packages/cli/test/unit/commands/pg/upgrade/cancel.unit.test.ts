@@ -12,7 +12,7 @@ import * as sinon from 'sinon'
 
 const stripAnsi = require('strip-ansi')
 
-describe.only('pg:upgrade:cancel', function () {
+describe('pg:upgrade:cancel', function () {
   const addon = fixtures.addons['dwh-db']
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
@@ -148,13 +148,6 @@ describe.only('pg:upgrade:cancel', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: "bad_request", message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
 
-    const message = heredoc(`
-      Destructive action
-      You're cancelling the version upgrade for ${addon.name}.
-
-      You can't undo this action.
-    `)
-
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -185,13 +178,6 @@ describe.only('pg:upgrade:cancel', function () {
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: "bad_request", message: "You can't cancel the upgrade because it's currently in progress."})
-
-    const message = heredoc(`
-      Destructive action
-      You're cancelling the version upgrade for ${addon.name}.
-
-      You can't undo this action.
-    `)
 
     await runCommand(Cmd, [
       '--app',
