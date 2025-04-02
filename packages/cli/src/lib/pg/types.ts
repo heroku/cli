@@ -167,6 +167,18 @@ export type PgDatabaseTenant = {
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
+export type PgUpgradeResponse = {
+  message: string
+}
+
+export type PgUpgradeError = {
+  status: number,
+  body: {
+    id: string,
+    message: string,
+  }
+}
+
 export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Required<Heroku.AddOn['plan']>}
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
   config_vars: Heroku.AddOn['config_vars']

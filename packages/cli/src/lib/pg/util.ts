@@ -40,6 +40,10 @@ export function getConfigVarNameFromAttachment(attachment: Required<AddOnAttachm
   return getConfigVarName(configVars)
 }
 
+export function formatResponseWithCommands(response: string): string {
+  return response.replace(/`(.*?)`/g, (_, word) => color.cmd(word))
+}
+
 export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialsInfo, cred: string) {
   const isForeignApp = (attOrAddon: Required<AddOnAttachment>) => attOrAddon.app.name === app ? 0 : 1
   const comparators = [
