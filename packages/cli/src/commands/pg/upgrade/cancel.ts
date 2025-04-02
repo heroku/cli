@@ -38,7 +38,7 @@ export default class Upgrade extends Command {
 
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
     if (replica.following)
-      ux.error(`You can't use ${color.cmd('pg:upgrade:prepare')} on follower databases.  You can only use this command on Standard-tier and higher leader databases.`)
+      ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases.  You can only use this command on Standard-tier and higher leader databases.`)
 
     await confirmCommand(app, confirm, heredoc(`
       Destructive action
