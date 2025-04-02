@@ -165,7 +165,7 @@ describe('pg:upgrade:cancel', function () {
     })
   })
 
-  it ('errors when upgrade is not cancelable', async function () {
+  it('errors when upgrade is not cancelable', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
