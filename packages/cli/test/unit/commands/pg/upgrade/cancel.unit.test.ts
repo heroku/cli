@@ -146,22 +146,22 @@ describe('pg:upgrade:cancel', function () {
       .reply(200)
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
-      .reply(422, {id: "bad_request", message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
+      .reply(422, {id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
 
     await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => { 
+    ]).catch(error => {
       expectOutput(error.message, heredoc(`
       You haven't scheduled an upgrade on your database. Run ${color.cmd('pg:upgrade:prepare')} to schedule an upgrade.
       Error ID: bad_request
     `))
 
-    expectOutput(stderr.output, heredoc(`
-      Cancelling upgrade on ${addon.name}...
-    `))
+      expectOutput(stderr.output, heredoc(`
+        Cancelling upgrade on ${addon.name}...
+      `))
     })
   })
 
@@ -177,7 +177,7 @@ describe('pg:upgrade:cancel', function () {
       .reply(200)
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
-      .reply(422, {id: "bad_request", message: "You can't cancel the upgrade because it's currently in progress."})
+      .reply(422, {id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})
 
     await runCommand(Cmd, [
       '--app',
@@ -190,9 +190,9 @@ describe('pg:upgrade:cancel', function () {
       Error ID: bad_request
     `))
 
-    expectOutput(stderr.output, heredoc(`
-      Cancelling upgrade on ${addon.name}...
-    `))
+      expectOutput(stderr.output, heredoc(`
+        Cancelling upgrade on ${addon.name}...
+      `))
     })
   })
 })
