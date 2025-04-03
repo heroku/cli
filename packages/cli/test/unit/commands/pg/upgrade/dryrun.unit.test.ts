@@ -92,7 +92,7 @@ describe('pg:upgrade:dryrun', function () {
       'myapp',
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
-      You can't use ${color.cmd('pg:upgrade:dryrun')} on follower databases.  You can only use this command on Standard-tier and higher leader databases.    `))
+      You can't use ${color.cmd('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`))
     })
   })
 
