@@ -56,10 +56,10 @@ export default class Upgrade extends Command {
       const data = {version}
       ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
       const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/prepare`, {hostname: pgHost(), body: data})
-      ux.action.stop('done\n' + formatResponseWithCommands(response.body.message))
+      ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       const response = error as PgUpgradeError
-      ux.error(formatResponseWithCommands(response.body.message) + `\n\nError ID: ${response.body.id}`)
+      ux.error(heredoc(`${formatResponseWithCommands(response.body.message)}\n\nError ID: ${response.body.id}`))
     }
   }
 }

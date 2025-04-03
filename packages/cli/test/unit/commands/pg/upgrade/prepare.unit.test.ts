@@ -6,10 +6,11 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
+import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../../../src/lib/pg/types'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
-import stripAnsi = require('strip-ansi')
+const stripAnsi = require('strip-ansi')
 
 describe('pg:upgrade:prepare', function () {
   const addon = fixtures.addons['dwh-db']
@@ -109,7 +110,7 @@ describe('pg:upgrade:prepare', function () {
       .reply(200)
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
-      .reply(200)
+      .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
 
     const message = heredoc(`
       Destructive action
@@ -147,7 +148,7 @@ describe('pg:upgrade:prepare', function () {
       .reply(200)
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
-      .reply(200)
+      .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
 
     const message = heredoc(`
       Destructive action
@@ -169,5 +170,32 @@ describe('pg:upgrade:prepare', function () {
       Run heroku pg:upgrade:wait to track its status.
       You can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it's fully prepared, which can take up to a day.
     `))
+  })
+
+  it('catches the error', async function () {
+    nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon}])
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/config-vars')
+      .reply(200, {DATABASE_URL: 'postgres://db1'})
+    nock('https://api.data.heroku.com')
+      .get(`/client/v11/databases/${addon.id}`)
+      .reply(200)
+    nock('https://api.data.heroku.com')
+      .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
+      .reply(422, {id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--confirm',
+      'myapp',
+    ]).catch(error => {
+      expect(error.message).to.equal(heredoc(`
+      database has an upgrade already scheduled, please check ${color.cmd('pg:upgrade:wait')} for more information on the status of your upgrade.
+      
+      Error ID: unprocessable_entity`))
+    })
   })
 })
