@@ -15,7 +15,8 @@ export default class Upgrade extends Command {
   static description = heredoc(`
     We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
-    For an Essential-* plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version. To upgrade to another Postgres version, use pg:copy instead.
+    For an Essential-* plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version.
+    To upgrade to another Postgres version, use pg:copy instead.
     `)
 
   static flags = {
@@ -38,13 +39,13 @@ export default class Upgrade extends Command {
     if (legacyEssentialPlan(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-* databases and follower databases on Standard-tier and higher plans.`)
 
-    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc(`the latest supported Postgres version`)
+    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
 
     if (replica.following) {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
-      
+
       await confirmCommand(app, confirm, heredoc(`
         We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
@@ -53,7 +54,7 @@ export default class Upgrade extends Command {
 
         This cannot be undone.
       `))
-    } else if (essentialNumPlan(db)){
+    } else if (essentialNumPlan(db)) {
       await confirmCommand(app, confirm, heredoc(`
         We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
@@ -64,7 +65,7 @@ export default class Upgrade extends Command {
       `))
     } else {
       ux.warn(heredoc(`
-        We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.`
+        We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.`,
       ))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-* databases and follower databases on Standard-tier and higher plans.`)
     }
