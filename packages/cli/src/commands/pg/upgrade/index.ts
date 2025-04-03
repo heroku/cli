@@ -14,9 +14,9 @@ export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
     We’re deprecating this command. To upgrade your Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
-
+    
     For an Essential-* plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version.
-    To upgrade to another Postgres version, use pg:copy instead.
+    To upgrade to another Postgres version, use ${color.cmd('pg:copy')} instead.
     `)
 
   static flags = {
