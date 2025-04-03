@@ -67,6 +67,7 @@ direwolf
 displayer
 dockerfiles
 dropdb
+dryrun
 DVCS
 dxxxxxxxxxxxx
 dyno
