@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.4.2-alpha.0](https://github.com/heroku/cli/compare/v10.4.1...v10.4.2-alpha.0) (2025-04-03)
+
+
+### Features
+
+* **REPL:** added session and history restoration ([ee2dd1d](https://github.com/heroku/cli/commit/ee2dd1d28f04851966f9b7bbe217b5f7f77a8496))
+
+
+
+
+
 ## [10.4.1](https://github.com/heroku/cli/compare/v10.4.0...v10.4.1) (2025-04-01)
 
 
