@@ -206,7 +206,7 @@ pg:settings:log-min-duration-statement         The duration of each completed st
 pg:settings:log-statement                      log_statement controls which SQL statements are logged.
 pg:settings:track-functions                    track_functions controls tracking of function call counts and time used. Default is none.
 pg:unfollow                                    stop a replica from following and make it a writeable database
-pg:upgrade                                     We’re deprecating this command. To upgrade your Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.For an Essential-* plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version. To upgrade to another Postgres version, use pg:copy instead.
+pg:upgrade                                     We’re deprecating this command. To upgrade your Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 pg:vacuum-stats                                show dead rows and whether an automatic vacuum is expected to be triggered
 pg:wait                                        blocks until database is available
 pipelines                                      list pipelines you have access to
