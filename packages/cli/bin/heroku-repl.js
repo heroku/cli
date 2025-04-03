@@ -200,7 +200,20 @@ class HerokuRepl {
     this.#history.push(input)
     this.#historyStream?.write(input + '\n')
 
-    const [command, ...args] = input.split(' ')
+    const {_: [command, ...positionalArgs], ...flags} = yargs(input, {
+      configuration: {
+        'camel-case-expansion': false,
+        'boolean-negation': false,
+      },
+    })
+    const args = Object.entries(flags).flatMap(([key, value]) => {
+      if (typeof value === 'string') {
+        return [`--${key}`, value]
+      }
+
+      return [`--${key}`]
+    }).concat(positionalArgs)
+
     if (command === 'exit') {
       process.exit(0)
     }
