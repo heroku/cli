@@ -12,7 +12,7 @@ import {nls} from '../../../nls'
 export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
-    Prepares the upgrade for Standard-tier and higher leader databases and schedules it for the next available maintenance window. Use ${color.cmd('heroku pg:upgrade:run')} for Essential-tier or follower databases instead.
+    Prepares the upgrade for Standard-tier and higher leader databases and schedules it for the next available maintenance window. To start a version upgrade on Essential-tier and follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.
   `)
 
   static flags = {
@@ -37,7 +37,7 @@ export default class Upgrade extends Command {
     if (essentialNumPlan(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
 
-    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc(`the latest supported Postgres version`)
+    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
 
     if (replica.following)
@@ -47,7 +47,6 @@ export default class Upgrade extends Command {
         Destructive action
         This command prepares the upgrade for ${color.addon(db.name)} to ${versionPhrase} and schedules to upgrade it during the next available maintenance window.
     `))
-    
 
     try {
       const data = {version}
