@@ -47,7 +47,7 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-* databases and follower databases on Standard-tier and higher plans.`)
+      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
     })
   })
 
@@ -68,7 +68,7 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-* databases and follower databases on Standard-tier and higher plans.`)
+      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
     })
   })
 
@@ -87,7 +87,7 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${addon.name} to Postgres version 15. The database will stop following DATABASE and become writable.
@@ -126,7 +126,7 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${addon.name} to the latest supported Postgres version. The database will stop following DATABASE and become writable.
@@ -167,7 +167,7 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${essentialAddon.name} to the latest supported Postgres version.
