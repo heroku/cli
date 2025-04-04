@@ -36,22 +36,17 @@ export default class Upgrade extends Command {
       ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     if (essentialNumPlan(db))
-      ux.error(`You can't use ${color.cmd('pg:upgrade:dryrun')} on Essential tier databases. You can only use this command on Standard-tier and higher leader databases.`)
+      ux.error(`You can't use ${color.cmd('pg:upgrade:dryrun')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
 
+    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
     if (replica.following)
       ux.error(`You can't use ${color.cmd('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
-    if (version)
-      await confirmCommand(app, confirm, heredoc(`
-          Destructive action
-          This command starts a test upgrade for ${color.addon(db.name)} to Postgres version ${version}.
-      `))
-    else
-      await confirmCommand(app, confirm, heredoc(`
+    await confirmCommand(app, confirm, heredoc(`
         Destructive action
-        This command starts a test upgrade for ${color.addon(db.name)} to the latest supported Postgres version.
-      `))
+        This command starts a test upgrade for ${color.addon(db.name)} to ${versionPhrase}.
+    `))
 
     try {
       const data = {version}
