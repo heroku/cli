@@ -78,7 +78,8 @@
     "urijs": "^1.19.11",
     "validator": "^13.7.0",
     "word-wrap": "^1.2.5",
-    "ws": "^6.2.2"
+    "ws": "^6.2.2",
+    "yaml": "^2.0.1"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.25",
