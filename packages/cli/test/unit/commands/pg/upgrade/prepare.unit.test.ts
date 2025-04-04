@@ -113,7 +113,7 @@ describe('pg:upgrade:prepare', function () {
 
     const message = heredoc(`
       Destructive action
-      This command prepares the upgrade for ${addon.name} to PostgreSQL version 15 and schedules to upgrade it during the next available maintenance window.
+      This command prepares the upgrade for ${addon.name} to Postgres version 15 and schedules to upgrade it during the next available maintenance window.
       `)
 
     await runCommand(Cmd, [
@@ -151,7 +151,7 @@ describe('pg:upgrade:prepare', function () {
 
     const message = heredoc(`
       Destructive action
-      This command prepares the upgrade for ${addon.name} to the latest supported PostgreSQL version and schedules to upgrade it during the next available maintenance window.
+      This command prepares the upgrade for ${addon.name} to the latest supported Postgres version and schedules to upgrade it during the next available maintenance window.
       `)
 
     await runCommand(Cmd, [
