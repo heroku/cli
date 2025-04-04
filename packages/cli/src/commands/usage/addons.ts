@@ -89,7 +89,7 @@ export default class UsageAddons extends Command {
     const usageAddons = usageData.addons
 
     if (usageAddons.length === 0) {
-      ux.log(`No usage found for ${app}`)
+      ux.log(`No usage found for app ${color.app(app)}`)
       return
     }
 
@@ -111,7 +111,7 @@ export default class UsageAddons extends Command {
     ux.log()
 
     if (!usageData.apps || usageData.apps.length === 0) {
-      ux.log(`No usage found for team ${team}`)
+      ux.log(`No usage found for team ${color.magenta(team)}`)
       return
     }
 
@@ -143,7 +143,7 @@ export default class UsageAddons extends Command {
     const {flags} = await this.parse(UsageAddons)
     const {app, team} = flags
     if (!app && !team) {
-      this.error('Specify an app with --app or a team with --team')
+      ux.error('Specify an app with --app or a team with --team')
     }
 
     if (app) {
