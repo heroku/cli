@@ -12,7 +12,7 @@ import {nls} from '../../../nls'
 export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
-    cancels a prepared upgrade, doesn't cancel an active upgrade.
+    cancels a scheduled upgrade. You can't cancel a version upgrade that's in progress.
   `)
 
   static flags = {
@@ -34,15 +34,15 @@ export default class Upgrade extends Command {
       ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     if (essentialNumPlan(db))
-      ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential tier databases. You can only use this command on Standard-tier and higher leader databases.`)
+      ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
 
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
     if (replica.following)
-      ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases.  You can only use this command on Standard-tier and higher leader databases.`)
+      ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
     await confirmCommand(app, confirm, heredoc(`
       Destructive action
-      You're cancelling the version upgrade for ${color.addon(db.name)}.
+      You're canceling the scheduled version upgrade for ${color.addon(db.name)}.
 
       You can't undo this action.
     `))

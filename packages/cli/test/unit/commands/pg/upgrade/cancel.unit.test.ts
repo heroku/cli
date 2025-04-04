@@ -69,7 +69,7 @@ describe('pg:upgrade:cancel', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential tier databases. You can only use this command on Standard-tier and higher leader databases.`)
+      expect(error.message).to.equal(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
     })
   })
 
@@ -93,7 +93,7 @@ describe('pg:upgrade:cancel', function () {
       'myapp',
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
-      You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases.  You can only use this command on Standard-tier and higher leader databases.
+      You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.
     `))
     })
   })
@@ -114,7 +114,7 @@ describe('pg:upgrade:cancel', function () {
 
     const message = heredoc(`
       Destructive action
-      You're cancelling the version upgrade for ${addon.name}.
+      You're canceling the scheduled version upgrade for ${addon.name}.
       
       You can't undo this action.
     `)
@@ -156,6 +156,7 @@ describe('pg:upgrade:cancel', function () {
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
       You haven't scheduled an upgrade on your database. Run ${color.cmd('pg:upgrade:prepare')} to schedule an upgrade.
+
       Error ID: bad_request
     `))
 
@@ -187,6 +188,7 @@ describe('pg:upgrade:cancel', function () {
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
       You can't cancel the upgrade because it's currently in progress.
+
       Error ID: bad_request
     `))
 
