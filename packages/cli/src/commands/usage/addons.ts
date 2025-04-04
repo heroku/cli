@@ -14,9 +14,21 @@ interface AppUsage {
   }>
 }
 
+interface TeamUsage {
+  apps: Array<{
+    id: string;
+    addons: AppUsage['addons'];
+  }>;
+}
+
+interface AppInfo extends Record<string, unknown> {
+  id: string
+  name: string
+}
+
 export default class UsageAddons extends Command {
   static topic = 'usage'
-  static description = 'list usage values for metered addons associated with a given app'
+  static description = 'list usage values for metered addons associated with a given app or team'
   static flags = {
     app: flags.string(),
     team: flags.string(),
@@ -49,12 +61,12 @@ export default class UsageAddons extends Command {
   }
 
   private async fetchAndDisplayAppUsageData(app: string, team?: string): Promise<void> {
-    let usageResponse
+    let usageData
     let appAddons
     ux.action.start('Gathering usage data')
     if (team) {
-      [usageResponse, {body: appAddons}] = await Promise.all([
-        this.heroku.get<unknown>(`/teams/${team}/apps/${app}/usage`, {
+      [{body: usageData}, {body: appAddons}] = await Promise.all([
+        this.heroku.get<AppUsage>(`/teams/${team}/apps/${app}/usage`, {
           headers: {
             Accept: 'application/vnd.heroku+json; version=3.sdk',
           },
@@ -62,8 +74,8 @@ export default class UsageAddons extends Command {
         this.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
       ])
     } else {
-      [usageResponse, {body: appAddons}] = await Promise.all([
-        this.heroku.get<unknown>(`/apps/${app}/usage`, {
+      [{body: usageData}, {body: appAddons}] = await Promise.all([
+        this.heroku.get<AppUsage>(`/apps/${app}/usage`, {
           headers: {
             Accept: 'application/vnd.heroku+json; version=3.sdk',
           },
@@ -74,8 +86,6 @@ export default class UsageAddons extends Command {
 
     ux.action.stop()
     ux.log()
-    const usageApp = usageResponse.body
-    const usageData: AppUsage = typeof usageApp === 'string' ? JSON.parse(usageApp) : usageApp
     const usageAddons = usageData.addons
 
     if (usageAddons.length === 0) {
@@ -87,9 +97,9 @@ export default class UsageAddons extends Command {
   }
 
   private async fetchAndDisplayTeamUsageData(team: string): Promise<void> {
-    ux.action.start('Gathering usage data')
-    const [usageResponse, {body: teamAddons}] = await Promise.all([
-      this.heroku.get<unknown>(`/teams/${team}/usage`, {
+    ux.action.start(`Gathering usage data for ${color.magenta(team)}`)
+    const [{body: usageData}, {body: teamAddons}] = await Promise.all([
+      this.heroku.get<TeamUsage>(`/teams/${team}/usage`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
@@ -99,18 +109,34 @@ export default class UsageAddons extends Command {
 
     ux.action.stop()
     ux.log()
-    const usageData = typeof usageResponse.body === 'string' ? JSON.parse(usageResponse.body) : usageResponse.body
 
     if (!usageData.apps || usageData.apps.length === 0) {
       ux.log(`No usage found for team ${team}`)
       return
     }
 
+    const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
+
     // Display usage for each app
     usageData.apps.forEach((app: { id: string; addons: any[] }) => {
-      this.displayAppUsage(app.id, app.addons, teamAddons)
-      ux.log() // Add spacing between apps
+      const appInfo = appInfoArray.find(info => info.id === app.id)
+      this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
+      ux.log()
     })
+  }
+
+  private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
+    const appInfoMap = new Map<string, string>()
+    teamAddons.forEach(addon => {
+      if (addon.app && addon.app.id && addon.app.name) {
+        appInfoMap.set(addon.app.id, addon.app.name)
+      }
+    })
+
+    return Array.from(appInfoMap.entries()).map(([id, name]) => ({
+      id,
+      name,
+    }))
   }
 
   public async run(): Promise<void> {
