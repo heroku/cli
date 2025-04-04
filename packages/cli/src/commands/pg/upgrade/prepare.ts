@@ -17,7 +17,7 @@ export default class Upgrade extends Command {
 
   static flags = {
     confirm: flags.string({char: 'c'}),
-    version: flags.string({char: 'v', description: 'PostgreSQL version to upgrade to'}),
+    version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
     app: flags.app({required: true}),
   }
 
@@ -37,20 +37,17 @@ export default class Upgrade extends Command {
     if (essentialNumPlan(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
 
+    const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc(`the latest supported Postgres version`)
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
+
     if (replica.following)
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.`)
 
-    if (version)
-      await confirmCommand(app, confirm, heredoc(`
-          Destructive action
-          This command prepares the upgrade for ${color.addon(db.name)} to PostgreSQL version ${version} and schedules to upgrade it during the next available maintenance window.
-      `))
-    else
-      await confirmCommand(app, confirm, heredoc(`
+    await confirmCommand(app, confirm, heredoc(`
         Destructive action
-        This command prepares the upgrade for ${color.addon(db.name)} to the latest supported PostgreSQL version and schedules to upgrade it during the next available maintenance window.
-      `))
+        This command prepares the upgrade for ${color.addon(db.name)} to ${versionPhrase} and schedules to upgrade it during the next available maintenance window.
+    `))
+    
 
     try {
       const data = {version}
