@@ -68,7 +68,7 @@ describe('pg:upgrade:dryrun', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can't use ${color.cmd('pg:upgrade:dryrun')} on Essential tier databases. You can only use this command on Standard-tier and higher leader databases.`)
+      expect(error.message).to.equal(`You can't use ${color.cmd('pg:upgrade:dryrun')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
     })
   })
 
