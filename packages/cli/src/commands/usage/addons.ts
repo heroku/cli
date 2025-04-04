@@ -25,8 +25,8 @@ export default class UsageAddons extends Command {
     const {flags} = await this.parse(UsageAddons)
     const {app} = flags
     ux.action.start('Gathering usage data')
-    const [usageResponse, {body: appAddons}] = await Promise.all([
-      this.heroku.get<unknown>(`/apps/${app}/usage`, {
+    const [{body: usageData}, {body: appAddons}] = await Promise.all([
+      this.heroku.get<AppUsage>(`/apps/${app}/usage`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
@@ -35,8 +35,6 @@ export default class UsageAddons extends Command {
     ])
     ux.action.stop()
     ux.log()
-    const usageApp = usageResponse.body
-    const usageData: AppUsage = typeof usageApp === 'string' ? JSON.parse(usageApp) : usageApp
     const usageAddons = usageData.addons
 
     if (usageAddons.length === 0) {
