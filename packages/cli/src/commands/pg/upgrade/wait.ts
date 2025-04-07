@@ -16,7 +16,7 @@ const wait = (ms: number) => new Promise(resolve => {
 
 export default class Wait extends Command {
   static topic = 'pg'
-  static description = 'blocks until database is available'
+  static description = 'provides the status of an upgrade and blocks it until the operation is complete'
   static flags = {
     'wait-interval': flags.string({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
     'no-notify': flags.boolean({description: 'do not show OS notification'}),
@@ -48,6 +48,8 @@ export default class Wait extends Command {
             `/client/v11/databases/${db.id}/upgrade/wait_status`,
             {hostname: pgHost()},
           ))
+          if (status.step)
+            status.message = heredoc(`${status.step} ${status.message}`)
         } catch (error) {
           const httpError = error as HTTPError
           pgDebug(httpError)
@@ -71,7 +73,7 @@ export default class Wait extends Command {
 
         if (!waiting) {
           waiting = true
-          ux.action.start(`Waiting for upgrade on database ${color.yellow(db.name)}`, status.message)
+          ux.action.start(`Waiting for database ${color.yellow(db.name)}`, status.message)
         }
 
         ux.action.status = status.message
@@ -84,7 +86,7 @@ export default class Wait extends Command {
     if (dbName) {
       dbs = [await getAddon(this.heroku, app, dbName)]
     } else {
-      ux.error(heredoc('Please provide a database.'))
+      ux.error(heredoc('You must provide a database. Run `--help` for more information on the command.'))
     }
 
     for (const db of dbs) {

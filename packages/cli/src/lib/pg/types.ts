@@ -135,6 +135,7 @@ export type PgUpgradeStatus = {
   'waiting?': boolean
   'error?': boolean
   message: string
+  step: string
 }
 
 type TenantInfoNames =
