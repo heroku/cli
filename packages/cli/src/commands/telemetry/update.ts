@@ -49,7 +49,7 @@ export default class Update extends Command {
       }
 
       if (transport) {
-        exporter.type = `otlp${transport}`
+        exporter.type = (transport === 'grpc') ? 'otlp' : 'otlphttp'
       }
 
       drainConfig.exporter = exporter
@@ -64,6 +64,6 @@ export default class Update extends Command {
     })
     ux.action.stop()
 
-    displayTelemetryDrain(telemetryDrain)
+    await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }

@@ -20,6 +20,6 @@ export default class Info extends Command {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    displayTelemetryDrain(telemetryDrain)
+    await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }
