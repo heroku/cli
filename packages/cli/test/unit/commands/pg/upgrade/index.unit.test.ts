@@ -87,12 +87,12 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${addon.name} to Postgres version 15. The database will stop following DATABASE and become writable.
 
-      This cannot be undone.
+      You can't undo this action.
     `)
 
     await runCommand(Cmd, [
@@ -126,12 +126,12 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${addon.name} to the latest supported Postgres version. The database will stop following DATABASE and become writable.
 
-      This cannot be undone.
+      You can't undo this action.
     `)
 
     await runCommand(Cmd, [
@@ -167,12 +167,12 @@ describe('pg:upgrade', function () {
       .reply(200, {message: 'Upgrading'})
 
     const message = heredoc(`
-      We’re deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
+      We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
       You're upgrading ${essentialAddon.name} to the latest supported Postgres version.
 
-      This cannot be undone.
+      You can't undo this action.
     `)
 
     await runCommand(Cmd, [

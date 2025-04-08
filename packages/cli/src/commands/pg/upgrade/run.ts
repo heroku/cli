@@ -13,16 +13,17 @@ import {nls} from '../../../nls'
 export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
-    We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
-    
-    For an Essential-tier plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version.
+    On Essential-tier databases, this command upgrades the database's Postgres version.
+
+    On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.cmd('pg:upgrade:prepare')} before this command to schedule a version upgrade.
+
+    On follower databases, this command unfollows the leader database before upgrading the follower's Postgres version.
     `)
 
   static flags = {
     confirm: flags.string({char: 'c'}),
     version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
     app: flags.app({required: true}),
-    remote: flags.remote(),
   }
 
   static args = {
@@ -36,43 +37,41 @@ export default class Upgrade extends Command {
 
     const db = await getAddon(this.heroku, app, database)
     if (legacyEssentialPlan(db))
-      ux.error(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
+      ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
 
-    if (replica.following) {
-      const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
-      const origin = databaseNameFromUrl(replica.following, configVars)
-
+    if (essentialNumPlan(db)) {
       await confirmCommand(app, confirm, heredoc(`
-        We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
-
-        Destructive action
-        You're upgrading ${color.addon(db.name)} to ${versionPhrase}. The database will stop following ${origin} and become writable.
-
-        You can't undo this action.
-      `))
-    } else if (essentialNumPlan(db)) {
-      await confirmCommand(app, confirm, heredoc(`
-        We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
-
         Destructive action
         You're upgrading ${color.addon(db.name)} to ${versionPhrase}.
 
         You can't undo this action.
       `))
+    } else if (replica.following) {
+      const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
+      const origin = databaseNameFromUrl(replica.following, configVars)
+
+      await confirmCommand(app, confirm, heredoc(`
+        Destructive action
+        You're upgrading ${color.addon(db.name)} to ${versionPhrase}. The database will stop following ${origin} and become writable.
+
+        You can't undo this action.
+      `))
     } else {
-      ux.warn(heredoc(`
-        We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.`,
-      ))
-      ux.error(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
+      await confirmCommand(app, confirm, heredoc(`
+        Destructive action
+        You're upgrading the Postgres version on ${color.addon(db.name)}. This action also upgrades any followers on the database.
+
+        You can't undo this action.
+      `))
     }
 
     try {
       const data = {version}
       ux.action.start(`Starting upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade`, {hostname: pgHost(), body: data})
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: pgHost(), body: data})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       const response = error as PgUpgradeError
