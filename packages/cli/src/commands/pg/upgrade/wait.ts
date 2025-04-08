@@ -9,6 +9,7 @@ import notify from '../../../lib/notify'
 import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgUpgradeStatus} from '../../../lib/pg/types'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls'
+import {formatResponseWithCommands} from '../../../lib/pg/util'
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
@@ -25,7 +26,7 @@ export default class Wait extends Command {
   }
 
   static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
+    database: Args.string({description: `${nls('pg:database:arg:description')}`}),
   }
 
   public async run(): Promise<void> {
@@ -48,8 +49,6 @@ export default class Wait extends Command {
             `/client/v11/databases/${db.id}/upgrade/wait_status`,
             {hostname: pgHost()},
           ))
-          if (status.step)
-            status.message = heredoc(`${status.step} ${status.message}`)
         } catch (error) {
           const httpError = error as HTTPError
           pgDebug(httpError)
@@ -58,14 +57,20 @@ export default class Wait extends Command {
           status = {'waiting?': true, message: notFoundMessage}
         }
 
+        let message = formatResponseWithCommands(status.message)
+        if (status.step)
+          message = heredoc(`(${status.step}) ${message}`)
+
         if (status['error?']) {
-          notify('error', `${db.name} ${status.message}`, false)
-          ux.error(status.message || '', {exit: 1})
+          notify('error', `${db.name} ${message}`, false)
+          ux.error(message || '', {exit: 1})
         }
 
         if (!status['waiting?']) {
           if (waiting) {
-            ux.action.stop(status.message)
+            ux.action.stop(message)
+          } else {
+            ux.log(message)
           }
 
           return
@@ -73,10 +78,10 @@ export default class Wait extends Command {
 
         if (!waiting) {
           waiting = true
-          ux.action.start(`Waiting for database ${color.yellow(db.name)}`, status.message)
+          ux.action.start(`Waiting for database ${color.yellow(db.name)}`, message)
         }
 
-        ux.action.status = status.message
+        ux.action.status = message
 
         await wait(interval * 1000)
       }
