@@ -19,11 +19,26 @@ export default class Wait extends Command {
   static topic = 'pg'
   static description = 'provides the status of an upgrade and blocks it until the operation is complete'
   static flags = {
-    'wait-interval': flags.string({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
+    'wait-interval': flags.integer({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
     'no-notify': flags.boolean({description: 'do not show OS notification'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static examples = [
+    heredoc(`
+      # Wait for upgrade to complete with default settings
+      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp
+    `),
+    heredoc(`
+      # Wait with custom polling interval
+      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --wait-interval 10
+    `),
+    heredoc(`
+      # Wait without showing OS notifications
+      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --no-notify
+    `),
+  ]
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')}`}),
@@ -36,8 +51,7 @@ export default class Wait extends Command {
     const pgDebug = debug('pg')
 
     const waitFor = async (db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData) => {
-      let interval = waitInterval && Number.parseInt(waitInterval, 10)
-      if (!interval || interval < 0) interval = 5
+      const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
       let status
       let waiting = false
       let retries = 20
@@ -50,9 +64,12 @@ export default class Wait extends Command {
             {hostname: pgHost()},
           ))
         } catch (error) {
-          const httpError = error as HTTPError
-          pgDebug(httpError)
-          if (!retries || httpError.statusCode !== 404) throw httpError
+          if (error instanceof HTTPError && (!retries || error.statusCode !== 404)) {
+            const httpError = error as HTTPError
+            pgDebug(httpError)
+            throw httpError
+          }
+
           retries--
           status = {'waiting?': true, message: notFoundMessage}
         }
