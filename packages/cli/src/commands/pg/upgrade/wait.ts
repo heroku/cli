@@ -70,7 +70,7 @@ export default class Wait extends Command {
           if (waiting) {
             ux.action.stop(message)
           } else {
-            ux.log(message)
+            ux.log(heredoc(`Waiting for database ${color.yellow(db.name)}... ${message}`))
           }
 
           return
