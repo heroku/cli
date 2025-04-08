@@ -62,7 +62,7 @@ describe('pg:upgrade:wait', function () {
       '1',
       'DATABASE_URL',
     ])
-    expect(stdout.output).to.equal('upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using heroku pg:upgrade:run.\n')
+    expect(stdout.output).to.equal('Waiting for database postgres-1... upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using heroku pg:upgrade:run.\n')
   })
 
   it('requires a database', async function () {
