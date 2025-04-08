@@ -172,7 +172,6 @@ export type PgUpgradeResponse = {
 }
 
 export type PgUpgradeError = {
-  status: number,
   body: {
     id: string,
     message: string,

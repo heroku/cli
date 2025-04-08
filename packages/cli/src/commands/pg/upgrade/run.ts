@@ -20,10 +20,26 @@ export default class Upgrade extends Command {
     On follower databases, this command unfollows the leader database before upgrading the follower's Postgres version.
     `)
 
+  static examples = [
+    heredoc`
+      # Upgrade an Essential-tier database to a specific version
+      $ heroku pg:upgrade:run postgresql-curved-12345 --version 14 --app myapp
+    `,
+    heredoc`
+      # Upgrade a Standard-tier follower database to the latest supported version
+      $ heroku pg:upgrade:run HEROKU_POSTGRESQL_BLUE_URL --app myapp
+    `,
+    heredoc`
+      # Run a previously scheduled upgrade on a Standard-tier leader database
+      $ heroku pg:upgrade:run DATABASE_URL --app myapp
+    `,
+  ]
+
   static flags = {
     confirm: flags.string({char: 'c'}),
     version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
     app: flags.app({required: true}),
+    remote: flags.remote({char: 'r'}),
   }
 
   static args = {
@@ -74,8 +90,12 @@ export default class Upgrade extends Command {
       const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: pgHost(), body: data})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
-      const response = error as PgUpgradeError
-      ux.error(heredoc(`${formatResponseWithCommands(response.body.message)}\n\nError ID: ${response.body.id}`))
+      if (error instanceof Error && 'body' in error) {
+        const response = error as PgUpgradeError
+        ux.error(heredoc(`${formatResponseWithCommands(response.body.message)}\n\nError ID: ${response.body.id}`))
+      } else {
+        throw error
+      }
     }
   }
 }
