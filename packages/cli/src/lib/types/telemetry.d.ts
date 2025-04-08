@@ -9,7 +9,6 @@ export type TelemetryDrain = {
 
 type TelemetryDrainOwner = {
   id: string;
-  name?: string;
   type: 'app' | 'space';
 }
 

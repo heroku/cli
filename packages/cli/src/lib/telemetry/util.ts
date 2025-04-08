@@ -1,5 +1,16 @@
 import {ux} from '@oclif/core'
 import {TelemetryDrain} from '../types/telemetry'
+import * as Heroku from '@heroku-cli/schema'
+import {APIClient} from '@heroku-cli/command'
+
+interface TelemetryDisplayObject {
+  App?: string
+  Space?: string
+  Signals: string
+  Endpoint: string
+  Transport: string
+  Headers?: string
+}
 
 export function validateAndFormatSignals(signalInput: string | undefined): string[] {
   const signalOptions = ['traces', 'metrics', 'logs']
@@ -13,14 +24,33 @@ export function validateAndFormatSignals(signalInput: string | undefined): strin
   return signalArray
 }
 
-export function displayTelemetryDrain(telemetryDrain: TelemetryDrain) {
+export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, heroku: APIClient) {
   ux.styledHeader(telemetryDrain.id)
-  const drainType = telemetryDrain.owner.type.charAt(0).toUpperCase() + telemetryDrain.owner.type.slice(1)
-  ux.styledObject({
-    [drainType]: telemetryDrain.owner.name,
+  const displayObject: TelemetryDisplayObject = {
     Signals: telemetryDrain.signals.join(', '),
     Endpoint: telemetryDrain.exporter.endpoint,
-    Kind: telemetryDrain.exporter.type,
-    Headers: telemetryDrain.exporter.headers,
-  }, ['App', 'Space', 'Signals', 'Endpoint', 'Kind', 'Headers'])
+    Transport: (telemetryDrain.exporter.type === 'otlp' ? 'gRPC' : 'HTTP'),
+  }
+
+  if (telemetryDrain.owner.type === 'space') {
+    const {body: space} = await heroku.get<Heroku.Space>(`/spaces/${telemetryDrain.owner.id}`, {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
+    displayObject.Space = space.name
+  } else {
+    const {body: app} = await heroku.get<Heroku.App>(`/apps/${telemetryDrain.owner.id}`, {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
+    displayObject.App = app.name
+  }
+
+  if (telemetryDrain.exporter.headers) {
+    displayObject.Headers = JSON.stringify(telemetryDrain.exporter.headers)
+  }
+
+  ux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
 }

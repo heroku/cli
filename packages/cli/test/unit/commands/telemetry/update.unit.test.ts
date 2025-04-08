@@ -18,6 +18,10 @@ describe('telemetry:update', function () {
       .patch(`/telemetry-drains/${appTelemetryDrain1.id}`, {signals: ['logs']})
       .reply(200, updatedAppTelemetryDrain)
 
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appTelemetryDrain1.owner.id}`)
+      .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
+
     await runCommand(Cmd, [
       appTelemetryDrain1.id,
       '--signals',
@@ -29,11 +33,11 @@ describe('telemetry:update', function () {
     `))
     expectOutput(stdout.output, heredoc(`
       === ${updatedAppTelemetryDrain.id}
-      App:      ${updatedAppTelemetryDrain.owner.name}
-      Signals:  ${updatedAppTelemetryDrain.signals.join(', ')}
-      Endpoint: ${updatedAppTelemetryDrain.exporter.endpoint}
-      Kind:     ${updatedAppTelemetryDrain.exporter.type}
-      Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'
+      App:       myapp
+      Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
+      Endpoint:  ${updatedAppTelemetryDrain.exporter.endpoint}
+      Transport: HTTP
+      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
     `))
   })
 
@@ -43,7 +47,7 @@ describe('telemetry:update', function () {
       signals: ['logs'],
       exporter: {
         endpoint: 'https://api-new.honeycomb.io/',
-        type: 'otlpgrpc',
+        type: 'otlp',
         headers: {
           'x-honeycomb-team': 'your-api-key',
           'x-honeycomb-dataset': 'your-dataset',
@@ -55,10 +59,14 @@ describe('telemetry:update', function () {
         signals: ['logs'],
         exporter: {
           endpoint: 'https://api-new.honeycomb.io/',
-          type: 'otlpgrpc',
+          type: 'otlp',
         },
       })
       .reply(200, updatedAppTelemetryDrain)
+
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appTelemetryDrain1.owner.id}`)
+      .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
 
     await runCommand(Cmd, [
       appTelemetryDrain1.id,
@@ -75,11 +83,11 @@ describe('telemetry:update', function () {
     `))
     expectOutput(stdout.output, heredoc(`
       === ${updatedAppTelemetryDrain.id}
-      App:      ${updatedAppTelemetryDrain.owner.name}
-      Signals:  ${updatedAppTelemetryDrain.signals.join(', ')}
-      Endpoint: ${updatedAppTelemetryDrain.exporter.endpoint}
-      Kind:     ${updatedAppTelemetryDrain.exporter.type}
-      Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'
+      App:       myapp
+      Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
+      Endpoint:  ${updatedAppTelemetryDrain.exporter.endpoint}
+      Transport: gRPC
+      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
     `))
   })
 

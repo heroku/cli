@@ -15,7 +15,7 @@ describe('telemetry:info', function () {
   beforeEach(function () {
     spaceTelemetryDrain = {
       id: '44444321-5717-4562-b3fc-2c963f66afa6',
-      owner: {id: spaceId, type: 'space', name: 'myspace'},
+      owner: {id: spaceId, type: 'space'},
       signals: ['traces', 'metrics', 'logs'],
       exporter: {
         type: 'otlphttp',
@@ -28,7 +28,7 @@ describe('telemetry:info', function () {
     }
     appTelemetryDrain = {
       id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      owner: {id: appId, type: 'app', name: 'myapp'},
+      owner: {id: appId, type: 'app'},
       signals: ['traces', 'metrics'],
       exporter: {
         type: 'otlphttp',
@@ -50,16 +50,20 @@ describe('telemetry:info', function () {
       .get(`/telemetry-drains/${spaceTelemetryDrain.id}`)
       .reply(200, spaceTelemetryDrain)
 
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/spaces/${spaceTelemetryDrain.owner.id}`)
+      .reply(200, {id: spaceTelemetryDrain.owner.id, name: 'myspace'})
+
     await runCommand(Cmd, [
       spaceTelemetryDrain.id,
     ])
     expectOutput(stdout.output, heredoc(`
       === ${spaceTelemetryDrain.id}
-      Space:    ${spaceTelemetryDrain.owner.name}
-      Signals:  ${spaceTelemetryDrain.signals.join(', ')}
-      Endpoint: ${spaceTelemetryDrain.exporter.endpoint}
-      Kind:     ${spaceTelemetryDrain.exporter.type}
-      Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'
+      Space:     myspace
+      Signals:   ${spaceTelemetryDrain.signals.join(', ')}
+      Endpoint:  ${spaceTelemetryDrain.exporter.endpoint}
+      Transport: HTTP
+      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
     `))
   })
 
@@ -68,16 +72,20 @@ describe('telemetry:info', function () {
       .get(`/telemetry-drains/${appTelemetryDrain.id}`)
       .reply(200, appTelemetryDrain)
 
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appTelemetryDrain.owner.id}`)
+      .reply(200, {id: appTelemetryDrain.owner.id, name: 'myapp'})
+
     await runCommand(Cmd, [
       appTelemetryDrain.id,
     ])
     expectOutput(stdout.output, heredoc(`
       === ${appTelemetryDrain.id}
-      App:      ${appTelemetryDrain.owner.name}
-      Signals:  ${appTelemetryDrain.signals.join(', ')}
-      Endpoint: ${appTelemetryDrain.exporter.endpoint}
-      Kind:     ${appTelemetryDrain.exporter.type}
-      Headers:  x-honeycomb-team: 'your-api-key', x-honeycomb-dataset: 'your-dataset'
+      App:       myapp
+      Signals:   ${appTelemetryDrain.signals.join(', ')}
+      Endpoint:  ${appTelemetryDrain.exporter.endpoint}
+      Transport: HTTP
+      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
     `))
   })
 })
