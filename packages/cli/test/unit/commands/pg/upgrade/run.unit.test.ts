@@ -206,7 +206,7 @@ describe('pg:upgrade', function () {
       .reply(200)
     nock('https://api.data.heroku.com')
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(400, {id: 'bad_request', message: "Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`."})
+      .reply(400, {id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
 
     await runCommand(Cmd, [
       '--app',
@@ -247,7 +247,7 @@ describe('pg:upgrade', function () {
       '--app',
       'myapp',
     ])
-  
+
     expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
 
@@ -256,5 +256,5 @@ describe('pg:upgrade', function () {
       Starting upgrade on ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
-  }) 
+  })
 })
