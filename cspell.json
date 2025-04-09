@@ -8,6 +8,6 @@
         "path": "./cspell-dictionary.txt",
       }
     ],
-    "ignorePaths": ["./cspell-dictionary.txt"]
+    "ignorePaths": ["./cspell-dictionary.txt", "./packages/cli/CHANGELOG.md", "./CHANGELOG.md"]
   }
   
