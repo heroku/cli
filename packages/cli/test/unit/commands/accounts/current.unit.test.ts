@@ -6,7 +6,7 @@ import * as accounts from '../../../../src/lib/accounts/accounts'
 import {stdout} from 'stdout-stderr'
 import stripAnsi = require('strip-ansi')
 
-describe.only('accounts:current', function () {
+describe('accounts:current', function () {
   let currentStub: sinon.SinonStub
 
   beforeEach(function () {
