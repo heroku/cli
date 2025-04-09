@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.5.0](https://github.com/heroku/cli/compare/v10.4.1...v10.5.0) (2025-04-09)
+
+
+### Features
+
+* add team option to usage:addons command ([#3274](https://github.com/heroku/cli/issues/3274)) ([0c43989](https://github.com/heroku/cli/commit/0c4398986f156b69009ccf857bf267bfd4dd46f1))
+
+
+
+
+
 ## [10.4.1](https://github.com/heroku/cli/compare/v10.4.0...v10.4.1) (2025-04-01)
 
 
