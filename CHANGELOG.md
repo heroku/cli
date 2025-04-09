@@ -6,9 +6,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 # [10.5.0](https://github.com/heroku/cli/compare/v10.4.1...v10.5.0) (2025-04-09)
 
 
+### Bug Fixes
+
+* Fix display and update of grpc vs httpc transport protocol ([3275](https://github.com/heroku/cli/pull/3275)) ([e2eefaf](https://github.com/heroku/cli/commit/e2eefaf3ba8b806b9b7abe08a595291cc0f4c3df))
+
+
 ### Features
 
 * add team option to usage:addons command ([#3274](https://github.com/heroku/cli/issues/3274)) ([0c43989](https://github.com/heroku/cli/commit/0c4398986f156b69009ccf857bf267bfd4dd46f1))
+* Add new usage addons command ([#3263](https://github.com/heroku/cli/pull/3263)) ([48ae523](https://github.com/heroku/cli/commit/48ae523ae5986bd640019af798ed715f577b4cee))
 
 
 
