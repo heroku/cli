@@ -91,11 +91,13 @@ export function setupTelemetry(config: any, opts: any) {
   const now = new Date()
   const cmdStartTime = now.getTime()
   const isRegularCmd = Boolean(opts.Command)
+  const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
+  const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
 
   const irregularTelemetryObject = {
     command: opts.id,
     os: config.platform,
-    version: config.version,
+    version: `${config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
     exitCode: 0,
     exitState: 'successful',
     cliRunDuration: 0,
