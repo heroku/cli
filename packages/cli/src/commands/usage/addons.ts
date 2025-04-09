@@ -28,10 +28,10 @@ interface AppInfo extends Record<string, unknown> {
 
 export default class UsageAddons extends Command {
   static topic = 'usage'
-  static description = 'list usage values for metered addons associated with a given app or team'
+  static description = 'list usage for metered add-ons attached to an app or apps within a team'
   static flags = {
-    app: flags.string(),
-    team: flags.string(),
+    app: flags.string({char: 'a', description: 'app to list metered add-ons usage for'}),
+    team: flags.team({description: 'team to list metered add-ons usage for'}),
   }
 
   private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
@@ -45,7 +45,7 @@ export default class UsageAddons extends Command {
 
     ux.styledHeader(`Usage for ${color.app(app)}`)
     ux.table(metersArray, {
-      Addon: {
+      'Add-on': {
         get: row => {
           const matchingAddon = appAddons.find(a => a.id === row.addonId)
           return matchingAddon?.name || row.addonId
