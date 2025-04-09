@@ -47,7 +47,7 @@ describe('usage:addons', function () {
 
       expectOutput(stdout.output, heredoc(`
         === Usage for ⬢ ${app}
-         Add-on     Meter        Quantity
+         Add-on    Meter        Quantity
          ───────── ──────────── ────────
          redis-123 Data Storage 2.5
          redis-123 Connections  100
@@ -126,12 +126,12 @@ describe('usage:addons', function () {
 
       expectOutput(stdout.output, heredoc(`
         === Usage for ⬢ App One
-         Add-on     Meter        Quantity
+         Add-on    Meter        Quantity
          ───────── ──────────── ────────
          redis-123 Data Storage 2.5
 
         === Usage for ⬢ App Two
-         Add-on     Meter        Quantity
+         Add-on    Meter        Quantity
          ───────── ──────────── ────────
          redis-456 Data Storage 5
       `))
