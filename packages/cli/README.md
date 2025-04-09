@@ -73,6 +73,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
+* [`heroku usage`](docs/usage.md) - list usage values for metered addons associated with a given app or team
 * [`heroku version`](docs/version.md)
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
