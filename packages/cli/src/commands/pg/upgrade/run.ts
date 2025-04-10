@@ -13,6 +13,8 @@ import {nls} from '../../../nls'
 export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
+    starts a Postgres version upgrade
+
     On Essential-tier databases, this command upgrades the database's Postgres version.
 
     On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.cmd('pg:upgrade:prepare')} before this command to schedule a version upgrade.
