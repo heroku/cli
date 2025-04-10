@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 
 describe('access', function () {
   test
-    .skip()
+    .skip() // skipped due to account access issues with heroku-cli-ci-smoke-test-app
     .stdout()
     .command(['access', '--app=heroku-cli-ci-smoke-test-app'])
     .it('shows a table with access status', ctx => {
