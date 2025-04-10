@@ -37,9 +37,35 @@ jobs:
           devcenter help
       - name: Build CLI
         run: yarn build
-      - name: Compile documentation and push to devcenter
-        run: |
-          cd packages/cli
-          ./scripts/postrelease/dev_center_docs
+      - name: Configure Heroku user
         env:
           HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
+        run: |
+          set +x
+          cat << EOF > ~/.netrc
+          machine api.heroku.com
+            login heroku-cli@salesforce.com
+            password $HEROKU_DEVCENTER_API_KEY
+          EOF
+          chmod 0600 ~/.netrc
+          set -ex
+
+          export PATH="./node_modules/.bin:./bin:$PATH"
+      - name: Generate and format docs
+        run: |
+          export COLUMNS=80
+          cat <<EOF > README.md
+          ---
+          title: Heroku CLI Commands
+          id: 4088
+
+
+          These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help\`, \`heroku --help\`, or \`heroku -h\`.
+
+          <!-- commands -->
+          EOF
+          oclif readme --no-aliases
+          grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
+      - name: Push docs to Devcenter
+        run: |
+          devcenter push /tmp/heroku-cli-commands.md --trace
