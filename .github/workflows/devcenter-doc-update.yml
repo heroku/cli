@@ -72,3 +72,5 @@ jobs:
         with:
           name: heroku-cli-commands
           path: /tmp/heroku-cli-commands.md
+      - name: Push docs to Devcenter
+        run: devcenter push /tmp/heroku-cli-commands.md --trace
