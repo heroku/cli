@@ -54,6 +54,7 @@ jobs:
       - name: Generate and format docs
         run: |
           export COLUMNS=80
+          cd packages/cli
           cat <<EOF > README.md
           ---
           title: Heroku CLI Commands
@@ -66,6 +67,8 @@ jobs:
           EOF
           yarn oclif readme --no-aliases
           grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
-      - name: Push docs to Devcenter
-        run: |
-          devcenter push /tmp/heroku-cli-commands.md --trace
+      - name: Upload md file as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: heroku-cli-commands
+          path: /tmp/heroku-cli-commands.md
