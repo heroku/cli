@@ -12,7 +12,7 @@ import {nls} from '../../../nls'
 export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
-    Prepares the upgrade for Standard-tier and higher leader databases and schedules it for the next available maintenance window. To start a version upgrade on Essential-tier and follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.
+    prepares the upgrade for Standard-tier and higher leader databases and schedules it for the next available maintenance window. To start a version upgrade on Essential-tier and follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.
   `)
 
   static flags = {
