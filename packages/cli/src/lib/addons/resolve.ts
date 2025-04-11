@@ -67,7 +67,7 @@ const filter = function (app: string | undefined, addonService: AddOnAttachment[
 }
 
 const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }> = {
-  Accept: 'application/vnd.heroku+json; version=3.actions',
+  Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Inclusion': 'addon:plan,config_vars',
 }
 
