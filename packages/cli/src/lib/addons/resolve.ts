@@ -5,7 +5,7 @@ import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from '../pg/types'
 
 const addonHeaders = {
-  Accept: 'application/vnd.heroku+json; version=3.actions',
+  Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Expansion': 'addon_service,plan',
 }
 
