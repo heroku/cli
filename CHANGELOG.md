@@ -3,8 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [10.5.0](https://github.com/heroku/cli/compare/v10.4.1...v10.5.0) (2025-04-09)
+## [10.5.1-beta.0](https://github.com/heroku/cli/compare/v10.5.0...v10.5.1-beta.0) (2025-04-11)
 
+
+### Bug Fixes
+
+* change addon text to add-on, add description to flags ([#3280](https://github.com/heroku/cli/issues/3280)) ([bcc84fd](https://github.com/heroku/cli/commit/bcc84fdd1c2472d5c09d53ceeb83a828082dc23a))
+
+
+### Features
+
+* add accounts commands ([#3257](https://github.com/heroku/cli/issues/3257)) ([fc5989b](https://github.com/heroku/cli/commit/fc5989b40575b42bee40ab55f27ff16f1216707d))
+
+
+
+
+
+# [10.5.0](https://github.com/heroku/cli/compare/v10.4.1...v10.5.0) (2025-04-09)
 
 ### Bug Fixes
 
@@ -15,7 +30,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * add team option to usage:addons command ([#3274](https://github.com/heroku/cli/issues/3274)) ([0c43989](https://github.com/heroku/cli/commit/0c4398986f156b69009ccf857bf267bfd4dd46f1))
 * Add new usage addons command ([#3263](https://github.com/heroku/cli/pull/3263)) ([48ae523](https://github.com/heroku/cli/commit/48ae523ae5986bd640019af798ed715f577b4cee))
-
 
 
 
