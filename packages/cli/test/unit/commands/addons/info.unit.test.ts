@@ -18,7 +18,10 @@ describe('addons:info', function () {
 
   context('with add-ons', function () {
     beforeEach(function () {
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
@@ -48,7 +51,10 @@ State:        created\n
 
   context('with app add-ons', function () {
     beforeEach(function () {
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
       nock('https://api.heroku.com', {reqheaders: {
@@ -82,7 +88,10 @@ State:        created\n
   })
   context('with app but not an app add-on', function () {
     beforeEach(function () {
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: 'example', addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
@@ -122,7 +131,10 @@ State:        created\n
     beforeEach(function () {
       const addon = fixtures.addons['dwh-db']
       addon.billed_price = {cents: 10000}
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
         .reply(200, [addon])
       nock('https://api.heroku.com', {reqheaders: {
@@ -156,7 +168,10 @@ State:        created\n
     beforeEach(function () {
       const addon = fixtures.addons['dwh-db']
       addon.billed_price = {cents: 0, contract: true}
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: null, addon: 'dwh-db'})
         .reply(200, [addon])
       nock('https://api.heroku.com', {reqheaders: {
@@ -189,7 +204,10 @@ State:        created\n
   context('provisioning add-on', function () {
     beforeEach(function () {
       const provisioningAddon = fixtures.addons['www-redis']
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
         .reply(200, [provisioningAddon])
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
@@ -220,7 +238,10 @@ State:        creating\n
   context('deprovisioning add-on', function () {
     beforeEach(function () {
       const deprovisioningAddon = fixtures.addons['www-redis-2']
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      }})
         .post('/actions/addons/resolve', {app: null, addon: 'www-redis-2'})
         .reply(200, [deprovisioningAddon])
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})

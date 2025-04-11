@@ -19,7 +19,10 @@ describe('addons', function () {
 
     context('with add-ons', function () {
       beforeEach(function () {
-        nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan', Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+        nock('https://api.heroku.com', {reqheaders: {
+          'Accept-Expansion': 'addon_service,plan',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        }})
           .get('/addons')
           .reply(200, addons)
       })
