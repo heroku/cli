@@ -34,6 +34,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 # Command Topics
 
 * [`heroku access`](docs/access.md) - manage user access to apps
+* [`heroku accounts`](docs/accounts.md) - list the Heroku accounts in your cache
 * [`heroku addons`](docs/addons.md) - tools and services for developing, extending, and operating your app
 * [`heroku apps`](docs/apps.md) - manage apps on Heroku
 * [`heroku auth`](docs/auth.md) - manage authentication for your Heroku account
@@ -73,7 +74,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
-* [`heroku usage`](docs/usage.md) - list usage values for metered addons associated with a given app or team
+* [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
 * [`heroku version`](docs/version.md)
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
