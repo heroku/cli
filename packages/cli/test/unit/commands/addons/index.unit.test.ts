@@ -19,7 +19,10 @@ describe('addons', function () {
 
     context('with add-ons', function () {
       beforeEach(function () {
-        nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
+        nock('https://api.heroku.com', {reqheaders: {
+          'Accept-Expansion': 'addon_service,plan',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        }})
           .get('/addons')
           .reply(200, addons)
       })
@@ -52,6 +55,7 @@ describe('addons', function () {
         addon.billed_price = {cents: 10000}
         nock('https://api.heroku.com', {reqheaders: {
           'Accept-Expansion': 'addon_service,plan',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         }})
           .get('/addons')
           .reply(200, [addon])
@@ -70,6 +74,7 @@ describe('addons', function () {
         addon.billed_price = {cents: 0, contract: true}
         nock('https://api.heroku.com', {reqheaders: {
           'Accept-Expansion': 'addon_service,plan',
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
         }})
           .get('/addons')
           .reply(200, [addon])
@@ -96,6 +101,7 @@ describe('addons', function () {
     function mockAPI(appName: string, addons: Heroku.AddOn[] = [], attachments: Heroku.AddOnAttachment[] = []) {
       nock('https://api.heroku.com', {reqheaders: {
         'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       }})
         .get(`/apps/${appName}/addons`)
         .reply(200, addons)

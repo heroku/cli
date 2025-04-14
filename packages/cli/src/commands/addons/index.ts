@@ -15,6 +15,7 @@ async function addonGetter(api: APIClient, app?: string) {
     addonsResponse = api.get<Heroku.AddOn[]>(`/apps/${app}/addons`, {
       headers: {
         'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
@@ -32,6 +33,7 @@ async function addonGetter(api: APIClient, app?: string) {
     addonsResponse = api.get<Heroku.AddOn[]>('/addons', {
       headers: {
         'Accept-Expansion': 'addon_service,plan',
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
   }
