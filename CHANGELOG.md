@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.7.0-alpha.0](https://github.com/heroku/cli/compare/v10.6.0...v10.7.0-alpha.0) (2025-04-16)
+
+
+### Bug Fixes
+
+* show metered for metered addons in addons:info and addons:index ([#3284](https://github.com/heroku/cli/issues/3284)) ([84d36c7](https://github.com/heroku/cli/commit/84d36c75e8176abb7e2524c99793e5c841fbeea4))
+
+
+
+
+
 # [10.6.0](https://github.com/heroku/cli/compare/v10.5.0...v10.6.0) (2025-04-11)
 
 

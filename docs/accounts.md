@@ -24,7 +24,7 @@ EXAMPLES
   $ heroku accounts
 ```
 
-_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v10.6.0/packages/cli/src/commands/accounts/index.ts)_
+_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v10.7.0-alpha.0/packages/cli/src/commands/accounts/index.ts)_
 
 ## `heroku accounts:add NAME`
 
@@ -44,7 +44,7 @@ EXAMPLES
   $ heroku accounts:add my-account
 ```
 
-_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v10.6.0/packages/cli/src/commands/accounts/add.ts)_
+_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v10.7.0-alpha.0/packages/cli/src/commands/accounts/add.ts)_
 
 ## `heroku accounts:current`
 
@@ -61,7 +61,7 @@ EXAMPLES
   $ heroku accounts:current
 ```
 
-_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v10.6.0/packages/cli/src/commands/accounts/current.ts)_
+_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v10.7.0-alpha.0/packages/cli/src/commands/accounts/current.ts)_
 
 ## `heroku accounts:remove NAME`
 
@@ -81,7 +81,7 @@ EXAMPLES
   $ heroku accounts:remove my-account
 ```
 
-_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v10.6.0/packages/cli/src/commands/accounts/remove.ts)_
+_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v10.7.0-alpha.0/packages/cli/src/commands/accounts/remove.ts)_
 
 ## `heroku accounts:set NAME`
 
@@ -101,4 +101,4 @@ EXAMPLES
   $ heroku accounts:set my-account
 ```
 
-_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v10.6.0/packages/cli/src/commands/accounts/set.ts)_
+_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v10.7.0-alpha.0/packages/cli/src/commands/accounts/set.ts)_
