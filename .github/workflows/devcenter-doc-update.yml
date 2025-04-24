@@ -42,5 +42,6 @@ jobs:
         run: yarn build
       - name: Compile documentation and push to devcenter
         run: |
+          pwd
           cd packages/cli
           devcenter help
