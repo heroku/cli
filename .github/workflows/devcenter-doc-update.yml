@@ -28,10 +28,11 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
-      - name: Use Ruby 3.2.8
+      - name: Use Ruby 3.2.x
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.8
+          ruby-version: 3.2
+          bundler-cache: true
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
