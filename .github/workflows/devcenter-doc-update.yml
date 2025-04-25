@@ -28,18 +28,20 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
+      - name: Use Ruby 3.2.8
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.8
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
         run: |
           gem install devcenter --user-install
-          export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.0/bin"
+          export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.8/bin"
           devcenter help
       - name: Build CLI
         run: yarn build
       - name: Compile documentation and push to devcenter
         run: |
+          pwd
           cd packages/cli
-          ./scripts/postrelease/dev_center_docs
-        env:
-          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
