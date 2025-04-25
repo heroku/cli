@@ -31,18 +31,16 @@ jobs:
       - name: Use Ruby 3.2.x
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.x
+          ruby-version: 3.2
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
         run: |
-          lsb_release -a
           gem install devcenter --user-install
           devcenter help
       - name: Build CLI
         run: yarn build
       - name: Compile documentation and push to devcenter
         run: |
-          pwd
           cd packages/cli
           devcenter help
