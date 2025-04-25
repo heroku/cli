@@ -36,6 +36,7 @@ jobs:
         run: yarn --immutable --network-timeout 1000000
       - name: Install Devcenter CLI
         run: |
+          lsb_release -a
           gem install devcenter --user-install
           devcenter help
       - name: Build CLI
