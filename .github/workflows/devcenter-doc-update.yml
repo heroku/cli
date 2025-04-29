@@ -40,15 +40,9 @@ jobs:
       - name: Install Devcenter CLI
         run: |
           gem install devcenter --user-install
-          devcenter help
-
-      - name: Get Ruby version and set GEM_BIN_DIR
-        run: |
           RUBY_VERSION=$(ruby -e 'print RbConfig::CONFIG["ruby_version"]')
-          echo "GEM_BIN_DIR=$HOME/.gem/ruby/$RUBY_VERSION/bin" >> $GITHUB_ENV
-
-      - name: Update PATH with gem bin
-        run: echo "$GEM_BIN_DIR" >> $GITHUB_PATH
+          echo "$HOME/.gem/ruby/$RUBY_VERSION/bin" >> $GITHUB_PATH
+          devcenter help
 
       - name: Build CLI
         run: yarn build
