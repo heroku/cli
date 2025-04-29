@@ -39,8 +39,8 @@ jobs:
 
       - name: Install Devcenter CLI
         run: |
-          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
           gem install devcenter --user-install
+          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
           devcenter help
 
       - name: Build CLI
