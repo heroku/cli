@@ -28,26 +28,19 @@ jobs:
         with:
           node-version: 16.x
           cache: yarn
-
-      - name: Set up Ruby
+      - name: Use Ruby 3.2.x
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
-
       - name: Install Devcenter CLI
         run: |
-          gem install devcenter --user-install
-          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
+          gem install devcenter
           devcenter help
-
       - name: Build CLI
         run: yarn build
-
       - name: Compile documentation and push to devcenter
         run: |
-          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
           cd packages/cli
           devcenter help
