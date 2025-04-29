@@ -34,16 +34,21 @@ jobs:
         with:
           ruby-version: 3.2
 
-      - name: Check Ruby version
-        run: ruby -v
-
       - name: Install package deps
         run: yarn --immutable --network-timeout 1000000
 
       - name: Install Devcenter CLI
         run: |
-          gem install devcenter
+          gem install devcenter --user-install
           devcenter help
+
+      - name: Get Ruby version and set GEM_BIN_DIR
+        run: |
+          RUBY_VERSION=$(ruby -e 'print RbConfig::CONFIG["ruby_version"]')
+          echo "GEM_BIN_DIR=$HOME/.gem/ruby/$RUBY_VERSION/bin" >> $GITHUB_ENV
+
+      - name: Update PATH with gem bin
+        run: echo "$GEM_BIN_DIR" >> $GITHUB_PATH
 
       - name: Build CLI
         run: yarn build
