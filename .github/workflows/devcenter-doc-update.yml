@@ -40,3 +40,4 @@ jobs:
       - name: Compile documentation and push to devcenter
         run: |
           cd packages/cli
+          devcenter help
