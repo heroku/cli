@@ -40,7 +40,7 @@ jobs:
       - name: Install Devcenter CLI
         run: |
           gem install devcenter --user-install
-          echo "$(ruby -e 'print Gem.user_dir')/bin" >> $GITHUB_PATH
+          export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.8/bin"
           devcenter help
 
       - name: Build CLI
