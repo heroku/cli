@@ -48,5 +48,6 @@ jobs:
 
       - name: Compile documentation and push to devcenter
         run: |
+          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
           cd packages/cli
           devcenter help
