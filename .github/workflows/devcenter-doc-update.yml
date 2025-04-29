@@ -39,7 +39,7 @@ jobs:
 
       - name: Install Devcenter CLI
         run: |
-          echo "$(ruby -e 'puts Gem.user_dir + "/bin"')" >> $GITHUB_PATH
+          export PATH="$(ruby -e 'puts Gem.user_dir + "/bin"'):$PATH"
           gem install devcenter --user-install
           devcenter help
 
