@@ -43,4 +43,6 @@ jobs:
       - name: Compile documentation and push to devcenter
         run: |
           cd packages/cli
-          devcenter help
+          ./scripts/postrelease/dev_center_docs
+        env:
+          HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}
