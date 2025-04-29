@@ -40,8 +40,7 @@ jobs:
       - name: Install Devcenter CLI
         run: |
           gem install devcenter --user-install
-          RUBY_VERSION=$(ruby -e 'print RbConfig::CONFIG["ruby_version"]')
-          echo "$HOME/.gem/ruby/$RUBY_VERSION/bin" >> $GITHUB_PATH
+          echo "$HOME/.gem/ruby/3.2.8/bin" >> $GITHUB_PATH
           devcenter help
 
       - name: Build CLI
