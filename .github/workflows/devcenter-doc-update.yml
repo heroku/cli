@@ -42,7 +42,7 @@ jobs:
 
       - name: Install Devcenter CLI
         run: |
-          gem install devcenter --user-install
+          gem install devcenter
           devcenter help
 
       - name: Build CLI
