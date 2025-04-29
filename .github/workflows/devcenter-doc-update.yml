@@ -39,5 +39,7 @@ jobs:
         run: yarn build
       - name: Compile documentation and push to devcenter
         run: |
+          gem install devcenter --user-install
+          export PATH="$PATH:$HOME/.local/share/gem/ruby/3.2.0/bin"
           cd packages/cli
           devcenter help
