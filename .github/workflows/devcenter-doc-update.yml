@@ -41,8 +41,7 @@ jobs:
         run: |
           gem install devcenter --user-install
           echo "$HOME/.gem/ruby/3.2.8/bin" >> $GITHUB_PATH
-          devcenter help
-
+      - run: devcenter help
       - name: Build CLI
         run: yarn build
 
