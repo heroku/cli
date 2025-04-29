@@ -40,8 +40,9 @@ jobs:
       - name: Install Devcenter CLI
         run: |
           gem install devcenter --user-install
-          echo "$HOME/.gem/ruby/3.2.8/bin" >> $GITHUB_PATH
-      - run: devcenter help
+          echo "$(ruby -e 'print Gem.user_dir')/bin" >> $GITHUB_PATH
+          devcenter help
+
       - name: Build CLI
         run: yarn build
 
