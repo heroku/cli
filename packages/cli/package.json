@@ -343,7 +343,7 @@
     },
     "update": {
       "node": {
-        "version": "20.17.0"
+        "version": "20.19.1"
       },
       "s3": {
         "xz": true,
