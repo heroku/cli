@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.6.2-alpha.0](https://github.com/heroku/cli/compare/v10.6.1...v10.6.2-alpha.0) (2025-05-06)
+
+
+### Bug Fixes
+
+* **W-18451520:** mcp does not start on windows ([284988c](https://github.com/heroku/cli/commit/284988ce7fa968a3a845d359f52a0a37bc86dedb))
+
+
+### Features
+
+* **REPL:** added session and history restoration ([aaaa4b8](https://github.com/heroku/cli/commit/aaaa4b8f3d8c166f2198b93f2403cee1fe3d2a1e))
+
+
+
+
+
 ## [10.6.1](https://github.com/heroku/cli/compare/v10.6.0...v10.6.1) (2025-04-17)
 
 
