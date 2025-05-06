@@ -6,9 +6,10 @@ const util = require('util')
 const path = require('node:path')
 const fs = require('node:fs')
 const {ux} = require('@oclif/core')
+const os = require('node:os')
 
-const historyFile = path.join(process.env.HOME || process.env.USERPROFILE, '.heroku_repl_history')
-const stateFile = path.join(process.env.HOME || process.env.USERPROFILE, '.heroku_repl_state')
+const historyFile = path.join(process.env.HOME || process.env.USERPROFILE || os.homedir(), '.heroku_repl_history')
+const stateFile = path.join(process.env.HOME || process.env.USERPROFILE || os.homedir(), '.heroku_repl_state')
 
 const maxHistory = 1000
 const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
