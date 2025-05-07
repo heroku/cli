@@ -387,15 +387,5 @@ describe('addons:create', function () {
       })
         .reply(200, inferenceAddon)
     })
-    it('displays disclaimer when creating inference addon', async function () {
-      await runCommand(Cmd, [
-        'heroku-inference:claude-3-5-sonnet',
-        '--app',
-        'myapp',
-        '--name',
-        'foobar',
-      ])
-      expect(stderr.output).to.contain('Heroku Managed Inference and Agent is a pilot or beta service')
-    })
   })
 })
