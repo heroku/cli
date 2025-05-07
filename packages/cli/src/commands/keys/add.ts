@@ -79,7 +79,7 @@ Uploading SSH public key /my/key.pub... done`
 
       if (keys.length === 1) {
         const key = keys[0]
-        ux.info(`Found an SSH public key at ${color.cyan(key)}`)
+        ux.log(`Found an SSH public key at ${color.cyan(key)}`)
 
         if (!flags.yes) {
           const resp = await confirmPrompt('Would you like to upload it to Heroku?')
