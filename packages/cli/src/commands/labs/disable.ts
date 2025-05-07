@@ -2,13 +2,14 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {FlagInput} from '@oclif/core/lib/interfaces/parser'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
     async prompt(app: string): Promise<string> {
       ux.warn('Insecure Action')
-      const name = await ux.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
+      const name = await hux.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
 To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
     },
