@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import BaseCommand from '../../../lib/webhooks/base'
 
@@ -31,7 +32,7 @@ export default class EventsIndex extends BaseCommand {
 
       const printLine: typeof this.log = (...args) => this.log(...args)
 
-      ux.table(events, {
+      hux.table(events, {
         id: {
           header: 'Event ID',
         },

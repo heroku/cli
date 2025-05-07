@@ -44,7 +44,7 @@ export function displayRulesAsJSON(ruleset: Heroku.OutboundRuleset) {
 }
 
 function display(rules: Heroku.OutboundRuleset['rules']) {
-  ux.table(lined(rules), {
+  hux.table(lined(rules), {
     line: {
       header: 'Rule Number',
     },
