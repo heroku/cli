@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {ago} from '../../lib/time'
 
@@ -45,7 +46,7 @@ export default class Ps extends Command {
     }
 
     if (flags.json) {
-      ux.styledJSON(spaceDynos)
+      hux.styledJSON(spaceDynos)
     } else {
       this.render(spaceDynos)
     }
@@ -81,7 +82,7 @@ export default class Ps extends Command {
     }
 
     for (const [key, dynos] of dynosByCommand) {
-      ux.styledHeader(`${appName} ${key} (${color.yellow(dynos.length)})`)
+      hux.styledHeader(`${appName} ${key} (${color.yellow(dynos.length)})`)
       dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
       for (const dyno of dynos) {
         ux.log(dyno)

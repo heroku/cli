@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {getAddon, all} from '../../../lib/pg/fetcher'
 import pgHost from '../../../lib/pg/host'
 import type {Link} from '../../../lib/pg/types'
@@ -40,7 +41,7 @@ export default class Index extends Command {
         ux.log()
       else
         once = true
-      ux.styledHeader(color.yellow(db.name))
+      hux.styledHeader(color.yellow(db.name))
       if (db.links.message)
         return ux.log(db.links.message)
       if (db.links.length === 0)
@@ -50,7 +51,7 @@ export default class Index extends Command {
         const remoteAttachmentName = link.remote?.attachment_name || ''
         const remoteName = link.remote?.name || ''
         const remoteLinkText = `${color.green(remoteAttachmentName)} (${color.yellow(remoteName)})`
-        ux.styledObject({
+        hux.styledObject({
           created_at: link.created_at,
           remote: remoteLinkText,
         })

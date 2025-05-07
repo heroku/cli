@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as DockerHelper from '../../lib/container/docker_helper'
 import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
@@ -87,9 +88,9 @@ export default class Push extends Command {
     try {
       for (const job of jobs) {
         if (job.name === 'standard') {
-          ux.styledHeader(`Building ${processTypes} (${job.dockerfile})`)
+          hux.styledHeader(`Building ${processTypes} (${job.dockerfile})`)
         } else {
-          ux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
+          hux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
         }
 
         await DockerHelper.buildImage({
@@ -107,9 +108,9 @@ export default class Push extends Command {
     try {
       for (const job of jobs) {
         if (job.name === 'standard') {
-          ux.styledHeader(`Pushing ${processTypes} (${job.dockerfile})`)
+          hux.styledHeader(`Pushing ${processTypes} (${job.dockerfile})`)
         } else {
-          ux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
+          hux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
         }
 
         await DockerHelper.pushImage(job.resource)

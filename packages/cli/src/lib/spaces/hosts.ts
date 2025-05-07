@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {hostStatus} from './format'
 
 export type Host = {
@@ -10,8 +11,8 @@ export type Host = {
 }
 
 export function displayHosts(space: string, hosts: Host[]) {
-  ux.styledHeader(`${space} Hosts`)
-  ux.table(hosts, {
+  hux.styledHeader(`${space} Hosts`)
+  hux.table(hosts, {
     host_id: {
       header: 'Host ID',
     },

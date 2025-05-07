@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
 
@@ -43,8 +44,8 @@ export default class UsageAddons extends Command {
       })),
     )
 
-    ux.styledHeader(`Usage for ${color.app(app)}`)
-    ux.table(metersArray, {
+    hux.styledHeader(`Usage for ${color.app(app)}`)
+    hux.table(metersArray, {
       'Add-on': {
         get: row => {
           const matchingAddon = appAddons.find(a => a.id === row.addonId)

@@ -2,13 +2,14 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Notifications} from '../../lib/types/notifications'
 import * as time from '../../lib/time'
 import * as wrap from 'word-wrap'
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
   const read = readNotification ? 'Read' : 'Unread'
-  ux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
+  hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
   for (const n of notifications) {
     ux.log(color.yellow(`\n${n.title}\n`))
     ux.log(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
@@ -45,7 +46,7 @@ export default class NotificationsIndex extends Command {
     }
 
     if (flags.json) {
-      ux.styledJSON(notifications)
+      hux.styledJSON(notifications)
       return
     }
 

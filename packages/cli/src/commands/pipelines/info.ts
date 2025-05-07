@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {listPipelineApps} from '../../lib/api'
 import disambiguate from '../../lib/pipelines/disambiguate'
@@ -36,7 +37,7 @@ export default class PipelinesInfo extends Command {
     const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
 
     if (flags.json) {
-      ux.styledJSON({pipeline, apps: pipelineApps})
+      hux.styledJSON({pipeline, apps: pipelineApps})
     } else {
       await renderPipeline(this.heroku, pipeline, pipelineApps, {
         withOwners: flags['with-owners'],

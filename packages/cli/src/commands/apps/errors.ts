@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {sum} from 'lodash'
 import errorInfo from '../../lib/apps/error_info'
@@ -119,7 +120,7 @@ export default class Errors extends Command {
     }
 
     if (flags.json) {
-      ux.styledJSON(errors)
+      hux.styledJSON(errors)
     } else {
       let t = buildErrorTable(errors.router, 'router')
       for (const type of Object.keys(errors.dyno)) {
@@ -129,8 +130,8 @@ export default class Errors extends Command {
       if (t.length === 0) {
         ux.log(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
       } else {
-        ux.styledHeader(`Errors on ${color.app(flags.app)} in the last ${hours} hours`)
-        ux.table(t, {
+        hux.styledHeader(`Errors on ${color.app(flags.app)} in the last ${hours} hours`)
+        hux.table(t, {
           source: {},
           name: {get: ({name, level}) => colorize(level, name)},
           level: {get: ({level}) => colorize(level, level)},

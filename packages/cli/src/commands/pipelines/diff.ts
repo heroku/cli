@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import HTTP from '@heroku/http-call'
 
 import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
@@ -50,7 +51,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
 
     ux.log('')
-    ux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
+    hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
     const mapped = githubDiff.commits.map((commit: Commit) => {
       return {
         sha: commit.sha.slice(0, 7),
@@ -59,7 +60,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
         message: commit.commit.message.split('\n')[0],
       }
     }).reverse()
-    ux.table(mapped, {
+    hux.table(mapped, {
       sha: {
         header: 'SHA',
       },

@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
@@ -57,7 +58,7 @@ export default class Topology extends Command {
 
   protected render(topology: SpaceTopology, appInfo: Heroku.App[], json: boolean) {
     if (json) {
-      ux.styledJSON(topology)
+      hux.styledJSON(topology)
     } else if (topology.apps) {
       topology.apps.forEach(app => {
         const formations: string[] = []
@@ -95,8 +96,8 @@ export default class Topology extends Command {
           header += ` (${color.cyan(formations.join(', '))})`
         }
 
-        ux.styledHeader(header || '')
-        ux.styledObject({
+        hux.styledHeader(header || '')
+        hux.styledObject({
           Domains: domains, Dynos: dynos,
         }, ['Domains', 'Dynos'])
         ux.log()

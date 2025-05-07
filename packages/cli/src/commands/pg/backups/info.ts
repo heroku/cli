@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import pgHost from '../../../lib/pg/host'
 import pgBackupsApi from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
@@ -67,8 +68,8 @@ export default class Info extends Command {
 
   displayBackup = (backup: BackupTransfer, app: string) => {
     const {filesize, name} = pgBackupsApi(app, this.heroku)
-    ux.styledHeader(`Backup ${color.cyan(name(backup))}`)
-    ux.styledObject({
+    hux.styledHeader(`Backup ${color.cyan(name(backup))}`)
+    hux.styledObject({
       Database: color.green(backup.from_name),
       'Started at': backup.started_at,
       'Finished at': backup.finished_at,
@@ -80,7 +81,7 @@ export default class Info extends Command {
   }
 
   displayLogs = (backup: BackupTransfer) => {
-    ux.styledHeader('Backup Logs')
+    hux.styledHeader('Backup Logs')
     for (const log of backup.logs)
       ux.log(`${log.created_at} ${log.message}`)
     ux.log()

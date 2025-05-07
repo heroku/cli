@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {getDomains, waitForDomains, printDomains, waitForCertIssuedOnDomains} from '../../../lib/domains/domains'
 import notify from '../../../lib/notify'
 
@@ -31,7 +32,7 @@ export default class Enable extends Command {
           notify('heroku certs:auto:enable', 'Certificate issued to all domains')
         } catch (error) {
           notify('heroku certs:auto:enable', 'An error occurred', false)
-          ux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
+          hux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
           throw error
         }
       } else {
@@ -48,7 +49,7 @@ export default class Enable extends Command {
       if (domains.length === 0 || changedCnames.length > 0) {
         printDomains(changedCnames, message)
       } else {
-        ux.styledHeader(message)
+        hux.styledHeader(message)
       }
     }
 }

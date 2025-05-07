@@ -2,10 +2,11 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 function print(feature: Record<string, string>) {
-  ux.styledHeader(feature.name)
-  ux.styledObject({
+  hux.styledHeader(feature.name)
+  hux.styledObject({
     Description: feature.description,
     Enabled: feature.enabled ? color.green(feature.enabled) : color.red(feature.enabled),
     Docs: feature.doc_url,
@@ -42,7 +43,7 @@ export default class LabsInfo extends Command {
     }
 
     if (flags.json) {
-      ux.styledJSON(feature)
+      hux.styledJSON(feature)
     } else {
       print(feature)
     }

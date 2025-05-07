@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
@@ -21,9 +22,9 @@ export default class Features extends Command {
     features = sortBy(features, 'name')
 
     if (json) {
-      ux.styledJSON(features)
+      hux.styledJSON(features)
     } else {
-      ux.styledHeader(`App Features ${color.app(app)}`)
+      hux.styledHeader(`App Features ${color.app(app)}`)
       const longest = Math.max.apply(null, features.map(f => f.name?.length || 0))
 
       for (const f of features) {

@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import {displayCIDR, displayVPNStatus} from '../../../lib/spaces/format'
@@ -49,8 +50,8 @@ export default class Info extends Command {
   }
 
   private displayVPNInfo(name: string, vpnConnection: Heroku.PrivateSpacesVpn) {
-    ux.styledHeader(`${name} VPN Info`)
-    ux.styledObject({
+    hux.styledHeader(`${name} VPN Info`)
+    hux.styledObject({
       Name: name,
       ID: vpnConnection.id,
       'Public IP': vpnConnection.public_ip,
@@ -62,8 +63,8 @@ export default class Info extends Command {
     vpnConnectionTunnels.forEach((val, i) => {
       val.tunnel_id = 'Tunnel ' + (i + 1)
     })
-    ux.styledHeader(`${name} VPN Tunnel Info`)
-    ux.table(vpnConnectionTunnels, {
+    hux.styledHeader(`${name} VPN Tunnel Info`)
+    hux.table(vpnConnectionTunnels, {
       tunnel_id: {header: 'VPN Tunnel'},
       ip: {header: 'IP Address'},
       status: {
@@ -77,7 +78,7 @@ export default class Info extends Command {
 
   private render(name: string, vpnConnection: Heroku.PrivateSpacesVpn, json: boolean) {
     if (json) {
-      ux.styledJSON(vpnConnection)
+      hux.styledJSON(vpnConnection)
     } else {
       this.displayVPNInfo(name, vpnConnection)
     }

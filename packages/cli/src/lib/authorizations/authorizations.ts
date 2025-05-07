@@ -1,7 +1,7 @@
 'use strict'
 
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {formatDistanceToNow, addSeconds} from 'date-fns'
 
 export function display(auth: Heroku.OAuthAuthorization) {
@@ -40,7 +40,7 @@ export function display(auth: Heroku.OAuthAuthorization) {
     }
   }
 
-  ux.styledObject(obj, [
+  hux.styledObject(obj, [
     'Client',
     'Redirect URI',
     'ID',

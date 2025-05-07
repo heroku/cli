@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags, APIClient} from '@heroku-cli/command'
 import {mapKeys, pickBy} from 'lodash'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 const lastRelease = async (client: APIClient, app: string) => {
@@ -62,7 +63,7 @@ RACK_ENV:  staging`,
 
     config = pickBy(config, (_, k) => vars[k])
     config = mapKeys(config, (_, k) => color.green(k))
-    ux.styledObject(config)
+    hux.styledObject(config)
     await this.config.runHook('recache', {type: 'config', app: flags.app})
   }
 }

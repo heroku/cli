@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {formatPrice} from '../../lib/addons/util'
 import * as _ from 'lodash'
 import {Plan} from '@heroku-cli/schema'
@@ -39,9 +40,9 @@ export default class Plans extends Command {
     })
     plans = _.sortBy(plans, ['price.contract', 'price.cents'])
     if (flags.json) {
-      ux.styledJSON(plans)
+      hux.styledJSON(plans)
     } else {
-      ux.table(plans, {
+      hux.table(plans, {
         default: {
           header: '',
           get: (plan: any) => plan.default ? 'default' : '',

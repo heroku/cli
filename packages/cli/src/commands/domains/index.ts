@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
 import {paginateRequest} from '../../lib/utils/paginator'
@@ -120,9 +121,9 @@ www.example.com  CNAME            www.example.herokudns.com
     }
 
     if (flags.json) {
-      ux.styledJSON(domains)
+      hux.styledJSON(domains)
     } else {
-      ux.styledHeader(`${flags.app} Heroku Domain`)
+      hux.styledHeader(`${flags.app} Heroku Domain`)
       ux.log(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
         ux.log()
@@ -137,8 +138,8 @@ www.example.com  CNAME            www.example.herokudns.com
         }
 
         ux.log()
-        ux.styledHeader(`${flags.app} Custom Domains`)
-        ux.table(customDomains, this.tableConfig(true), {
+        hux.styledHeader(`${flags.app} Custom Domains`)
+        hux.table(customDomains, this.tableConfig(true), {
           ...flags,
           'no-truncate': true,
         })

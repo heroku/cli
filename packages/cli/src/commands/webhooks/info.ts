@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import BaseCommand from '../../lib/webhooks/base'
 
@@ -31,7 +32,7 @@ export default class WebhooksInfo extends BaseCommand {
       Level: webhook.level,
     }
 
-    ux.styledHeader(webhook.id)
-    ux.styledObject(obj)
+    hux.styledHeader(webhook.id)
+    hux.styledObject(obj)
   }
 }
