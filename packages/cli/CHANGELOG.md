@@ -10,6 +10,8 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * Removing pilot messaging for MIA ([#3290](https://github.com/heroku/cli/issues/3290)) ([051de2f](https://github.com/heroku/cli/commit/051de2fe7a74b9ccc0c9411cd74e4d804b741b3c))
 
+* remove fir pilot language, fix node engine definition ([#3287](https://github.com/heroku/cli/issues/3287)) ([4cd2217](https://github.com/heroku/cli/commit/4cd221785b5129919d195830fe32905a9b217ea6))
+
 
 
 
