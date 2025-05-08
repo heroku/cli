@@ -75,20 +75,10 @@ export default class Create extends Command {
     const argv = (restParse.argv as string[])
     // oclif duplicates specified args in argv
       .filter(arg => arg !== servicePlan)
-    const inferenceRegex = /^heroku-inference/
-    const isInferenceAddon = inferenceRegex.test(servicePlan)
 
     if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
       process.stderr.write(` ${color.yellow('›')}   For example: ${color.cyan(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
       process.stderr.write(` ${color.yellow('›')}   See https://devcenter.heroku.com/changelog-items/2925 for more info.\n`)
-    }
-
-    if (isInferenceAddon) {
-      ux.warn(heredoc`
-      Heroku Managed Inference and Agent is a pilot or beta service that is subject to the Beta Services Terms at https://www.salesforce.com/company/legal/customer-agreements/ or a written Unified Pilot Agreement if executed by Customer, and the Non-GA Gen AI and Non-GA Credit Consumption terms in the Product Terms Directory at https://ptd.salesforce.com. While use of this pilot or beta service is itself free, such use may consume GA Heroku credits and/or resources for which the Customer may have paid or be charged. Use of this pilot or beta is at the Customer's sole discretion.
-
-      For clarity and without limitation, the various third-party machine learning and generative artificial intelligence (AI) models and applications (each a “Platform”) integrated with the Beta Service are Non-SFDC Applications, as that term is defined in the Beta Services Terms. Note that these third-party Platforms include features that use generative AI technology. Due to the nature of generative AI, the output that a Platform generates may be unpredictable, and may include inaccurate or harmful responses. Before using any generative AI output, Customer is solely responsible for reviewing the output for accuracy, safety, and compliance with applicable laws and third-party acceptable use policies. In addition, Customer’s use of each Platform may be subject to the Platform’s own terms and conditions, compliance with which Customer is solely responsible.
-    `)
     }
 
     const config = parseConfig(argv)
