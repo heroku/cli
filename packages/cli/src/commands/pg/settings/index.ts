@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {SettingKey, SettingsResponse} from '../../../lib/pg/types'
 import {addonResolver} from '../../../lib/addons/resolve'
 import {essentialPlan} from '../../../lib/pg/util'
@@ -27,11 +28,11 @@ export default class Index extends Command {
     if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
 
     const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: host()})
-    ux.styledHeader(db.name)
+    hux.styledHeader(db.name)
     const remapped: Record<string, unknown> = {}
     Object.keys(settings).forEach(k => {
       remapped[k.replace(/_/g, '-')] = settings[k as SettingKey].value
     })
-    ux.styledObject(remapped)
+    hux.styledObject(remapped)
   }
 }

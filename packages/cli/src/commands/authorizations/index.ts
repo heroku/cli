@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 const {sortBy} = require('lodash')
 
 export default class AuthorizationsIndex extends Command {
@@ -23,12 +24,12 @@ export default class AuthorizationsIndex extends Command {
     authorizations = sortBy(authorizations, 'description')
 
     if (flags.json) {
-      ux.styledJSON(authorizations)
+      hux.styledJSON(authorizations)
     } else if (authorizations.length === 0) {
       ux.log('No OAuth authorizations.')
     } else {
       const printLine: typeof this.log = (...args) => this.log(...args)
-      ux.table(authorizations, {
+      hux.table(authorizations, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
         scope: {get: (v: any) => v.scope.join(',')},

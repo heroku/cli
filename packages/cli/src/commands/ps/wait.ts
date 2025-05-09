@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {Dyno, Release} from '@heroku-cli/schema'
 
@@ -83,7 +84,7 @@ export default class Wait extends Command {
 
       ux.action.status = releasedFraction
 
-      await ux.wait(interval * 1000)
+      await hux.wait(interval * 1000)
     }
   }
 }

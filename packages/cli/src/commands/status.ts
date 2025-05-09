@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {capitalize} from '@oclif/core/lib/util'
 import {formatDistanceToNow} from 'date-fns'
 import HTTP from '@heroku/http-call'
@@ -32,7 +33,7 @@ export default class Status extends Command {
     const {body} = await HTTP.get<any>(host + apiPath)
 
     if (flags.json) {
-      ux.styledJSON(body)
+      hux.styledJSON(body)
       return
     }
 
@@ -44,7 +45,7 @@ export default class Status extends Command {
 
     for (const incident of body.incidents) {
       ux.log()
-      ux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
+      hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
       const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
       for (const u of incident.updates) {

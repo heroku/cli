@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default async function getCISettings(yes: any, organization: any) {
   const settings = {
@@ -11,7 +11,7 @@ export default async function getCISettings(yes: any, organization: any) {
     return settings
   }
 
-  settings.ci = await ux.confirm('Enable automatic Heroku CI test runs?')
+  settings.ci = await hux.confirm('Enable automatic Heroku CI test runs?')
 
   if (settings.ci && organization) {
     settings.organization = organization

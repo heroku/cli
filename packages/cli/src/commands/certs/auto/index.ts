@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {displayCertificateDetails} from '../../../lib/certs/certificate_details'
 import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains'
@@ -53,11 +54,11 @@ export default class Index extends Command {
     ])
 
     if (!app.acm) {
-      ux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${flags.app}`)
+      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${flags.app}`)
       return
     }
 
-    ux.styledHeader(`Automatic Certificate Management is ${color.green('enabled')} on ${flags.app}`)
+    hux.styledHeader(`Automatic Certificate Management is ${color.green('enabled')} on ${flags.app}`)
 
     if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
       displayCertificateDetails(sniEndpoints[0])
@@ -86,7 +87,7 @@ export default class Index extends Command {
     }
 
     if (domains.length > 0) {
-      ux.table<Record<keyof Domain, unknown>>(
+      hux.table<Record<keyof Domain, unknown>>(
         domains,
         {
           Domain: {
@@ -112,7 +113,7 @@ export default class Index extends Command {
     }
 
     if (message) {
-      ux.styledHeader(message)
+      hux.styledHeader(message)
     }
   }
 }

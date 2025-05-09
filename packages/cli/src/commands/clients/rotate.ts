@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default class ClientsRotate extends Command {
   static description = 'rotate OAuth client secret'
@@ -27,13 +28,13 @@ export default class ClientsRotate extends Command {
     ux.action.stop()
 
     if (flags.json) {
-      ux.styledJSON(client)
+      hux.styledJSON(client)
     } else if (flags.shell) {
       ux.log(`HEROKU_OAUTH_ID=${client.id}`)
       ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
     } else {
-      ux.styledHeader(`${client.name}`)
-      ux.styledObject(client)
+      hux.styledHeader(`${client.name}`)
+      hux.styledObject(client)
     }
   }
 }

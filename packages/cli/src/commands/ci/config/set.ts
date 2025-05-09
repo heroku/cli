@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {getPipeline} from '../../../lib/ci/pipelines'
 import {Command, flags} from '@heroku-cli/command'
 import {setPipelineConfigVars} from '../../../lib/api'
@@ -51,7 +52,7 @@ export default class CiConfigSet extends Command {
     await setPipelineConfigVars(this.heroku, pipeline.id, vars)
     ux.action.stop()
 
-    ux.styledObject(
+    hux.styledObject(
       Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
         memo[color.green(key)] = vars[key]
         return memo

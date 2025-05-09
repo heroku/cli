@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default class DomainsInfo extends Command {
   static description = 'show detailed information for a domain on an app'
@@ -26,6 +27,6 @@ export default class DomainsInfo extends Command {
       ...res,
       app: res.app && res.app.name,
     }
-    ux.styledObject(domain)
+    hux.styledObject(domain)
   }
 }

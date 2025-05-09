@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {OAuthSession} from '../../lib/sessions/sessions'
 const {sortBy} = require('lodash')
@@ -20,12 +21,12 @@ export default class SessionsIndex extends Command {
     sessions = sortBy(sessions, 'description')
 
     if (flags.json) {
-      ux.styledJSON(sessions)
+      hux.styledJSON(sessions)
     } else if (sessions.length === 0) {
       ux.log('No OAuth sessions.')
     } else {
       const printLine: typeof this.log = (...args) => this.log(...args)
-      ux.table(sessions, {
+      hux.table(sessions, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
       }, {'no-header': true, printLine})

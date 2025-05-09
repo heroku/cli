@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {TelemetryDrain} from '../types/telemetry'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
@@ -25,7 +26,7 @@ export function validateAndFormatSignals(signalInput: string | undefined): strin
 }
 
 export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, heroku: APIClient) {
-  ux.styledHeader(telemetryDrain.id)
+  hux.styledHeader(telemetryDrain.id)
   const displayObject: TelemetryDisplayObject = {
     Signals: telemetryDrain.signals.join(', '),
     Endpoint: telemetryDrain.exporter.endpoint,
@@ -52,5 +53,5 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
     displayObject.Headers = JSON.stringify(telemetryDrain.exporter.headers)
   }
 
-  ux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
+  hux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
 }

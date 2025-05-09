@@ -1,15 +1,15 @@
 import {PrivateSpacesVpn} from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export function displayVPNConfigInfo(space: string, name: string, config: PrivateSpacesVpn) {
-  ux.styledHeader(`${name} VPN Tunnels`)
+  hux.styledHeader(`${name} VPN Tunnels`)
   const configTunnels = config.tunnels || []
   configTunnels.forEach((val, i) => {
     val.tunnel_id = 'Tunnel ' + (i + 1)
     val.routable_cidr = config.space_cidr_block
     val.ike_version = config.ike_version
   })
-  ux.table(configTunnels, {
+  hux.table(configTunnels, {
     tunnel_id: {header: 'VPN Tunnel'},
     customer_ip: {header: 'Customer Gateway'},
     ip: {header: 'VPN Gateway'},

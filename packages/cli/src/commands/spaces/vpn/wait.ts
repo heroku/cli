@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections'
 import heredoc from 'tsheredoc'
@@ -68,7 +69,7 @@ export default class Wait extends Command {
       ux.action.stop()
       const {body: newVpnConnection} = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)
       if (json) {
-        ux.styledJSON(newVpnConnection)
+        hux.styledJSON(newVpnConnection)
       } else {
         displayVPNConfigInfo(space, name, newVpnConnection)
       }

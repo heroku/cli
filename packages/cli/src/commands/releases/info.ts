@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import * as shellescape from 'shell-escape'
 const {forEach} = require('lodash')
@@ -28,7 +29,7 @@ export default class Info extends Command {
       const release = await findByLatestOrId(this.heroku, app, args.release)
 
       if (json) {
-        ux.styledJSON(release)
+        hux.styledJSON(release)
       } else {
         let releaseChange = release.description
         const status = description(release)
@@ -40,8 +41,8 @@ export default class Info extends Command {
           releaseChange += ' (' + color[statusColor](status) + ')'
         }
 
-        ux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
-        ux.styledObject({
+        hux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
+        hux.styledObject({
           'Add-ons': release.addon_plan_names,
           Change: releaseChange,
           By: userEmail,
@@ -49,13 +50,13 @@ export default class Info extends Command {
           When: release.created_at,
         })
         ux.log()
-        ux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
+        hux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
         if (shell) {
           forEach(config, (v: string, k: string) => {
             ux.log(`${k}=${shellescape([v])}`)
           })
         } else {
-          ux.styledObject(config)
+          hux.styledObject(config)
         }
       }
     }

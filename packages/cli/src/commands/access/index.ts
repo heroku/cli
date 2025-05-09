@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
 import {isTeamApp, getOwner} from '../../lib/teamUtils'
@@ -58,7 +59,7 @@ function printAccess(app: Heroku.App, collaborators: any[]) {
     .value()
 
   const tableColumns = buildTableColumns(showPermissions)
-  ux.table(
+  hux.table(
     collaborators,
     tableColumns,
   )

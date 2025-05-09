@@ -1,4 +1,5 @@
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
@@ -22,10 +23,10 @@ export default class Info extends Command {
     const {body: feature} = await this.heroku.get<Heroku.AppFeature>(`/apps/${app}/features/${args.feature}`)
 
     if (json) {
-      ux.styledJSON(feature)
+      hux.styledJSON(feature)
     } else {
-      ux.styledHeader(feature.name || '')
-      ux.styledObject({
+      hux.styledHeader(feature.name || '')
+      hux.styledObject({
         Description: feature.description,
         Enabled: feature.enabled ? color.green('true') : color.red('false'),
         Docs: feature.doc_url,

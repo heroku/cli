@@ -1,4 +1,5 @@
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import {flags, Command} from '@heroku-cli/command'
 import * as  inquirer from 'inquirer'
@@ -23,7 +24,7 @@ async function confirmPrompt(message: string) {
     }])
   }
 
-  const data = await ux.prompt(message + ' [Y/n]')
+  const data = await hux.prompt(message + ' [Y/n]')
   return {yes: /^y(es)?/i.test(data)}
 }
 

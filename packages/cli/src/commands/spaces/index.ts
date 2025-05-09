@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Space} from '../../lib/types/fir'
 import {getGeneration} from '../../lib/apps/generation'
 
@@ -52,7 +53,7 @@ export default class Index extends Command {
   }
 
   protected display(spaces: SpaceArray) {
-    ux.table(
+    hux.table(
       spaces,
       {
         Name: {get: space => space.name},

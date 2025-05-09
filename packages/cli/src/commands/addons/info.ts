@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/util'
 import {resolveAddon} from '../../lib/addons/resolve'
@@ -29,9 +30,9 @@ export default class Info extends Command {
 
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
-    ux.styledHeader(color.magenta(addon.name ?? ''))
+    hux.styledHeader(color.magenta(addon.name ?? ''))
 
-    ux.styledObject({
+    hux.styledObject({
       Plan: addon.plan.name,
       Price: formatPrice({price: addon.plan.price, hourly: true}),
       'Max Price': formatPrice({price: addon.plan.price, hourly: false}),

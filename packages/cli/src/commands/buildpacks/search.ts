@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
@@ -51,7 +52,7 @@ export default class Search extends Command {
       }
     })
     const displayTable = (buildpacks: TableRow[]) => {
-      ux.table(buildpacks, {
+      hux.table(buildpacks, {
         buildpack: {
           header: 'Buildpack',
         },
