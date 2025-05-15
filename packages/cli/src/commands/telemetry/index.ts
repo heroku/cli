@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {TelemetryDrains} from '../../lib/types/telemetry'
 
 export default class Index extends Command {
@@ -39,8 +40,8 @@ export default class Index extends Command {
     if (telemetryDrains.length === 0) {
       ux.log(`There are no telemetry drains in ${owner}`)
     } else {
-      ux.styledHeader(`${owner} Telemetry Drains`)
-      ux.table(
+      hux.styledHeader(`${owner} Telemetry Drains`)
+      hux.table(
         telemetryDrains,
         {
           ID: {get: telemetryDrain => telemetryDrain.id},

@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {formatPrice, grandfatheredPrice, formatState} from '../../lib/addons/util'
 import {groupBy, some, sortBy, values} from 'lodash'
@@ -82,7 +83,7 @@ function displayAll(addons: Heroku.AddOn[]) {
     return
   }
 
-  ux.table(
+  hux.table(
     addons,
     {
       'Owning App': {
@@ -176,7 +177,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
   addons = sortBy(addons, isForeignApp, 'plan.name', 'name')
   ux.log()
-  ux.table(
+  hux.table(
     addons,
     {
       'Add-on': {get: presentAddon},

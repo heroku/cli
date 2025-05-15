@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default async function confirmCommand(app: string, confirm?: string, message?: string) {
   if (confirm) {
@@ -14,7 +15,7 @@ This command will affect the app ${color.bold.red(app)}`
 
   ux.warn(message)
   console.error()
-  const entered = await ux.prompt(
+  const entered = await hux.prompt(
     `To proceed, type ${color.bold.red(app)} or re-run this command with ${color.bold.red('--confirm', app)}`,
     {required: true},
   )

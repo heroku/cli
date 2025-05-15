@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {truncate} from 'lodash'
 import * as Heroku from '@heroku-cli/schema'
 import * as statusHelper from '../../lib/releases/status_helper'
@@ -141,8 +142,8 @@ export default class Index extends Command {
         header += ' - ' + color.cyan(`Current: v${currentRelease.version}`)
       }
 
-      ux.styledHeader(header)
-      ux.table(
+      hux.styledHeader(header)
+      hux.table(
         releases,
         columns,
         {'no-header': true, 'no-truncate': true,  extended},

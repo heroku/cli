@@ -2,6 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import {parse, ParsedDomain, ParseError} from 'psl'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 
 const wait = function (ms: number) {
@@ -61,11 +62,11 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
   const domains_with_type: (Required<Heroku.Domain> & { type: string })[] = domains.map(domain => Object.assign({}, domain, {type: type(domain)}))
 
   if (domains_with_type.length === 0) {
-    ux.styledHeader(`${message}  Add a custom domain to your app by running ${color.cmd('heroku domains:add <yourdomain.com>')}`)
+    hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.cmd('heroku domains:add <yourdomain.com>')}`)
   } else {
-    ux.styledHeader(`${message}  Update your application's DNS settings as follows`)
+    hux.styledHeader(`${message}  Update your application's DNS settings as follows`)
 
-    ux.table(domains_with_type,
+    hux.table(domains_with_type,
       {
         domain: {
           get: ({hostname}) => hostname,

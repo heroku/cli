@@ -1,5 +1,6 @@
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import * as shellescape from 'shell-escape'
@@ -33,14 +34,14 @@ export default class CiConfig extends Command {
         ux.log(`${key}=${shellescape([config[key]])}`)
       })
     } else if (flags.json) {
-      ux.styledJSON(config)
+      hux.styledJSON(config)
     } else {
-      ux.styledHeader(`${pipeline.name} test config vars`)
+      hux.styledHeader(`${pipeline.name} test config vars`)
       const formattedConfig: Heroku.Pipeline = {}
       Object.keys(config).forEach(key => {
         formattedConfig[color.green(key)] = config[key]
       })
-      ux.styledObject(formattedConfig)
+      hux.styledObject(formattedConfig)
     }
   }
 }

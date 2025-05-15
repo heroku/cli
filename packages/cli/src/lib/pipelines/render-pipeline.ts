@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {sortBy} from 'lodash'
 
 import {getOwner, warnMixedOwnership} from './ownership'
@@ -13,7 +14,7 @@ export default async function renderPipeline(
   pipelineApps: Array<AppWithPipelineCoupling>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
   {withOwners, showOwnerWarning} = {withOwners: false, showOwnerWarning: false}) {
-  ux.styledHeader(pipeline.name!)
+  hux.styledHeader(pipeline.name!)
 
   let owner
 
@@ -58,7 +59,7 @@ export default async function renderPipeline(
   const productionApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'production'), ['name'])
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
-  ux.table(apps, columns)
+  hux.table(apps, columns)
 
   if (showOwnerWarning && pipeline.owner) {
     warnMixedOwnership(pipelineApps, pipeline, owner)

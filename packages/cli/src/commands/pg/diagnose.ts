@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {table} from '@oclif/core/lib/cli-ux/styled/table'
 import {capitalize} from '@oclif/core/lib/util'
 import heredoc from 'tsheredoc'
@@ -56,7 +57,7 @@ export default class Diagnose extends Command {
 
   private displayReport(report: PGDiagnoseResponse, json: boolean) {
     if (json) {
-      ux.styledJSON(report)
+      hux.styledJSON(report)
       return
     }
 
@@ -86,7 +87,7 @@ export default class Diagnose extends Command {
             get: (row: PGDiagnoseResult): string => row[key],
           }
         })
-        ux.table(check.results, cols)
+        hux.table(check.results, cols)
       } else {
         const [key] = resultsKeys
         ux.log(`${key.split('_')

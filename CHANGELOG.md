@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.7.0](https://github.com/heroku/cli/compare/v10.6.1...v10.7.0) (2025-05-08)
+
+
+### Features
+
+* Removing pilot messaging for MIA ([#3290](https://github.com/heroku/cli/issues/3290)) ([051de2f](https://github.com/heroku/cli/commit/051de2fe7a74b9ccc0c9411cd74e4d804b741b3c))
+
+* remove fir pilot language, fix node engine definition ([#3287](https://github.com/heroku/cli/issues/3287)) ([4cd2217](https://github.com/heroku/cli/commit/4cd221785b5129919d195830fe32905a9b217ea6))
+
+
+
+
+
 ## [10.6.1](https://github.com/heroku/cli/compare/v10.6.0...v10.6.1) (2025-04-17)
 
 

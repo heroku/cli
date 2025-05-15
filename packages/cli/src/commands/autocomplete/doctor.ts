@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -64,7 +65,7 @@ export default class Doctor extends AutocompleteBase {
 
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
-    ux.table(data, {
+    hux.table(data, {
       name: {},
       value: {},
     }, {'no-header': true, printLine})

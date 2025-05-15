@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 
 import BaseCommand from '../../lib/webhooks/base'
@@ -41,7 +42,7 @@ export default class WebhooksAdd extends BaseCommand {
 
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
     if (secret) {
-      ux.styledHeader('Webhooks Signing Secret')
+      hux.styledHeader('Webhooks Signing Secret')
       this.log(secret)
     } else {
       ux.warn('no secret found')

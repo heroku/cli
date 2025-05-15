@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import pgHost from '../../../lib/pg/host'
 import {arbitraryAppDB} from '../../../lib/pg/fetcher'
 import type {TransferSchedule} from '../../../lib/pg/types'
@@ -21,7 +22,7 @@ export default class Schedules extends Command {
     if (schedules.length === 0) {
       ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.cyan.bold('heroku pg:backups:schedule')} to set one up`)
     } else {
-      ux.styledHeader('Backup Schedules')
+      hux.styledHeader('Backup Schedules')
       for (const s of schedules) {
         ux.log(`${color.green(s.name)}: daily at ${s.hour}:00 ${s.timezone}`)
       }

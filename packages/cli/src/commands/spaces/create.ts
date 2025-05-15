@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Space} from '../../lib/types/fir'
 import heredoc from 'tsheredoc'
 import {displayShieldState} from '../../lib/spaces/spaces'
@@ -87,8 +88,8 @@ export default class Create extends Command {
     ux.warn(`${color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
     ux.warn(`Use ${color.cmd('heroku spaces:wait')} to track allocation.`)
 
-    ux.styledHeader(space.name)
-    ux.styledObject({
+    hux.styledHeader(space.name)
+    hux.styledObject({
       ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }

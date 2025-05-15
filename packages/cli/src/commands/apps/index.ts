@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as _ from 'lodash'
@@ -38,15 +39,15 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
     else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
     else ux.log('You have no apps.')
   } else if (space) {
-    ux.styledHeader(`Apps in space ${color.green(space)}`)
+    hux.styledHeader(`Apps in space ${color.green(space)}`)
     listApps(apps)
   } else if (team) {
-    ux.styledHeader(`Apps in team ${color.magenta(team)}`)
+    hux.styledHeader(`Apps in team ${color.magenta(team)}`)
     listApps(apps)
   } else {
     apps = _.partition(apps, (app: App) => app.owner.email === user.email)
     if (apps[0].length > 0) {
-      ux.styledHeader(`${color.cyan(user.email!)} Apps`)
+      hux.styledHeader(`${color.cyan(user.email!)} Apps`)
       listApps(apps[0])
     }
 
@@ -56,8 +57,8 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
     }
 
     if (apps[1].length > 0) {
-      ux.styledHeader('Collaborated Apps')
-      ux.table(apps[1], columns, {'no-header': true})
+      hux.styledHeader('Collaborated Apps')
+      hux.table(apps[1], columns, {'no-header': true})
     }
   }
 }
@@ -116,7 +117,7 @@ export default class AppsIndex extends Command {
     }
 
     if (flags.json) {
-      ux.styledJSON(apps)
+      hux.styledJSON(apps)
     } else {
       print(apps, user, space, team)
     }

@@ -1,5 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {SpaceNat} from '../types/fir'
 import {SpaceWithOutboundIps} from '../types/spaces'
 import {getGeneration} from '../apps/generation'
@@ -18,8 +19,8 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.log(JSON.stringify(space, null, 2))
   } else {
-    ux.styledHeader(space.name || '')
-    ux.styledObject(
+    hux.styledHeader(space.name || '')
+    hux.styledObject(
       {
         ID: space.id,
         Team: space.team?.name,

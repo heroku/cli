@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {sortBy, compact} from 'lodash'
 import heredoc from 'tsheredoc'
@@ -109,8 +110,8 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     throw emptyFormationErr(app)
   }
 
-  ux.styledHeader('Process Types')
-  ux.table(formationTableData, {
+  hux.styledHeader('Process Types')
+  hux.table(formationTableData, {
     type: {},
     size: {},
     qty: {},
@@ -118,8 +119,8 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     'max cost/month': {},
   })
   ux.log()
-  ux.styledHeader('Dyno Totals')
-  ux.table(dynoTotalsTableData, {
+  hux.styledHeader('Dyno Totals')
+  hux.table(dynoTotalsTableData, {
     type: {},
     total: {},
   })

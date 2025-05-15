@@ -9,6 +9,7 @@ import {
   StackCompletion,
 } from '@heroku-cli/command/lib/completions'
 import {Args, Interfaces, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {get} from 'lodash'
@@ -98,7 +99,7 @@ async function configureGitRemote(context: ParserOutput<Create>, app: Heroku.App
 
 function printAppSummary(context: ParserOutput<Create>, app: Heroku.App, remoteUrl: string) {
   if (context.flags.json) {
-    ux.styledJSON(app)
+    hux.styledJSON(app)
   } else {
     ux.log(`${color.cyan(app.web_url || '')} | ${color.green(remoteUrl)}`)
   }

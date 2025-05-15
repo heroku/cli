@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as _ from 'lodash'
 import color from '@heroku-cli/color'
@@ -34,7 +35,7 @@ export default class StacksIndex extends Command {
     const stacks = stackResponse.body
     const sortedStacks = _.sortBy(stacks, 'name')
 
-    ux.styledHeader(`${color.app(app.name!)} Available Stacks`)
+    hux.styledHeader(`${color.app(app.name!)} Available Stacks`)
     for (const stack of sortedStacks) {
       if (stack.name === app.stack!.name) {
         ux.log(color.green('* ' + updateCedarName(stack.name!)))

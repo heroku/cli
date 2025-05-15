@@ -2,6 +2,8 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote'
@@ -132,7 +134,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
     ux.log('Config Diff:')
     showDiff(original, newConfig)
     ux.log()
-    return ux.confirm(`Update config on ${color.app(this.app)} with these values?`)
+    return hux.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 
   private async verifyUnchanged(original: Config) {

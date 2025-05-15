@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as assert from 'assert'
 import fetch from 'node-fetch'
 import * as Stream from 'stream'
@@ -260,6 +261,6 @@ export default class Promote extends Command {
       ux.warn('\nPromotion to some apps failed')
     }
 
-    ux.styledObject(styledTargets)
+    hux.styledObject(styledTargets)
   }
 }

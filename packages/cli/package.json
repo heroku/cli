@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "10.6.1",
+  "version": "10.7.0",
   "author": "Heroku",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -13,7 +13,7 @@
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
-    "@heroku/heroku-cli-util": "^8.0.13",
+    "@heroku/heroku-cli-util": "^9.0.1",
     "@heroku/http-call": "^5.4.0",
     "@inquirer/prompts": "^5.0.5",
     "@oclif/core": "^2.16.0",
@@ -320,9 +320,6 @@
         "./lib/hooks/init/version",
         "./lib/hooks/init/terms-of-service",
         "./lib/hooks/init/performance_analytics"
-      ],
-      "plugins:preinstall": [
-        "./lib/hooks/plugins/preinstall/disclaimers"
       ],
       "prerun": [
         "./lib/hooks/prerun/analytics"

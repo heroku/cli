@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Index extends Command {
@@ -15,9 +15,9 @@ export default class Index extends Command {
     const {body: teams} = await this.heroku.get<Heroku.Team[]>('/teams')
 
     if (flags.json)
-      ux.styledJSON(teams)
+      hux.styledJSON(teams)
     else {
-      ux.table(teams.sort((a: Heroku.Team, b: Heroku.Team) => {
+      hux.table(teams.sort((a: Heroku.Team, b: Heroku.Team) => {
         const aName = a?.name || ''
         const bName = b?.name || ''
         return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)

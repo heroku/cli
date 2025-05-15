@@ -1,5 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {App} from '../../lib/types/fir'
 import color from '@heroku-cli/color'
 
@@ -35,7 +35,7 @@ export default class Index extends Command {
         header += ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
       }
 
-      ux.styledHeader(header)
+      hux.styledHeader(header)
       buildpacksCommand.display(buildpacks, '')
     }
   }

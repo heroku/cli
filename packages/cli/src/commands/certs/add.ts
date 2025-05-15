@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {waitForDomains} from '../../lib/certs/domains'
 import {prompt} from 'inquirer'
@@ -15,7 +16,7 @@ async function configureDomains(app: string, heroku: APIClient, cert: SniEndpoin
   const appDomains = apiDomains?.map((domain: Heroku.Domain) => domain.hostname as string)
   const matchedDomains = matchDomains(certDomains, appDomains ?? [])
   if (matchedDomains.length > 0) {
-    ux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+    hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
     const selections = await prompt<{domains: string[]}>([{
       type: 'checkbox',
       name: 'domains',
