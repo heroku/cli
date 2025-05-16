@@ -1794,9 +1794,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/plugin-ai@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@heroku/plugin-ai@npm:1.0.0"
+"@heroku/plugin-ai@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@heroku/plugin-ai@npm:1.0.1"
   dependencies:
     "@heroku-cli/color": ^2
     "@heroku-cli/command": ^11.5.0
@@ -1806,7 +1806,7 @@ __metadata:
     open: ^8.4.2
     printf: ^0.6.1
     tsheredoc: ^1
-  checksum: 43b0d8672f2362b81ee7f142fe336ceaaccd506de4f625972054ddb0dd9007134e8ad6a419982267c153f63d69a97c026862c31134456d88d3b07d3b9dfc17c2
+  checksum: b3d454c2332a6f81ef25540120cceb62dd67492dbb237744f96f804b0851c7f0268fd9640ed3645d063b6ebe0b38fe48e346fb97a1d1f58a19a13566e305fd04
   languageName: node
   linkType: hard
 
@@ -10411,7 +10411,7 @@ __metadata:
     "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^9.0.1
     "@heroku/http-call": ^5.4.0
-    "@heroku/plugin-ai": ^1.0.0
+    "@heroku/plugin-ai": ^1.0.1
     "@inquirer/prompts": ^5.0.5
     "@istanbuljs/nyc-config-typescript": ^1.0.2
     "@oclif/core": ^2.16.0
