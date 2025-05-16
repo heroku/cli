@@ -15,6 +15,7 @@
     "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "^9.0.1",
     "@heroku/http-call": "^5.4.0",
+    "@heroku/plugin-ai": "^1.0.1",
     "@inquirer/prompts": "^5.0.5",
     "@oclif/core": "^2.16.0",
     "@oclif/plugin-commands": "2.2.28",
@@ -186,7 +187,8 @@
       "@oclif/plugin-update",
       "@oclif/plugin-version",
       "@oclif/plugin-warn-if-update-available",
-      "@oclif/plugin-which"
+      "@oclif/plugin-which",
+      "@heroku/plugin-ai"
     ],
     "bin": "heroku",
     "dirname": "heroku",
