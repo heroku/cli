@@ -96,6 +96,21 @@ describe('telemetry', function () {
     reportCmdNotFoundTest(mockConfig)
   })
 
+  it('confirms version string includes MCP info when in MCP mode', function () {
+    // Mock MCP mode and version
+    const originalMcpMode = process.env.HEROKU_MCP_MODE
+    const originalMcpVersion = process.env.HEROKU_MCP_SERVER_VERSION
+    process.env.HEROKU_MCP_MODE = 'true'
+    process.env.HEROKU_MCP_SERVER_VERSION = '1.2.3'
+
+    const result = telemetry.setupTelemetry(mockConfig, mockOpts)
+    expect(result!.version).to.equal(`${version} (MCP 1.2.3)`)
+
+    // Restore original env vars
+    process.env.HEROKU_MCP_MODE = originalMcpMode
+    process.env.HEROKU_MCP_SERVER_VERSION = originalMcpVersion
+  })
+
   it('confirms successful request to honeycomb', async function () {
     const mockTelemetry = telemetry.setupTelemetry(mockConfig, mockOpts)
     telemetry.initializeInstrumentation()
