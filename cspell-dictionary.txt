@@ -219,6 +219,7 @@ nspname
 oclif
 oldname
 openredis
+optfile
 osslsigncode
 ossp
 otherapp

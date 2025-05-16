@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.7.0-alpha.0](https://github.com/heroku/cli/compare/v10.7.0...v10.7.0-alpha.0) (2025-05-16)
+
+
+### Bug Fixes
+
+* **W-18451520:** mcp does not start on windows ([082c6af](https://github.com/heroku/cli/commit/082c6af824f9428b60e9328c348bd2523bd66f55))
+
+
+### Features
+
+* **REPL:** added session and history restoration ([79f8769](https://github.com/heroku/cli/commit/79f8769d2c09807352202cf50dbe370d7ab2d593))
+* update Add plugin AI as a dependency in MCP feature branch ([#3295](https://github.com/heroku/cli/issues/3295)) ([94684cf](https://github.com/heroku/cli/commit/94684cf1efc6571c66e2faa3303881bec7e647be))
+
+
+
+
+
 # [10.7.0](https://github.com/heroku/cli/compare/v10.6.1...v10.7.0) (2025-05-08)
 
 
