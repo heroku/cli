@@ -1607,7 +1607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:^2.0.4":
+"@heroku-cli/color@npm:^2, @heroku-cli/color@npm:^2.0.4":
   version: 2.0.4
   resolution: "@heroku-cli/color@npm:2.0.4"
   dependencies:
@@ -1791,6 +1791,22 @@ __metadata:
     is-stream: ^2.0.0
     tunnel-agent: ^0.6.0
   checksum: 46e522a6f1d1ae44d857db202862aa0ca800804af7ba04b13a46a99f7bb1233adaf47d7d22dbf4fcd7443e78603e3793b3d6662486e8eb1c9ab6e3569e116f25
+  languageName: node
+  linkType: hard
+
+"@heroku/plugin-ai@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@heroku/plugin-ai@npm:1.0.0"
+  dependencies:
+    "@heroku-cli/color": ^2
+    "@heroku-cli/command": ^11.5.0
+    "@heroku-cli/schema": ^1.0.25
+    "@oclif/core": ^2.16.0
+    "@oclif/plugin-help": ^5
+    open: ^8.4.2
+    printf: ^0.6.1
+    tsheredoc: ^1
+  checksum: 43b0d8672f2362b81ee7f142fe336ceaaccd506de4f625972054ddb0dd9007134e8ad6a419982267c153f63d69a97c026862c31134456d88d3b07d3b9dfc17c2
   languageName: node
   linkType: hard
 
@@ -10395,6 +10411,7 @@ __metadata:
     "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^9.0.1
     "@heroku/http-call": ^5.4.0
+    "@heroku/plugin-ai": ^1.0.0
     "@inquirer/prompts": ^5.0.5
     "@istanbuljs/nyc-config-typescript": ^1.0.2
     "@oclif/core": ^2.16.0
@@ -14188,7 +14205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"printf@npm:0.6.1":
+"printf@npm:0.6.1, printf@npm:^0.6.1":
   version: 0.6.1
   resolution: "printf@npm:0.6.1"
   checksum: 7643279e5e4e2032b86b61babb21e60b99eac71491556a0fc3f01a443f61f90f1701f9912be41a1e44e1164a69fa349b907719716b983e3a222ad9a978ba06f9
@@ -16373,7 +16390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsheredoc@npm:^1.0.1":
+"tsheredoc@npm:^1, tsheredoc@npm:^1.0.1":
   version: 1.0.1
   resolution: "tsheredoc@npm:1.0.1"
   checksum: 1ecf5c4dbcdb9b0edaf666a5a73252d02ca28896e36d438588f5fc0e369ed055e2d6fce2011128bd9cade473ff6530118a69413b23542295c9f28fd725b18f53

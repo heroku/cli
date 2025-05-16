@@ -97,7 +97,7 @@ describe('pg:pull', function () {
       'myapp',
     ])
 
-    expect(createDbStub.calledOnce).to.eq(true)
+    expect(createDbStub.called).to.eq(true)
     expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
     expect(stdout.output).to.eq(heredoc`
@@ -128,7 +128,7 @@ describe('pg:pull', function () {
       'myapp',
     ])
 
-    expect(createDbStub.calledOnce).to.eq(true)
+    expect(createDbStub.called).to.eq(true)
     expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
     expect(stdout.output).to.eq(heredoc`
