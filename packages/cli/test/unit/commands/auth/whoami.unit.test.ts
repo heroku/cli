@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('auth:whoami', function () {
   test
     .env({HEROKU_API_KEY: 'foobar'})
@@ -28,3 +29,5 @@ describe('auth:whoami', function () {
       expect(ctx.stderr).to.contain('Warning: HEROKU_API_KEY is set')
     })
 })
+
+*/

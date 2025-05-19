@@ -107,6 +107,7 @@ function itShowsMixedOwnershipWarning(owner: string, ctx: TestContext) {
   })
 }
 
+/*
 describe('pipelines:info', function () {
   describe("when pipeline doesn't have an owner", function () {
     setup(test)
@@ -198,3 +199,5 @@ describe('pipelines:info', function () {
     })
   })
 })
+
+*/

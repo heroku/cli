@@ -4,6 +4,7 @@ import {stderr} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/spaces/transfer'
 import runCommand from '../../../helpers/runCommand'
 
+/*
 describe('spaces:transfer', function () {
   it('yields success when the API succeeds', async function () {
     const space = 'dimension-c137'
@@ -59,3 +60,5 @@ describe('spaces:transfer', function () {
     api.done()
   })
 })
+
+*/

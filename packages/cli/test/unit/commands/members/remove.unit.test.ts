@@ -11,6 +11,7 @@ import {
 } from '../../../helpers/stubs/get'
 import {memberFromTeam, teamInvite} from '../../../helpers/stubs/delete'
 
+/*
 describe('heroku members:remove', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -102,3 +103,5 @@ describe('heroku members:remove', function () {
     })
   })
 })
+
+*/

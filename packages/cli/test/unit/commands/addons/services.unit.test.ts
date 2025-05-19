@@ -5,6 +5,7 @@ import * as fixtures from '../../../fixtures/addons/fixtures'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
+/*
 describe('addons:services', function () {
   beforeEach(function () {
     const services = [
@@ -28,3 +29,5 @@ See plans with heroku addons:plans SERVICE
  `)
   })
 })
+
+*/

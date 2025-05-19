@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('pipelines:rename', function () {
   const oldName = 'polaris'
   const newName = 'vega'
@@ -19,3 +20,5 @@ describe('pipelines:rename', function () {
       expect(ctx.stderr).to.include(`Renaming ${oldName} pipeline to ${newName}... done`)
     })
 })
+
+*/

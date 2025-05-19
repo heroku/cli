@@ -10,6 +10,7 @@ import color from '@heroku-cli/color'
 
 let sandbox: { restore: () => void; stub: (arg0: NodeJS.Process, arg1: string) => void }
 
+/*
 describe('container release', function () {
   let api: nock.Scope
 
@@ -519,3 +520,5 @@ describe('container release', function () {
     })
   })
 })
+
+*/

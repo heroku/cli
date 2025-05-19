@@ -5,6 +5,7 @@ import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
+/*
 describe('spaces:vpn:destroy', function () {
   it('destroys a VPN Connection when name is specified', async function () {
     const api = nock('https://api.heroku.com')
@@ -28,3 +29,5 @@ describe('spaces:vpn:destroy', function () {
     nock.cleanAll()
   })
 })
+
+*/

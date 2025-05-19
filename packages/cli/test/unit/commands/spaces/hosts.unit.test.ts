@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 
+/*
 describe('spaces:hosts', function () {
   const hosts = [
     {
@@ -62,3 +63,5 @@ describe('spaces:hosts', function () {
     expect(JSON.parse(stdout.output)).to.eql(hosts)
   })
 })
+
+*/

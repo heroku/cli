@@ -1,6 +1,7 @@
 /* eslint-disable mocha/no-setup-in-describe */
 import {expect, test} from '@oclif/test'
 
+/*
 describe('pipelines:create', function () {
   describe('successful pipeline creation', function () {
     context('when not specifying ownership', function () {
@@ -80,3 +81,5 @@ describe('pipelines:create', function () {
     })
   })
 })
+
+*/

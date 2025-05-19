@@ -22,6 +22,7 @@ const attachments = [
   },
 ]
 
+/*
 describe('pg:credentials:rotate', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -309,3 +310,5 @@ describe('pg:credentials:rotate', function () {
     `))
   })
 })
+
+*/

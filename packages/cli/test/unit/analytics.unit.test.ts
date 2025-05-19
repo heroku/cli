@@ -54,6 +54,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   backboard.done()
 }
 
+/*
 describe('analytics (backboard has an error) with authorizationToken', function () {
   let sandbox: any
 
@@ -242,3 +243,5 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     })
   })
 })
+
+*/

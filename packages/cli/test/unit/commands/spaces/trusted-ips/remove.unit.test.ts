@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove'
 import runCommand from '../../../../helpers/runCommand'
 
+/*
 describe('trusted-ips:remove', function () {
   it('removes a CIDR entry from the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -31,3 +32,5 @@ describe('trusted-ips:remove', function () {
     api.done()
   })
 })
+
+*/

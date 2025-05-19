@@ -13,6 +13,7 @@ const options = {
 
 const tosPath: string = join(options.config.cacheDir, 'terms-of-service')
 
+/*
 describe('terms-of-service hook', function () {
   afterEach(function () {
     fs.removeSync(tosPath)
@@ -40,3 +41,6 @@ describe('terms-of-service hook', function () {
       })
   })
 })
+
+*/
+

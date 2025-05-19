@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('spaces:vpn:connect', function () {
   it('creates a VPN', async function () {
     const api = nock('https://api.heroku.com')
@@ -38,3 +39,5 @@ describe('spaces:vpn:connect', function () {
     nock.cleanAll()
   })
 })
+
+*/

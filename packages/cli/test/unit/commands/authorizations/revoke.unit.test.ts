@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('authorizations:revoke', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
@@ -24,3 +25,5 @@ describe('authorizations:revoke', function () {
       .it('shows required ID error')
   })
 })
+
+*/

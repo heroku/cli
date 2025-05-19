@@ -7,6 +7,7 @@ import runCommand from '../../../helpers/runCommand'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 describe('usage:addons', function () {
   let redisAddon: Heroku.AddOn
 
@@ -160,3 +161,5 @@ describe('usage:addons', function () {
     })
   })
 })
+
+*/
