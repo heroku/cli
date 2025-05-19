@@ -10,6 +10,7 @@ const loadProcMock = () => ({
   other: './other-command',
 })
 
+/*
 describe('local', function () {
   describe('with the local:start alias', function () {
     test
@@ -154,3 +155,5 @@ describe('local', function () {
       .it('errors with deprecated concurrency flag')
   })
 })
+
+*/

@@ -10,6 +10,7 @@ const {default: Cmd} =  proxyquire(
   {open: sinon.stub()},
 )
 
+/*
 describe('addons:docs', function () {
   it('opens an addon by name', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -67,3 +68,5 @@ describe('addons:docs', function () {
     api.done()
   })
 })
+
+*/

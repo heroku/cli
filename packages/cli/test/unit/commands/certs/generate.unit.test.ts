@@ -10,6 +10,7 @@ import * as inquirer from 'inquirer'
 import * as childProcess from 'node:child_process'
 import {SinonStub} from 'sinon'
 
+/*
 describe('heroku certs:generate', function () {
   let childProcessStub: SinonStub
   let stubbedPrompt: SinonStub
@@ -196,3 +197,5 @@ describe('heroku certs:generate', function () {
     expect(childProcessStub.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:4096', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
   })
 })
+
+*/

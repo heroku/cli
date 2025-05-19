@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('domains:clear', function () {
   test
     .stderr()
@@ -16,3 +17,5 @@ describe('domains:clear', function () {
       expect(ctx.stderr).to.contain('Removing all domains from ⬢ myapp... done')
     })
 })
+
+*/

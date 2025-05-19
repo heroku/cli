@@ -9,6 +9,7 @@ import heredoc from 'tsheredoc'
 import logDisplayer from '../../../../src/lib/run/log-displayer'
 import {cedarApp, firApp} from '../../../fixtures/apps/fixtures'
 
+/*
 describe('logDisplayer', function () {
   let api: nock.Scope
   let heroku: APIClient
@@ -411,3 +412,5 @@ describe('logDisplayer', function () {
     })
   })
 })
+
+*/

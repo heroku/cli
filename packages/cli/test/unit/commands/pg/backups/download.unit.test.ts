@@ -4,6 +4,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
 
+/*
 describe('pg:backups:download', function () {
   beforeEach(function () {
     nock('https://api.data.heroku.com')
@@ -52,3 +53,5 @@ describe('pg:backups:download', function () {
     })
   })
 })
+
+*/

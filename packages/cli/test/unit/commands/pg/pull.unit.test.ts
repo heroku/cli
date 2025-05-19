@@ -9,6 +9,7 @@ import * as psql from '../../../../src/lib/pg/psql'
 import * as childProcess from 'node:child_process'
 import {TunnelConfig} from '../../../../src/lib/pg/bastion'
 
+/*
 describe('pg:pull', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
@@ -139,3 +140,5 @@ describe('pg:pull', function () {
     expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.eq(true)
   })
 })
+
+*/

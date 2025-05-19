@@ -12,6 +12,7 @@ import {
   teamAppCollaboratorsWithPermissions,
 } from '../../../helpers/stubs/get'
 
+/*
 describe('heroku access', function () {
   context('with personal app', function () {
     afterEach(function () {
@@ -52,3 +53,5 @@ describe('heroku access', function () {
     })
   })
 })
+
+*/

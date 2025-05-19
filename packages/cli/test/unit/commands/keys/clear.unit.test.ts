@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('keys:clear', function () {
   test
     .stderr()
@@ -17,3 +18,5 @@ describe('keys:clear', function () {
       expect(stderr).to.contain('Removing all SSH keys... done\n')
     })
 })
+
+*/

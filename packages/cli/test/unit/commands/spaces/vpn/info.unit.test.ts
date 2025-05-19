@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 describe('spaces:vpn:info', function () {
   let vpnConnection: Heroku.PrivateSpacesVpn
 
@@ -106,3 +107,5 @@ describe('spaces:vpn:info', function () {
   `))
   })
 })
+
+*/

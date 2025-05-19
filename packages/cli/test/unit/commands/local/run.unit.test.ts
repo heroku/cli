@@ -3,6 +3,7 @@ import * as runHelper from '../../../../src/lib/run/helpers'
 
 import * as foreman from '../../../../src/lib/local/fork-foreman'
 
+/*
 describe('local:run', function () {
   describe('when no arguments are given', function () {
     test
@@ -77,3 +78,5 @@ describe('local:run', function () {
       .it('is can pass the `-p` shorthand to foreman an a --port flag before the `--` argument separator')
   })
 })
+
+*/

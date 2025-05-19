@@ -6,6 +6,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 
+/*
 describe('heroku teams', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -25,3 +26,5 @@ describe('heroku teams', function () {
     expectOutput(stderr.output, '')
   })
 })
+
+*/

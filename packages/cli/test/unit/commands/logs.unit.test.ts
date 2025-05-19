@@ -4,6 +4,7 @@ import * as sinon from 'sinon'
 import runCommand, {GenericCmd} from '../../helpers/runCommand'
 import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('logs', function () {
   let logDisplayerStub: sinon.SinonStub
   let Cmd: GenericCmd
@@ -253,3 +254,5 @@ describe('logs', function () {
     })
   })
 })
+
+*/

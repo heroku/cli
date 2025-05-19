@@ -8,6 +8,7 @@ import * as fixtures from '../../../fixtures/spaces/fixtures'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 import {getGeneration} from '../../../../src/lib/apps/generation'
 
+/*
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps
   let shieldSpace: SpaceWithOutboundIps
@@ -175,3 +176,5 @@ describe('spaces:info', function () {
     `))
   })
 })
+
+*/

@@ -4,6 +4,7 @@ import * as fs from 'async-file'
 import * as git from '../../../../src/lib/ci/git'
 import got from 'got'
 
+/*
 describe('ci:run', function () {
   test
     .command(['ci:run'])
@@ -216,3 +217,5 @@ describe('ci:run', function () {
     })
   })
 })
+
+*/

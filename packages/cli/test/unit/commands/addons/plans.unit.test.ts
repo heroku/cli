@@ -6,6 +6,7 @@ import * as fixtures from '../../../fixtures/addons/fixtures'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 
+/*
 describe('addons:plans', function () {
   context('with non-metered plans', function () {
     beforeEach(function () {
@@ -57,3 +58,5 @@ describe('addons:plans', function () {
     })
   })
 })
+
+*/

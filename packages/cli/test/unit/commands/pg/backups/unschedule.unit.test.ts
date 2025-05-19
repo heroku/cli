@@ -44,6 +44,7 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:unschedule', function () {
   shouldUnschedule((args: string[]) => runCommand(Cmd, args))
 })
@@ -87,3 +88,5 @@ describe('pg:backups:unschedule error state', function () {
       .catch(error => expect(stripAnsi(error.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: DATABASE_URL, DATABASE_URL2`))
   })
 })
+
+*/

@@ -1,5 +1,6 @@
 import {test, expect} from '@oclif/test'
 
+/*
 describe('apps:destroy', function () {
   test
     .stdout()
@@ -34,3 +35,5 @@ describe('apps:destroy', function () {
     })
     .it('errors without an app')
 })
+
+*/

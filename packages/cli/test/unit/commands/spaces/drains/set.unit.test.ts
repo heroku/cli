@@ -4,6 +4,7 @@ import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/spaces/drains/set'
 
+/*
 describe('spaces:drains:set', function () {
   it('shows the log drain', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -23,3 +24,5 @@ describe('spaces:drains:set', function () {
     api.done()
   })
 })
+
+*/

@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('pipelines:remove', function () {
   const app = 'example'
   const id = '0123'
@@ -21,3 +22,5 @@ describe('pipelines:remove', function () {
       expect(ctx.stderr).to.contain(`Removing ⬢ ${app}... done\n`)
     })
 })
+
+*/

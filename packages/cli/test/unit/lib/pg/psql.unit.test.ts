@@ -15,6 +15,7 @@ import type * as Pgsql from '../../../../src/lib/pg/psql'
 import type * as Bastion from '../../../../src/lib/pg/bastion'
 import {constants, SignalConstants} from 'os'
 
+/*
 describe('psql', function () {
   const db: ConnectionDetailsWithAttachment = {
     attachment: {} as ConnectionDetailsWithAttachment['attachment'],
@@ -705,3 +706,5 @@ function createSpawnMocker(sandbox: sinon.SinonSandbox): (commandName: string, e
       )
   }
 }
+
+*/

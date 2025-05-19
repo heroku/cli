@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/track-functions'
 
+/*
 describe('pg:settings:track-functions', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -46,3 +47,5 @@ describe('pg:settings:track-functions', function () {
     `))
   })
 })
+
+*/

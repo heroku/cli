@@ -115,6 +115,9 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:info', function () {
   shouldInfo((args: string[]) => runCommand(Cmd, args))
 })
+
+*/

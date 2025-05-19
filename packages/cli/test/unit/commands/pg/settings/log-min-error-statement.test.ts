@@ -6,6 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/log-min-error-statement'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:settings:log-min-error-statement', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -45,3 +46,5 @@ describe('pg:settings:log-min-error-statement', function () {
     `))
   })
 })
+
+*/

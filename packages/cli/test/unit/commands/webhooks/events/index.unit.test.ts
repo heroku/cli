@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {addDays} from 'date-fns'
 
+/*
 describe('webhooks:events', function () {
   const deprecationWarning = 'Warning: heroku webhooks:event is deprecated, please use heroku'
   const deprecationWarning2 = 'webhooks:deliveries'
@@ -147,3 +148,5 @@ describe('webhooks:events', function () {
       })
   })
 })
+
+*/

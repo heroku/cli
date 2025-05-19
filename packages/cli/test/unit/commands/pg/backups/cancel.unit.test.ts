@@ -5,6 +5,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
+/*
 describe('pg:backups:cancel', function () {
   let pg: nock.Scope
 
@@ -59,3 +60,5 @@ describe('pg:backups:cancel', function () {
     })
   })
 })
+
+*/

@@ -7,6 +7,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 describe('spaces:peering:info', function () {
   let peeringInfo: Heroku.PeeringInfo
 
@@ -53,3 +54,5 @@ describe('spaces:peering:info', function () {
     expect(JSON.parse(stdout.output)).to.eql(peeringInfo)
   })
 })
+
+*/

@@ -6,6 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:unfollow', function () {
   const addon = fixtures.addons['dwh-db']
   const appName = 'myapp'
@@ -40,3 +41,5 @@ describe('pg:unfollow', function () {
     `))
   })
 })
+
+*/

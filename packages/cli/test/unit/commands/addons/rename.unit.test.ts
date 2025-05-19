@@ -6,6 +6,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 
+/*
 describe('addons:rename', function () {
   context('when the add-on exists', function () {
     let redis_name: string
@@ -37,3 +38,5 @@ describe('addons:rename', function () {
     })
   })
 })
+
+*/

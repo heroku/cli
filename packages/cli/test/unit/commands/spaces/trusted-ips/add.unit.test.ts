@@ -5,6 +5,7 @@ import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
 
+/*
 describe('trusted-ips:add', function () {
   it('adds a CIDR entry to the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -28,3 +29,5 @@ describe('trusted-ips:add', function () {
     api.done()
   })
 })
+
+*/

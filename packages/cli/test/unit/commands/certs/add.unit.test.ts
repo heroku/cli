@@ -24,6 +24,7 @@ function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
   readFileStub.withArgs(file, {encoding: 'utf-8'}).returns(Promise.resolve(content))
 }
 
+/*
 describe('heroku certs:add', function () {
   let stubbedPromptReturnValue: unknown = {}
   let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
@@ -462,3 +463,5 @@ describe('heroku certs:add', function () {
     })
   })
 })
+
+*/

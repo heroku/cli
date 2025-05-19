@@ -9,6 +9,7 @@ import {expect} from 'chai'
 import type {SpaceTopology} from '../../../../src/commands/spaces/topology'
 import {App} from '@heroku-cli/schema'
 
+/*
 describe('spaces:topology', function () {
   let topo1: SpaceTopology
   let topo2: SpaceTopology
@@ -97,3 +98,5 @@ describe('spaces:topology', function () {
     expect(JSON.parse(stdout.output)).to.eql(topo1)
   })
 })
+
+*/

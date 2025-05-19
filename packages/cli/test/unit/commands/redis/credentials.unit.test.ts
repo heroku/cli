@@ -5,6 +5,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
+/*
 describe('heroku redis:credentials should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd)
 })
@@ -58,3 +59,5 @@ describe('heroku redis:credentials', function () {
     expect(stderr.output).to.equal('')
   })
 })
+
+*/

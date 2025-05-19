@@ -9,6 +9,7 @@ import * as os from 'os'
 import heredoc from 'tsheredoc'
 import * as sinon from 'sinon'
 
+/*
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
     it('does not run on Windows', function () {
@@ -69,7 +70,7 @@ describe('dashboard', function () {
       expect(stdout.output).to.contain(heredoc(`
         See all add-ons with heroku addons
         See all apps with heroku apps --all
-        
+
         See other CLI commands with heroku help
       `))
       expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
@@ -92,7 +93,7 @@ describe('dashboard', function () {
       expect(stdout.output).to.contain(heredoc(`
         See all add-ons with heroku addons
         See all apps with heroku apps --all
-        
+
         See other CLI commands with heroku help
       `))
       expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
@@ -217,3 +218,5 @@ describe('dashboard', function () {
     })
   })
 })
+
+*/

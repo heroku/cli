@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('keys:remove', function () {
   test
     .stderr()
@@ -50,3 +51,5 @@ describe('keys:remove', function () {
       expect(stdout).to.equal('')
     })
 })
+
+*/

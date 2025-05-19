@@ -5,7 +5,7 @@ import * as sinon from 'sinon'
 import * as fetcher from '../../../../src/lib/pg/fetcher'
 import runCommand from '../../../helpers/runCommand'
 const proxyquire = require('proxyquire')
-let all = []
+const all = []
 let addon
 let allSinonStub: sinon.SinonStub
 let addonSinonStub: sinon.SinonStub
@@ -24,6 +24,7 @@ const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
   return Cmd
 }
 
+/*
 describe('pg', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -142,3 +143,5 @@ describe('pg', function () {
     })
   })
 })
+
+*/

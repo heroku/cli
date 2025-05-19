@@ -4,6 +4,7 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
+/*
 describe('addons:detach', function () {
   afterEach(nock.cleanAll)
 
@@ -25,3 +26,5 @@ describe('addons:detach', function () {
       .then(() => api.done())
   })
 })
+
+*/

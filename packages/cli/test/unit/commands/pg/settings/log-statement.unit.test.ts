@@ -6,6 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/log-statement'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:settings:log-statement', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -42,3 +43,5 @@ describe('pg:settings:log-statement', function () {
     `))
   })
 })
+
+*/

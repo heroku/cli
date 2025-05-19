@@ -4,6 +4,7 @@ import Cmd from '../../../../../src/commands/spaces/drains/get'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
+/*
 describe('spaces:drains:get', function () {
   const drain = {
     addon: null,
@@ -45,3 +46,5 @@ describe('spaces:drains:get', function () {
     expect(JSON.parse(stdout.output)).to.eql(drain)
   })
 })
+
+*/

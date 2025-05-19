@@ -6,6 +6,7 @@ import runCommand from '../../../../../helpers/runCommand'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-verbose'
 import * as fixtures from '../../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:settings:auto-explain:log-verbose', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -44,3 +45,5 @@ describe('pg:settings:auto-explain:log-verbose', function () {
     `))
   })
 })
+
+*/

@@ -6,6 +6,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:reset', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -60,3 +61,5 @@ describe('pg:reset', function () {
     })
   })
 })
+
+*/

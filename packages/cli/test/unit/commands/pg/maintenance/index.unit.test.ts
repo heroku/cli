@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:maintenance', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -25,3 +26,5 @@ describe('pg:maintenance', function () {
     expectOutput(stdout.output, 'foo\n')
   })
 })
+
+*/

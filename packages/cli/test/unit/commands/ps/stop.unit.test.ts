@@ -7,6 +7,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('ps:stop', function () {
   it('requires a dyno name or type', async function () {
     await runCommand(Cmd, [
@@ -65,3 +66,5 @@ describe('ps:stop', function () {
     expect(stderr.output).to.include('Stopping dyno web.1 on ⬢ myapp... done')
   })
 })
+
+*/

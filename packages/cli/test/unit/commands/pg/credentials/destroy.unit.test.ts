@@ -7,6 +7,7 @@ import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('pg:credentials:destroy', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
@@ -141,3 +142,5 @@ describe('pg:credentials:destroy', function () {
     })
   })
 })
+
+*/

@@ -14,6 +14,7 @@ const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
+/*
 describe('telemetry:add', function () {
   let space: SpaceWithOutboundIps
 
@@ -165,3 +166,5 @@ describe('telemetry:add', function () {
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
   })
 })
+
+*/

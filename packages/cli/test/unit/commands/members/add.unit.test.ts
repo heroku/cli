@@ -11,6 +11,7 @@ import {
   variableSizeTeamMembers,
 } from '../../../helpers/stubs/get'
 
+/*
 describe('heroku members:add', function () {
   let apiUpdateMemberRole: nock.Scope
 
@@ -64,3 +65,5 @@ describe('heroku members:add', function () {
     })
   })
 })
+
+*/

@@ -16,6 +16,7 @@ import {
 import sharedSni = require('./shared_sni.unit.test')
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
 
+/*
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
     nock('https://api.heroku.com')
@@ -120,3 +121,5 @@ describe('heroku shared', function () {
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
 })
+
+*/

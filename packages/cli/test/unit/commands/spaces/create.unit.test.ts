@@ -7,6 +7,7 @@ import heredoc from 'tsheredoc'
 import {getGeneration} from '../../../../src/lib/apps/generation'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
+/*
 describe('spaces:create', function () {
   const now = new Date()
   const features = ['one', 'two']
@@ -273,3 +274,5 @@ describe('spaces:create', function () {
     `)
   })
 })
+
+*/

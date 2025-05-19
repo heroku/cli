@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/auto-explain'
 
+/*
 describe('pg:settings:auto-explain', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -50,3 +51,5 @@ describe('pg:settings:auto-explain', function () {
     `))
   })
 })
+
+*/

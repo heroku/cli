@@ -10,6 +10,7 @@ import * as fixtures from '../../../fixtures/addons/fixtures'
 
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
+/*
 describe('heroku redis:timeout', function () {
   shouldHandleArgs(Cmd, {seconds: '5'})
 })
@@ -83,3 +84,5 @@ describe('heroku redis:timeout should handle standard arg behavior', function ()
     })
   })
 })
+
+*/

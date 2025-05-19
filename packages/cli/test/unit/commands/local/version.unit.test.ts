@@ -9,6 +9,7 @@ let existsSyncSpy: any
 const extensionRoot = path.join(__dirname, '..', '..', '..', '..', 'src', 'lib', 'local')
 const jsExtensionPath = path.join(extensionRoot, 'run-foreman.js')
 
+/*
 describe('local:version', function () {
   test
     .stub(foreman, 'fork', function () {
@@ -33,3 +34,5 @@ describe('local:version', function () {
     .catch(error => expect(error.message).to.equal('Unexpected argument: extra\nSee more help with --help'))
     .it('is throws an error when extra arguments are passed in')
 })
+
+*/

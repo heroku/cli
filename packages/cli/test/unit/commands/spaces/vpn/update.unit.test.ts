@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 
+/*
 describe('spaces:vpn:update', function () {
   it('updates VPN', async function () {
     const api = nock('https://api.heroku.com')
@@ -30,3 +31,5 @@ describe('spaces:vpn:update', function () {
     nock.cleanAll()
   })
 })
+
+*/

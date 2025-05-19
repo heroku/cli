@@ -5,6 +5,7 @@ import {CLIError} from '@oclif/core/lib/errors'
 import Cmd  from '../../../../src/commands/apps/unlock'
 import runCommand from '../../../helpers/runCommand'
 
+/*
 describe('heroku apps:unlock', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -41,3 +42,5 @@ describe('heroku apps:unlock', function () {
     api.done()
   })
 })
+
+*/

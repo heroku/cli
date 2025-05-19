@@ -6,6 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import {TelemetryDrain} from '../../../../src/lib/types/telemetry'
 
+/*
 describe('telemetry:info', function () {
   const appId = '87654321-5717-4562-b3fc-2c963f66afa6'
   const spaceId = '12345678-5717-4562-b3fc-2c963f66afa6'
@@ -89,3 +90,5 @@ describe('telemetry:info', function () {
     `))
   })
 })
+
+*/

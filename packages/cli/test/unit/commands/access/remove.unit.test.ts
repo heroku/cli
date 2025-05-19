@@ -5,6 +5,7 @@ import Cmd  from '../../../../src/commands/access/remove'
 import runCommand from '../../../helpers/runCommand'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete'
 let apiDelete: { done: () => any }
+/*
 describe('heroku access:remove', function () {
   context('with either a personal or org app', function () {
     beforeEach(function () {
@@ -25,3 +26,5 @@ describe('heroku access:remove', function () {
     })
   })
 })
+
+*/

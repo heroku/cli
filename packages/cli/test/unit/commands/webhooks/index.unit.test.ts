@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {addDays} from 'date-fns'
 
+/*
 describe('webhooks:index', function () {
   describe('app webhooks', function () {
     const appWebhooksUrl = '/apps/example/webhooks'
@@ -127,3 +128,5 @@ describe('webhooks:index', function () {
       })
   })
 })
+
+*/

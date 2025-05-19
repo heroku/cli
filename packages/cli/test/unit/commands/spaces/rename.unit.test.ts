@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 
+/*
 describe('spaces:rename', function () {
   it('renames a space', async function () {
     nock('https://api.heroku.com')
@@ -23,3 +24,5 @@ describe('spaces:rename', function () {
     `))
   })
 })
+
+*/

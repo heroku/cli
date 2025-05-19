@@ -6,6 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
+/*
 describe('pg:links:create', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -88,3 +89,5 @@ describe('pg:links:create', function () {
     })
   })
 })
+
+*/

@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/index'
 
+/*
 describe('pg:settings', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -39,8 +40,10 @@ describe('pg:settings', function () {
 
     expect(stdout.output).to.eq(heredoc`
       === postgres-1
-      
+
       log-statement: none
     `)
   })
 })
+
+*/

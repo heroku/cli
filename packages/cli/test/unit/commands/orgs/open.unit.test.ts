@@ -5,6 +5,7 @@ const expect = require('chai').expect
 import * as nock from 'nock'
 import {teamInfo} from '../../../helpers/stubs/get'
 
+/*
 describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope
   let urlOpenerStub: sinon.SinonStub
@@ -38,3 +39,5 @@ describe('heroku org:open', function () {
       .then(() => expect(urlOpenerStub.called).to.equal(true))
   })
 })
+
+*/

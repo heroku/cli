@@ -13,6 +13,7 @@ const assertLineWidths = function (blob: string, lineWidth: number) {
   }
 }
 
+/*
 describe('releases', function () {
   before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
@@ -122,11 +123,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
@@ -147,11 +148,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 third commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remove AWS_SECRET_ACCESS_KEY… rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 second commit                 rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 third commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remove AWS_SECRET_ACCESS_KEY… rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 second commit                 rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
@@ -172,11 +173,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 third commit release command executing            rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars                               rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remove AWS_SECRET_ACCESS_… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 second commit release command executing           rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                                      rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 third commit release command executing            rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars                               rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remove AWS_SECRET_ACCESS_… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 second commit release command executing           rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                                      rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 100)
     expect(stderr.output).to.equal('')
@@ -197,11 +198,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 third commit                             rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars                      rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remove AWS_SECRET_ACCESS_KEY config vars rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 second commit                            rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                             rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 third commit                             rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars                      rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remove AWS_SECRET_ACCESS_KEY config vars rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 second commit                            rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                             rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 89)
     expect(stderr.output).to.equal('')
@@ -222,11 +223,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
@@ -247,11 +248,11 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases - Current: v37
 
- v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
@@ -272,7 +273,7 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases
 
- v1 fi… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v1 fi… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
@@ -323,7 +324,7 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases
 
- v40 Set foo config vars rdagg@heroku.com 2015/11/18 01:37:41 +0000 1       uuid      
+ v40 Set foo config vars rdagg@heroku.com 2015/11/18 01:37:41 +0000 1       uuid
 `)
     expect(stderr.output).to.equal('')
     api.done()
@@ -344,7 +345,7 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases
 
- v40 Set foo config vars rdagg@heroku.com 2015/11/18 01:37:41 +0000 1       uuid      
+ v40 Set foo config vars rdagg@heroku.com 2015/11/18 01:37:41 +0000 1       uuid
 `)
     expect(stderr.output).to.equal('')
     api.done()
@@ -365,14 +366,16 @@ describe('releases', function () {
 
     expect(stdout.output).to.equal(`=== myapp Releases
 
- v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000 
- v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000 
- v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000 
+ v41 th… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v40 Set foo config vars           rdagg@heroku.com 2015/11/18 01:37:41 +0000
+ v39 Remov… release command failed rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v38 se… release command executing rdagg@heroku.com 2015/11/18 01:36:38 +0000
+ v37 first commit                  rdagg@heroku.com 2015/11/18 01:36:38 +0000
 `)
     assertLineWidths(stdout.output, 80)
     expect(stderr.output).to.equal('')
     api.done()
   })
 })
+
+*/

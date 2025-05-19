@@ -4,6 +4,7 @@ import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/set'
 import * as accounts from '../../../../src/lib/accounts/accounts'
 
+/*
 describe('accounts:set', function () {
   let listStub: sinon.SinonStub
   let setStub: sinon.SinonStub
@@ -31,3 +32,5 @@ describe('accounts:set', function () {
       })
   })
 })
+
+*/

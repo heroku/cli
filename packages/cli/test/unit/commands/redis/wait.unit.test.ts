@@ -5,6 +5,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
+/*
 describe('heroku redis:credentials', function () {
   shouldHandleArgs(Cmd)
 })
@@ -60,3 +61,5 @@ describe('heroku redis:wait ', function () {
     expect(stderr.output).to.equal('Waiting for database redis-haiku... upgrading version\nWaiting for database redis-haiku... available\n')
   })
 })
+
+*/

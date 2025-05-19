@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('ps:scale', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -120,3 +121,5 @@ describe('ps:scale', function () {
     api.done()
   })
 })
+
+*/

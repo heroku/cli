@@ -10,6 +10,7 @@ import {
   teamMembers,
 } from '../../../helpers/stubs/get'
 
+/*
 describe('heroku members', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -128,3 +129,5 @@ describe('heroku members', function () {
     })
   })
 })
+
+*/

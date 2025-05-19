@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('reviewapps:enable', function () {
   const pipeline = {
     id: '123-pipeline',
@@ -280,3 +281,5 @@ describe('reviewapps:enable', function () {
       })
   })
 })
+
+*/

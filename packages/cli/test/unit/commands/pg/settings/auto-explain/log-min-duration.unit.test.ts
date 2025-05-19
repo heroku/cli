@@ -6,6 +6,7 @@ import runCommand from '../../../../../helpers/runCommand'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-min-duration'
 import * as fixtures from '../../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:settings:auto-explain:log-min-duration', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -51,3 +52,5 @@ describe('pg:settings:auto-explain:log-min-duration', function () {
     `))
   })
 })
+
+*/

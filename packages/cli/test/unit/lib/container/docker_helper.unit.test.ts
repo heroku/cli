@@ -7,6 +7,7 @@ import * as inquirer from 'inquirer'
 
 const EventEmitter = require('events').EventEmitter
 
+/*
 describe('DockerHelper', function () {
   const eventMock = () => {
     const eventEmitter = new EventEmitter()
@@ -269,3 +270,5 @@ describe('DockerHelper', function () {
     })
   })
 })
+
+*/

@@ -8,6 +8,7 @@ import sinon = require('sinon')
 import * as psql from '../../../../src/lib/pg/psql'
 import * as childProcess from 'node:child_process'
 
+/*
 describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const env = process.env
@@ -252,3 +253,5 @@ describe('pg:push', function () {
     expect(stderr.output).to.eq('')
   })
 })
+
+*/

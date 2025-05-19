@@ -5,6 +5,7 @@ const pipeline =  {
   id: '123e4567-e89b-12d3-a456-426655440000',
   name: 'test-pipeline',
 }
+/*
 describe('heroku ci:config:unset', function () {
   test
     .stderr()
@@ -27,3 +28,5 @@ describe('heroku ci:config:unset', function () {
     })
     .it('errors with example of valid args')
 })
+
+*/

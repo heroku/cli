@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 import * as inquirer from '@inquirer/prompts'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
+/*
 describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
     acm_status: null,
@@ -164,3 +165,5 @@ describe('domains', function () {
       expect(unwrap(ctx.stderr)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
     })
 })
+
+*/

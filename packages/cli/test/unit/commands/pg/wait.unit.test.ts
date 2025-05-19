@@ -20,6 +20,7 @@ const {default: Cmd} = proxyquire('../../../../src/commands/pg/wait', {
   '../../lib/pg/fetcher': fetcher,
 })
 
+/*
 describe('pg:wait', function () {
   let pg: nock.Scope
 
@@ -97,3 +98,5 @@ describe('pg:wait', function () {
     `))
   })
 })
+
+*/

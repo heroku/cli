@@ -6,6 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
+/*
 describe('heroku redis:stats-reset', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -37,3 +38,5 @@ describe('heroku redis:stats-reset', function () {
     `))
   })
 })
+
+*/

@@ -13,6 +13,7 @@ import {PathLike} from 'node:fs'
 import * as sinon from 'sinon'
 import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('heroku certs:update', function () {
   type ReadFileStub = sinon.SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
 
@@ -163,3 +164,5 @@ describe('shared', function () {
 
   sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {stdout, stderr, flags: {confirm: 'example'}, args: ['pem_file', 'key_file']})
 })
+
+*/

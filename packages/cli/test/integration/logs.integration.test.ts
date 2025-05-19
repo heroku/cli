@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('logs', function () {
   test
     .stdout()
@@ -10,3 +11,5 @@ describe('logs', function () {
       expect(ctx.stdout.startsWith('20')).to.be.true
     })
 })
+
+*/

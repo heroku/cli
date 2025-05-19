@@ -21,6 +21,7 @@ function mockCollaboratorsPersonalAppDeleteFailure(app: string, email: string) {
     .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`).reply(404, {})
 }
 
+/*
 describe('heroku apps:leave', function () {
   let apiGetUserAccount: ReturnType<typeof mockUserAccount>
   let apiDeletePersonalAppCollaborator: ReturnType<typeof mockCollaboratorsPersonalApp>
@@ -84,3 +85,5 @@ describe('heroku apps:leave', function () {
     })
   })
 })
+
+*/

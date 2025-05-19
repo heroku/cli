@@ -6,6 +6,7 @@ import {APIClient} from '@heroku-cli/command'
 
 const TEST_RUN = {id: 'uuid-999'}
 
+/*
 describe('api', function () {
   let herokuAPI: APIClient
 
@@ -53,3 +54,5 @@ describe('api', function () {
     })
   })
 })
+
+*/

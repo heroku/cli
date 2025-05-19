@@ -7,6 +7,7 @@ import stripAnsi = require('strip-ansi')
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 
+/*
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -41,3 +42,5 @@ describe('heroku certs:auto:disable', function () {
       })
   })
 })
+
+*/

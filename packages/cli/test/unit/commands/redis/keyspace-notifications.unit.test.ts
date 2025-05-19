@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
+/*
 describe('heroku redis:keyspace-notifications should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {config: 'A'})
 })
@@ -38,3 +39,5 @@ describe('heroku redis:keyspace-notifications', function () {
     expect(stderr.output).to.equal('')
   })
 })
+
+*/

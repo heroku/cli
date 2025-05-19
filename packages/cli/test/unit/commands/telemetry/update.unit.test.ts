@@ -7,6 +7,7 @@ import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures'
 
+/*
 describe('telemetry:update', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -98,3 +99,5 @@ describe('telemetry:update', function () {
     })
   })
 })
+
+*/

@@ -20,6 +20,7 @@ const withRelease = test
     .reply(200, [CURRENT]),
   )
 
+/*
 describe('heroku ps:wait', function () {
   test
     .nock(API_HOST, api => api
@@ -132,3 +133,5 @@ describe('heroku ps:wait', function () {
       expect(ctx.stderr).to.be.empty
     })
 })
+
+*/

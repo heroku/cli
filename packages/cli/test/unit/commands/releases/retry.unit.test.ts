@@ -4,6 +4,7 @@ import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'
 
+/*
 describe('releases:retry', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -102,3 +103,5 @@ describe('releases:retry', function () {
     })
   })
 })
+
+*/

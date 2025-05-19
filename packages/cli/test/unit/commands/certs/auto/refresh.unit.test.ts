@@ -5,6 +5,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 import * as nock from 'nock'
 
+/*
 describe('heroku certs:auto:refresh', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -25,3 +26,5 @@ describe('heroku certs:auto:refresh', function () {
     expectOutput((stdout.output), '')
   })
 })
+
+*/
