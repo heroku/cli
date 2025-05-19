@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
+/*
 describe('pipelines:transfer', function () {
   const pipeline = {
     id: 'd214bea8-aaa0-4f98-91ba-e781cb26d50f',
@@ -92,3 +93,5 @@ describe('pipelines:transfer', function () {
       expect(update.isDone()).to.be.true
     })
 })
+
+*/

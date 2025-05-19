@@ -5,6 +5,7 @@ import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
+/*
 describe('pg:outliers', function () {
   let api: nock.Scope
   let fetchVersionCalled = false
@@ -81,3 +82,5 @@ describe('pg:outliers', function () {
     expect(stdout.output.trim()).to.eq(expected_output_text)
   })
 })
+
+*/

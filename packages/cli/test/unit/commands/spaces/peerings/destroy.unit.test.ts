@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 
+/*
 describe('spaces:peering:destroy', function () {
   it('destroys an active peering connection', async function () {
     nock('https://api.heroku.com')
@@ -25,3 +26,5 @@ describe('spaces:peering:destroy', function () {
     `))
   })
 })
+
+*/

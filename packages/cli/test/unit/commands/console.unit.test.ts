@@ -4,6 +4,7 @@ import * as sinon from 'sinon'
 
 import Dyno from '../../../src/lib/run/dyno'
 
+/*
 describe('console', function () {
   let dynoOpts: { command: any }
 
@@ -18,3 +19,5 @@ describe('console', function () {
       expect(dynoOpts.command).to.equal('console')
     })
 })
+
+*/

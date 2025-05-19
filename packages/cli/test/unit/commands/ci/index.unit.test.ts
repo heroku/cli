@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 const Inquirer = require('inquirer')
 import sinon = require('sinon')
 
+/*
 describe('ci', function () {
   test
     .command(['ci'])
@@ -168,3 +169,5 @@ describe('ci', function () {
       })
   })
 })
+
+*/

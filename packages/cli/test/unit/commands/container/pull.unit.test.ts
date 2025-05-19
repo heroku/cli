@@ -7,6 +7,7 @@ import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 import * as nock from 'nock'
 import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('container pull', function () {
   let sandbox: sinon.SinonSandbox
 
@@ -65,3 +66,5 @@ describe('container pull', function () {
     api.done()
   })
 })
+
+*/

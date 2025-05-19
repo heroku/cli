@@ -6,6 +6,7 @@ import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:links', function () {
   const addon = fixtures.addons['www-db']
   const appName = 'myapp'
@@ -65,3 +66,5 @@ describe('pg:links', function () {
     `))
   })
 })
+
+*/

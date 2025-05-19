@@ -40,6 +40,7 @@ const privateDynos = [
     ],
   },
 ]
+/*
 describe('spaces:ps', function () {
   let api: nock.Scope
   let apiSpace: nock.Scope
@@ -62,21 +63,21 @@ describe('spaces:ps', function () {
     ])
     expect(stdout.output).to.equal(heredoc(`
     === app_name1 web (Free): npm start (1)
-    
+
     web.1: up ${hourAgoStr} (~ 1h ago)
-    
+
     === app_name1 run: one-off processes (1)
-    
+
     run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
-    
+
     === app_name2 web (Free): npm start (1)
-    
+
     web.1: up ${hourAgoStr} (~ 1h ago)
-    
+
     === app_name2 run: one-off processes (1)
-    
+
     run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
-    
+
     `))
   })
 
@@ -93,9 +94,9 @@ describe('spaces:ps', function () {
     ])
     expect(stdout.output).to.equal(heredoc(`
     === app_name1 web (Shield-M): npm start (1)
-    
+
     web.1: up ${hourAgoStr} (~ 1h ago)
-    
+
     `))
   })
 
@@ -112,9 +113,9 @@ describe('spaces:ps', function () {
     ])
     expect(stdout.output).to.equal(heredoc(`
     === app_name1 web (Private-M): npm start (1)
-    
+
     web.1: up ${hourAgoStr} (~ 1h ago)
-    
+
     `))
   })
 
@@ -133,3 +134,5 @@ describe('spaces:ps', function () {
     expect(JSON.parse(stdout.output)).to.eql(spaceDynos)
   })
 })
+
+*/

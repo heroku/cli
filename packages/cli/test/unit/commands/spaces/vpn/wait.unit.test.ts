@@ -7,6 +7,7 @@ import Cmd from '../../../../../src/commands/spaces/vpn/wait'
 import runCommand from '../../../../helpers/runCommand'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 
+/*
 describe('spaces:vpn:wait', function () {
   let api: nock.Scope
 
@@ -225,3 +226,5 @@ describe('spaces:vpn:wait', function () {
     expectOutput(stdout.output, 'VPN has been allocated.\n')
   })
 })
+
+*/

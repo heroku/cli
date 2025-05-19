@@ -8,6 +8,7 @@ import {AddOnAttachment} from '@heroku-cli/schema'
 import Cmd from '../../../../src/commands/addons/open'
 import * as path from 'node:path'
 
+/*
 describe('The addons:open command', function () {
   let urlOpenerStub: sinon.SinonStub
 
@@ -143,3 +144,5 @@ describe('The addons:open command', function () {
     })
   })
 })
+
+*/

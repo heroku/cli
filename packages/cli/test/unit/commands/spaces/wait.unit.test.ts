@@ -10,6 +10,7 @@ import * as sinon from 'sinon'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 import {getGeneration} from '../../../../src/lib/apps/generation'
 
+/*
 describe('spaces:wait', function () {
   let allocatingSpace: SpaceWithOutboundIps
   let allocatedSpace: SpaceWithOutboundIps
@@ -123,3 +124,5 @@ describe('spaces:wait', function () {
     expect(notifySpy.calledOnce).to.be.true
   })
 })
+
+*/

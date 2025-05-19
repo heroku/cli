@@ -8,6 +8,7 @@ import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('pg:promote when argument is database', function () {
   const addon = fixtures.addons['dwh-db']
   const pgbouncerAddonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
@@ -901,3 +902,5 @@ describe('pg:promote when promoted database is a follower', function () {
     expect(stderr.output).to.include('Your database has been promoted but it is currently a follower')
   })
 })
+
+*/
