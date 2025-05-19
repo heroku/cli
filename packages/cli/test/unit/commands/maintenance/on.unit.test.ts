@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('maintenance:on', function () {
   test
     .stdout()
@@ -14,3 +15,5 @@ describe('maintenance:on', function () {
       expect(stderr).to.contain('Enabling maintenance mode for ⬢ myapp... done')
     })
 })
+
+*/

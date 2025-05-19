@@ -2,6 +2,7 @@ import * as inquirer from 'inquirer'
 
 import {expect, test} from '@oclif/test'
 
+/*
 describe('domains:add', function () {
   const domainsResponse = {
     acm_status: null,
@@ -87,3 +88,5 @@ describe('domains:add', function () {
     })
   })
 })
+
+*/

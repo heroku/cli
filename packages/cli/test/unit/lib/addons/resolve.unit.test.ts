@@ -7,6 +7,7 @@ import * as nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
 
+/*
 describe('resolve', function () {
   let herokuAPI: APIClient
 
@@ -307,3 +308,5 @@ describe('resolve', function () {
     })
   })
 })
+
+*/

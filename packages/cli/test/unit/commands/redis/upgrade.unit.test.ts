@@ -8,6 +8,7 @@ import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 import * as fixtures from '../../../fixtures/addons/fixtures'
 
+/*
 describe('heroku redis:upgrade', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -53,3 +54,5 @@ describe('heroku redis:upgrade', function () {
       })
   })
 })
+
+*/

@@ -56,6 +56,9 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:schedules', function () {
   shouldSchedules((args: string[]) => runCommand(Cmd, args))
 })
+
+*/

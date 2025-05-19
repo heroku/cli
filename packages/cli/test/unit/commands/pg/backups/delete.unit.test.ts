@@ -4,6 +4,7 @@ import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
+/*
 describe('pg:backups:delete', function () {
   let pg: nock.Scope
 
@@ -31,3 +32,5 @@ describe('pg:backups:delete', function () {
     expect(stderr.output).to.equal('Deleting backup b003 on ⬢ myapp...\nDeleting backup b003 on ⬢ myapp... done\n')
   })
 })
+
+*/

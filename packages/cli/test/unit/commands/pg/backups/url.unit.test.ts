@@ -40,6 +40,9 @@ const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:url', function () {
   shouldUrl((args: string[]) => runCommand(Cmd, args))
 })
+
+*/

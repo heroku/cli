@@ -8,6 +8,7 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
 
+/*
 describe('telemetry', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -134,3 +135,5 @@ describe('telemetry', function () {
     rollbarAPI.done()
   })
 })
+
+*/

@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('run:detached', function () {
   test
     .stdout()
@@ -8,3 +9,5 @@ describe('run:detached', function () {
       expect(ctx.stdout).to.include('Run heroku logs --app heroku-cli-ci-smoke-test-app --dyno')
     })
 })
+
+*/

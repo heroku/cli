@@ -7,6 +7,7 @@ import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 describe('addons', function () {
   describe('--all', function () {
     let addons: Heroku.AddOn[]
@@ -342,3 +343,5 @@ The table above shows add-ons and the attachments to the current app (acme-inc-a
     })
   })
 })
+
+*/

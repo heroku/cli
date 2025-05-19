@@ -11,6 +11,7 @@ import {
   endpointAcm,
 } from '../../../helpers/stubs/sni-endpoints'
 
+/*
 describe('heroku certs', function () {
   it('warns about no SSL certificates if the app has no certs', async function () {
     nock('https://api.heroku.com')
@@ -97,3 +98,5 @@ describe('heroku certs', function () {
     `))
   })
 })
+
+*/

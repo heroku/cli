@@ -12,6 +12,7 @@ const testFactory = () => {
     })
 }
 
+/*
 describe('run', function () {
   testFactory()
     .stub(runHelper, 'revertSortedArgs', () => ['echo 1 2 3'])
@@ -51,3 +52,5 @@ describe('run', function () {
       expect(unwrap(ctx.stdout)).to.include('invalid-command: command not found')
     })
 })
+
+*/

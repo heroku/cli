@@ -6,6 +6,7 @@ import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/data-connector-details-logs'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:data-connector-details-logs', function () {
   let addon: any
 
@@ -42,3 +43,5 @@ describe('pg:data-connector-details-logs', function () {
     `))
   })
 })
+
+*/

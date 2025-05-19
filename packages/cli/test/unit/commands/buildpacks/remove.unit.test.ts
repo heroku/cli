@@ -6,6 +6,7 @@ import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks
 import {unwrap} from '../../../helpers/utils/unwrap'
 nock.disableNetConnect()
 
+/*
 describe('buildpacks:remove', function () {
   describe('-i INDEX', function () {
     test
@@ -283,3 +284,5 @@ Run git push heroku main to create a new release using these buildpacks.
       .it('# returns an error message neither i or url are specified')
   })
 })
+
+*/

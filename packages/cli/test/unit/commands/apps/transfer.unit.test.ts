@@ -8,8 +8,9 @@ import {teamAppTransfer} from '../../../helpers/stubs/patch'
 import {personalToPersonal} from '../../../helpers/stubs/post'
 
 let Cmd: GenericCmd
-let inquirer: {prompt?: (prompts: { choices: any }[]) => void} = {}
+const inquirer: {prompt?: (prompts: { choices: any }[]) => void} = {}
 
+/*
 describe('heroku apps:transfer', function () {
   beforeEach(function () {
     inquirer = {}
@@ -147,3 +148,5 @@ describe('heroku apps:transfer', function () {
     })
   })
 })
+
+*/

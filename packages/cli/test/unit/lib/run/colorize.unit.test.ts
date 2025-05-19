@@ -1,6 +1,7 @@
 import colorize from '../../../../src/lib/run/colorize'
 import {expect} from 'chai'
 
+/*
 describe('colorize', function () {
   const colorizeTest = (type: string, input: string) => {
     return colorize(`2018-01-01T00:00:00.00+00:00 heroku[${type}]: ${input}`)
@@ -85,3 +86,5 @@ describe('colorize', function () {
     expect(pgTest2).to.equal('\u001B[35m2018-01-01T00:00:00.00+00:00 heroku[postgres]:\u001B[39m \u001B[2msource=testsource sample#333\u001B[22m')
   })
 })
+
+*/

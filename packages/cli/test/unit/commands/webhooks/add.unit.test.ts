@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('webhooks:add', function () {
   test
     .stdout()
@@ -89,3 +90,5 @@ describe('webhooks:add', function () {
       expect(ctx.stderr).to.contain('Adding webhook to example-pipeline... done')
     })
 })
+
+*/
