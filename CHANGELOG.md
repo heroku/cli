@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.7.1-beta.0](https://github.com/heroku/cli/compare/v10.7.0...v10.7.1-beta.0) (2025-05-19)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 # [10.7.0](https://github.com/heroku/cli/compare/v10.6.1...v10.7.0) (2025-05-08)
 
 
