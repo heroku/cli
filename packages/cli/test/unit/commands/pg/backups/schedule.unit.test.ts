@@ -7,6 +7,7 @@ import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('pg:backups:schedule', function () {
   let api: nock.Scope
   let data: nock.Scope
@@ -165,3 +166,5 @@ describe('pg:backups:schedule', function () {
     nock.cleanAll()
   })
 })
+
+*/

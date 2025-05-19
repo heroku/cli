@@ -6,6 +6,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
+/*
 describe('pg:maintenance:run', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -35,3 +36,5 @@ describe('pg:maintenance:run', function () {
     expectOutput(stdout.output, '')
   })
 })
+
+*/

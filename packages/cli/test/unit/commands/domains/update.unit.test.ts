@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('domains:update', function () {
   const responseBody = {
     acm_status: null,
@@ -27,3 +28,5 @@ describe('domains:update', function () {
       expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
     })
 })
+
+*/

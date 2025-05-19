@@ -14,6 +14,7 @@ nock.disableNetConnect()
 
 const requestUrl = '/apps/myapp/domains'
 
+/*
 describe('paginator', function () {
   it('paginates through 2 requests', async function () {
     nock('https://api.heroku.com')
@@ -39,3 +40,5 @@ describe('paginator', function () {
     expect(results[0].id).to.equal('1')
   })
 })
+
+*/

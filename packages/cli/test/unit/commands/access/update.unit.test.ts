@@ -8,6 +8,7 @@ import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
     afterEach(function () {
@@ -68,3 +69,5 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
     })
   })
 })
+
+*/

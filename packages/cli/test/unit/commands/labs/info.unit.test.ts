@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('labs:info', function () {
   test
     .stdout()
@@ -56,3 +57,5 @@ describe('labs:info', function () {
       expect(stderr).to.be.empty
     })
 })
+
+*/

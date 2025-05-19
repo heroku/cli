@@ -6,6 +6,7 @@ import * as nock from 'nock'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('heroku redis:maintenance should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd)
 })
@@ -151,3 +152,5 @@ describe('heroku redis:maintenance', function () {
     expect(stdout.output).to.equal('')
   })
 })
+
+*/

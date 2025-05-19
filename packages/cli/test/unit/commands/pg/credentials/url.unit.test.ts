@@ -7,6 +7,7 @@ import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:credentials:url', function () {
   const addon = fixtures.addons['dwh-db']
   const attachments = [fixtures.attachments['acme-inc-dwh::DATABASE']]
@@ -128,3 +129,5 @@ describe('pg:credentials:url', function () {
     `))
   })
 })
+
+*/

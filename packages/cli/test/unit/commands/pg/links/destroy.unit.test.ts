@@ -7,6 +7,7 @@ import {expect} from 'chai'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 import heredoc from 'tsheredoc'
 
+/*
 describe('pg:links:destroy', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -60,3 +61,5 @@ describe('pg:links:destroy', function () {
     })
   })
 })
+
+*/

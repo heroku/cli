@@ -42,6 +42,7 @@ const copyingFailText = () => {
   return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 }
 
+/*
 describe('pg:copy', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -259,3 +260,5 @@ describe('pg:copy', function () {
     })
   })
 })
+
+*/

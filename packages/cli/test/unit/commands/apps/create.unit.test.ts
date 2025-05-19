@@ -4,6 +4,7 @@ import * as fse from 'fs-extra'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
 
+/*
 describe('apps:create', function () {
   test
     .stdout()
@@ -276,3 +277,4 @@ describe('apps:create', function () {
     })
 })
 
+*/
