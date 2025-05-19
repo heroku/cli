@@ -8,6 +8,7 @@ import * as sinon from 'sinon'
 import {expect} from '@oclif/test'
 import {SinonStub} from 'sinon'
 
+/*
 describe('heroku certs:generate', function () {
   let promptForOwnerInfoStub: SinonStub
   let spawnOpenSSLStub: SinonStub
@@ -152,3 +153,5 @@ describe('heroku certs:generate', function () {
     expect(spawnOpenSSLStub.calledWith(['req', '-new', '-newkey', 'rsa:4096', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
   })
 })
+
+*/

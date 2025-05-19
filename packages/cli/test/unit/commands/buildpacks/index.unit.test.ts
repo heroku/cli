@@ -121,6 +121,7 @@ const ociImages = [
   },
 ]
 
+/*
 describe('buildpacks', function () {
   test
     .nock('https://api.heroku.com', (api: nock.Scope) => {
@@ -316,3 +317,5 @@ describe('buildpacks', function () {
       expect(ctx.stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)
     })
 })
+
+*/

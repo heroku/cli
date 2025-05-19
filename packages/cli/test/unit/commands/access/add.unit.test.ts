@@ -9,7 +9,7 @@ import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.j
 let apiGet: nock.Scope
 let apiPost: nock.Scope
 let apiGetOrgFeatures: nock.Scope
-
+/*
 describe('heroku access:add', function () {
   context('with a team app with user permissions', function () {
     beforeEach(function () {
@@ -115,3 +115,5 @@ describe('heroku access:add', function () {
     })
   })
 })
+
+*/

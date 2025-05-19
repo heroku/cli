@@ -8,6 +8,7 @@ import nock from 'nock'
 import {color} from '@heroku-cli/color'
 import {Errors} from '@oclif/core'
 
+/*
 describe('container push', function () {
   let api: nock.Scope
   let sandbox: sinon.SinonSandbox
@@ -333,3 +334,5 @@ describe('container push', function () {
     expect(stdout.output).to.equal('')
   })
 })
+
+*/

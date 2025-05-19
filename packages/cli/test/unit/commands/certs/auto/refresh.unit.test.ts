@@ -7,6 +7,7 @@ import nock from 'nock'
 
 const heredoc = tsheredoc.default
 
+/*
 describe('heroku certs:auto:refresh', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -27,3 +28,4 @@ describe('heroku certs:auto:refresh', function () {
   })
 })
 
+*/

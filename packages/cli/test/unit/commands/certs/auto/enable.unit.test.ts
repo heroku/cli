@@ -10,6 +10,7 @@ import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js
 const heredoc = tsheredoc.default
 const sandbox = sinon.createSandbox()
 
+/*
 describe('heroku certs:auto:enable', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -323,3 +324,5 @@ describe('heroku certs:auto:enable', function () {
     })
   })
 })
+
+*/

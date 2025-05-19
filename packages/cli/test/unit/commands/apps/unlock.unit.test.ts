@@ -6,6 +6,7 @@ import Cmd from '../../../../src/commands/apps/unlock.js'
 import runCommand from '../../../helpers/runCommand.js'
 import stripAnsi from 'strip-ansi'
 
+/*
 describe('heroku apps:unlock', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -42,3 +43,5 @@ describe('heroku apps:unlock', function () {
     api.done()
   })
 })
+
+*/

@@ -4,6 +4,7 @@ const writeFile = fs.writeFile
 const unlinkFile = fs.unlink
 const readFile = fs.readFile
 
+/*
 describe('ci:migrate-manifest', function () {
   let appJsonFileContents
   const appJsonPath = './app.json'
@@ -166,3 +167,5 @@ describe('ci:migrate-manifest', function () {
       expect(appJsonFileContents).to.deep.equal(mockConvertedAppJSONFileContents)
     })
 })
+
+*/

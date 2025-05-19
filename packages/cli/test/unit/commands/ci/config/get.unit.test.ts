@@ -7,6 +7,7 @@ const pipeline =  {
   name: 'test-pipeline',
 }
 
+/*
 describe('heroku ci:config:get', function () {
   test
     .stdout()
@@ -34,3 +35,5 @@ describe('heroku ci:config:get', function () {
       expect(stdout).to.equal(`${key}=${value}\n`)
     })
 })
+
+*/

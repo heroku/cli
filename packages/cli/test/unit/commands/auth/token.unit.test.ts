@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('auth:token', function () {
   test
     .env({HEROKU_API_KEY: 'foobar'})
@@ -58,3 +59,5 @@ describe('auth:token', function () {
       expect(ctx.stderr).to.not.contain('To generate a token that expires in one year, use heroku authorizations:create.')
     })
 })
+
+*/

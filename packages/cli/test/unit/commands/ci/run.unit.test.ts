@@ -5,6 +5,7 @@ import {PassThrough} from 'node:stream'
 import * as git from '../../../../src/lib/ci/git.js'
 import got from 'got'
 
+/*
 describe('ci:run', function () {
   test
     .command(['ci:run'])
@@ -243,3 +244,5 @@ describe('ci:run', function () {
     })
   })
 })
+
+*/

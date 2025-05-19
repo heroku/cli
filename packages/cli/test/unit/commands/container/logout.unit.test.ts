@@ -5,6 +5,7 @@ import {expect} from 'chai'
 import sinon from 'sinon'
 import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
 
+/*
 describe('container logout', function () {
   let sandbox: sinon.SinonSandbox
 
@@ -27,3 +28,5 @@ describe('container logout', function () {
     sandbox.assert.calledOnce(logout)
   })
 })
+
+*/

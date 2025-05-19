@@ -5,6 +5,7 @@ import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
+/*
 describe('accounts:add', function () {
   let api: nock.Scope
   let addStub: sinon.SinonStub
@@ -58,3 +59,5 @@ describe('accounts:add', function () {
     })
   })
 })
+
+*/

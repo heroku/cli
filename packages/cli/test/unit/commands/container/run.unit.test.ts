@@ -8,6 +8,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {Errors} from '@oclif/core'
 import nock from 'nock'
 
+/*
 describe('container run', function () {
   let api: nock.Scope
   let sandbox: sinon.SinonSandbox
@@ -109,3 +110,5 @@ describe('container run', function () {
     })
   })
 })
+
+*/

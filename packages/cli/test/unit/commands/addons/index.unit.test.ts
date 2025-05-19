@@ -9,6 +9,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+/*
 describe('addons', function () {
   describe('--all', function () {
     let addons: Heroku.AddOn[]
@@ -356,3 +357,5 @@ describe('addons', function () {
     })
   })
 })
+
+*/

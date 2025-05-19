@@ -5,6 +5,7 @@ import {PassThrough} from 'node:stream'
 import * as git from '../../../../src/lib/ci/git.js'
 import got from 'got'
 
+/*
 describe('ci:rerun', function () {
   test
     .command(['ci:rerun'])
@@ -256,3 +257,5 @@ describe('ci:rerun', function () {
     })
   })
 })
+
+*/

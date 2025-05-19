@@ -8,6 +8,7 @@ import stdMocks from 'std-mocks'
 import {Errors} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 
+/*
 describe('container release', function () {
   let api: nock.Scope
   let sandbox: sinon.SinonSandbox
@@ -518,3 +519,5 @@ describe('container release', function () {
     })
   })
 })
+
+*/

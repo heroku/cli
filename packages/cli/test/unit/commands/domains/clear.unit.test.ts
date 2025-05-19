@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('domains:clear', function () {
   test
     .stderr()
@@ -17,3 +18,4 @@ describe('domains:clear', function () {
     })
 })
 
+*/

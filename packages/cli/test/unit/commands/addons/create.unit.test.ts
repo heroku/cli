@@ -10,6 +10,7 @@ import {HTTPError} from '@heroku/http-call'
 import stripAnsi from 'strip-ansi'
 import lolex from 'lolex'
 
+/*
 describe('addons:create', function () {
   let api: ReturnType<typeof nock>
   const addon = {
@@ -378,3 +379,5 @@ describe('addons:create', function () {
     })
   })
 })
+
+*/

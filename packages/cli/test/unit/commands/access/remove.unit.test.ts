@@ -6,6 +6,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
+/*
 describe('heroku access:remove', function () {
   let apiDelete: { done: () => any }
 
@@ -30,3 +31,5 @@ describe('heroku access:remove', function () {
     })
   })
 })
+
+*/

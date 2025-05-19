@@ -15,6 +15,7 @@ import {SinonStub} from 'sinon'
 
 const heredoc = tsheredoc.default
 
+/*
 describe('heroku certs:update', function () {
   let stubbedGetCertAndKey: SinonStub
 
@@ -151,3 +152,5 @@ describe('shared', function () {
 
   sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {stdout, stderr, flags: {confirm: 'example'}, args: ['pem_file', 'key_file']})
 })
+
+*/

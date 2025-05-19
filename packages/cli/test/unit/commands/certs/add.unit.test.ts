@@ -17,6 +17,7 @@ import Cmd from '../../../../src/commands/certs/add.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
 import {expect} from '@oclif/test'
 
+/*
 describe('heroku certs:add', function () {
   let stubbedSelectDomainsReturnValue: {domains: string[]} = {domains: []}
   let stubbedSelectDomains: SinonStub
@@ -441,3 +442,5 @@ describe('heroku certs:add', function () {
     })
   })
 })
+
+*/

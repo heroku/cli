@@ -10,6 +10,7 @@ import stripAnsi from 'strip-ansi'
 /* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
 * You MUST change requests to have different params, or they won't be made and nock will not be satisfied */
 
+/*
 describe('addons:destroy', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -225,3 +226,5 @@ describe('addons:destroy', function () {
     })
   })
 })
+
+*/

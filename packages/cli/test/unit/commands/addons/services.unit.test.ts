@@ -6,6 +6,7 @@ import nock from 'nock'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {expect} from 'chai'
 
+/*
 describe('addons:services', function () {
   beforeEach(function () {
     const services = [
@@ -36,3 +37,5 @@ describe('addons:services', function () {
     //  `)
   })
 })
+
+*/

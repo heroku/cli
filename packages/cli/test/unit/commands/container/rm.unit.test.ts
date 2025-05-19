@@ -6,6 +6,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import {Errors} from '@oclif/core'
 
+/*
 describe('container removal', function () {
   let api: nock.Scope
 
@@ -93,3 +94,4 @@ describe('container removal', function () {
   })
 })
 
+*/

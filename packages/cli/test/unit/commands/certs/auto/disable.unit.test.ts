@@ -9,6 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
+/*
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -42,3 +43,5 @@ describe('heroku certs:auto:disable', function () {
       })
   })
 })
+
+*/

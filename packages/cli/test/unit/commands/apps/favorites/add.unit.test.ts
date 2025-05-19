@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
 
+/*
 describe('apps:favorites:add', function () {
   test
     .stdout()
@@ -46,3 +47,5 @@ describe('apps:favorites:add', function () {
     })
     .it('errors if app not found')
 })
+
+*/

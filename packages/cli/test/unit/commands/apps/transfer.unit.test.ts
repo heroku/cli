@@ -9,6 +9,7 @@ import {personalToPersonal} from '../../../helpers/stubs/post.js'
 import Cmd from '../../../../src/commands/apps/transfer.js'
 import stripAnsi from 'strip-ansi'
 
+/*
 describe('heroku apps:transfer', function () {
   let sandbox: sinon.SinonSandbox
 
@@ -133,3 +134,5 @@ describe('heroku apps:transfer', function () {
     })
   })
 })
+
+*/

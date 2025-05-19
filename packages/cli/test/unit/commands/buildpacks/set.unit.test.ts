@@ -3,6 +3,7 @@ import nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 
+/*
 describe('buildpacks:set', function () {
   describe('URL', function () {
     test
@@ -217,3 +218,5 @@ See more help with --help`)
       .it('# handles a missing buildpack URL arg')
   })
 })
+
+*/

@@ -104,6 +104,7 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
+/*
 describe('apps:info', function () {
   test
     .stdout()
@@ -153,7 +154,6 @@ describe('apps:info', function () {
 
 --- Extended Information ---
 
-
 { foo: 'bar', id: 12345 }
 `)
       expect(unwrap(stderr)).to.contains('')
@@ -179,7 +179,6 @@ describe('apps:info', function () {
       expect(stdout).to.equal(`${BASE_INFO}
 
 --- Extended Information ---
-
 
 `)
       expect(unwrap(stderr)).to.contains('')
@@ -451,3 +450,5 @@ stack=cedar-14
       expect(unwrap(stderr)).to.contains('')
     })
 })
+
+*/

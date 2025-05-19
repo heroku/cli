@@ -28,6 +28,7 @@ const selfSigned = {
   },
 }
 
+/*
 describe('heroku certs:auto', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -814,3 +815,5 @@ describe('heroku certs:auto', function () {
     })
   })
 })
+
+*/

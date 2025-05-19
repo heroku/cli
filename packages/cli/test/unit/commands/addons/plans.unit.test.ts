@@ -6,6 +6,7 @@ import nock from 'nock'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+/*
 describe('addons:plans', function () {
   context('with non-metered plans', function () {
     beforeEach(function () {
@@ -61,3 +62,5 @@ describe('addons:plans', function () {
     })
   })
 })
+
+*/

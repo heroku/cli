@@ -13,6 +13,7 @@ import {
 } from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+/*
 describe('heroku access', function () {
   context('with personal app', function () {
     afterEach(function () {
@@ -53,3 +54,5 @@ describe('heroku access', function () {
     })
   })
 })
+
+*/

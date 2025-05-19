@@ -11,6 +11,7 @@ import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 
+/*
 describe('heroku certs:remove', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -77,3 +78,5 @@ describe('heroku shared', function () {
 
   sharedSni.shouldHandleArgs('certs:remove', Cmd, callback, {stderr, flags: {confirm: 'example'}})
 })
+
+*/

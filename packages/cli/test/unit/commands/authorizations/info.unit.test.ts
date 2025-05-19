@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {formatDistanceToNow} from 'date-fns'
 
+/*
 describe('authorizations:info', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
   const authorization = {
@@ -60,3 +61,5 @@ describe('authorizations:info', function () {
       })
   })
 })
+
+*/

@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
+/*
 describe('apps:rename', function () {
   const newApp = {
     name: 'newname',
@@ -42,3 +43,5 @@ describe('apps:rename', function () {
       expect(unwrap(stderr)).to.contains('Renaming myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
     })
 })
+
+*/

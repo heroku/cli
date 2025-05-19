@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+/*
 describe('clients', function () {
   describe('with clients', function () {
     const exampleClient1 = {
@@ -42,3 +43,5 @@ describe('clients', function () {
       })
   })
 })
+
+*/

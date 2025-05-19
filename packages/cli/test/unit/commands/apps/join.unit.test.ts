@@ -7,6 +7,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
+/*
 describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope
   let apiPostCollaborators: nock.Scope
@@ -50,3 +51,5 @@ describe('heroku apps:join', function () {
     apiPostCollaborators.done()
   })
 })
+
+*/

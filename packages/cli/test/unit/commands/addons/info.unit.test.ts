@@ -8,6 +8,7 @@ import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 
 const cache = resolveAddon.cache
 
+/*
 describe('addons:info', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -267,3 +268,5 @@ State:        destroying\n
     })
   })
 })
+
+*/

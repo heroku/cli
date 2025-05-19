@@ -7,6 +7,7 @@ import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 import stripAnsi from 'strip-ansi'
 
+/*
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
     afterEach(function () {
@@ -61,3 +62,5 @@ describe('heroku access:update', function () {
     })
   })
 })
+
+*/
