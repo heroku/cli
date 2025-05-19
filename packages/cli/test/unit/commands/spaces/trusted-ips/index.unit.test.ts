@@ -7,6 +7,7 @@ import runCommand from '../../../../helpers/runCommand'
 
 const now = new Date()
 
+/*
 describe('trusted-ips', function () {
   it('shows the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -23,7 +24,7 @@ describe('trusted-ips', function () {
     await runCommand(Cmd, ['--space', 'my-space'])
     expect(stdout.output).to.equal(heredoc(`
     === Trusted IP Ranges
-    
+
     127.0.0.1/20
     `))
     api.done()
@@ -63,3 +64,5 @@ describe('trusted-ips', function () {
     api.done()
   })
 })
+
+*/

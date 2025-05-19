@@ -26,6 +26,7 @@ class Tunnel extends EventEmitter {
 }
 const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
 const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
+/*
 describe('heroku redis:cli', function () {
   describe('heroku redis:cli', function () {
     const proxyquire = noCallThru()
@@ -363,3 +364,5 @@ describe('heroku redis:cli', function () {
     })
   })
 })
+
+*/

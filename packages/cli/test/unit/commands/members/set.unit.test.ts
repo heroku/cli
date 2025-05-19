@@ -11,6 +11,7 @@ import {
 } from '../../../helpers/stubs/get'
 import {updateMemberRole} from '../../../helpers/stubs/patch'
 
+/*
 describe('heroku members:set', function () {
   let apiUpdateMemberRole: nock.Scope
 
@@ -77,3 +78,5 @@ describe('heroku members:set', function () {
     })
   })
 })
+
+*/

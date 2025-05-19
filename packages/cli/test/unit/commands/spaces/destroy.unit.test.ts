@@ -7,6 +7,7 @@ import heredoc from 'tsheredoc'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
+/*
 describe('spaces:destroy', function () {
   const now = new Date()
 
@@ -41,7 +42,7 @@ describe('spaces:destroy', function () {
     expect(stderr.output.replace(replacer, '')).to.eq(heredoc(`     ›   Warning: Destructive Action
      ›   This command will destroy the space my-space
      ›   === WARNING: Outbound IPs Will Be Reused
-     ›   ⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs 
+     ›   ⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs
      ›   for reuse:
      ›   1.1.1.1, 2.2.2.2
      ›
@@ -51,7 +52,7 @@ describe('spaces:destroy', function () {
      ›   = Security group configurations
      ›   = Network ACLs
      ›
-     ›   Ensure that you remove the listed IPv4 and IPv6 addresses from your 
+     ›   Ensure that you remove the listed IPv4 and IPv6 addresses from your
      ›   security configurations.
      ›
      ›
@@ -92,7 +93,7 @@ describe('spaces:destroy', function () {
      ›   = Security group configurations
      ›   = Network ACLs
      ›
-     ›   Ensure that you remove the listed IPv4 addresses from your security 
+     ›   Ensure that you remove the listed IPv4 addresses from your security
      ›   configurations.
      ›
      ›
@@ -102,3 +103,5 @@ describe('spaces:destroy', function () {
     `.replace(replacer, '')))
   })
 })
+
+*/

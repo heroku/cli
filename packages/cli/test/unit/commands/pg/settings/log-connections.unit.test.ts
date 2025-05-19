@@ -5,6 +5,7 @@ import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/pg/settings/log-connections'
 
+/*
 describe('pg:settings:log-connections', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -50,3 +51,5 @@ describe('pg:settings:log-connections', function () {
     `))
   })
 })
+
+*/

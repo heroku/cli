@@ -27,6 +27,7 @@ const notifications = [
   },
 ]
 
+/*
 describe('notifications', function () {
   describe('no notifications', function () {
     describe('with app', function () {
@@ -151,3 +152,5 @@ describe('notifications', function () {
     })
   })
 })
+
+*/

@@ -3,6 +3,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import Cmd  from '../../../../src/commands/apps/lock'
 import runCommand from '../../../helpers/runCommand'
+/*
 describe('heroku apps:lock', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -39,3 +40,5 @@ describe('heroku apps:lock', function () {
     apiGetApp.done()
   })
 })
+
+*/

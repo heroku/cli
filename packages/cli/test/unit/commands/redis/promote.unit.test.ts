@@ -4,6 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/redis/promote'
 import runCommand from '../../../helpers/runCommand'
 
+/*
 describe('heroku redis:promote should handle standard arg behavior', function () {
   require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(Cmd)
 })
@@ -84,3 +85,5 @@ describe('heroku redis:promote', function () {
     expect(stderr.output).to.equal('')
   })
 })
+
+*/

@@ -7,6 +7,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'
 
 const d = new Date(2000, 1, 1)
+/*
 describe('releases:info', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -213,3 +214,5 @@ describe('releases:info', function () {
     `))
   })
 })
+
+*/

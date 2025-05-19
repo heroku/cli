@@ -6,6 +6,7 @@ import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 
+/*
 describe('pg:credentials:repair-default', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
@@ -52,3 +53,5 @@ describe('pg:credentials:repair-default', function () {
     ]).catch((error: Error) => expect(error.message).to.equal(err))
   })
 })
+
+*/

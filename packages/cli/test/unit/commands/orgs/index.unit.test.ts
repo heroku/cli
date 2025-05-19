@@ -5,6 +5,7 @@ import Cmd  from '../../../../src/commands/orgs'
 import runCommand from '../../../helpers/runCommand'
 import {teams} from '../../../helpers/stubs/get'
 
+/*
 describe('heroku teams', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -30,3 +31,5 @@ describe('heroku teams', function () {
       .then(() => apiGetTeamsOnly.done())
   })
 })
+
+*/

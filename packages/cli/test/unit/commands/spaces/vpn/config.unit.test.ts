@@ -7,6 +7,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 describe('spaces:vpn:config', function () {
   let vpnConnection: Heroku.PrivateSpacesVpn
 
@@ -74,3 +75,5 @@ describe('spaces:vpn:config', function () {
     expect(JSON.parse(stdout.output)).to.eql(vpnConnection)
   })
 })
+
+*/

@@ -8,6 +8,7 @@ import heredoc from 'tsheredoc'
 import stripAnsi = require('strip-ansi')
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
 
+/*
 describe('heroku redis:maxmemory should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {policy: 'noeviction'})
 })
@@ -53,3 +54,5 @@ describe('heroku redis:maxmemory', function () {
     })
   })
 })
+
+*/

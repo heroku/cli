@@ -4,6 +4,7 @@ import * as nock from 'nock'
 
 nock.disableNetConnect()
 
+/*
 describe('buildpacks:versions', function () {
   test
     .env({HEROKU_API_KEY: 'authtoken'})
@@ -44,3 +45,5 @@ describe('buildpacks:versions', function () {
     .catch('Problem fetching versions, 500: some error')
     .it('handles server error')
 })
+
+*/

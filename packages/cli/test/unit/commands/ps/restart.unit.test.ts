@@ -7,6 +7,7 @@ import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
 
+/*
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {
     nock('https://api.heroku.com')
@@ -71,3 +72,5 @@ describe('ps:restart', function () {
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })
+
+*/

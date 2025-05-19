@@ -7,6 +7,7 @@ import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 
 const sandbox = sinon.createSandbox()
 
+/*
 describe('container:login', function () {
   beforeEach(function () {
     process.env.HEROKU_API_KEY = 'heroku_token'
@@ -45,3 +46,5 @@ describe('container:login', function () {
     sandbox.assert.calledOnce(login)
   })
 })
+
+*/

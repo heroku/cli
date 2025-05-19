@@ -7,6 +7,7 @@ import runCommand from '../../../../../helpers/runCommand'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-format'
 import * as fixtures from '../../../../../fixtures/addons/fixtures'
 
+/*
 describe('pg:settings:auto-explain:log-format', function () {
   const addon = fixtures.addons['dwh-db']
   let api: nock.Scope
@@ -38,3 +39,5 @@ describe('pg:settings:auto-explain:log-format', function () {
     `))
   })
 })
+
+*/

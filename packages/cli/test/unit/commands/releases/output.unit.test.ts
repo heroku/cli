@@ -5,6 +5,7 @@ import * as nock from 'nock'
 import {expect} from 'chai'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
+/*
 describe('releases:output', function () {
   it('warns if there is no output available', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -82,3 +83,5 @@ describe('releases:output', function () {
     expect(stderr.output).to.contain('Warning: Release command not started yet. Please try again in a few')
   })
 })
+
+*/

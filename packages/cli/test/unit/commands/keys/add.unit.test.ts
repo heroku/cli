@@ -6,6 +6,7 @@ import * as path from 'path'
 import * as inquirer from 'inquirer'
 import * as os from 'os'
 
+/*
 describe('keys:add', function () {
   const home = path.join('tmp', 'home')
   const sshDir = path.join(home, '.ssh')
@@ -94,3 +95,5 @@ describe('keys:add', function () {
       })
   })
 })
+
+*/

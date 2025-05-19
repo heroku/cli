@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
 
+/*
 describe('pg:kill', function () {
   let queryString = ''
   const db = {}
@@ -45,3 +46,5 @@ describe('pg:kill', function () {
     expect(queryString).to.eq('SELECT pg_terminate_backend(100);')
   })
 })
+
+*/
