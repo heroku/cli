@@ -3,7 +3,7 @@ name: Release Homebrew
 on:
   workflow_call:
   workflow_dispatch:
-    input:
+    inputs:
       notUsed:
         type: string
         description: Run this workflow from a "release-*" branch. This input does nothing.
