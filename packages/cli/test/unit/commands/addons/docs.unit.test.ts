@@ -5,10 +5,10 @@ import * as nock from 'nock'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
 
-const {default: Cmd} =  proxyquire(
-  '../../../../src/commands/addons/docs',
-  {open: sinon.stub()},
-)
+// const {default: Cmd} =  proxyquire(
+//   '../../../../src/commands/addons/docs',
+//   {open: sinon.stub()},
+// )
 
 /*
 describe('addons:docs', function () {
