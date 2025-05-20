@@ -16,9 +16,9 @@ const fetcher =  {
   getAddon: () => Promise.resolve(all[0]),
 }
 
-const {default: Cmd} = proxyquire('../../../../src/commands/pg/wait', {
-  '../../lib/pg/fetcher': fetcher,
-})
+// const {default: Cmd} = proxyquire('../../../../src/commands/pg/wait', {
+//   '../../lib/pg/fetcher': fetcher,
+// })
 
 /*
 describe('pg:wait', function () {

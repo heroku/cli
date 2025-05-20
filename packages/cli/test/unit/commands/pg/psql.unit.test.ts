@@ -16,9 +16,9 @@ const db = {
 const fetcher = {
   database: () => db,
 }
-const {default: Cmd} = proxyquire('../../../../src/commands/pg/psql', {
-  '../../lib/pg/fetcher': fetcher,
-})
+// const {default: Cmd} = proxyquire('../../../../src/commands/pg/psql', {
+//   '../../lib/pg/fetcher': fetcher,
+// })
 /*
 describe('psql', function () {
   let stub: sinon.SinonStub

@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as fixtures from '../../../fixtures/spaces/fixtures'
 import {expect} from 'chai'
-import type {SpaceTopology} from '../../../../src/commands/spaces/topology'
+// import type {SpaceTopology} from '../../../../src/commands/spaces/topology'
 import {App} from '@heroku-cli/schema'
 
 /*
