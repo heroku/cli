@@ -31,22 +31,22 @@ export default class Regions extends Command {
       return (a.name ?? '').localeCompare(b.name ?? '')
     })
 
-    if (flags.json) {
-      hux.styledJSON(regions)
-    } else {
-      hux.table(regions, {
-        name: {
-          header: 'ID',
-          get: ({name}: any) => color.green(name),
-        },
-        description: {
-          header: 'Location',
-        },
-        private_capable: {
-          header: 'Runtime',
-          get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
-        },
-      })
-    }
+    // if (flags.json) {
+    //   hux.styledJSON(regions)
+    // } else {
+    //   hux.table(regions, {
+    //     name: {
+    //       header: 'ID',
+    //       get: ({name}: any) => color.green(name),
+    //     },
+    //     description: {
+    //       header: 'Location',
+    //     },
+    //     private_capable: {
+    //       header: 'Runtime',
+    //       get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
+    //     },
+    //   })
+    // }
   }
 }
