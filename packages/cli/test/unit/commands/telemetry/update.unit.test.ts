@@ -1,5 +1,5 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/update'
+// import Cmd from '../../../../src/commands/telemetry/update'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'

@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions'
@@ -65,3 +66,4 @@ The stage of the app will be guessed based on its name if not specified.`
     ux.action.stop()
   }
 }
+*/

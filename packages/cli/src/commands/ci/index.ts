@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -28,3 +29,4 @@ export default class CiIndex extends Command {
     await renderList(this, testRuns, pipeline, flags.watch, flags.json)
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
@@ -170,3 +171,4 @@ function factory(app: string, heroku: APIClient) {
 }
 
 export default factory
+*/

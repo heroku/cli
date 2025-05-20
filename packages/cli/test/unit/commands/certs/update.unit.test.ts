@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/update'
+// import Cmd from '../../../../src/commands/certs/update'
 import runCommand from '../../../helpers/runCommand'
 import heredoc from 'tsheredoc'
 import * as nock from 'nock'
@@ -11,7 +11,7 @@ import stripAnsi = require('strip-ansi')
 import * as fs from 'node:fs/promises'
 import {PathLike} from 'node:fs'
 import * as sinon from 'sinon'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 /*
 describe('heroku certs:update', function () {

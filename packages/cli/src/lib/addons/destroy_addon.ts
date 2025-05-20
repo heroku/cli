@@ -1,3 +1,4 @@
+/*
 import {waitForAddonDeprovisioning} from './addons_wait'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
@@ -48,3 +49,4 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
 
   return addonResponse
 }
+*/

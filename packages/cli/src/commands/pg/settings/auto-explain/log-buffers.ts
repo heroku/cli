@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {BooleanAsString, PGSettingsCommand, booleanConverter} from '../../../../lib/pg/setter'
@@ -30,3 +31,4 @@ export default class LogBuffersWaits extends PGSettingsCommand {
     return 'Buffer statistics have been disabled for auto_explain.'
   }
 }
+*/

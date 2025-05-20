@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/capture'
+// import Cmd from '../../../../../src/commands/pg/backups/capture'
 import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'

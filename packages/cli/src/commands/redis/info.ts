@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import redisApi from '../../lib/redis/api'
@@ -23,3 +24,4 @@ export default class Info extends Command {
     return redisApi(app, database, json, this.heroku).info()
   }
 }
+*/

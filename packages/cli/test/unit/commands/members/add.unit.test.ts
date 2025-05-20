@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import Cmd  from '../../../../src/commands/members/add'
+// import Cmd from '../../../../src/commands/members/add'
 import runCommand from '../../../helpers/runCommand'
 import {sendInvite, updateMemberRole} from '../../../helpers/stubs/put'
 import {

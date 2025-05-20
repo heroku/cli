@@ -1,11 +1,11 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/schedule'
+// import Cmd from '../../../../../src/commands/pg/backups/schedule'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 /*
 describe('pg:backups:schedule', function () {

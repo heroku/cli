@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -43,3 +44,4 @@ export default class Add extends Command {
     return Array.isArray(ruleset.rules) && !ruleset.rules.some(rs => rs.source === source)
   }
 }
+*/
