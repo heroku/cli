@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types'
-import Cmd  from '../../../../src/commands/pg/diagnose'
+// import Cmd from '../../../../src/commands/pg/diagnose'
 import runCommand from '../../../helpers/runCommand'
 
 /*

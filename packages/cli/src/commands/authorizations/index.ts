@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -37,3 +38,4 @@ export default class AuthorizationsIndex extends Command {
     }
   }
 }
+*/

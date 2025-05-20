@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {list, set} from '../../lib/accounts/accounts'
@@ -22,3 +23,4 @@ export default class Set extends Command {
     set(name)
   }
 }
+*/

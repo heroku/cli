@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -18,3 +19,4 @@ export default class MaintenanceIndex extends Command {
     ux.log(app.maintenance ? 'on' : 'off')
   }
 }
+*/

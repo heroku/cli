@@ -1,3 +1,4 @@
+/*
 
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -65,3 +66,4 @@ export default class CiReRun extends Command {
     await displayAndExit(pipeline, testRun.number!, this)
   }
 }
+*/

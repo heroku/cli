@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
@@ -25,3 +26,4 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
 export const printGroupsJSON = function (teams: Heroku.Team[]) {
   ux.log(JSON.stringify(teams, null, 2))
 }
+*/

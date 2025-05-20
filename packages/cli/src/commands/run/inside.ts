@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
@@ -88,3 +89,4 @@ export default class RunInside extends Command {
     }
   }
 }
+*/

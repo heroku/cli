@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -99,3 +100,4 @@ export default class Copy extends Command {
       await pgbackups.wait('Copying', copy.uuid, interval, verbose, attachment.addon.app?.name || app)
     }
 }
+*/

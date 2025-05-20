@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -52,3 +53,4 @@ export default class Index extends Command {
     }
   }
 }
+*/

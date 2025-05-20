@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import {PGSettingsCommand} from '../../../../lib/pg/setter'
 import {Setting, SettingKey} from '../../../../lib/pg/types'
@@ -25,3 +26,4 @@ export default class LogFormat extends PGSettingsCommand {
     return val
   }
 }
+*/

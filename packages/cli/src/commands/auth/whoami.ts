@@ -22,3 +22,4 @@ export default class AuthWhoami extends Command {
     this.error('not logged in', {exit: 100})
   }
 }
+

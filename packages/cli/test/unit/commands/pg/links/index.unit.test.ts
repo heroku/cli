@@ -1,6 +1,6 @@
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/pg/links/index'
+// import Cmd from '../../../../../src/commands/pg/links/index'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput'

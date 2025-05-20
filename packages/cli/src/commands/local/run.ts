@@ -1,3 +1,4 @@
+/*
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, Flags} from '@oclif/core'
 import color from '@heroku-cli/color'
@@ -49,3 +50,4 @@ export default class Run extends Command {
     await foreman(execArgv)
   }
 }
+*/

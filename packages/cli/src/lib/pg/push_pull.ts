@@ -1,3 +1,4 @@
+/*
 import {ConnectionDetails} from './util'
 import {exec as psqlExec} from './psql'
 import {ux} from '@oclif/core'
@@ -123,3 +124,4 @@ export const verifyExtensionsMatch = async function (source: ConnectionDetails, 
     `)
   }
 }
+*/

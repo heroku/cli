@@ -1,3 +1,4 @@
+/*
 import {Command} from '@oclif/core'
 
 import {fork as foreman} from '../../lib/local/fork-foreman'
@@ -12,3 +13,4 @@ export default class Version extends Command {
     await foreman(execArgv)
   }
 }
+*/

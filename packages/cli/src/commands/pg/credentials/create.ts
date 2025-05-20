@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -42,3 +43,4 @@ export default class Create extends Command {
       Please define the new grants for the credential within Postgres: ${color.cyan.bold(psqlCmd)}.`))
     }
 }
+*/
