@@ -4,6 +4,7 @@ import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export default class Services extends Command {
   static topic = 'addons';
   static description = 'list all available add-on services';
@@ -32,3 +33,4 @@ export default class Services extends Command {
     }
   }
 }
+*/

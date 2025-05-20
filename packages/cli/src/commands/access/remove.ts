@@ -4,6 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export default class AccessRemove extends Command {
   static description = 'remove users from a team app'
   static example = '$ heroku access:remove user@email.com --app APP'
@@ -25,3 +26,4 @@ export default class AccessRemove extends Command {
     ux.action.stop()
   }
 }
+*/

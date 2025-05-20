@@ -8,6 +8,7 @@ import AppsLock from './lock.js'
 import {appTransfer} from '../../lib/apps/app-transfer.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
 
+/*
 export default class AppsTransfer extends Command {
   static topic = 'apps';
   static description = 'transfer applications to another user or team';
@@ -88,3 +89,4 @@ $ heroku apps:transfer --bulk acme-widgets
     }
   }
 }
+*/

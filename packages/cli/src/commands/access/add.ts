@@ -3,6 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {isTeamApp, getOwner} from '../../lib/teamUtils.js'
+
+/*
 export default class AccessAdd extends Command {
   static description = 'add new users to your app'
   static flags = {
@@ -50,5 +52,7 @@ export default class AccessAdd extends Command {
       await this.heroku.post<Heroku.Collaborator[]>(`/apps/${appName}/collaborators`, {body: {user: email}})
       ux.action.stop()
     }
+    }
   }
-}
+*/
+

@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
+/*
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
 
@@ -32,3 +33,4 @@ export default class ClientsIndex extends Command {
     }
   }
 }
+*/

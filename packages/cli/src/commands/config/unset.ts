@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
+/*
 export class ConfigUnset extends Command {
   static aliases = [
     'config:remove',
@@ -51,3 +52,4 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
     ux.action.stop('done, ' + color.release(`v${release.version}`))
   }
 }
+*/

@@ -3,6 +3,7 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
+/*
 export default class AuthorizationsRevoke extends Command {
   static description = 'revoke OAuth authorization'
 
@@ -26,3 +27,4 @@ export default class AuthorizationsRevoke extends Command {
     ux.action.stop(`done, revoked authorization from ${color.cyan(auth.description)}`)
   }
 }
+*/

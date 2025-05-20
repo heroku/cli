@@ -1,10 +1,10 @@
-
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {quote} from '../../../lib/config/quote.js'
 import {getPipelineConfigVars} from '../../../lib/api.js'
 import {getPipeline} from '../../../lib/ci/pipelines.js'
 
+/*
 export default class CiConfigGet extends Command {
   static description = 'get a CI config var'
   static topic = 'ci'
@@ -37,3 +37,4 @@ export default class CiConfigGet extends Command {
     }
   }
 }
+*/

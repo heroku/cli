@@ -12,6 +12,7 @@ import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
 
 const heredoc = tsheredoc.default
 
+/*
 export default class Add extends Command {
   static topic = 'certs'
   static strict = true
@@ -126,3 +127,4 @@ function matchDomains(certDomains: string[], appDomains: string[]) {
 
   return certDomains.filter(domain => appDomains.includes(domain))
 }
+*/

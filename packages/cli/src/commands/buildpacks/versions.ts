@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -57,3 +58,4 @@ export default class Versions extends Command {
     }, result as any)
   }
 }
+*/

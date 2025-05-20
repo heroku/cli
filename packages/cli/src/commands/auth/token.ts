@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {formatRelative}  from 'date-fns'
 
+/*
 export default class AuthToken extends Command {
   static description = `outputs current CLI authentication token.
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
@@ -27,3 +28,4 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
     ux.stdout(this.heroku.auth)
   }
 }
+*/

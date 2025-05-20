@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import AccountsModule from '../../lib/accounts/accounts.js'
@@ -26,3 +27,4 @@ export default class Remove extends Command {
     AccountsModule.remove(name)
   }
 }
+*/

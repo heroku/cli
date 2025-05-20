@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {DockerHelper} from '../../lib/container/docker_helper.js'
@@ -62,3 +63,4 @@ export default class Login extends Command {
     return this.dockerHelper.cmd('docker', args)
   }
 }
+*/

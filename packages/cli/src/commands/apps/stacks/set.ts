@@ -7,7 +7,7 @@ import * as Heroku from '@heroku-cli/schema'
 function map(stack: string): string {
   return stack === 'cedar-10' ? 'cedar' : stack
 }
-
+/*
 export default class Set extends Command {
   static description = 'set the stack of an app'
 
@@ -46,3 +46,4 @@ Run git push heroku main to trigger a new build on myapp.`
     ux.action.stop()
   }
 }
+*/

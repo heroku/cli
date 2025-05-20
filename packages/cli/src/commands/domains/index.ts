@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
@@ -191,3 +192,4 @@ www.example.com  CNAME            www.example.herokudns.com
     }
   }
 }
+*/

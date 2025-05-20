@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export default class Unlock extends Command {
     static topic = 'apps'
     static description = 'unlock an app so any team member can join'
@@ -30,3 +31,4 @@ export default class Unlock extends Command {
       ux.action.stop()
     }
 }
+*/

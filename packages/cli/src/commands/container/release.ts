@@ -17,6 +17,7 @@ type ImageResponse = {
   }
 }
 
+/*
 export default class ContainerRelease extends Command {
   static topic = 'container'
   static description = 'Releases previously pushed Docker images to your Heroku app'
@@ -113,3 +114,4 @@ export default class ContainerRelease extends Command {
     }
   }
 }
+*/

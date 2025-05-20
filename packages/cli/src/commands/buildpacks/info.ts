@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -40,3 +41,4 @@ export default class Info extends Command {
     }, result as any)
   }
 }
+*/

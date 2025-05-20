@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
+/*
 export default class ClientsRotate extends Command {
   static description = 'rotate OAuth client secret'
 
@@ -38,3 +39,4 @@ export default class ClientsRotate extends Command {
     }
   }
 }
+*/

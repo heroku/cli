@@ -5,6 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {resolveAddon} from '../../lib/addons/resolve.js'
 import open from 'open'
 
+/*
 export default class Docs extends Command {
     static topic = 'addons'
     static description = "open an add-on's Dev Center documentation in your browser"
@@ -38,3 +39,4 @@ export default class Docs extends Command {
       }
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {getPipeline} from '../../../lib/ci/pipelines.js'
@@ -60,3 +61,4 @@ export default class CiConfigSet extends Command {
     )
   }
 }
+*/

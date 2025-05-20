@@ -6,6 +6,7 @@ import ConfirmCommand from '../../lib/confirmCommand.js'
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
+/*
 export default class Remove extends Command {
     static topic = 'certs';
     static description = 'remove an SSL certificate from an app';
@@ -37,3 +38,4 @@ export default class Remove extends Command {
       ux.action.stop()
     }
 }
+*/

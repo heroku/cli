@@ -13,6 +13,7 @@ const lastRelease = async (client: APIClient, app: string) => {
   return releases[0]
 }
 
+/*
 export default class Set extends Command {
   static description = 'set one or more config vars'
   static strict = false
@@ -69,3 +70,5 @@ RACK_ENV:  staging`,
     await this.config.runHook('recache', {type: 'config', app: flags.app})
   }
 }
+
+*/

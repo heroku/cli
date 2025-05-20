@@ -7,6 +7,7 @@ import push from '../git/push.js'
 import {OciImage} from '../../lib/types/fir.js'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export type BuildpackResponse = {
   buildpack: {
     url: string;
@@ -221,3 +222,4 @@ export class BuildpackCommand {
     }
   }
 }
+*/

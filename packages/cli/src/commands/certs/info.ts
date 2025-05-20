@@ -6,6 +6,7 @@ import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 import {Domain} from '../../lib/types/domain.js'
 
+/*
 export default class Info extends Command {
   static topic = 'certs';
   static description = 'show certificate information for an SSL certificate';
@@ -43,3 +44,4 @@ export default class Info extends Command {
     displayCertificateDetails(cert)
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -33,3 +34,4 @@ export default class CiInfo extends Command {
     await displayTestRunInfo(this, testRun, testNodes, flags.node)
   }
 }
+*/

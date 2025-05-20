@@ -14,7 +14,7 @@ import * as Heroku from '@heroku-cli/schema'
 import Git from '../../lib/git/git.js'
 
 const git = new Git()
-
+/*
 function createText(name: string, space: string) {
   let text = `Creating ${name ? color.app(name) : 'app'}`
   if (space) {
@@ -238,3 +238,4 @@ $ heroku apps:create --region eu`,
     await runFromFlags(context, this.heroku, this.config)
   }
 }
+*/

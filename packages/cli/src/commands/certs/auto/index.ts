@@ -12,6 +12,7 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
+/*
 function humanize(value: string | null) {
   if (!value) {
     return color.yellow('Waiting')
@@ -119,3 +120,4 @@ export default class Index extends Command {
     }
   }
 }
+*/

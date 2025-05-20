@@ -4,6 +4,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {SniEndpoint} from '../types/sni_endpoint.js'
 
+/*
 export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, message = 'Certificate details:') {
   const now = new Date()
   const autoRenewsAt = new Date(sniEndpoint.ssl_cert.expires_at)
@@ -37,3 +38,4 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
     ux.stdout('SSL certificate is not trusted.')
   }
 }
+*/

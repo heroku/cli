@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -37,3 +38,4 @@ export default class Add extends Command {
     AccountsModule.add(name, email, token)
   }
 }
+*/

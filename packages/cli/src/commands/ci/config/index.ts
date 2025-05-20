@@ -1,3 +1,4 @@
+/*
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -45,3 +46,4 @@ export default class CiConfig extends Command {
     }
   }
 }
+*/

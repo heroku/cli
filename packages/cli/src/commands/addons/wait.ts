@@ -6,6 +6,7 @@ import {resolveAddon} from '../../lib/addons/resolve.js'
 import {waitForAddonProvisioning, waitForAddonDeprovisioning} from '../../lib/addons/addons_wait.js'
 import notify from '../../lib/notify.js'
 
+/*
 export default class Wait extends Command {
   static topic = 'addons'
   static description = 'show provisioning status of the add-ons on the app'
@@ -73,3 +74,4 @@ export default class Wait extends Command {
     }
   }
 }
+*/

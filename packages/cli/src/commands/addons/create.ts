@@ -6,6 +6,7 @@ import createAddon from '../../lib/addons/create_addon.js'
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
+/*
 function parseConfig(args: string[]) {
   const config: Record<string, string | boolean> = {}
   while (args.length > 0) {
@@ -104,3 +105,4 @@ export default class Create extends Command {
     ux.stdout(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
   }
 }
+*/

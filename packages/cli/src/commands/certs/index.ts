@@ -4,6 +4,7 @@ import {ux} from '@oclif/core'
 import displayTable from '../../lib/certs/display_table.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
+/*
 export default class Index extends Command {
   static topic = 'certs';
   static description = 'list SSL certificates for an app';
@@ -24,3 +25,4 @@ export default class Index extends Command {
     }
   }
 }
+*/

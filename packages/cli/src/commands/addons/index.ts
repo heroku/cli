@@ -9,7 +9,7 @@ import _ from 'lodash'
 import printf from 'printf'
 
 const topic = 'addons'
-
+/*
 async function addonGetter(api: APIClient, app?: string) {
   let attachmentsResponse: ReturnType<typeof api.get<Heroku.AddOnAttachment>> | null = null
   let addonsResponse: ReturnType<typeof api.get<Heroku.AddOn[]>>
@@ -265,3 +265,4 @@ export default class Addons extends Command {
     }
   }
 }
+*/

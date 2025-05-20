@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export default class AppsJoin extends Command {
     static topic = 'apps';
     static description = 'add yourself to a team app';
@@ -23,3 +24,4 @@ export default class AppsJoin extends Command {
       ux.action.stop()
     }
 }
+*/

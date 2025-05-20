@@ -7,6 +7,7 @@ import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
 
+/*
 export default class CiReRun extends Command {
   static description = 'rerun tests against current directory'
 
@@ -64,3 +65,4 @@ export default class CiReRun extends Command {
     await displayAndExit(pipeline, testRun.number!, this)
   }
 }
+*/

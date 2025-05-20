@@ -8,6 +8,7 @@ import destroyAddon from '../../lib/addons/destroy_addon.js'
 import {resolveAddon} from '../../lib/addons/resolve.js'
 import _ from 'lodash'
 
+/*
 export default class Destroy extends Command {
   static topic = 'addons'
   static description = 'permanently destroy an add-on resource'
@@ -63,3 +64,4 @@ export default class Destroy extends Command {
     }
   }
 }
+*/

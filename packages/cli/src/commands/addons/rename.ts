@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -19,3 +20,4 @@ export default class Rename extends Command {
     ux.stdout(`${color.addon(args.addon_name)} successfully renamed to ${color.addon(args.new_name)}.`)
   }
 }
+*/

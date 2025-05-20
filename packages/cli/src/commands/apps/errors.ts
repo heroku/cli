@@ -9,7 +9,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {AppErrors} from '../../lib/types/app_errors.js'
 
 type ErrorSummary = Record<string, number>
-
+/*
 const colorize = (level: string, s: string) => {
   switch (level) {
   case 'critical':
@@ -141,3 +141,5 @@ export default class Errors extends Command {
     }
   }
 }
+
+*/

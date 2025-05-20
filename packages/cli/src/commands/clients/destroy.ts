@@ -3,6 +3,7 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
+/*
 export default class ClientsDestroy extends Command {
   static description = 'delete client by ID'
 
@@ -22,3 +23,4 @@ export default class ClientsDestroy extends Command {
     ux.action.stop()
   }
 }
+*/

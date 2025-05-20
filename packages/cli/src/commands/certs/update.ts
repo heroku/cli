@@ -10,6 +10,7 @@ import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default
 
+/*
 export default class Update extends Command {
   static topic = 'certs';
   static description = heredoc`
@@ -63,3 +64,4 @@ export default class Update extends Command {
     displayCertificateDetails(sniEndpoint, 'Updated certificate details:')
   }
 }
+*/

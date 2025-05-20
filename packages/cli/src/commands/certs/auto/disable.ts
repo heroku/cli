@@ -6,6 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
+/*
 export default class Disable extends Command {
   static topic = 'certs';
   static description = 'disable ACM for an app';
@@ -35,3 +36,4 @@ export default class Disable extends Command {
     ux.action.stop()
   }
 }
+*/

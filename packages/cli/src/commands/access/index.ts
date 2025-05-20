@@ -7,6 +7,7 @@ import * as Heroku from '@heroku-cli/schema'
 import _ from 'lodash'
 import {isTeamApp, getOwner} from '../../lib/teamUtils.js'
 
+/*
 type MemberData = {
   email: string,
   role: string,
@@ -108,3 +109,4 @@ export default class AccessIndex extends Command {
       printAccess(app, collaborators)
   }
 }
+*/

@@ -7,7 +7,7 @@ import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/uti
 import {resolveAddon} from '../../lib/addons/resolve.js'
 
 const topic = 'addons'
-
+/*
 export default class Info extends Command {
   static topic = topic
   static description = 'show detailed add-on resource and attachment information'
@@ -46,3 +46,4 @@ export default class Info extends Command {
     })
   }
 }
+*/

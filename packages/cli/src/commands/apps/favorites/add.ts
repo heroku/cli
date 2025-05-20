@@ -3,6 +3,7 @@ import {ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import {Favorites} from '../../../lib/types/favorites.js'
 
+/*
 export default class Add extends Command {
   static description = 'favorites an app'
   static topic = 'apps'
@@ -42,3 +43,5 @@ export default class Add extends Command {
     ux.action.stop()
   }
 }
+
+*/

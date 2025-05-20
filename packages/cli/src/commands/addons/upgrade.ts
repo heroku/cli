@@ -8,6 +8,7 @@ import {HTTP} from '@heroku/http-call'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types.js'
 
+/*
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
   static topic = 'addons'
@@ -157,3 +158,4 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     }
   }
 }
+*/

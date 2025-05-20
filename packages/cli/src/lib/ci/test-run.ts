@@ -13,7 +13,7 @@ import debug from 'debug'
 import ansiEscapes from 'ansi-escapes'
 const ciDebug = debug('ci')
 const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
-
+/*
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
 }
@@ -283,3 +283,4 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     processExitCode(command, testNode)
   }
 }
+*/

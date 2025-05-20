@@ -4,6 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
+/*
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
 
@@ -33,3 +34,4 @@ export default class AuthorizationsIndex extends Command {
     }
   }
 }
+*/

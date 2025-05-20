@@ -20,7 +20,7 @@ const getUpdates = (flags: any) => {
 
   return updates
 }
-
+/*
 export default class ClientsUpdate extends Command {
   static description = 'update OAuth client'
 
@@ -53,3 +53,4 @@ export default class ClientsUpdate extends Command {
     ux.action.stop()
   }
 }
+*/

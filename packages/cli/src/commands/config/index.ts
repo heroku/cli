@@ -6,6 +6,7 @@ import {hux} from '@heroku/heroku-cli-util'
 
 import {quote} from '../../lib/config/quote.js'
 
+/*
 export class ConfigIndex extends Command {
   static description = 'display the config vars for an app'
 
@@ -33,3 +34,4 @@ export class ConfigIndex extends Command {
     }
   }
 }
+*/

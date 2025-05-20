@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
+/*
 export default class AppsLock extends Command {
     static topic = 'apps'
     static description = 'prevent team members from joining an app'
@@ -31,3 +32,4 @@ export default class AppsLock extends Command {
       ux.action.stop()
     }
 }
+*/
