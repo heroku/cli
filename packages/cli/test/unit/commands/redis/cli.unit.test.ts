@@ -1,7 +1,7 @@
 import {stdout} from 'stdout-stderr'
 import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 import {SinonStub} from 'sinon'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 import * as nock from 'nock'
 import * as sinon from 'sinon'

@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter'
@@ -30,3 +31,4 @@ export default class LogTriggers extends PGSettingsCommand {
     return 'Trigger execution statistics have been disabled for auto-explain.'
   }
 }
+*/

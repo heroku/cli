@@ -5,7 +5,7 @@ import * as nock from 'nock'
 import * as sinon from 'sinon'
 import * as fs from 'node:fs/promises'
 import {AddOnAttachment} from '@heroku-cli/schema'
-import Cmd from '../../../../src/commands/addons/open'
+// import Cmd from '../../../../src/commands/addons/open'
 import * as path from 'node:path'
 
 /*

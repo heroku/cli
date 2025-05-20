@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import Cmd  from '../../../../src/commands/access/index'
+// import Cmd from '../../../../src/commands/access/index'
 import runCommand from '../../../helpers/runCommand'
 import {
   personalApp,

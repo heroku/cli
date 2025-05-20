@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 

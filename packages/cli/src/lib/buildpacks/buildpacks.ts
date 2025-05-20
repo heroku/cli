@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
@@ -215,3 +216,4 @@ export class BuildpackCommand {
     }
   }
 }
+*/

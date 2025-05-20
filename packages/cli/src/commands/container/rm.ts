@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
@@ -42,3 +43,4 @@ export default class Rm extends Command {
     }
   }
 }
+*/

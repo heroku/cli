@@ -7,12 +7,12 @@ import {PassThrough} from 'node:stream'
 import * as proxyquire from 'proxyquire'
 import type {SinonExpectation} from 'sinon'
 import {stderr} from 'stdout-stderr'
-import type {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
+// import type {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
 import {unwrap} from '../../../helpers/utils/unwrap'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
-import type * as Pgsql from '../../../../src/lib/pg/psql'
-import type * as Bastion from '../../../../src/lib/pg/bastion'
+// import type * as Pgsql from '../../../../src/lib/pg/psql'
+// import type * as Bastion from '../../../../src/lib/pg/bastion'
 import {constants, SignalConstants} from 'os'
 
 /*

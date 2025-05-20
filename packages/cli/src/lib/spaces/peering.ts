@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {displayCIDR, peeringStatus} from './format'
@@ -50,3 +51,4 @@ export function displayPeerings(space: string, peerings: Peering[]) {
     },
   })
 }
+*/

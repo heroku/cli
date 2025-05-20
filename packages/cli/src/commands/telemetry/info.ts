@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
@@ -23,3 +24,4 @@ export default class Info extends Command {
     await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -213,3 +214,4 @@ export const parsePostgresConnectionString = (db: string): ConnectionDetails => 
     url: dbPath,
   }
 }
+*/

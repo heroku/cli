@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as shellescape from 'shell-escape'
@@ -37,3 +38,4 @@ export default class CiConfigGet extends Command {
     }
   }
 }
+*/

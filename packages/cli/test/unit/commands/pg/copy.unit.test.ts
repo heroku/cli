@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import Cmd  from '../../../../src/commands/pg/copy'
+// import Cmd from '../../../../src/commands/pg/copy'
 import runCommand from '../../../helpers/runCommand'
 
 const addon = {

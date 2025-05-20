@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
@@ -120,3 +121,4 @@ export default class Generate extends Command {
     })
   }
 }
+*/

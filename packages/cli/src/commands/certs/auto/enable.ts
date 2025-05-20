@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
@@ -53,3 +54,4 @@ export default class Enable extends Command {
       }
     }
 }
+*/

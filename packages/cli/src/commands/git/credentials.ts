@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 
@@ -29,3 +30,4 @@ password=${this.heroku.auth}`)
     }
   }
 }
+*/

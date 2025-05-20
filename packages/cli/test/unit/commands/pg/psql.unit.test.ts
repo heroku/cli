@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
 import runCommand from '../../../helpers/runCommand'
-import * as psql from '../../../../src/lib/pg/psql'
+// import * as psql from '../../../../src/lib/pg/psql'
 
 const db = {
   user: 'jeff', password: 'pass', database: 'mydb', port: 5432, host: 'localhost', attachment: {

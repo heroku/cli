@@ -1,6 +1,6 @@
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/pg/links/create'
+// import Cmd from '../../../../../src/commands/pg/links/create'
 import runCommand from '../../../../helpers/runCommand'
 
 import {expect} from 'chai'

@@ -1,6 +1,6 @@
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/drains/get'
+// import Cmd from '../../../../../src/commands/spaces/drains/get'
 import {expect} from 'chai'
 import * as nock from 'nock'
 

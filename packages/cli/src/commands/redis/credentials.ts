@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisFormationResponse} from '../../lib/redis/api'
@@ -31,3 +32,4 @@ export default class Credentials extends Command {
     }
   }
 }
+*/

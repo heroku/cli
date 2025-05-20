@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as open from 'open'
 import {getPipeline} from '../../lib/ci/pipelines'
@@ -22,3 +23,4 @@ export default class CiOpen extends Command {
     await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 
@@ -46,3 +47,4 @@ export default class Add extends Command {
     buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'added')
   }
 }
+*/

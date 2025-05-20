@@ -1,5 +1,5 @@
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+// import {hux} from '@heroku/heroku-cli-util'
 
 import {pipelineName, repoName} from './validate'
 
@@ -24,32 +24,32 @@ export default async function getNameAndRepo(args: any) {
     repo: '',
   }
 
-  if (!args.name) {
-    const name = await hux.prompt('Pipeline name', {
-      required: true,
-    })
+  // if (!args.name) {
+  //   const name = await hux.prompt('Pipeline name', {
+  //     required: true,
+  //   })
 
-    const [valid, msg] = pipelineName(name)
+  //   const [valid, msg] = pipelineName(name)
 
-    if (valid) {
-      answer.name = name
-    } else {
-      ux.error(msg as string)
-    }
-  }
+  //   if (valid) {
+  //     answer.name = name
+  //   } else {
+  //     ux.error(msg as string)
+  //   }
+  // }
 
-  if (!args.repo) {
-    const repo = await hux.prompt('GitHub repository to connect to (e.g. rails/rails)', {
-      required: true,
-    })
+  // if (!args.repo) {
+  //   const repo = await hux.prompt('GitHub repository to connect to (e.g. rails/rails)', {
+  //     required: true,
+  //   })
 
-    const [valid, msg] = repoName(repo)
-    if (valid) {
-      answer.repo = repo
-    } else {
-      ux.error(msg as string)
-    }
-  }
+  //   const [valid, msg] = repoName(repo)
+  //   if (valid) {
+  //     answer.repo = repo
+  //   } else {
+  //     ux.error(msg as string)
+  //   }
+  // }
 
   const reply: any = Object.assign(filter(answer), filter(args))
   reply.name = reply.name.toLowerCase().replace(/\s/g, '-')

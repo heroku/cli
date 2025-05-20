@@ -2,7 +2,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove'
+// import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove'
 import runCommand from '../../../../helpers/runCommand'
 
 /*

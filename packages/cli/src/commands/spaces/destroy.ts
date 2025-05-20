@@ -1,3 +1,4 @@
+/*
 import {Args, ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -74,3 +75,4 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
+*/

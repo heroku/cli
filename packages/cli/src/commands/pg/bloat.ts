@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {database} from '../../lib/pg/fetcher'
@@ -88,3 +89,4 @@ export default class Bloat extends Command {
   }
 }
 
+*/

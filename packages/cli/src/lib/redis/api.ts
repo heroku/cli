@@ -1,6 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+// import {hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 
 export type RedisFormationResponse = {
@@ -175,7 +175,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
           redii.push(filteredRedis)
         }
 
-        hux.styledJSON(redii)
+        // hux.styledJSON(redii)
         return
       }
 
@@ -191,17 +191,17 @@ export default (app: string, database: string | undefined, json: boolean, heroku
           uxHeader += ` (${db.addon.config_vars.join(', ')})`
         }
 
-        if (uxHeader) {
-          hux.styledHeader(uxHeader)
-          hux.styledObject(
-            // eslint-disable-next-line unicorn/no-array-reduce
-            redis.info.reduce(function (memo: { [x: string]: any }, row: { name: string | number; values: any }) {
-              memo[row.name] = row.values
-              return memo
-            }, {}),
-            redis.info.map(row => row.name),
-          )
-        }
+        // if (uxHeader) {
+        //   hux.styledHeader(uxHeader)
+        //   hux.styledObject(
+        //     // eslint-disable-next-line unicorn/no-array-reduce
+        //     redis.info.reduce(function (memo: { [x: string]: any }, row: { name: string | number; values: any }) {
+        //       memo[row.name] = row.values
+        //       return memo
+        //     }, {}),
+        //     redis.info.map(row => row.name),
+        //   )
+        // }
       }
     },
   }

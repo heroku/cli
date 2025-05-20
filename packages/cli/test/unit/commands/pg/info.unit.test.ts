@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import * as fetcher from '../../../../src/lib/pg/fetcher'
+// import * as fetcher from '../../../../src/lib/pg/fetcher'
 import runCommand from '../../../helpers/runCommand'
 const proxyquire = require('proxyquire')
 const all = []
@@ -10,19 +10,19 @@ let addon
 let allSinonStub: sinon.SinonStub
 let addonSinonStub: sinon.SinonStub
 
-const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
-  const {allResult, addonResult} = resultsObject
-  allSinonStub = sinon.stub(fetcher, 'all').returns(allResult)
-  addonSinonStub = sinon.stub(fetcher, 'getAddon').returns(addonResult)
-  const {default: Cmd} = proxyquire(
-    '../../../../src/commands/pg/info',
-    {
-      getAddOn: addonSinonStub,
-      all: allSinonStub,
-    },
-  )
-  return Cmd
-}
+// const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
+//   const {allResult, addonResult} = resultsObject
+//   allSinonStub = sinon.stub(fetcher, 'all').returns(allResult)
+//   addonSinonStub = sinon.stub(fetcher, 'getAddon').returns(addonResult)
+//   const {default: Cmd} = proxyquire(
+//     '../../../../src/commands/pg/info',
+//     {
+//       getAddOn: addonSinonStub,
+//       all: allSinonStub,
+//     },
+//   )
+//   return Cmd
+// }
 
 /*
 describe('pg', function () {

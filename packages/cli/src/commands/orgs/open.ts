@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as open from 'open'
@@ -23,3 +24,4 @@ export default class OrgsOpen extends Command {
       await OrgsOpen.openUrl(`https://dashboard.heroku.com/teams/${org.name}`)
     }
 }
+*/

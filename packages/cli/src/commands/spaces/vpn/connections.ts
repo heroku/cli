@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -13,9 +14,9 @@ export default class Connections extends Command {
   static example = heredoc`
     $ heroku spaces:vpn:connections --space my-space
     === my-space VPN Connections
-     Name   Status Tunnels 
-     ────── ────── ─────── 
-     office active UP/UP   
+     Name   Status Tunnels
+     ────── ────── ───────
+     office active UP/UP
   `
   static flags = {
     space: flags.string({char: 's', description: 'space to get VPN connections from', required: true}),
@@ -65,3 +66,4 @@ export default class Connections extends Command {
     return t.map(tunnel => displayVPNStatus(tunnel.status)).join('/')
   }
 }
+*/

@@ -29,7 +29,7 @@ const empty = (o: Record<string, any>) => Object.keys(o).length === 0
 function displayFormation(formation: Heroku.Formation) {
   formation = groupBy(formation, 'size')
   formation = map(formation, (p, size) => `${bold(sumBy(p, 'quantity').toString())} | ${size}`)
-  ux.log(`  ${label('Dynos:')} ${formation.join(', ')}`)
+  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayErrors(metrics: FetchMetricsResponse[0]) {
@@ -48,7 +48,7 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
   }
 
   if (errors.length > 0)
-    ux.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.cyan.bold('heroku apps:errors')})`)
+    ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.cyan.bold('heroku apps:errors')})`)
 }
 
 function displayMetrics(metrics: FetchMetricsResponse[0]) {
@@ -80,7 +80,7 @@ function displayMetrics(metrics: FetchMetricsResponse[0]) {
   }
 
   if (rpm || ms)
-    ux.log(`  ${label('Metrics:')} ${ms}${rpm}`)
+    ux.stdout(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
 function displayNotifications(notifications?: {read: boolean}[]) {
@@ -88,7 +88,7 @@ function displayNotifications(notifications?: {read: boolean}[]) {
     return
   notifications = notifications.filter(n => !n.read)
   if (notifications.length > 0) {
-    ux.log(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.cyan.bold('heroku notifications')}`)
+    ux.stdout(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.cyan.bold('heroku notifications')}`)
   }
 }
 
@@ -129,17 +129,17 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
   for (const a of zipped) {
     const app = a[0]
     const metrics = a[1]
-    ux.log(color.magenta(app.app.name || ''))
-    ux.log(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
+    ux.stdout(color.magenta(app.app.name || ''))
+    ux.stdout(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
     if (app.pipeline) {
-      ux.log(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
+      ux.stdout(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
     }
 
     displayFormation(app.formation)
-    ux.log(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
+    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
-    ux.log()
+    ux.stdout()
   }
 }
 
@@ -189,12 +189,12 @@ export default class Dashboard extends Command {
         displayApps(appsWithMoreInfo, metrics)
       else
         ux.warn(`Add apps to this dashboard by favoriting them with ${color.cyan.bold('heroku apps:favorites:add')}`)
-      ux.log(`See all add-ons with ${color.cyan.bold('heroku addons')}`)
+      ux.stdout(`See all add-ons with ${color.cyan.bold('heroku addons')}`)
       const sampleTeam = sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
       if (sampleTeam)
-        ux.log(`See all apps in ${color.yellow.dim(sampleTeam.name || '')} with ${color.cyan.bold('heroku apps --team ' + sampleTeam.name)}`)
-      ux.log(`See all apps with ${color.cyan.bold('heroku apps --all')}`)
+        ux.stdout(`See all apps in ${color.yellow.dim(sampleTeam.name || '')} with ${color.cyan.bold('heroku apps --team ' + sampleTeam.name)}`)
+      ux.stdout(`See all apps with ${color.cyan.bold('heroku apps --all')}`)
       displayNotifications(notificationsResponse?.body)
-      ux.log(`\nSee other CLI commands with ${color.cyan.bold('heroku help')}\n`)
+      ux.stdout(`\nSee other CLI commands with ${color.cyan.bold('heroku help')}\n`)
     }
 }

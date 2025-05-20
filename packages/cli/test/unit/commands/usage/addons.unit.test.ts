@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/usage/addons'
+// import Cmd from '../../../../src/commands/usage/addons'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'

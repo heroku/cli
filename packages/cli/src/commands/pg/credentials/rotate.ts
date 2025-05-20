@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {APIClient} from '@heroku-cli/command/lib/api-client'
@@ -92,3 +93,4 @@ export default class Rotate extends Command {
     ux.action.stop()
   }
 }
+*/

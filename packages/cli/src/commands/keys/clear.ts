@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {Command} from '@heroku-cli/command'
@@ -16,3 +17,4 @@ export default class Clear extends Command {
   }
 }
 
+*/

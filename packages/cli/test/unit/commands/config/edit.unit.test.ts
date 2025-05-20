@@ -1,7 +1,7 @@
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
 
-import {stringToConfig} from '../../../../src/commands/config/edit'
+// import {stringToConfig} from '../../../../src/commands/config/edit'
 import {Editor} from '../../../../src/lib/config/util'
 import {expect, test} from '@oclif/test'
 

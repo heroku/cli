@@ -46,7 +46,7 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
 
     es.addEventListener('message', function (e: { data: string }) {
       e.data.trim().split(/\n+/).forEach(line => {
-        ux.log(colorize(line))
+        ux.stdout(colorize(line))
       })
     })
 

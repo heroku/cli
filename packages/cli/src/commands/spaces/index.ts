@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
@@ -69,3 +70,4 @@ export default class Index extends Command {
     )
   }
 }
+*/

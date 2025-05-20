@@ -3,9 +3,9 @@ import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-import {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
+// import {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
 import sinon = require('sinon')
-import * as psql from '../../../../src/lib/pg/psql'
+// import * as psql from '../../../../src/lib/pg/psql'
 import * as childProcess from 'node:child_process'
 
 /*

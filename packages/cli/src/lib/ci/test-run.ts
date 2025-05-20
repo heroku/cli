@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -285,3 +286,4 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     processExitCode(command, testNode)
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -31,3 +32,4 @@ export default class MembersAdd extends Command {
       }
     }
 }
+*/

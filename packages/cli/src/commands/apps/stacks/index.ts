@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
@@ -47,3 +48,4 @@ export default class StacksIndex extends Command {
     }
   }
 }
+*/

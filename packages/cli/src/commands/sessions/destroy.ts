@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -23,3 +24,4 @@ export default class SessionsDestroy extends Command {
     ux.action.stop()
   }
 }
+*/

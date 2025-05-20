@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -48,3 +49,4 @@ export default class Attach extends Command {
       ux.action.stop(`done, v${releases[0].version}`)
     }
 }
+*/

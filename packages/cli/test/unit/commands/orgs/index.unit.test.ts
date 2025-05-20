@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import Cmd  from '../../../../src/commands/orgs'
+// import Cmd from '../../../../src/commands/orgs'
 import runCommand from '../../../helpers/runCommand'
 import {teams} from '../../../helpers/stubs/get'
 

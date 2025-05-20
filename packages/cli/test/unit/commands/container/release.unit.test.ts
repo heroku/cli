@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/container/release'
+// import Cmd from '../../../../src/commands/container/release'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as nock from 'nock'
 import stdMocks = require('std-mocks')
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 import color from '@heroku-cli/color'
 
 let sandbox: { restore: () => void; stub: (arg0: NodeJS.Process, arg1: string) => void }

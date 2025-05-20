@@ -3,28 +3,28 @@ import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../../../src/lib/autocomplete/base'
+// import {AutocompleteBase} from '../../../../src/lib/autocomplete/base'
 
 // autocomplete will throw error on windows
 const {default: runtest} = require('../../../helpers/autocomplete/runtest')
 
-class AutocompleteTest extends AutocompleteBase {
-  static id = 'test:foo'
+// class AutocompleteTest extends AutocompleteBase {
+//   static id = 'test:foo'
 
-  static flags = {
-    app: flags.app(),
-    bar: flags.boolean(),
-  }
+//   static flags = {
+//     app: flags.app(),
+//     bar: flags.boolean(),
+//   }
 
-  async run() {
-    'do work!'
-  }
-}
+//   async run() {
+//     'do work!'
+//   }
+// }
 
 const root = path.resolve(__dirname, '../../package.json')
 const config = new Config({root})
 
-const cmd = new AutocompleteTest([], config)
+// const cmd = new AutocompleteTest([], config)
 
 runtest('AutocompleteBase', () => {
   // before(async function () {

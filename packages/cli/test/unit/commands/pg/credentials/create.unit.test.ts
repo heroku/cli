@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import Cmd from '../../../../../src/commands/pg/credentials/create'
+// import Cmd from '../../../../../src/commands/pg/credentials/create'
 
 /*
 describe('pg:credentials:create', function () {

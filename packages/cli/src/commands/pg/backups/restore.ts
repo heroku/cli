@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -30,8 +31,8 @@ export default class Restore extends Command {
     extensions: flags.string({
       char: 'e',
       description: heredoc(`
-        comma-separated list of extensions to pre-install in the default 
-        public schema or an optional custom schema 
+        comma-separated list of extensions to pre-install in the default
+        public schema or an optional custom schema
         (for example: hstore or myschema.hstore)
       `),
     }),
@@ -145,3 +146,4 @@ export default class Restore extends Command {
     return extensions?.split(',').map(ext => ext.trim().toLowerCase()).sort()
   }
 }
+*/

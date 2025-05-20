@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
-import Cmd from '../../../../src/commands/accounts/remove'
+// import Cmd from '../../../../src/commands/accounts/remove'
 import * as accounts from '../../../../src/lib/accounts/accounts'
 
 /*

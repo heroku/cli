@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
@@ -50,3 +51,4 @@ export default class Webhooks extends BaseCommand {
     })
   }
 }
+*/

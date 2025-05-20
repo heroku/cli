@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -36,3 +37,4 @@ export default class Accept extends Command {
     ux.log(`Accepting and configuring peering connection ${color.cyan.bold(pcxID)}`)
   }
 }
+*/

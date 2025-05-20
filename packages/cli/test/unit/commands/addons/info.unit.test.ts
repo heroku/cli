@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/addons/info'
+// import Cmd from '../../../../src/commands/addons/info'
 import runCommand from '../../../helpers/runCommand'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import expectOutput from '../../../helpers/utils/expectOutput'

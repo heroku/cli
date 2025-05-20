@@ -1,10 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/rm'
+// import Cmd from '../../../../src/commands/container/rm'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 /*
 describe('container removal', function () {

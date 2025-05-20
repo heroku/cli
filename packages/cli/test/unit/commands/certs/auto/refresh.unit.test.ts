@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/certs/auto/refresh'
+// import Cmd from '../../../../../src/commands/certs/auto/refresh'
 import runCommand from '../../../../helpers/runCommand'
 import expectOutput from '../../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'

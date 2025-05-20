@@ -1,3 +1,4 @@
+/*
 import {Command} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -249,3 +250,4 @@ bindkey "^I" expand-or-complete-with-dots`
     ].includes(flag)
   }
 }
+*/

@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/container/login'
+// import Cmd from '../../../../src/commands/container/login'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as sinon from 'sinon'

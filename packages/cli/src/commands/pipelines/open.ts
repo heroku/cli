@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as open from 'open'
@@ -20,3 +21,4 @@ export default class Open extends Command {
     await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }
+*/

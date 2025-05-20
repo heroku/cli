@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {get} from 'lodash'
@@ -116,3 +117,4 @@ export default class Debug extends Command {
     await ux.action.stop()
   }
 }
+*/

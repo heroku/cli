@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {current, list} from '../../lib/accounts/accounts'
@@ -22,3 +23,4 @@ export default class AccountsIndex extends Command {
     }
   }
 }
+*/

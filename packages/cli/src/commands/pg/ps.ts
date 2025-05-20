@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
@@ -51,3 +52,4 @@ export default class Ps extends Command {
     process.stdout.write(output)
   }
 }
+*/

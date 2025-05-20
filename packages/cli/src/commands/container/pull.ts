@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import * as DockerHelper from '../../lib/container/docker_helper'
@@ -48,3 +49,4 @@ export default class Pull extends Command {
     }
   }
 }
+*/

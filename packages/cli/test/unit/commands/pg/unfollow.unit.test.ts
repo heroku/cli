@@ -1,6 +1,6 @@
 import {stderr} from 'stdout-stderr'
 import * as nock from 'nock'
-import Cmd  from '../../../../src/commands/pg/unfollow'
+// import Cmd from '../../../../src/commands/pg/unfollow'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import heredoc from 'tsheredoc'

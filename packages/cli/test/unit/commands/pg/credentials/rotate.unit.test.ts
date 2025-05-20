@@ -3,7 +3,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/pg/credentials/rotate'
+// import Cmd from '../../../../../src/commands/pg/credentials/rotate'
 import runCommand from '../../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import stripAnsi = require('strip-ansi')

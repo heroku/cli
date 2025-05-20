@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
@@ -28,3 +29,4 @@ export default class TrackFunctions extends PGSettingsCommand {
     return setting.values[setting.value]
   }
 }
+*/

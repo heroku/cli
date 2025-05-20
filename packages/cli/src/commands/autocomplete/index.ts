@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import chalk from 'chalk'
@@ -75,3 +76,4 @@ Enjoy!
     await updateCache(cachePath, options)
   }
 }
+*/

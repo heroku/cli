@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -29,3 +30,4 @@ export default class PipelinesDestroy extends Command {
     ux.action.stop()
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {getAddon} from '../../../lib/pg/fetcher'
@@ -38,3 +39,4 @@ export default class RepairDefault extends Command {
     ux.action.stop()
   }
 }
+*/

@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/apps/leave'
+// import Cmd from '../../../../src/commands/apps/leave'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from '@oclif/test'

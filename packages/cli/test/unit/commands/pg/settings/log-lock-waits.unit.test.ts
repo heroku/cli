@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits'
+// import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
 /*

@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import host from '../../../lib/pg/host'
@@ -51,3 +52,4 @@ export default class Cancel extends Command {
     })
   }
 }
+*/

@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/redis/wait'
+// import Cmd from '../../../../src/commands/redis/wait'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'

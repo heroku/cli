@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
@@ -31,3 +32,4 @@ export default class LogLockWaits extends PGSettingsCommand {
     return "When a deadlock is detected, no log message will be emitted in your application's logs."
   }
 }
+*/

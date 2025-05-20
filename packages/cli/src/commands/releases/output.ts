@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {findByLatestOrId} from '../../lib/releases/releases'
@@ -37,3 +38,4 @@ export default class Output extends Command {
         })
     }
 }
+*/

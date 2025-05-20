@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter'
 import type {Setting, SettingKey} from '../../../../lib/pg/types'
@@ -25,3 +26,4 @@ export default class LogNestedStatements extends PGSettingsCommand {
     return 'Only top-level execution plans will be included in logs.'
   }
 }
+*/

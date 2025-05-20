@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {CompletionLookup, CompletionMapping} from '../../../../src/lib/autocomplete/completions'
+// import {CompletionLookup, CompletionMapping} from '../../../../src/lib/autocomplete/completions'
 
 // autocomplete will throw error on windows
 const {default: runtest} = require('../../../helpers/autocomplete/runtest')

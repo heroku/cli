@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -73,3 +74,4 @@ export default class PipelinesTransfer extends Command {
     ux.action.stop()
   }
 }
+*/

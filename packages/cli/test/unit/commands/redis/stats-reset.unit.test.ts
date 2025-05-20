@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/redis/stats-reset'
+// import Cmd from '../../../../src/commands/redis/stats-reset'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'

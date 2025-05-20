@@ -1,3 +1,4 @@
+/*
 import formatDate from './format_date'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -37,3 +38,4 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
     ux.log('SSL certificate is not trusted.')
   }
 }
+*/

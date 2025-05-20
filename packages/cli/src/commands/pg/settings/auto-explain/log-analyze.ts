@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter'
@@ -32,3 +33,4 @@ export default class LogAnalyze extends PGSettingsCommand {
     return 'EXPLAIN ANALYZE execution plans will not be logged.'
   }
 }
+*/

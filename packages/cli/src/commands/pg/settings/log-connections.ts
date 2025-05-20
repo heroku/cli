@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
@@ -35,3 +36,4 @@ export default class LogConnections extends PGSettingsCommand {
     return 'When login attempts are made, no log message will be emitted in your application\'s logs.'
   }
 }
+*/

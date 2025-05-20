@@ -1,5 +1,5 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/credentials/repair-default'
+// import Cmd from '../../../../../src/commands/pg/credentials/repair-default'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'

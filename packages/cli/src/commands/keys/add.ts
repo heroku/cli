@@ -1,3 +1,4 @@
+/*
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
@@ -112,3 +113,4 @@ Uploading SSH public key /my/key.pub... done`
     ux.action.stop()
   }
 }
+*/

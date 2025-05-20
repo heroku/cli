@@ -3,7 +3,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
+// import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
 
 /*
 describe('trusted-ips:add', function () {

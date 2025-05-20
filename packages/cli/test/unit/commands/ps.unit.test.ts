@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import * as strftime from 'strftime'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../src/commands/spaces/ps'
+// import Cmd from '../../../src/commands/spaces/ps'
 import runCommand from '../../helpers/runCommand'
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))

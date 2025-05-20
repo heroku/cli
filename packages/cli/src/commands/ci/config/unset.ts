@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {getPipeline} from '../../../lib/ci/pipelines'
@@ -40,3 +41,4 @@ export default class CiConfigUnset extends Command {
     ux.action.stop()
   }
 }
+*/

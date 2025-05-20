@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisApiResponse} from '../../lib/redis/api'
@@ -36,3 +37,4 @@ export default class Upgrade extends Command {
     ux.action.stop(response.message)
   }
 }
+*/

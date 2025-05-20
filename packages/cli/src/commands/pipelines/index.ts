@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -29,3 +30,4 @@ export default class Pipelines extends Command {
     }
   }
 }
+*/

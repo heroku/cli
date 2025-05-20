@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
@@ -87,3 +88,4 @@ export default class MembersIndex extends Command {
       }
     }
 }
+*/

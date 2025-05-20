@@ -1,4 +1,4 @@
-import Cmd from '../../../../../src/commands/pg/backups/download'
+// import Cmd from '../../../../../src/commands/pg/backups/download'
 import runCommand from '../../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'

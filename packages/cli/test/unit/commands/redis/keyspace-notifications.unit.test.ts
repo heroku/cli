@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/redis/keyspace-notifications'
+// import Cmd from '../../../../src/commands/redis/keyspace-notifications'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {expect} from 'chai'

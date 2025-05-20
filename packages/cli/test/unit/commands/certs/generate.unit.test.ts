@@ -1,4 +1,4 @@
-import Cmd  from '../../../../src/commands/certs/generate'
+// import Cmd from '../../../../src/commands/certs/generate'
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'

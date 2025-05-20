@@ -1,3 +1,4 @@
+/*
 const debug = require('debug')('pg')
 import {APIClient} from '@heroku-cli/command'
 import * as EventEmitter from 'node:events'
@@ -132,3 +133,4 @@ export async function fetchConfig(heroku:APIClient, db: {id: string}) {
     },
   )
 }
+*/

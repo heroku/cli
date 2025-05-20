@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -41,3 +42,4 @@ export function getOwner(heroku: APIClient, apps: Array<AppWithPipelineCoupling>
     return owner.name ? `${owner.name} (team)` : owner
   })
 }
+*/

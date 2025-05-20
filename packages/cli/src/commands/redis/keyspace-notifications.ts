@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import redisApi, {RedisFormationConfigResponse} from '../../lib/redis/api'
@@ -50,3 +51,4 @@ export default class KeyspaceNotifications extends Command {
     ux.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${updated_config.notify_keyspace_events.value}'.`)
   }
 }
+*/

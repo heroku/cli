@@ -1,3 +1,4 @@
+/*
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
@@ -78,3 +79,4 @@ export default class CiMigrateManifest extends Command {
     ux.log('You\'re all set! 🎉')
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Args, ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
@@ -24,3 +25,4 @@ export default class Add extends Command {
   }
 }
 
+*/

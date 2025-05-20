@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions'
 import * as Heroku from '@heroku-cli/schema'
@@ -45,3 +46,4 @@ export default class AuthorizationsCreate extends Command {
     }
   }
 }
+*/

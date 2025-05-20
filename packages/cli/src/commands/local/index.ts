@@ -1,3 +1,4 @@
+/*
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, Command, Flags} from '@oclif/core'
 import * as fs from 'fs'
@@ -86,3 +87,4 @@ $ heroku local web=1,worker=2`,
     await foreman(execArgv)
   }
 }
+*/

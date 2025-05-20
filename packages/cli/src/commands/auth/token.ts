@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -31,3 +32,4 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
     this.log(this.heroku.auth)
   }
 }
+*/

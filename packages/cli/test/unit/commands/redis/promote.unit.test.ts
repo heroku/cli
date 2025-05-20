@@ -1,7 +1,7 @@
 import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/redis/promote'
+// import Cmd from '../../../../src/commands/redis/promote'
 import runCommand from '../../../helpers/runCommand'
 
 /*

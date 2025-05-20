@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -36,3 +37,4 @@ export default class WebhooksInfo extends BaseCommand {
     hux.styledObject(obj)
   }
 }
+*/

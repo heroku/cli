@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args, Command} from '@oclif/core'
 import * as path from 'path'
@@ -235,3 +236,4 @@ export default class Options extends AutocompleteBase {
     return [argsIndex, argIsFlag, argIsFlagValue]
   }
 }
+*/

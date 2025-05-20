@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/run'
+// import Cmd from '../../../../src/commands/container/run'
 import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
 import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 import expectOutput from '../../../helpers/utils/expectOutput'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 import * as nock from 'nock'
 
 /*

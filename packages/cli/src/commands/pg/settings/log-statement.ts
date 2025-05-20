@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {type Setting, type SettingKey} from '../../../lib/pg/types'
@@ -28,3 +29,4 @@ export default class LogStatement extends PGSettingsCommand {
     return setting.values[setting.value]
   }
 }
+*/

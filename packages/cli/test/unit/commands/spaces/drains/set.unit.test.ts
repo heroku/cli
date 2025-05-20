@@ -2,7 +2,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/drains/set'
+// import Cmd from '../../../../../src/commands/spaces/drains/set'
 
 /*
 describe('spaces:drains:set', function () {

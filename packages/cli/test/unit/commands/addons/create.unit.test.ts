@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/addons/create'
+// import Cmd from '../../../../src/commands/addons/create'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as _ from 'lodash'

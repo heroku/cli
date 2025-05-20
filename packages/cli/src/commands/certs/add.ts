@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -110,3 +111,4 @@ function matchDomains(certDomains: string[], appDomains: string[]) {
 
   return certDomains.filter(domain => appDomains.includes(domain))
 }
+*/

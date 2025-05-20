@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
@@ -40,3 +41,4 @@ export default class AutoExplain extends PGSettingsCommand {
     return 'Execution plans of queries will not be logged for future connections.'
   }
 }
+*/

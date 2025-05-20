@@ -286,7 +286,7 @@ export default class Dyno extends Duplex {
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
     if (this.opts.listen) {
-      ux.log(`listening on port ${host}:${port} for ssh client`)
+      ux.stderr(`listening on port ${host}:${port} for ssh client`)
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
@@ -317,7 +317,7 @@ export default class Dyno extends Duplex {
 
         // suppress host key and permission denied messages
         const messages = [
-          "Warning: Permanently added '[127.0.0.1]"
+          "Warning: Permanently added '[127.0.0.1]",
         ]
 
         const killMessages = [

@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/addons/rename'
+// import Cmd from '../../../../src/commands/addons/rename'
 import runCommand from '../../../helpers/runCommand'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import * as nock from 'nock'
