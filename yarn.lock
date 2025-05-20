@@ -1763,21 +1763,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/heroku-cli-util@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@heroku/heroku-cli-util@npm:9.0.1"
+"@heroku/heroku-cli-util@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "@heroku/heroku-cli-util@npm:9.0.2"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku-cli/command": ^11.5.0
     "@heroku/http-call": ^5.4.0
     "@oclif/core": ^2.16.0
-    "@types/chai": ^4.3.13
-    chai: ^4.4.1
     debug: ^4.4.0
-    nock: ^13.2.9
-    stdout-stderr: ^0.1.13
     tunnel-ssh: 4.1.6
-  checksum: 11fecd61bd7f9104340d8c87c01963c2a24d158fc22d7a5c2f025c9a76a59d2941e4e852cb1cfacebeefda86afe9d512cbf88b5a06c3694232611c727eefe121
+  checksum: 7db511fe64f8e7e31d8b6fff53bcf3e87c7abcc1f6091eb0bdb6fd4dcd724dbdf5accbc07d40f5705223d1b909bc1c5f2e2cde2eed55121ac27b1bc0457a4491
   languageName: node
   linkType: hard
 
@@ -4987,13 +4983,6 @@ __metadata:
   version: 4.1.7
   resolution: "@types/chai@npm:4.1.7"
   checksum: 55b3d33a9a7b8a6993342e801d3f65381ee327e5838b390bfe97c4b84a3dfeaf7cdadbedf6d81443d49dbfdf39c858342eb17179e513f4668f2f9fe666ec7069
-  languageName: node
-  linkType: hard
-
-"@types/chai@npm:^4.3.13":
-  version: 4.3.20
-  resolution: "@types/chai@npm:4.3.20"
-  checksum: 7c5b0c9148f1a844a8d16cb1e16c64f2e7749cab2b8284155b9e494a6b34054846e22fb2b38df6b290f9bf57e6beebb2e121940c5896bc086ad7bab7ed429f06
   languageName: node
   linkType: hard
 
@@ -10393,7 +10382,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/heroku-cli-util": ^9.0.1
+    "@heroku/heroku-cli-util": ^9.0.2
     "@heroku/http-call": ^5.4.0
     "@inquirer/prompts": ^5.0.5
     "@istanbuljs/nyc-config-typescript": ^1.0.2
@@ -12888,17 +12877,6 @@ __metadata:
     lower-case: ^2.0.2
     tslib: ^2.0.3
   checksum: 0b2ebc113dfcf737d48dde49cfebf3ad2d82a8c3188e7100c6f375e30eafbef9e9124aadc3becef237b042fd5eb0aad2fd78669c20972d045bbe7fea8ba0be5c
-  languageName: node
-  linkType: hard
-
-"nock@npm:^13.2.9":
-  version: 13.5.6
-  resolution: "nock@npm:13.5.6"
-  dependencies:
-    debug: ^4.1.0
-    json-stringify-safe: ^5.0.1
-    propagate: ^2.0.0
-  checksum: 82d31ef7a428e8a6bc430b2772745ecb1f9c8835170789bbcc29c9036614adf3b7112daeb6d59edd93f4340a9a96acee401021572d469a7a0e09a669679f2794
   languageName: node
   linkType: hard
 
