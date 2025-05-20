@@ -1,11 +1,11 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/pull'
+// import Cmd from '../../../../src/commands/container/pull'
 import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
 import * as DockerHelper from '../../../../src/lib/container/docker_helper'
 import * as nock from 'nock'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 /*
 describe('container pull', function () {

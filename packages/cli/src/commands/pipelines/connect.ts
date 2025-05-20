@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
@@ -64,3 +65,4 @@ export default class Connect extends Command {
     ux.action.stop()
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {flags, Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
@@ -65,3 +66,4 @@ export default class Remove extends Command {
     return telemetryDrain
   }
 }
+*/

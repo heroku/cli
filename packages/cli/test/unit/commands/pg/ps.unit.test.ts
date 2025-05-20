@@ -2,11 +2,11 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd  from '../../../../src/commands/pg/ps'
+// import Cmd from '../../../../src/commands/pg/ps'
 import * as fixtures from '../../../fixtures/addons/fixtures'
 import runCommand from '../../../helpers/runCommand'
 import * as sinon from 'sinon'
-import * as psql from '../../../../src/lib/pg/psql'
+// import * as psql from '../../../../src/lib/pg/psql'
 
 const FAKE_OUTPUT_TEXT = heredoc(`
   pid  | state  | source  | username | running_for | transaction_start | waiting | query

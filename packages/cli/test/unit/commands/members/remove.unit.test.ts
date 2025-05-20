@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
 
-import Cmd  from '../../../../src/commands/members/remove'
+// import Cmd from '../../../../src/commands/members/remove'
 import runCommand from '../../../helpers/runCommand'
 import {
   teamFeatures,

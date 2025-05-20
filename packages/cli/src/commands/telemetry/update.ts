@@ -1,3 +1,4 @@
+/*
 import {flags as Flags, Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry'
@@ -67,3 +68,4 @@ export default class Update extends Command {
     await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }
+*/

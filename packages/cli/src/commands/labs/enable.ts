@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {APIClient, flags, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -47,3 +48,4 @@ export default class LabsEnable extends Command {
     ux.action.stop()
   }
 }
+*/

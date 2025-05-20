@@ -1,4 +1,4 @@
-import Cmd  from '../../../../src/commands/orgs/open'
+// import Cmd from '../../../../src/commands/orgs/open'
 import runCommand from '../../../helpers/runCommand'
 const sinon = require('sinon')
 const expect = require('chai').expect

@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import * as sinon from 'sinon'
 import runCommand, {GenericCmd} from '../../helpers/runCommand'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 /*
 describe('logs', function () {

@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/upgrade'
+// import Cmd from '../../../../src/commands/addons/upgrade'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'

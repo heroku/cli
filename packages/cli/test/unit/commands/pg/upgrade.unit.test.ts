@@ -1,5 +1,5 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/pg/upgrade'
+// import Cmd from '../../../../src/commands/pg/upgrade'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import {expect} from 'chai'

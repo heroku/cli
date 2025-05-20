@@ -2,7 +2,7 @@ import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/peerings/accept'
+// import Cmd from '../../../../../src/commands/spaces/peerings/accept'
 
 /*
 describe('spaces:peerings:accept', function () {
