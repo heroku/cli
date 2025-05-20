@@ -3761,43 +3761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.0.8":
-  version: 2.1.5
-  resolution: "@oclif/core@npm:2.1.5"
-  dependencies:
-    "@types/cli-progress": ^3.11.0
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.11.2
-    debug: ^4.3.4
-    ejs: ^3.1.6
-    fs-extra: ^9.1.0
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    semver: ^7.3.7
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    tslib: ^2.5.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: 04429c9619c27fc7795b0072d1a86bbc460eaa58ee5264aead6ed9612c82aa0583b1d484ea5095f0cee2b94742005c02d80a35f550f93972c5a08c301e750a61
-  languageName: node
-  linkType: hard
-
-"@oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
+"@oclif/core@npm:^2.0.8, @oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
   version: 2.16.0
   resolution: "@oclif/core@npm:2.16.0"
   dependencies:
@@ -7449,7 +7413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-progress@npm:^3.10.0, cli-progress@npm:^3.11.2, cli-progress@npm:^3.12.0":
+"cli-progress@npm:^3.10.0, cli-progress@npm:^3.12.0":
   version: 3.12.0
   resolution: "cli-progress@npm:3.12.0"
   dependencies:
