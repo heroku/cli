@@ -1,5 +1,6 @@
 import formatDate from './format_date'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {SniEndpoint} from '../types/sni_endpoint'
 
@@ -26,7 +27,7 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
     tableObject['Domain(s)'] = sniEndpoint.domains
   }
 
-  ux.styledObject(tableObject)
+  hux.styledObject(tableObject)
 
   if (sniEndpoint.ssl_cert['ca_signed?']) {
     ux.log('SSL certificate is verified by a root authority.')

@@ -2,6 +2,7 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
@@ -111,7 +112,7 @@ export default class DomainsAdd extends Command {
       })
 
       if (flags.json) {
-        ux.styledJSON(domain)
+        hux.styledJSON(domain)
       } else {
         ux.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
     For help, see https://devcenter.heroku.com/articles/custom-domains`)

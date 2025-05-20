@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 
@@ -42,12 +43,12 @@ export default class Index extends Command {
 
   private displayRules(space: string, ruleset: Required<Heroku.InboundRuleset>) {
     if (ruleset.rules.length > 0) {
-      ux.styledHeader('Trusted IP Ranges')
+      hux.styledHeader('Trusted IP Ranges')
       for (const rule of ruleset.rules) {
         ux.log(rule.source)
       }
     } else {
-      ux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
+      hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
     }
   }
 }

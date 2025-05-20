@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as _ from 'lodash'
 
 export default class Regions extends Command {
@@ -27,9 +27,9 @@ export default class Regions extends Command {
     regions = _.sortBy(regions, ['private_capable', 'name'])
 
     if (flags.json) {
-      ux.styledJSON(regions)
+      hux.styledJSON(regions)
     } else {
-      ux.table(regions, {
+      hux.table(regions, {
         name: {
           header: 'ID',
           get: ({name}: any) => color.green(name),

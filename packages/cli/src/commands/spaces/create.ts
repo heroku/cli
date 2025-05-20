@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Space} from '../../lib/types/fir'
 import heredoc from 'tsheredoc'
 import {displayShieldState} from '../../lib/spaces/spaces'
@@ -63,21 +64,6 @@ export default class Create extends Command {
     const dollarAmountHourly = shield ? '$4.17' : '$1.39'
     const spaceType = shield ? 'Shield' : 'Standard'
 
-    if (generation === 'fir') {
-      ux.warn(heredoc`
-        Fir Pilot Features
-        Fir is currently a pilot service that is subject to the Beta Services Terms
-        (https://www.salesforce.com/company/legal/) or a written Unified Pilot Agreement
-        if executed by Customer, and applicable terms in the Product Terms Directory
-        (https://ptd.salesforce.com/?_ga=2.247987783.1372150065.1709219475-629000709.1639001992).
-        Use of this pilot or beta service is at the Customer's sole discretion.
-
-        Please note that we’re actively developing and adding new features, and not all
-        existing features are currently available. See the Dev Center
-        (https://devcenter.heroku.com/articles/generations) for more info.
-      `)
-    }
-
     ux.action.start(`Creating space ${color.green(spaceName as string)} in team ${color.cyan(team as string)}`)
     const {body: space} = await this.heroku.post<Required<Space>>('/spaces', {
       headers: {
@@ -102,8 +88,8 @@ export default class Create extends Command {
     ux.warn(`${color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
     ux.warn(`Use ${color.cmd('heroku spaces:wait')} to track allocation.`)
 
-    ux.styledHeader(space.name)
-    ux.styledObject({
+    hux.styledHeader(space.name)
+    hux.styledObject({
       ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }

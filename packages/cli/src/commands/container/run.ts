@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as DockerHelper from '../../lib/container/docker_helper'
 import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
@@ -63,9 +64,9 @@ export default class Run extends Command {
     const job = jobs[0]
 
     if (command.length === 0) {
-      ux.styledHeader(`Running ${job.resource}`)
+      hux.styledHeader(`Running ${job.resource}`)
     } else {
-      ux.styledHeader(`Running '${command}' on ${job.resource}`)
+      hux.styledHeader(`Running '${command}' on ${job.resource}`)
     }
 
     try {

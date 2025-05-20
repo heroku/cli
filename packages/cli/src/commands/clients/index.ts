@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 const {sortBy} = require('lodash')
 
 export default class ClientsIndex extends Command {
@@ -19,12 +20,12 @@ export default class ClientsIndex extends Command {
     clients = sortBy(clients, 'name')
 
     if (flags.json) {
-      ux.styledJSON(clients)
+      hux.styledJSON(clients)
     } else if (clients.length === 0) {
       ux.log('No OAuth clients.')
     } else {
       const printLine: typeof this.log = (...args) => this.log(...args)
-      ux.table(clients, {
+      hux.table(clients, {
         name: {get: (w: any) => color.green(w.name)},
         id: {},
         redirect_uri: {},

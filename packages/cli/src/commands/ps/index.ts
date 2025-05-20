@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {ago} from '../../lib/time'
 import {APIClient} from '@heroku-cli/command'
 import {AccountQuota} from '../../lib/types/account_quota'
@@ -57,7 +58,7 @@ function truncate(s: string) {
 function printExtended(dynos: DynoExtended[]) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
-  ux.table<DynoExtended>(
+  hux.table<DynoExtended>(
     sortedDynos,
     {
       ID: {get: (dyno: DynoExtended) => dyno.id},
@@ -153,7 +154,7 @@ function printDynos(dynos: DynoExtended[]) : void {
 
   // Print one-off dynos
   if (oneOffs.length > 0) {
-    ux.styledHeader(`${color.green('run')}: one-off processes (${color.yellow(oneOffs.length.toString())})`)
+    hux.styledHeader(`${color.green('run')}: one-off processes (${color.yellow(oneOffs.length.toString())})`)
     oneOffs.forEach(dyno => ux.log(decorateOneOffDyno(dyno)))
     ux.log()
   }
@@ -165,7 +166,7 @@ function printDynos(dynos: DynoExtended[]) : void {
     // eslint-disable-next-line unicorn/explicit-length-check
     const size = commandDynos[0].size || '1X'
 
-    ux.styledHeader(`${color.green(type)} (${color.cyan(size)}): ${command} (${color.yellow(commandDynos.length.toString())})`)
+    hux.styledHeader(`${color.green(type)} (${color.cyan(size)}): ${command} (${color.yellow(commandDynos.length.toString())})`)
     for (const dyno of commandDynos)
       ux.log(decorateCommandDyno(dyno))
     ux.log()
@@ -236,7 +237,7 @@ export default class Index extends Command {
     selectedDynos = selectedDynos.sort(byProcessName)
 
     if (json)
-      ux.styledJSON(selectedDynos)
+      hux.styledJSON(selectedDynos)
     else if (extended)
       printExtended(selectedDynos)
     else {

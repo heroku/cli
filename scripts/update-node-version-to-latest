@@ -19,4 +19,14 @@ else
     echo "nodejs $version" >> .tool-versions
 fi
 
-echo "Updated nodejs version to $version in .tool-versions"
+# Update the Node.js version in package.json's oclif update configuration
+# Using node to update the JSON file correctly
+node -e "
+const fs = require('fs');
+const path = 'packages/cli/package.json';
+const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+pkg.oclif.update.node.version = '$version';
+fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
+"
+
+echo "Updated nodejs version to $version in .tool-versions and package.json"

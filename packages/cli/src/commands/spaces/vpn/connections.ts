@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import {displayVPNStatus} from '../../../lib/spaces/format'
@@ -30,7 +31,7 @@ export default class Connections extends Command {
 
   protected render(space: string, connections: Required<Heroku.PrivateSpacesVpn>[], json: boolean) {
     if (json) {
-      ux.styledJSON(connections)
+      hux.styledJSON(connections)
     } else {
       this.displayVPNConnections(space, connections)
     }
@@ -42,9 +43,9 @@ export default class Connections extends Command {
       return
     }
 
-    ux.styledHeader(`${space} VPN Connections`)
+    hux.styledHeader(`${space} VPN Connections`)
 
-    ux.table(
+    hux.table(
       connections,
       {
         Name: {

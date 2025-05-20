@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
@@ -31,11 +32,11 @@ export default class Drains extends Command {
     const {body: drains} = await this.heroku.get<Heroku.LogDrain[]>(path)
 
     if (flags.json) {
-      ux.styledJSON(drains)
+      hux.styledJSON(drains)
     } else {
       const [drainsWithAddons, drainsWithoutAddons] = partition<Heroku.LogDrain>(drains, 'addon')
       if (drainsWithoutAddons.length > 0) {
-        ux.styledHeader('Drains')
+        hux.styledHeader('Drains')
         drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
           styledDrain(drain.url || '', color.green(drain.token || ''), drain)
         })
@@ -45,7 +46,7 @@ export default class Drains extends Command {
         const addons = await Promise.all(
           drainsWithAddons.map((d: Heroku.LogDrain) => this.heroku.get<Heroku.AddOn>(`/apps/${flags.app}/addons/${d.addon?.name}`)),
         )
-        ux.styledHeader('Add-on Drains')
+        hux.styledHeader('Add-on Drains')
         addons.forEach(({body: addon}, i) => {
           styledDrain(color.yellow(addon.plan?.name || ''), color.green(addon.name || ''), drainsWithAddons[i])
         })

@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {sortBy} from 'lodash'
 
 interface Features {
@@ -67,11 +68,11 @@ export default class LabsIndex extends Command {
     if (flags.json) {
       printJSON({app, user})
     } else {
-      ux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
+      hux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
       printFeatures(features.user)
       if (features.app) {
         ux.log()
-        ux.styledHeader(`App Features ${color.app(flags.app!)}`)
+        hux.styledHeader(`App Features ${color.app(flags.app!)}`)
         printFeatures(features.app)
       }
     }

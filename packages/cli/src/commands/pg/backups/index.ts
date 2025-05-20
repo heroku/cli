@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import backupsFactory from '../../../lib/pg/backups'
 import host from '../../../lib/pg/host'
 import type {BackupTransfer} from '../../../lib/pg/types'
@@ -45,11 +46,11 @@ export default class Index extends Command {
   private displayBackups(transfers: BackupTransfer[], app: string) {
     const backups = transfers.filter(backupTransfer => backupTransfer.from_type === 'pg_dump' && backupTransfer.to_type === 'gof3r')
     const {name, status, filesize} = backupsFactory(app, this.heroku)
-    ux.styledHeader('Backups')
+    hux.styledHeader('Backups')
     if (backups.length === 0) {
       ux.log(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
     } else {
-      ux.table<BackupTransfer>(backups, {
+      hux.table<BackupTransfer>(backups, {
         ID: {
           get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
         },
@@ -76,11 +77,11 @@ export default class Index extends Command {
       .filter(t => t.from_type !== 'pg_dump' && t.to_type === 'pg_restore')
       .slice(0, 10) // first 10 only
     const {name, status, filesize} = backupsFactory(app, this.heroku)
-    ux.styledHeader('Restores')
+    hux.styledHeader('Restores')
     if (restores.length === 0) {
       ux.log(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
     } else {
-      ux.table(restores, {
+      hux.table(restores, {
         ID: {
           get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
         },
@@ -105,11 +106,11 @@ export default class Index extends Command {
   private displayCopies(transfers: BackupTransfer[], app: string) {
     const {name, status, filesize} = backupsFactory(app, this.heroku)
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
-    ux.styledHeader('Copies')
+    hux.styledHeader('Copies')
     if (copies.length === 0) {
       ux.log(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
     } else {
-      ux.table(copies, {
+      hux.table(copies, {
         ID: {
           get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
         },

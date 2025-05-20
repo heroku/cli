@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as http from 'http'
 import {get, RequestOptions} from 'https'
 import {randomUUID} from 'node:crypto'
@@ -105,7 +106,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   const latestTestRuns = sort(testRuns).slice(0, count)
 
   if (jsonOption) {
-    ux.styledJSON(latestTestRuns)
+    hux.styledJSON(latestTestRuns)
     return
   }
 
@@ -127,7 +128,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     )
   })
 
-  ux.table(
+  hux.table(
     data,
     {
       iconStatus: {
@@ -152,7 +153,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 
   if (!jsonOption) {
     const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
-    ux.styledHeader(header)
+    hux.styledHeader(header)
   }
 
   draw(testRuns, watchOption, jsonOption)

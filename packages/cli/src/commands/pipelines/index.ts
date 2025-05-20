@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
@@ -19,9 +20,9 @@ export default class Pipelines extends Command {
     const {body: pipelines} = await this.heroku.get<Heroku.Pipeline[]>('/pipelines')
 
     if (flags.json) {
-      ux.styledJSON(pipelines)
+      hux.styledJSON(pipelines)
     } else {
-      ux.styledHeader('My Pipelines')
+      hux.styledHeader('My Pipelines')
       for (const pipeline of pipelines) {
         ux.log(pipeline.name)
       }

@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import pghost from '../../lib/pg/host'
 import {getAddon} from '../../lib/pg/fetcher'
@@ -48,7 +49,7 @@ export default class Credentials extends Command {
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }
 
-    ux.table(credentials, {
+    hux.table(credentials, {
       Credential: {
         get: presentCredential,
       },

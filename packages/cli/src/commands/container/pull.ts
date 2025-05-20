@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as DockerHelper from '../../lib/container/docker_helper'
 import {ensureContainerStack} from '../../lib/container/helpers'
 import {debug} from '../../lib/container/debug'
@@ -43,7 +43,7 @@ export default class Pull extends Command {
 
     for (const process of argv as string[]) {
       const tag = `${registry}/${app}/${process}`
-      ux.styledHeader(`Pulling ${process} as ${tag}`)
+      hux.styledHeader(`Pulling ${process} as ${tag}`)
       await DockerHelper.pullImage(tag)
     }
   }

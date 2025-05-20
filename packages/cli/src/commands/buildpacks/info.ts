@@ -1,5 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
@@ -28,8 +29,8 @@ export default class Info extends Command {
     const result = await registry.info(args.buildpack)
     Result.match({
       Ok: buildpack => {
-        ux.styledHeader(args.buildpack)
-        ux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+        hux.styledHeader(args.buildpack)
+        hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
       },
       Err: err => {
         if (err.status === 404) {

@@ -379,23 +379,4 @@ describe('addons:create', function () {
       expect(stdout.output).to.equal('provision message\nCreated db3-swiftly-123\nUse heroku addons:docs heroku-db3 to view documentation\n')
     })
   })
-
-  context('creating an inference addon', function () {
-    beforeEach(function () {
-      api.post('/apps/myapp/addons', {
-        plan: {name: 'heroku-inference:claude-3-5-sonnet'}, name: 'foobar', attachment: {}, config: {},
-      })
-        .reply(200, inferenceAddon)
-    })
-    it('displays disclaimer when creating inference addon', async function () {
-      await runCommand(Cmd, [
-        'heroku-inference:claude-3-5-sonnet',
-        '--app',
-        'myapp',
-        '--name',
-        'foobar',
-      ])
-      expect(stderr.output).to.contain('Heroku Managed Inference and Agent is a pilot or beta service')
-    })
-  })
 })

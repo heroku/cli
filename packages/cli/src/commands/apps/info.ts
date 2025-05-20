@@ -1,10 +1,12 @@
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as util from 'util'
 import * as _ from 'lodash'
 import {filesize} from 'filesize'
 import {getGeneration} from '../../lib/apps/generation'
+
 const {countBy, snakeCase} = _
 
 function formatDate(date: Date) {
@@ -85,8 +87,8 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
     return stack
   })(info.app)
 
-  ux.styledHeader(info.app.name)
-  ux.styledObject(data)
+  hux.styledHeader(info.app.name)
+  hux.styledObject(data)
 
   if (extended) {
     ux.log('\n\n--- Extended Information ---\n\n')
@@ -170,7 +172,7 @@ repo_size=5000000
     if (flags.shell) {
       shell()
     } else if (flags.json) {
-      ux.styledJSON(info)
+      hux.styledJSON(info)
     } else {
       print(info, addons, collaborators, flags.extended)
     }

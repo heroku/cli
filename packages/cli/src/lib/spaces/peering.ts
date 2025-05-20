@@ -1,10 +1,11 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {displayCIDR, peeringStatus} from './format'
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
 
 export function displayPeeringInfo(space: string, info: PeeringInfo) {
-  ux.styledHeader(`${space} Peering Info`)
-  ux.styledObject({
+  hux.styledHeader(`${space} Peering Info`)
+  hux.styledObject({
     'AWS Account ID': info.aws_account_id,
     'AWS Region': info.aws_region,
     'AWS VPC ID': info.vpc_id,
@@ -19,8 +20,8 @@ export function displayPeeringsAsJSON(peerings: Peering[]) {
 }
 
 export function displayPeerings(space: string, peerings: Peering[]) {
-  ux.styledHeader(`${space} Peerings`)
-  ux.table<Peering>(peerings, {
+  hux.styledHeader(`${space} Peerings`)
+  hux.table<Peering>(peerings, {
     pcx_id: {
       header: 'PCX ID',
     },

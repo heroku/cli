@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 const _ = require('lodash')
@@ -79,7 +80,7 @@ export default class MembersIndex extends Command {
         ux.log(msg)
       } else {
         const tableColumns = buildTableColumns(teamInvites)
-        ux.table(
+        hux.table(
           members,
           tableColumns,
         )

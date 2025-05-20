@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import pghost from '../../lib/pg/host'
 import {getAddon, all} from '../../lib/pg/fetcher'
@@ -17,10 +18,10 @@ type DBObject = {
 
 function displayDB(db: DBObject, app: string) {
   if (db.addon.attachment_names) {
-    ux.styledHeader(db.addon.attachment_names.map((c: string) => color.green(c + '_URL'))
+    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.green(c + '_URL'))
       .join(', '))
   } else {
-    ux.styledHeader(db.configVars?.map(c => color.green(c))
+    hux.styledHeader(db.configVars?.map(c => color.green(c))
       .join(', ') || '')
   }
 
@@ -43,7 +44,7 @@ function displayDB(db: DBObject, app: string) {
     }
   })
   const keys = db.dbInfo?.info.map(i => i.name)
-  ux.styledObject(info, keys)
+  hux.styledObject(info, keys)
   ux.log()
 }
 

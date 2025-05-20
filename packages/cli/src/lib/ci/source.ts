@@ -1,8 +1,10 @@
 import {Command} from '@heroku-cli/command'
 import * as fs from 'async-file'
-import {ux} from '@oclif/core'
 import * as git from './git'
 import got from 'got'
+import debug from 'debug'
+
+const ciDebug = debug('ci')
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {
@@ -37,7 +39,7 @@ export async function createSourceBlob(ref: any, command: Command) {
     }
   } catch (error) {
     // the commit isn't in the repo, we will package the local git commit instead
-    ux.debug(`Commit not found in pipeline repository: ${error}`)
+    ciDebug('Commit not found in pipeline repository', error)
   }
 
   const sourceBlob = await prepareSource(ref, command)

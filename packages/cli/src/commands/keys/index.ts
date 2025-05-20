@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
@@ -19,11 +20,11 @@ export default class Keys extends Command {
     const {flags} = await this.parse(Keys)
     const {body: keys} = await this.heroku.get<Heroku.Key[]>('/account/keys')
     if (flags.json) {
-      ux.styledJSON(keys)
+      hux.styledJSON(keys)
     } else if (keys.length === 0) {
       ux.warn('You have no SSH keys.')
     } else {
-      ux.styledHeader(`${color.cyan(keys[0].email || '')} keys`)
+      hux.styledHeader(`${color.cyan(keys[0].email || '')} keys`)
       if (flags.long) {
         keys.forEach(k => ux.log(k.public_key))
       } else {

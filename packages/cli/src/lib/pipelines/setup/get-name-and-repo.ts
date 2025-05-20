@@ -1,4 +1,5 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {pipelineName, repoName} from './validate'
 
@@ -24,7 +25,7 @@ export default async function getNameAndRepo(args: any) {
   }
 
   if (!args.name) {
-    const name = await ux.prompt('Pipeline name', {
+    const name = await hux.prompt('Pipeline name', {
       required: true,
     })
 
@@ -38,7 +39,7 @@ export default async function getNameAndRepo(args: any) {
   }
 
   if (!args.repo) {
-    const repo = await ux.prompt('GitHub repository to connect to (e.g. rails/rails)', {
+    const repo = await hux.prompt('GitHub repository to connect to (e.g. rails/rails)', {
       required: true,
     })
 
