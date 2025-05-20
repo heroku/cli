@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import * as path from 'path'
 
@@ -30,3 +31,4 @@ export default class Script extends AutocompleteBase {
     return `\n# ${this.config.bin} autocomplete setup\n`
   }
 }
+*/

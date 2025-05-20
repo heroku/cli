@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import redisApi, {RedisApiResponse, RedisMaintenanceWindowResponse} from '../../lib/redis/api'
@@ -70,3 +71,4 @@ export default class Maintenance extends Command {
     ux.log(maintenance.message)
   }
 }
+*/

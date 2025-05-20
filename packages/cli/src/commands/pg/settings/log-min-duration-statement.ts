@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand} from '../../../lib/pg/setter'
@@ -34,3 +35,4 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
     return `The duration of each completed statement will be logged if the statement ran for at least ${setting.value} milliseconds.`
   }
 }
+*/

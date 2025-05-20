@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags, APIClient} from '@heroku-cli/command'
 import {mapKeys, pickBy} from 'lodash'
@@ -68,3 +69,4 @@ RACK_ENV:  staging`,
   }
 }
 
+*/

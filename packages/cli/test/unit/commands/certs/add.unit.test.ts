@@ -13,7 +13,7 @@ import {
   certificateDetails,
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints'
-import Cmd from '../../../../src/commands/certs/add'
+// import Cmd from '../../../../src/commands/certs/add'
 import {expect} from '@oclif/test'
 import {SinonStub} from 'sinon'
 import {PathLike} from 'node:fs'

@@ -1,3 +1,4 @@
+/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry'
@@ -65,3 +66,4 @@ export default class Add extends Command {
     ux.log(`successfully added drain ${drain.exporter.endpoint}`)
   }
 }
+*/

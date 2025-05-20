@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -45,3 +46,4 @@ export default class Remove extends Command {
     ux.warn('It may take a few moments for the changes to take effect.')
   }
 }
+*/

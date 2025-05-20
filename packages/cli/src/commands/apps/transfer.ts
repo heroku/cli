@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -89,3 +90,4 @@ $ heroku apps:transfer --bulk acme-widgets
     }
   }
 }
+*/

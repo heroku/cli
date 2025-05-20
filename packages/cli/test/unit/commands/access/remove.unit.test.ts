@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import Cmd  from '../../../../src/commands/access/remove'
+// import Cmd from '../../../../src/commands/access/remove'
 import runCommand from '../../../helpers/runCommand'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete'
 let apiDelete: { done: () => any }

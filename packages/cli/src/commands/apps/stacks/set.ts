@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -46,3 +47,4 @@ Run git push heroku main to trigger a new build on myapp.`
     ux.action.stop()
   }
 }
+*/

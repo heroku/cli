@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {hostStatus} from './format'
@@ -38,3 +39,4 @@ export function displayHosts(space: string, hosts: Host[]) {
 export function displayHostsAsJSON(hosts: Host[]) {
   ux.log(JSON.stringify(hosts, null, 2))
 }
+*/

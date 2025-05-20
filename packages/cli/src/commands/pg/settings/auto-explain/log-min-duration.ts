@@ -1,3 +1,4 @@
+/*
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter'
@@ -34,3 +35,4 @@ export default class LogMinDuration extends PGSettingsCommand {
     return `All execution plans will be logged for queries taking up to ${setting.value} milliseconds or more.`
   }
 }
+*/

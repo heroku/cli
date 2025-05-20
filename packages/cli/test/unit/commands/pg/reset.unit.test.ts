@@ -1,5 +1,5 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/pg/reset'
+// import Cmd from '../../../../src/commands/pg/reset'
 import runCommand from '../../../helpers/runCommand'
 import expectOutput from '../../../helpers/utils/expectOutput'
 import * as nock from 'nock'

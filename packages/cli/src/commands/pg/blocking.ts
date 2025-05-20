@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
@@ -43,3 +44,4 @@ export default class Blocking extends Command {
       ux.log(output)
     }
 }
+*/

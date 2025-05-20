@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/pg/settings/track-functions'
+// import Cmd from '../../../../../src/commands/pg/settings/track-functions'
 
 /*
 describe('pg:settings:track-functions', function () {

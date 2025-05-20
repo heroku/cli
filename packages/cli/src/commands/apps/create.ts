@@ -1,3 +1,4 @@
+/*
 import {ParserOutput} from '@oclif/core/lib/interfaces/parser'
 import yaml = require('js-yaml')
 import {readFile} from 'fs-extra'
@@ -241,3 +242,4 @@ $ heroku apps:create --region eu`,
     await runFromFlags(context, this.heroku, this.config)
   }
 }
+*/

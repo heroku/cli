@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import color from '@heroku-cli/color'
@@ -73,3 +74,4 @@ export default class Restart extends Command {
     ux.action.stop()
   }
 }
+*/

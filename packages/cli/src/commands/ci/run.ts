@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -48,3 +49,4 @@ export default class CiRun extends Command {
     await displayAndExit(pipeline, testRun.number!, this)
   }
 }
+*/

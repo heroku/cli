@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {database} from '../../lib/pg/fetcher'
@@ -105,3 +106,4 @@ export default class Outliers extends Command {
       `
   }
 }
+*/

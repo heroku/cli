@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -30,3 +31,4 @@ remote: Counting objects: 42, done.
     await git.spawn(['clone', '-o', remote, git.url(app.name!), directory])
   }
 }
+*/

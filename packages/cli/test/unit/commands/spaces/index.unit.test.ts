@@ -1,10 +1,10 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/spaces/index'
+// import Cmd from '../../../../src/commands/spaces/index'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-import {CLIError} from '@oclif/core/lib/errors'
+// // import {CLIError} from '@oclif/core/lib/errors'
 import stripAnsi = require('strip-ansi')
 
 /*

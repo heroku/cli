@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -178,3 +179,4 @@ export default class Promote extends Command {
     }
   }
 }
+*/
