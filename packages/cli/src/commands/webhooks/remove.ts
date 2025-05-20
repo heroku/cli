@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
@@ -32,3 +33,4 @@ export default class WebhooksRemove extends BaseCommand {
     action.stop()
   }
 }
+*/

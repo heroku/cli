@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {spawn, SpawnOptions, type SpawnOptionsWithStdioTuple} from 'child_process'
 import debug from 'debug'
@@ -270,3 +271,4 @@ export async function interactive(db: ReturnType<typeof getConnectionDetails>) {
 
   return runWithTunnel(db, configs.dbTunnelConfig, options)
 }
+*/

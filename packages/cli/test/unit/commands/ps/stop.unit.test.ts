@@ -1,5 +1,5 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/ps/stop'
+// import Cmd from '../../../../src/commands/ps/stop'
 import runCommand from '../../../helpers/runCommand'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'

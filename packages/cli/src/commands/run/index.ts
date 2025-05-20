@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import {ux} from '@oclif/core'
@@ -67,3 +68,4 @@ export default class Run extends Command {
     }
   }
 }
+*/

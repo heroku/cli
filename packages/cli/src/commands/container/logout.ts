@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as DockerHelper from '../../lib/container/docker_helper'
@@ -37,3 +38,4 @@ export default class Logout extends Command {
     }
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions'
 import {addMemberToTeam} from '../../lib/members/utils'
@@ -19,3 +20,4 @@ export default class MembersSet extends Command {
     await addMemberToTeam(email, role, team, this.heroku, 'PATCH')
   }
 }
+*/

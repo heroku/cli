@@ -1,3 +1,4 @@
+/*
 import {Command, Flags} from '@oclif/core'
 
 export default class CertsAutoWait extends Command {
@@ -13,3 +14,4 @@ export default class CertsAutoWait extends Command {
     this.parse(CertsAutoWait)
   }
 }
+*/

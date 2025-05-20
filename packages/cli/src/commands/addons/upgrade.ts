@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -157,3 +158,4 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     }
   }
 }
+*/

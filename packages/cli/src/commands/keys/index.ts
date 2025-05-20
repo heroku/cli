@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import color from '@heroku-cli/color'
@@ -34,3 +35,4 @@ export default class Keys extends Command {
   }
 }
 
+*/

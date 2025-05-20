@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
@@ -48,3 +49,4 @@ export default class Psql extends Command {
       }
     }
 }
+*/

@@ -1,6 +1,7 @@
+
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+// import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
@@ -20,7 +21,7 @@ export type SpaceTopology = {
     }>
   }>
 }
-
+/*
 export default class Topology extends Command {
   static topic = 'spaces';
   static description = 'show space topology';
@@ -113,3 +114,4 @@ export default class Topology extends Command {
     return Number.parseInt(s.split('-', 2)[0].split('.', 2)[1], 10)
   }
 }
+*/

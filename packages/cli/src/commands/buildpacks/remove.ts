@@ -1,3 +1,4 @@
+/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
@@ -59,3 +60,4 @@ export default class Remove extends Command {
     }
   }
 }
+*/

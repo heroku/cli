@@ -1,3 +1,4 @@
+/*
 import {APIClient} from '@heroku-cli/command'
 import {deps} from '@heroku-cli/command/lib/deps'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git'
@@ -290,3 +291,4 @@ export class CompletionLookup {
     return this.blocklistMap[this.name] && this.blocklistMap[this.name].includes(this.cmdId)
   }
 }
+*/

@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/pg/settings/data-connector-details-logs'
+//import Cmd from '../../../../../src/commands/pg/settings/data-connector-details-logs'
 import * as fixtures from '../../../../fixtures/addons/fixtures'
 
 /*

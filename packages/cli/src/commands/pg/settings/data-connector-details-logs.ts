@@ -1,3 +1,4 @@
+/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
@@ -35,3 +36,4 @@ export default class DataConnectorDetailsLogs extends PGSettingsCommand {
     return 'Data replication slot details will no longer be logged.'
   }
 }
+*/
