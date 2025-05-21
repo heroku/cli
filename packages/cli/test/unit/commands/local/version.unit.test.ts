@@ -3,9 +3,12 @@ import {expect, test} from '@oclif/test'
 import * as foreman from '../../../../src/lib/local/fork-foreman.js'
 import * as fs from 'fs'
 import * as path from 'path'
+import {fileURLToPath} from 'url'
+import sinon from 'sinon'
 
-const sinon = require('sinon')
 let existsSyncSpy: any
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const extensionRoot = path.join(__dirname, '..', '..', '..', '..', 'src', 'lib', 'local')
 const jsExtensionPath = path.join(extensionRoot, 'run-foreman.js')
 

@@ -4,7 +4,7 @@ import * as nock from 'nock'
 import * as sinon from 'sinon'
 // import * as fetcher from '../../../../src/lib/pg/fetcher'
 import runCommand from '../../../helpers/runCommand.js'
-const proxyquire = require('proxyquire')
+import proxyquire from 'proxyquire'
 const all = []
 let addon
 let allSinonStub: sinon.SinonStub

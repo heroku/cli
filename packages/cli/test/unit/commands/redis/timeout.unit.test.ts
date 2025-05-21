@@ -5,7 +5,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'

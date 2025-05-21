@@ -7,9 +7,7 @@ import * as _ from 'lodash'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-
-const lolex = require('lolex')
-
+import lolex from 'lolex'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 

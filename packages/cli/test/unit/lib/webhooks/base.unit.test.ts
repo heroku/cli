@@ -1,8 +1,11 @@
 import {Config} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import * as path from 'path'
-
 import webhooksAbstractClass from '../../../../src/lib/webhooks/base.js'
+import * as path from 'path'
+import {fileURLToPath} from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 class Webhooks extends webhooksAbstractClass {
   // eslint-disable-next-line no-useless-constructor

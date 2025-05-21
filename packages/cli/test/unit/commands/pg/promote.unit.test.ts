@@ -6,7 +6,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('pg:promote when argument is database', function () {

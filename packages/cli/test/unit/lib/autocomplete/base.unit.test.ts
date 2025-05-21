@@ -2,7 +2,10 @@ import {flags} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
+import {fileURLToPath} from 'url'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 // import {AutocompleteBase} from '../../../../src/lib/autocomplete/base'
 
 // autocomplete will throw error on windows

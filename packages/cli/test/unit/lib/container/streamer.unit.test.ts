@@ -2,8 +2,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import * as stream from 'stream'
-const lolex = require('lolex')
-
+import lolex from 'lolex'
 import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {

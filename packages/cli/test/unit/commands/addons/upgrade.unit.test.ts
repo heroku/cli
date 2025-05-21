@@ -5,7 +5,7 @@ import * as nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import * as chalk from 'chalk'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('addons:upgrade', function () {

@@ -5,7 +5,7 @@ import nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 // // import {CLIError} from '@oclif/core/lib/errors'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('spaces', function () {

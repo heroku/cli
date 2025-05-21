@@ -5,7 +5,7 @@ import nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('ps:stop', function () {

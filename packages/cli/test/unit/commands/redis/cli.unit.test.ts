@@ -8,8 +8,7 @@ import * as sinon from 'sinon'
 import {noCallThru} from 'proxyquire'
 import {expect} from 'chai'
 import {Duplex} from 'node:stream'
-
-const EventEmitter = require('events').EventEmitter
+import {EventEmitter} from 'events'
 
 class Client extends Duplex {
   _write() {}

@@ -3,9 +3,9 @@ import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import * as nock from 'nock'
 import {expect} from 'chai'
-const lolex = require('lolex')
+import lolex from 'lolex'
 import * as sinon from 'sinon'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
 * You MUST change requests to have different params, or they won't be made and nock will not be satisfied */

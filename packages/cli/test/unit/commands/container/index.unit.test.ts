@@ -2,7 +2,14 @@ import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/index'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-const {version} = require('../../../../package.json')
+import {readFileSync} from 'fs'
+import {fileURLToPath} from 'url'
+import {dirname, join} from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../../../../package.json'), 'utf8'))
+const {version} = packageJson
 
 /*
 describe('container', function () {

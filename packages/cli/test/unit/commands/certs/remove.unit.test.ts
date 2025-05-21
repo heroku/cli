@@ -7,7 +7,7 @@ import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared_sni.unit.test.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('heroku certs:remove', function () {

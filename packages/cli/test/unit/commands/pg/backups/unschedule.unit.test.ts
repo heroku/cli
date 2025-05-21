@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {

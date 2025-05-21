@@ -1,8 +1,7 @@
 import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
 import confirmCommand from '../../../src/lib/confirmCommand.js'
-
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('confirmApp', function () {

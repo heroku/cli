@@ -5,7 +5,7 @@ import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('pg:credentials:destroy', function () {

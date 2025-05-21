@@ -55,6 +55,7 @@
     "netrc-parser": "3.1.6",
     "node-fetch": "^2.6.7",
     "open": "^8.4.2",
+    "parse-procfile": "^0.0.2",
     "phoenix": "^1.6.14",
     "portfinder": "^1.0.32",
     "printf": "0.6.1",
@@ -125,7 +126,7 @@
     "oclif": "4.17.46",
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
-    "read-pkg": "^4.0.1",
+    "read-pkg": "^9.0.1",
     "rimraf": "5.0.5",
     "sinon": "^19.0.2",
     "source-map-support": "^0.5.21",
@@ -153,17 +154,6 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
-  "mocha": {
-    "require": [
-      "test/helpers/init.js",
-      "ts-node/register",
-      "source-map-support/register"
-    ],
-    "watch-extensions": "ts",
-    "recursive": true,
-    "reporter": "spec",
-    "timeout": 360000
-  },
   "oclif": {
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "additionalHelpFlags": [

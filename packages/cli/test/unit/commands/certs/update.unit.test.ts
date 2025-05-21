@@ -7,7 +7,7 @@ import {endpoint, certificateDetails} from '../../../helpers/stubs/sni-endpoints
 import * as sharedSni from './shared_sni.unit.test.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 import * as fs from 'node:fs/promises'
 import {PathLike} from 'node:fs'
 import * as sinon from 'sinon'

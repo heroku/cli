@@ -19,7 +19,8 @@
     "oclif": "4.17.46",
     "qqjs": "0.3.11",
     "standard": "17.1.0",
-    "tmp": "^0.2.1"
+    "tmp": "^0.2.1",
+    "ts-node": "^10.9.2"
   },
   "resolutions": {
     "ansi-regex": "4.1.1"

@@ -5,7 +5,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import strftime from 'strftime'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)

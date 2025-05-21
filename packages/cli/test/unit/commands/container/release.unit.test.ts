@@ -4,7 +4,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as nock from 'nock'
-import stdMocks = require('std-mocks')
+import stdMocks from 'std-mocks'
 // import {CLIError} from '@oclif/core/lib/errors'
 import color from '@heroku-cli/color'
 

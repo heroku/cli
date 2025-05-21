@@ -6,8 +6,7 @@ import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import stripAnsi = require('strip-ansi')
-
+import stripAnsi from 'strip-ansi'
 /*
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {

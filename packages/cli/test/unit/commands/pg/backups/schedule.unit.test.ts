@@ -4,7 +4,7 @@ import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 // import {CLIError} from '@oclif/core/lib/errors'
 
 /*

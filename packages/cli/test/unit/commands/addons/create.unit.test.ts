@@ -7,8 +7,8 @@ import * as sinon from 'sinon'
 import * as nock from 'nock'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import {HTTPError} from '@heroku/http-call'
-import stripAnsi = require('strip-ansi')
-const lolex = require('lolex')
+import stripAnsi from 'strip-ansi'
+import lolex from 'lolex'
 
 /*
 describe('addons:create', function () {
@@ -97,8 +97,8 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-      expect(unwrap(stderr.output)).to.contain('Warning: You’re using a deprecated syntax with the [--rollback,--follow,--foo] flag')
-      expect(unwrap(stderr.output)).to.contain("Add a '--' (end of options) separator before the flags you’re passing through.")
+      expect(unwrap(stderr.output)).to.contain('Warning: You're using a deprecated syntax with the [--rollback,--follow,--foo] flag')
+      expect(unwrap(stderr.output)).to.contain("Add a '--' (end of options) separator before the flags you're passing through.")
       expect(unwrap(stderr.output)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
       expect(unwrap(stderr.output)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
     })

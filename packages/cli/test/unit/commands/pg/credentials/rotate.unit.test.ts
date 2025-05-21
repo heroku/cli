@@ -6,7 +6,7 @@ import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/pg/credentials/rotate'
 import runCommand from '../../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 const addon = {
   id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
