@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.8.0](https://github.com/heroku/cli/compare/v10.7.0...v10.8.0) (2025-05-21)
+
+
+### Features
+
+* 'pg:upgrade' command enhancements ([#3298](https://github.com/heroku/cli/issues/3298)) ([eab32d1](https://github.com/heroku/cli/commit/eab32d1a51dd4465c9c276339bf64035d3798390))
+
+
+
+
+
 # [10.7.0](https://github.com/heroku/cli/compare/v10.6.1...v10.7.0) (2025-05-08)
 
 
