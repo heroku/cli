@@ -1,8 +1,8 @@
 import {stdout} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import {CLIError} from '@oclif/core/lib/errors'
+// import {CLIError} from '@oclif/core/lib/errors'
 
 export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unknown> = {}) {}
 /*

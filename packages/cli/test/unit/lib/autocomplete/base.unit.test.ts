@@ -6,7 +6,7 @@ import * as path from 'path'
 // import {AutocompleteBase} from '../../../../src/lib/autocomplete/base'
 
 // autocomplete will throw error on windows
-const {default: runtest} = require('../../../helpers/autocomplete/runtest')
+import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 
 // class AutocompleteTest extends AutocompleteBase {
 //   static id = 'test:foo'

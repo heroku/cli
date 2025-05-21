@@ -1,9 +1,10 @@
 import {expect} from '@oclif/test'
-import * as telemetry from '../../src/global_telemetry'
+import * as telemetry from '../../src/global_telemetry.js'
 import {identity} from 'lodash'
 import * as os from 'os'
-const {version} = require('../../../../packages/cli/package.json')
-const nock = require('nock')
+import * as fs from 'fs'
+const {version} = JSON.parse(fs.readFileSync('../../../../packages/cli/package.json', 'utf8'))
+import nock from 'nock'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()

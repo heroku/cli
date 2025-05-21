@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import * as foreman from '../../../../src/lib/local/fork-foreman'
+import * as foreman from '../../../../src/lib/local/fork-foreman.js'
 import * as fs from 'fs'
 import * as path from 'path'
 

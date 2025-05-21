@@ -1,9 +1,9 @@
 import {stdout} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {SinonStub} from 'sinon'
 // import {CLIError} from '@oclif/core/lib/errors'
 
-import * as nock from 'nock'
+import nock from 'nock'
 import * as sinon from 'sinon'
 import {noCallThru} from 'proxyquire'
 import {expect} from 'chai'

@@ -1653,6 +1653,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku/heroku-cli-util@npm:^10.0.0-beta.0":
+  version: 10.0.0-beta.0
+  resolution: "@heroku/heroku-cli-util@npm:10.0.0-beta.0"
+  dependencies:
+    "@heroku-cli/color": ^2.0.4
+    "@heroku-cli/command": ^12.0.0
+    "@heroku/http-call": ^5.4.0
+    "@oclif/core": ^4.3.0
+    "@oclif/table": 0.4.8
+    debug: ^4.4.0
+    inquirer: ^12.6.1
+    tunnel-ssh: 4.1.6
+  checksum: efcae4696236a10ecc8562aab4f7759808db266bd97935233ed1befa753e7db5a6840417637ded83f0912a4e35321555c41b127c65090882ee3c49c86d85d186
+  languageName: node
+  linkType: hard
+
 "@heroku/heroku-cli-util@npm:^8.0.13":
   version: 8.0.13
   resolution: "@heroku/heroku-cli-util@npm:8.0.13"
@@ -3881,7 +3897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/table@npm:^0.4.8":
+"@oclif/table@npm:0.4.8, @oclif/table@npm:^0.4.8":
   version: 0.4.8
   resolution: "@oclif/table@npm:0.4.8"
   dependencies:
@@ -5289,10 +5305,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.123":
+"@types/lodash@npm:*":
   version: 4.14.136
   resolution: "@types/lodash@npm:4.14.136"
   checksum: 08c17a29e4168468a2fcf35b369a81e41dd633a952a077ecb8a976c8326e9c7785022165c3abc68610cf3b81e05fe5d571177d570db8f8c71637bfc099c62acc
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.123":
+  version: 4.17.17
+  resolution: "@types/lodash@npm:4.17.17"
+  checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
   languageName: node
   linkType: hard
 
@@ -11011,6 +11034,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
+    "@heroku/heroku-cli-util": ^10.0.0-beta.0
     "@heroku/http-call": ^5.4.0
     "@inquirer/prompts": ^5.0.5
     "@istanbuljs/nyc-config-typescript": ^1.0.2
@@ -11614,6 +11638,26 @@ __metadata:
   peerDependencies:
     inquirer: ">=8.0.0 <10.0.0"
   checksum: 795d6c4254886232b9b0f02b3a49a40eaf8dc92133f80a6f9bb982410cfa4f6c4830257261d4b437c893e73e83c00d7933d10103c1bb67aaf6c76d7cfcf6da25
+  languageName: node
+  linkType: hard
+
+"inquirer@npm:^12.6.1":
+  version: 12.6.1
+  resolution: "inquirer@npm:12.6.1"
+  dependencies:
+    "@inquirer/core": ^10.1.11
+    "@inquirer/prompts": ^7.5.1
+    "@inquirer/type": ^3.0.6
+    ansi-escapes: ^4.3.2
+    mute-stream: ^2.0.0
+    run-async: ^3.0.0
+    rxjs: ^7.8.2
+  peerDependencies:
+    "@types/node": ">=18"
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+  checksum: 556b83cd2fab8cdd7f8b1c31f3b21c533ebd29ee8f75d919e96b62895bbb9f7f9c1d31554cdb8e27eec081c33b49b78c3ca8ca8f1c20c5ca613417127a9de4bc
   languageName: node
   linkType: hard
 
@@ -16677,6 +16721,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"run-async@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "run-async@npm:3.0.0"
+  checksum: 280c03d5a88603f48103fc6fd69f07fb0c392a1e0d319c34ec96a2516030e07ba06f79231a563c78698b882649c2fc1fda601bc84705f57d50efcd1fa506cfc0
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.9":
   version: 1.1.9
   resolution: "run-parallel@npm:1.1.9"
@@ -16699,6 +16750,15 @@ __metadata:
   dependencies:
     tslib: ^2.1.0
   checksum: 61b4d4fd323c1043d8d6ceb91f24183b28bcf5def4f01ca111511d5c6b66755bc5578587fe714ef5d67cf4c9f2e26f4490d4e1d8cabf9bd5967687835e9866a2
+  languageName: node
+  linkType: hard
+
+"rxjs@npm:^7.8.2":
+  version: 7.8.2
+  resolution: "rxjs@npm:7.8.2"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 2f233d7c832a6c255dabe0759014d7d9b1c9f1cb2f2f0d59690fd11c883c9826ea35a51740c06ab45b6ade0d9087bde9192f165cba20b6730d344b831ef80744
   languageName: node
   linkType: hard
 

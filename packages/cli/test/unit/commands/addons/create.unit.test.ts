@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/addons/create'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as _ from 'lodash'
 import * as sinon from 'sinon'
 import * as nock from 'nock'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 import {HTTPError} from '@heroku/http-call'
 import stripAnsi = require('strip-ansi')
 const lolex = require('lolex')

@@ -1,6 +1,6 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/index'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 const {version} = require('../../../../package.json')
 

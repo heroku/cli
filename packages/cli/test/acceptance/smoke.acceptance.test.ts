@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
-import commandsOutput from './commands-output'
+import commandsOutput from './commands-output.js'
 
 // this is a custom function that strips both ansi characters and several additional characters
 const stripAnsi = (input: string) => {

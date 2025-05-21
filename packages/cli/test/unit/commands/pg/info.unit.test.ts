@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 // import * as fetcher from '../../../../src/lib/pg/fetcher'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 const proxyquire = require('proxyquire')
 const all = []
 let addon

@@ -1,9 +1,9 @@
 import {expect} from '@oclif/test'
 import {Config} from '@oclif/core'
-import {paginateRequest} from '../../../src/lib/utils/paginator'
+import {paginateRequest} from '../../../src/lib/utils/paginator.js'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as nock from 'nock'
+import nock from 'nock'
 
 const path = require('path')
 const root = path.resolve(__dirname, '../package.json')

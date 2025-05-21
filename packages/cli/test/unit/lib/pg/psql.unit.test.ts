@@ -8,7 +8,7 @@ import * as proxyquire from 'proxyquire'
 import type {SinonExpectation} from 'sinon'
 import {stderr} from 'stdout-stderr'
 // import type {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
 // import type * as Pgsql from '../../../../src/lib/pg/psql'

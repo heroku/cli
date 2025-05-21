@@ -1,10 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/pg/links/create'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 
 /*
 describe('pg:links:create', function () {

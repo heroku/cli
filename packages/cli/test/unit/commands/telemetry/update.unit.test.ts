@@ -1,11 +1,11 @@
 import {stderr, stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/telemetry/update'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures'
+import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
 /*
 describe('telemetry:update', function () {

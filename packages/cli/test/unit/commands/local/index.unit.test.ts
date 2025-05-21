@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import * as foreman from '../../../../src/lib/local/fork-foreman'
+import * as foreman from '../../../../src/lib/local/fork-foreman.js'
 
 // eslint-disable-next-line node/no-missing-require
 const procfile = require('../../../../src/lib/local/load-foreman-procfile')

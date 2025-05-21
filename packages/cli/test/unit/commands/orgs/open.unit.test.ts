@@ -1,9 +1,9 @@
 // import Cmd from '../../../../src/commands/orgs/open'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 const sinon = require('sinon')
 const expect = require('chai').expect
 import * as nock from 'nock'
-import {teamInfo} from '../../../helpers/stubs/get'
+import {teamInfo} from '../../../helpers/stubs/get.js'
 
 /*
 describe('heroku org:open', function () {

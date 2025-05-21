@@ -1,7 +1,7 @@
 import {stderr} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/spaces/vpn/connect'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
 import stripAnsi = require('strip-ansi')
