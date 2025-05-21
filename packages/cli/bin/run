@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+/* eslint-disable node/shebang */
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
 const now = new Date()
 const cliStartTime = now.getTime()
-const globalTelemetry = require('../lib/global_telemetry')
+import * as globalTelemetry from '../lib/global_telemetry.js'
 
 process.once('beforeExit', async code => {
   // capture as successful exit
@@ -37,14 +38,14 @@ process.on('SIGTERM', async () => {
 
 globalTelemetry.initializeInstrumentation()
 
-const oclif = require('@oclif/core')
+import oclif from '@oclif/core'
 
-oclif.run().then(require('@oclif/core/flush')).catch(async error => {
+oclif.run().then(async () => (await import('@oclif/core/flush')).default()).catch(async error => {
   // capture any errors raised by oclif
   const cliError = error
   cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
   await globalTelemetry.sendTelemetry(cliError)
 
-  return require('@oclif/core/handle')(error)
+  return (await import('@oclif/core/handle')).default(error)
 })
 

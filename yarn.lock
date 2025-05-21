@@ -10756,7 +10756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^13":
+"got@npm:^13, got@npm:^13.0.0":
   version: 13.0.0
   resolution: "got@npm:13.0.0"
   dependencies:
@@ -11081,7 +11081,7 @@ __metadata:
     github-url-to-object: ^4.0.4
     glob: ^10.3.10
     globby: ^10.0.2
-    got: ^11.8.6
+    got: ^13.0.0
     inquirer: ^8.2.6
     lodash: ^4.17.21
     lolex: ^3.1.0

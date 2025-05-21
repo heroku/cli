@@ -48,7 +48,7 @@
     "fs-extra": "^11.3.0",
     "github-url-to-object": "^4.0.4",
     "glob": "^10.3.10",
-    "got": "^11.8.6",
+    "got": "^13.0.0",
     "inquirer": "^8.2.6",
     "lodash": "^4.17.21",
     "netrc-parser": "3.1.6",
@@ -393,5 +393,6 @@
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
+  "type": "module",
   "types": "lib/index.d.ts"
 }
