@@ -48,7 +48,7 @@ const completionCommandByName = new Map([
  */
 const completionResultsByName = new Map()
 
-export class HerokuRepl {
+class HerokuRepl {
   /**
    * The OClif config object containing
    * the command metadata and the means
