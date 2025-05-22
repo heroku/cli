@@ -53,8 +53,7 @@ const main = async () => {
     await config.load()
     const {_: [commandName, ...args], ...flags} = yargs
     if (!commandName && args.length === 0 && Object.keys(flags).length === 0) {
-      await herokuRepl(config)
-      return
+      return herokuRepl(config)
     }
 
     if (flags.prompt) {
