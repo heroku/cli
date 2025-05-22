@@ -13,6 +13,6 @@ declare module 'netrc-parser' {
     save(): Promise<void>;
   }
 
-  const netrc: Netrc;
-  export default netrc;
-} 
+  const netrc: Netrc
+  export default netrc
+}

@@ -4,6 +4,7 @@ import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
 import globby from 'globby'
+import {fileURLToPath} from 'url'
 
 import commandsOutput from './commands-output.js'
 
@@ -18,6 +19,7 @@ const stripAnsi = (input: string) => {
 
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
