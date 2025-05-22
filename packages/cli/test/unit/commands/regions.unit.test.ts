@@ -10,27 +10,34 @@ const withRegions = test
     ]),
   )
 
-/*
 describe('regions', function () {
   withRegions
     .stdout()
     .command(['regions'])
     .it('list regions', async ({stdout}) => {
-      expect(stdout).to.equal(' ID     Location              Runtime        \n ────── ───────────────────── ────────────── \n eu     Europe                Common Runtime \n us     United States         Common Runtime \n oregon Oregon, United States Private Spaces \n')
+      expect(stdout).to.include('ID       Location                Runtime')
+      expect(stdout).to.include('─────────────────────────────────────────────────')
+      expect(stdout).to.include('eu       Europe                  Common Runtime')
+      expect(stdout).to.include('us       United States           Common Runtime')
     })
 
   withRegions
     .stdout()
     .command(['regions', '--private'])
     .it('--private', async ({stdout}) => {
-      expect(stdout).to.equal(' ID     Location              Runtime        \n ────── ───────────────────── ────────────── \n oregon Oregon, United States Private Spaces \n')
+      expect(stdout).to.include('ID       Location                Runtime')
+      expect(stdout).to.include('─────────────────────────────────────────────────')
+      expect(stdout).to.include('oregon   Oregon, United States   Private Spaces')
     })
 
   withRegions
     .stdout()
     .command(['regions', '--common'])
     .it('--common', async ({stdout}) => {
-      expect(stdout).to.equal(' ID Location      Runtime        \n ── ───────────── ────────────── \n eu Europe        Common Runtime \n us United States Common Runtime \n')
+      expect(stdout).to.include('ID   Location        Runtime')
+      expect(stdout).to.include('─────────────────────────────────────')
+      expect(stdout).to.include('eu   Europe          Common Runtime')
+      expect(stdout).to.include('us   United States   Common Runtime')
     })
 
   withRegions
@@ -40,5 +47,3 @@ describe('regions', function () {
       expect(JSON.parse(stdout)[0].name).to.equal('eu')
     })
 })
-
-*/
