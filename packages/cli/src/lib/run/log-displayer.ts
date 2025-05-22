@@ -5,7 +5,7 @@ import colorize from './colorize.js'
 import {LogSession} from '../types/fir.js'
 import {getGenerationByAppId} from '../apps/generation.js'
 
-import EventSource from '@heroku/eventsource'
+const EventSource = require('@heroku/eventsource')
 
 interface LogDisplayerOptions {
   app: string,
