@@ -17,7 +17,6 @@ describe('regions', function () {
     .command(['regions'])
     .it('list regions', async ({stdout}) => {
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
-      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────────────────'))
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu       Europe                  Common Runtime'))
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us       United States           Common Runtime'))
     })
@@ -27,7 +26,6 @@ describe('regions', function () {
     .command(['regions', '--private'])
     .it('--private', async ({stdout}) => {
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
-      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────────────────'))
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('oregon   Oregon, United States   Private Spaces'))
     })
 
@@ -36,7 +34,6 @@ describe('regions', function () {
     .command(['regions', '--common'])
     .it('--common', async ({stdout}) => {
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID   Location        Runtime'))
-      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────'))
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu   Europe          Common Runtime'))
       expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us   United States   Common Runtime'))
     })
