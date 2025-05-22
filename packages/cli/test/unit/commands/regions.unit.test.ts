@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
 
 const withRegions = test
   .nock('https://api.heroku.com', api => api
@@ -15,29 +16,29 @@ describe('regions', function () {
     .stdout()
     .command(['regions'])
     .it('list regions', async ({stdout}) => {
-      expect(stdout).to.include('ID       Location                Runtime')
-      expect(stdout).to.include('─────────────────────────────────────────────────')
-      expect(stdout).to.include('eu       Europe                  Common Runtime')
-      expect(stdout).to.include('us       United States           Common Runtime')
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────────────────'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu       Europe                  Common Runtime'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us       United States           Common Runtime'))
     })
 
   withRegions
     .stdout()
     .command(['regions', '--private'])
     .it('--private', async ({stdout}) => {
-      expect(stdout).to.include('ID       Location                Runtime')
-      expect(stdout).to.include('─────────────────────────────────────────────────')
-      expect(stdout).to.include('oregon   Oregon, United States   Private Spaces')
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────────────────'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('oregon   Oregon, United States   Private Spaces'))
     })
 
   withRegions
     .stdout()
     .command(['regions', '--common'])
     .it('--common', async ({stdout}) => {
-      expect(stdout).to.include('ID   Location        Runtime')
-      expect(stdout).to.include('─────────────────────────────────────')
-      expect(stdout).to.include('eu   Europe          Common Runtime')
-      expect(stdout).to.include('us   United States   Common Runtime')
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID   Location        Runtime'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('─────────────────────────────────────'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu   Europe          Common Runtime'))
+      expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us   United States   Common Runtime'))
     })
 
   withRegions
