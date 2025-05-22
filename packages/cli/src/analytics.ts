@@ -48,6 +48,8 @@ export default class AnalyticsCommand {
 
   async record(opts: RecordOpts) {
     await this.initialize
+    const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
+    const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
     const plugin = opts.Command.plugin
     if (!plugin) {
       debug('no plugin found for analytics')
@@ -63,7 +65,7 @@ export default class AnalyticsCommand {
         cli: this.config.name,
         command: opts.Command.id,
         completion: await this._acAnalytics(opts.Command.id),
-        version: this.config.version,
+        version: `${this.config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
         plugin: plugin.name,
         plugin_version: plugin.version,
         os: this.config.platform,
