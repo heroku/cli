@@ -50,19 +50,19 @@ function filePrompt(description, defaultPath) {
 }
 
 const showBooleanPrompt = async (commandFlag, userInputMap, defaultOption) => {
-  const {description, default: defaultValue, name: flagOrArgName} = commandFlag
-  const choice = await choicesPrompt(description, [
+  const {description, name: flagOrArgName} = commandFlag
+  const {choices} = await choicesPrompt(description, [
     {name: 'yes', value: true},
     {name: 'no', value: false},
   ], defaultOption)
 
   // user cancelled
-  if (choice === undefined || choice === 'Cancel') {
+  if (choices === undefined || choices === 'Cancel') {
     return true
   }
 
-  if (choice === 'Yes') {
-    userInputMap.set(flagOrArgName, defaultValue)
+  if (choices) {
+    userInputMap.set(flagOrArgName, {input: true})
   }
 
   return false
