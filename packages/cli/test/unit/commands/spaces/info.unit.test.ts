@@ -1,11 +1,11 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/spaces/info'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../fixtures/spaces/fixtures'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 // import {getGeneration} from '../../../../src/lib/apps/generation'
 
 /*

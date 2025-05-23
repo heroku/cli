@@ -1,7 +1,7 @@
 import * as FS from 'fs-extra'
 import * as path from 'path'
 
-import deps from './deps'
+import deps from './deps.js'
 
 const debug = require('debug')('heroku-cli:file')
 

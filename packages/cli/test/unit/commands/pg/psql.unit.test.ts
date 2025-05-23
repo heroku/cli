@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 // import * as psql from '../../../../src/lib/pg/psql'
 
 const db = {

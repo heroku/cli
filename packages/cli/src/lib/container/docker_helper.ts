@@ -1,5 +1,5 @@
 import * as Child from 'child_process'
-import {debug} from './debug'
+import {debug} from './debug.js'
 import * as glob from 'glob'
 import * as Path from 'path'
 import * as inquirer from 'inquirer'

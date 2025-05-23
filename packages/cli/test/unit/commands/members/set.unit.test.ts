@@ -1,15 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 // import Cmd from '../../../../src/commands/members/set'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {
   teamFeatures,
   teamInfo,
   variableSizeTeamInvites,
   variableSizeTeamMembers,
-} from '../../../helpers/stubs/get'
-import {updateMemberRole} from '../../../helpers/stubs/patch'
+} from '../../../helpers/stubs/get.js'
+import {updateMemberRole} from '../../../helpers/stubs/patch.js'
 
 /*
 describe('heroku members:set', function () {

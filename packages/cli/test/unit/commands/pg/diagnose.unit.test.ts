@@ -1,12 +1,12 @@
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types.js'
 // import Cmd from '../../../../src/commands/pg/diagnose'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 
 /*
 describe('pg:diagnose', function () {

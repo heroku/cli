@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/maintenance/run'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import heredoc from 'tsheredoc'
 
 /*

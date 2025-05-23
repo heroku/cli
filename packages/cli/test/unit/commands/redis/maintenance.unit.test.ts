@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/redis/maintenance'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
+import nock from 'nock'
+import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 // import {CLIError} from '@oclif/core/lib/errors'
 
 /*

@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/ps/index'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import * as strftime from 'strftime'
+import strftime from 'strftime'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)

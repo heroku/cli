@@ -1,11 +1,10 @@
 import {expect} from 'chai'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 // import Cmd from '../../../../src/commands/accounts/current'
-import * as accounts from '../../../../src/lib/accounts/accounts'
+import * as accounts from '../../../../src/lib/accounts/accounts.js'
 import {stdout} from 'stdout-stderr'
-import stripAnsi = require('strip-ansi')
-
+import stripAnsi from 'strip-ansi'
 /*
 describe('accounts:current', function () {
   let currentStub: sinon.SinonStub

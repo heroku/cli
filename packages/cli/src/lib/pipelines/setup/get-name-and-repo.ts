@@ -1,7 +1,7 @@
 import {ux} from '@oclif/core'
 // import {hux} from '@heroku/heroku-cli-util'
 
-import {pipelineName, repoName} from './validate'
+import {pipelineName, repoName} from './validate.js'
 
 function filter(obj: any) {
   const ret: any = {}

@@ -1,8 +1,8 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/rm'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import nock from 'nock'
 import {expect} from 'chai'
 // import {CLIError} from '@oclif/core/lib/errors'
 

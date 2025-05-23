@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/spaces/create'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 // import {getGeneration} from '../../../../src/lib/apps/generation'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 /*
 describe('spaces:create', function () {

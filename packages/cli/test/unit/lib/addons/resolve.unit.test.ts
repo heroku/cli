@@ -1,8 +1,6 @@
-'use strict'
-
-import {resolveAddon, appAddon} from '../../../../src/lib/addons/resolve'
-import {getHerokuAPI} from '../../../helpers/testInstances'
-const {expect} = require('chai')
+import {resolveAddon, appAddon} from '../../../../src/lib/addons/resolve.js'
+import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {expect} from 'chai'
 import * as nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'

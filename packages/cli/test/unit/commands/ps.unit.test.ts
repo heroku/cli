@@ -1,10 +1,10 @@
 import {expect} from '@oclif/test'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import * as strftime from 'strftime'
+import strftime from 'strftime'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../src/commands/spaces/ps'
-import runCommand from '../../helpers/runCommand'
+import runCommand from '../../helpers/runCommand.js'
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)

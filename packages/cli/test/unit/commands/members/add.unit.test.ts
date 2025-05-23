@@ -2,14 +2,14 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
 // import Cmd from '../../../../src/commands/members/add'
-import runCommand from '../../../helpers/runCommand'
-import {sendInvite, updateMemberRole} from '../../../helpers/stubs/put'
+import runCommand from '../../../helpers/runCommand.js'
+import {sendInvite, updateMemberRole} from '../../../helpers/stubs/put.js'
 import {
   teamFeatures,
   teamInfo,
   variableSizeTeamInvites,
   variableSizeTeamMembers,
-} from '../../../helpers/stubs/get'
+} from '../../../helpers/stubs/get.js'
 
 /*
 describe('heroku members:add', function () {

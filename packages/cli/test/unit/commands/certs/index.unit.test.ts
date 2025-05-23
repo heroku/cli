@@ -1,15 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/certs/index'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {
   endpointStables,
   endpointWildcard,
   endpointWildcardBug,
   endpointAcm,
-} from '../../../helpers/stubs/sni-endpoints'
+} from '../../../helpers/stubs/sni-endpoints.js'
 
 /*
 describe('heroku certs', function () {

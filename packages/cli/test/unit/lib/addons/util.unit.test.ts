@@ -1,4 +1,4 @@
-import * as util from '../../../../src/lib/addons/util'
+import * as util from '../../../../src/lib/addons/util.js'
 import {expect} from 'chai'
 
 /*

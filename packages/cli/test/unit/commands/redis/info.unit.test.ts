@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/redis/info'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import runCommand from '../../../helpers/runCommand'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import runCommand from '../../../helpers/runCommand.js'
 import heredoc from 'tsheredoc'
 
 /*

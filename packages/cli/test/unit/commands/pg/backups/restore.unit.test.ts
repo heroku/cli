@@ -1,9 +1,9 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/pg/backups/restore'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 
 const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 

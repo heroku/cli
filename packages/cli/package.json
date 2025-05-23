@@ -7,12 +7,13 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "2.0.1",
-    "@heroku-cli/command": "^12.0.0",
+    "@heroku-cli/command": "^12.0.1",
     "@heroku-cli/notifications": "^1.2.4",
     "@heroku-cli/plugin-ps-exec": "2.6.2",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
+    "@heroku/heroku-cli-util": "^10.0.0-beta.0",
     "@heroku/http-call": "^5.4.0",
     "@inquirer/prompts": "^5.0.5",
     "@oclif/core": "^4.3.0",
@@ -48,12 +49,13 @@
     "fs-extra": "^11.3.0",
     "github-url-to-object": "^4.0.4",
     "glob": "^10.3.10",
-    "got": "^11.8.6",
+    "got": "^13.0.0",
     "inquirer": "^8.2.6",
     "lodash": "^4.17.21",
     "netrc-parser": "3.1.6",
     "node-fetch": "^2.6.7",
     "open": "^8.4.2",
+    "parse-procfile": "^0.0.2",
     "phoenix": "^1.6.14",
     "portfinder": "^1.0.32",
     "printf": "0.6.1",
@@ -124,7 +126,7 @@
     "oclif": "4.17.46",
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
-    "read-pkg": "^4.0.1",
+    "read-pkg": "^9.0.1",
     "rimraf": "5.0.5",
     "sinon": "^19.0.2",
     "source-map-support": "^0.5.21",
@@ -152,17 +154,6 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
-  "mocha": {
-    "require": [
-      "test/helpers/init.js",
-      "ts-node/register",
-      "source-map-support/register"
-    ],
-    "watch-extensions": "ts",
-    "recursive": true,
-    "reporter": "spec",
-    "timeout": 360000
-  },
   "oclif": {
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "additionalHelpFlags": [
@@ -393,5 +384,6 @@
     "test:local": "yarn pretest && yarn test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
+  "type": "module",
   "types": "lib/index.d.ts"
 }

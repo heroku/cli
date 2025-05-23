@@ -1,4 +1,4 @@
-import {getConfig} from './testInstances'
+import {getConfig} from './testInstances.js'
 import {Command} from '@heroku-cli/command'
 import {stdout, stderr} from 'stdout-stderr'
 

@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
-import * as runHelper from '../../src/lib/run/helpers'
-import {unwrap} from '../helpers/utils/unwrap'
+import * as runHelper from '../../src/lib/run/helpers.js'
+import {unwrap} from '../helpers/utils/unwrap.js'
 
 const testFactory = () => {
   return test

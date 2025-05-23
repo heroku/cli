@@ -1,7 +1,7 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/spaces/vpn/connections'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 

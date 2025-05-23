@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 
 /*
 describe('trusted-ips:remove', function () {

@@ -1,5 +1,5 @@
 import {Hook} from '@oclif/core'
-import {getAllVersionFlags} from '../../lib/utils/packageParser'
+import {getAllVersionFlags} from '../../lib/utils/packageParser.js'
 
 const allowlist = [
   'HEROKU_API_KEY',

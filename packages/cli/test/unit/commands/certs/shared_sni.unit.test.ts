@@ -1,6 +1,6 @@
 import {stdout, stderr} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
 import {
   endpoint,
@@ -11,9 +11,9 @@ import {
   endpointDomain,
   endpointCnameDomain,
   endpoint2Domain,
-} from '../../../helpers/stubs/sni-endpoints'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
+} from '../../../helpers/stubs/sni-endpoints.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import heredoc from 'tsheredoc'
 
 export const shouldHandleArgs = (

@@ -1,10 +1,10 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/telemetry/info'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import {TelemetryDrain} from '../../../../src/lib/types/telemetry'
+import {TelemetryDrain} from '../../../../src/lib/types/telemetry.js'
 
 /*
 describe('telemetry:info', function () {

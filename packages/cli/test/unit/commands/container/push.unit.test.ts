@@ -1,12 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/push'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
-import * as nock from 'nock'
+import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
+import nock from 'nock'
 // import {CLIError} from '@oclif/core/lib/errors'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 const sandbox = sinon.createSandbox()
 

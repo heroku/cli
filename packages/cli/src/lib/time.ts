@@ -1,4 +1,4 @@
-import * as strftime from 'strftime'
+import strftime from 'strftime'
 
 export function ago(since: Date) {
   const elapsed = Math.floor((Date.now() - since.getTime()) / 1000)

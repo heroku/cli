@@ -1,9 +1,9 @@
 import {Hook} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import execa from 'execa'
 
 const exec = (cmd: string, args: string[]) => {
-  const execa = require('execa')
   return execa(cmd, args, {stdio: 'inherit'})
 }
 

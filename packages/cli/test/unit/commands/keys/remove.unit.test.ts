@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('keys:remove', function () {

@@ -1,7 +1,7 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expect, test} from '@oclif/test'
 import {formatDistanceToNow, addSeconds} from 'date-fns'
-import {display} from '../../../../src/lib/authorizations/authorizations'
+import {display} from '../../../../src/lib/authorizations/authorizations.js'
 
 const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
   test

@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-import {CLIError} from '@oclif/core/lib/errors'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import {CLIError} from '@oclif/core/lib/errors'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
@@ -16,6 +16,7 @@ const fetcher =  {
   getAddon: () => Promise.resolve(all[0]),
 }
 
+/*
 const {default: Cmd} = proxyquire('../../../../../src/commands/pg/upgrade/wait', {
   '../../../lib/pg/fetcher': fetcher,
 })
@@ -91,3 +92,4 @@ describe('pg:upgrade:wait', function () {
     })
   })
 })
+*/

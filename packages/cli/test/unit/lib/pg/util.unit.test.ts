@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 // import {essentialPlan, parsePostgresConnectionString} from '../../../../src/lib/pg/util'
-import {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types'
+import {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types.js'
 
 /*
 describe('util', function () {

@@ -1,8 +1,8 @@
 import {HTTP} from '@heroku/http-call'
-import UserConfig from './user-config'
+import UserConfig from './user-config.js'
 import FS = require('fs-extra')
 
-import file = require('./file')
+import * as file from './file.js'
 
 const cache: any = {}
 function fetch(s: string) {

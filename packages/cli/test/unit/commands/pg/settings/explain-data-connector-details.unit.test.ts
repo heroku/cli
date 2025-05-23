@@ -1,10 +1,10 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 // import Cmd from '../../../../../src/commands/pg/settings/explain-data-connector-details'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
 /*
 describe('pg:explain-data-connector-details', function () {

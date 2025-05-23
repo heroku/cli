@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
-import type {App} from '../../../../src/lib/types/fir'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import type {App} from '../../../../src/lib/types/fir.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const app = {
   id: 'app-id',

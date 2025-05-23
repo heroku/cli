@@ -1,12 +1,18 @@
 import {expect} from '@oclif/test'
-import * as telemetry from '../../src/global_telemetry'
+import * as telemetry from '../../src/global_telemetry.js'
 import {identity} from 'lodash'
 import * as os from 'os'
-const {version} = require('../../../../packages/cli/package.json')
-const nock = require('nock')
+import * as fs from 'fs'
+import {fileURLToPath} from 'url'
+import * as path from 'path'
+import nock from 'nock'
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const {version} = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', '..', 'cli', 'package.json'), 'utf8'))
 
 /*
 describe('telemetry', function () {

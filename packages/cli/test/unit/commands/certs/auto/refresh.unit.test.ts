@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/certs/auto/refresh'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import * as nock from 'nock'
+import nock from 'nock'
 
 /*
 describe('heroku certs:auto:refresh', function () {

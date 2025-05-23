@@ -1,10 +1,10 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import runCommand from '../../../../../helpers/runCommand'
+import runCommand from '../../../../../helpers/runCommand.js'
 // import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-triggers'
-import * as fixtures from '../../../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
 /*
 describe('pg:settings:auto-explain:log-triggers', function () {

@@ -2,7 +2,7 @@ import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
 import * as path from 'path'
 
-import deps from './deps'
+import deps from './deps.js'
 
 export interface ConfigJSON {
   schema: 1;

@@ -5,7 +5,7 @@ import * as sinon from 'sinon'
 import {expect} from 'chai'
 import * as cp from 'child_process'
 import * as EventEmitter from 'events'
-import Git from '../../../../src/lib/git/git'
+import Git from '../../../../src/lib/git/git.js'
 
 /*
 describe('git', function () {

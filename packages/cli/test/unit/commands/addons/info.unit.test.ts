@@ -1,10 +1,10 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/addons/info'
-import runCommand from '../../../helpers/runCommand'
-import * as fixtures from '../../../fixtures/addons/fixtures'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import runCommand from '../../../helpers/runCommand.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as nock from 'nock'
-import  {resolveAddon} from '../../../../src/lib/addons/resolve'
+import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 
 const cache = resolveAddon.cache
 

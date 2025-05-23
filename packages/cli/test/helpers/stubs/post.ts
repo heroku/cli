@@ -1,4 +1,4 @@
-import * as nock from 'nock'
+import nock from 'nock'
 
 export function collaborators() {
   return nock('https://api.heroku.com:443')

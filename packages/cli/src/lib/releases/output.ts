@@ -1,4 +1,4 @@
-import got from 'got'
+const got = require('got')
 
 export const stream = function (url: string) {
   return new Promise(function (resolve, reject) {

@@ -1,5 +1,5 @@
-import confirmCommand from '../confirmCommand'
-import color from '@heroku-cli/color'
+import confirmCommand from '../confirmCommand.js'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {HTTPError} from '@heroku/http-call'
 import printf = require('printf')

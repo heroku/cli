@@ -1,9 +1,9 @@
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
 import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
-import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups'
+import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups.js'
 
 /*
 describe('pipelines:setup', function () {

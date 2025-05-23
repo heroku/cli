@@ -1,4 +1,4 @@
-import * as nock from 'nock'
+import nock from 'nock'
 import * as sinon from 'sinon'
 import {expect, test as base} from '@oclif/test'
 
@@ -13,7 +13,6 @@ afterEach(function () {
   return api.done()
 })
 
-/*
 describe('when heroku is green', function () {
   test
     .stdout()
@@ -100,5 +99,3 @@ update contents
 `)
     })
 })
-
-*/
