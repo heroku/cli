@@ -338,9 +338,10 @@ class HerokuRepl {
    *
    * @param {Record<string, unknown>} commandMeta the metadata for the command
    * @param {string[]} flagsOrArgs the flags or args for the command
+   * @param {string} line the current line
    * @returns {Promise<[string[], string]>} the completions and the current input
    */
-  async #buildCompletions(commandMeta, flagsOrArgs = [], line) {
+  async #buildCompletions(commandMeta, flagsOrArgs = [], line = '') {
     const {args, flags} = commandMeta
     const {requiredInputs: requiredFlags, optionalInputs: optionalFlags} = this.#collectInputsFromManifest(flags)
     const {requiredInputs: requiredArgs, optionalInputs: optionalArgs} = this.#collectInputsFromManifest(args)
@@ -362,9 +363,9 @@ class HerokuRepl {
     // Flags *must* occur first since they may influence
     // the completions for args.
     return await this.#getCompletionsForFlag(line, current, requiredFlags, userFlags, commandMeta) ||
-      await this.#getCompletionsForArg(line, current, requiredArgs, userArgs, commandMeta) ||
+      await this.#getCompletionsForArg(current, requiredArgs, userArgs) ||
       await this.#getCompletionsForFlag(line, current, optionalFlags, userFlags, commandMeta) ||
-      await this.#getCompletionsForArg(line, current, optionalArgs, userArgs, commandMeta) ||
+      await this.#getCompletionsForArg(current, optionalArgs, userArgs) ||
       this.#getCompletionsForEndOfLine(line, flags, userFlags)
   }
 
@@ -585,14 +586,12 @@ class HerokuRepl {
   /**
    * Get completions for an arg.
    *
-   * @param {string} line the current line
    * @param {string} current the current input
    * @param {({long: string}[])} args the args for the command
    * @param {string[]} userArgs the args that have already been used
-   * @param {Record<string, unknown>} commandMeta the metadata for the command
    * @returns {Promise<[string[], string] | null>} the completions and the current input
    */
-  async #getCompletionsForArg(line, current, args = [], userArgs = [], commandMeta) {
+  async #getCompletionsForArg(current, args = [], userArgs = []) {
     if (userArgs.length <= args.length) {
       const arg = args[userArgs.length]
       if (arg) {
