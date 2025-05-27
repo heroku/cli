@@ -156,9 +156,10 @@ class HerokuRepl {
 
         const commandMeta = this.#config.findCommand(command)
         if (!commandMeta) {
-          const matches = this.#config.commands.filter(({ id }) => id.startsWith(command))
-          return [matches.map(({ id }) => id).sort(), line]
+          const matches = this.#config.commands.filter(({id}) => id.startsWith(command))
+          return [matches.map(({id}) => id).sort(), line]
         }
+
         return this.#buildCompletions(commandMeta, parts, line)
       },
     })
@@ -181,6 +182,11 @@ class HerokuRepl {
    * @returns {Promise<void>} a promise that resolves when the command has been executed
    */
   #processLine = async input => {
+    if (input.trim() === '') {
+      this.#rl.prompt()
+      return
+    }
+
     this.#history.push(input)
     this.#historyStream?.write(input + '\n')
 
@@ -197,6 +203,7 @@ class HerokuRepl {
       if (typeof value === 'string') {
         return [`--${key}`, value]
       }
+
       return [`--${key}`]
     }).concat(positionalArgs)
 
@@ -245,7 +252,8 @@ class HerokuRepl {
       if (mcpMode) {
         process.stdout.write('<<<BEGIN RESULTS>>>\n')
       }
-      process.argv.length = 2;
+
+      process.argv.length = 2
       process.argv.push(command, ...args.filter(Boolean))
       await run([command, ...args.filter(Boolean)], this.#config)
     } catch (error) {
@@ -448,7 +456,7 @@ class HerokuRepl {
       return null
     }
 
-    const { options, type, name } = commandMetaWithCharKeys.flags[flag] ?? {}
+    const {options, type, name} = commandMetaWithCharKeys.flags[flag] ?? {}
     // Options are defined in the metadata
     // for the command. If the flag has options
     // defined, we will attempt to complete
@@ -634,10 +642,11 @@ class HerokuRepl {
     })
     const includedFlags = new Set()
     for (const key of keysByType) {
-      const { required: isRequired, char: short, name: long } = commandMeta[key]
+      const {required: isRequired, char: short, name: long} = commandMeta[key]
       if (includedFlags.has(long)) {
         continue
       }
+
       includedFlags.add(long)
       if (isRequired) {
         requiredInputs.push({long, short})
@@ -646,6 +655,7 @@ class HerokuRepl {
 
       optionalInputs.push({long, short})
     }
+
     // Prioritize required inputs
     // over optional inputs
     // required inputs are sorted
