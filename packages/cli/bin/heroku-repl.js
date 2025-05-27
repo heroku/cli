@@ -5,11 +5,11 @@ const yargs = require('yargs-parser')
 const util = require('util')
 const path = require('node:path')
 const fs = require('node:fs')
-const {ux} = require('@oclif/core')
+const {ux, run} = require('@oclif/core')
 const os = require('node:os')
-
 const historyFile = path.join(process.env.HOME || process.env.USERPROFILE || os.homedir(), '.heroku_repl_history')
 const stateFile = path.join(process.env.HOME || process.env.USERPROFILE || os.homedir(), '.heroku_repl_state')
+const shellQuote = require('shell-quote')
 
 const maxHistory = 1000
 const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
@@ -75,31 +75,7 @@ class HerokuRepl {
   /**
    * The readline interface used for the REPL
    */
-  #rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: 'heroku > ',
-    removeHistoryDuplicates: true,
-    historySize: maxHistory,
-    completer: async line => {
-      if (mcpMode) {
-        return [[], line]
-      }
-
-      const [command, ...parts] = line.split(' ')
-      if (command === 'set') {
-        return this.#buildSetCompletions(parts)
-      }
-
-      const commandMeta = this.#config.findCommand(command)
-      if (!commandMeta) {
-        const matches = this.#config.commands.filter(({id}) => id.startsWith(command))
-        return [matches.map(({id}) => id).sort(), line]
-      }
-
-      return this.#buildCompletions(commandMeta, parts)
-    },
-  })
+  #rl
 
   /**
    * Constructs a new instance of the HerokuRepl class.
@@ -107,11 +83,7 @@ class HerokuRepl {
    * @param {Config} config The oclif core config object
    */
   constructor(config) {
-    if (!mcpMode) {
-      this.#prepareHistory()
-      this.#loadState()
-    }
-
+    this.#createInterface()
     this.#config = config
   }
 
@@ -135,9 +107,6 @@ class HerokuRepl {
         .filter(line => line.trim())
         .reverse()
         .splice(0, maxHistory)
-
-      this.#rl.history.push(...this.#history)
-      this.#rl.history
     }
   }
 
@@ -161,33 +130,48 @@ class HerokuRepl {
   }
 
   /**
-   * Waits for the REPL to finish and then
-   * writes the current session state to the state file.
+   * Creates a new readline interface.
    *
-   * @returns {Promise<void>} a promise that resolves when the REPL is done
+   * @returns {readline.Interface} the readline interface
    */
-  async done() {
-    await new Promise(resolve => {
-      this.#rl.once('close', () => {
-        this.#historyStream?.close()
-        fs.writeFileSync(stateFile, JSON.stringify(Object.fromEntries(this.#setValues)), 'utf8')
-        resolve()
-      })
-    })
-  }
+  #createInterface() {
+    this.#rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      prompt: 'heroku > ',
+      removeHistoryDuplicates: true,
+      historySize: maxHistory,
+      completer: async line => {
+        if (mcpMode) {
+          return [[], line]
+        }
 
-  /**
-   * Process a line of input.
-   * This method will parse the input
-   * and run the command if it is valid.
-   * If the command is invalid, an error
-   * message will be displayed.
-   *
-   * @param {string} line the line to process
-   * @returns void
-   */
-  start() {
+        // Use shell-quote to tokenize the line for robust parsing
+        const tokens = shellQuote.parse(line)
+        const stringTokens = tokens.filter(t => typeof t === 'string')
+        const [command = '', ...parts] = stringTokens
+        if (command === 'set') {
+          return this.#buildSetCompletions(parts)
+        }
+
+        const commandMeta = this.#config.findCommand(command)
+        if (!commandMeta) {
+          const matches = this.#config.commands.filter(({id}) => id.startsWith(command))
+          return [matches.map(({id}) => id).sort(), line]
+        }
+
+        return this.#buildCompletions(commandMeta, parts, line)
+      },
+    })
+    this.#prepareHistory()
+    this.#loadState()
+
+    this.#rl.history.push(...this.#history)
     this.#rl.on('line', this.#processLine)
+    this.#rl.once('close', () => {
+      this.#historyStream?.close()
+      fs.writeFileSync(stateFile, JSON.stringify(Object.fromEntries(this.#setValues)), 'utf8')
+    })
     this.#rl.prompt()
   }
 
@@ -198,10 +182,18 @@ class HerokuRepl {
    * @returns {Promise<void>} a promise that resolves when the command has been executed
    */
   #processLine = async input => {
+    if (input.trim() === '') {
+      this.#rl.prompt()
+      return
+    }
+
     this.#history.push(input)
     this.#historyStream?.write(input + '\n')
 
-    const {_: [command, ...positionalArgs], ...flags} = yargs(input, {
+    const tokens = shellQuote.parse(input)
+    const stringTokens = tokens.filter(t => typeof t === 'string')
+    // flag/arg extraction
+    const {_: [command, ...positionalArgs], ...flags} = yargs(stringTokens, {
       configuration: {
         'camel-case-expansion': false,
         'boolean-negation': false,
@@ -255,13 +247,15 @@ class HerokuRepl {
         process.stdin.setRawMode(false)
       }
 
-      this.#rl.pause()
+      this.#rl.close()
       this.#rl.off('line', this.#processLine)
       if (mcpMode) {
         process.stdout.write('<<<BEGIN RESULTS>>>\n')
       }
 
-      await this.#config.runCommand(command, args.filter(Boolean))
+      process.argv.length = 2
+      process.argv.push(command, ...args.filter(Boolean))
+      await run([command, ...args.filter(Boolean)], this.#config)
     } catch (error) {
       if (mcpMode) {
         process.stderr.write(`<<<ERROR>>>\n${error.message}\n<<<END ERROR>>>\n`)
@@ -277,8 +271,8 @@ class HerokuRepl {
         process.stdout.write('<<<END RESULTS>>>\n')
       }
 
-      this.#rl.resume()
-      this.#rl.on('line', this.#processLine)
+      this.#createInterface()
+      this.start()
       // Force readline to refresh the current line
       this.#rl.write(null, {ctrl: true, name: 'u'})
     }
@@ -346,7 +340,7 @@ class HerokuRepl {
    * @param {string[]} flagsOrArgs the flags or args for the command
    * @returns {Promise<[string[], string]>} the completions and the current input
    */
-  async #buildCompletions(commandMeta, flagsOrArgs = []) {
+  async #buildCompletions(commandMeta, flagsOrArgs = [], line) {
     const {args, flags} = commandMeta
     const {requiredInputs: requiredFlags, optionalInputs: optionalFlags} = this.#collectInputsFromManifest(flags)
     const {requiredInputs: requiredArgs, optionalInputs: optionalArgs} = this.#collectInputsFromManifest(args)
@@ -367,11 +361,11 @@ class HerokuRepl {
     // 5. End of line
     // Flags *must* occur first since they may influence
     // the completions for args.
-    return await this.#getCompletionsForFlag(current, requiredFlags, userFlags, commandMeta) ||
-      await this.#getCompletionsForArg(current, requiredArgs, userArgs, commandMeta) ||
-      await this.#getCompletionsForFlag(current, optionalFlags, userFlags, commandMeta) ||
-      await this.#getCompletionsForArg(current, optionalArgs, userArgs, commandMeta) ||
-      this.#getCompletionsForEndOfLine(flags, userFlags)
+    return await this.#getCompletionsForFlag(line, current, requiredFlags, userFlags, commandMeta) ||
+      await this.#getCompletionsForArg(line, current, requiredArgs, userArgs, commandMeta) ||
+      await this.#getCompletionsForFlag(line, current, optionalFlags, userFlags, commandMeta) ||
+      await this.#getCompletionsForArg(line, current, optionalArgs, userArgs, commandMeta) ||
+      this.#getCompletionsForEndOfLine(line, flags, userFlags)
   }
 
   /**
@@ -401,51 +395,68 @@ class HerokuRepl {
   /**
    * Get completions for the end of the line.
    *
+   * @param {string} line the current line
    * @param {Record<string, unknown>} flags the flags for the command
    * @param {Record<string, unknown>} userFlags the flags that have already been used
    * @returns {[string[], string]} the completions and the current input
    */
-  #getCompletionsForEndOfLine(flags, userFlags) {
+  #getCompletionsForEndOfLine(line, flags, userFlags) {
     const flagKeys = Object.keys(userFlags)
     // If there are no more flags to complete,
     // return an empty array.
-    return flagKeys.length < Object.keys(flags).length ? [[' --'], ''] : [[], '']
+    return flagKeys.length < Object.keys(flags).length ? [[line.endsWith(' ') ? '--' : ' --'], ''] : [[], '']
   }
 
   /**
    * Get completions for a flag or flag value.
    *
+   * @param {string} line the current line
    * @param {string} current the current input
    * @param {string[]} flags the flags for the command
    * @param {string[]} userFlags the flags that have already been used
    * @param {Record<string, unknown>} commandMeta the metadata for the command
    * @return {Promise<[string[], string]>} the completions and the current input
    */
-  async #getCompletionsForFlag(current, flags, userFlags, commandMeta) {
+  async #getCompletionsForFlag(line, current, flags, userFlags, commandMeta) {
+    const commandMetaWithCharKeys = {...commandMeta}
+    // make sure the commandMeta also contains keys for char fields
+    Object.keys(commandMeta.flags).forEach(key => {
+      const flag = commandMeta.flags[key]
+      if (flag.char) {
+        commandMetaWithCharKeys.flags[flag.char] = flag
+      }
+    })
     // flag completion for long and short flags.
     // flags that have already been used are
     // not included in the completions.
     const isFlag = current.startsWith('-')
+    const isLongFlag = current.startsWith('--')
     if (isFlag) {
-      const isLongFlag = current.startsWith('--')
       const rawFlag = isLongFlag ? current.slice(2) : current.slice(1)
+      const prop = isLongFlag ? 'long' : 'short'
       const matched = flags
+        .filter(flag => {
+          return !Reflect.has(userFlags, flag.short) && !Reflect.has(userFlags, flag.long) &&
+          (!rawFlag || flag[prop]?.startsWith(rawFlag))
+        })
         .map(f => isLongFlag ? f.long : f.short)
-        .filter(flag => !Reflect.has(userFlags, flag) && (!rawFlag || flag.startsWith(rawFlag)))
+        .filter(Boolean)
 
-      if (matched.length > 0) {
+      if (matched?.length > 0) {
         return [matched, rawFlag]
       }
     }
 
-    // Does the flag have a value?
+    // Does the flag have a value or is it
+    // expected to have a value?
     const flagKeys = Object.keys(userFlags)
     const flag = flagKeys[flagKeys.length - 1]
-    if (!flag || !current) {
+    const isBooleanFlag = commandMetaWithCharKeys.flags[flag]?.type === 'boolean'
+    if (this.#isFlagValueComplete(line) || isBooleanFlag || current === '--' || current === '-') {
       return null
     }
 
-    const {options, type} = commandMeta.flags[flag] ?? {}
+    const {options, type, name} = commandMetaWithCharKeys.flags[flag] ?? {}
     // Options are defined in the metadata
     // for the command. If the flag has options
     // defined, we will attempt to complete
@@ -460,7 +471,7 @@ class HerokuRepl {
         }
       }
 
-      return [await this.#getCompletion(flag, isFlag ? '' : current), current]
+      return [await this.#getCompletion(name, isFlag ? '' : current), current]
     }
   }
 
@@ -497,6 +508,52 @@ class HerokuRepl {
     }
   }
 
+  #isFlagValueComplete(input) {
+    const tokens = shellQuote.parse(input.trim())
+    const len = tokens.length
+    if (len === 0) {
+      return false
+    }
+
+    const lastToken = tokens[len - 1]
+
+    // "-" or "--" means the flag name is absent
+    if (lastToken === '-' || lastToken === '--') {
+      return false
+    }
+
+    // back up to the last flag and store the index
+    let lastFlagIndex = -1
+    for (let i = len - 1; i >= 0; i--) {
+      if (typeof tokens[i] === 'string' && tokens[i].startsWith('-')) {
+        lastFlagIndex = i
+        break
+      }
+    }
+
+    // No flag, nothing to complete
+    if (lastFlagIndex === -1) {
+      return true
+    }
+
+    // If the last flag is the last token
+    // e.g., "run hello.sh --app"
+    if (lastFlagIndex === len - 1) {
+      return false
+    }
+
+    // If the last flag has a value
+    if (lastFlagIndex === len - 2) {
+      // e.g., "run hello.sh --app heroku-vscode "
+      // If input ends with whitespace assume the value is complete
+      return /\s$/.test(input)
+    }
+
+    // If the last flag is followed by more than one value, treat as complete
+    // since the last value is likely to be an argument
+    return true
+  }
+
   /**
    * Capture stdout by deflecting it to a
    * trap function and returning the output.
@@ -528,14 +585,16 @@ class HerokuRepl {
   /**
    * Get completions for an arg.
    *
+   * @param {string} line the current line
    * @param {string} current the current input
    * @param {({long: string}[])} args the args for the command
    * @param {string[]} userArgs the args that have already been used
+   * @param {Record<string, unknown>} commandMeta the metadata for the command
    * @returns {Promise<[string[], string] | null>} the completions and the current input
    */
-  async #getCompletionsForArg(current, args = [], userArgs = []) {
+  async #getCompletionsForArg(line, current, args = [], userArgs = [], commandMeta) {
     if (userArgs.length <= args.length) {
-      const arg = args[userArgs.length - 1]
+      const arg = args[userArgs.length]
       if (arg) {
         const {long} = arg
         if (completionCommandByName.has(long)) {
@@ -581,16 +640,22 @@ class HerokuRepl {
 
       return 0
     })
+    const includedFlags = new Set()
+    for (const key of keysByType) {
+      const {required: isRequired, char: short, name: long} = commandMeta[key]
+      if (includedFlags.has(long)) {
+        continue
+      }
 
-    keysByType.forEach(long => {
-      const {required: isRequired, char: short} = commandMeta[long]
+      includedFlags.add(long)
       if (isRequired) {
         requiredInputs.push({long, short})
-        return
+        continue
       }
 
       optionalInputs.push({long, short})
-    })
+    }
+
     // Prioritize required inputs
     // over optional inputs
     // required inputs are sorted
@@ -614,7 +679,5 @@ class HerokuRepl {
   }
 }
 module.exports.herokuRepl = async function (config) {
-  const repl = new HerokuRepl(config)
-  repl.start()
-  return repl.done()
+  return new HerokuRepl(config)
 }
