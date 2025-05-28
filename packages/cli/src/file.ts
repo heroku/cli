@@ -3,7 +3,8 @@ import * as path from 'path'
 
 import deps from './deps.js'
 
-const debug = require('debug')('heroku-cli:file')
+import debug from 'debug'
+const fileDebug = debug('heroku-cli:file')
 
 export function exists(f: string): Promise<boolean> {
   return deps.fs.pathExists(f)
@@ -14,13 +15,13 @@ export async function stat(file: string): Promise<FS.Stats> {
 }
 
 export async function rename(from: string, to: string) {
-  debug('rename', from, to)
+  fileDebug('rename', from, to)
   return deps.fs.rename(from, to)
 }
 
 export async function remove(file: string) {
   if (!await exists(file)) return
-  debug('remove', file)
+  fileDebug('remove', file)
   return deps.fs.remove(file)
 }
 
@@ -46,12 +47,12 @@ export async function removeEmptyDirs(dir: string): Promise<void> {
 }
 
 export async function readJSON(file: string) {
-  debug('readJSON', file)
+  fileDebug('readJSON', file)
   return deps.fs.readJSON(file)
 }
 
 export async function outputJSON(file: string, data: any) {
-  debug('outputJSON', file)
+  fileDebug('outputJSON', file)
   return deps.fs.outputJSON(file, data, {spaces: 2})
 }
 

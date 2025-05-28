@@ -11136,6 +11136,7 @@ __metadata:
     chai: ^4.4.1
     chai-as-promised: ^7.1.1
     chalk: ^2.4.2
+    cli-progress: ^3.12.0
     commander: ^2.15.1
     date-fns: ^2.30.0
     debug: 4.3.4
@@ -11173,7 +11174,6 @@ __metadata:
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
     sinon: ^19.0.2
-    smooth-progress: ^1.1.0
     source-map-support: ^0.5.21
     sparkline: ^0.2.0
     ssh2: ^1.16.0
@@ -17272,7 +17272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smooth-progress@npm:1.1.0, smooth-progress@npm:^1.1.0":
+"smooth-progress@npm:1.1.0":
   version: 1.1.0
   resolution: "smooth-progress@npm:1.1.0"
   dependencies:

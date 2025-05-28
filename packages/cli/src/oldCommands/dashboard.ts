@@ -6,7 +6,7 @@ import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodas
 import img from 'term-img'
 import * as path from 'path'
 import {execSync} from 'child_process'
-const sparkline = require('sparkline')
+import sparkline from 'sparkline'
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app_errors.js'
 import * as process from 'process'
