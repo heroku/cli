@@ -6,7 +6,8 @@ import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
 import {prompt} from 'inquirer'
-import * as shellescape from 'shell-escape'
+// import * as shellescape from 'shell-escape'
+import {parse, quote} from '../../lib/config/quote'
 import waitForDomain from '../../lib/domains/wait-for-domain'
 
 interface DomainCreatePayload {
