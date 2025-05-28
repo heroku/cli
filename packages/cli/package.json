@@ -43,7 +43,6 @@
     "commander": "^2.15.1",
     "date-fns": "^2.30.0",
     "debug": "4.3.4",
-    "edit-string": "^1.1.6",
     "execa": "5.1.1",
     "filesize": "^10.1.2",
     "foreman": "^3.0.1",
@@ -72,6 +71,7 @@
     "strftime": "^0.10.0",
     "strip-ansi": "^6",
     "term-img": "^4.1.0",
+    "tmp": "^0.2.3",
     "true-myth": "2.2.3",
     "tsheredoc": "^1.0.1",
     "tslib": "1.14.1",
@@ -132,7 +132,6 @@
     "source-map-support": "^0.5.21",
     "std-mocks": "^2.0.0",
     "strip-ansi": "6.0.1",
-    "tmp": "^0.2.3",
     "ts-node": "^10.9.2",
     "typescript": "4.8.4"
   },

@@ -8597,19 +8597,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"edit-string@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "edit-string@npm:1.1.6"
-  dependencies:
-    debug: ^3.1.0
-    execa: ^0.10.0
-    lodash: ^4.17.10
-    tmp: ^0.0.33
-    tslib: ^1.9.0
-  checksum: ca25ac527b8c0ebbf2c7ab1066248083268569567ad9418a68485a04674f86243100c7d3b41b848c1b2b9bd48f09b1b53fb8e9817b113da6c637d32f88a460e5
-  languageName: node
-  linkType: hard
-
 "ejs@npm:^3.1.10, ejs@npm:^3.1.7, ejs@npm:^3.1.8":
   version: 3.1.10
   resolution: "ejs@npm:3.1.10"
@@ -11140,7 +11127,6 @@ __metadata:
     commander: ^2.15.1
     date-fns: ^2.30.0
     debug: 4.3.4
-    edit-string: ^1.1.6
     execa: 5.1.1
     filesize: ^10.1.2
     foreman: ^3.0.1
