@@ -202,6 +202,27 @@ describe('analytics (backboard has an error) with authorizationToken', function 
       await runAnalyticsTest((d: AnalyticsInterface) => d.properties.install_id, 'abcde')
     })
 
+    it('includes MCP version in version string when in MCP mode', async function () {
+      // Save original env vars
+      const originalMcpMode = process.env.HEROKU_MCP_MODE
+      const originalMcpVersion = process.env.HEROKU_MCP_SERVER_VERSION
+
+      // Set MCP mode and version
+      process.env.HEROKU_MCP_MODE = 'true'
+      process.env.HEROKU_MCP_SERVER_VERSION = '1.2.3'
+
+      try {
+        await runAnalyticsTest(
+          (d: AnalyticsInterface) => d.properties.version,
+          '1 (MCP 1.2.3)', // '1' is the version set in runAnalyticsTest
+        )
+      } finally {
+        // Restore original env vars
+        process.env.HEROKU_MCP_MODE = originalMcpMode
+        process.env.HEROKU_MCP_SERVER_VERSION = originalMcpVersion
+      }
+    })
+
     after(function () {
       sandbox.restore()
     })
