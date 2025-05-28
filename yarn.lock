@@ -11122,7 +11122,6 @@ __metadata:
     bytes: ^3.1.2
     chai: ^4.4.1
     chai-as-promised: ^7.1.1
-    chalk: ^2.4.2
     cli-progress: ^3.12.0
     commander: ^2.15.1
     date-fns: ^2.30.0
@@ -11144,7 +11143,7 @@ __metadata:
     node-fetch: ^2.6.7
     nyc: ^15.1.0
     oclif: 4.17.46
-    open: ^8.4.2
+    open: ^10.1.2
     parse-procfile: ^0.0.2
     phoenix: ^1.6.14
     portfinder: ^1.0.32
@@ -11169,7 +11168,7 @@ __metadata:
     strip-ansi: 6.0.1
     term-img: ^4.1.0
     tmp: ^0.2.3
-    true-myth: 2.2.3
+    true-myth: 4.1.1
     ts-node: ^10.9.2
     tsheredoc: ^1.0.1
     tslib: 1.14.1
@@ -14966,17 +14965,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open@npm:^8.4.2":
-  version: 8.4.2
-  resolution: "open@npm:8.4.2"
-  dependencies:
-    define-lazy-prop: ^2.0.0
-    is-docker: ^2.1.1
-    is-wsl: ^2.2.0
-  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
-  languageName: node
-  linkType: hard
-
 "opn@npm:^3.0.3":
   version: 3.0.3
   resolution: "opn@npm:3.0.3"
@@ -18250,7 +18238,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"true-myth@npm:2.2.3, true-myth@npm:^2.0.0":
+"true-myth@npm:4.1.1":
+  version: 4.1.1
+  resolution: "true-myth@npm:4.1.1"
+  checksum: 0b937bb215b78d0ccff8637ac1c49be7f08c04f32a7b755c45a1566a1d522f50b0cadac93ad869b6bea9b843f60479160d3382c2c91d2381ef3559915564ff82
+  languageName: node
+  linkType: hard
+
+"true-myth@npm:^2.0.0":
   version: 2.2.3
   resolution: "true-myth@npm:2.2.3"
   checksum: 2a4336c524400486526487c38609fcbc0c9d07b41732217511ce5f50594c81174e9e7edb27cc2b543ac4ead4a64f34ebf110935d6ff50dc746b26d408141da58
