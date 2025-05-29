@@ -1,7 +1,7 @@
 import {stderr, stdout} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/access/add.js'
+// import Cmd from '../../../../src/commands/access/add'
 import runCommand from '../../../helpers/runCommand.js'
 import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
 import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'

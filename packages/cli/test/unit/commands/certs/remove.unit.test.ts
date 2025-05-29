@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/remove.js'
+// import Cmd from '../../../../src/commands/certs/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import tsheredoc from 'tsheredoc'
 import nock from 'nock'
@@ -14,8 +14,6 @@ const heredoc = tsheredoc.default
 /*
 describe('heroku certs:remove', function () {
   afterEach(function () {
-    nock.cleanAll()
-  })
 
   it('# deletes the endpoint', async function () {
     const api = nock('https://api.heroku.com')

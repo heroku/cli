@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/pull.js'
+// import Cmd from '../../../../src/commands/container/pull.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import {expect} from 'chai'

@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import Cmd from '../../../../src/commands/accounts/add.js'
+// import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 /*

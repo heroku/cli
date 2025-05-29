@@ -6,7 +6,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
 import {personalToPersonal} from '../../../helpers/stubs/post.js'
-import Cmd from '../../../../src/commands/apps/transfer.js'
+// import Cmd from '../../../../src/commands/apps/transfer.js'
 import stripAnsi from 'strip-ansi'
 
 /*

@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/access/remove.js'
+// import Cmd from '../../../../src/commands/access/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'

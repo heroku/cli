@@ -32,8 +32,6 @@ const CacheBuildFlagsTest = {
   args: [],
 }
 
-runtest('Create', () => {})
-
 // Unit test private methods for extra coverage
 /*
 describe('private methods', function () {

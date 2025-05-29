@@ -1,6 +1,6 @@
 /* eslint-disable max-nested-callbacks */
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/index.js'
+// import Cmd from '../../../../src/commands/addons/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import nock from 'nock'

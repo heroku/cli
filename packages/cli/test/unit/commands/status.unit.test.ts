@@ -13,7 +13,6 @@ afterEach(function () {
   return api.done()
 })
 
-/*
 describe('when heroku is green', function () {
   test
     .stdout()
@@ -100,5 +99,3 @@ update contents
 `)
     })
 })
-
-*/

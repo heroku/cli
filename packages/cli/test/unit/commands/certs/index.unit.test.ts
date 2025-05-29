@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/index.js'
+// import Cmd from '../../../../src/commands/certs/index.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import tsheredoc from 'tsheredoc'
@@ -14,13 +14,10 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {expect} from 'chai'
 
 const heredoc = tsheredoc.default
-
 /*
 describe('heroku certs', function () {
   it('warns about no SSL certificates if the app has no certs', async function () {
     nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, '')
     expectOutput(stdout.output, heredoc(`

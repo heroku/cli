@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/run.js'
+// import Cmd from '../../../../src/commands/container/run.js'
 import runCommand from '../../../helpers/runCommand.js'
 import sinon from 'sinon'
 import {expect} from 'chai'

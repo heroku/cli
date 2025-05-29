@@ -19,10 +19,6 @@ const printStatus = (status: string) => {
   return colorize(message)
 }
 
-function capitalize(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
-}
-
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
 
@@ -37,10 +33,10 @@ export default class Status extends Command {
     const host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
     const {body} = await HTTP.get<any>(host + apiPath)
 
-    // if (flags.json) {
-    //   hux.styledJSON(body)
-    //   return
-    // }
+    if (flags.json) {
+      hux.styledJSON(body)
+      return
+    }
 
     for (const item of body.status) {
       const message = printStatus(item.status)

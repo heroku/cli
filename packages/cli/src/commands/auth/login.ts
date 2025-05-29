@@ -25,4 +25,4 @@ export default class Login extends Command {
     await this.config.runHook('recache', {type: 'login'})
   }
 }
-*/
+

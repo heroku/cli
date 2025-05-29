@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/apps/lock.js'
+// import Cmd from '../../../../src/commands/apps/lock.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 /*

@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
 import {Errors} from '@oclif/core'
-import Cmd from '../../../../src/commands/apps/unlock.js'
+// import Cmd from '../../../../src/commands/apps/unlock.js'
 import runCommand from '../../../helpers/runCommand.js'
 import stripAnsi from 'strip-ansi'
 
