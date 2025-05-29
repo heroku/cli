@@ -1,9 +1,9 @@
 
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
-import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions'
-import Dyno from '../lib/run/dyno'
-import {buildCommand} from '../lib/run/helpers'
+import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions.js'
+import Dyno from '../lib/run/dyno.js'
+import {buildCommand} from '../lib/run/helpers.js'
 
 export default class RunConsole extends Command {
   static hidden = true

@@ -2,10 +2,10 @@ import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
 // import Cmd from '../../../../src/commands/apps/join'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import {userAccount} from '../../../helpers/stubs/get'
-import {teamAppCollaborators} from '../../../helpers/stubs/post'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {userAccount} from '../../../helpers/stubs/get.js'
+import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
 /*
 describe('heroku apps:join', function () {

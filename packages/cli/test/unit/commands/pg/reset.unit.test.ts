@@ -1,10 +1,10 @@
 import {stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/pg/reset'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 /*
 describe('pg:reset', function () {

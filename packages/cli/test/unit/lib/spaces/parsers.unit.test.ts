@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {splitCsv} from '../../../../src/lib/spaces/parsers'
+import {splitCsv} from '../../../../src/lib/spaces/parsers.js'
 
 /*
 describe('splitCsv', function () {

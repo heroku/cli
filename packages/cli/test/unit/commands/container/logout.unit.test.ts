@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/logout'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
+import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
 
 const sandbox = sinon.createSandbox()
 

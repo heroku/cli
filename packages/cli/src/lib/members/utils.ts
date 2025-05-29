@@ -1,6 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 
 export const addMemberToTeam = async function (email: string, role: string, groupName: string, heroku: APIClient, method = 'PUT') {

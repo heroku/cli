@@ -2,14 +2,23 @@ import {Config, Plugin} from '@oclif/core'
 // import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
 import * as path from 'path'
+import {fileURLToPath} from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // import Create from '../../../../src/commands/autocomplete/create'
 
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 
-// autocomplete will throw error on windows
-const {default: runtest} = require('../../../helpers/autocomplete/runtest')
+let runtest: any
+
+(async () => {
+  const mod = await import('../../../helpers/autocomplete/runtest.js')
+  runtest = mod.default
+  runtest('Create', () => {})
+})()
 
 const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'autocomplete-scripts')
 
@@ -22,8 +31,6 @@ const CacheBuildFlagsTest = {
   },
   args: [],
 }
-
-runtest('Create', () => {})
 
 // Unit test private methods for extra coverage
 /*

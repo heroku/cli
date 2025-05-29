@@ -1,12 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/container/run'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 // import {CLIError} from '@oclif/core/lib/errors'
-import * as nock from 'nock'
+import nock from 'nock'
 
 /*
 describe('container run', function () {

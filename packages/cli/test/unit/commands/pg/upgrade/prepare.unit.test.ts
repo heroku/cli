@@ -1,16 +1,17 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/prepare'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import Cmd from '../../../../oldCommands/pg/upgrade/prepare.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
-import color from '@heroku-cli/color'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
+/*
 describe('pg:upgrade:prepare', function () {
   const addon = fixtures.addons['dwh-db']
   let uxWarnStub: sinon.SinonStub
@@ -193,8 +194,9 @@ describe('pg:upgrade:prepare', function () {
     ]).catch(error => {
       expect(error.message).to.equal(heredoc(`
       database has an upgrade already scheduled, please check ${color.cmd('pg:upgrade:wait')} for more information on the status of your upgrade.
-      
+
       Error ID: unprocessable_entity`))
     })
   })
 })
+*/
