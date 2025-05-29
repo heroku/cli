@@ -1,10 +1,10 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/addons'
-import runCommand from '../../../helpers/runCommand'
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import runCommand from '../../../helpers/runCommand.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
 
 /*

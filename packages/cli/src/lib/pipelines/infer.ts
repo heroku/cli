@@ -1,4 +1,4 @@
-import {inferrableStages as stages} from './stages'
+import {inferrableStages as stages} from './stages.js'
 
 export default function infer(app: string) {
   const inferredStage = stages.find(stage => stage.inferRegex.test(app))

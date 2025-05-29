@@ -1,7 +1,7 @@
 import {Hook} from '@oclif/core'
 
-import Analytics from '../../analytics'
-import * as telemetry from '../../global_telemetry'
+import Analytics from '../../analytics.js'
+import * as telemetry from '../../global_telemetry.js'
 
 declare const global: telemetry.TelemetryGlobal
 

@@ -1,11 +1,11 @@
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 import {stderr, stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import {CLIError} from '@oclif/core/lib/errors'
 // import Cmd from '../../../../../src/commands/spaces/vpn/wait'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 /*
 describe('spaces:vpn:wait', function () {

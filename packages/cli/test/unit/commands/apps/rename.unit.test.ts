@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 /*
 describe('apps:rename', function () {

@@ -1,9 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/certs/info'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import * as nock from 'nock'
+import nock from 'nock'
+
 import {
   endpoint,
   endpointWithDomains,
@@ -12,9 +13,9 @@ import {
   certificateDetails,
   certificateDetailsWithDomains,
   untrustedCertificateDetails,
-} from '../../../helpers/stubs/sni-endpoints'
-import sharedSni = require('./shared_sni.unit.test')
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
+} from '../../../helpers/stubs/sni-endpoints.js'
+import * as sharedSni from './shared_sni.unit.test.js'
+import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 
 /*
 describe('heroku certs:info', function () {

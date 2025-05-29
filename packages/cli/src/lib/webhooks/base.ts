@@ -1,4 +1,4 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 
 import {Config} from '@oclif/core'

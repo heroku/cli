@@ -1,8 +1,8 @@
 import {stderr} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/backups/delete'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 
 /*
 describe('pg:backups:delete', function () {

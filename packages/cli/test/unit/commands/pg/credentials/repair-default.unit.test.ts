@@ -1,10 +1,10 @@
 import {stderr, stdout} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/credentials/repair-default'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 /*
 describe('pg:credentials:repair-default', function () {

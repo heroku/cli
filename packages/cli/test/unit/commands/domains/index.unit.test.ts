@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 import * as inquirer from '@inquirer/prompts'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 /*
 describe('domains', function () {

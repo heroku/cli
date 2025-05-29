@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {App, Pipeline, PipelineCoupling} from './types/fir'
+import {App, Pipeline, PipelineCoupling} from './types/fir.js'
 
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const SDK_HEADER = 'application/vnd.heroku+json; version=3.sdk'

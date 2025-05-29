@@ -1,10 +1,10 @@
 
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import logDisplayer from '../lib/run/log-displayer'
-import heredoc from 'tsheredoc'
-
+import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import logDisplayer from '../lib/run/log-displayer.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 export default class Logs extends Command {
   static description = heredoc`
     display recent log output

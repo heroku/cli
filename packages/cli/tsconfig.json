@@ -2,19 +2,24 @@
   "compilerOptions": {
     "allowJs": true, // allowed to support run-foreman.js. Should be removed when that functionality is refactored.
     "declaration": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "resolveJsonModule": true,
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "./lib",
     "rootDirs": [
       "./src"
     ],
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2017"
+    "target": "ES2022"
   },
   "include": [
     "./src/**/*"
-  ]
+  ],
+  "ts-node": {
+    "esm": true
+  }
 }

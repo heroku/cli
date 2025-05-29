@@ -1,7 +1,8 @@
 /*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as shellescape from 'shell-escape'
+// import * as shellescape from 'shell-escape'
+import {parse, quote} from '../../lib/config/quote'
 import {getPipelineConfigVars} from '../../../lib/api'
 import {getPipeline} from '../../../lib/ci/pipelines'
 

@@ -1,11 +1,10 @@
 import {vars} from '@heroku-cli/command'
 import {Command, Interfaces} from '@oclif/core'
-import netrc from 'netrc-parser'
 import * as path from 'path'
-import deps from './deps'
+import deps from './deps.js'
+import debug from 'debug'
 
-const debug = require('debug')('heroku:analytics')
-
+const analyticsDebug = debug('heroku:analytics')
 export interface RecordOpts {
   Command: Command.Class;
   argv: string[];
@@ -38,6 +37,8 @@ export default class AnalyticsCommand {
 
   initialize: Promise<void>;
 
+  private netrc: any;
+
   constructor(config: Interfaces.Config) {
     this.config = config
     this.http = deps.HTTP.create({
@@ -52,7 +53,7 @@ export default class AnalyticsCommand {
     const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
     const plugin = opts.Command.plugin
     if (!plugin) {
-      debug('no plugin found for analytics')
+      analyticsDebug('no plugin found for analytics')
       return
     }
 
@@ -78,10 +79,10 @@ export default class AnalyticsCommand {
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
     if (this.authorizationToken) {
-      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}}).catch(error => debug(error))
+      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}}).catch(error => analyticsDebug(error))
     }
 
-    return this.http.get(`${this.url}?data=${data}`).catch(error => debug(error))
+    return this.http.get(`${this.url}?data=${data}`).catch(error => analyticsDebug(error))
   }
 
   get url(): string {
@@ -93,7 +94,7 @@ export default class AnalyticsCommand {
   }
 
   get netrcToken(): string | undefined {
-    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].password
+    return this.netrc?.machines[vars.apiHost]?.password
   }
 
   get usingHerokuAPIKey(): boolean {
@@ -102,7 +103,7 @@ export default class AnalyticsCommand {
   }
 
   get netrcLogin(): string | undefined {
-    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].login
+    return this.netrc?.machines[vars.apiHost]?.login
   }
 
   get user(): string | undefined {
@@ -127,7 +128,10 @@ export default class AnalyticsCommand {
   }
 
   private async init() {
-    await netrc.load()
+    const NetrcModule = await import('netrc-parser')
+    const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+    this.netrc = new NetrcClass()
+    await this.netrc.load()
     this.userConfig = new deps.UserConfig(this.config)
     await this.userConfig.init()
   }

@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 
-import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 nock.disableNetConnect()
 
 /*

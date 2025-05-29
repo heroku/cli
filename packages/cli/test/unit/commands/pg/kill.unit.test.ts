@@ -1,4 +1,4 @@
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
