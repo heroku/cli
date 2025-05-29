@@ -1,8 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/access/index'
+import Cmd from '../../../../src/commands/access/index.js'
 import runCommand from '../../../helpers/runCommand.js'
+import stripAnsi from 'strip-ansi'
 import {
   personalApp,
   appCollaborators,
@@ -12,7 +13,8 @@ import {
   teamAppCollaboratorsWithPermissions,
 } from '../../../helpers/stubs/get.js'
 
-/*
+const removeAllWhitespace = (str: string): string => stripAnsi(str).replace(/\s+/g, '')
+
 describe('heroku access', function () {
   context('with personal app', function () {
     afterEach(function () {
@@ -25,7 +27,7 @@ describe('heroku access', function () {
         '--app',
         'myapp',
       ])
-        .then(() => expect(stdout.output).to.contain('jeff@heroku.com  collaborator \n raulb@heroku.com owner'))
+        .then(() => expect(removeAllWhitespace(stdout.output)).to.contain(removeAllWhitespace('frodo@heroku.com  collaborator \n gandalf@heroku.com owner')))
         .then(() => expect('').to.eq(stderr.output))
         .then(() => apiGetPersonalApp.done())
         .then(() => apiGetAppCollaborators.done())
@@ -44,7 +46,7 @@ describe('heroku access', function () {
         '--app',
         'myapp',
       ])
-        .then(() => expect(stdout.output).to.contain('bob@heroku.com   member deploy, view                  \n raulb@heroku.com admin  deploy, manage, operate, view \n'))
+        .then(() => expect(removeAllWhitespace(stdout.output)).to.contain(removeAllWhitespace('bob@heroku.com   member deploy, view                  \n gandalf@heroku.com admin  deploy, manage, operate, view \n')))
         .then(() => expect('').to.eq(stderr.output))
         .then(() => apiGetTeamApp.done())
         .then(() => apiGetOrgMembers.done())
@@ -53,5 +55,3 @@ describe('heroku access', function () {
     })
   })
 })
-
-*/

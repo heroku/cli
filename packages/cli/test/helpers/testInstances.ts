@@ -1,8 +1,12 @@
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
+import {fileURLToPath} from 'node:url'
+import path from 'node:path'
 
 export const getConfig = async () => {
-  const pjsonPath = require.resolve('../../package.json')
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const pjsonPath = path.resolve(__dirname, '../../package.json')
   const conf = new Config({root: pjsonPath})
   await conf.load()
   return conf
