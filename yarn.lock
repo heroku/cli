@@ -4052,7 +4052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/table@npm:^0.4.8":
+"@oclif/table@npm:0.4.8, @oclif/table@npm:^0.4.8":
   version: 0.4.8
   resolution: "@oclif/table@npm:0.4.8"
   dependencies:
@@ -11170,12 +11170,13 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 2.0.1
-    "@heroku-cli/command": ^12.0.0
+    "@heroku-cli/command": ^12.0.2-beta.0
     "@heroku-cli/notifications": ^1.2.4
     "@heroku-cli/plugin-ps-exec": 2.6.2
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
+    "@heroku/heroku-cli-util": ^10.0.0-beta.0
     "@heroku/http-call": ^5.4.0
     "@heroku/plugin-ai": ^1.0.1
     "@inquirer/prompts": ^5.0.5
@@ -11255,7 +11256,8 @@ __metadata:
     node-fetch: ^2.6.7
     nyc: ^15.1.0
     oclif: 4.17.46
-    open: ^8.4.2
+    open: ^10.1.2
+    parse-procfile: ^0.0.2
     phoenix: ^1.6.14
     portfinder: ^1.0.32
     printf: 0.6.1
@@ -11784,6 +11786,26 @@ __metadata:
   peerDependencies:
     inquirer: ">=8.0.0 <10.0.0"
   checksum: 795d6c4254886232b9b0f02b3a49a40eaf8dc92133f80a6f9bb982410cfa4f6c4830257261d4b437c893e73e83c00d7933d10103c1bb67aaf6c76d7cfcf6da25
+  languageName: node
+  linkType: hard
+
+"inquirer@npm:^12.6.1":
+  version: 12.6.1
+  resolution: "inquirer@npm:12.6.1"
+  dependencies:
+    "@inquirer/core": ^10.1.11
+    "@inquirer/prompts": ^7.5.1
+    "@inquirer/type": ^3.0.6
+    ansi-escapes: ^4.3.2
+    mute-stream: ^2.0.0
+    run-async: ^3.0.0
+    rxjs: ^7.8.2
+  peerDependencies:
+    "@types/node": ">=18"
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+  checksum: 556b83cd2fab8cdd7f8b1c31f3b21c533ebd29ee8f75d919e96b62895bbb9f7f9c1d31554cdb8e27eec081c33b49b78c3ca8ca8f1c20c5ca613417127a9de4bc
   languageName: node
   linkType: hard
 
@@ -15065,17 +15087,6 @@ __metadata:
     is-docker: ^2.1.1
     is-wsl: ^2.2.0
   checksum: e9545bec64cdbf30a0c35c1bdc310344adf8428a117f7d8df3c0af0a0a24c513b304916a6d9b11db0190ff7225c2d578885080b761ed46a3d5f6f1eebb98b63c
-  languageName: node
-  linkType: hard
-
-"open@npm:^8.4.2":
-  version: 8.4.2
-  resolution: "open@npm:8.4.2"
-  dependencies:
-    define-lazy-prop: ^2.0.0
-    is-docker: ^2.1.1
-    is-wsl: ^2.2.0
-  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
   languageName: node
   linkType: hard
 
