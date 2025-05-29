@@ -1,6 +1,6 @@
 // import {hux} from '@heroku/heroku-cli-util'
-import formatDate from './format_date'
-import {SniEndpoint} from '../types/sni_endpoint'
+import formatDate from './format_date.js'
+import {SniEndpoint} from '../types/sni_endpoint.js'
 
 function type(endpoint: SniEndpoint) {
   if (endpoint.ssl_cert && endpoint.ssl_cert.acm) {

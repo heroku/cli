@@ -3,7 +3,7 @@ import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/spaces/trusted-ips'
-import runCommand from '../../../../helpers/runCommand'
+import runCommand from '../../../../helpers/runCommand.js'
 
 const now = new Date()
 

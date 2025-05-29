@@ -1,11 +1,11 @@
 import {stderr, stdout} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/credentials/destroy'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('pg:credentials:destroy', function () {

@@ -1,15 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 
 // import Cmd from '../../../../src/commands/members/remove'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {
   teamFeatures,
   teamInfo,
   teamInvites,
-} from '../../../helpers/stubs/get'
-import {memberFromTeam, teamInvite} from '../../../helpers/stubs/delete'
+} from '../../../helpers/stubs/get.js'
+import {memberFromTeam, teamInvite} from '../../../helpers/stubs/delete.js'
 
 /*
 describe('heroku members:remove', function () {
