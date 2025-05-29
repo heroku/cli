@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {isTeamApp} from '../../lib/teamUtils'
+import {isTeamApp} from '../../lib/teamUtils.js'
 
 export default class Update extends Command {
     static topic = 'access';
@@ -40,4 +39,3 @@ export default class Update extends Command {
       ux.action.stop()
     }
 }
-*/
