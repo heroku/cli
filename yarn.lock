@@ -1646,6 +1646,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku-cli/command@npm:^12.0.2-beta.0":
+  version: 12.0.2-beta.0
+  resolution: "@heroku-cli/command@npm:12.0.2-beta.0"
+  dependencies:
+    "@heroku-cli/color": ^2.0.4
+    "@heroku/http-call": ^5.4.0
+    "@oclif/core": ^4.3.0
+    debug: ^4.4.0
+    inquirer: ^8.2.6
+    netrc-parser: ^3.1.6
+    open: ^10.1.2
+    yargs-parser: ^20.2.9
+    yargs-unparser: ^2.0.0
+  checksum: aa0183e2e8bec32c1ccdc51bbca7fd3bc23f5dac365eaf0a92495c6f9e39a272fc4306fff3a6d46c4156c0488d799228154b9a02fe11509b9a1fbd00c7e1de95
+  languageName: node
+  linkType: hard
+
 "@heroku-cli/heroku-exec-util@npm:0.9.2":
   version: 0.9.2
   resolution: "@heroku-cli/heroku-exec-util@npm:0.9.2"
@@ -5462,10 +5479,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.123":
+"@types/lodash@npm:*":
   version: 4.14.136
   resolution: "@types/lodash@npm:4.14.136"
   checksum: 08c17a29e4168468a2fcf35b369a81e41dd633a952a077ecb8a976c8326e9c7785022165c3abc68610cf3b81e05fe5d571177d570db8f8c71637bfc099c62acc
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.123":
+  version: 4.17.17
+  resolution: "@types/lodash@npm:4.17.17"
+  checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
   languageName: node
   linkType: hard
 
@@ -11652,6 +11676,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"inquirer@npm:^12.6.1":
+  version: 12.6.1
+  resolution: "inquirer@npm:12.6.1"
+  dependencies:
+    "@inquirer/core": ^10.1.11
+    "@inquirer/prompts": ^7.5.1
+    "@inquirer/type": ^3.0.6
+    ansi-escapes: ^4.3.2
+    mute-stream: ^2.0.0
+    run-async: ^3.0.0
+    rxjs: ^7.8.2
+  peerDependencies:
+    "@types/node": ">=18"
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+  checksum: 556b83cd2fab8cdd7f8b1c31f3b21c533ebd29ee8f75d919e96b62895bbb9f7f9c1d31554cdb8e27eec081c33b49b78c3ca8ca8f1c20c5ca613417127a9de4bc
+  languageName: node
+  linkType: hard
+
 "inquirer@npm:^8.2.4":
   version: 8.2.5
   resolution: "inquirer@npm:8.2.5"
@@ -14849,17 +14893,6 @@ __metadata:
     is-docker: ^2.1.1
     is-wsl: ^2.2.0
   checksum: e9545bec64cdbf30a0c35c1bdc310344adf8428a117f7d8df3c0af0a0a24c513b304916a6d9b11db0190ff7225c2d578885080b761ed46a3d5f6f1eebb98b63c
-  languageName: node
-  linkType: hard
-
-"open@npm:^8.4.2":
-  version: 8.4.2
-  resolution: "open@npm:8.4.2"
-  dependencies:
-    define-lazy-prop: ^2.0.0
-    is-docker: ^2.1.1
-    is-wsl: ^2.2.0
-  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
   languageName: node
   linkType: hard
 
