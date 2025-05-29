@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+/* eslint-disable node/shebang */
+
+import {execute} from '@oclif/core'
+import * as globalTelemetry from '../lib/global_telemetry.js'
 
 const {Config} = require('@oclif/core')
 const root = require.resolve('../package.json')
@@ -8,8 +12,6 @@ process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS 
 
 const now = new Date()
 const cliStartTime = now.getTime()
-const globalTelemetry = require('../lib/global_telemetry')
-const yargs = require('yargs-parser')(process.argv.slice(2))
 
 process.once('beforeExit', async code => {
   // capture as successful exit
@@ -42,37 +44,4 @@ process.on('SIGTERM', async () => {
 
 globalTelemetry.initializeInstrumentation()
 
-const oclif = require('@oclif/core')
-const oclifFlush = require('@oclif/core/flush')
-const oclifError = require('@oclif/core/handle')
-const {promptUser} = require('./heroku-prompts')
-const {herokuRepl} = require('./heroku-repl')
-
-const main = async () => {
-  try {
-    await config.load()
-    const {_: [commandName, ...args], ...flags} = yargs
-    if (flags.repl && args.length === 0 && Object.keys(flags).length === 1) {
-      return herokuRepl(config)
-    }
-
-    if (flags.prompt) {
-      delete flags.prompt
-      await promptUser(config, commandName, args, flags)
-      await oclif.run([commandName, ...args], config)
-    } else {
-      await oclif.run(undefined, config)
-    }
-
-    await oclifFlush()
-  } catch (error) {
-    // capture any errors raised by oclif
-    const cliError = error
-    cliError.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-    await globalTelemetry.sendTelemetry(cliError)
-
-    oclifError(error)
-  }
-}
-
-main()
+await execute({dir: import.meta.url})

@@ -7,7 +7,7 @@ import {truncate} from 'lodash'
 import * as Heroku from '@heroku-cli/schema'
 import * as statusHelper from '../../lib/releases/status_helper'
 import * as time from '../../lib/time'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 import {table} from '@oclif/core/lib/cli-ux/styled/table'
 import Columns = table.Columns
 

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import {IOptions} from '@heroku-cli/command/lib/api-client'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
@@ -15,7 +14,7 @@ import * as tls from 'tls'
 import * as tty from 'tty'
 import {URL, parse} from 'url'
 
-import {buildEnvFromFlag} from './helpers'
+import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
@@ -40,6 +39,13 @@ interface DynoOpts {
   showStatus?: boolean;
   size?: string;
   type?: string;
+}
+
+interface IOptions {
+  debug?: boolean
+  debugHeaders?: boolean
+  preauth?: boolean
+  required?: boolean
 }
 
 export default class Dyno extends Duplex {

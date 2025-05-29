@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/ps/scale'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('ps:scale', function () {

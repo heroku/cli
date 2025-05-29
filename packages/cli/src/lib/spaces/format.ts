@@ -1,4 +1,4 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 export function displayCIDR(cidr: string[] | undefined) {
   return cidr?.join(', ') ?? ''

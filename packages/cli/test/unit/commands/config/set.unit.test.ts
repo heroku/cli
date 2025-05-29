@@ -1,5 +1,5 @@
 import {test, expect} from '@oclif/test'
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('config:set', function () {

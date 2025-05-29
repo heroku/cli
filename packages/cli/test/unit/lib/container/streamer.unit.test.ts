@@ -1,10 +1,9 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import * as stream from 'stream'
-const lolex = require('lolex')
-
-import {streamer} from '../../../../src/lib/container/streamer'
+import lolex from 'lolex'
+import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {
   // Inherit properties

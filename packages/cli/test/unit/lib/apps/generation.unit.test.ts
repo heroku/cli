@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 import {APIClient} from '@heroku-cli/command'
-import * as nock from 'nock'
+import nock from 'nock'
 // import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation'
 import {Config} from '@oclif/core'
 

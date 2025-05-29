@@ -1,9 +1,10 @@
 // import Cmd from '../../../../src/commands/certs/generate'
 import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import {endpoint} from '../../../helpers/stubs/sni-endpoints'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sinon from 'sinon'
+
 import {expect} from '@oclif/test'
 import {QuestionCollection} from 'inquirer'
 import * as inquirer from 'inquirer'

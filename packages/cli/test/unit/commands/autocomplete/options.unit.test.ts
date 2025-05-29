@@ -2,6 +2,10 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, Config} from '@oclif/core'
 import {expect} from 'chai'
 import * as path from 'path'
+import {fileURLToPath} from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // import Options from '../../../../src/commands/autocomplete/options'
 

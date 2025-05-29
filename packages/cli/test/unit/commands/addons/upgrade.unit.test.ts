@@ -1,11 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/addons/upgrade'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
-import * as chalk from 'chalk'
-import stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
 /*
 describe('addons:upgrade', function () {

@@ -256,6 +256,7 @@ postgis
 postpublish
 postrelease
 postrun
+preauth
 prerun
 processname
 processtype

@@ -1,9 +1,10 @@
 /* eslint-disable mocha/no-setup-in-describe */
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
+
 import heredoc from 'tsheredoc'
 
-import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 nock.disableNetConnect()
 
 const cedarApp = {

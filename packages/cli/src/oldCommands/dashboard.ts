@@ -1,14 +1,14 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodash'
-import * as img from 'term-img'
+import img from 'term-img'
 import * as path from 'path'
 import {execSync} from 'child_process'
-const sparkline = require('sparkline')
-import {ago} from '../lib/time'
-import {AppErrors} from '../lib/types/app_errors'
+import sparkline from 'sparkline'
+import {ago} from '../lib/time.js'
+import {AppErrors} from '../lib/types/app_errors.js'
 import * as process from 'process'
 
 type AppsWithMoreInfo = {

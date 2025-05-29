@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import * as fs from 'fs'
 import * as sinon from 'sinon'
-import * as accounts from '../../../../src/lib/accounts/accounts'
+import * as accounts from '../../../../src/lib/accounts/accounts.js'
 import * as path from 'node:path'
 import * as os from 'node:os'
 

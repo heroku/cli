@@ -2,7 +2,10 @@ import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
 import * as path from 'path'
 
-import deps from './deps'
+import deps from './deps.js'
+
+import debug from 'debug'
+const userConfigDebug = debug('heroku:user_config')
 
 export interface ConfigJSON {
   schema: 1;
@@ -48,7 +51,7 @@ export default class UserConfig {
     if (this._init) return this._init
 
     this._init = (async () => {
-      this.debug('init')
+      userConfigDebug('init')
       this.body = (await this.read()) || {schema: 1}
 
       if (!this.body.schema) {
@@ -66,10 +69,6 @@ export default class UserConfig {
     return this._init
   }
 
-  private get debug() {
-    return require('debug')('heroku:user_config')
-  }
-
   private get file() {
     return path.join(this.config.dataDir, 'config.json')
   }
@@ -78,7 +77,7 @@ export default class UserConfig {
     if (!this.needsSave) return
     this.needsSave = false
     this.saving = (async () => {
-      this.debug('saving')
+      userConfigDebug('saving')
       if (!await this.canWrite()) {
         throw new Error('file modified, cannot save')
       }
@@ -95,7 +94,7 @@ export default class UserConfig {
       return body
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
-      this.debug('not found')
+      userConfigDebug('not found')
     }
   }
 
@@ -103,7 +102,7 @@ export default class UserConfig {
     if (await deps.file.exists(this.file)) return
     const old = path.join(this.config.configDir, 'config.json')
     if (!await deps.file.exists(old)) return
-    this.debug('moving config into new place')
+    userConfigDebug('moving config into new place')
     await deps.file.rename(old, this.file)
   }
 

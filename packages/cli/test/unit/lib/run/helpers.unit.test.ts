@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers'
+import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers.js'
 
 /*
 describe('helpers.buildCommand()', function () {
@@ -52,6 +52,5 @@ describe('helpers.buildEnvFromFlag()', function () {
       expect(context.stderr).to.contain("Warning: env flag ue appears invalid. Avoid using ';' in values.")
     })
 })
-
 
 */

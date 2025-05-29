@@ -1,6 +1,6 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/addons/detach'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as nock from 'nock'
 import {expect} from 'chai'
 

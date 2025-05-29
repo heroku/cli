@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
-import * as runHelper from '../../../../src/lib/run/helpers'
+import * as runHelper from '../../../../src/lib/run/helpers.js'
 
-import * as foreman from '../../../../src/lib/local/fork-foreman'
+import * as foreman from '../../../../src/lib/local/fork-foreman.js'
 
 /*
 describe('local:run', function () {

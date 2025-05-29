@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 // import Cmd from '../../../../src/commands/access/remove'
-import runCommand from '../../../helpers/runCommand'
-import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete'
+import runCommand from '../../../helpers/runCommand.js'
+import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 let apiDelete: { done: () => any }
 /*
 describe('heroku access:remove', function () {

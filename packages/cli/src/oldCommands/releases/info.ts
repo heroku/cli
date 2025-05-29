@@ -4,7 +4,9 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import * as shellescape from 'shell-escape'
+// import * as shellescape from 'shell-escape'
+import {parse, quote} from '../../lib/config/quote'
+
 const {forEach} = require('lodash')
 
 import {findByLatestOrId} from '../../lib/releases/releases'

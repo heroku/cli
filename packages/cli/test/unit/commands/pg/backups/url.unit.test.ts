@@ -1,8 +1,8 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/backups/url'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
   beforeEach(function () {

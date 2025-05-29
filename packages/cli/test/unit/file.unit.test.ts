@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import * as file from '../../src/file'
+import * as file from '../../src/file.js'
 import * as fs from 'fs-extra'
 
 /*

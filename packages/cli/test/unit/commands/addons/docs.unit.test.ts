@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as proxyquire from 'proxyquire'
 import * as nock from 'nock'
 import * as sinon from 'sinon'

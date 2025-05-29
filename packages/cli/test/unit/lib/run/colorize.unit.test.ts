@@ -1,4 +1,4 @@
-import colorize from '../../../../src/lib/run/colorize'
+import colorize from '../../../../src/lib/run/colorize.js'
 import {expect} from 'chai'
 
 /*

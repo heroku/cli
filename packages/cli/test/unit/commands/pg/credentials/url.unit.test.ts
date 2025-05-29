@@ -1,11 +1,11 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/pg/credentials/url'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
 /*
 describe('pg:credentials:url', function () {

@@ -1,4 +1,7 @@
-const path = require('path')
+import path from 'path'
+import nock from 'nock'
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 
 globalThis.setInterval = () => ({unref: () => {}})
 const tm = globalThis.setTimeout
@@ -11,11 +14,9 @@ process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // prerun and postrun hooks from initializing
 process.env.IS_HEROKU_TEST_ENV = 'true'
 
-let nock = require('nock')
 nock.disableNetConnect()
 if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
 }
 
-const chai = require('chai')
-chai.use(require('chai-as-promised'))
+chai.use(chaiAsPromised)

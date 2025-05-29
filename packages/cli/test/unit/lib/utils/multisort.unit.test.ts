@@ -1,5 +1,5 @@
 import {expect} from '@oclif/test'
-import {multiSortCompareFn, type Comparator} from '../../../../src/lib/utils/multisort'
+import {multiSortCompareFn, type Comparator} from '../../../../src/lib/utils/multisort.js'
 
 /*
 describe('MultiSort', function () {

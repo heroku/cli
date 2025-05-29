@@ -5,11 +5,12 @@ import * as fs from 'fs'
 import {promisify} from 'util'
 const execFile = promisify(cp.execFile)
 
-const debug = require('debug')('git')
+import debug from 'debug'
+const gitDebug = debug('git')
 
 export default class Git {
   public async exec(args: string[]): Promise<string> {
-    debug('exec: git %o', args)
+    gitDebug('exec: git %o', args)
     try {
       const {stdout, stderr} = await execFile('git', args)
       if (stderr) process.stderr.write(stderr)
@@ -25,7 +26,7 @@ export default class Git {
 
   public spawn(args: string[]) {
     return new Promise((resolve, reject) => {
-      debug('spawn: git %o', args)
+      gitDebug('spawn: git %o', args)
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {

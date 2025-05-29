@@ -1,8 +1,7 @@
-import * as execa from 'execa'
+import execa from 'execa'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-
-const readPkg = require('read-pkg')
+import {readPackage} from 'read-pkg'
 
 const plugins = ['heroku-ps-exec']
 
@@ -13,7 +12,11 @@ describe.skip('plugins', function () {
     skipOnWindows(plugin, async () => {
       const cwd = path.join(__dirname, '../../tmp/plugin', plugin)
       await fs.remove(cwd)
-      const pkg = await readPkg(path.join(__dirname, '../../node_modules', plugin, 'package.json'))
+      const pkg = await readPackage({cwd: path.join(__dirname, '../../node_modules', plugin, 'package.json')})
+      if (!pkg.repository) {
+        throw new Error('No repository found')
+      }
+
       await execa('git', ['clone', pkg.repository.url.split('+')[1], cwd])
       const opts = {cwd, stdio: [0, 1, 2]}
       await execa('git', ['checkout', `v${pkg.version}`], opts)

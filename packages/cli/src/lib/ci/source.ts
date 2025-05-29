@@ -1,7 +1,7 @@
 import {Command} from '@heroku-cli/command'
 import * as fs from 'async-file'
-import * as git from './git'
-import got from 'got'
+import * as git from './git.js'
+import {got} from 'got'
 import debug from 'debug'
 
 const ciDebug = debug('ci')

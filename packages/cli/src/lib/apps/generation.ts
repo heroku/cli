@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
-import {App, Space, DynoSize, TeamApp, Pipeline, Generation, AppGeneration, DynoSizeGeneration, PipelineGeneration} from '../types/fir'
-import Dyno from '../run/dyno'
+import {App, Space, DynoSize, TeamApp, Pipeline, Generation, AppGeneration, DynoSizeGeneration, PipelineGeneration} from '../types/fir.js'
+import Dyno from '../run/dyno.js'
 
 export type GenerationKind = 'fir' | 'cedar';
 // web.1 web-1234abcde-123ab
