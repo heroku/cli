@@ -1,4 +1,4 @@
-import {TelemetryDrain} from '../../../src/lib/types/telemetry'
+import {TelemetryDrain} from '../../../src/lib/types/telemetry.js'
 
 export const spaceTelemetryDrain1: TelemetryDrain = {
   id: '44444321-5717-4562-b3fc-2c963f66afa6',

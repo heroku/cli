@@ -1,6 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+
 import * as fs from 'node:fs/promises'
 import * as sinon from 'sinon'
 import * as inquirer from 'inquirer'
@@ -12,7 +13,7 @@ import {
   endpointWildcard,
   certificateDetails,
   endpointHeroku,
-} from '../../../helpers/stubs/sni-endpoints'
+} from '../../../helpers/stubs/sni-endpoints.js'
 // import Cmd from '../../../../src/commands/certs/add'
 import {expect} from '@oclif/test'
 import {SinonStub} from 'sinon'

@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import * as proxyquire from 'proxyquire'
 import {expect} from 'chai'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
-import {apps, personalApp, teamApp} from '../../../helpers/stubs/get'
-import {teamAppTransfer} from '../../../helpers/stubs/patch'
-import {personalToPersonal} from '../../../helpers/stubs/post'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
+import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
+import {personalToPersonal} from '../../../helpers/stubs/post.js'
 
 let Cmd: GenericCmd
 const inquirer: {prompt?: (prompts: { choices: any }[]) => void} = {}

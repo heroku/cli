@@ -1,6 +1,6 @@
 import {ux} from '@oclif/core'
 // import {hux} from '@heroku/heroku-cli-util'
-import {TelemetryDrain} from '../types/telemetry'
+import {TelemetryDrain} from '../types/telemetry.js'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
 

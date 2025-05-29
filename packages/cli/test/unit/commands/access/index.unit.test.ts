@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import * as nock from 'nock'
 import {expect} from 'chai'
 // import Cmd from '../../../../src/commands/access/index'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {
   personalApp,
   appCollaborators,
@@ -10,7 +10,7 @@ import {
   teamMembers,
   appPermissions,
   teamAppCollaboratorsWithPermissions,
-} from '../../../helpers/stubs/get'
+} from '../../../helpers/stubs/get.js'
 
 /*
 describe('heroku access', function () {

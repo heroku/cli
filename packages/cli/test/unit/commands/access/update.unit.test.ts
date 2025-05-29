@@ -1,13 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/access/update'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import {personalApp, teamApp} from '../../../helpers/stubs/get'
-import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import stripAnsi = require('strip-ansi')
-
+import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
+import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import stripAnsi from 'strip-ansi'
 /*
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {

@@ -1,7 +1,7 @@
-import {getPipeline} from '../../../../src/lib/ci/pipelines'
-import * as nock from 'nock'
+import {getPipeline} from '../../../../src/lib/ci/pipelines.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import {getHerokuAPI} from '../../../helpers/testInstances'
+import {getHerokuAPI} from '../../../helpers/testInstances.js'
 import {APIClient} from '@heroku-cli/command'
 
 const PIPELINE = {

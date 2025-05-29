@@ -1,12 +1,10 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
-// import {hux} from '@heroku/heroku-cli-util'
+import {hux} from '@heroku/heroku-cli-util'
 import {formatDistanceToNow} from 'date-fns'
-import HTTP from '@heroku/http-call'
+import {HTTP} from '@heroku/http-call'
 
-import {maxBy} from '../lib/status/util'
-
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+import {maxBy} from '../lib/status/util.js'
 
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]
@@ -17,6 +15,10 @@ const printStatus = (status: string) => {
   }
 
   return colorize(message)
+}
+
+function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
 export default class Status extends Command {
@@ -33,10 +35,10 @@ export default class Status extends Command {
     const host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
     const {body} = await HTTP.get<any>(host + apiPath)
 
-    // if (flags.json) {
-    //   hux.styledJSON(body)
-    //   return
-    // }
+    if (flags.json) {
+      hux.styledJSON(body)
+      return
+    }
 
     for (const item of body.status) {
       const message = printStatus(item.status)
@@ -46,7 +48,7 @@ export default class Status extends Command {
 
     for (const incident of body.incidents) {
       ux.stdout()
-      // hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
+      hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
       const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
       for (const u of incident.updates) {

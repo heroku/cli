@@ -1,6 +1,6 @@
-import * as api from '../../api'
+import * as api from '../../api.js'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 function wait(ms: any) {
   return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))

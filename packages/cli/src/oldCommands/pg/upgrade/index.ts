@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
@@ -14,7 +15,7 @@ export default class Upgrade extends Command {
   static topic = 'pg';
   static description = heredoc(`
     We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
-    
+
     For an Essential-tier plan, this command upgrades the database's Postgres version. For a Standard-tier and higher plan, this command unfollows the leader database before upgrading the Postgres version.
     `)
 
@@ -80,3 +81,4 @@ export default class Upgrade extends Command {
     }
   }
 }
+*/

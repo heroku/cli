@@ -1,16 +1,17 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/dryrun'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import Cmd from '../../../../oldCommands/pg/upgrade/dryrun.js'
+// import runCommand from '../../../../helpers/runCommand'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import color from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
+/*
 describe('pg:upgrade:dryrun', function () {
   const addon = fixtures.addons['dwh-db']
   let uxWarnStub: sinon.SinonStub
@@ -188,8 +189,9 @@ describe('pg:upgrade:dryrun', function () {
     ]).catch(error => {
       expect(error.message).to.equal(heredoc(`
       database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.
-      
+
       Error ID: unprocessable_entity`))
     })
   })
 })
+*/
