@@ -1,9 +1,9 @@
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
-import colorize from './colorize'
-import {LogSession} from '../types/fir'
-import {getGenerationByAppId} from '../apps/generation'
+import {color} from '@heroku-cli/color'
+import colorize from './colorize.js'
+import {LogSession} from '../types/fir.js'
+import {getGenerationByAppId} from '../apps/generation.js'
 
 const EventSource = require('@heroku/eventsource')
 

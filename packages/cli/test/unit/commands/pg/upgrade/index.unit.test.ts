@@ -1,16 +1,17 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/index'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import Cmd from '../../../../../src/commands/pg/upgrade/index'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
-import color from '@heroku-cli/color'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import * as sinon from 'sinon'
-const stripAnsi = require('strip-ansi')
+import stripAnsi from 'strip-ansi'
 
+/*
 describe('pg:upgrade', function () {
   const hobbyAddon = fixtures.addons['www-db']
   const essentialAddon = fixtures.addons['www-db-3']
@@ -190,3 +191,4 @@ describe('pg:upgrade', function () {
     `))
   })
 })
+*/

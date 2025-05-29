@@ -3,7 +3,6 @@
 
 // This paginator uses status code to determine passing the Next-Range header
 import {APIClient} from '@heroku-cli/command'
-import HTTP from '@heroku/http-call'
 
 export async function paginateRequest<T = unknown>(client: APIClient, url: string, pageSize = 200): Promise<T[]> {
   let isPartial = true
@@ -12,7 +11,7 @@ export async function paginateRequest<T = unknown>(client: APIClient, url: strin
   let aggregatedResponseBody: T[] = []
 
   while (isPartial) {
-    const response: HTTP<T[]> = await client.get<T[]>(url, {
+    const response = await client.get<T[]>(url, {
       headers: {
         Range: `${(isPartial && !isFirstRequest) ? `${nextRange}` : `id ..; max=${pageSize};`}`,
       },

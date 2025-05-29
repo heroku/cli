@@ -1,10 +1,10 @@
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/pg/links/index'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
 /*
 describe('pg:links', function () {

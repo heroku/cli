@@ -3,8 +3,10 @@ import * as fs from 'fs-extra'
 import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
+import globby from 'globby'
+import {fileURLToPath} from 'url'
 
-import commandsOutput from './commands-output'
+import commandsOutput from './commands-output.js'
 
 // this is a custom function that strips both ansi characters and several additional characters
 const stripAnsi = (input: string) => {
@@ -15,10 +17,9 @@ const stripAnsi = (input: string) => {
   return cleanedString
 }
 
-const globby = require('globby')
-
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {

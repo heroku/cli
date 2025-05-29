@@ -1,10 +1,10 @@
 import {stderr, stdout} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
 // import {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
-import sinon = require('sinon')
+import sinon from 'sinon'
 // import * as psql from '../../../../src/lib/pg/psql'
 // import * as childProcess from 'node:child_process'
 // import {TunnelConfig} from '../../../../src/lib/pg/bastion'

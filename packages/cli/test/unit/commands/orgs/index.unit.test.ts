@@ -2,8 +2,8 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
 // import Cmd from '../../../../src/commands/orgs'
-import runCommand from '../../../helpers/runCommand'
-import {teams} from '../../../helpers/stubs/get'
+import runCommand from '../../../helpers/runCommand.js'
+import {teams} from '../../../helpers/stubs/get.js'
 
 /*
 describe('heroku teams', function () {

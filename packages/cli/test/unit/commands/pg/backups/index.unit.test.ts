@@ -1,10 +1,10 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import Cmd from '../../../../../src/commands/pg/backups/index'
-import type {BackupTransfer} from '../../../../../src/lib/pg/types'
-import runCommand from '../../../../helpers/runCommand'
+import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 /*
 describe('pg:backups', function () {

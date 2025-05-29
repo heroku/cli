@@ -1,7 +1,7 @@
-import {SniEndpoint} from '../types/sni_endpoint'
+import {SniEndpoint} from '../types/sni_endpoint.js'
 import {APIClient} from '@heroku-cli/command'
 import {HTTP} from '@heroku/http-call'
-import {Domain} from '../types/domain'
+import {Domain} from '../types/domain.js'
 
 export default async function (flags: { endpoint: string | undefined; name: string | undefined; app: string }, heroku: APIClient) {
   if (flags.endpoint && flags.name) {

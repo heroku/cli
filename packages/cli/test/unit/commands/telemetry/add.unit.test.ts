@@ -1,13 +1,13 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/telemetry/add'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures'
-import {firApp} from '../../../fixtures/apps/fixtures'
-import * as spaceFixtures from '../../../fixtures/spaces/fixtures'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures.js'
+import {firApp} from '../../../fixtures/apps/fixtures.js'
+import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id

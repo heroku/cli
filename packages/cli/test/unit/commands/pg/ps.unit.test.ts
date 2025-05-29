@@ -1,12 +1,13 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 // import Cmd from '../../../../src/commands/pg/ps'
-import * as fixtures from '../../../fixtures/addons/fixtures'
-import runCommand from '../../../helpers/runCommand'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 // import * as psql from '../../../../src/lib/pg/psql'
+const heredoc = tsheredoc.default
 
 const FAKE_OUTPUT_TEXT = heredoc(`
   pid  | state  | source  | username | running_for | transaction_start | waiting | query

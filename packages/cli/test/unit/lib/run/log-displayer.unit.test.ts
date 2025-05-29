@@ -3,11 +3,11 @@ import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 // import {CLIError} from '@oclif/core/lib/errors'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 // import logDisplayer from '../../../../src/lib/run/log-displayer'
-import {cedarApp, firApp} from '../../../fixtures/apps/fixtures'
+import {cedarApp, firApp} from '../../../fixtures/apps/fixtures.js'
 
 /*
 describe('logDisplayer', function () {

@@ -1,17 +1,17 @@
-import c from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 
 export const COLORS: Array<(s: string) => string> = [
-  s => c.yellow(s),
-  s => c.green(s),
-  s => c.cyan(s),
-  s => c.magenta(s),
-  s => c.blue(s),
-  s => c.bold.green(s),
-  s => c.bold.cyan(s),
-  s => c.bold.magenta(s),
-  s => c.bold.yellow(s),
-  s => c.bold.blue(s),
+  s => color.yellow(s),
+  s => color.green(s),
+  s => color.cyan(s),
+  s => color.magenta(s),
+  s => color.blue(s),
+  s => color.bold.green(s),
+  s => color.bold.cyan(s),
+  s => color.bold.magenta(s),
+  s => color.bold.yellow(s),
+  s => color.bold.blue(s),
 ]
 const assignedColors: any = {}
 function getColorForIdentifier(i: string) {
@@ -30,28 +30,28 @@ getColorForIdentifier('heroku-postgres')
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
-const red = c.red
-const dim = (i: string) => c.dim(i)
+const red = color.red
+const dim = (i: string) => color.dim(i)
 const other = dim
-const path = (i: string) => c.green(i)
-const method = (i: string) => c.bold.magenta(i)
+const path = (i: string) => color.green(i)
+const method = (i: string) => color.bold.magenta(i)
 const status = (code: any) => {
   if (code < 200) return code
-  if (code < 300) return c.green(code)
-  if (code < 400) return c.cyan(code)
-  if (code < 500) return c.yellow(code)
-  if (code < 600) return c.red(code)
+  if (code < 300) return color.green(code)
+  if (code < 400) return color.cyan(code)
+  if (code < 500) return color.yellow(code)
+  if (code < 600) return color.red(code)
   return code
 }
 
 const ms = (s: string) => {
   const ms = Number.parseInt(s, 10)
   if (!ms) return s
-  if (ms < 100) return c.greenBright(s)
-  if (ms < 500) return c.green(s)
-  if (ms < 5000) return c.yellow(s)
-  if (ms < 10000) return c.yellowBright(s)
-  return c.red(s)
+  if (ms < 100) return color.greenBright(s)
+  if (ms < 500) return color.green(s)
+  if (ms < 5000) return color.yellow(s)
+  if (ms < 10000) return color.yellowBright(s)
+  return color.red(s)
 }
 
 function colorizeRouter(body: string) {
@@ -99,23 +99,23 @@ function colorizeRouter(body: string) {
 const state = (s: string) => {
   switch (s) {
   case 'down': return red(s)
-  case 'up': return c.greenBright(s)
-  case 'starting': return c.yellowBright(s)
-  case 'complete': return c.greenBright(s)
+  case 'up': return color.greenBright(s)
+  case 'starting': return color.yellowBright(s)
+  case 'complete': return color.greenBright(s)
   default: return s
   }
 }
 
 function colorizeRun(body: string) {
   try {
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return c.red(body)
+    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.red(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
         starting[1],
-        c.cmd(starting[2]),
+        color.cmd(starting[2]),
         starting[3] || '',
-        c.green(starting[4] || ''),
+        color.green(starting[4] || ''),
       ].join('')
     }
 
@@ -133,7 +133,7 @@ function colorizeRun(body: string) {
     if (exited) {
       return [
         exited[1],
-        exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2]),
+        exited[2] === '0' ? color.greenBright(exited[2]) : color.red(exited[2]),
       ].join('')
     }
   } catch (error: any) {
@@ -145,16 +145,16 @@ function colorizeRun(body: string) {
 
 function colorizeWeb(body: string) {
   try {
-    if (body.match(/^Unidling$/)) return c.yellow(body)
-    if (body.match(/^Restarting$/)) return c.yellow(body)
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return c.red(body)
+    if (body.match(/^Unidling$/)) return color.yellow(body)
+    if (body.match(/^Restarting$/)) return color.yellow(body)
+    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.red(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
         (starting[1]),
-        c.cmd(starting[2]),
+        color.cmd(starting[2]),
         (starting[3] || ''),
-        c.green(starting[4] || ''),
+        color.green(starting[4] || ''),
       ].join('')
     }
 
@@ -162,7 +162,7 @@ function colorizeWeb(body: string) {
     if (exited) {
       return [
         exited[1],
-        exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2]),
+        exited[2] === '0' ? color.greenBright(exited[2]) : color.red(exited[2]),
       ].join('')
     }
 
@@ -207,14 +207,14 @@ function colorizeWeb(body: string) {
 }
 
 function colorizeAPI(body: string) {
-  if (body.match(/^Build succeeded$/)) return c.greenBright(body)
+  if (body.match(/^Build succeeded$/)) return color.greenBright(body)
   // eslint-disable-next-line unicorn/prefer-starts-ends-with
-  if (body.match(/^Build failed/)) return c.red(body)
+  if (body.match(/^Build failed/)) return color.red(body)
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {
     return [
       build[1],
-      c.green(build[2]),
+      color.green(build[2]),
     ].join('')
   }
 
@@ -222,9 +222,9 @@ function colorizeAPI(body: string) {
   if (deploy) {
     return [
       deploy[1],
-      c.cyan(deploy[2]),
+      color.cyan(deploy[2]),
       deploy[3],
-      c.green(deploy[4]),
+      color.green(deploy[4]),
     ].join('')
   }
 
@@ -232,9 +232,9 @@ function colorizeAPI(body: string) {
   if (release) {
     return [
       release[1],
-      c.magenta(release[2]),
+      color.magenta(release[2]),
       release[3],
-      c.green(release[4]),
+      color.green(release[4]),
     ].join('')
   }
 
@@ -242,9 +242,9 @@ function colorizeAPI(body: string) {
   if (starting) {
     return [
       (starting[1]),
-      c.cmd(starting[2]),
+      color.cmd(starting[2]),
       (starting[3] || ''),
-      c.green(starting[4] || ''),
+      color.green(starting[4] || ''),
     ].join('')
   }
 
@@ -264,8 +264,8 @@ function colorizePG(body: string) {
   if (create) {
     return [
       other(create[1]),
-      c.magenta(create[2]),
-      c.cyan(create[3]),
+      color.magenta(create[2]),
+      color.cyan(create[3]),
     ].join('')
   }
 

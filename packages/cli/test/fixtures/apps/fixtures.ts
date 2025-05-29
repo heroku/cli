@@ -1,4 +1,4 @@
-import {App} from '../../../src/lib/types/fir'
+import {App} from '../../../src/lib/types/fir.js'
 
 export const cedarApp: Partial<App> = {
   acm: false,

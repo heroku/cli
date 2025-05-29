@@ -1,9 +1,9 @@
 import {stdout} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/releases/info'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
 
 const d = new Date(2000, 1, 1)
