@@ -1,4 +1,4 @@
-import {stderr} from 'stdout-stderr'
+import {stderr, stdout} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/access/add.js'
@@ -19,7 +19,7 @@ describe('heroku access:add', function () {
     })
 
     afterEach(function () {
-      return nock.cleanAll()
+      nock.cleanAll()
     })
 
     it('adds user to the app with permissions, even specifying the view permission', async function () {
@@ -33,6 +33,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
+      expect('').to.eq(stdout.output)
       expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
     })
 
@@ -47,6 +48,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
+      expect('').to.eq(stdout.output)
       expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
     })
 
@@ -73,7 +75,7 @@ describe('heroku access:add', function () {
     })
 
     afterEach(function () {
-      return nock.cleanAll()
+      nock.cleanAll()
     })
 
     it('adds user to the app', async function () {
@@ -85,6 +87,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
+      expect('').to.eq(stdout.output)
       expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
     })
   })
@@ -96,7 +99,7 @@ describe('heroku access:add', function () {
     })
 
     afterEach(function () {
-      return nock.cleanAll()
+      nock.cleanAll()
     })
 
     it('adds user to the app as a collaborator', async function () {
@@ -107,6 +110,7 @@ describe('heroku access:add', function () {
       ])
       apiGet.done()
       apiPost.done()
+      expect('').to.eq(stdout.output)
       expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
     })
   })
