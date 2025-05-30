@@ -33,6 +33,9 @@ describe('heroku access:add', function () {
         'deploy,view',
         'gandalf@heroku.com',
       ])
+      apiGet.done()
+      apiGetOrgFeatures.done()
+      apiPost.done()
       expectOutput(stderr.output, heredoc(`
         Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done
       `))
@@ -46,7 +49,11 @@ describe('heroku access:add', function () {
         'deploy',
         'gandalf@heroku.com',
       ])
+      apiGet.done()
+      apiGetOrgFeatures.done()
+      apiPost.done()
       expectOutput(stderr.output, heredoc(`
+        Adding gandalf@heroku.com access to the app myapp with deploy, view permissions...
         Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done
       `))
     })
@@ -83,12 +90,13 @@ describe('heroku access:add', function () {
         'myapp',
         'gandalf@heroku.com',
       ])
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp... done
-      `))
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
+      expectOutput(stderr.output, heredoc(`
+        Adding gandalf@heroku.com access to the app myapp...
+        Adding gandalf@heroku.com access to the app myapp... done
+      `))
     })
   })
 
@@ -108,11 +116,12 @@ describe('heroku access:add', function () {
         'myapp',
         'gandalf@heroku.com',
       ])
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp... done
-      `))
       apiGet.done()
       apiPost.done()
+      expectOutput(stderr.output, heredoc(`
+        Adding gandalf@heroku.com access to the app myapp...
+        Adding gandalf@heroku.com access to the app myapp... done
+      `))
     })
   })
 })

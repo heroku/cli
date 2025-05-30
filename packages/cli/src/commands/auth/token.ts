@@ -1,17 +1,12 @@
-/*
-import color from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku-cli/color'
+import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {FlagInput} from '@oclif/core/lib/interfaces/parser'
+import {ux} from '@oclif/core'
 import {formatRelative}  from 'date-fns'
 
 export default class AuthToken extends Command {
   static description = `outputs current CLI authentication token.
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
-
-  static flags: FlagInput = {
-    help: flags.help({char: 'h'}),
-  }
 
   async run() {
     this.parse(AuthToken)
@@ -29,7 +24,6 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
       this.warn(error)
     }
 
-    this.log(this.heroku.auth)
+    ux.stdout(this.heroku.auth)
   }
 }
-*/
