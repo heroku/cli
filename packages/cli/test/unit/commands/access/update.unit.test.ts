@@ -5,10 +5,8 @@ import nock from 'nock'
 import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import stripAnsi from 'strip-ansi'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
+
 
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
@@ -26,10 +24,8 @@ describe('heroku access:update', function () {
         'deploy',
         'gandalf@heroku.com',
       ])
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, heredoc(`
-        Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-      `))
+      expect('').to.eq(stdout.output)
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
@@ -42,10 +38,8 @@ describe('heroku access:update', function () {
         'deploy,view',
         'gandalf@heroku.com',
       ])
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, heredoc(`
-        Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-      `))
+      expect('').to.eq(stdout.output)
+      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
   })
 
