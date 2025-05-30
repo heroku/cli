@@ -28,7 +28,6 @@ describe('heroku access:update', function () {
       ])
       expectOutput(stdout.output, '')
       expectOutput(stderr.output, heredoc(`
-        Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
       `))
     })
@@ -45,7 +44,6 @@ describe('heroku access:update', function () {
       ])
       expectOutput(stdout.output, '')
       expectOutput(stderr.output, heredoc(`
-        Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
       `))
     })

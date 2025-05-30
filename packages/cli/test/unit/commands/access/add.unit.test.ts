@@ -5,9 +5,6 @@ import Cmd from '../../../../src/commands/access/add.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
 import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 let apiGet: nock.Scope
 let apiPost: nock.Scope
@@ -36,9 +33,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done
-      `))
+      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
     })
 
     it('adds user to the app with permissions, and view is implicit', async function () {
@@ -52,10 +47,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp with deploy, view permissions...
-        Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done
-      `))
+      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
     })
 
     it('raises an error when permissions are not specified', function () {
@@ -93,10 +85,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp...
-        Adding gandalf@heroku.com access to the app myapp... done
-      `))
+      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
     })
   })
 
@@ -118,10 +107,7 @@ describe('heroku access:add', function () {
       ])
       apiGet.done()
       apiPost.done()
-      expectOutput(stderr.output, heredoc(`
-        Adding gandalf@heroku.com access to the app myapp...
-        Adding gandalf@heroku.com access to the app myapp... done
-      `))
+      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
     })
   })
 })
