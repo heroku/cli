@@ -7,6 +7,8 @@ import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
@@ -25,9 +27,10 @@ describe('heroku access:update', function () {
         'gandalf@heroku.com',
       ])
       expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expectOutput(stderr.output, heredoc(`
+        Updating gandalf@heroku.com in application myapp with deploy,view permissions...
+        Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
+      `))
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
@@ -41,9 +44,10 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         'gandalf@heroku.com',
       ])
       expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expectOutput(stderr.output, heredoc(`
+        Updating gandalf@heroku.com in application myapp with deploy,view permissions...
+        Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
+      `))
     })
   })
 

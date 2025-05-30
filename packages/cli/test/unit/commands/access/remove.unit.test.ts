@@ -4,6 +4,9 @@ import {expect} from 'chai'
 import Cmd from '../../../../src/commands/access/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 describe('heroku access:remove', function () {
   let apiDelete: { done: () => any }
@@ -23,9 +26,12 @@ describe('heroku access:remove', function () {
         'myapp',
         'gandalf@heroku.com',
       ])
-      expect('').to.eq(stdout.output)
-      expect('Removing gandalf@heroku.com access from the app myapp... done\n').to.eq(stderr.output)
       apiDelete.done()
+      expect('').to.eq(stdout.output)
+      expectOutput(stderr.output, heredoc(`
+        Removing gandalf@heroku.com access from the app myapp...
+        Removing gandalf@heroku.com access from the app myapp... done
+      `))
     })
   })
 })
