@@ -1580,7 +1580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:^2, @heroku-cli/color@npm:^2.0.4":
+"@heroku-cli/color@npm:^2, @heroku-cli/color@npm:^2.0.1, @heroku-cli/color@npm:^2.0.4":
   version: 2.0.4
   resolution: "@heroku-cli/color@npm:2.0.4"
   dependencies:
@@ -1593,11 +1593,11 @@ __metadata:
   linkType: hard
 
 "@heroku-cli/command@npm:^11.5.0":
-  version: 11.5.0
-  resolution: "@heroku-cli/command@npm:11.5.0"
+  version: 11.6.0
+  resolution: "@heroku-cli/command@npm:11.6.0"
   dependencies:
     "@heroku-cli/color": ^2.0.1
-    "@heroku/http-call": ^5.4.0
+    "@heroku/http-call": ^5.5.0
     "@oclif/core": ^2.16.0
     cli-ux: ^6.0.9
     debug: ^4.4.0
@@ -1608,7 +1608,7 @@ __metadata:
     uuid: ^8.3.0
     yargs-parser: ^18.1.3
     yargs-unparser: ^2.0.0
-  checksum: f1323bd909487ee29720768674946c7336938b04f2d017d0ed4bf78e9eb34290862f946517879f7a64a930decc713186bbb1dcfa7b042b2e8eb2a769247bd7cd
+  checksum: b1a58b29988bbb7602be24d4fe7d671a18568bbb94887abf9b02302cf12af97f7805bc88d0833bf63f7aa69d1ff6976f9c8fd4ed063f3ea77bdb0a30bdea39c0
   languageName: node
   linkType: hard
 
@@ -3778,7 +3778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.0.8, @oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
+"@oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
   version: 2.16.0
   resolution: "@oclif/core@npm:2.16.0"
   dependencies:
@@ -3909,6 +3909,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/linewrap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@oclif/linewrap@npm:1.0.0"
+  checksum: a072016a58b5e1331bbc21303ad5100fcda846ac4b181e344aec88bb24c5da09c416651e51313ffcc846a83514b74b8b987dd965982900f3edbb42b4e87cc246
+  languageName: node
+  linkType: hard
+
 "@oclif/plugin-commands@npm:4.1.25":
   version: 4.1.25
   resolution: "@oclif/plugin-commands@npm:4.1.25"
@@ -3922,11 +3929,11 @@ __metadata:
   linkType: hard
 
 "@oclif/plugin-help@npm:^5":
-  version: 5.2.4
-  resolution: "@oclif/plugin-help@npm:5.2.4"
+  version: 5.2.20
+  resolution: "@oclif/plugin-help@npm:5.2.20"
   dependencies:
-    "@oclif/core": ^2.0.8
-  checksum: a2335e9b9ab806566082e4a52d259f206dbae6334afa9d816e09acdf6e51b4f37cff0ce72294ad532141895c4d1eb9c38e2fe4794e71abb59cd56e966be70b2e
+    "@oclif/core": ^2.15.0
+  checksum: 4e98e9b81f26d63dea15c82a367ee60b36f3b62261015282090b90b94dec9a53cd4a856c7b10767bba5a7d2582c1ffb2b72ec00bd62ec35f9359bcdc87dcd674
   languageName: node
   linkType: hard
 
@@ -4057,9 +4064,9 @@ __metadata:
   linkType: hard
 
 "@oclif/screen@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "@oclif/screen@npm:3.0.4"
-  checksum: 6d662c81edfbc8acb50a30001e3c2261171e8baffcd6010603c331de375c5d0c9ce6b3230f6b0ce24961bfa3531f99e771265ea74d9d7a0ee37fb9357fb436a7
+  version: 3.0.8
+  resolution: "@oclif/screen@npm:3.0.8"
+  checksum: d287d5abf236e6564259a11f3942ad68a70ead2fe2ad3653c3730bce8519d21e49cabcc5be449fab769f4efc5ca74c6de98edc34e3464e60d2277119fb4796d2
   languageName: node
   linkType: hard
 
@@ -4585,7 +4592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^13.0.1, @sinonjs/fake-timers@npm:^13.0.2":
+"@sinonjs/fake-timers@npm:^13.0.1, @sinonjs/fake-timers@npm:^13.0.2, @sinonjs/fake-timers@npm:^13.0.5":
   version: 13.0.5
   resolution: "@sinonjs/fake-timers@npm:13.0.5"
   dependencies:
@@ -14896,6 +14903,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"open@npm:^8.4.2":
+  version: 8.4.2
+  resolution: "open@npm:8.4.2"
+  dependencies:
+    define-lazy-prop: ^2.0.0
+    is-docker: ^2.1.1
+    is-wsl: ^2.2.0
+  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
+  languageName: node
+  linkType: hard
+
 "opn@npm:^3.0.3":
   version: 3.0.3
   resolution: "opn@npm:3.0.3"
@@ -17039,6 +17057,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sinon@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "sinon@npm:20.0.0"
+  dependencies:
+    "@sinonjs/commons": ^3.0.1
+    "@sinonjs/fake-timers": ^13.0.5
+    "@sinonjs/samsam": ^8.0.1
+    diff: ^7.0.0
+    supports-color: ^7.2.0
+  checksum: c6dcd3bc60aa360fede157fbed30c3984eb222990ff28f3014a5e31834cec74e5203c0575332a99c3f7976425167f70e0777507c0c58867473ad0a0c4c1a759c
+  languageName: node
+  linkType: hard
+
 "slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -18221,14 +18252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "tslib@npm:2.0.1"
-  checksum: 507f32fc24a614c5097d414b622373b6cbb99e305413517e7fd49bef1e63570c0dd15b417ae68152088c3496218e82a5d8c7cd6b48c7a32dcee1a3f7191fff74
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.4.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
