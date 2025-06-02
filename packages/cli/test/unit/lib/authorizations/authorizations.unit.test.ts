@@ -1,14 +1,15 @@
 import * as Heroku from '@heroku-cli/schema'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import {formatDistanceToNow, addSeconds} from 'date-fns'
 import {display} from '../../../../src/lib/authorizations/authorizations.js'
 
+/*
 const setupDisplay = (auth: Heroku.OAuthAuthorization) =>
   test
     .stdout()
     .do(() => display(auth))
 
-/*
 describe('display', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const authDesc = 'a cool auth'

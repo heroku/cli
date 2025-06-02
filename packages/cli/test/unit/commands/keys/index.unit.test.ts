@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 const PUBLIC_KEY = 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'
 

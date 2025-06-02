@@ -1,25 +1,27 @@
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
+import {runCommand} from '@oclif/test'
 
 describe('2fa', function () {
-  test
-    .nock('https://api.heroku.com', api => api
-      .get('/account')
-      .reply(200, {two_factor_authentication: true}),
-    )
-    .stdout()
-    .command(['2fa'])
-    .it('shows 2fa is enabled', ({stdout}) => {
-      expect(stdout).to.equal('Two-factor authentication is enabled\n')
-    })
+  beforeEach(function () {
+    nock.cleanAll()
+  })
 
-  test
-    .nock('https://api.heroku.com', api => api
+  it('shows 2fa is enabled', async function () {
+    nock('https://api.heroku.com')
       .get('/account')
-      .reply(200, {two_factor_authentication: false}),
-    )
-    .stdout()
-    .command(['2fa'])
-    .it('shows 2fa is not enabled', ({stdout}) => {
-      expect(stdout).to.equal('Two-factor authentication is not enabled\n')
-    })
+      .reply(200, {two_factor_authentication: true})
+
+    const {stdout} = await runCommand(['auth:2fa'])
+    expect(stdout).to.include('Two-factor authentication is enabled')
+  })
+
+  it('shows 2fa is not enabled', async function () {
+    nock('https://api.heroku.com')
+      .get('/account')
+      .reply(200, {two_factor_authentication: false})
+
+    const {stdout} = await runCommand(['auth:2fa'])
+    expect(stdout).to.include('Two-factor authentication is not enabled')
+  })
 })

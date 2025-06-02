@@ -1,4 +1,5 @@
-import {test, expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 // import yaml from 'js-yaml'
 import * as fse from 'fs-extra'
 import * as sinon from 'sinon'

@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 // autocomplete will throw error on windows
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'

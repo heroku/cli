@@ -1,7 +1,9 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import * as runHelper from '../../src/lib/run/helpers.js'
 import {unwrap} from '../helpers/utils/unwrap.js'
 
+/*
 const testFactory = () => {
   return test
     .stdout()
@@ -12,7 +14,6 @@ const testFactory = () => {
     })
 }
 
-/*
 describe('run', function () {
   testFactory()
     .stub(runHelper, 'revertSortedArgs', () => ['echo 1 2 3'])

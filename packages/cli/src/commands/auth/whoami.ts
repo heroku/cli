@@ -1,4 +1,5 @@
 import {Command} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class AuthWhoami extends Command {
@@ -19,7 +20,7 @@ export default class AuthWhoami extends Command {
   }
 
   notloggedin() {
-    this.error('not logged in', {exit: 100})
+    ux.error('not logged in', {exit: 100})
   }
 }
 

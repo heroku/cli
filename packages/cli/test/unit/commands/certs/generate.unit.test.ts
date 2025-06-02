@@ -5,7 +5,7 @@ import nock from 'nock'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sinon from 'sinon'
 
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import {QuestionCollection} from 'inquirer'
 import * as inquirer from 'inquirer'
 import * as childProcess from 'node:child_process'

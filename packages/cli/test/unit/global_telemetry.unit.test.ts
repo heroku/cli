@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import * as telemetry from '../../src/global_telemetry.js'
 import {identity} from 'lodash'
 import * as os from 'os'

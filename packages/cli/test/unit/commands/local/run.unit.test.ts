@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import * as runHelper from '../../../../src/lib/run/helpers.js'
 
 import * as foreman from '../../../../src/lib/local/fork-foreman.js'

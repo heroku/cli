@@ -32,10 +32,11 @@ export default class Update extends Command {
       permissions.push('view')
       permissions = Array.from(new Set(permissions.sort()))
 
-      ux.action.start(`Updating ${args.email} in application ${color.cyan(appName)} with ${permissions} permissions`)
+      const output = `Updating ${args.email} in application ${color.cyan(appName)} with ${permissions.join(',')} permissions`
+      ux.action.start(output)
       await this.heroku.patch(`/teams/apps/${appName}/collaborators/${args.email}`, {
         body: {permissions: permissions},
       })
-      ux.action.stop()
+      ux.action.stop('done')
     }
 }

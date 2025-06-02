@@ -1,5 +1,6 @@
 import {Config} from '@oclif/core'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import webhooksAbstractClass from '../../../../src/lib/webhooks/base.js'
 import * as path from 'path'
 import {fileURLToPath} from 'url'

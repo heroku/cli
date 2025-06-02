@@ -3,7 +3,7 @@ import nock from 'nock'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 
-globalThis.setInterval = () => ({unref: () => {}})
+// globalThis.setInterval = () => ({unref: () => {}})
 const tm = globalThis.setTimeout
 globalThis.setTimeout = cb => {
   return tm(cb)

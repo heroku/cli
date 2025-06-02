@@ -1,5 +1,6 @@
 import {ux} from '@oclif/core'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import confirmCommand from '../../../src/lib/confirmCommand.js'
 import stripAnsi from 'strip-ansi'
 

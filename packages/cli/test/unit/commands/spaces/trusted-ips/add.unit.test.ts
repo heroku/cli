@@ -1,5 +1,5 @@
 import color from '@heroku-cli/color'
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'

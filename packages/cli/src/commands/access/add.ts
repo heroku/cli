@@ -45,11 +45,11 @@ export default class AccessAdd extends Command {
       await this.heroku.post<Heroku.TeamAppCollaborator[]>(`/teams/apps/${appName}/collaborators`, {
         body: {user: email, permissions: permissionsArraySorted},
       })
-      ux.action.stop()
+      ux.action.stop('done')
     } else {
       ux.action.start(output)
       await this.heroku.post<Heroku.Collaborator[]>(`/apps/${appName}/collaborators`, {body: {user: email}})
-      ux.action.stop()
+      ux.action.stop('done')
     }
   }
 }

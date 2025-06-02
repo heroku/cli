@@ -1,12 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
+// import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/access/remove.js'
-import runCommand from '../../../helpers/runCommand.js'
+// import Cmd from '../../../../src/commands/access/remove.js'
+import {runCommand} from '@oclif/test'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 describe('heroku access:remove', function () {
   let apiDelete: { done: () => any }
@@ -21,14 +18,16 @@ describe('heroku access:remove', function () {
     })
 
     it('removes the user from an app', async function () {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'gandalf@heroku.com',
-      ])
+      const {stdout, stderr} = await runCommand(['access:remove', '--app', 'myapp', 'gandalf@heroku.com'])
+
+      // await runCommand(Cmd, [
+      //   '--app',
+      //   'myapp',
+      //   'gandalf@heroku.com',
+      // ])
       apiDelete.done()
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Removing gandalf@heroku.com access from the app myapp... done')
+      expect('').to.eq(stdout)
+      expect(stderr).to.include('Removing gandalf@heroku.com access from the app myapp... done')
     })
   })
 })

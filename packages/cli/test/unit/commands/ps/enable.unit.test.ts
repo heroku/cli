@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 const API_HOST = 'https://api.heroku.com'
 const METRICS_HOST = 'https://api.metrics.heroku.com'
@@ -7,6 +8,7 @@ const APP_NAME = 'wubalubadubdub'
 const FORMATION_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-22222222222'
 const MONITOR_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-333333333333'
 
+/*
 function commonSetup() {
   return test
     .stderr()
@@ -40,7 +42,6 @@ function dynoTest(dynoType: string) {
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
 }
 
-/*
 describe('without specifying an app', function () {
   test
     .stderr()
@@ -146,5 +147,4 @@ describe('with a fir app', function () {
     .catch(error => expect(error.message).to.contain('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.'))
     .it('rejected fir app')
 })
-
 */

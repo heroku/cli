@@ -15,7 +15,7 @@ import {
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints.js'
 // import Cmd from '../../../../src/commands/certs/add'
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import {SinonStub} from 'sinon'
 import {PathLike} from 'node:fs'
 

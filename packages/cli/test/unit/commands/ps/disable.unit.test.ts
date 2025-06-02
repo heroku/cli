@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 const API_HOST = 'https://api.heroku.com'
 const METRICS_HOST = 'https://api.metrics.heroku.com'

@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 // import * as PromoteCmd from '../../../../src/commands/pipelines/promote'
 

@@ -11,8 +11,8 @@ const stopMock = () => {
 }
 
 const runCommand = async (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
-  stdout.start()
   stderr.start()
+  stdout.start()
   const conf = await getConfig()
   const instance = new Cmd(args, conf)
   if (printStd) {
@@ -20,16 +20,18 @@ const runCommand = async (Cmd: GenericCmd, args: string[] = [], printStd = false
     stderr.print = true
   }
 
-  return instance
-    .run()
-    .then(args => {
-      stopMock()
-      return args
-    })
-    .catch((error: Error) => {
-      stopMock()
-      throw error
-    })
+  try {
+    const result = await instance.run()
+    // Wait a tick to ensure all stderr output is captured
+    await new Promise(resolve => setTimeout(resolve, 0))
+    stopMock()
+    return result
+  } catch (error) {
+    // Wait a tick to ensure all stderr output is captured
+    await new Promise(resolve => setTimeout(resolve, 0))
+    stopMock()
+    throw error
+  }
 }
 
 export default runCommand

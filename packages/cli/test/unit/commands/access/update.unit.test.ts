@@ -1,6 +1,7 @@
-import {stdout, stderr} from 'stdout-stderr'
+// import {stdout, stderr} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/access/update.js'
-import runCommand from '../../../helpers/runCommand.js'
+// import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '@oclif/test'
 import nock from 'nock'
 import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
@@ -16,29 +17,30 @@ describe('heroku access:update', function () {
     it('updates the app permissions, view being implicit', async function () {
       teamApp()
       appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand([
+        'access:update',
         '--app',
         'myapp',
         '--permissions',
         'deploy',
         'gandalf@heroku.com',
       ])
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
+      expect('').to.eq(stdout)
+      expect(stderr).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
       teamApp()
       appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand([
         '--app',
         'myapp',
         '--permissions',
         'deploy,view',
         'gandalf@heroku.com',
       ])
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
+      expect('').to.eq(stdout)
+      expect(stderr).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
     })
   })
 
@@ -48,7 +50,8 @@ describe('heroku access:update', function () {
     })
     it('returns an error when passing permissions', async function () {
       personalApp()
-      await runCommand(Cmd, [
+      await runCommand([
+        'access:update',
         '--app',
         'myapp',
         '--permissions',

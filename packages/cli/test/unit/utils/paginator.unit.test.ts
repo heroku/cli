@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import {Config} from '@oclif/core'
 import {paginateRequest} from '../../../src/lib/utils/paginator.js'
 import {APIClient} from '@heroku-cli/command'

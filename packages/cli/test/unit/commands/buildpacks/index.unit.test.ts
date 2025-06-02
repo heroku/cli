@@ -1,5 +1,6 @@
 /* eslint-disable mocha/no-setup-in-describe */
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 import heredoc from 'tsheredoc'

@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import parseKeyValue from '../../../src/lib/utils/keyValueParser.js'
 
 const exampleInput1 = 'Domain Name=ztestdomain7'

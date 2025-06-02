@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import * as nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'

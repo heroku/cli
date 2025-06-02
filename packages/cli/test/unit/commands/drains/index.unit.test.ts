@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 const DRAIN = {
   token: 'd.8bf587e9-29d1-43c8-bd0e-36cdfaf35259',

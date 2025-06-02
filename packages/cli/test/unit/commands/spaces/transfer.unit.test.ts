@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import {stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/spaces/transfer'

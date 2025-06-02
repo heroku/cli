@@ -1,8 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/access/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+// import Cmd from '../../../../src/commands/access/index.js'
+// import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '@oclif/test'
 import stripAnsi from 'strip-ansi'
 import {
   personalApp,
@@ -23,7 +24,8 @@ describe('heroku access', function () {
     it('shows the app collaborators', function () {
       const apiGetPersonalApp = personalApp()
       const apiGetAppCollaborators = appCollaborators()
-      return runCommand(Cmd, [
+      return runCommand([
+        'access',
         '--app',
         'myapp',
       ])
@@ -42,7 +44,8 @@ describe('heroku access', function () {
       const apiGetOrgMembers = teamMembers()
       const apiGetAppPermissions = appPermissions()
       const apiGetTeamAppCollaboratorsWithPermissions = teamAppCollaboratorsWithPermissions()
-      return runCommand(Cmd, [
+      return runCommand([
+        'access',
         '--app',
         'myapp',
       ])

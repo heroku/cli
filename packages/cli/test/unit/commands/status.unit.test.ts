@@ -1,93 +1,83 @@
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {expect, test as base} from '@oclif/test'
 
-const test = base
+describe('status', function () {
+  beforeEach(function () {
+    nock.cleanAll()
+  })
 
-const api = nock('https://status.heroku.com:443')
+  afterEach(function () {
+    nock.cleanAll()
+  })
 
-beforeEach(function () {
-  return nock.cleanAll()
-})
-afterEach(function () {
-  return api.done()
-})
+  describe('when heroku is green', function () {
+    const greenStatus = {
+      status: [
+        {system: 'Apps', status: 'green'},
+        {system: 'Data', status: 'green'},
+        {system: 'Tools', status: 'green'},
+      ],
+      incidents: [],
+      scheduled: [],
+    }
 
-describe('when heroku is green', function () {
-  test
-    .stdout()
-    .nock('https://status.heroku.com', api => {
-      api.get('/api/v4/current-status').reply(200, {
-        status: [
-          {system: 'Apps', status: 'green'},
-          {system: 'Data', status: 'green'},
-          {system: 'Tools', status: 'green'},
-        ],
-        incidents: [],
-        scheduled: [],
-      })
+    beforeEach(function () {
+      nock('https://status.heroku.com')
+        .get('/api/v4/current-status')
+        .reply(200, greenStatus)
     })
-    .command(['status'])
-    .it('shows success message', ctx => {
-      expect(ctx.stdout).to.equal(`Apps:      No known issues at this time.
+
+    it('shows success message', async function () {
+      const {stdout} = await runCommand(['status'])
+      expect(stdout).to.equal(`Apps:      No known issues at this time.
 Data:      No known issues at this time.
 Tools:     No known issues at this time.\n`)
     })
 
-  test
-    .stdout()
-    .nock('https://status.heroku.com', api => {
-      api.get('/api/v4/current-status').reply(200, {
-        status: [
-          {system: 'Apps', status: 'green'},
-          {system: 'Data', status: 'green'},
-          {system: 'Tools', status: 'green'},
-        ],
-        incidents: [],
-        scheduled: [],
-      })
+    it('--json', async function () {
+      const {stdout} = await runCommand(['status', '--json'])
+      expect(JSON.parse(stdout).status[0]).to.deep.include({status: 'green'})
     })
-    .command(['status', '--json'])
-    .it('--json', ctx => {
-      expect(JSON.parse(ctx.stdout).status[0]).to.deep.include({status: 'green'})
-    })
-})
-
-describe('when heroku has issues', function () {
-  const now = Date.now()
-  const timeISO = new Date(now).toISOString()
-
-  before(function () {
-    sinon.stub(Date, 'now').returns(now)
   })
 
-  after(function () {
-    sinon.restore()
-  })
+  describe('when heroku has issues', function () {
+    const now = Date.now()
+    const timeISO = new Date(now).toISOString()
 
-  test
-    .stdout()
-    .nock('https://status.heroku.com', api => {
-      api.get('/api/v4/current-status').reply(200, {
-        status: [
-          {system: 'Apps', status: 'red'},
-          {system: 'Data', status: 'green'},
-          {system: 'Tools', status: 'green'},
-        ],
-        incidents: [
-          {
-            title: 'incident title',
-            created_at: timeISO,
-            full_url: 'https://status.heroku.com',
-            updates: [{update_type: 'update type', updated_at: timeISO, contents: 'update contents'}],
-          },
-        ],
-        scheduled: [],
-      })
+    before(function () {
+      sinon.stub(Date, 'now').returns(now)
     })
-    .command(['status'])
-    .it('shows the issues', ctx => {
-      expect(ctx.stdout).to.equal(`Apps:      Red
+
+    after(function () {
+      sinon.restore()
+    })
+
+    beforeEach(function () {
+      nock('https://status.heroku.com')
+        .get('/api/v4/current-status')
+        .reply(200, {
+          status: [
+            {system: 'Apps', status: 'red'},
+            {system: 'Data', status: 'green'},
+            {system: 'Tools', status: 'green'},
+          ],
+          incidents: [
+            {
+              title: 'incident title',
+              created_at: timeISO,
+              full_url: 'https://status.heroku.com',
+              updates: [{update_type: 'update type', updated_at: timeISO, contents: 'update contents'}],
+            },
+          ],
+          scheduled: [],
+        })
+    })
+
+    it('shows the issues', async function () {
+      const {stdout} = await runCommand(['status'])
+      expect(stdout).to.equal(`Apps:      Red
 Data:      No known issues at this time.
 Tools:     No known issues at this time.
 
@@ -98,4 +88,5 @@ update contents
 
 `)
     })
+  })
 })

@@ -1,30 +1,38 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('auth:whoami', function () {
-  test
-    .env({HEROKU_API_KEY: 'foobar'})
-    .nock('https://api.heroku.com', api => api
-      .get('/account')
-      .reply(200, {email: 'jeff@example.com'}),
-    )
-    .stdout()
-    .stderr()
-    .command(['auth:whoami'])
-    .it('shows user email when logged in', ctx => {
-      expect(ctx.stdout).to.equal('jeff@example.com\n')
-      expect(ctx.stderr).to.contain('Warning: HEROKU_API_KEY is set')
-    })
+  beforeEach(function () {
+    process.env.HEROKU_API_KEY = 'foobar'
+  })
 
-  test
-    .env({HEROKU_API_KEY: 'foobar'})
-    .nock('https://api.heroku.com', api => api
+  afterEach(function () {
+    delete process.env.HEROKU_API_KEY
+    nock.cleanAll()
+  })
+
+  it('shows user email when logged in', async function () {
+    nock('https://api.heroku.com')
       .get('/account')
-      .reply(401),
-    )
-    .stderr()
-    .command(['auth:whoami'])
-    .exit(100)
-    .it('exits with status 100 when not logged in', ctx => {
-      expect(ctx.stderr).to.contain('Warning: HEROKU_API_KEY is set')
-    })
+      .reply(200, {email: 'jeff@example.com'})
+
+    const {stdout, stderr} = await runCommand(['auth:whoami'])
+    expect(stdout).to.equal('jeff@example.com\n')
+    expect(stderr).to.contain('Warning: HEROKU_API_KEY is set')
+  })
+
+  it('exits with status 100 when not logged in', async function () {
+    nock('https://api.heroku.com')
+      .get('/account')
+      .reply(401)
+
+    try {
+      await runCommand(['auth:whoami'])
+      expect.fail('Expected command to fail')
+    } catch (error: any) {
+      expect(error.exit).to.equal(100)
+      expect(error.stderr).to.contain('Warning: HEROKU_API_KEY is set')
+    }
+  })
 })

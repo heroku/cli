@@ -1,5 +1,4 @@
-import {test} from '@oclif/test'
-
+import {runCommand} from '@oclif/test'
 /*
 describe('config', function () {
   test

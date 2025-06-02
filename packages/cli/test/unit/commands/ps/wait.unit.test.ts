@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import {ux} from '@oclif/core'
 
 const API_HOST = 'https://api.heroku.com'
@@ -14,13 +15,13 @@ const PREVIOUS = {
   version: 22,
 }
 
+/*
 const withRelease = test
   .nock(API_HOST, api => api
     .get(`/apps/${APP_NAME}/releases`)
     .reply(200, [CURRENT]),
   )
 
-/*
 describe('heroku ps:wait', function () {
   test
     .nock(API_HOST, api => api

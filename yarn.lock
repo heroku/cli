@@ -3689,42 +3689,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.15.0":
-  version: 2.16.0
-  resolution: "@oclif/core@npm:2.16.0"
-  dependencies:
-    "@types/cli-progress": ^3.11.0
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.12.0
-    debug: ^4.3.4
-    ejs: ^3.1.8
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    slice-ansi: ^4.0.0
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    ts-node: ^10.9.1
-    tslib: ^2.5.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: 40341a41200354a30492f32997cd3634ff7987ec645223746a5e22f26f7f4aed818fe4d4e0925f31946cbed68dac93ec310807c40d02160b9232915f980b7fb6
-  languageName: node
-  linkType: hard
-
 "@oclif/core@npm:^3.27.0":
   version: 3.27.0
   resolution: "@oclif/core@npm:3.27.0"
@@ -3949,13 +3913,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/test@npm:^2.3.28":
-  version: 2.5.6
-  resolution: "@oclif/test@npm:2.5.6"
+"@oclif/test@npm:^4.1.13":
+  version: 4.1.13
+  resolution: "@oclif/test@npm:4.1.13"
   dependencies:
-    "@oclif/core": ^2.15.0
-    fancy-test: ^2.0.42
-  checksum: 41411ab54dcf477ee013d6f1081c0d595e5a6c61202d65bef9bbc8f124634cd5f12246b23e559d7a06531ca4b18b697b95049502429618666340e8e332703997
+    ansis: ^3.17.0
+    debug: ^4.4.1
+  peerDependencies:
+    "@oclif/core": ">= 3.0.0"
+  checksum: 34e9f9c0ba4983315305ed002b6b5f9b1fb3f318d193ae5cea2a83b63018b43e06660688f8245e10de5a6b5e3afa0cea8cafa383982fdaa26715ce22c0fc6491
   languageName: node
   linkType: hard
 
@@ -5215,7 +5181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cli-progress@npm:^3.11.0, @types/cli-progress@npm:^3.11.5":
+"@types/cli-progress@npm:^3.11.5":
   version: 3.11.6
   resolution: "@types/cli-progress@npm:3.11.6"
   dependencies:
@@ -5331,7 +5297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.123":
+"@types/lodash@npm:^4.14.123":
   version: 4.17.17
   resolution: "@types/lodash@npm:4.17.17"
   checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
@@ -5545,15 +5511,6 @@ __metadata:
   version: 1.0.2
   resolution: "@types/shimmer@npm:1.0.2"
   checksum: 952b5555e914f632f3312a7b54e2b720b12ddce7373e1da58d25f25f32c07e5513afeb53bfce4256035a1205bbe81223fe8e47c160163de3e56fb93a3e0da42b
-  languageName: node
-  linkType: hard
-
-"@types/sinon@npm:*":
-  version: 17.0.4
-  resolution: "@types/sinon@npm:17.0.4"
-  dependencies:
-    "@types/sinonjs__fake-timers": "*"
-  checksum: 487f43bda8d8b2ef32d1b3c08e5a68e17705d2c7470ea89c8fd62e3a086f9a35faf65d37a57bf189004c4e7adbc5f9562dfaa332c54e06a8d99fc7361f3ac004
   languageName: node
   linkType: hard
 
@@ -8576,7 +8533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.10, ejs@npm:^3.1.7, ejs@npm:^3.1.8":
+"ejs@npm:^3.1.10, ejs@npm:^3.1.7":
   version: 3.1.10
   resolution: "ejs@npm:3.1.10"
   dependencies:
@@ -9621,22 +9578,6 @@ __metadata:
     iconv-lite: ^0.4.24
     tmp: ^0.0.33
   checksum: 1c2a616a73f1b3435ce04030261bed0e22d4737e14b090bb48e58865da92529c9f2b05b893de650738d55e692d071819b45e1669259b2b354bc3154d27a698c7
-  languageName: node
-  linkType: hard
-
-"fancy-test@npm:^2.0.42":
-  version: 2.0.42
-  resolution: "fancy-test@npm:2.0.42"
-  dependencies:
-    "@types/chai": "*"
-    "@types/lodash": "*"
-    "@types/node": "*"
-    "@types/sinon": "*"
-    lodash: ^4.17.13
-    mock-stdin: ^1.0.0
-    nock: ^13.3.3
-    stdout-stderr: ^0.1.9
-  checksum: 48f802bcb70da9abbe1a8b136aef1912ea9346c16d4bb653f99c54d5d9c318831397f7f88ce3aee3960fb3a9f9a479032bc56e7e494390993cb9925be8b6d37a
   languageName: node
   linkType: hard
 
@@ -11056,7 +10997,7 @@ __metadata:
     "@oclif/plugin-version": ^2.2.28
     "@oclif/plugin-warn-if-update-available": ^3.1.40
     "@oclif/plugin-which": ^3.2.35
-    "@oclif/test": ^2.3.28
+    "@oclif/test": ^4.1.13
     "@opentelemetry/api": ^1.4.1
     "@opentelemetry/exporter-trace-otlp-http": ^0.41.1
     "@opentelemetry/instrumentation": ^0.51.1
@@ -13191,7 +13132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.10, lodash@npm:^4.17.13, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.21":
+"lodash@npm:^4.17.10, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -13834,13 +13775,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-stdin@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "mock-stdin@npm:1.0.0"
-  checksum: da038fae5cc189915e4865cbcb0a0b71e98a7e8569959423ac6e798d5e626bc12708c9918d98c46a5aab35d8d8f8bfa782dce25532173137a69fc162990eda91
-  languageName: node
-  linkType: hard
-
 "modify-values@npm:^1.0.0":
   version: 1.0.1
   resolution: "modify-values@npm:1.0.1"
@@ -14028,17 +13962,6 @@ __metadata:
     lower-case: ^2.0.2
     tslib: ^2.0.3
   checksum: 0b2ebc113dfcf737d48dde49cfebf3ad2d82a8c3188e7100c6f375e30eafbef9e9124aadc3becef237b042fd5eb0aad2fd78669c20972d045bbe7fea8ba0be5c
-  languageName: node
-  linkType: hard
-
-"nock@npm:^13.3.3":
-  version: 13.5.6
-  resolution: "nock@npm:13.5.6"
-  dependencies:
-    debug: ^4.1.0
-    json-stringify-safe: ^5.0.1
-    propagate: ^2.0.0
-  checksum: 82d31ef7a428e8a6bc430b2772745ecb1f9c8835170789bbcc29c9036614adf3b7112daeb6d59edd93f4340a9a96acee401021572d469a7a0e09a669679f2794
   languageName: node
   linkType: hard
 
@@ -15504,7 +15427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"password-prompt@npm:^1.1.2, password-prompt@npm:^1.1.3":
+"password-prompt@npm:^1.1.3":
   version: 1.1.3
   resolution: "password-prompt@npm:1.1.3"
   dependencies:
@@ -17579,7 +17502,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stdout-stderr@npm:^0.1.13, stdout-stderr@npm:^0.1.9":
+"stdout-stderr@npm:^0.1.13":
   version: 0.1.13
   resolution: "stdout-stderr@npm:0.1.13"
   dependencies:
@@ -18222,7 +18145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.1, ts-node@npm:^10.9.2":
+"ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:

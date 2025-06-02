@@ -1,5 +1,6 @@
 import {ux} from '@oclif/core'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import * as rimraf from 'rimraf'
 import * as fs from 'fs-extra'
 import * as path from 'path'

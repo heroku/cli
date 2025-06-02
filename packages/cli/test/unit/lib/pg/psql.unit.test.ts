@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import * as ChildProcess from 'child_process'
 import {EventEmitter, once} from 'node:events'
 import * as fs from 'node:fs'

@@ -1,4 +1,5 @@
-import {test, expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 import * as git from '../../../../src/lib/ci/git.js'
 

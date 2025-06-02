@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 // import Cmd from '../../../../src/commands/apps/leave'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 
 function mockUserAccount(email = 'raulb@heroku.com') {
   return nock('https://api.heroku.com:443')

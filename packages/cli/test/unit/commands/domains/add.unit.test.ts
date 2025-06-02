@@ -1,6 +1,7 @@
 import * as inquirer from 'inquirer'
 
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 /*
 describe('domains:add', function () {

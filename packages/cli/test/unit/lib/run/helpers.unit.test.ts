@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers.js'
 

@@ -1,7 +1,7 @@
-import {FancyTypes} from '@oclif/test'
+import nock from 'nock'
 
 export namespace BuildpackInstallationsStub {
-  export function get(nock: FancyTypes.NockScope, buildpacks?: Array<string | {url: string; name: string}>) {
+  export function get(nock: nock.Scope, buildpacks?: Array<string | {url: string; name: string}>) {
     let response: any
 
     if (buildpacks && buildpacks.length > 0) {
@@ -29,7 +29,7 @@ export namespace BuildpackInstallationsStub {
       .reply(200, response)
   }
 
-  export function put(nock: FancyTypes.NockScope, buildpacks?: Array<string>, registry?: Map<string, {url: string; name: string}>) {
+  export function put(nock: nock.Scope, buildpacks?: Array<string>, registry?: Map<string, {url: string; name: string}>) {
     let updates: Array<{buildpack: string}> = []
     let response: Array<{
       buildpack: {

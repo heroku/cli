@@ -1,6 +1,8 @@
 import * as Heroku from '@heroku-cli/schema'
-import {expect, FancyTypes, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
+/*
 const appNames = [
   'development-app-1',
   'development-app-2',
@@ -107,7 +109,6 @@ function itShowsMixedOwnershipWarning(owner: string, ctx: TestContext) {
   })
 }
 
-/*
 describe('pipelines:info', function () {
   describe("when pipeline doesn't have an owner", function () {
     setup(test)
