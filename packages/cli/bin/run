@@ -4,10 +4,6 @@
 import {execute} from '@oclif/core'
 import * as globalTelemetry from '../lib/global_telemetry.js'
 
-const {Config} = require('@oclif/core')
-const root = require.resolve('../package.json')
-const config = new Config({root})
-
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
 const now = new Date()
