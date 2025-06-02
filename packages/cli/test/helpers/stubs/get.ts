@@ -42,7 +42,12 @@ export function teams(teams = [
 }
 
 export function teamApp(locked = false) {
-  return nock('https://api.heroku.com:443')
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {
+      accept: 'application/vnd.heroku+json; version=3',
+      'user-agent': /heroku-cli\/.*/,
+    },
+  })
     .get('/apps/myapp')
     .reply(200, {
       name: 'myapp',

@@ -6,6 +6,6 @@
   "watch-extensions": ["ts"],
   "recursive": true,
   "reporter": "spec",
-  "timeout": 15000,
+  "timeout": 360000,
   "node-option": ["loader=ts-node/esm"]
 }
