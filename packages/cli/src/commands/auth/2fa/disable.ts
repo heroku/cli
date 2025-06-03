@@ -1,4 +1,3 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
@@ -16,4 +15,4 @@ export default class Auth2faGenerate extends Command {
     ux.error('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
   }
 }
-*/
+

@@ -1,4 +1,3 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
@@ -14,4 +13,3 @@ export default class Logout extends Command {
     ux.action.stop()
   }
 }
-*/

@@ -1,12 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import * as _ from 'lodash'
-import {isTeamApp, getOwner} from '../../lib/teamUtils'
+import _ from 'lodash'
+import {isTeamApp, getOwner} from '../../lib/teamUtils.js'
 
 type MemberData = {
   email: string,
@@ -19,7 +18,7 @@ type AdminWithPermissions = Heroku.TeamMember & {
 }
 
 function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
-  ux.log(JSON.stringify(collaborators, null, 2))
+  ux.stdout(JSON.stringify(collaborators, null, 2))
 }
 
 function buildTableColumns(showPermissions: boolean) {
@@ -109,4 +108,3 @@ export default class AccessIndex extends Command {
       printAccess(app, collaborators)
   }
 }
-*/

@@ -1,13 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/access/update'
+import Cmd from '../../../../src/commands/access/update.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import stripAnsi from 'strip-ansi'
-/*
+
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
     afterEach(function () {
@@ -24,11 +23,8 @@ describe('heroku access:update', function () {
         'deploy',
         'gandalf@heroku.com',
       ])
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions...
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expect('').to.eq(stdout.output)
+      expect(stderr.output).to.equal('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done\n')
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
@@ -41,11 +37,8 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
         'deploy,view',
         'gandalf@heroku.com',
       ])
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, `
-Updating gandalf@heroku.com in application myapp with deploy,view permissions...
-Updating gandalf@heroku.com in application myapp with deploy,view permissions... done
-`)
+      expect('').to.eq(stdout.output)
+      expect(stderr.output).to.equal('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done\n')
     })
   })
 
@@ -68,5 +61,3 @@ Updating gandalf@heroku.com in application myapp with deploy,view permissions...
     })
   })
 })
-
-*/
