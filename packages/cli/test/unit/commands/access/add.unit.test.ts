@@ -34,9 +34,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      // TODO figure out why this test is not working as expected
-      // expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
-      expect(stderr.output).to.include('done')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done\n')
     })
 
     it('adds user to the app with permissions, and view is implicit', async function () {
@@ -51,7 +49,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done\n')
     })
 
     it('raises an error when permissions are not specified', function () {
@@ -90,7 +88,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp... done\n')
     })
   })
 
@@ -113,7 +111,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Adding gandalf@heroku.com access to the app myapp... done')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp... done\n')
     })
   })
 })

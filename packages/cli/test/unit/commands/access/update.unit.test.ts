@@ -24,7 +24,7 @@ describe('heroku access:update', function () {
         'gandalf@heroku.com',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
+      expect(stderr.output).to.equal('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done\n')
     })
 
     it('updates the app permissions, even specifying view as a permission', async function () {
@@ -38,7 +38,7 @@ describe('heroku access:update', function () {
         'gandalf@heroku.com',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done')
+      expect(stderr.output).to.equal('Updating gandalf@heroku.com in application myapp with deploy,view permissions... done\n')
     })
   })
 

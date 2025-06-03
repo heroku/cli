@@ -28,7 +28,7 @@ describe('heroku access:remove', function () {
       ])
       apiDelete.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.include('Removing gandalf@heroku.com access from the app myapp... done')
+      expectOutput(stderr.output, 'Removing gandalf@heroku.com access from the app myapp... done\n')
     })
   })
 })

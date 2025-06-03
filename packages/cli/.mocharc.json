@@ -1,7 +1,8 @@
 {
   "require": [
     "ts-node/esm",
-    "test/helpers/init.mjs"
+    "test/helpers/init.mjs",
+    "test/helpers/hooks.ts"
   ],
   "watch-extensions": ["ts"],
   "recursive": true,
