@@ -3,73 +3,98 @@ import * as fs from 'fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as Heroku from '@heroku-cli/schema'
-import netrc from 'netrc-parser'
 
-function configDir() {
-  const legacyDir = path.join(os.homedir(), '.heroku')
-  if (fs.existsSync(legacyDir)) {
-    return legacyDir
+export interface IAccountsWrapper {
+  list(): Heroku.Account[] | []
+  current(): Promise<string | null>
+  add(name: string, username: string, password: string): void
+  remove(name: string): void
+  set(name: string): Promise<void>
+}
+
+export class AccountsWrapper implements IAccountsWrapper {
+  private netrc: any
+
+  private async initNetrc() {
+    if (!this.netrc) {
+      const NetrcModule = await import('netrc-parser')
+      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+      this.netrc = new NetrcClass()
+      await this.netrc.load()
+    }
+
+    return this.netrc
   }
 
-  return path.join(os.homedir(), '.config', 'heroku')
-}
+  private configDir() {
+    const legacyDir = path.join(os.homedir(), '.heroku')
+    if (fs.existsSync(legacyDir)) {
+      return legacyDir
+    }
 
-function account(name: string): Heroku.Account {
-  const basedir = path.join(configDir(), 'accounts')
-  const file = fs.readFileSync(path.join(basedir, name), 'utf8')
-  const account = parse(file)
-  if (account[':username']) {
-    // convert from ruby symbols
-    account.username = account[':username']
-    account.password = account[':password']
-    delete account[':username']
-    delete account[':password']
+    return path.join(os.homedir(), '.config', 'heroku')
   }
 
-  return account
-}
+  private account(name: string): Heroku.Account {
+    const basedir = path.join(this.configDir(), 'accounts')
+    const file = fs.readFileSync(path.join(basedir, name), 'utf8')
+    const account = parse(file)
+    if (account[':username']) {
+      // convert from ruby symbols
+      account.username = account[':username']
+      account.password = account[':password']
+      delete account[':username']
+      delete account[':password']
+    }
 
-export function list(): Heroku.Account[] | [] {
-  const basedir = path.join(configDir(), 'accounts')
-  try {
-    return fs.readdirSync(basedir)
-      .map(name => Object.assign(account(name), {name}))
-  } catch {
-    return []
+    return account
+  }
+
+  list(): Heroku.Account[] | [] {
+    const basedir = path.join(this.configDir(), 'accounts')
+    try {
+      return fs.readdirSync(basedir)
+        .map(name => Object.assign(this.account(name), {name}))
+    } catch {
+      return []
+    }
+  }
+
+  async current(): Promise<string | null> {
+    const netrcInstance = await this.initNetrc()
+    if (netrcInstance.machines['api.heroku.com']) {
+      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      return current && current.name ? current.name : null
+    }
+
+    return null
+  }
+
+  add(name: string, username: string, password: string): void {
+    const basedir = path.join(this.configDir(), 'accounts')
+    fs.mkdirSync(basedir, {recursive: true})
+
+    fs.writeFileSync(
+      path.join(basedir, name),
+      stringify({username, password}),
+      'utf8',
+    )
+    fs.chmodSync(path.join(basedir, name), 0o600)
+  }
+
+  remove(name: string): void {
+    const basedir = path.join(this.configDir(), 'accounts')
+    fs.unlinkSync(path.join(basedir, name))
+  }
+
+  async set(name: string): Promise<void> {
+    const netrcInstance = await this.initNetrc()
+    const current = this.account(name)
+    netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
+    netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+    await netrcInstance.save()
   }
 }
 
-export async function current(): Promise<string | null> {
-  await netrc.load()
-  if (netrc.machines['api.heroku.com']) {
-    const current = list().find(a => a.username === netrc.machines['api.heroku.com'].login)
-    return current && current.name ? current.name : null
-  }
-
-  return null
-}
-
-export function add(name: string, username: string, password: string) {
-  const basedir = path.join(configDir(), 'accounts')
-  fs.mkdirSync(basedir, {recursive: true})
-
-  fs.writeFileSync(
-    path.join(basedir, name),
-    stringify({username, password}),
-    'utf8',
-  )
-  fs.chmodSync(path.join(basedir, name), 0o600)
-}
-
-export function remove(name: string) {
-  const basedir = path.join(configDir(), 'accounts')
-  fs.unlinkSync(path.join(basedir, name))
-}
-
-export async function set(name: string) {
-  await netrc.load()
-  const current = account(name)
-  netrc.machines['git.heroku.com'] = {login: current.username, password: current.password}
-  netrc.machines['api.heroku.com'] = {login: current.username, password: current.password}
-  await netrc.save()
-}
+// Default export for convenience
+export default new AccountsWrapper()

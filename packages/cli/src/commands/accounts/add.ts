@@ -1,8 +1,7 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {add, list} from '../../lib/accounts/accounts'
+import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Add extends Command {
   static description = 'add a Heroku account to your cache'
@@ -18,7 +17,7 @@ export default class Add extends Command {
     const {name} = args
     const logInMessage = 'You must be logged in to run this command.'
 
-    if (list().some(a => a.name === name)) {
+    if (AccountsModule.list().some(a => a.name === name)) {
       ux.error(`${name} already exists`)
     }
 
@@ -35,7 +34,6 @@ export default class Add extends Command {
       ux.error(logInMessage)
     }
 
-    add(name, email, token)
+    AccountsModule.add(name, email, token)
   }
 }
-*/
