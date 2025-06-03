@@ -3,7 +3,19 @@ import * as fs from 'fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as Heroku from '@heroku-cli/schema'
-import netrc from 'netrc-parser'
+
+let netrc: any
+
+async function initNetrc() {
+  if (!netrc) {
+    const NetrcModule = await import('netrc-parser')
+    const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+    netrc = new NetrcClass()
+    await netrc.load()
+  }
+
+  return netrc
+}
 
 function configDir() {
   const legacyDir = path.join(os.homedir(), '.heroku')
@@ -40,9 +52,9 @@ export function list(): Heroku.Account[] | [] {
 }
 
 export async function current(): Promise<string | null> {
-  await netrc.load()
-  if (netrc.machines['api.heroku.com']) {
-    const current = list().find(a => a.username === netrc.machines['api.heroku.com'].login)
+  const netrcInstance = await initNetrc()
+  if (netrcInstance.machines['api.heroku.com']) {
+    const current = list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
     return current && current.name ? current.name : null
   }
 
@@ -67,9 +79,9 @@ export function remove(name: string) {
 }
 
 export async function set(name: string) {
-  await netrc.load()
+  const netrcInstance = await initNetrc()
   const current = account(name)
-  netrc.machines['git.heroku.com'] = {login: current.username, password: current.password}
-  netrc.machines['api.heroku.com'] = {login: current.username, password: current.password}
-  await netrc.save()
+  netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
+  netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+  await netrcInstance.save()
 }

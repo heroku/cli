@@ -1,18 +1,17 @@
 import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-// import Cmd from '../../../../src/commands/accounts/index'
-import * as accounts from '../../../../src/lib/accounts/accounts.js'
+import Cmd from '../../../../src/commands/accounts/index.js'
+import accountsWrapper from '../../../../src/lib/accounts/accounts-wrapper.js'
 import {stdout} from 'stdout-stderr'
 
-/*
 describe('accounts', function () {
   let currentStub: sinon.SinonStub
   let listStub: sinon.SinonStub
 
   beforeEach(function () {
-    currentStub = sinon.stub(accounts, 'current')
-    listStub = sinon.stub(accounts, 'list')
+    currentStub = sinon.stub(accountsWrapper, 'current')
+    listStub = sinon.stub(accountsWrapper, 'list')
   })
 
   afterEach(function () {
@@ -20,7 +19,7 @@ describe('accounts', function () {
   })
 
   it('should print a list of added accounts with the current account highlighted if accounts are found', async function () {
-    currentStub.returns('test-account')
+    currentStub.resolves('test-account')
     listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
     await runCommand(Cmd, [])
     expect(stdout.output).to.equal('* test-account\n  test-account-2\n')
@@ -34,5 +33,3 @@ describe('accounts', function () {
       })
   })
 })
-
-*/
