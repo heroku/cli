@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.9.0](https://github.com/heroku/cli/compare/v10.8.0...v10.9.0) (2025-06-03)
+
+
+### Bug Fixes
+
+* speed up unit test execution ([#3306](https://github.com/heroku/cli/issues/3306)) ([abb9c90](https://github.com/heroku/cli/commit/abb9c90b213c2915595c9844e6f6bc82f53418ca))
+
+
+### Features
+
+* Heroku REPL and prompt mode ([#3176](https://github.com/heroku/cli/issues/3176)) ([7d84dce](https://github.com/heroku/cli/commit/7d84dce87952d068eeed2b25343ba961086687f6))
+
+
+
+
+
 # [10.8.0](https://github.com/heroku/cli/compare/v10.7.0...v10.8.0) (2025-05-21)
 
 
