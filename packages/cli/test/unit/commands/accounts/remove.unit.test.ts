@@ -1,19 +1,27 @@
 import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-// import Cmd from '../../../../src/commands/accounts/remove'
-import * as accounts from '../../../../src/lib/accounts/accounts.js'
+import Cmd from '../../../../src/commands/accounts/remove.js'
+import accountsModule from '../../../../src/lib/accounts/accounts.js'
 
-/*
 describe('accounts:remove', function () {
+  // let currentStub: sinon.SinonStub
+
+  // beforeEach(function () {
+  //   currentStub = sinon.stub(accountsModule, 'current')
+  // })
+
+  // afterEach(function () {
+  //   sinon.restore()
+  // })
   let currentStub: sinon.SinonStub
   let listStub: sinon.SinonStub
   let removeStub: sinon.SinonStub
 
   beforeEach(function () {
-    currentStub = sinon.stub(accounts, 'current')
-    listStub = sinon.stub(accounts, 'list')
-    removeStub = sinon.stub(accounts, 'remove')
+    currentStub = sinon.stub(accountsModule, 'current')
+    listStub = sinon.stub(accountsModule, 'list')
+    removeStub = sinon.stub(accountsModule, 'remove')
   })
 
   afterEach(function () {
@@ -45,5 +53,3 @@ describe('accounts:remove', function () {
       })
   })
 })
-
-*/
