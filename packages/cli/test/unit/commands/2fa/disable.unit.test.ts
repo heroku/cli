@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('2fa:disable remove', function () {
   test
     .command(['2fa:disable'])
@@ -9,5 +8,3 @@ describe('2fa:disable remove', function () {
     })
     .it('shows error when trying to disable 2fa')
 })
-
-*/

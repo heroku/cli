@@ -1,30 +1,34 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/access/remove'
+import Cmd from '../../../../src/commands/access/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
-let apiDelete: { done: () => any }
-/*
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+
 describe('heroku access:remove', function () {
+  let apiDelete: { done: () => any }
+
   context('with either a personal or org app', function () {
     beforeEach(function () {
-      apiDelete = collaboratorsPersonalApp('myapp', 'raulb@heroku.com')
+      apiDelete = collaboratorsPersonalApp('myapp', 'gandalf@heroku.com')
     })
+
     afterEach(function () {
       return nock.cleanAll()
     })
-    it('removes the user from an app', function () {
-      return runCommand(Cmd, [
+
+    it('removes the user from an app', async function () {
+      await runCommand(Cmd, [
         '--app',
         'myapp',
-        'raulb@heroku.com',
+        'gandalf@heroku.com',
       ])
-        .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Removing raulb@heroku.com access from the app myapp...\nRemoving raulb@heroku.com access from the app myapp... done\n').to.eq(stderr.output))
-        .then(() => apiDelete.done())
+      apiDelete.done()
+      expect('').to.eq(stdout.output)
+      expectOutput(stderr.output, 'Removing gandalf@heroku.com access from the app myapp... done\n')
     })
   })
 })
-
-*/
