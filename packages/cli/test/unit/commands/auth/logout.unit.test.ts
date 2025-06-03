@@ -5,7 +5,6 @@ describe('auth:logout', function () {
     .stderr()
     .command(['logout'])
     .it('shows cli logging user out', ({stderr}) => {
-      // TODO figure out why this test is not working as expected
-      expect(stderr).to.contain('done')
+      expect(stderr).to.equal('Logging out... done\n')
     })
 })
