@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/index.js'
-import accountsModule from '../../../../src/lib/accounts/accounts.js'
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stdout} from 'stdout-stderr'
 
 describe('accounts', function () {
@@ -10,8 +10,8 @@ describe('accounts', function () {
   let listStub: sinon.SinonStub
 
   beforeEach(function () {
-    currentStub = sinon.stub(accountsModule, 'current')
-    listStub = sinon.stub(accountsModule, 'list')
+    currentStub = sinon.stub(AccountsModule, 'current')
+    listStub = sinon.stub(AccountsModule, 'list')
   })
 
   afterEach(function () {

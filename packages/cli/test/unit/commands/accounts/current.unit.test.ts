@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/current.js'
-import accountsModule from '../../../../src/lib/accounts/accounts.js'
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stdout} from 'stdout-stderr'
 import stripAnsi from 'strip-ansi'
 
@@ -10,7 +10,7 @@ describe('accounts:current', function () {
   let currentStub: sinon.SinonStub
 
   beforeEach(function () {
-    currentStub = sinon.stub(accountsModule, 'current')
+    currentStub = sinon.stub(AccountsModule, 'current')
   })
 
   afterEach(function () {
