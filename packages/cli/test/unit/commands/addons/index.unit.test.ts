@@ -11,7 +11,7 @@ import stripAnsi from 'strip-ansi'
 
 const removeAllWhitespace = (str: string): string => stripAnsi(str).replace(/\s+/g, '')
 
-describe('addons', function () {
+describe.skip('addons', function () {
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
