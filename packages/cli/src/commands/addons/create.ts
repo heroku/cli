@@ -1,10 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import notify from '../../lib/notify'
-import createAddon from '../../lib/addons/create_addon'
-import heredoc from 'tsheredoc'
+import notify from '../../lib/notify.js'
+import createAddon from '../../lib/addons/create_addon.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 function parseConfig(args: string[]) {
   const config: Record<string, string | boolean> = {}
@@ -99,7 +99,6 @@ export default class Create extends Command {
 
     await this.config.runHook('recache', {type: 'addon', app, addon})
     // eslint-disable-next-line no-unsafe-optional-chaining
-    ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
+    ux.stdout(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
   }
 }
-*/

@@ -6,8 +6,6 @@ import {expect} from 'chai'
 import lolex from 'lolex'
 import sinon from 'sinon'
 import stripAnsi from 'strip-ansi'
-import notify from '../../../../src/lib/notify.js'
-// import * as notifications from '@heroku-cli/notifications'
 
 /* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
 * You MUST change requests to have different params, or they won't be made and nock will not be satisfied */
@@ -79,7 +77,6 @@ describe('addons:destroy', function () {
         const addon = {
           id: 201, name: 'db5-swiftly-123', addon_service: {name: 'heroku-db5'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
         }
-        sinon.stub(notify)
         const api = nock('https://api.heroku.com:443')
           .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-db5'})
           .reply(200, [addon])
