@@ -1,6 +1,10 @@
 import * as path from 'path'
 import {notify} from '@heroku-cli/notifications'
 import {ux} from '@oclif/core'
+import {fileURLToPath} from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default function (subtitle: string, message: string, success = true) {
   const contentImage = path.join(__dirname, `../assets/${success ? 'success' : 'error'}.png`)
