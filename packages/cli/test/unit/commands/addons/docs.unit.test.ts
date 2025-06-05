@@ -1,17 +1,23 @@
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
-import * as proxyquire from 'proxyquire'
-import * as nock from 'nock'
-import * as sinon from 'sinon'
+import nock from 'nock'
+import sinon from 'sinon'
 import {expect} from 'chai'
+import Cmd from '../../../../src/commands/addons/docs.js'
 
-// const {default: Cmd} =  proxyquire(
-//   '../../../../src/commands/addons/docs',
-//   {open: sinon.stub()},
-// )
-
-/*
 describe('addons:docs', function () {
+  let urlOpenerStub: sinon.SinonStub
+
+  beforeEach(function () {
+    urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async () => {})
+  })
+
+  afterEach(function () {
+    urlOpenerStub.reset()
+    urlOpenerStub.restore()
+    nock.cleanAll()
+  })
+
   it('opens an addon by name', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addon-services/slowdb')
@@ -32,6 +38,7 @@ describe('addons:docs', function () {
     await runCommand(Cmd, ['slowdb'])
 
     expect(stdout.output).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
+    expect(urlOpenerStub.calledWith('https://devcenter.heroku.com/articles/slowdb')).to.be.true
     api.done()
   })
 
@@ -68,5 +75,3 @@ describe('addons:docs', function () {
     api.done()
   })
 })
-
-*/
