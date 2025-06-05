@@ -16,6 +16,7 @@ describe('addons:attach', function () {
   afterEach(function () {
     confirmStub.restore()
     nock.cleanAll()
+    sinon.restore()
   })
 
   it('attaches an add-on', async function () {
