@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import notify from '../../lib/notify'
-import confirmCommand from '../../lib/confirmCommand'
-import destroyAddon from '../../lib/addons/destroy_addon'
-import {resolveAddon} from '../../lib/addons/resolve'
-import {groupBy} from 'lodash'
+import notify from '../../lib/notify.js'
+import confirmCommand from '../../lib/confirmCommand.js'
+import destroyAddon from '../../lib/addons/destroy_addon.js'
+import {resolveAddon} from '../../lib/addons/resolve.js'
+import _ from 'lodash'
 
 export default class Destroy extends Command {
   static topic = 'addons'
@@ -32,7 +31,7 @@ export default class Destroy extends Command {
     const {app, wait, confirm} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
 
-    const addons = await Promise.all(argv.map(name => resolveAddon(this.heroku, app, name as string)))
+    const addons = await Promise.all(argv.map((name: string) => resolveAddon(this.heroku, app, name as string)))
     for (const addon of addons) {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name
@@ -41,7 +40,7 @@ export default class Destroy extends Command {
       }
     }
 
-    for (const addonApps of Object.entries(groupBy<Heroku.AddOn>(addons, 'app.name'))) {
+    for (const addonApps of Object.entries(_.groupBy<Heroku.AddOn>(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
       await confirmCommand(appName, confirm)
@@ -62,4 +61,3 @@ export default class Destroy extends Command {
     }
   }
 }
-*/

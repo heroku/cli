@@ -1,7 +1,7 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku-cli/color'
 
 export default class Rename extends Command {
   static topic = 'addons';
@@ -16,7 +16,6 @@ export default class Rename extends Command {
     const {args} = await this.parse(Rename)
     const {body: addon} = await this.heroku.get<Heroku.AddOn>(`/addons/${encodeURIComponent(args.addon_name)}`)
     await this.heroku.patch<Heroku.AddOn>(`/apps/${addon.app?.id}/addons/${addon.id}`, {body: {name: args.new_name}})
-    ux.log(`${args.addon_name} successfully renamed to ${args.new_name}.`)
+    ux.stdout(`${color.addon(args.addon_name)} successfully renamed to ${color.addon(args.new_name)}.`)
   }
 }
-*/
