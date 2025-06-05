@@ -1,8 +1,10 @@
-import confirmCommand from '../confirmCommand.js'
+import ConfirmCommand from '../confirmCommand.js'
 import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {HTTPError} from '@heroku/http-call'
-import printf = require('printf')
+import printf from 'printf'
+
+const confirmCommand = new ConfirmCommand()
 
 export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
   try {
@@ -12,7 +14,7 @@ export const trapConfirmationRequired = async <T> (app: string, confirm: string 
       throw error
     }
 
-    await confirmCommand(app, confirm, error.body.message)
+    await confirmCommand.confirm(app, confirm, error.body.message)
     return fn(app)
   }
 }

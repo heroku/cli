@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {trapConfirmationRequired} from '../../lib/addons/util'
+import {trapConfirmationRequired} from '../../lib/addons/util.js'
 
 export default class Attach extends Command {
     static topic = 'addons';
@@ -55,4 +54,3 @@ export default class Attach extends Command {
       ux.action.stop(`done, v${releases[0].version}`)
     }
 }
-*/
