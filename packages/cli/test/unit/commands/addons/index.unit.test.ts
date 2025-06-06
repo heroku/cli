@@ -7,9 +7,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
-import stripAnsi from 'strip-ansi'
-
-const removeAllWhitespace = (str: string): string => stripAnsi(str).replace(/\s+/g, '')
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe.skip('addons', function () {
   describe('--all', function () {

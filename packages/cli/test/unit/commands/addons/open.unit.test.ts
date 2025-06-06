@@ -1,14 +1,13 @@
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import * as sinon from 'sinon'
-import * as fs from 'node:fs/promises'
+import nock from 'nock'
+import sinon from 'sinon'
+import fs from 'node:fs/promises'
 import {AddOnAttachment} from '@heroku-cli/schema'
-// import Cmd from '../../../../src/commands/addons/open'
-import * as path from 'node:path'
+import Cmd from '../../../../src/commands/addons/open.js'
+import path from 'node:path'
 
-/*
 describe('The addons:open command', function () {
   let urlOpenerStub: sinon.SinonStub
 
@@ -144,5 +143,3 @@ describe('The addons:open command', function () {
     })
   })
 })
-
-*/

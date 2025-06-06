@@ -12,8 +12,7 @@ import {
   appPermissions,
   teamAppCollaboratorsWithPermissions,
 } from '../../../helpers/stubs/get.js'
-
-const removeAllWhitespace = (str: string): string => stripAnsi(str).replace(/\s+/g, '')
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('heroku access', function () {
   context('with personal app', function () {

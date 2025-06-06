@@ -68,6 +68,8 @@ export default class Create extends Command {
     'service:plan': Args.string({required: true, description: 'unique identifier or unique name of the add-on service plan'}),
   }
 
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
   public async run(): Promise<void> {
     this.allowArbitraryFlags = true
     const {flags, args, ...restParse} = await this.parse(Create)
@@ -87,11 +89,11 @@ export default class Create extends Command {
     try {
       addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
       if (wait) {
-        notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
+        Create.notifier(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
       }
     } catch (error) {
       if (wait) {
-        notify(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
+        Create.notifier(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
       }
 
       throw error

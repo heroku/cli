@@ -202,8 +202,7 @@ describe('addons:create', function () {
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {
-        // const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
-        // Notification stub not needed for this test
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
         const asyncAddon = {..._.clone(addon), state: 'provisioning'}
         const post = api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {wait: true}, plan: {name: 'heroku-postgresql:standard-0'},
@@ -223,13 +222,44 @@ describe('addons:create', function () {
           '--',
           '--wait',
         ])
+        expect(notifySpy.called).to.equal(true)
+        expect(notifySpy.calledOnce).to.equal(true)
         expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-        expect(stderr.output).to.contain('Creating db3-swiftly-123...')
-        expect(stderr.output).to.contain('done')
+        expect(stderr.output).to.contain('Creating db3-swiftly-123... done')
         expect(stdout.output).to.equal('provision message\nWaiting for db3-swiftly-123...\nCreated db3-swiftly-123 as DATABASE_URL\nUse heroku addons:docs heroku-db3 to view documentation\n')
         post.done()
         provisioningResponse.done()
         provisionedResponse.done()
+      })
+      it('notifies when provisioning failure occurs', async function () {
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const asyncAddon = _.clone(addon)
+        asyncAddon.state = 'provisioning'
+        api.post('/apps/myapp/addons', {
+          attachment: {name: 'mydb'}, config: {wait: true}, plan: {name: 'heroku-postgresql:standard-0'},
+        })
+          .reply(200, asyncAddon)
+        api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, asyncAddon)
+        const deprovisionedAddon = _.clone(addon)
+        deprovisionedAddon.state = 'deprovisioned'
+        api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, deprovisionedAddon)
+        try {
+          return await runCommand(Cmd, [
+            '--app',
+            'myapp',
+            '--as',
+            'mydb',
+            '--wait',
+            'heroku-postgresql:standard-0',
+            '--',
+            '--wait',
+          ])
+        } catch {
+          expect(notifySpy.called).to.equal(true)
+          expect(notifySpy.calledOnce).to.equal(true)
+        }
       })
     })
     context('when add-on provision errors', function () {

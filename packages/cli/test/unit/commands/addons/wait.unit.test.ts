@@ -1,17 +1,16 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/wait'
+import Cmd from '../../../../src/commands/addons/wait.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import nock from 'nock'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import lolex from 'lolex'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
-/*
 describe('addons:wait', function () {
   let sandbox: any
 
@@ -63,7 +62,6 @@ describe('addons:wait', function () {
           'www-redis',
         ])
         expectOutput(stderr.output, `
-Creating www-redis...
 Creating www-redis... done
 `)
         expectOutput(stdout.output, `
@@ -71,7 +69,7 @@ Created www-redis as REDIS_URL
 `)
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']])
@@ -92,7 +90,8 @@ Created www-redis as REDIS_URL
         expect(notifySpy.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
+
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']])
@@ -116,7 +115,8 @@ Created www-redis as REDIS_URL
     })
     context('when add-on transitions to deprovisioned state', function () {
       it('shows notification', async function () {
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
+
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
           .reply(200, [fixtures.addons['www-redis']])
@@ -172,13 +172,13 @@ Created www-redis as REDIS_URL
           'www-redis-2',
         ])
         expectOutput(stderr.output, `
-Destroying www-redis-2...
 Destroying www-redis-2... done
 `)
         expectOutput(stdout.output, '')
       })
       it('does NOT notify the user when deprovisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
+
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '37f27548-db4a-4ae0-bb48-57125df0ddc2'
         deprovisioningAddon.name = 'www-redis-3'
@@ -196,7 +196,8 @@ Destroying www-redis-2... done
         expect(notifySpy.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
+
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '967dff74-99b4-4fd2-a0f0-79b523d5c0e1'
         deprovisioningAddon.name = 'www-redis-4'
@@ -267,11 +268,8 @@ Destroying www-redis-2... done
           'acme-inc-www',
         ])
         expectOutput(stderr.output, `
-Creating www-db...
 Creating www-db... done
-Creating www-redis...
 Creating www-redis... done
-Destroying www-redis-2...
 Destroying www-redis-2... done
 `)
         expectOutput(stdout.output, `
@@ -324,11 +322,8 @@ Created www-redis as REDIS_URL
           '1',
         ])
         expectOutput(stderr.output, `
-Creating www-db...
 Creating www-db... done
-Creating www-redis...
 Creating www-redis... done
-Destroying www-redis-2...
 Destroying www-redis-2... done
 `)
         expectOutput(stdout.output, `
@@ -339,5 +334,3 @@ Created www-redis as REDIS_URL
     })
   })
 })
-
-*/
