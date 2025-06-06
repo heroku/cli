@@ -32,5 +32,5 @@ Setting DATABASE_URL and restarting example-app... done
 
 * [Heroku CLI](heroku-cli)
 * [Heroku CLI Commands](cli-commands)
- * [Heroku CLI REPL](cli-repl)
+* [Heroku CLI REPL](cli-repl)
 _See code: [src/commands/prompt.ts](https://github.com/heroku/cli/blob/v10.9.0/packages/cli/src/commands/prompt.ts)_
