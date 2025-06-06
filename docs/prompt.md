@@ -16,8 +16,6 @@ The interactive prompt helps you run Heroku CLI commands by guiding you through 
 
 * Prompts for required arguments
 * Prompts for required flags
-* Provides descriptions and examples for each input
-* Validates input before executing the command
 
 ### Example Session
 
@@ -30,14 +28,10 @@ Setting DATABASE_URL and restarting example-app... done
 
 ## Common Use Cases
 
-* Setting configuration variables
-* Creating new resources
-* Running commands with multiple required flags
-* Learning command requirements
 
-## Related Topics
+## Additional Reading
 
 * [Heroku CLI](heroku-cli)
 * [Heroku CLI Commands](cli-commands)
-
+ * [Heroku CLI REPL](cli-repl)
 _See code: [src/commands/prompt.ts](https://github.com/heroku/cli/blob/v10.9.0/packages/cli/src/commands/prompt.ts)_

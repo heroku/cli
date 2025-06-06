@@ -1,28 +1,32 @@
 # Heroku CLI REPL
 
-The Heroku CLI REPL (Read-Eval-Print Loop) provides an interactive environment for running Heroku CLI commands.
+The Heroku CLI REPL (Read-Eval-Print Loop) feature provides an interactive environment to run Heroku CLI commands without typing `heroku` each time. 
 
-## Usage
+Use it when running multiple commands in sequence or exploring the CLI.
 
+## Benefits
+
+* Run commands without typing `heroku` each time
+* [Set and persist flags](#setting-persistent-flags) across multiple commands
+* Get [command completions](#command-completions) and help
+* See an interactive [command history](#command-history)
+* Persist session state
+
+## Start a REPL
+Start a REPL interactive environment with this command:
 ```term
 $ heroku --repl
 ```
+## Exit a REPL
 
-## Description
+To exit the REPL, type `exit` or press `Ctrl`+`D`.
 
-The REPL provides an interactive environment where you can run Heroku CLI commands without typing `heroku` each time. This is useful for running multiple commands in sequence or exploring the CLI.
 
-### Features
 
-* Run commands without typing `heroku` each time
-* Set and persist flags across multiple commands
-* Get command completions and help
-* Interactive command history
-* Session state persistence
 
-### Setting Persistent Flags
+## Setting Persistent Flags
 
-You can set flags that persist across commands:
+You can set flags that persist across commands. For example, to persist an app's name in your commands:
 
 ```term
 $ heroku --repl
@@ -33,7 +37,7 @@ example-app> ps
 web.1: up 2024/03/19 10:00:00 +0000 (~ 1h ago)
 ```
 
-To view your current settings:
+To view your persisted flags:
 
 ```term
 example-app> set
@@ -41,7 +45,7 @@ Flag    Value
 app     example-app
 ```
 
-To remove a setting:
+To remove a persisted flag:
 
 ```term
 example-app> unset app
@@ -49,7 +53,7 @@ unsetting --app
 heroku>
 ```
 
-### Command History
+## Command History
 
 The REPL maintains a history of your commands. View your history with:
 
@@ -57,7 +61,7 @@ The REPL maintains a history of your commands. View your history with:
 heroku> history
 ```
 
-You can also use the up and down arrow keys to navigate through your command history.
+Use the up and down arrow keys to navigate through your command history.
 
 ### Command Completion
 
@@ -80,11 +84,11 @@ The REPL supports completion for various resources including:
 * Releases
 * Stacks
 
-## Exiting the REPL
 
 To exit the REPL, type `exit` or press `Ctrl+D`.
 
-## Related Topics
+## Additional Reading
 
 * [Heroku CLI](heroku-cli)
 * [Heroku CLI Commands](cli-commands)
+* [Heroku CLI Interactive Prompt](cli-prompt)
