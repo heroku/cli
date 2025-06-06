@@ -13,16 +13,13 @@ Prompting is particularly useful when you're unsure about what required or optio
 * Validate input before executing the command
 
 ## Usage
+
 Start prompting by adding `--prompt` before any command:
 ```term
 $ heroku --prompt COMMAND
 ```
 
-
-
-
-
-### Example Session
+## Example Session
 
 ```term
 $ heroku --prompt config:set
@@ -30,8 +27,6 @@ Enter key: DATABASE_URL
 Enter value: postgres://...
 Setting DATABASE_URL and restarting example-app... done
 ```
-
-
 
 ## Additional Reading
 
