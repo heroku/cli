@@ -7,7 +7,8 @@ Prompting is particularly useful when you're unsure about what required or optio
 ## Benefits
 
 * Learn requirements for any command, like setting configuration vars
-* Run commands with multiple required flags, such as when creating new resources
+* Run commands with multiple required flags easily, such as when creating new resources
+* ```
 * Never forget optional arguments or flags when you run a command
 * Get descriptions and examples for each input
 * Validate input before executing the command
