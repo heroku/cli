@@ -13,19 +13,15 @@ Prompting is particularly useful when you're unsure about what required or optio
 * Validate input before executing the command
 
 ## Usage
-
+Start prompting by adding `--prompt` before any command:
 ```term
 $ heroku --prompt COMMAND
 ```
 
-## Description
 
 The interactive prompt helps you run Heroku CLI commands by guiding you through the required inputs. This is particularly useful when you're not sure about all the required arguments and flags for a command.
 
-### Features
 
-* Prompts for required arguments
-* Prompts for required flags
 
 ### Example Session
 
@@ -36,7 +32,6 @@ Enter value: postgres://...
 Setting DATABASE_URL and restarting example-app... done
 ```
 
-## Common Use Cases
 
 
 ## Additional Reading
