@@ -7,12 +7,13 @@ Use it when running multiple commands in sequence or exploring the CLI.
 ## Benefits
 
 * Run commands without typing `heroku` each time
-* [Set and persist flags](#setting-persistent-flags) across multiple commands
+* [Set and persist flags](#set-persistent-flags) across multiple commands
 * Get [command completions](#command-completions) and help
 * See an interactive [command history](#command-history)
 * Persist session state
 
 ## Start a REPL
+
 Start a REPL interactive environment with this command:
 ```term
 $ heroku --repl
@@ -21,10 +22,7 @@ $ heroku --repl
 
 To exit the REPL, type `exit` or press `Ctrl`+`D`.
 
-
-
-
-## Setting Persistent Flags
+## Set Persistent Flags
 
 You can set flags that persist across commands. For example, to persist an app's name in your commands:
 
@@ -53,19 +51,9 @@ unsetting --app
 heroku>
 ```
 
-## Command History
+## Command Completion
 
-The REPL maintains a history of your commands. View your history with:
-
-```term
-heroku> history
-```
-
-Use the up and down arrow keys to navigate through your command history.
-
-### Command Completion
-
-The REPL provides intelligent command completion. Press `Tab` to see available commands and options:
+The REPL provides intelligent command completion. Press `tab` to see available commands and options:
 
 ```term
 heroku> pipelines:create --app <tab><tab>
@@ -73,6 +61,7 @@ heroku> spaces:create --team <tab><tab>
 ```
 
 The REPL supports completion for various resources including:
+
 * Apps
 * Organizations
 * Teams
@@ -84,7 +73,15 @@ The REPL supports completion for various resources including:
 * Releases
 * Stacks
 
+## Command History
 
+The REPL maintains a history of your commands. View your history with:
+
+```term
+heroku> history
+```
+
+Use the up and down arrow keys to navigate through your command history.
 
 ## Additional Reading
 
