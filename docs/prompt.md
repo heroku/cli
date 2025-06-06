@@ -19,7 +19,6 @@ $ heroku --prompt COMMAND
 ```
 
 
-The interactive prompt helps you run Heroku CLI commands by guiding you through the required inputs. This is particularly useful when you're not sure about all the required arguments and flags for a command.
 
 
 

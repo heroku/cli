@@ -85,7 +85,6 @@ The REPL supports completion for various resources including:
 * Stacks
 
 
-To exit the REPL, type `exit` or press `Ctrl+D`.
 
 ## Additional Reading
 
