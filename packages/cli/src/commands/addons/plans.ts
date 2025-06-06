@@ -1,11 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {formatPrice} from '../../lib/addons/util'
-import * as _ from 'lodash'
+import {formatPrice} from '../../lib/addons/util.js'
+import _ from 'lodash'
 import {Plan} from '@heroku-cli/schema'
-import printf = require('printf')
+import printf from 'printf'
 
 type PlanWithMeteredPrice = Plan & {
   price: {
@@ -66,4 +65,3 @@ export default class Plans extends Command {
     }
   }
 }
-*/

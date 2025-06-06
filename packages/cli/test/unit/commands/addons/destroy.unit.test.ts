@@ -77,6 +77,7 @@ describe('addons:destroy', function () {
         const addon = {
           id: 201, name: 'db5-swiftly-123', addon_service: {name: 'heroku-db5'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
         }
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
         const api = nock('https://api.heroku.com:443')
           .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-db5'})
           .reply(200, [addon])
@@ -95,6 +96,8 @@ describe('addons:destroy', function () {
           'heroku-db5',
         ])
         api.done()
+        expect(notifySpy.called).to.equal(true)
+        expect(notifySpy.calledOnce).to.equal(true)
         expect(stripAnsi(stderr.output)).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending')
         expect(stderr.output).to.contain('Destroying db5-swiftly-123... done\n')
         expect(stdout.output).to.equal('Waiting for db5-swiftly-123...\n')

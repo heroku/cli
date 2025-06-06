@@ -26,6 +26,8 @@ export default class Destroy extends Command {
     addonName: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
   }
 
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
   public async run(): Promise<void> {
     const {flags, argv} = await this.parse(Destroy)
     const {app, wait, confirm} = flags
@@ -48,11 +50,11 @@ export default class Destroy extends Command {
         try {
           await destroyAddon(this.heroku, addon, force, wait)
           if (wait) {
-            notify(`heroku addons:destroy ${addon.name}`, 'Add-on successfully deprovisioned')
+            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on successfully deprovisioned')
           }
         } catch (error) {
           if (wait) {
-            notify(`heroku addons:destroy ${addon.name}`, 'Add-on failed to deprovision', false)
+            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on failed to deprovision', false)
           }
 
           throw error
