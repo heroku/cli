@@ -1,6 +1,16 @@
 # Heroku CLI Interactive Prompt
 
-The Heroku CLI interactive prompt guides you through running commands by prompting for required arguments and flags.
+The interactive prompt helps you run Heroku CLI commands by guiding you through the required inputs. 
+
+Prompting is particularly useful when you're unsure about what required or optional arguments and flags a command uses.
+
+## Benefits
+
+* Learn requirements for any command, like setting configuration vars
+* Run commands with multiple required flags, such as when creating new resources
+* Never forget optional arguments or flags when you run a command
+* Get descriptions and examples for each input
+* Validate input before executing the command
 
 ## Usage
 
