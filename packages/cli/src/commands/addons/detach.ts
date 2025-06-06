@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -36,4 +35,3 @@ export default class Detach extends Command {
     ux.action.stop(`done, v${releases[0]?.version || ''}`)
   }
 }
-*/

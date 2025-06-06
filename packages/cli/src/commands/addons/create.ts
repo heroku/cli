@@ -1,10 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import notify from '../../lib/notify'
-import createAddon from '../../lib/addons/create_addon'
-import heredoc from 'tsheredoc'
+import notify from '../../lib/notify.js'
+import createAddon from '../../lib/addons/create_addon.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 function parseConfig(args: string[]) {
   const config: Record<string, string | boolean> = {}
@@ -68,6 +68,8 @@ export default class Create extends Command {
     'service:plan': Args.string({required: true, description: 'unique identifier or unique name of the add-on service plan'}),
   }
 
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
   public async run(): Promise<void> {
     this.allowArbitraryFlags = true
     const {flags, args, ...restParse} = await this.parse(Create)
@@ -87,11 +89,11 @@ export default class Create extends Command {
     try {
       addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {config, name, as})
       if (wait) {
-        notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
+        Create.notifier(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
       }
     } catch (error) {
       if (wait) {
-        notify(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
+        Create.notifier(`heroku addons:create ${servicePlan}`, 'Add-on failed to provision', false)
       }
 
       throw error
@@ -99,7 +101,6 @@ export default class Create extends Command {
 
     await this.config.runHook('recache', {type: 'addon', app, addon})
     // eslint-disable-next-line no-unsafe-optional-chaining
-    ux.log(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
+    ux.stdout(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
   }
 }
-*/

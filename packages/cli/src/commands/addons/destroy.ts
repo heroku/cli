@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import notify from '../../lib/notify'
-import confirmCommand from '../../lib/confirmCommand'
-import destroyAddon from '../../lib/addons/destroy_addon'
-import {resolveAddon} from '../../lib/addons/resolve'
-import {groupBy} from 'lodash'
+import notify from '../../lib/notify.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import destroyAddon from '../../lib/addons/destroy_addon.js'
+import {resolveAddon} from '../../lib/addons/resolve.js'
+import _ from 'lodash'
 
 export default class Destroy extends Command {
   static topic = 'addons'
@@ -27,12 +26,14 @@ export default class Destroy extends Command {
     addonName: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
   }
 
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
   public async run(): Promise<void> {
     const {flags, argv} = await this.parse(Destroy)
     const {app, wait, confirm} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
 
-    const addons = await Promise.all(argv.map(name => resolveAddon(this.heroku, app, name as string)))
+    const addons = await Promise.all(argv.map((name: string) => resolveAddon(this.heroku, app, name as string)))
     for (const addon of addons) {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name
@@ -41,19 +42,19 @@ export default class Destroy extends Command {
       }
     }
 
-    for (const addonApps of Object.entries(groupBy<Heroku.AddOn>(addons, 'app.name'))) {
+    for (const addonApps of Object.entries(_.groupBy<Heroku.AddOn>(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
-      await confirmCommand(appName, confirm)
+      await new ConfirmCommand().confirm(appName, confirm)
       for (const addon of currentAddons) {
         try {
           await destroyAddon(this.heroku, addon, force, wait)
           if (wait) {
-            notify(`heroku addons:destroy ${addon.name}`, 'Add-on successfully deprovisioned')
+            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on successfully deprovisioned')
           }
         } catch (error) {
           if (wait) {
-            notify(`heroku addons:destroy ${addon.name}`, 'Add-on failed to deprovision', false)
+            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on failed to deprovision', false)
           }
 
           throw error
@@ -62,4 +63,3 @@ export default class Destroy extends Command {
     }
   }
 }
-*/

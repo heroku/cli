@@ -1,23 +1,19 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/upgrade'
+import Cmd from '../../../../src/commands/addons/upgrade.js'
 import runCommand from '../../../helpers/runCommand.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
 
-/*
 describe('addons:upgrade', function () {
   let api: ReturnType<typeof nock>
-  const {level} = chalk.default
 
   beforeEach(function () {
-    chalk.default.level = 0
     api = nock('https://api.heroku.com:443')
   })
 
   afterEach(function () {
-    chalk.default.level = level
     api.done()
     nock.cleanAll()
   })
@@ -42,7 +38,7 @@ describe('addons:upgrade', function () {
       'heroku-kafka:hobby',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free\n')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free')
   })
 
   it('displays hourly and monthly price when upgrading an add-on', async function () {
@@ -66,7 +62,7 @@ describe('addons:upgrade', function () {
       'heroku-kafka:standard',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)\n')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)')
   })
 
   it('does not display a price when upgrading an add-on and no price is returned from the api', async function () {
@@ -90,7 +86,7 @@ describe('addons:upgrade', function () {
       'heroku-kafka:hobby',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done\n')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done')
   })
 
   it('upgrades to a contract add-on', async function () {
@@ -114,7 +110,7 @@ describe('addons:upgrade', function () {
       'heroku-connect:contract',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract\n')
+    expect(stderr.output).to.contain('Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract')
   })
 
   it('upgrades an add-on with only one argument', async function () {
@@ -136,7 +132,7 @@ describe('addons:upgrade', function () {
       'heroku-postgresql:hobby',
     ])
     expect(stdout.output, 'to be empty')
-    expect(stderr.output).to.contain('Changing postgresql-swiftly-123 on myapp from premium-0 to heroku-postgresql:hobby... done, free\n')
+    expect(stderr.output).to.contain('Changing postgresql-swiftly-123 on myapp from premium-0 to heroku-postgresql:hobby... done, free')
   })
 
   it('errors with no plan', async function () {
@@ -216,5 +212,3 @@ describe('addons:upgrade', function () {
     }
   })
 })
-
-*/

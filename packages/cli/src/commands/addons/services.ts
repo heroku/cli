@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -29,8 +28,7 @@ export default class Services extends Command {
           header: 'State',
         },
       })
-      ux.log(`\nSee plans with ${color.blue('heroku addons:plans SERVICE')}`)
+      ux.stdout(`\nSee plans with ${color.blue('heroku addons:plans SERVICE')}`)
     }
   }
 }
-*/
