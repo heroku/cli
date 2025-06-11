@@ -131,7 +131,11 @@ function displayAll(addons: Heroku.AddOn[]) {
           return result
         },
       },
-    })
+    },
+    {
+      overflow: 'wrap',
+    },
+  )
 }
 
 function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
