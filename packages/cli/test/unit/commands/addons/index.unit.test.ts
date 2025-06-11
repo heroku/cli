@@ -10,26 +10,6 @@ import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {
-  // Store original values to restore later
-  let originalColumns: number | undefined
-
-  beforeEach(function () {
-    // Store original values
-    originalColumns = process.stdout.columns
-
-    // Set consistent terminal properties for tests
-    process.stdout.columns = 120
-  })
-
-  afterEach(function () {
-    // Restore original values
-    if (originalColumns !== undefined) {
-      process.stdout.columns = originalColumns
-    } else {
-      delete (process.stdout as any).columns
-    }
-  })
-
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
@@ -156,6 +136,8 @@ describe('addons', function () {
         ])
         return run('acme-inc-www', function () {
           const actual = removeAllWhitespace(stdout.output)
+          console.log('Actual output:', JSON.stringify(stdout.output))
+          console.log('Actual cleaned:', JSON.stringify(removeAllWhitespace(stdout.output)))
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
           expect(actual).to.include(removeAllWhitespace('heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating'))
