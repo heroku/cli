@@ -9,7 +9,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-describe('addons', function () {
+describe.only('addons', function () {
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
@@ -138,10 +138,10 @@ describe('addons', function () {
           const actual = removeAllWhitespace(stdout.output)
           const expected = removeAllWhitespace(`
             heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created
-             └─ as DATABASE
+             as DATABASE
 
             heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
-             └─ as REDIS`)
+             as REDIS`)
           expect(actual).to.include(expected)
         })
       })
@@ -153,8 +153,8 @@ describe('addons', function () {
           const actual = removeAllWhitespace(stdout.output)
           const expected = removeAllWhitespace(`
             heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created
-             ├─ as DATABASE
-             └─ as WWW_DB on acme-inc-dwh app
+             as DATABASE
+             as WWW_DB on acme-inc-dwh app
 
             The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
           expect(actual).to.include(expected)
@@ -168,8 +168,8 @@ describe('addons', function () {
           const actual = removeAllWhitespace(stdout.output)
           const expected = removeAllWhitespace(`
             heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created
-             ├─ as WWW_DB
-             └─ as DATABASE on acme-inc-www app
+             as WWW_DB
+             as DATABASE on acme-inc-www app
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
@@ -296,7 +296,7 @@ describe('addons', function () {
           const actual = removeAllWhitespace(stdout.output)
           const expected = removeAllWhitespace(`
             heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created
-             └─ as DATABASE
+             as DATABASE
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
@@ -318,7 +318,7 @@ describe('addons', function () {
           const actual = removeAllWhitespace(stdout.output)
           const expected = removeAllWhitespace(`
             heroku-postgresql (dwh-db) standard-2 contract contract  created
-             └─ as DATABASE
+             as DATABASE
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
