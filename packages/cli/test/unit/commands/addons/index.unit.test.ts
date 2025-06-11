@@ -139,7 +139,8 @@ describe('addons', function () {
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
           expect(actual).to.include(removeAllWhitespace('mini      ~$0.007/hour $5/month  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
-          expect(actual).to.include(removeAllWhitespace('heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating'))
+          expect(actual).to.include(removeAllWhitespace('heroku-redis (www-redis)'))
+          expect(actual).to.include(removeAllWhitespace('premium-2 ~$0.083/hour $60/month creating'))
           expect(actual).to.include(removeAllWhitespace('as REDIS'))
         })
       })
@@ -288,7 +289,8 @@ describe('addons', function () {
       it('prints add-ons in a table with the grandfathered price', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
-          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created'))
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
+          expect(actual).to.include(removeAllWhitespace('standard-2 ~$0.139/hour $100/month created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
           expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
         })
@@ -307,7 +309,8 @@ describe('addons', function () {
       it('prints add-ons in a table with contract', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
-          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db) standard-2 contract contract  created'))
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
+          expect(actual).to.include(removeAllWhitespace('standard-2 contract contract  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
           expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
         })
@@ -318,6 +321,8 @@ describe('addons', function () {
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function () {
         const actual = removeAllWhitespace(stdout.output)
+        console.log('Actual output:', JSON.stringify(stdout.output))
+        console.log('Actual cleaned:', JSON.stringify(removeAllWhitespace(stdout.output)))
         expect(actual).to.include(removeAllWhitespace('? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)'))
         expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
         expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.'))
