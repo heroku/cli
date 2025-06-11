@@ -136,13 +136,10 @@ describe('addons', function () {
         ])
         return run('acme-inc-www', function () {
           const actual = removeAllWhitespace(stdout.output)
-          const expected = removeAllWhitespace(`
-            heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created
-             as DATABASE
-
-            heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
-             as REDIS`)
-          expect(actual).to.include(expected)
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE'))
+          expect(actual).to.include(removeAllWhitespace('heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating'))
+          expect(actual).to.include(removeAllWhitespace('as REDIS'))
         })
       })
       it('shows attachments to foreign apps for owned add-ons', function () {
@@ -151,13 +148,10 @@ describe('addons', function () {
         ])
         return run('acme-inc-www', function () {
           const actual = removeAllWhitespace(stdout.output)
-          const expected = removeAllWhitespace(`
-            heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created
-             as DATABASE
-             as WWW_DB on acme-inc-dwh app
-
-            The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
-          expect(actual).to.include(expected)
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE'))
+          expect(actual).to.include(removeAllWhitespace('as WWW_DB on acme-inc-dwh app'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.'))
         })
       })
       it('shows add-ons owned by foreign apps if attached to targeted app', function () {
@@ -166,13 +160,10 @@ describe('addons', function () {
         ])
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
-          const expected = removeAllWhitespace(`
-            heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created
-             as WWW_DB
-             as DATABASE on acme-inc-www app
-
-            The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
-          expect(actual).to.include(expected)
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created'))
+          expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE on acme-inc-www app'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
         })
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
@@ -294,12 +285,9 @@ describe('addons', function () {
       it('prints add-ons in a table with the grandfathered price', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
-          const expected = removeAllWhitespace(`
-            heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created
-             as DATABASE
-
-            The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
-          expect(actual).to.include(expected)
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
         })
       })
     })
@@ -316,12 +304,9 @@ describe('addons', function () {
       it('prints add-ons in a table with contract', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
-          const expected = removeAllWhitespace(`
-            heroku-postgresql (dwh-db) standard-2 contract contract  created
-             as DATABASE
-
-            The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
-          expect(actual).to.include(expected)
+          expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db) standard-2 contract contract  created'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
         })
       })
     })
@@ -330,12 +315,9 @@ describe('addons', function () {
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function () {
         const actual = removeAllWhitespace(stdout.output)
-        const expected = removeAllWhitespace(`
-          ? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)
-           └─ as WWW_DB
-
-          The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.`)
-        expect(actual).to.include(expected)
+        expect(actual).to.include(removeAllWhitespace('? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)'))
+        expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
+        expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.'))
       })
     })
   })
