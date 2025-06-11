@@ -210,11 +210,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       },
     },
     {
-      // Separate each add-on row by a blank line
-      // printLine: (s: string) => {
-      //   ux.log(s)
-      //   ux.log('\n')
-      // },
+      overflow: 'wrap',
     },
   )
   ux.stdout(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)

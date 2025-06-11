@@ -1708,9 +1708,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/heroku-cli-util@npm:^10.0.0-beta.0":
-  version: 10.0.0-beta.0
-  resolution: "@heroku/heroku-cli-util@npm:10.0.0-beta.0"
+"@heroku/heroku-cli-util@npm:^10.0.0-beta.1":
+  version: 10.0.0-beta.1
+  resolution: "@heroku/heroku-cli-util@npm:10.0.0-beta.1"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku-cli/command": ^12.0.0
@@ -1720,7 +1720,7 @@ __metadata:
     debug: ^4.4.0
     inquirer: ^12.6.1
     tunnel-ssh: 4.1.6
-  checksum: efcae4696236a10ecc8562aab4f7759808db266bd97935233ed1befa753e7db5a6840417637ded83f0912a4e35321555c41b127c65090882ee3c49c86d85d186
+  checksum: 064f45cf098b1c5cc0bacfff94a5d4c52574d1b4511c51063d881ae82f80e59d78e96cb6e09e6ff1492e4a6dc20fb9f572def24ca5822a8d23b86c9627fe88a3
   languageName: node
   linkType: hard
 
@@ -11023,7 +11023,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/heroku-cli-util": ^10.0.0-beta.0
+    "@heroku/heroku-cli-util": ^10.0.0-beta.1
     "@heroku/http-call": ^5.4.0
     "@heroku/plugin-ai": ^1.0.1
     "@inquirer/prompts": ^5.0.5

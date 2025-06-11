@@ -9,7 +9,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-describe.skip('addons', function () {
+describe('addons', function () {
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
@@ -141,19 +141,8 @@ describe.skip('addons', function () {
              └─ as DATABASE
 
             heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
-             └─ as REDIS
-          `)
+             └─ as REDIS`)
           expect(actual).to.include(expected)
-          //           expectOutput(stdout.output, `
-          // Add-on                     Plan      Price        Max price State
-          //  ────────────────────────── ───────── ──────────── ───────── ────────
-          //  heroku-postgresql (www-db) mini      ~$0.007/hour $5/month  created
-          //   └─ as DATABASE
-
-          //  heroku-redis (www-redis)   premium-2 ~$0.083/hour $60/month creating
-          //   └─ as REDIS
-
-          // The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
         })
       })
       it('shows attachments to foreign apps for owned add-ons', function () {
@@ -169,15 +158,6 @@ describe.skip('addons', function () {
 
             The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.`)
           expect(actual).to.include(expected)
-          // expectOutput(stdout.output, `
-          // Add-on                            Plan Price        Max price State
-          //  ───────────────────────────────── ──── ──────────── ───────── ───────
-          //  heroku-postgresql (www-db)        mini ~$0.007/hour $5/month  created
-          //   ├─ as DATABASE
-          //   └─ as WWW_DB on acme-inc-dwh app
-
-          // The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
-          // `)
         })
       })
       it('shows add-ons owned by foreign apps if attached to targeted app', function () {
@@ -193,14 +173,6 @@ describe.skip('addons', function () {
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
-          // expectOutput(stdout.output, `
-          // Add-on                              Plan Price                        Max price                    State
-          //  ─────────────────────────────────── ──── ──────────────────────────── ──────────────────────────── ───────
-          //  heroku-postgresql (www-db)          mini (billed to acme-inc-www app) (billed to acme-inc-www app) created
-          //   ├─ as WWW_DB
-          //   └─ as DATABASE on acme-inc-www app
-
-          // The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
@@ -328,13 +300,6 @@ describe.skip('addons', function () {
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
-          // expectOutput(stdout.output, `
-          // Add-on                     Plan       Price        Max price  State
-          //  ────────────────────────── ────────── ──────────── ────────── ───────
-          //  heroku-postgresql (dwh-db) standard-2 ~$0.139/hour $100/month created
-          //   └─ as DATABASE
-
-          // The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
     })
@@ -357,13 +322,6 @@ describe.skip('addons', function () {
 
             The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
           expect(actual).to.include(expected)
-          // expectOutput(stdout.output, `
-          // Add-on                     Plan       Price    Max price State
-          //  ────────────────────────── ────────── ──────── ───────── ───────
-          //  heroku-postgresql (dwh-db) standard-2 contract contract  created
-          //   └─ as DATABASE
-
-          // The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
         })
       })
     })
@@ -378,14 +336,6 @@ describe.skip('addons', function () {
 
           The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.`)
         expect(actual).to.include(expected)
-        // expectOutput(stdout.output, `
-        // Add-on        Plan Price                        Max price                    State
-        //  ───────────── ──── ──────────────────────────── ──────────────────────────── ─────
-        //  ? (www-db)    ?    (billed to acme-inc-www app) (billed to acme-inc-www app)
-        //   └─ as WWW_DB
-
-        // The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.
-        // `)
       })
     })
   })
