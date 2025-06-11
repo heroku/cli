@@ -10,18 +10,33 @@ import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {
+  // Store original values to restore later
+  let originalColumns: number | undefined
+
+  beforeEach(function () {
+    // Store original values
+    originalColumns = process.stdout.columns
+
+    // Set consistent terminal properties for tests
+    process.stdout.columns = 120
+  })
+
+  afterEach(function () {
+    // Restore original values
+    if (originalColumns !== undefined) {
+      process.stdout.columns = originalColumns
+    } else {
+      delete (process.stdout as any).columns
+    }
+  })
+
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
     beforeEach(function () {
-      process.env.COLUMNS = '120'
       addons = [
         fixtures.addons['www-db'], fixtures.addons['www-redis'], fixtures.addons['api-redis'],
       ]
-    })
-
-    afterEach(function() {
-      delete process.env.COLUMNS
     })
 
     context('with add-ons', function () {
