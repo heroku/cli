@@ -18,7 +18,6 @@ describe('addons:create', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com:443')
-    process.env.COLUMNS = '120'
   })
 
   afterEach(function () {

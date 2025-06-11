@@ -14,6 +14,7 @@ describe('addons', function () {
     let addons: Heroku.AddOn[]
 
     beforeEach(function () {
+      process.env.COLUMNS = '120'
       addons = [
         fixtures.addons['www-db'], fixtures.addons['www-redis'], fixtures.addons['api-redis'],
       ]
