@@ -20,6 +20,10 @@ describe('addons', function () {
       ]
     })
 
+    afterEach(function() {
+      delete process.env.COLUMNS
+    })
+
     context('with add-ons', function () {
       beforeEach(function () {
         nock('https://api.heroku.com', {reqheaders: {
