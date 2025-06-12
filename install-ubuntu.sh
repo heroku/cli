@@ -20,14 +20,29 @@
       && apt-get update \
       && apt-get install -y apt-transport-https)
 
-  # add heroku repository to apt
-  echo "deb https://cli-assets.heroku.com/channels/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
+  # Download Heroku's release key
+  curl -fsS https://cli-assets.heroku.com/channels/stable/apt/release.key -o /tmp/heroku-archive-keyring.asc
+
+  # Use apt-key if available, otherwise use keyring method
+  if command -v apt-key 1>/dev/null 2>&1; then
+    echo "deb https://cli-assets.heroku.com/channels/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
+    cat /tmp/heroku-archive-keyring.asc | apt-key add -
+  else
+    dpkg -s gpg 1>/dev/null 2>/dev/null || apt-get install -y gpg
+
+    mkdir -p /etc/apt/keyrings
+
+    # We use the --dearmor flag to convert the ASCII key to GPG format. 
+    # This is necessary because the we need to point `signed-by` in the apt sources 
+    # list to a GPG formatted key.
+    gpg --dearmor < /tmp/heroku-archive-keyring.asc > /etc/apt/keyrings/heroku-archive-keyring.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/heroku-archive-keyring.gpg] https://cli-assets.heroku.com/channels/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
+  fi
+
+  rm -f /tmp/heroku-archive-keyring.asc
 
   # remove toolbelt
   (dpkg -s heroku-toolbelt 1>/dev/null 2>/dev/null && (apt-get remove -y heroku-toolbelt heroku || true)) || true
-
-  # install heroku's release key for package verification
-  curl https://cli-assets.heroku.com/channels/stable/apt/release.key | apt-key add -
 
   # update your sources
   apt-get update
