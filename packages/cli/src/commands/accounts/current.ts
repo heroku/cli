@@ -1,7 +1,7 @@
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import accountsModule from '../../lib/accounts/accounts.js'
+import AccountsModule from '../../lib/accounts/accounts.js'
 import {color} from '@heroku-cli/color'
 
 export default class Current extends Command {
@@ -10,7 +10,7 @@ export default class Current extends Command {
   static example = 'heroku accounts:current'
 
   async run() {
-    const accountName = await accountsModule.current()
+    const accountName = await AccountsModule.current()
     if (accountName) {
       hux.styledHeader(`Current account is ${accountName}`)
     } else {
