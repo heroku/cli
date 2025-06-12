@@ -33,8 +33,8 @@
     mkdir -p /etc/apt/keyrings
 
     # We use the --dearmor flag to convert the ASCII key to GPG format. 
-    # This is necessary because the we need to point `signed-by` in the apt sources 
-    # list to a GPG formatted key.
+    # This is necessary because we need to point `signed-by` (in the apt sources 
+    # list) to a GPG formatted key.
     gpg --dearmor < /tmp/heroku-archive-keyring.asc > /etc/apt/keyrings/heroku-archive-keyring.gpg
     echo "deb [signed-by=/etc/apt/keyrings/heroku-archive-keyring.gpg] https://cli-assets.heroku.com/channels/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
   fi
