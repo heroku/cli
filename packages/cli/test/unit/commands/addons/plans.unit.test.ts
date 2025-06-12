@@ -23,6 +23,9 @@ describe('addons:plans', function () {
     it('shows add-on plans', async function () {
       await runCommand(Cmd, ['daservice'])
       const actual = removeAllWhitespace(stdout.output)
+      const expectedHeader = removeAllWhitespace(`
+                Slug                         Name       Price        Max Price`)
+      expect(actual).to.include(expectedHeader)
       const expected = removeAllWhitespace(`
         default heroku-postgresql:mini       Mini       ~$0.007/hour $5/month
                 heroku-postgresql:standard-2 Standard 2 ~$0.278/hour $200/month
@@ -47,6 +50,9 @@ describe('addons:plans', function () {
     it('formats price for metered usage plans', async function () {
       await runCommand(Cmd, ['metered-service'])
       const actual = removeAllWhitespace(stdout.output)
+      const expectedHeader = removeAllWhitespace(`
+                Slug                    Name   Price   Max Price`)
+      expect(actual).to.include(expectedHeader)
       const expected = removeAllWhitespace(`
         default heroku-inference:plan-1 Plan 1 metered https://elements.heroku.com/addons/metered-service#pricing
                 heroku-inference:plan-2 Plan 2 metered https://elements.heroku.com/addons/metered-service#pricing
