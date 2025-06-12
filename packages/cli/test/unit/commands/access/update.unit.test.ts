@@ -6,7 +6,11 @@ import {expect} from 'chai'
 import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 import stripAnsi from 'strip-ansi'
-/*
+
+describe('heroku access:update', function () {
+  context('with a team app with permissions', function () {
+    afterEach(function () {
+      return nock.cleanAll()
     })
 
     it('updates the app permissions, view being implicit', async function () {
@@ -57,4 +61,3 @@ import stripAnsi from 'strip-ansi'
     })
   })
 })
-*/
