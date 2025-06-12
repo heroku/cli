@@ -31,10 +31,13 @@ describe('addons', function () {
       it('prints add-ons in a table', async function () {
         await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout.output)
+        const expectedHeader = removeAllWhitespace(`
+          Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
- acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
- acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
- acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating`)
+          acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
+          acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
+          acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating`)
+        expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
       it('orders by app, then by add-on name', async function () {
@@ -65,8 +68,11 @@ describe('addons', function () {
       it('prints add-ons in a table with the grandfathered price', async function () {
         await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout.output)
+        const expectedHeader = removeAllWhitespace(`
+          Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
-           acme-inc-dwh dwh-db heroku-postgresql:standard-2 ~$0.139/hour $100/month created`)
+          acme-inc-dwh dwh-db heroku-postgresql:standard-2 ~$0.139/hour $100/month created`)
+        expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
     })
@@ -84,8 +90,11 @@ describe('addons', function () {
       it('prints add-ons in a table with contract', async function () {
         await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout.output)
+        const expectedHeader = removeAllWhitespace(`
+          Owning App   Add-on Plan                         Price    Max Price State`)
         const expected = removeAllWhitespace(`
-           acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
+          acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
+        expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
     })
@@ -136,6 +145,9 @@ describe('addons', function () {
         ])
         return run('acme-inc-www', function () {
           const actual = removeAllWhitespace(stdout.output)
+          const expectedHeader = removeAllWhitespace(`
+            Add-on    Plan                   Price        Max Price State`)
+          expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
           expect(actual).to.include(removeAllWhitespace('mini      ~$0.007/hour $5/month  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
@@ -150,6 +162,9 @@ describe('addons', function () {
         ])
         return run('acme-inc-www', function () {
           const actual = removeAllWhitespace(stdout.output)
+          const expectedHeader = removeAllWhitespace(`
+            Add-on    Plan                   Price        Max Price State`)
+          expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
           expect(actual).to.include(removeAllWhitespace('mini ~$0.007/hour $5/month  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
@@ -163,6 +178,9 @@ describe('addons', function () {
         ])
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
+          const expectedHeader = removeAllWhitespace(`
+            Add-on    Plan                   Price        Max Price State`)
+          expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
           expect(actual).to.include(removeAllWhitespace('mini (billed to acme-inc-www app) (billed to acme-inc-www app) created'))
           expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
@@ -289,6 +307,9 @@ describe('addons', function () {
       it('prints add-ons in a table with the grandfathered price', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
+          const expectedHeader = removeAllWhitespace(`
+            Add-on    Plan                   Price        Max Price State`)
+          expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
           expect(actual).to.include(removeAllWhitespace('standard-2 ~$0.139/hour $100/month created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
@@ -309,6 +330,9 @@ describe('addons', function () {
       it('prints add-ons in a table with contract', function () {
         return run('acme-inc-dwh', function () {
           const actual = removeAllWhitespace(stdout.output)
+          const expectedHeader = removeAllWhitespace(`
+            Add-on    Plan                   Price        Max Price State`)
+          expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
           expect(actual).to.include(removeAllWhitespace('standard-2 contract contract  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
@@ -321,6 +345,9 @@ describe('addons', function () {
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function () {
         const actual = removeAllWhitespace(stdout.output)
+        const expectedHeader = removeAllWhitespace(`
+          Add-on    Plan                   Price        Max Price State`)
+        expect(actual).to.include(expectedHeader)
         expect(actual).to.include(removeAllWhitespace('? (www-db)'))
         expect(actual).to.include(removeAllWhitespace('?    (billed to acme-inc-www app) (billed to acme-inc-www app)'))
         expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
