@@ -27,9 +27,6 @@ describe('authorizations', function () {
       const expected = removeAllWhitespace(`
         awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
         b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
-      // console.log('Actual stdout:', ctx.stdout)
-      // expect(actual).to.include(removeAllWhitespace('awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user'))
-      // expect(actual).to.include(removeAllWhitespace('b description aBcD1234-129f-42d2-854b-dEf123abc123 global'))
       expect(actual).to.include(expected)
     })
 
