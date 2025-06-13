@@ -1,11 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
-import {ScopeCompletion} from '@heroku-cli/command/lib/completions'
+import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {display} from '../../lib/authorizations/authorizations'
+import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsCreate extends Command {
   static description = 'create a new OAuth authorization'
@@ -38,7 +37,7 @@ export default class AuthorizationsCreate extends Command {
     ux.action.stop()
 
     if (flags.short) {
-      ux.log(auth.access_token && auth.access_token.token)
+      ux.stdout(auth.access_token && auth.access_token.token)
     } else if (flags.json) {
       hux.styledJSON(auth)
     } else {
@@ -46,4 +45,3 @@ export default class AuthorizationsCreate extends Command {
     }
   }
 }
-*/

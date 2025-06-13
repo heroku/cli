@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('authorizations:rotate', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
@@ -20,5 +19,3 @@ describe('authorizations:rotate', function () {
       expect(ctx.stderr).to.contain('Rotating OAuth Authorization... done')
     })
 })
-
-*/
