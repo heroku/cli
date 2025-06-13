@@ -29,7 +29,6 @@ const errors = {
 
 const APP = 'myapp'
 
-/*
 describe('apps:errors', function () {
   test
     .stdout()
@@ -156,7 +155,7 @@ describe('apps:errors', function () {
     })
     .command(['apps:errors', '--app', APP])
     .it('shows errors', ({stdout, stderr}) => {
-      expect(stdout).to.include('=== Errors on ⬢ myapp in the last 24 hours')
+      expect(stdout).to.include('Errors on ⬢ myapp in the last 24 hours')
       expect(stdout).to.include('Source Name Level    Desc                       Count')
       expect(stdout).to.include('────── ──── ──────── ────────────────────────── ─────')
       expect(stdout).to.include('router H12  critical Request Timeout            2')
@@ -198,5 +197,3 @@ describe('apps:errors', function () {
       expect(stderr).to.be.equal('')
     })
 })
-
-*/

@@ -1,12 +1,11 @@
-/*
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as util from 'util'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {filesize} from 'filesize'
-import {getGeneration} from '../../lib/apps/generation'
+import {getGeneration} from '../../lib/apps/generation.js'
 
 const {countBy, snakeCase} = _
 
@@ -92,9 +91,9 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   hux.styledObject(data)
 
   if (extended) {
-    ux.log('\n\n--- Extended Information ---\n\n')
+    ux.stdout('\n\n--- Extended Information ---\n\n')
     if (info.app.extended) {
-      ux.log(util.inspect(info.app.extended))
+      ux.stdout(util.inspect(info.app.extended))
     }
   }
 }
@@ -146,7 +145,7 @@ repo_size=5000000
 
     function shell() {
       function print(k: string, v: string) {
-        ux.log(`${snakeCase(k)}=${v}`)
+        ux.stdout(`${snakeCase(k)}=${v}`)
       }
 
       print('auto_cert_mgmt', info.app.acm)
@@ -179,4 +178,3 @@ repo_size=5000000
     }
   }
 }
-*/

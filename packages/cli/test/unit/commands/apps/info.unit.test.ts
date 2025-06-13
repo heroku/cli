@@ -104,7 +104,6 @@ Stack:            cedar-14
 Web URL:          https://myapp.herokuapp.com
 `
 
-/*
 describe('apps:info', function () {
   test
     .stdout()
@@ -450,5 +449,3 @@ stack=cedar-14
       expect(unwrap(stderr)).to.contains('')
     })
 })
-
-*/

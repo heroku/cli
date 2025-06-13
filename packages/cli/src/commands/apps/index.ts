@@ -58,7 +58,7 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
 
     if (apps[1].length > 0) {
       ux.stdout()
-      hux.table(apps[1], columns, {title: 'Collaborated Apps', titleOptions: {bold: true}})
+      hux.table(apps[1], columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}})
     }
   }
 }
