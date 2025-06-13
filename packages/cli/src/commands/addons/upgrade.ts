@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {formatPriceText} from '../../lib/addons/util'
-import {addonResolver} from '../../lib/addons/resolve'
+import {formatPriceText} from '../../lib/addons/util.js'
+import {addonResolver} from '../../lib/addons/resolve.js'
 import type {AddOn, Plan} from '@heroku-cli/schema'
 import {HTTP} from '@heroku/http-call'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
+import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types.js'
 
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
@@ -88,7 +87,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 
     ux.action.stop(`done${resolvedAddon.plan?.price ? `, ${formatPriceText(resolvedAddon.plan.price)}` : ''}`)
     if (resolvedAddon.provision_message) {
-      ux.log(resolvedAddon.provision_message)
+      ux.stdout(resolvedAddon.provision_message)
     }
   }
 
@@ -158,4 +157,3 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     }
   }
 }
-*/
