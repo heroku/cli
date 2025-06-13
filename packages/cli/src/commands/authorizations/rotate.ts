@@ -1,9 +1,8 @@
-/*
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import {display} from '../../lib/authorizations/authorizations'
+import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsRotate extends Command {
   static description = 'updates an OAuth authorization token'
@@ -24,4 +23,3 @@ export default class AuthorizationsRotate extends Command {
     display(authorization)
   }
 }
-*/
