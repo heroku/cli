@@ -1,10 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-const {sortBy} = require('lodash')
 
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
@@ -20,22 +18,18 @@ export default class AuthorizationsIndex extends Command {
   async run() {
     const {flags} = await this.parse(AuthorizationsIndex)
 
-    let {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>('/oauth/authorizations')
-
-    authorizations = sortBy(authorizations, 'description')
+    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>('/oauth/authorizations')
 
     if (flags.json) {
-      hux.styledJSON(authorizations)
+      hux.styledJSON(authorizations.sort((a, b) => a.description.localeCompare(b.description)))
     } else if (authorizations.length === 0) {
-      ux.log('No OAuth authorizations.')
+      ux.stdout('No OAuth authorizations.')
     } else {
-      const printLine: typeof this.log = (...args) => this.log(...args)
       hux.table(authorizations, {
-        description: {get: (v: any) => color.green(v.description)},
-        id: {},
-        scope: {get: (v: any) => v.scope.join(',')},
-      }, {'no-header': true, printLine})
+        Description: {get: (v: any) => color.green(v.description)},
+        ID: {get: (v: any) => v.id},
+        Scope: {get: (v: any) => v.scope.join(',')},
+      }, {sort: {Description: 'asc'}})
     }
   }
 }
-*/
