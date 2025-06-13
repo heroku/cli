@@ -1,10 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/detach'
+import Cmd from '../../../../src/commands/addons/detach.js'
 import runCommand from '../../../helpers/runCommand.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 
-/*
 describe('addons:detach', function () {
   afterEach(nock.cleanAll)
 
@@ -20,11 +19,9 @@ describe('addons:detach', function () {
     return runCommand(Cmd, ['--app', 'myapp', 'redis-123'])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done\n')
-        expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting myapp... done, v10\n')
+        expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done')
+        expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting myapp... done, v10')
       })
       .then(() => api.done())
   })
 })
-
-*/

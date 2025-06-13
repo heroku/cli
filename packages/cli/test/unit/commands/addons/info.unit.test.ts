@@ -1,19 +1,16 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/info'
+import Cmd from '../../../../src/commands/addons/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 
 const cache = resolveAddon.cache
 
-/*
 describe('addons:info', function () {
   beforeEach(function () {
     nock.cleanAll()
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     cache.clear()
   })
 
@@ -39,12 +36,12 @@ describe('addons:info', function () {
 
       expectOutput(stdout.output, `
 === www-db
-Attachments:  acme-inc-www::DATABASE
-Installed at: Invalid Date
-Max Price:    $5/month
-Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
+Max Price:    $5/month
+Attachments:  acme-inc-www::DATABASE
+Owning app:   acme-inc-www
+Installed at: Invalid Date
 State:        created\n
 `)
     })
@@ -77,12 +74,12 @@ State:        created\n
 
       expectOutput(stdout.output, `
 === www-db
-Attachments:  acme-inc-www::DATABASE
-Installed at: Invalid Date
-Max Price:    $5/month
-Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
+Max Price:    $5/month
+Attachments:  acme-inc-www::DATABASE
+Owning app:   acme-inc-www
+Installed at: Invalid Date
 State:        created\n
       `)
     })
@@ -117,12 +114,12 @@ State:        created\n
       ])
       expectOutput(stdout.output, `
 === www-db
-Attachments:  acme-inc-www::DATABASE
-Installed at: Invalid Date
-Max Price:    $5/month
-Owning app:   acme-inc-www
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
+Max Price:    $5/month
+Attachments:  acme-inc-www::DATABASE
+Owning app:   acme-inc-www
+Installed at: Invalid Date
 State:        created\n
         `)
     })
@@ -154,12 +151,12 @@ State:        created\n
       ])
       expectOutput(stdout.output, `
 === dwh-db
-Attachments:  acme-inc-dwh::DATABASE
-Installed at: Invalid Date
-Max Price:    $100/month
-Owning app:   acme-inc-dwh
 Plan:         heroku-postgresql:standard-2
 Price:        ~$0.139/hour
+Max Price:    $100/month
+Attachments:  acme-inc-dwh::DATABASE
+Owning app:   acme-inc-dwh
+Installed at: Invalid Date
 State:        created\n
         `)
     })
@@ -191,12 +188,12 @@ State:        created\n
       ])
       expectOutput(stdout.output, `
 === dwh-db
-Attachments:  acme-inc-dwh::DATABASE
-Installed at: Invalid Date
-Max Price:    contract
-Owning app:   acme-inc-dwh
 Plan:         heroku-postgresql:standard-2
 Price:        contract
+Max Price:    contract
+Attachments:  acme-inc-dwh::DATABASE
+Owning app:   acme-inc-dwh
+Installed at: Invalid Date
 State:        created\n
         `)
     })
@@ -225,12 +222,12 @@ State:        created\n
       ])
       expectOutput(stdout.output, `
 === www-redis
-Attachments:  acme-inc-www::REDIS
-Installed at: Invalid Date
-Max Price:    $60/month
-Owning app:   acme-inc-www
 Plan:         heroku-redis:premium-2
 Price:        ~$0.083/hour
+Max Price:    $60/month
+Attachments:  acme-inc-www::REDIS
+Owning app:   acme-inc-www
+Installed at: Invalid Date
 State:        creating\n
         `)
     })
@@ -259,16 +256,14 @@ State:        creating\n
       ])
       expectOutput(stdout.output, `
 === www-redis-2
-Attachments:  acme-inc-www::REDIS
-Installed at: Invalid Date
-Max Price:    $60/month
-Owning app:   acme-inc-www
 Plan:         heroku-redis:premium-2
 Price:        ~$0.083/hour
+Max Price:    $60/month
+Attachments:  acme-inc-www::REDIS
+Owning app:   acme-inc-www
+Installed at: Invalid Date
 State:        destroying\n
         `)
     })
   })
 })
-
-*/

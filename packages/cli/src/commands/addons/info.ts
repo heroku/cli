@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/util'
-import {resolveAddon} from '../../lib/addons/resolve'
+import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/util.js'
+import {resolveAddon} from '../../lib/addons/resolve.js'
 
 const topic = 'addons'
 
@@ -47,4 +46,3 @@ export default class Info extends Command {
     })
   }
 }
-*/
