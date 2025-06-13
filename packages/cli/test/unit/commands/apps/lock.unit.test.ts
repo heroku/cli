@@ -1,9 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/apps/lock'
+import Cmd from '../../../../src/commands/apps/lock.js'
 import runCommand from '../../../helpers/runCommand.js'
-/*
+
 describe('heroku apps:lock', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -21,7 +21,7 @@ describe('heroku apps:lock', function () {
     ])
 
     expect('').to.eq(stdout.output)
-    expect('Locking myapp...\nLocking myapp... done\n').to.eq(stderr.output)
+    expect('Locking myapp... done\n').to.eq(stderr.output)
     apiGetApp.done()
   })
 
@@ -40,5 +40,3 @@ describe('heroku apps:lock', function () {
     apiGetApp.done()
   })
 })
-
-*/
