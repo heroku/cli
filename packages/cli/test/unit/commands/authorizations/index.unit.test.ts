@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('authorizations', function () {
   const exampleAuthorization1 = {
     description: 'b description',
@@ -23,10 +23,11 @@ describe('authorizations', function () {
   testWithAuthorizations()
     .command(['authorizations'])
     .it('lists the authorizations alphabetically by description', ctx => {
-      expect(ctx.stdout).to.equal(
-        ' awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user \n' +
-        ' b description aBcD1234-129f-42d2-854b-dEf123abc123 global   \n',
-      )
+      const actual = removeAllWhitespace(ctx.stdout)
+      const expected = removeAllWhitespace(`
+        awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
+        b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
+      expect(actual).to.include(expected)
     })
 
   context('with json flag', function () {
@@ -48,5 +49,3 @@ describe('authorizations', function () {
       })
   })
 })
-
-*/
