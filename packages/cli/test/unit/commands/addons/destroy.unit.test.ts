@@ -1,15 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/destroy'
+import Cmd from '../../../../src/commands/addons/destroy.js'
 import runCommand from '../../../helpers/runCommand.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 import lolex from 'lolex'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import stripAnsi from 'strip-ansi'
 
 /* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
 * You MUST change requests to have different params, or they won't be made and nock will not be satisfied */
-/*
+
 describe('addons:destroy', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -55,7 +55,7 @@ describe('addons:destroy', function () {
         'heroku-db4',
       ])
       expect(stdout.output).to.equal('db4-swiftly-123 is being destroyed in the background. The app will restart when complete...\nUse heroku addons:info db4-swiftly-123 to check destruction progress\n')
-      expect(stderr.output).to.contain('Destroying db4-swiftly-123 on ⬢ myapp... pending\n')
+      expect(stripAnsi(stderr.output)).to.contain(stripAnsi('Destroying db4-swiftly-123 on ⬢ myapp... pending'))
       api.done()
     })
     context('--wait', function () {
@@ -64,8 +64,9 @@ describe('addons:destroy', function () {
       beforeEach(function () {
         sandbox = sinon.createSandbox()
         clock = lolex.install()
-        clock.setTimeout = function (fn: () => unknown) {
-          fn()
+        clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
+          callback()
+          return 1
         }
       })
       afterEach(function () {
@@ -76,7 +77,7 @@ describe('addons:destroy', function () {
         const addon = {
           id: 201, name: 'db5-swiftly-123', addon_service: {name: 'heroku-db5'}, app: {name: 'myapp', id: 101}, state: 'provisioned',
         }
-        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+        const notifySpy = sandbox.spy(Cmd, 'notifier')
         const api = nock('https://api.heroku.com:443')
           .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-db5'})
           .reply(200, [addon])
@@ -97,7 +98,7 @@ describe('addons:destroy', function () {
         api.done()
         expect(notifySpy.called).to.equal(true)
         expect(notifySpy.calledOnce).to.equal(true)
-        expect(stderr.output).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending\n')
+        expect(stripAnsi(stderr.output)).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending')
         expect(stderr.output).to.contain('Destroying db5-swiftly-123... done\n')
         expect(stdout.output).to.equal('Waiting for db5-swiftly-123...\n')
       })
@@ -224,5 +225,3 @@ describe('addons:destroy', function () {
     })
   })
 })
-
-*/
