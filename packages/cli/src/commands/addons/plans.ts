@@ -58,7 +58,7 @@ export default class Plans extends Command {
           get: (plan: any) => formatPrice({price: plan.price, hourly: true}),
         },
         max_price: {
-          header: 'Max price',
+          header: 'Max Price',
           get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({price: plan.price, hourly: false}),
         },
       })
