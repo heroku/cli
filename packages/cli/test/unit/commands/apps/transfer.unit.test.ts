@@ -33,8 +33,8 @@ describe('heroku apps:transfer', function () {
         'team',
       ])
       api.done()
-      expect(stderr.output).to.include('Warning: Transferring applications to team...')
-      expect(stderr.output).to.include('Transferring ⬢ myapp... done')
+      expect(stripAnsi(stderr.output)).to.include('Warning: Transferring applications to team...')
+      expect(stripAnsi(stderr.output)).to.include('Transferring ⬢ myapp... done')
     })
 
     it('transfers selected apps to a personal account', async function () {
