@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   cache: false,
   extension: ['.ts'],
   exclude: [
@@ -25,15 +25,9 @@ export default {
   functions: 80,
   lines: 80,
   require: [
-    'ts-node/esm',
+    'ts-node/register',
     'source-map-support/register',
   ],
   sourceMap: true,
   instrument: true,
-  esModules: true,
-  cwd: process.cwd(),
-  tempDir: './.nyc_output',
-  hookRequire: true,
-  hookRunInContext: true,
-  hookRunInThisContext: true,
 }
