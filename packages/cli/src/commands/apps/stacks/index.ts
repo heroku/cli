@@ -1,9 +1,7 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import * as _ from 'lodash'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 
 function updateCedarName(stack: string) {
@@ -34,18 +32,17 @@ export default class StacksIndex extends Command {
 
     const app = appResponse.body
     const stacks = stackResponse.body
-    const sortedStacks = _.sortBy(stacks, 'name')
+    const sortedStacks = stacks.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
 
     hux.styledHeader(`${color.app(app.name!)} Available Stacks`)
     for (const stack of sortedStacks) {
       if (stack.name === app.stack!.name) {
-        ux.log(color.green('* ' + updateCedarName(stack.name!)))
+        ux.stdout(color.green('* ' + updateCedarName(stack.name!)))
       } else if (stack.name === app.build_stack!.name) {
-        ux.log(`  ${updateCedarName(stack.name!)} (active on next deploy)`)
+        ux.stdout(`  ${updateCedarName(stack.name!)} (active on next deploy)`)
       } else {
-        ux.log(`  ${updateCedarName(stack.name!)}`)
+        ux.stdout(`  ${updateCedarName(stack.name!)}`)
       }
     }
   }
 }
-*/

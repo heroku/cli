@@ -2,7 +2,6 @@ import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
 
-/*
 describe('apps:stacks', function () {
   test
     .stdout()
@@ -50,5 +49,3 @@ describe('apps:stacks', function () {
       expect(stderr).to.equal('')
     })
 })
-
-*/
