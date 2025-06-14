@@ -47,7 +47,7 @@ describe('heroku apps:transfer', function () {
         'gandalf@heroku.com',
       ])
       api.done()
-      expect(stderr.output).to.include('Warning: Transferring applications to gandalfb@heroku.com...')
+      expect(stripAnsi(stderr.output)).to.include('Warning: Transferring applications to gandalfb@heroku.com...')
       expect(stripAnsi(stderr.output)).to.include('Initiating transfer of ⬢ myapp... email sent')
     })
   })
