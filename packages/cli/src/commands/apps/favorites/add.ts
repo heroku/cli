@@ -1,8 +1,7 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
-import {Favorites} from '../../../lib/types/favorites'
+import {Favorites} from '../../../lib/types/favorites.js'
 
 export default class Add extends Command {
   static description = 'favorites an app'
@@ -43,5 +42,3 @@ export default class Add extends Command {
     ux.action.stop()
   }
 }
-
-*/

@@ -21,6 +21,6 @@ export function teamAppCollaborators(email = 'gandalf@heroku.com', permissions: 
 
 export function personalToPersonal() {
   return nock('https://api.heroku.com:443')
-    .post('/account/app-transfers', {app: 'myapp', recipient: 'raulb@heroku.com'})
+    .post('/account/app-transfers', {app: 'myapp', recipient: 'gandalf@heroku.com'})
     .reply(200, {state: 'pending'})
 }

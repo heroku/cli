@@ -1,10 +1,7 @@
 import {test, expect} from '@oclif/test'
-// import yaml from 'js-yaml'
-import * as fse from 'fs-extra'
-import * as sinon from 'sinon'
-import * as proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import CreateCommand from '../../../../src/commands/apps/create.js'
 
-/*
 describe('apps:create', function () {
   test
     .stdout()
@@ -134,22 +131,15 @@ describe('apps:create', function () {
       },
     }
 
-    let readFileStub: sinon.SinonStub
-    let safeLoadStub: sinon.SinonStub
+    let readManifestStub: sinon.SinonStub
 
     beforeEach(async function () {
-      readFileStub = sinon.stub(fse, 'readFile').resolves(Buffer.from(''))
-      safeLoadStub = sinon.stub(yaml, 'load').returns(manifest)
-
-      proxyquire('../../../../src/commands/apps/create', {
-        'js-yaml': safeLoadStub,
-        'fs-extra': readFileStub,
-      })
+      readManifestStub = sinon.stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
+      // urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async () => {})
     })
 
     afterEach(function () {
-      readFileStub.restore()
-      safeLoadStub.restore()
+      readManifestStub.restore()
     })
 
     test
@@ -276,5 +266,3 @@ describe('apps:create', function () {
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     })
 })
-
-*/

@@ -1,8 +1,7 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import push from '../../../lib/git/push'
+import push from '../../../lib/git/push.js'
 import * as Heroku from '@heroku-cli/schema'
 
 function map(stack: string): string {
@@ -40,11 +39,10 @@ Run git push heroku main to trigger a new build on myapp.`
     // A redeployment is not required for apps that have never been deployed, since
     // API updates the app's `stack` to match `build_stack` immediately.
     if (app.stack?.name !== app.build_stack?.name) {
-      ux.log(`You will need to redeploy ${color.app(flags.app)} for the change to take effect.`)
-      ux.log(`Run ${color.cmd(push(flags.remote))} to trigger a new build on ${color.app(flags.app)}.`)
+      ux.stdout(`You will need to redeploy ${color.app(flags.app)} for the change to take effect.`)
+      ux.stdout(`Run ${color.cmd(push(flags.remote))} to trigger a new build on ${color.app(flags.app)}.`)
     }
 
     ux.action.stop()
   }
 }
-*/
