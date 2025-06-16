@@ -131,6 +131,13 @@ export type PgStatus = {
   message: string
 }
 
+export type PgUpgradeStatus = {
+  'waiting?': boolean
+  'error?': boolean
+  message: string
+  step: string
+}
+
 type TenantInfoNames =
   'Plan'
   | 'Status'
@@ -166,6 +173,17 @@ export type PgDatabaseTenant = {
 }
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant
+
+export type PgUpgradeResponse = {
+  message: string
+}
+
+export type PgUpgradeError = {
+  body: {
+    id: string,
+    message: string,
+  }
+}
 
 export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Required<Heroku.AddOn['plan']>}
 export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {

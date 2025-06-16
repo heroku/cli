@@ -77,4 +77,23 @@ describe('pg:wait', function () {
       expect(oclif.exit).to.equal(1)
     })
   })
+
+  it('receives steps but does not display them', async function () {
+    pg
+      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'upgrading', step: '1/3'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--wait-interval',
+      '1',
+      'DATABASE_URL',
+    ])
+    expect(stdout.output).to.equal('')
+    expectOutput(stderr.output, heredoc(`
+      Waiting for database postgres-1... upgrading
+      Waiting for database postgres-1... available
+    `))
+  })
 })

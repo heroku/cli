@@ -67,6 +67,7 @@ direwolf
 displayer
 dockerfiles
 dropdb
+dryrun
 DVCS
 dxxxxxxxxxxxx
 dyno
@@ -219,6 +220,7 @@ nspname
 oclif
 oldname
 openredis
+optfile
 osslsigncode
 ossp
 otherapp
@@ -359,6 +361,7 @@ wubalubadubdub
 xact
 xlarge
 xvzf
+yargs
 yetanotherapp
 yourdomain
 ztestdomain7
