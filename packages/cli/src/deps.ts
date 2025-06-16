@@ -1,7 +1,6 @@
 import {HTTP} from '@heroku/http-call'
 import UserConfig from './user-config.js'
-import FS = require('fs-extra')
-
+import FS from 'fs-extra'
 import * as file from './file.js'
 
 const cache: any = {}

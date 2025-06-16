@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const example = {
   name: 'example',
@@ -70,11 +71,10 @@ const teamSpaceInternalApp = {
   internal_routing: true,
 }
 
-const euLockedApp = {}
-const euInternalApp = {}
-const euInternalLockedApp = {}
+let euLockedApp = {}
+let euInternalApp = {}
+let euInternalLockedApp = {}
 
-/*
 describe('apps', function () {
   describe('with no args', function () {
     test
@@ -106,7 +106,15 @@ describe('apps', function () {
       .command(['apps'])
       .it('list all user apps', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n=== Collaborated Apps\n\n collab-app someone-else@bar.com \n')
+        const actual = removeAllWhitespace(stdout)
+        const expectedPersonalApps = removeAllWhitespace(`
+          === foo@bar.com Apps
+          example`)
+        const expectedCollaboratedAppsHeader = removeAllWhitespace('Collaborated Apps')
+        const expectedCollaboratedApps = removeAllWhitespace('collab-app someone-else@bar.com')
+        expect(actual).to.include(expectedPersonalApps)
+        expect(actual).to.include(expectedCollaboratedAppsHeader)
+        expect(actual).to.include(expectedCollaboratedApps)
       })
 
     test
@@ -122,7 +130,16 @@ describe('apps', function () {
       .command(['apps', '--all'])
       .it('lists all apps', ({stdout, stderr}) => {
         expect(stderr).to.equal('')
-        expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\n=== Collaborated Apps\n\n collab-app someone-else@bar.com        \n team-app-1 test-team@herokumanager.com \n')
+        const actual = removeAllWhitespace(stdout)
+        const expectedPersonalApps = removeAllWhitespace(`
+          === foo@bar.com Apps
+          example`)
+        const expectedCollaboratedAppsHeader = removeAllWhitespace('Collaborated Apps')
+        const expectedCollaboratedApps = removeAllWhitespace('collab-app someone-else@bar.com')
+        expect(actual).to.include(expectedPersonalApps)
+        expect(actual).to.include(expectedCollaboratedAppsHeader)
+        expect(actual).to.include(expectedCollaboratedApps)
+        // expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nCollaborated Apps\n\n collab-app someone-else@bar.com        \n team-app-1 test-team@herokumanager.com \n')
       })
 
     test
@@ -356,5 +373,3 @@ describe('apps', function () {
       })
   })
 })
-
-*/

@@ -3,7 +3,6 @@ import nock from 'nock'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/access/index.js'
 import runCommand from '../../../helpers/runCommand.js'
-import stripAnsi from 'strip-ansi'
 import {
   personalApp,
   appCollaborators,
