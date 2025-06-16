@@ -71,40 +71,39 @@ const BASE_INFO = `=== myapp
 
 Addons:           heroku-redis
                   papertrail
-Auto Cert Mgmt:   true
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Dynos:            web: 1
-Git URL:          https://git.heroku.com/myapp
+Space:            myspace
 Internal Routing: true
-Owner:            foo@foo.com
-Region:           eu
+Auto Cert Mgmt:   true
+Git URL:          https://git.heroku.com/myapp
+Web URL:          https://myapp.herokuapp.com
 Repo Size:        1000 B
 Slug Size:        1000 B
-Space:            myspace
+Owner:            foo@foo.com
+Region:           eu
+Dynos:            web: 1
 Stack:            cedar-14
-Web URL:          https://myapp.herokuapp.com
 `
 
 const BASE_INFO_FIR = `=== myapp
 
 Addons:           heroku-redis
                   papertrail
-Auto Cert Mgmt:   true
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Dynos:            web: 1
-Git URL:          https://git.heroku.com/myapp
+Space:            myspace
 Internal Routing: true
+Auto Cert Mgmt:   true
+Git URL:          https://git.heroku.com/myapp
+Web URL:          https://myapp.herokuapp.com
+Repo Size:        1000 B
 Owner:            foo@foo.com
 Region:           eu
-Repo Size:        1000 B
-Space:            myspace
+Dynos:            web: 1
 Stack:            cedar-14
-Web URL:          https://myapp.herokuapp.com
 `
 
-/*
 describe('apps:info', function () {
   test
     .stdout()
@@ -154,6 +153,7 @@ describe('apps:info', function () {
 
 --- Extended Information ---
 
+
 { foo: 'bar', id: 12345 }
 `)
       expect(unwrap(stderr)).to.contains('')
@@ -179,6 +179,7 @@ describe('apps:info', function () {
       expect(stdout).to.equal(`${BASE_INFO}
 
 --- Extended Information ---
+
 
 `)
       expect(unwrap(stderr)).to.contains('')
@@ -225,20 +226,20 @@ describe('apps:info', function () {
 
 Addons:           heroku-redis
                   papertrail
-Auto Cert Mgmt:   true
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Dynos:            web: 1
-Git URL:          https://git.heroku.com/myapp
+Space:            myspace
 Internal Routing: true
-Owner:            foo@foo.com
 Pipeline:         my-pipeline - production
-Region:           eu
+Auto Cert Mgmt:   true
+Git URL:          https://git.heroku.com/myapp
+Web URL:          https://myapp.herokuapp.com
 Repo Size:        1000 B
 Slug Size:        1000 B
-Space:            myspace
+Owner:            foo@foo.com
+Region:           eu
+Dynos:            web: 1
 Stack:            cedar-14
-Web URL:          https://myapp.herokuapp.com
 `)
       expect(unwrap(stderr)).to.contains('')
     })
@@ -382,16 +383,16 @@ Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Dynos:            web: 1
-Git URL:          https://git.heroku.com/myapp
+Space:            myspace
 Internal Routing: true
-Owner:            foo@foo.com
-Region:           eu
+Git URL:          https://git.heroku.com/myapp
+Web URL:          https://myapp.herokuapp.com
 Repo Size:        1000 B
 Slug Size:        1000 B
-Space:            myspace
+Owner:            foo@foo.com
+Region:           eu
+Dynos:            web: 1
 Stack:            cedar-14 (next build will use heroku-24)
-Web URL:          https://myapp.herokuapp.com
 `)
       expect(unwrap(stderr)).to.contains('')
     })
@@ -450,5 +451,3 @@ stack=cedar-14
       expect(unwrap(stderr)).to.contains('')
     })
 })
-
-*/

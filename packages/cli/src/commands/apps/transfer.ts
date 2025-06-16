@@ -1,28 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {sortBy} from 'lodash'
 import * as inquirer from 'inquirer'
-import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils'
-import AppsLock from './lock'
-import {appTransfer} from '../../lib/apps/app-transfer'
-import confirmCommand from '../../lib/confirmCommand'
-
-function getAppsToTransfer(apps: Heroku.App[]) {
-  return inquirer.prompt([{
-    type: 'checkbox',
-    name: 'choices',
-    pageSize: 20,
-    message: 'Select applications you would like to transfer',
-    choices: apps.map(function (app) {
-      return {
-        name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
-      }
-    }),
-  }])
-}
+import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
+import AppsLock from './lock.js'
+import {appTransfer} from '../../lib/apps/app-transfer.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
 
 export default class AppsTransfer extends Command {
   static topic = 'apps';
@@ -48,13 +32,27 @@ Transferring example to acme-widgets... done
 $ heroku apps:transfer --bulk acme-widgets
 ...`]
 
+  getAppsToTransfer(apps: Heroku.App[]) {
+    return inquirer.prompt([{
+      type: 'checkbox',
+      name: 'choices',
+      pageSize: 20,
+      message: 'Select applications you would like to transfer',
+      choices: apps.map(function (app) {
+        return {
+          name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
+        }
+      }),
+    }])
+  }
+
   public async run() {
     const {flags, args} = await this.parse(AppsTransfer)
     const {app, bulk, locked, confirm} = flags
     const recipient = args.recipient
     if (bulk) {
       const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
-      const selectedApps = await getAppsToTransfer(sortBy(allApps, 'name'))
+      const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')))
       ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
       for (const app of selectedApps.choices) {
         try {
@@ -74,7 +72,7 @@ $ heroku apps:transfer --bulk acme-widgets
       const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       const appName = appInfo.name ?? app ?? ''
       if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
-        await confirmCommand(appName, confirm, 'All collaborators will be removed from this app')
+        await new ConfirmCommand().confirm(appName, confirm, 'All collaborators will be removed from this app')
       }
 
       await appTransfer({
@@ -90,4 +88,3 @@ $ heroku apps:transfer --bulk acme-widgets
     }
   }
 }
-*/

@@ -1,11 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
-// import {CLIError} from '@oclif/core/lib/errors'
-// import Cmd from '../../../../src/commands/apps/unlock'
+import {Errors} from '@oclif/core'
+import Cmd from '../../../../src/commands/apps/unlock.js'
 import runCommand from '../../../helpers/runCommand.js'
+import stripAnsi from 'strip-ansi'
 
-/*
 describe('heroku apps:unlock', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -22,7 +22,7 @@ describe('heroku apps:unlock', function () {
       'myapp',
     ])
     expect('').to.eq(stdout.output)
-    expect('Unlocking myapp...\nUnlocking myapp... done\n').to.eq(stderr.output)
+    expect(stderr.output).to.eq('Unlocking ⬢ myapp... done\n')
     api.done()
   })
 
@@ -35,12 +35,10 @@ describe('heroku apps:unlock', function () {
       'myapp',
     ])
       .catch((error: unknown) => {
-        const {message, oclif} = error as CLIError
-        expect(message).to.eq('cannot unlock \u001B[36mmyapp\u001B[39m\nThis app is not locked.')
+        const {message, oclif} = error as Errors.CLIError
+        expect(stripAnsi(message)).to.eq('cannot unlock ⬢ myapp\nThis app is not locked.')
         expect(oclif.exit).to.equal(1) // You can add testing for the correct exit status if you're using `ux.error` to throw.
       })
     api.done()
   })
 })
-
-*/

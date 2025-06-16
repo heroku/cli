@@ -1,9 +1,9 @@
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import {vars} from '@heroku-cli/command'
+import {spawn} from 'node:child_process'
 
-const gh = require('github-url-to-object')
-const spawn = require('child_process').spawn
-const tmp = require('tmp')
+import gh from 'github-url-to-object'
+import tmp from 'tmp'
 
 const NOT_A_GIT_REPOSITORY = 'not a git repository'
 const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory containing your project\'s git repo'

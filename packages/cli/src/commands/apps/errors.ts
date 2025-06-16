@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {sum} from 'lodash'
-import errorInfo from '../../lib/apps/error_info'
+import _ from 'lodash'
+import errorInfo from '../../lib/apps/error_info.js'
 import * as Heroku from '@heroku-cli/schema'
-import {AppErrors} from '../../lib/types/app_errors'
+import {AppErrors} from '../../lib/types/app_errors.js'
 
 type ErrorSummary = Record<string, number>
 
@@ -39,7 +38,7 @@ function buildErrorTable(errors: ErrorSummary, source: string) {
 const sumErrors = (errors: AppErrors) => {
   const summed: ErrorSummary = {}
   Object.keys(errors.data).forEach(key => {
-    summed[key] = sum(errors.data[key])
+    summed[key] = _.sum(errors.data[key])
   })
   return summed
 }
@@ -129,19 +128,16 @@ export default class Errors extends Command {
       }
 
       if (t.length === 0) {
-        ux.log(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
+        ux.stdout(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
       } else {
-        hux.styledHeader(`Errors on ${color.app(flags.app)} in the last ${hours} hours`)
         hux.table(t, {
-          source: {},
-          name: {get: ({name, level}) => colorize(level, name)},
-          level: {get: ({level}) => colorize(level, level)},
+          Source: {get: ({source}) => source},
+          Name: {get: ({name, level}) => colorize(level, name)},
+          Level: {get: ({level}) => colorize(level, level)},
           title: {header: 'Desc'},
-          count: {},
-        })
+          Count: {get: ({count}) => count},
+        }, {title: `Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
       }
     }
   }
 }
-
-*/
