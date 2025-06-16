@@ -1,6 +1,5 @@
 import {test, expect} from '@oclif/test'
 
-/*
 describe('apps:destroy', function () {
   test
     .stdout()
@@ -12,7 +11,7 @@ describe('apps:destroy', function () {
     .command(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
     .it('deletes the app',  ({stdout, stderr}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done\n')
+      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
     })
 
   test
@@ -25,7 +24,7 @@ describe('apps:destroy', function () {
     .command(['apps:destroy', 'myapp', '--confirm', 'myapp'])
     .it('deletes the app via arg',  ({stdout, stderr}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done\n')
+      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
     })
 
   test
@@ -35,5 +34,3 @@ describe('apps:destroy', function () {
     })
     .it('errors without an app')
 })
-
-*/

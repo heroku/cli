@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -18,10 +17,9 @@ export default class Leave extends Command {
     const {flags} = await this.parse(Leave)
     const {app} = flags
     const request = await this.heroku.get<Heroku.Account>('/account')
-    ux.action.start(`Leaving ${color.cyan(app)}`)
+    ux.action.start(`Leaving ${color.app(app)}`)
     const {body: account} = request
     await this.heroku.delete(`/apps/${app}/collaborators/${encodeURIComponent(account.email as string)}`)
     ux.action.stop()
   }
 }
-*/

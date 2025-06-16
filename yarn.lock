@@ -5381,6 +5381,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/github-url-to-object@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "@types/github-url-to-object@npm:4.0.4"
+  checksum: 43279f11326339267fb81d29d20b10ce5289971e8829782bae85583638cc463c89b8bc432c3c976d1e2a04e668b3284725fb46d0415271f3d5fd7dfd1f453d41
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.1":
   version: 7.1.1
   resolution: "@types/glob@npm:7.1.1"
@@ -10506,7 +10513,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"github-url-to-object@npm:^4.0.4":
+"github-url-to-object@npm:^4.0.6":
   version: 4.0.6
   resolution: "github-url-to-object@npm:4.0.6"
   dependencies:
@@ -11052,6 +11059,7 @@ __metadata:
     "@types/chai-as-promised": ^7.1.8
     "@types/debug": ^4.1.2
     "@types/fs-extra": ^11.0.4
+    "@types/github-url-to-object": ^4.0.4
     "@types/glob": ^7.1.1
     "@types/inquirer": ^8.2.10
     "@types/js-yaml": ^3.12.5
@@ -11090,7 +11098,7 @@ __metadata:
     filesize: ^10.1.2
     foreman: ^3.0.1
     fs-extra: ^11.3.0
-    github-url-to-object: ^4.0.4
+    github-url-to-object: ^4.0.6
     glob: ^10.3.10
     globby: ^10.0.2
     got: ^13.0.0
