@@ -1,5 +1,5 @@
 import * as path from 'path'
-import {notify} from '@heroku-cli/notifications'
+import {notify, Notification} from '@heroku-cli/notifications'
 import {ux} from '@oclif/core'
 
 export default function (subtitle: string, message: string, success = true) {
@@ -13,7 +13,7 @@ export default function (subtitle: string, message: string, success = true) {
       message,
       contentImage,
       sound: true,
-    })
+    } as Notification)
   } catch (error: any) {
     ux.warn(error)
   }
