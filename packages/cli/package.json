@@ -171,8 +171,7 @@
   "oclif": {
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>",
     "additionalHelpFlags": [
-      "-h",
-      "--prompt"
+      "-h"
     ],
     "additionalVersionFlags": [
       "-v",
