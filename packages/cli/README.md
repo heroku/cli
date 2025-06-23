@@ -63,10 +63,12 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
+* [`heroku prompt`](docs/prompt.md) - interactively prompt for command arguments and flags
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
+* [`heroku repl`](docs/repl.md) - enter an interactive REPL session to run Heroku CLI commands
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
