@@ -367,6 +367,7 @@
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
       "heroku-event-log": "@heroku/event-log",
+      "heroku-pg-extras": "@heroku-cli/heroku-pg-extras",
       "heroku-pipelines": null,
       "heroku-ps-wait": null,
       "heroku-redis": null,
