@@ -44,7 +44,7 @@ declare -a COMMANDS=(
   "$CMD_BIN labs"
   "$CMD_BIN local:version"
   "$CMD_BIN maintenance --app heroku-cli-test-staging"
-  "$CMD_BIN members --team heroku-front-end"
+  # "$CMD_BIN members --team heroku-front-end"
   "$CMD_BIN notifications"
   "$CMD_BIN orgs"
   "$CMD_BIN pg:backups --app particleboard-staging"
