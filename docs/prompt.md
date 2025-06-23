@@ -1,36 +1,25 @@
-# Heroku CLI Interactive Prompt
+`heroku prompt`
+===============
 
-The interactive prompt helps you run Heroku CLI commands by guiding you through the required inputs. 
+interactively prompt for command arguments and flags
 
-Prompting is particularly useful when you're unsure about what required or optional arguments and flags a command uses.
+* [`heroku prompt`](#heroku-prompt)
 
-## Benefits
+## `heroku prompt`
 
-* Learn requirements for any command, like setting configuration vars
-* Run commands with multiple required flags easily, such as when creating new resources
-* Never forget optional arguments or flags when you run a command
-* Get descriptions for each input
-* Validate input before executing the command
+interactively prompt for command arguments and flags
 
-## Usage
+```
+USAGE
+  $ heroku prompt
 
-Start prompting by adding `--prompt` after any command:
-```term
-$ heroku COMMAND --prompt
+DESCRIPTION
+  interactively prompt for command arguments and flags
+
+EXAMPLES
+  $ heroku apps:info --prompt
+
+  $ heroku config:set --prompt
 ```
 
-## Example Session
-
-```term
-$ heroku config:set --prompt
-Enter key: DATABASE_URL
-Enter value: postgres://...
-Setting DATABASE_URL and restarting example-app... done
-```
-
-## Additional Reading
-
-* [Heroku CLI](heroku-cli)
-* [Heroku CLI Commands](cli-commands)
-* [Heroku CLI REPL](cli-repl)
-_See code: [src/commands/prompt.ts](https://github.com/heroku/cli/blob/v10.9.0/packages/cli/src/commands/prompt.ts)_
+_See code: [src/commands/prompt.ts](https://github.com/heroku/cli/blob/v10.11.0-beta.0/packages/cli/src/commands/prompt.ts)_

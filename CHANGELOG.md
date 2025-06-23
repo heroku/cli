@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.11.0-beta.0](https://github.com/heroku/cli/compare/v10.10.1...v10.11.0-beta.0) (2025-06-23)
+
+
+### Bug Fixes
+
+* add alias for heroku-pg-extras ([#3322](https://github.com/heroku/cli/issues/3322)) ([d5c2481](https://github.com/heroku/cli/commit/d5c24819effd536e903009b81def53787235ecc7))
+* allow for the use of the --prompt flag with a value outside of prompt mode ([#3321](https://github.com/heroku/cli/issues/3321)) ([608e299](https://github.com/heroku/cli/commit/608e299431911259f21cb0c9444bfaf63954d804))
+
+
+### Features
+
+* add docs for repl and prompt modes ([#3311](https://github.com/heroku/cli/issues/3311)) ([c52a129](https://github.com/heroku/cli/commit/c52a12956a0c332d287301ba55a7d4ac22742afc))
+
+
+
+
+
 ## [10.10.1](https://github.com/heroku/cli/compare/v10.10.0...v10.10.1) (2025-06-18)
 
 **Note:** Version bump only for package heroku
