@@ -4,7 +4,7 @@ import nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 
-describe.only('buildpacks:add', function () {
+describe('buildpacks:add', function () {
   describe('URL', function () {
     test
       .nock('https://api.heroku.com', (api: nock.Scope) => {
