@@ -1,4 +1,3 @@
-/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -67,14 +66,13 @@ export default class Search extends Command {
     }
 
     if (buildpacks.length === 0) {
-      ux.log('No buildpacks found')
+      ux.stdout('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      ux.log('\n1 buildpack found')
+      ux.stdout('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      ux.log(`\n${buildpacks.length} buildpacks found`)
+      ux.stdout(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }
-*/
