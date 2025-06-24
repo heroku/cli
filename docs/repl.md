@@ -1,23 +1,90 @@
-`heroku repl`
-=============
+# Heroku CLI REPL
 
-enter an interactive REPL session to run Heroku CLI commands
+The Heroku CLI REPL (Read-Eval-Print Loop) feature provides an interactive environment to run Heroku CLI commands without typing `heroku` each time. 
 
-* [`heroku repl`](#heroku-repl)
+Use it when running multiple commands in sequence or exploring the CLI.
 
-## `heroku repl`
+## Benefits
 
-enter an interactive REPL session to run Heroku CLI commands
+* Run commands without typing `heroku` each time
+* [Set and persist flags](#set-persistent-flags) across multiple commands
+* Get [command completions](#command-completions) and help
+* See an interactive [command history](#command-history)
+* Persist session state
 
+## Start a REPL
+
+Start a REPL interactive environment with this command:
+```term
+$ heroku --repl
 ```
-USAGE
-  $ heroku repl
+## Exit a REPL
 
-DESCRIPTION
-  enter an interactive REPL session to run Heroku CLI commands
+To exit the REPL, type `exit` or press `Ctrl`+`D`.
 
-EXAMPLES
-  $ heroku --repl
+## Set Persistent Flags
+
+You can set flags that persist across commands. For example, to persist an app's name in your commands:
+
+```term
+$ heroku --repl
+heroku> set app example-app
+setting --app to example-app
+example-app> ps
+=== example-app Dynos
+web.1: up 2024/03/19 10:00:00 +0000 (~ 1h ago)
 ```
 
-_See code: [src/commands/repl.ts](https://github.com/heroku/cli/blob/v10.11.0/packages/cli/src/commands/repl.ts)_
+To view your persisted flags:
+
+```term
+example-app> set
+Flag    Value
+app     example-app
+```
+
+To remove a persisted flag:
+
+```term
+example-app> unset app
+unsetting --app
+heroku>
+```
+
+## Command Completion
+
+The REPL provides intelligent command completion. Press `tab` to see available commands and options:
+
+```term
+heroku> pipelines:create --app <tab><tab>
+heroku> spaces:create --team <tab><tab>
+```
+
+The REPL supports completion for various resources including:
+
+* Apps
+* Organizations
+* Teams
+* Spaces
+* Pipelines
+* Add-ons
+* Domains
+* Dynos
+* Releases
+* Stacks
+
+## Command History
+
+The REPL maintains a history of your commands. View your history with:
+
+```term
+heroku> history
+```
+
+Use the up and down arrow keys to navigate through your command history.
+
+## Additional Reading
+
+* [Heroku CLI](heroku-cli)
+* [Heroku CLI Commands](cli-commands)
+* [Heroku CLI Interactive Prompt](cli-prompt)
