@@ -1555,7 +1555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:2.0.1, @heroku-cli/color@npm:^2.0.1":
+"@heroku-cli/color@npm:2.0.1":
   version: 2.0.1
   resolution: "@heroku-cli/color@npm:2.0.1"
   dependencies:
@@ -1626,23 +1626,6 @@ __metadata:
     yargs-parser: ^20.2.9
     yargs-unparser: ^2.0.0
   checksum: f86b37961375b63c1b07b58d40485cfc1a56ff2d6fd3854672321af70ce6079066379ed05bfcf0c051399b282c8038ce8b206e765d1c01154f04c670a6fdf1e7
-  languageName: node
-  linkType: hard
-
-"@heroku-cli/command@npm:^12.0.2-beta.0":
-  version: 12.0.2-beta.0
-  resolution: "@heroku-cli/command@npm:12.0.2-beta.0"
-  dependencies:
-    "@heroku-cli/color": ^2.0.4
-    "@heroku/http-call": ^5.4.0
-    "@oclif/core": ^4.3.0
-    debug: ^4.4.0
-    inquirer: ^8.2.6
-    netrc-parser: ^3.1.6
-    open: ^10.1.2
-    yargs-parser: ^20.2.9
-    yargs-unparser: ^2.0.0
-  checksum: aa0183e2e8bec32c1ccdc51bbca7fd3bc23f5dac365eaf0a92495c6f9e39a272fc4306fff3a6d46c4156c0488d799228154b9a02fe11509b9a1fbd00c7e1de95
   languageName: node
   linkType: hard
 
@@ -1798,6 +1781,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku/http-call@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@heroku/http-call@npm:5.5.0"
+  dependencies:
+    chalk: ^4.1.2
+    content-type: ^1.0.5
+    debug: ^4.4.0
+    is-retry-allowed: ^2.2.0
+    is-stream: ^2.0.0
+    sinon: ^20.0.0
+    tunnel-agent: ^0.6.0
+  checksum: 78b4d178b41c1f2dd2babc3e7eb08594e911a194940f4a19ff596623ef3bc8ec6d5acfe0eaa3a2fc21469b91fa0c35a7228671e57f840d27389151864b5c607d
+  languageName: node
+  linkType: hard
+
 "@heroku/plugin-ai@npm:^1.0.1":
   version: 1.0.1
   resolution: "@heroku/plugin-ai@npm:1.0.1"
@@ -1939,7 +1937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/core@npm:^10.1.13":
+"@inquirer/core@npm:^10.1.11, @inquirer/core@npm:^10.1.13":
   version: 10.1.13
   resolution: "@inquirer/core@npm:10.1.13"
   dependencies:
@@ -2305,7 +2303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/type@npm:^3.0.7":
+"@inquirer/type@npm:^3.0.6, @inquirer/type@npm:^3.0.7":
   version: 3.0.7
   resolution: "@inquirer/type@npm:3.0.7"
   peerDependencies:
@@ -3899,13 +3897,6 @@ __metadata:
     wordwrap: ^1.0.0
     wrap-ansi: ^7.0.0
   checksum: 272d2dbd8add5ea706463f245fa8caab24a041207c249cd67e99c2a060f5ad527d641af6df9043da84d01f41e732c9588e08410d001d26f39c3e19709362bc59
-  languageName: node
-  linkType: hard
-
-"@oclif/linewrap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@oclif/linewrap@npm:1.0.0"
-  checksum: a072016a58b5e1331bbc21303ad5100fcda846ac4b181e344aec88bb24c5da09c416651e51313ffcc846a83514b74b8b987dd965982900f3edbb42b4e87cc246
   languageName: node
   linkType: hard
 
@@ -11664,26 +11655,6 @@ __metadata:
   linkType: hard
 
 "inquirer@npm:^12.6.1":
-  version: 12.6.3
-  resolution: "inquirer@npm:12.6.3"
-  dependencies:
-    "@inquirer/core": ^10.1.13
-    "@inquirer/prompts": ^7.5.3
-    "@inquirer/type": ^3.0.7
-    ansi-escapes: ^4.3.2
-    mute-stream: ^2.0.0
-    run-async: ^3.0.0
-    rxjs: ^7.8.2
-  peerDependencies:
-    "@types/node": ">=18"
-  peerDependenciesMeta:
-    "@types/node":
-      optional: true
-  checksum: f1277c4163569f283c27d363921eef2a752acdfd3d20b030f2cfa4914e2327d807603c42606798beb868f3b90b2628ace419527ce580ea0bf7c46b3e1f0c2e9d
-  languageName: node
-  linkType: hard
-
-"inquirer@npm:^12.6.1":
   version: 12.6.1
   resolution: "inquirer@npm:12.6.1"
   dependencies:
@@ -18245,7 +18216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2, tslib@npm:^2.1.0, tslib@npm:^2.4.1":
+"tslib@npm:^2, tslib@npm:^2.1.0":
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca
