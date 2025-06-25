@@ -1555,7 +1555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:2.0.1, @heroku-cli/color@npm:^2.0.1":
+"@heroku-cli/color@npm:2.0.1":
   version: 2.0.1
   resolution: "@heroku-cli/color@npm:2.0.1"
   dependencies:
@@ -1580,7 +1580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/color@npm:^2, @heroku-cli/color@npm:^2.0.4":
+"@heroku-cli/color@npm:^2, @heroku-cli/color@npm:^2.0.1, @heroku-cli/color@npm:^2.0.4":
   version: 2.0.4
   resolution: "@heroku-cli/color@npm:2.0.4"
   dependencies:
@@ -1593,11 +1593,11 @@ __metadata:
   linkType: hard
 
 "@heroku-cli/command@npm:^11.5.0":
-  version: 11.5.0
-  resolution: "@heroku-cli/command@npm:11.5.0"
+  version: 11.6.0
+  resolution: "@heroku-cli/command@npm:11.6.0"
   dependencies:
     "@heroku-cli/color": ^2.0.1
-    "@heroku/http-call": ^5.4.0
+    "@heroku/http-call": ^5.5.0
     "@oclif/core": ^2.16.0
     cli-ux: ^6.0.9
     debug: ^4.4.0
@@ -1608,7 +1608,7 @@ __metadata:
     uuid: ^8.3.0
     yargs-parser: ^18.1.3
     yargs-unparser: ^2.0.0
-  checksum: f1323bd909487ee29720768674946c7336938b04f2d017d0ed4bf78e9eb34290862f946517879f7a64a930decc713186bbb1dcfa7b042b2e8eb2a769247bd7cd
+  checksum: b1a58b29988bbb7602be24d4fe7d671a18568bbb94887abf9b02302cf12af97f7805bc88d0833bf63f7aa69d1ff6976f9c8fd4ed063f3ea77bdb0a30bdea39c0
   languageName: node
   linkType: hard
 
@@ -1781,6 +1781,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroku/http-call@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@heroku/http-call@npm:5.5.0"
+  dependencies:
+    chalk: ^4.1.2
+    content-type: ^1.0.5
+    debug: ^4.4.0
+    is-retry-allowed: ^2.2.0
+    is-stream: ^2.0.0
+    sinon: ^20.0.0
+    tunnel-agent: ^0.6.0
+  checksum: 78b4d178b41c1f2dd2babc3e7eb08594e911a194940f4a19ff596623ef3bc8ec6d5acfe0eaa3a2fc21469b91fa0c35a7228671e57f840d27389151864b5c607d
+  languageName: node
+  linkType: hard
+
 "@heroku/plugin-ai@npm:^1.0.1":
   version: 1.0.1
   resolution: "@heroku/plugin-ai@npm:1.0.1"
@@ -1922,7 +1937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/core@npm:^10.1.13":
+"@inquirer/core@npm:^10.1.11, @inquirer/core@npm:^10.1.13":
   version: 10.1.13
   resolution: "@inquirer/core@npm:10.1.13"
   dependencies:
@@ -2288,7 +2303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/type@npm:^3.0.7":
+"@inquirer/type@npm:^3.0.6, @inquirer/type@npm:^3.0.7":
   version: 3.0.7
   resolution: "@inquirer/type@npm:3.0.7"
   peerDependencies:
@@ -3761,7 +3776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.0.8, @oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
+"@oclif/core@npm:^2.15.0, @oclif/core@npm:^2.16.0":
   version: 2.16.0
   resolution: "@oclif/core@npm:2.16.0"
   dependencies:
@@ -3905,11 +3920,11 @@ __metadata:
   linkType: hard
 
 "@oclif/plugin-help@npm:^5":
-  version: 5.2.4
-  resolution: "@oclif/plugin-help@npm:5.2.4"
+  version: 5.2.20
+  resolution: "@oclif/plugin-help@npm:5.2.20"
   dependencies:
-    "@oclif/core": ^2.0.8
-  checksum: a2335e9b9ab806566082e4a52d259f206dbae6334afa9d816e09acdf6e51b4f37cff0ce72294ad532141895c4d1eb9c38e2fe4794e71abb59cd56e966be70b2e
+    "@oclif/core": ^2.15.0
+  checksum: 4e98e9b81f26d63dea15c82a367ee60b36f3b62261015282090b90b94dec9a53cd4a856c7b10767bba5a7d2582c1ffb2b72ec00bd62ec35f9359bcdc87dcd674
   languageName: node
   linkType: hard
 
@@ -4040,9 +4055,9 @@ __metadata:
   linkType: hard
 
 "@oclif/screen@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "@oclif/screen@npm:3.0.4"
-  checksum: 6d662c81edfbc8acb50a30001e3c2261171e8baffcd6010603c331de375c5d0c9ce6b3230f6b0ce24961bfa3531f99e771265ea74d9d7a0ee37fb9357fb436a7
+  version: 3.0.8
+  resolution: "@oclif/screen@npm:3.0.8"
+  checksum: d287d5abf236e6564259a11f3942ad68a70ead2fe2ad3653c3730bce8519d21e49cabcc5be449fab769f4efc5ca74c6de98edc34e3464e60d2277119fb4796d2
   languageName: node
   linkType: hard
 
@@ -4568,7 +4583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^13.0.1, @sinonjs/fake-timers@npm:^13.0.2":
+"@sinonjs/fake-timers@npm:^13.0.1, @sinonjs/fake-timers@npm:^13.0.2, @sinonjs/fake-timers@npm:^13.0.5":
   version: 13.0.5
   resolution: "@sinonjs/fake-timers@npm:13.0.5"
   dependencies:
@@ -5462,10 +5477,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:*, @types/lodash@npm:^4.14.123":
+"@types/lodash@npm:*":
   version: 4.14.136
   resolution: "@types/lodash@npm:4.14.136"
   checksum: 08c17a29e4168468a2fcf35b369a81e41dd633a952a077ecb8a976c8326e9c7785022165c3abc68610cf3b81e05fe5d571177d570db8f8c71637bfc099c62acc
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.123":
+  version: 4.17.17
+  resolution: "@types/lodash@npm:4.17.17"
+  checksum: cfa34a752f3c540a196e9f92dbaff93ae15fe4058da8cce1918dd9219076dc19eec33b043aae45865e2b3ef8234a845bb57366144ec8e52551e2bc3f119e04a1
   languageName: node
   linkType: hard
 
@@ -11142,7 +11164,7 @@ __metadata:
     tunnel-ssh: 4.1.6
     typescript: 4.8.4
     urijs: ^1.19.11
-    validator: ^13.7.0
+    validator: ^13.15.15
     word-wrap: ^1.2.5
     ws: ^6.2.2
     yaml: ^2.0.1
@@ -11633,12 +11655,12 @@ __metadata:
   linkType: hard
 
 "inquirer@npm:^12.6.1":
-  version: 12.6.3
-  resolution: "inquirer@npm:12.6.3"
+  version: 12.6.1
+  resolution: "inquirer@npm:12.6.1"
   dependencies:
-    "@inquirer/core": ^10.1.13
-    "@inquirer/prompts": ^7.5.3
-    "@inquirer/type": ^3.0.7
+    "@inquirer/core": ^10.1.11
+    "@inquirer/prompts": ^7.5.1
+    "@inquirer/type": ^3.0.6
     ansi-escapes: ^4.3.2
     mute-stream: ^2.0.0
     run-async: ^3.0.0
@@ -11648,7 +11670,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: f1277c4163569f283c27d363921eef2a752acdfd3d20b030f2cfa4914e2327d807603c42606798beb868f3b90b2628ace419527ce580ea0bf7c46b3e1f0c2e9d
+  checksum: 556b83cd2fab8cdd7f8b1c31f3b21c533ebd29ee8f75d919e96b62895bbb9f7f9c1d31554cdb8e27eec081c33b49b78c3ca8ca8f1c20c5ca613417127a9de4bc
   languageName: node
   linkType: hard
 
@@ -17006,6 +17028,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sinon@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "sinon@npm:20.0.0"
+  dependencies:
+    "@sinonjs/commons": ^3.0.1
+    "@sinonjs/fake-timers": ^13.0.5
+    "@sinonjs/samsam": ^8.0.1
+    diff: ^7.0.0
+    supports-color: ^7.2.0
+  checksum: c6dcd3bc60aa360fede157fbed30c3984eb222990ff28f3014a5e31834cec74e5203c0575332a99c3f7976425167f70e0777507c0c58867473ad0a0c4c1a759c
+  languageName: node
+  linkType: hard
+
 "slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -18181,21 +18216,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2, tslib@npm:^2.1.0, tslib@npm:^2.4.1":
+"tslib@npm:^2, tslib@npm:^2.1.0":
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "tslib@npm:2.0.1"
-  checksum: 507f32fc24a614c5097d414b622373b6cbb99e305413517e7fd49bef1e63570c0dd15b417ae68152088c3496218e82a5d8c7cd6b48c7a32dcee1a3f7191fff74
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.4.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
@@ -18763,10 +18791,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validator@npm:^13.7.0":
-  version: 13.7.0
-  resolution: "validator@npm:13.7.0"
-  checksum: 2b83283de1222ca549a7ef57f46e8d49c6669213348db78b7045bce36a3b5843ff1e9f709ebf74574e06223461ee1f264f8cc9a26a0060a79a27de079d8286ef
+"validator@npm:^13.15.15":
+  version: 13.15.15
+  resolution: "validator@npm:13.15.15"
+  checksum: 10c1b9215a25c31497c481cf4a3ee3e17dcf0b8a219445788e7167ed1b93b8597bbf657bd5c8ca22199b699c3ab41df902c23526cc514075c4b71bd19a13d02c
   languageName: node
   linkType: hard
 
