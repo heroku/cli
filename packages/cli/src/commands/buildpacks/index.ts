@@ -1,11 +1,10 @@
-/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
-import {App} from '../../lib/types/fir'
-import color from '@heroku-cli/color'
+import {App} from '../../lib/types/fir.js'
+import {color} from '@heroku-cli/color'
 
-import {BuildpackCommand} from '../../lib/buildpacks/buildpacks'
-import {getGeneration} from '../../lib/apps/generation'
+import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
+import {getGeneration} from '../../lib/apps/generation.js'
 
 export default class Index extends Command {
   static description = 'list the buildpacks on an app'
@@ -41,4 +40,3 @@ export default class Index extends Command {
     }
   }
 }
-*/

@@ -1,7 +1,7 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core'
 import {Result} from 'true-myth'
 
 import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
@@ -20,21 +20,19 @@ export default class Versions extends Command {
     const {args} = await this.parse(Versions)
     const herokuAuth = this.heroku.auth || ''
     if (herokuAuth === '') {
-      this.error('You need to be logged in to run this command.')
+      ux.error('You need to be logged in to run this command.')
     }
 
     const registry = new BuildpackRegistry()
 
-    Result.match({
-      Ok: () => {},
-      Err: err => {
-        this.error(`Could not find the buildpack.\n${err}`)
-      },
-    }, BuildpackRegistry.isValidBuildpackSlug(args.buildpack))
+    const validationResult = BuildpackRegistry.isValidBuildpackSlug(args.buildpack)
+    if (!validationResult.isOk) {
+      ux.error(`Could not find the buildpack.\n${(validationResult as any).error}`)
+    }
 
     const result = await registry.listVersions(args.buildpack)
     Result.match({
-      Ok: versions => {
+      Ok: (versions: RevisionBody[]) => {
         hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
           return a.release > b.release ? -1 : 1
         }), {
@@ -49,14 +47,13 @@ export default class Versions extends Command {
           },
         })
       },
-      Err: err => {
+      Err: (err: any) => {
         if (err.status === 404) {
-          this.error(`Could not find '${args.buildpack}'`)
+          ux.error(`Could not find '${args.buildpack}'`)
         } else {
-          this.error(`Problem fetching versions, ${err.status}: ${err.description}`)
+          ux.error(`Problem fetching versions, ${err.status}: ${err.description}`)
         }
       },
-    }, result)
+    }, result as any)
   }
 }
-*/

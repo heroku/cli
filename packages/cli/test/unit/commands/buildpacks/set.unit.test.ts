@@ -2,9 +2,7 @@ import {expect, test} from '@oclif/test'
 import nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
-nock.disableNetConnect()
 
-/*
 describe('buildpacks:set', function () {
   describe('URL', function () {
     test
@@ -219,5 +217,3 @@ See more help with --help`)
       .it('# handles a missing buildpack URL arg')
   })
 })
-
-*/

@@ -2,10 +2,10 @@
 import {expect, test} from '@oclif/test'
 import nock from 'nock'
 
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
-nock.disableNetConnect()
 
 const cedarApp = {
   acm: false,
@@ -120,7 +120,7 @@ const ociImages = [
     architecture: 'arm64',
   },
 ]
-/*
+
 describe('buildpacks', function () {
   test
     .nock('https://api.heroku.com', (api: nock.Scope) => {
@@ -316,5 +316,3 @@ describe('buildpacks', function () {
       expect(ctx.stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)
     })
 })
-
-*/

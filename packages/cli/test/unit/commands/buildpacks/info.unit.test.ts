@@ -2,9 +2,6 @@ import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test} from '@oclif/test'
 import nock from 'nock'
 
-nock.disableNetConnect()
-
-/*
 describe('buildpacks:info', function () {
   test
     .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
@@ -51,5 +48,3 @@ describe('buildpacks:info', function () {
     .catch('Problems finding buildpack info: some error')
     .it('handles case if there are errors from the API')
 })
-
-*/
