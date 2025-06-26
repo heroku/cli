@@ -1,9 +1,8 @@
-/*
-import formatDate from './format_date'
+import formatDate from './format_date.js'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
-import {SniEndpoint} from '../types/sni_endpoint'
+import {SniEndpoint} from '../types/sni_endpoint.js'
 
 export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, message = 'Certificate details:') {
   const now = new Date()
@@ -11,10 +10,10 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
   autoRenewsAt.setMonth(autoRenewsAt.getMonth() - 1)
 
   if (sniEndpoint.app && sniEndpoint.ssl_cert.acm && autoRenewsAt > now) {
-    ux.log(`Renewal scheduled for ${color.green(formatDate(autoRenewsAt.toString()))}.\n`)
+    ux.stdout(`Renewal scheduled for ${color.green(formatDate(autoRenewsAt.toString()))}.\n`)
   }
 
-  ux.log(message)
+  ux.stdout(message)
   const tableObject: Record<string, unknown> = {
     'Common Name(s)': sniEndpoint.ssl_cert.cert_domains,
     'Expires At': formatDate(sniEndpoint.ssl_cert.expires_at),
@@ -31,11 +30,10 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
   hux.styledObject(tableObject)
 
   if (sniEndpoint.ssl_cert['ca_signed?']) {
-    ux.log('SSL certificate is verified by a root authority.')
+    ux.stdout('SSL certificate is verified by a root authority.')
   } else if (sniEndpoint.ssl_cert.issuer === sniEndpoint.ssl_cert.subject) {
-    ux.log('SSL certificate is self signed.')
+    ux.stdout('SSL certificate is self signed.')
   } else {
-    ux.log('SSL certificate is not trusted.')
+    ux.stdout('SSL certificate is not trusted.')
   }
 }
-*/
