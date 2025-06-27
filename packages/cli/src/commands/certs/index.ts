@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import displayTable from '../../lib/certs/display_table'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import displayTable from '../../lib/certs/display_table.js'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 export default class Index extends Command {
   static topic = 'certs';
@@ -18,11 +17,10 @@ export default class Index extends Command {
     const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${flags.app}/sni-endpoints`)
 
     if (certs.length === 0) {
-      ux.log(`${color.magenta(flags.app)} has no SSL certificates.\nUse ${color.cmd('heroku certs:add CRT KEY')} to add one.`)
+      ux.stdout(`${color.app(flags.app)} has no SSL certificates.\nUse ${color.cmd('heroku certs:add CRT KEY')} to add one.`)
     } else {
       const sortedCerts = certs.sort((a, b) => a.name > b.name ? 1 : (b.name > a.name ? -1 : 0))
       displayTable(sortedCerts)
     }
   }
 }
-*/
