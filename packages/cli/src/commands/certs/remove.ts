@@ -1,10 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import getEndpoint from '../../lib/certs/flags'
-import confirmCommand from '../../lib/confirmCommand'
-import heredoc from 'tsheredoc'
+import getEndpoint from '../../lib/certs/flags.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
     static topic = 'certs';
@@ -21,15 +21,15 @@ export default class Remove extends Command {
       const {flags} = await this.parse(Remove)
       const {app, confirm} = flags
       const sniEndpoint = await getEndpoint(flags, this.heroku)
-      await confirmCommand(
+      await new ConfirmCommand().confirm(
         app,
         confirm,
         heredoc`
           WARNING: Destructive Action - you cannot rollback this change
-          This command will remove the endpoint ${sniEndpoint.name} from ${color.magenta(app)}.
+          This command will remove the endpoint ${sniEndpoint.name} from ${color.app(app)}.
         `,
       )
-      ux.action.start(`Removing SSL certificate ${sniEndpoint.name} from ${color.magenta(app)}`)
+      ux.action.start(`Removing SSL certificate ${sniEndpoint.name} from ${color.app(app)}`)
       await this.heroku.request(
         `/apps/${app}/sni-endpoints/${sniEndpoint.name}`,
         {method: 'DELETE'},
@@ -37,4 +37,3 @@ export default class Remove extends Command {
       ux.action.stop()
     }
 }
-*/
