@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import getEndpoint from '../../lib/certs/flags'
-import {displayCertificateDetails} from '../../lib/certs/certificate_details'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
-import {Domain} from '../../lib/types/domain'
+import getEndpoint from '../../lib/certs/flags.js'
+import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import {Domain} from '../../lib/types/domain.js'
 
 export default class Info extends Command {
   static topic = 'certs';
@@ -44,4 +43,3 @@ export default class Info extends Command {
     displayCertificateDetails(cert)
   }
 }
-*/
