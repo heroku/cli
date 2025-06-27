@@ -5,8 +5,6 @@ import Cmd from '../../../../src/commands/access/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 describe('heroku access:remove', function () {
   let apiDelete: { done: () => any }

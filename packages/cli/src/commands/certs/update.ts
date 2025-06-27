@@ -1,13 +1,14 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {displayCertificateDetails} from '../../lib/certs/certificate_details'
-import {getCertAndKey} from '../../lib/certs/get_cert_and_key'
-import heredoc from 'tsheredoc'
-import getEndpoint from '../../lib/certs/flags'
-import confirmCommand from '../../lib/confirmCommand'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
+import {CertAndKeyManager} from '../../lib/certs/get_cert_and_key.js'
+import tsheredoc from 'tsheredoc'
+import getEndpoint from '../../lib/certs/flags.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+
+const heredoc = tsheredoc.default
 
 export default class Update extends Command {
   static topic = 'certs';
@@ -39,9 +40,9 @@ export default class Update extends Command {
     const {flags, args} = await this.parse(Update)
     const {app, confirm} = flags
     let sniEndpoint = await getEndpoint(flags, this.heroku)
-    const files = await getCertAndKey(args)
+    const files = await new CertAndKeyManager().getCertAndKey(args)
 
-    await confirmCommand(
+    await new ConfirmCommand().confirm(
       app,
       confirm,
       heredoc`
@@ -62,4 +63,3 @@ export default class Update extends Command {
     displayCertificateDetails(sniEndpoint, 'Updated certificate details:')
   }
 }
-*/
