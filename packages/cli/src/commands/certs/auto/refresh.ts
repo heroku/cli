@@ -1,4 +1,3 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
@@ -18,4 +17,3 @@ export default class Refresh extends Command {
     ux.action.stop()
   }
 }
-*/
