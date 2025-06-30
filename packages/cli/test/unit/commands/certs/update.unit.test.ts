@@ -8,8 +8,6 @@ import * as sharedSni from './shared_sni.unit.test.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
-import * as fs from 'node:fs/promises'
-import {PathLike} from 'node:fs'
 import * as sinon from 'sinon'
 import {Errors} from '@oclif/core'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
@@ -117,22 +115,18 @@ describe('heroku certs:update', function () {
 })
 
 describe('shared', function () {
-  type ReadFileStub = sinon.SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
-
-  function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
-    readFileStub.withArgs(file, {encoding: 'utf-8'}).returns(Promise.resolve(content))
-  }
-
-  let stubbedReadFile: ReadFileStub
+  let stubbedGetCertAndKey: SinonStub
 
   beforeEach(function () {
-    stubbedReadFile = sinon.stub(fs, 'readFile')
-    mockFile(stubbedReadFile, 'pem_file', 'pem content')
-    mockFile(stubbedReadFile, 'key_file', 'key content')
+    stubbedGetCertAndKey = sinon.stub(CertAndKeyManager.prototype, 'getCertAndKey')
+    stubbedGetCertAndKey.returns(Promise.resolve({
+      crt: 'pem content',
+      key: 'key content',
+    }))
   })
 
   afterEach(function () {
-    stubbedReadFile.restore()
+    stubbedGetCertAndKey.restore()
   })
 
   const callback = function (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) {
@@ -146,7 +140,6 @@ describe('shared', function () {
 
   const stderr = function (endpoint: Partial<SniEndpoint>) {
     return heredoc`
-      Updating SSL certificate ${endpoint.name} for example...
       Updating SSL certificate ${endpoint.name} for example... done\n
     `
   }
