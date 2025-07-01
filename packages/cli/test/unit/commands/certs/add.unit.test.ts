@@ -151,10 +151,10 @@ describe('heroku certs:add', function () {
         'pem_file',
         'key_file',
       ])
-      // expect(stubbedSelectDomains.calledOnce).to.be.true
-      // expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
-      //   'biz.example.com',
-      // ])
+      expect(stubbedSelectDomains.calledOnce).to.be.true
+      expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
+        'biz.example.com',
+      ])
       mock.done()
       domainsMock.done()
       domainsCreate.done()

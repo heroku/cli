@@ -4,7 +4,6 @@ import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
-import lolex from 'lolex'
 import sinon from 'sinon'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
@@ -585,26 +584,22 @@ describe('heroku certs:auto', function () {
     expect(actual).to.include(expected)
   })
 
-  context.skip('--wait', function () {
-    let clock: lolex.InstalledClock<lolex.Clock>
-
+  context('--wait', function () {
+    let commandExecutedTime: string
     beforeEach(function () {
-      clock = lolex.install()
-      // Properly mock setTimeout to match the Node signature and avoid TS error
-      sandbox.stub(global, 'setTimeout').callsFake((callback: (...args: any[]) => void, _ms?: number, ...args: any[]) => {
-        callback(...args)
-        // Return a dummy Timeout object
-        return {} as NodeJS.Timeout
-      })
+      commandExecutedTime = new Date().toISOString()
+      // Freeze Date's now() time so when date-fns compares it will be
+      // immediately after the command is executed.
+      const now = Date.now()
+      sandbox.stub(Date, 'now').returns(now)
     })
 
     afterEach(function () {
-      clock.uninstall()
       sandbox.restore()
     })
 
     it('waits until certs are issued and displays the domains details', async function () {
-      const now = new Date().toISOString()
+      const now = commandExecutedTime
       const api = nock('https://api.heroku.com')
         .get('/apps/example')
         .reply(200, {acm: true})
@@ -704,16 +699,9 @@ describe('heroku certs:auto', function () {
         heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
         heroku-failing.heroku-cli-sni-test.com Cert issued less than a minute
       `))
-      expect(stdout.output).to.include(expectedHeader)
-      expect(stdout.output).to.include(expected)
-      // expect(stdout.output).to.equal(heredoc`
-      //   === Automatic Certificate Management is enabled on example
-
-      //    Domain                                 Status      Last Updated
-      //    ────────────────────────────────────── ─────────── ──────────────────
-      //    heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
-      //    heroku-failing.heroku-cli-sni-test.com Cert issued less than a minute
-      // `)
+      const actual = removeAllWhitespace(stdout.output)
+      expect(actual).to.include(expectedHeader)
+      expect(actual).to.include(expected)
     })
 
     it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async function () {
