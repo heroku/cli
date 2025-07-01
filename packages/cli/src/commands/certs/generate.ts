@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
-import * as inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {

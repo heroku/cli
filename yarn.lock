@@ -4574,15 +4574,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/commons@npm:^1.7.0":
-  version: 1.8.6
-  resolution: "@sinonjs/commons@npm:1.8.6"
-  dependencies:
-    type-detect: 4.0.8
-  checksum: 7d3f8c1e85f30cd4e83594fc19b7a657f14d49eb8d95a30095631ce15e906c869e0eff96c5b93dffea7490c00418b07f54582ba49c6560feb2a8c34c0b16832d
-  languageName: node
-  linkType: hard
-
 "@sinonjs/commons@npm:^3.0.1":
   version: 3.0.1
   resolution: "@sinonjs/commons@npm:3.0.1"
@@ -11135,7 +11126,7 @@ __metadata:
     got: ^13.0.0
     inquirer: ^8.2.6
     lodash: ^4.17.21
-    lolex: ^6.0.0
+    lolex: ^3.1.0
     mocha: ^10.8.2
     netrc-parser: 3.1.6
     nock: ^13.5.1
@@ -13183,12 +13174,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lolex@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "lolex@npm:6.0.0"
-  dependencies:
-    "@sinonjs/commons": ^1.7.0
-  checksum: 1d084702d67d059c11c7d8a5fa609408487eec37762fc381de01f73c8d9dcd78b3c18c5961a3a91deb361dbff101c10d50b5af1ec3f4ec997b69caac0cff4f6c
+"lolex@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "lolex@npm:3.1.0"
+  checksum: 7fa8d5b4c0c20adbc8990203af5305ffb9f42bd53fd92fe141ac3ca2e583ee7595a98abe2adb7decf8341f6729f7a8be7097d568e5429a078c121f8ca79de541
   languageName: node
   linkType: hard
 
