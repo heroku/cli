@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients', function () {
   describe('with clients', function () {
     const exampleClient1 = {
@@ -40,5 +39,3 @@ describe('clients', function () {
       })
   })
 })
-
-*/

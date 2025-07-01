@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients:info', function () {
   const id = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
   const client = {name: 'awesome', id, redirect_uri: 'https://myapp.com', secret: 'supersecretkey'}
@@ -42,5 +41,3 @@ describe('clients:info', function () {
       })
   })
 })
-
-*/

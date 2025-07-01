@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients:create', function () {
   const createResponse = {
     name: 'awesome',
@@ -25,8 +24,7 @@ describe('clients:create', function () {
       expect(ctx.stdout).to.equal(
         'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=clientsecret\n',
       )
-    // TODO: Not currently testable due to a cli-ux mocking issue
-    // expect(ctx.stderr).to.contain('Creating awesome... done\n')
+      expect(ctx.stderr).to.contain('Creating awesome... done\n')
     })
 
   testWithClientCreate()
@@ -36,5 +34,3 @@ describe('clients:create', function () {
       expect(ctx.stderr).to.contain('Creating awesome... done\n')
     })
 })
-
-*/

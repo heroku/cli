@@ -1,10 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {validateURL} from '../../lib/clients/clients'
+import {validateURL} from '../../lib/clients/clients.js'
 
 export default class ClientsCreate extends Command {
   static description = 'create a new OAuth client'
@@ -40,9 +39,8 @@ export default class ClientsCreate extends Command {
     if (flags.json) {
       hux.styledJSON(client)
     } else {
-      ux.log(`HEROKU_OAUTH_ID=${client.id}`)
-      ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      ux.stdout(`HEROKU_OAUTH_ID=${client.id}`)
+      ux.stdout(`HEROKU_OAUTH_SECRET=${client.secret}`)
     }
   }
 }
-*/
