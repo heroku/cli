@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('clients', function () {
   describe('with clients', function () {
@@ -17,7 +18,9 @@ describe('clients', function () {
     testWithClients()
       .command(['clients'])
       .it('lists the clients', ctx => {
-        expect(ctx.stdout).to.contain('awesome f6e8d969-129f-42d2-854b-c2eca9d5a42e https://myapp.com \n')
+        const actual = removeAllWhitespace(ctx.stdout)
+        const expected = removeAllWhitespace('awesome f6e8d969-129f-42d2-854b-c2eca9d5a42e https://myapp.com')
+        expect(actual).to.include(expected)
       })
 
     testWithClients()
