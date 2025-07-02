@@ -1,8 +1,8 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/certs/info'
+import Cmd from '../../../../src/commands/certs/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import nock from 'nock'
 
 import {
@@ -17,7 +17,8 @@ import {
 import * as sharedSni from './shared_sni.unit.test.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
     nock('https://api.heroku.com')
@@ -27,7 +28,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpoint)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -68,7 +68,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpointUntrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(heredoc(stdout.output), heredoc(`
@@ -85,7 +84,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpointTrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -111,7 +109,6 @@ describe('heroku shared', function () {
 
   const stderr = function (endpoint: Partial<SniEndpoint>) {
     return heredoc(`
-      Fetching SSL certificate ${endpoint.name} info for ⬢ example...
       Fetching SSL certificate ${endpoint.name} info for ⬢ example... done
     `)
   }
@@ -122,5 +119,3 @@ describe('heroku shared', function () {
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
 })
-
-*/

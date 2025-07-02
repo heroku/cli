@@ -2,11 +2,10 @@ import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 
-import * as fs from 'node:fs/promises'
-import * as sinon from 'sinon'
-import * as inquirer from 'inquirer'
-import {QuestionCollection} from 'inquirer'
-import heredoc from 'tsheredoc'
+import sinon from 'sinon'
+import {SinonStub} from 'sinon'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 import {
   endpoint,
   endpointStables,
@@ -14,52 +13,38 @@ import {
   certificateDetails,
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints.js'
-// import Cmd from '../../../../src/commands/certs/add'
+import Cmd from '../../../../src/commands/certs/add.js'
+import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
 import {expect} from '@oclif/test'
-import {SinonStub} from 'sinon'
-import {PathLike} from 'node:fs'
 
-type ReadFileStub = SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
-
-function mockFile(readFileStub: ReadFileStub, file: PathLike, content: string) {
-  readFileStub.withArgs(file, {encoding: 'utf-8'}).returns(Promise.resolve(content))
-}
-
-/*
 describe('heroku certs:add', function () {
-  let stubbedPromptReturnValue: unknown = {}
-  let questionsReceived: ReadonlyArray<inquirer.Answers> | undefined
-  let stubbedPrompt: SinonStub
-
-  let stubbedReadFile: SinonStub<Parameters<typeof fs.readFile>, ReturnType<typeof fs.readFile>>
+  let stubbedSelectDomainsReturnValue: {domains: string[]} = {domains: []}
+  let stubbedSelectDomains: SinonStub
+  let stubbedGetCertAndKey: SinonStub
 
   function mockDomains() {
     nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [])
-    stubbedPromptReturnValue = {domains: []}
+    stubbedSelectDomainsReturnValue = {domains: []}
   }
 
-  before(function () {
-    stubbedPrompt = sinon.stub(inquirer, 'prompt')
-      .callsFake((questions: QuestionCollection<inquirer.Answers>) => {
-        questionsReceived = questions as ReadonlyArray<inquirer.Answers>
-        return Promise.resolve(stubbedPromptReturnValue) as ReturnType<typeof inquirer.prompt>
-      })
-  })
-
   beforeEach(async function () {
-    stubbedReadFile = sinon.stub(fs, 'readFile')
-    questionsReceived = undefined
+    stubbedSelectDomains = sinon.stub(Cmd.prototype, 'selectDomains')
+    stubbedSelectDomains.callsFake(async (domainOptions: string[]) => {
+      // Let the method execute normally but return our stubbed value
+      return Promise.resolve(stubbedSelectDomainsReturnValue)
+    })
+    stubbedGetCertAndKey = sinon.stub(CertAndKeyManager.prototype, 'getCertAndKey')
+    stubbedGetCertAndKey.returns(Promise.resolve({
+      crt: Buffer.from('pem content'),
+      key: Buffer.from('key content'),
+    }))
     nock.cleanAll()
   })
 
   afterEach(function () {
-    stubbedReadFile.restore()
-  })
-
-  after(function () {
-    stubbedPrompt.restore()
+    sinon.restore()
   })
 
   it('# works with a cert and key', async function () {
@@ -67,8 +52,6 @@ describe('heroku certs:add', function () {
       .get('/apps/example')
       .reply(200, {space: null})
     mockDomains()
-    mockFile(stubbedReadFile, 'pem_file', 'pem content')
-    mockFile(stubbedReadFile, 'key_file', 'key content')
     const mockSni = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content',
@@ -90,8 +73,6 @@ describe('heroku certs:add', function () {
       .get('/apps/example')
       .reply(200, {space: null})
     mockDomains()
-    mockFile(stubbedReadFile, 'pem_file', 'pem content')
-    mockFile(stubbedReadFile, 'key_file', 'key content')
     const mock = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content',
@@ -116,8 +97,6 @@ describe('heroku certs:add', function () {
       .get('/apps/example/domains')
       .reply(200, [{id: 123, hostname: 'example.org'}])
     mockDomains()
-    mockFile(stubbedReadFile, 'pem_file', 'pem content')
-    mockFile(stubbedReadFile, 'key_file', 'key content')
     const mockSni = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
         certificate_chain: 'pem content', private_key: 'key content',
@@ -139,8 +118,6 @@ describe('heroku certs:add', function () {
       nock('https://api.heroku.com')
         .get('/apps/example')
         .reply(200, {space: null})
-      mockFile(stubbedReadFile, 'pem_file', 'pem content')
-      mockFile(stubbedReadFile, 'key_file', 'key content')
     })
 
     it('# prompts creates an SNI endpoint with stable cnames', async function () {
@@ -167,15 +144,15 @@ describe('heroku certs:add', function () {
         .patch('/apps/example/domains/biz.example.com')
         .reply(200)
 
-      stubbedPromptReturnValue = {domains: ['biz.example.com']}
+      stubbedSelectDomainsReturnValue = {domains: ['biz.example.com']}
       await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
         'key_file',
       ])
-      expect(questionsReceived).not.to.be.undefined
-      expect(questionsReceived?.[0].choices).to.eql([
+      expect(stubbedSelectDomains.calledOnce).to.be.true
+      expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'biz.example.com',
       ])
       mock.done()
@@ -202,14 +179,14 @@ describe('heroku certs:add', function () {
           {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
         ])
 
-      stubbedPromptReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
+      stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
       await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
         'key_file',
       ])
-      expect(questionsReceived?.[0].choices).to.eql([
+      expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'tokyo-1050.herokuapp.com',
       ])
       mock.done()
@@ -234,14 +211,14 @@ describe('heroku certs:add', function () {
             cname: 'wildcard.example.com.herokudns.com',
           },
         ])
-      stubbedPromptReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
+      stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
       await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
         'key_file',
       ])
-      expect(questionsReceived).to.be.undefined
+      expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
       expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
@@ -258,14 +235,14 @@ describe('heroku certs:add', function () {
         .get('/apps/example/domains')
         .reply(200, [])
 
-      stubbedPromptReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
+      stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
       await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
         'key_file',
       ])
-      expect(questionsReceived).to.be.undefined
+      expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
       expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
@@ -291,14 +268,14 @@ describe('heroku certs:add', function () {
         .patch('/apps/example/domains/foo.example.org')
         .reply(200)
 
-      stubbedPromptReturnValue = {domains: ['foo.example.org']}
+      stubbedSelectDomainsReturnValue = {domains: ['foo.example.org']}
       await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
         'key_file',
       ])
-      expect(questionsReceived?.[0].choices).to.eql([
+      expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'foo.example.org',
       ])
       mock.done()
@@ -391,7 +368,7 @@ describe('heroku certs:add', function () {
           .patch('/apps/example/domains/biz.example.com')
           .reply(200)
 
-        stubbedPromptReturnValue = {
+        stubbedSelectDomainsReturnValue = {
           domains: [
             'foo.example.org',
             'bar.example.org',
@@ -404,7 +381,7 @@ describe('heroku certs:add', function () {
           'pem_file',
           'key_file',
         ])
-        expect(questionsReceived?.[0].choices).to.eql([
+        expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
           'foo.example.org',
           'bar.example.org',
           'biz.example.com',
@@ -457,12 +434,10 @@ describe('heroku certs:add', function () {
 
         mock.done()
         domainsMock.done()
-        expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
-        expect(stderr.output).to.contain('Waiting for stable domains to be created... !\n')
+        expect(stderr.output).to.contain('Adding SSL certificate to example... done')
+        expect(stderr.output).to.contain('Waiting for stable domains to be created... !')
         expect(stdout.output).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n')
       })
     })
   })
 })
-
-*/

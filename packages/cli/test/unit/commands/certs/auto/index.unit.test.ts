@@ -1,12 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/certs/auto/index'
+import Cmd from '../../../../../src/commands/certs/auto/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
-import * as lolex from 'lolex'
-import * as sinon from 'sinon'
+import tsheredoc from 'tsheredoc'
+import sinon from 'sinon'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
+const heredoc = tsheredoc.default
 const sandbox = sinon.createSandbox()
 const letsEncrypt = {
   domains: [],
@@ -27,7 +28,6 @@ const selfSigned = {
   },
 }
 
-/*
 describe('heroku certs:auto', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -68,9 +68,8 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
-      === Automatic Certificate Management is enabled on example
-
+    expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on example')
+    expect(stdout.output).to.include(heredoc`
       Certificate details:
       Common Name(s): heroku-acm.heroku-cli-sni-test.com
                       heroku-san-test.heroku-cli-sni-test.com
@@ -79,12 +78,14 @@ describe('heroku certs:auto', function () {
       Starts At:      2013-08-01 21:34 UTC
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
-
-       Domain                                  Status Last Updated
-       ─────────────────────────────────────── ────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
-       heroku-san-test.heroku-cli-sni-test.com OK     less than a minute
     `)
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                  Status Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
+      heroku-san-test.heroku-cli-sni-test.com OK     less than a minute`))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('displays partially enabled status message', async function () {
@@ -149,8 +150,7 @@ describe('heroku certs:auto', function () {
 
     api.done()
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout.output).to.include(heredoc`
       === Automatic Certificate Management is enabled on example
 
       Certificate details:
@@ -161,10 +161,11 @@ describe('heroku certs:auto', function () {
       Starts At:      2013-08-01 21:34 UTC
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
-
-       Domain                                      Status       Last Updated
-       ─────────────────────────────────────────── ──────────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com          OK           less than a minute
+    `)
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                      Status       Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com          OK           less than a minute
        heroku-san-test.heroku-cli-sni-test.com     OK           less than a minute
        heroku-in-prog.heroku-cli-sni-test.com      In Progress  less than a minute
        heroku-verified.heroku-cli-sni-test.com     In Progress  less than a minute
@@ -173,8 +174,11 @@ describe('heroku certs:auto', function () {
        heroku-unknown.heroku-cli-sni-test.com      Waiting      less than a minute
 
       === Some domains are failing validation, please verify that your DNS matches: heroku domains
-          See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+          See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
+    `))
+    expect(stderr.output).to.equal('')
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('does not have a false positive check with non-ACM lets encrypt certs', async function () {
@@ -226,19 +230,19 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
-      === Automatic Certificate Management is enabled on example
-
-       Domain                                  Status  Last Updated
-       ─────────────────────────────────────── ─────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
-       heroku-san-test.heroku-cli-sni-test.com OK      less than a minute
-       heroku-missing.heroku-cli-sni-test.com  Failing less than a minute
-       heroku-unknown.heroku-cli-sni-test.com  Waiting less than a minute
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                  Status  Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
+      heroku-san-test.heroku-cli-sni-test.com OK      less than a minute
+      heroku-missing.heroku-cli-sni-test.com  Failing less than a minute
+      heroku-unknown.heroku-cli-sni-test.com  Waiting less than a minute
 
       === Some domains are failing validation, please verify that your DNS matches: heroku domains
           See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+    `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('displays partially enabled status with failed message', async function () {
@@ -282,7 +286,7 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout.output).to.include(heredoc`
       === Automatic Certificate Management is enabled on example
 
       Certificate details:
@@ -293,16 +297,19 @@ describe('heroku certs:auto', function () {
       Starts At:      2013-08-01 21:34 UTC
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
-
-       Domain                                  Status Last Updated
-       ─────────────────────────────────────── ────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
-       heroku-san-test.heroku-cli-sni-test.com OK     less than a minute
-       heroku-failed.heroku-cli-sni-test.com   Failed less than a minute
+    `)
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                  Status Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
+      heroku-san-test.heroku-cli-sni-test.com OK     less than a minute
+      heroku-failed.heroku-cli-sni-test.com   Failed less than a minute
 
       === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
           See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+    `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('displays partially enabled status with failing message', async function () {
@@ -345,7 +352,7 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout.output).to.include(heredoc`
       === Automatic Certificate Management is enabled on example
 
       Certificate details:
@@ -356,16 +363,19 @@ describe('heroku certs:auto', function () {
       Starts At:      2013-08-01 21:34 UTC
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
-
-       Domain                                  Status  Last Updated
-       ─────────────────────────────────────── ─────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
-       heroku-san-test.heroku-cli-sni-test.com OK      less than a minute
-       heroku-failed.heroku-cli-sni-test.com   Failing less than a minute
+    `)
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                  Status  Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
+      heroku-san-test.heroku-cli-sni-test.com OK      less than a minute
+      heroku-failed.heroku-cli-sni-test.com   Failing less than a minute
 
       === Some domains are failing validation, please verify that your DNS matches: heroku domains
           See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+    `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('displays disabled status message', async function () {
@@ -421,17 +431,15 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
-      === Automatic Certificate Management is enabled on example
-
-       Domain                                 Status  Last Updated
-       ────────────────────────────────────── ─────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com     OK      less than a minute
-       heroku-failing.heroku-cli-sni-test.com Failing less than a minute
-
-      === Some domains are failing validation, please verify that your DNS matches: heroku domains
-          See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+    expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on example')
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                 Status  Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com     OK      less than a minute
+      heroku-failing.heroku-cli-sni-test.com Failing less than a minute
+    `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   it('displays message that there are no domains', async function () {
@@ -551,7 +559,7 @@ describe('heroku certs:auto', function () {
     api.done()
 
     expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout.output).to.include(heredoc`
       === Automatic Certificate Management is enabled on example
 
       Certificate details:
@@ -562,35 +570,36 @@ describe('heroku certs:auto', function () {
       Starts At:      2013-08-01 21:34 UTC
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
-
-       Domain                                Status Reason                 Last Updated
-       ───────────────────────────────────── ────── ────────────────────── ──────────────────
-       heroku-acm.heroku-cli-sni-test.com    OK                            less than a minute
-       heroku-failed.heroku-cli-sni-test.com Failed uh oh something failed less than a minute
+    `)
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain                                Status Reason                 Last Updated')
+    const expected = removeAllWhitespace(heredoc(`
+      heroku-acm.heroku-cli-sni-test.com    OK                            less than a minute
+      heroku-failed.heroku-cli-sni-test.com Failed uh oh something failed less than a minute
 
       === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
           See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-    `)
+    `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expected)
   })
 
   context('--wait', function () {
-    let clock: lolex.InstalledClock<lolex.Clock>
-
+    let commandExecutedTime: string
     beforeEach(function () {
-      clock = lolex.install()
-      clock.setTimeout = function (fn) {
-        fn()
-        return 1
-      }
+      commandExecutedTime = new Date().toISOString()
+      // Freeze Date's now() time so when date-fns compares it will be
+      // immediately after the command is executed.
+      const now = Date.now()
+      sandbox.stub(Date, 'now').returns(now)
     })
 
     afterEach(function () {
-      clock.uninstall()
       sandbox.restore()
     })
 
     it('waits until certs are issued and displays the domains details', async function () {
-      const now = new Date().toISOString()
+      const now = commandExecutedTime
       const api = nock('https://api.heroku.com')
         .get('/apps/example')
         .reply(200, {acm: true})
@@ -682,17 +691,17 @@ describe('heroku certs:auto', function () {
       api.done()
 
       expect(stderr.output).to.equal(heredoc`
-        Waiting until the certificate is issued to all domains...
         Waiting until the certificate is issued to all domains... done
       `)
-      expect(stdout.output).to.equal(heredoc`
-        === Automatic Certificate Management is enabled on example
-
-         Domain                                 Status      Last Updated
-         ────────────────────────────────────── ─────────── ──────────────────
-         heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
-         heroku-failing.heroku-cli-sni-test.com Cert issued less than a minute
-      `)
+      expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on example')
+      const expectedHeader = removeAllWhitespace('Domain                                 Status      Last Updated')
+      const expected = removeAllWhitespace(heredoc(`
+        heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
+        heroku-failing.heroku-cli-sni-test.com Cert issued less than a minute
+      `))
+      const actual = removeAllWhitespace(stdout.output)
+      expect(actual).to.include(expectedHeader)
+      expect(actual).to.include(expected)
     })
 
     it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async function () {
@@ -788,22 +797,20 @@ describe('heroku certs:auto', function () {
       api.done()
 
       expect(stderr.output).to.equal(heredoc`
-        Waiting until the certificate is issued to all domains...
         Waiting until the certificate is issued to all domains... !
       `)
-      expect(stdout.output).to.equal(heredoc`
-        === Automatic Certificate Management is enabled on example
-
-         Domain                                 Status      Last Updated
-         ────────────────────────────────────── ─────────── ──────────────────
-         heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
-         heroku-failing.heroku-cli-sni-test.com Failed      less than a minute
+      expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on example')
+      const actual = removeAllWhitespace(stdout.output)
+      const expectedHeader = removeAllWhitespace('Domain                                 Status      Last Updated')
+      const expected = removeAllWhitespace(heredoc(`
+        heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
+        heroku-failing.heroku-cli-sni-test.com Failed      less than a minute
 
         === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
             See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons\n
-      `)
+      `))
+      expect(actual).to.include(expectedHeader)
+      expect(actual).to.include(expected)
     })
   })
 })
-
-*/

@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
-import * as inquirer from 'inquirer'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import inquirer from 'inquirer'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {
   const shouldUpdate = certs
@@ -38,16 +37,20 @@ export default class Generate extends Command {
 
   private parsed = this.parse(Generate)
 
+  async promptForOwnerInfo() {
+    return inquirer.prompt([
+      {type: 'input', message: 'Owner of this certificate', name: 'owner'},
+      {type: 'input', message: 'Country of owner (two-letter ISO code)', name: 'country'},
+      {type: 'input', message: 'State/province/etc. of owner', name: 'area'},
+      {type: 'input', message: 'City of owner', name: 'city'},
+    ])
+  }
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parsed
     const {app, selfsigned} = flags
     if (this.requiresPrompt(flags)) {
-      const {owner, country, area, city} = await inquirer.prompt([
-        {type: 'input', message: 'Owner of this certificate', name: 'owner'},
-        {type: 'input', message: 'Country of owner (two-letter ISO code)', name: 'country'},
-        {type: 'input', message: 'State/province/etc. of owner', name: 'area'},
-        {type: 'input', message: 'City of owner', name: 'city'},
-      ])
+      const {owner, country, area, city} = await this.promptForOwnerInfo()
       Object.assign(flags, {owner, country, area, city})
     }
 
@@ -78,10 +81,16 @@ export default class Generate extends Command {
       return false
     }
 
+    if (flags.now) {
+      return false
+    }
+
     const args = [flags.owner, flags.country, flags.area, flags.city]
-    if (!flags.now && args.every((arg: string | undefined) => !arg)) {
+    if (args.every((arg: string | undefined) => !arg)) {
       return true
     }
+
+    return false
   }
 
   protected getSubject(args: Awaited<typeof this.parsed>['args'], flags: Awaited<typeof this.parsed>['flags']) {
@@ -121,4 +130,3 @@ export default class Generate extends Command {
     })
   }
 }
-*/

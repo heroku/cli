@@ -1,36 +1,16 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {waitForDomains} from '../../lib/certs/domains'
-import {prompt} from 'inquirer'
-import {getCertAndKey} from '../../lib/certs/get_cert_and_key'
-import heredoc from 'tsheredoc'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
-import {displayCertificateDetails} from '../../lib/certs/certificate_details'
+import {waitForDomains} from '../../lib/certs/domains.js'
+import inquirer from 'inquirer'
+import {CertAndKeyManager} from '../../lib/certs/get_cert_and_key.js'
+import tsheredoc from 'tsheredoc'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
 
-async function configureDomains(app: string, heroku: APIClient, cert: SniEndpoint) {
-  const certDomains = cert.ssl_cert.cert_domains
-  const apiDomains = await waitForDomains(app, heroku)
-  const appDomains = apiDomains?.map((domain: Heroku.Domain) => domain.hostname as string)
-  const matchedDomains = matchDomains(certDomains, appDomains ?? [])
-  if (matchedDomains.length > 0) {
-    hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
-    const selections = await prompt<{domains: string[]}>([{
-      type: 'checkbox',
-      name: 'domains',
-      message: 'Select domains',
-      choices: matchedDomains,
-    }])
-    await Promise.all(selections?.domains.map(domain => {
-      return heroku.patch(`/apps/${app}/domains/${domain}`, {
-        body: {sni_endpoint: cert.name},
-      })
-    }))
-  }
-}
+const heredoc = tsheredoc.default
 
 export default class Add extends Command {
   static topic = 'certs'
@@ -55,10 +35,45 @@ export default class Add extends Command {
     KEY: Args.string({required: true, description: 'absolute path of the key file on disk'}),
   }
 
+  getDomainsToAssociate(sniEndpoint: SniEndpoint) {
+    return inquirer.prompt<{domains: string[]}>([{
+      type: 'checkbox',
+      name: 'domains',
+      message: 'Select domains',
+      choices: sniEndpoint.ssl_cert.cert_domains,
+    }])
+  }
+
+  async configureDomains(app: string, heroku: APIClient, cert: SniEndpoint) {
+    const certDomains = cert.ssl_cert.cert_domains
+    const apiDomains = await waitForDomains(app, heroku)
+    const appDomains = apiDomains?.map((domain: Heroku.Domain) => domain.hostname as string)
+    const matchedDomains = matchDomains(certDomains, appDomains ?? [])
+    if (matchedDomains.length > 0) {
+      hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+      const selections = await this.selectDomains(matchedDomains)
+      await Promise.all(selections?.domains.map(domain => {
+        return heroku.patch(`/apps/${app}/domains/${domain}`, {
+          body: {sni_endpoint: cert.name},
+        })
+      }))
+    }
+  }
+
+  async selectDomains(domainOptions: string[]) {
+    return inquirer.prompt<{domains: string[]}>([{
+      type: 'checkbox',
+      name: 'domains',
+      message: 'Select domains',
+      choices: domainOptions,
+    }])
+  }
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
     const {app} = flags
-    const files = await getCertAndKey(args)
+    const certManager = new CertAndKeyManager()
+    const files = await certManager.getCertAndKey(args)
     ux.action.start(`Adding SSL certificate to ${color.magenta(app)}`)
     const {body: sniEndpoint} = await this.heroku.post<SniEndpoint>(`/apps/${app}/sni-endpoints`, {
       body: {
@@ -69,7 +84,7 @@ export default class Add extends Command {
     ux.action.stop()
 
     displayCertificateDetails(sniEndpoint)
-    await configureDomains(app, this.heroku, sniEndpoint)
+    await this.configureDomains(app, this.heroku, sniEndpoint)
   }
 }
 
@@ -111,4 +126,3 @@ function matchDomains(certDomains: string[], appDomains: string[]) {
 
   return certDomains.filter(domain => appDomains.includes(domain))
 }
-*/

@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/certs/remove'
+import Cmd from '../../../../src/commands/certs/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import nock from 'nock'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared_sni.unit.test.js'
@@ -9,7 +9,8 @@ import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('heroku certs:remove', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -32,8 +33,7 @@ describe('heroku certs:remove', function () {
     api.done()
 
     expect(stderr.output).to.equal(heredoc`
-      Removing SSL certificate tokyo-1050 from example...
-      Removing SSL certificate tokyo-1050 from example... done
+      Removing SSL certificate tokyo-1050 from ⬢ example... done
     `)
   })
 
@@ -71,12 +71,9 @@ describe('heroku shared', function () {
 
   const stderr = function (endpoint: Partial<SniEndpoint>) {
     return heredoc(`
-      Removing SSL certificate ${endpoint.name} from example...
-      Removing SSL certificate ${endpoint.name} from example... done
+      Removing SSL certificate ${endpoint.name} from ⬢ example... done
     `)
   }
 
   sharedSni.shouldHandleArgs('certs:remove', Cmd, callback, {stderr, flags: {confirm: 'example'}})
 })
-
-*/
