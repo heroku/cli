@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients:update', function () {
   context('with a name flag', function () {
     test
@@ -48,5 +47,3 @@ describe('clients:update', function () {
       .it('errors with no changes provided')
   })
 })
-
-*/
