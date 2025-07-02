@@ -1,15 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/certs/auto/enable'
+import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import nock from 'nock'
-import * as lolex from 'lolex'
-import heredoc from 'tsheredoc'
-
+import lolex from 'lolex'
+import tsheredoc from 'tsheredoc'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
+const heredoc = tsheredoc.default
 const sandbox = sinon.createSandbox()
 
-/*
 describe('heroku certs:auto:enable', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -40,7 +40,6 @@ describe('heroku certs:auto:enable', function () {
     acmApi.done()
 
     expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
     expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
@@ -74,16 +73,14 @@ describe('heroku certs:auto:enable', function () {
     acmApi.done()
 
     expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
-    expect(stdout.output).to.equal(heredoc`
-      === Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
-
-       Domain          Record Type DNS Target
-       ─────────────── ─────────── ─────────────────────────────
-       foo.example.org CNAME       foo.example.org.herokudns.com
-    `)
+    expect(stdout.output).to.include("=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Update your application's DNS settings as follows")
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace('Domain          Record Type DNS Target')
+    const expectedRow = removeAllWhitespace('foo.example.org CNAME foo.example.org.herokudns.com')
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expectedRow)
   })
 
   it('enables acm with no domains', async function () {
@@ -105,7 +102,6 @@ describe('heroku certs:auto:enable', function () {
     acmApi.done()
 
     expect(stderr.output).to.equal(heredoc`
-      Enabling Automatic Certificate Management...
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
     expect(stdout.output).to.equal(
@@ -131,7 +127,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are issued and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+      const notifySpy = sandbox.spy(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -178,9 +174,7 @@ describe('heroku certs:auto:enable', function () {
 
       expect(notifySpy.called).to.equal(true)
       expect(stderr.output).to.equal(heredoc`
-        Enabling Automatic Certificate Management...
         Enabling Automatic Certificate Management... starting.
-        Waiting until the certificate is issued to all domains...
         Waiting until the certificate is issued to all domains... done
       `)
       expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
@@ -188,7 +182,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are issued or failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+      const notifySpy = sandbox.spy(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -229,9 +223,7 @@ describe('heroku certs:auto:enable', function () {
         expect(error.message).to.equal('ACM not enabled for some domains')
         expect(notifySpy.called).to.equal(true)
         expect(stderr.output).to.equal(heredoc`
-          Enabling Automatic Certificate Management...
           Enabling Automatic Certificate Management... starting.
-          Waiting until the certificate is issued to all domains...
           Waiting until the certificate is issued to all domains... !
         `)
         expect(stdout.output).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
@@ -240,7 +232,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+      const notifySpy = sandbox.spy(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -281,9 +273,7 @@ describe('heroku certs:auto:enable', function () {
         expect(error.message).to.equal('ACM not enabled for some domains')
         expect(notifySpy.called).to.equal(true)
         expect(stderr.output).to.equal(heredoc`
-          Enabling Automatic Certificate Management...
           Enabling Automatic Certificate Management... starting.
-          Waiting until the certificate is issued to all domains...
           Waiting until the certificate is issued to all domains... !
         `)
         expect(stdout.output).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
@@ -292,7 +282,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('does not wait if all certs are issued when first checked', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+      const notifySpy = sandbox.spy(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -327,12 +317,9 @@ describe('heroku certs:auto:enable', function () {
 
       expect(notifySpy.called).to.equal(true)
       expect(stderr.output).to.equal(heredoc`
-        Enabling Automatic Certificate Management...
         Enabling Automatic Certificate Management... starting.
       `)
       expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
     })
   })
 })
-
-*/

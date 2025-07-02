@@ -8,8 +8,8 @@ export function stubUxActionStart() {
   }
 
   const originalStop = ux.action.stop
-  ux.action.stop = (message?: string) => {
-    process.stderr.write(message || 'done\n')
+  ux.action.stop = (messageToWrite = 'done') => {
+    process.stderr.write(`${stripAnsi(messageToWrite)}\n`)
   }
 
   return {

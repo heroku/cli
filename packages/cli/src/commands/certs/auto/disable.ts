@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import confirmCommand from '../../../lib/confirmCommand'
-import heredoc from 'tsheredoc'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Disable extends Command {
   static topic = 'certs';
@@ -27,11 +28,10 @@ export default class Disable extends Command {
       1) Request a new SSL certificate for your domains names from your certificate provider
       2) heroku certs:update CRT KEY
     `)
-    await confirmCommand(app, confirm, warning)
+    await new ConfirmCommand().confirm(app, confirm, warning)
 
     ux.action.start('Disabling Automatic Certificate Management')
     await this.heroku.delete(`/apps/${app}/acm`)
     ux.action.stop()
   }
 }
-*/

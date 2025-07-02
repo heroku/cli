@@ -1,4 +1,4 @@
-// import {hux} from '@heroku/heroku-cli-util'
+import {hux} from '@heroku/heroku-cli-util'
 import formatDate from './format_date.js'
 import {SniEndpoint} from '../types/sni_endpoint.js'
 
@@ -55,5 +55,5 @@ export default function (endpoints: SniEndpoint[]) {
     columns.associated_domains = {header: 'Domains'}
   }
 
-  // hux.table(mapped, columns)
+  hux.table(mapped, columns)
 }

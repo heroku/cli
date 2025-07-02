@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {getDomains, waitForDomains, printDomains, waitForCertIssuedOnDomains} from '../../../lib/domains/domains'
-import notify from '../../../lib/notify'
+import {getDomains, waitForDomains, printDomains, waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
+import notify from '../../../lib/notify.js'
 
 export default class Enable extends Command {
     static topic = 'certs';
@@ -13,7 +12,9 @@ export default class Enable extends Command {
       wait: flags.boolean({description: 'watch ACM status and exit when complete'}),
       app: flags.app({required: true}),
       remote: flags.remote(),
-    };
+    }
+
+    public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
 
     public async run(): Promise<void> {
       const {flags} = await this.parse(Enable)
@@ -30,9 +31,9 @@ export default class Enable extends Command {
 
         try {
           await waitForCertIssuedOnDomains(this.heroku, app)
-          notify('heroku certs:auto:enable', 'Certificate issued to all domains')
+          Enable.notifier('heroku certs:auto:enable', 'Certificate issued to all domains')
         } catch (error) {
-          notify('heroku certs:auto:enable', 'An error occurred', false)
+          Enable.notifier('heroku certs:auto:enable', 'An error occurred', false)
           hux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
           throw error
         }
@@ -54,4 +55,3 @@ export default class Enable extends Command {
       }
     }
 }
-*/

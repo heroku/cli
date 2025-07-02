@@ -14,7 +14,9 @@ import {
 } from '../../../helpers/stubs/sni-endpoints.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export const shouldHandleArgs = (
   commandText: string,
@@ -37,10 +39,8 @@ export const shouldHandleArgs = (
 
   const additionalFlags = Object.entries(options?.flags || {}).map(([k, v]) => `--${k}=${v}`)
   const additionalArgs: string[] = options.args || []
-}
 
-/*
-describe(`${commandText}`, function () {
+  describe(`${commandText}`, function () {
     beforeEach(function () {
       nock.cleanAll()
     })
@@ -127,5 +127,3 @@ describe(`${commandText}`, function () {
     })
   })
 }
-
-*/
