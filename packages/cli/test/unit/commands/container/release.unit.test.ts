@@ -1,18 +1,16 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/release'
+import Cmd from '../../../../src/commands/container/release.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
-import * as nock from 'nock'
+import sinon from 'sinon'
+import nock from 'nock'
 import stdMocks from 'std-mocks'
-// import {CLIError} from '@oclif/core/lib/errors'
-import color from '@heroku-cli/color'
+import {Errors} from '@oclif/core'
+import {color} from '@heroku-cli/color'
 
-let sandbox: { restore: () => void; stub: (arg0: NodeJS.Process, arg1: string) => void }
-
-/*
 describe('container release', function () {
   let api: nock.Scope
+  let sandbox: sinon.SinonSandbox
 
   beforeEach(function () {
     api = nock('https://api.heroku.com:443')
@@ -32,7 +30,7 @@ describe('container release', function () {
     ]).catch((error_: any) => {
       error = error_
     })
-    const {message} = error as unknown as CLIError
+    const {message} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires one or more process types')
     expect(stdout.output).to.equal('')
   })
@@ -50,7 +48,7 @@ describe('container release', function () {
       error = error_
     })
 
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.cmd('git push heroku main')} instead.`)
     expect(oclif.exit).to.equal(1)
   })
@@ -302,7 +300,7 @@ describe('container release', function () {
         error = error_
       })
 
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
 
@@ -344,7 +342,7 @@ describe('container release', function () {
         error = error_
       })
 
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
 
@@ -443,7 +441,7 @@ describe('container release', function () {
         error = error_
       })
 
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
 
@@ -484,7 +482,7 @@ describe('container release', function () {
         error = error_
       })
 
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
 
@@ -520,5 +518,3 @@ describe('container release', function () {
     })
   })
 })
-
-*/

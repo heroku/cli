@@ -1,90 +1,19 @@
-import * as Child from 'child_process'
+import Child from 'node:child_process'
 import {debug} from './debug.js'
-import * as glob from 'glob'
-import * as Path from 'path'
-import * as inquirer from 'inquirer'
-import * as os from 'os'
+import {glob} from 'glob'
+import Path from 'node:path'
+import inquirer from 'inquirer'
+import os from 'node:os'
 import {ux} from '@oclif/core'
 
 const DOCKERFILE_REGEX = /\bDockerfile(.\w*)?$/
 
-export type cmdOptions = {
+export type CmdOptions = {
   output?: boolean
   input?: string
 }
 
-export const cmd = async function (cmd: string, args: string[], options: cmdOptions = {}): Promise<string> {
-  debug(cmd, args)
-
-  const stdio = [
-    options.input ? 'pipe' : process.stdin,
-    options.output ? 'pipe' : process.stdout,
-    process.stderr,
-  ] as Child.StdioOptions
-
-  return new Promise((resolve, reject) => {
-    const child = Child.spawn(cmd, args, {stdio: stdio})
-
-    if (child.stdin) {
-      child.stdin.end(options.input)
-    }
-
-    let stdout: string
-    if (child.stdout) {
-      stdout = ''
-      child.stdout.on('data', data => {
-        stdout += data.toString()
-      })
-    }
-
-    child.on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code === 'ENOENT' && err.path === 'docker') {
-        reject(new Error(`Cannot find docker, please ensure docker is installed.
-        If you need help installing docker, visit https://docs.docker.com/install/#supported-platforms`))
-      } else {
-        reject(err)
-      }
-    })
-
-    child.on('exit', (code, signal) => {
-      if (signal || code) {
-        reject(new Error(signal || code?.toString()))
-      } else {
-        resolve(stdout)
-      }
-    })
-  })
-}
-
-export const version = async function () {
-  const version = await cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-  const [major, minor] = version.split(/\./)
-
-  return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
-}
-
-export const pullImage = function (resource: string) {
-  const args = ['pull', resource]
-  return cmd('docker', args)
-}
-
-export const getDockerfiles = function (rootdir: string, recursive: boolean) {
-  const match = recursive ? './**/Dockerfile?(.)*' : 'Dockerfile*'
-  let dockerfiles = glob.sync(match, {
-    cwd: rootdir,
-    nodir: true,
-  })
-
-  if (recursive) {
-    dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+$/))
-  } else {
-    dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile$/))
-  }
-
-  return dockerfiles.map(file => Path.join(rootdir, file))
-}
-
-export type dockerJob = {
+export type DockerJob = {
   name: string,
   resource: string,
   dockerfile: string,
@@ -92,81 +21,8 @@ export type dockerJob = {
   depth: number,
 }
 
-export type groupedDockerJobs = {
-  [processType: string]: dockerJob[],
-}
-
-export const getJobs = function (resourceRoot: string, dockerfiles: string[]) {
-  const jobs: dockerJob[] = []
-  dockerfiles.forEach(dockerfile => {
-    const match = dockerfile.match(DOCKERFILE_REGEX)
-    if (match) {
-      const proc = (match[1] || '.standard').slice(1)
-      jobs.push({
-        name: proc,
-        resource: `${resourceRoot}/${proc}`,
-        dockerfile: dockerfile,
-        postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
-        depth: Path.normalize(dockerfile).split(Path.sep).length,
-      })
-    }
-  })
-
-  // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
-  jobs.sort((a, b) => {
-    return a.depth - b.depth || a.postfix - b.postfix
-  })
-
-  // group all Dockerfiles for the same process type together
-  const groupedJobs: groupedDockerJobs = {}
-  jobs.forEach(job => {
-    groupedJobs[job.name] = groupedJobs[job.name] || [] as dockerJob[]
-    groupedJobs[job.name].push(job)
-  })
-
-  return groupedJobs
-}
-
-export const filterByProcessType = function (jobs: groupedDockerJobs, processTypes: string[]) {
-  const filteredJobs: groupedDockerJobs = {}
-  processTypes.forEach(processType => {
-    filteredJobs[processType] = jobs[processType]
-  })
-  return filteredJobs
-}
-
-export const chooseJobs = async function (jobs: groupedDockerJobs) {
-  const chosenJobs = [] as dockerJob[]
-
-  for (const processType in jobs) {
-    if (Object.prototype.hasOwnProperty.call(jobs, processType)) {
-      const group = jobs[processType]
-      if (group === undefined) {
-        ux.warn(`Dockerfile.${processType} not found`)
-        continue
-      }
-
-      if (group.length > 1) {
-        const prompt = [{
-          type: 'list',
-          name: processType,
-          choices: group.map(j => j.dockerfile),
-          message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
-        }] as inquirer.QuestionCollection
-
-        const answer = await inquirer.prompt(prompt)
-        const found = group.find(o => o.dockerfile === answer[processType])
-
-        if (found) {
-          chosenJobs.push(found)
-        }
-      } else {
-        chosenJobs.push(group[0])
-      }
-    }
-  }
-
-  return chosenJobs
+export type GroupedDockerJobs = {
+  [processType: string]: DockerJob[],
 }
 
 type BuildImageParams = {
@@ -177,40 +33,204 @@ type BuildImageParams = {
   arch?: string,
 }
 
-export const buildImage = async function ({dockerfile, resource, buildArgs, path, arch}: BuildImageParams) {
-  const cwd = path || Path.dirname(dockerfile)
-  const args = ['build', '-f', dockerfile, '-t', resource]
-  // Older Docker versions don't allow for this flag, but we are
-  // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
-  if (arch === 'arm64') args.push('--platform', 'linux/amd64')
+export class DockerHelper {
+  async cmd(cmd: string, args: string[], options: CmdOptions = {}): Promise<string> {
+    debug(cmd, args)
 
-  for (const element of buildArgs) {
-    if (element.length > 0) {
-      args.push('--build-arg', element)
-    }
+    const stdio = [
+      options.input ? 'pipe' : process.stdin,
+      options.output ? 'pipe' : process.stdout,
+      process.stderr,
+    ] as Child.StdioOptions
+
+    return new Promise((resolve, reject) => {
+      const child = Child.spawn(cmd, args, {stdio: stdio})
+
+      if (child.stdin) {
+        child.stdin.end(options.input)
+      }
+
+      let stdout: string
+      if (child.stdout) {
+        stdout = ''
+        child.stdout.on('data', data => {
+          stdout += data.toString()
+        })
+      }
+
+      child.on('error', (err: NodeJS.ErrnoException) => {
+        if (err.code === 'ENOENT' && err.path === 'docker') {
+          reject(new Error(`Cannot find docker, please ensure docker is installed.
+          If you need help installing docker, visit https://docs.docker.com/install/#supported-platforms`))
+        } else {
+          reject(err)
+        }
+      })
+
+      child.on('exit', (code, signal) => {
+        if (signal || code) {
+          reject(new Error(signal || code?.toString()))
+        } else {
+          resolve(stdout)
+        }
+      })
+    })
   }
 
-  args.push(cwd)
+  async version(): Promise<[number, number]> {
+    const version = await this.cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+    const [major, minor] = version.split(/\./)
 
-  return cmd('docker', args)
+    return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
+  }
+
+  async pullImage(resource: string): Promise<string> {
+    const args = ['pull', resource]
+    return this.cmd('docker', args)
+  }
+
+  getDockerfiles(rootdir: string, recursive: boolean): string[] {
+    const match = recursive ? './**/Dockerfile?(.)*' : 'Dockerfile*'
+    let dockerfiles = glob.sync(match, {
+      cwd: rootdir,
+      nodir: true,
+    })
+
+    if (recursive) {
+      dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+$/))
+    } else {
+      dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile$/))
+    }
+
+    return dockerfiles.map(file => Path.join(rootdir, file))
+  }
+
+  getJobs(resourceRoot: string, dockerfiles: string[]): GroupedDockerJobs {
+    const jobs: DockerJob[] = []
+    dockerfiles.forEach(dockerfile => {
+      const match = dockerfile.match(DOCKERFILE_REGEX)
+      if (match) {
+        const proc = (match[1] || '.standard').slice(1)
+        jobs.push({
+          name: proc,
+          resource: `${resourceRoot}/${proc}`,
+          dockerfile: dockerfile,
+          postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
+          depth: Path.normalize(dockerfile).split(Path.sep).length,
+        })
+      }
+    })
+
+    // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
+    jobs.sort((a, b) => {
+      return a.depth - b.depth || a.postfix - b.postfix
+    })
+
+    // group all Dockerfiles for the same process type together
+    const groupedJobs: GroupedDockerJobs = {}
+    jobs.forEach(job => {
+      groupedJobs[job.name] = groupedJobs[job.name] || [] as DockerJob[]
+      groupedJobs[job.name].push(job)
+    })
+
+    return groupedJobs
+  }
+
+  filterByProcessType(jobs: GroupedDockerJobs, processTypes: string[]): GroupedDockerJobs {
+    const filteredJobs: GroupedDockerJobs = {}
+    processTypes.forEach(processType => {
+      filteredJobs[processType] = jobs[processType]
+    })
+    return filteredJobs
+  }
+
+  async chooseJobs(jobs: GroupedDockerJobs): Promise<DockerJob[]> {
+    const chosenJobs = [] as DockerJob[]
+
+    for (const processType in jobs) {
+      if (Object.prototype.hasOwnProperty.call(jobs, processType)) {
+        const group = jobs[processType]
+        if (group === undefined) {
+          ux.warn(`Dockerfile.${processType} not found`)
+          continue
+        }
+
+        if (group.length > 1) {
+          const prompt = [{
+            type: 'list',
+            name: processType,
+            choices: group.map(j => j.dockerfile),
+            message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
+          }] as inquirer.QuestionCollection
+
+          const answer = await inquirer.prompt(prompt)
+          const found = group.find(o => o.dockerfile === answer[processType])
+
+          if (found) {
+            chosenJobs.push(found)
+          }
+        } else {
+          chosenJobs.push(group[0])
+        }
+      }
+    }
+
+    return chosenJobs
+  }
+
+  async buildImage({dockerfile, resource, buildArgs, path, arch}: BuildImageParams): Promise<string> {
+    const cwd = path || Path.dirname(dockerfile)
+    const args = ['build', '-f', dockerfile, '-t', resource]
+    // Older Docker versions don't allow for this flag, but we are
+    // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
+    if (arch === 'arm64') args.push('--platform', 'linux/amd64')
+
+    for (const element of buildArgs) {
+      if (element.length > 0) {
+        args.push('--build-arg', element)
+      }
+    }
+
+    args.push(cwd)
+
+    return this.cmd('docker', args)
+  }
+
+  async pushImage(resource: string): Promise<string> {
+    const args = ['push', resource]
+
+    return this.cmd('docker', args)
+  }
+
+  async runImage(resource: string, command: string, port: number): Promise<string> {
+    const args: string[] = [
+      'run',
+      '--user',
+      os.userInfo().uid.toString(),
+      '-e',
+      `PORT=${port}`,
+      '-it',
+      resource,
+      command,
+    ]
+    return this.cmd('docker', args)
+  }
 }
 
-export const pushImage = async function (resource: string) {
-  const args = ['push', resource]
+// // Create a default instance for backward compatibility
+// const defaultDockerHelper = new DockerHelper()
 
-  return cmd('docker', args)
-}
+// // Export the class and default instance
+// export {defaultDockerHelper}
 
-export const runImage = function (resource: string, command: string, port: number) {
-  const args: string[] = [
-    'run',
-    '--user',
-    os.userInfo().uid.toString(),
-    '-e',
-    `PORT=${port}`,
-    '-it',
-    resource,
-    command,
-  ]
-  return cmd('docker', args)
-}
+// // Export all methods as standalone functions for backward compatibility
+// export const cmd = (cmd: string, args: string[], options: cmdOptions = {}) => defaultDockerHelper.cmd(cmd, args, options)
+// export const version = () => defaultDockerHelper.version()
+// export const pullImage = (resource: string) => defaultDockerHelper.pullImage(resource)
+// export const getDockerfiles = (rootdir: string, recursive: boolean) => defaultDockerHelper.getDockerfiles(rootdir, recursive)
+// export const getJobs = (resourceRoot: string, dockerfiles: string[]) => defaultDockerHelper.getJobs(resourceRoot, dockerfiles)
+// export const filterByProcessType = (jobs: groupedDockerJobs, processTypes: string[]) => defaultDockerHelper.filterByProcessType(jobs, processTypes)
+// export const chooseJobs = (jobs: groupedDockerJobs) => defaultDockerHelper.chooseJobs(jobs)
+// export const buildImage = (params: BuildImageParams) => defaultDockerHelper.buildImage(params)
+// export const pushImage = (resource: string) => defaultDockerHelper.pushImage(resource)
+// export const runImage = (resource: string, command: string, port: number) => defaultDockerHelper.runImage(resource, command, port)

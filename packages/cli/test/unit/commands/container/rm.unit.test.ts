@@ -1,12 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/rm'
+import Cmd from '../../../../src/commands/container/rm.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import nock from 'nock'
 import {expect} from 'chai'
-// import {CLIError} from '@oclif/core/lib/errors'
+import {Errors} from '@oclif/core'
 
-/*
 describe('container removal', function () {
   let api: nock.Scope
 
@@ -26,7 +25,7 @@ describe('container removal', function () {
     ]).catch((error_: any) => {
       error = error_
     })
-    const {message} = error as unknown as CLIError
+    const {message} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires one or more process types')
     expectOutput(stdout.output, '')
   })
@@ -43,7 +42,7 @@ describe('container removal', function () {
     ]).catch((error_: any) => {
       error = error_
     })
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal('This command is for Docker apps only.')
     expect(oclif.exit).to.equal(1)
     expectOutput(stdout.output, '')
@@ -94,4 +93,3 @@ describe('container removal', function () {
   })
 })
 
-*/
