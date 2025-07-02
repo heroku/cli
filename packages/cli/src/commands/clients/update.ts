@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import {validateURL} from '../../lib/clients/clients'
+import {validateURL} from '../../lib/clients/clients.js'
 
 interface Updates {
   redirect_uri?: string;
@@ -54,4 +53,3 @@ export default class ClientsUpdate extends Command {
     ux.action.stop()
   }
 }
-*/

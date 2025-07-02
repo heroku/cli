@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -31,12 +30,11 @@ export default class ClientsRotate extends Command {
     if (flags.json) {
       hux.styledJSON(client)
     } else if (flags.shell) {
-      ux.log(`HEROKU_OAUTH_ID=${client.id}`)
-      ux.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      ux.stdout(`HEROKU_OAUTH_ID=${client.id}`)
+      ux.stdout(`HEROKU_OAUTH_SECRET=${client.secret}`)
     } else {
       hux.styledHeader(`${client.name}`)
       hux.styledObject(client)
     }
   }
 }
-*/
