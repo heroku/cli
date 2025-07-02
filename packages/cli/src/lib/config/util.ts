@@ -1,6 +1,6 @@
-import * as tmp from 'tmp'
-import * as fs from 'fs-extra'
-import {spawn} from 'child_process'
+import tmp from 'tmp'
+import fs from 'fs-extra'
+import {spawn} from 'node:child_process'
 
 export class Editor {
   async edit(input: string, options = {}) {

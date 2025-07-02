@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
-import {quote} from '../../lib/config/quote'
+import {quote} from '../../lib/config/quote.js'
 
 export class ConfigGet extends Command {
   static usage = 'config:get KEY...'
@@ -31,11 +30,10 @@ production`
     for (const key of (argv as string[])) {
       const v = config[key]
       if (flags.shell) {
-        this.log(`${key}=${quote(v || '')}`)
+        ux.stdout(`${key}=${quote(v || '')}`)
       } else {
-        this.log(v || '')
+        ux.stdout(v || '')
       }
     }
   }
 }
-*/
