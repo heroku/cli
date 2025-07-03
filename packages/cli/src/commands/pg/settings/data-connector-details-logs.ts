@@ -5,7 +5,7 @@ import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../.
 import type {Setting, SettingKey} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
-export default class ExplainDataConnectorDetails extends PGSettingsCommand {
+export default class DataConnectorDetailsLogs extends PGSettingsCommand {
   static description = heredoc(`
   displays stats on replication slots on your database, the default value is "off"
   `)
@@ -20,7 +20,7 @@ export default class ExplainDataConnectorDetails extends PGSettingsCommand {
     value: Args.string({description: 'boolean indicating if data replication slot details get logged'}),
   }
 
-  protected settingKey:SettingKey = 'explain_data_connector_details'
+  protected settingKey:SettingKey = 'data_connector_details_logs'
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
