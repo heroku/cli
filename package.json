@@ -1,4 +1,5 @@
 {
+  "name": "heroku-cli",
   "devDependencies": {
     "@actions/core": "^1.10.0",
     "@types/lolex": "^5.1.6",
