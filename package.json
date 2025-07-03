@@ -40,6 +40,7 @@
     "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
     "lint": "cd packages/cli && npm run lint",
+    "cspell": "cspell",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules",
     "postinstall": "husky install"
