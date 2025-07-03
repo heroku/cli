@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {debug} from '../../lib/container/debug'
-import {streamer} from '../../lib/container/streamer'
-import {ensureContainerStack} from '../../lib/container/helpers'
+import {debug} from '../../lib/container/debug.js'
+import {streamer} from '../../lib/container/streamer.js'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 type ImageResponse = {
   schemaVersion: number,
@@ -105,7 +104,7 @@ export default class ContainerRelease extends Command {
     if (release.status === 'failed') {
       ux.error('Error: release command failed', {exit: 1})
     } else if ((release.status === 'pending') && release.output_stream_url) {
-      ux.log('Running release command...')
+      ux.stdout('Running release command...')
       await streamer(release.output_stream_url, process.stdout)
       const {body: finishedRelease} = await this.heroku.request<Heroku.Release>(`/apps/${app}/releases/${release.id}`)
       if (finishedRelease.status === 'failed') {
@@ -114,4 +113,3 @@ export default class ContainerRelease extends Command {
     }
   }
 }
-*/

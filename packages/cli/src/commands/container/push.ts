@@ -1,37 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import * as DockerHelper from '../../lib/container/docker_helper'
-import {ensureContainerStack} from '../../lib/container/helpers'
-import {debug} from '../../lib/container/debug'
+import {DockerHelper, GroupedDockerJobs, DockerJob} from '../../lib/container/docker_helper.js'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {debug} from '../../lib/container/debug.js'
 import * as Heroku from '@heroku-cli/schema'
-
-async function selectJobs(jobs: DockerHelper.groupedDockerJobs, processTypes: string[], recursive: boolean) {
-  let filteredJobs: DockerHelper.groupedDockerJobs = {}
-  let selectedJobs: DockerHelper.dockerJob[] = []
-
-  if (Object.keys(jobs).length === 0) {
-    return selectedJobs
-  }
-
-  if (recursive) {
-    if (processTypes.length > 0) {
-      filteredJobs = DockerHelper.filterByProcessType(jobs, processTypes)
-    } else {
-      filteredJobs = jobs
-    }
-
-    selectedJobs = await DockerHelper.chooseJobs(filteredJobs)
-  } else if (jobs.standard) {
-    jobs.standard.forEach(pj => {
-      pj.resource = pj.resource.replace(/standard$/, processTypes[0])
-    })
-    selectedJobs = jobs.standard || []
-  }
-
-  return selectedJobs
-}
 
 export default class Push extends Command {
   static topic = 'container'
@@ -55,6 +28,8 @@ export default class Push extends Command {
     '$ heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context',
   ]
 
+  dockerHelper = new DockerHelper()
+
   async run(): Promise<void> {
     const {argv: processTypes, flags} = await this.parse(Push)
     const {verbose, app, recursive, arg, 'context-path': contextPath} = flags
@@ -76,9 +51,9 @@ export default class Push extends Command {
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`
-    const dockerfiles = DockerHelper.getDockerfiles(process.cwd(), recursive)
-    const possibleJobs = DockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
-    const jobs = await selectJobs(possibleJobs, processTypes as string[], recursive)
+    const dockerfiles = this.dockerHelper.getDockerfiles(process.cwd(), recursive)
+    const possibleJobs = this.dockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
+    const jobs = await this.selectJobs(possibleJobs, processTypes as string[], recursive)
 
     if (jobs.length === 0) {
       ux.error('No images to push', {exit: 1})
@@ -94,7 +69,7 @@ export default class Push extends Command {
           hux.styledHeader(`Building ${job.name} (${job.dockerfile})`)
         }
 
-        await DockerHelper.buildImage({
+        await this.dockerHelper.buildImage({
           dockerfile: job.dockerfile,
           resource: job.resource,
           buildArgs,
@@ -114,14 +89,39 @@ export default class Push extends Command {
           hux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
         }
 
-        await DockerHelper.pushImage(job.resource)
+        await this.dockerHelper.pushImage(job.resource)
       }
 
       const plural = jobs.length !== 1
-      ux.log(`Your image${plural ? 's have' : ' has'} been successfully pushed. You can now release ${plural ? 'them' : 'it'} with the 'container:release' command.`)
+      ux.stdout(`Your image${plural ? 's have' : ' has'} been successfully pushed. You can now release ${plural ? 'them' : 'it'} with the 'container:release' command.`)
     } catch (error) {
       ux.error(`docker push exited with ${error}`, {exit: 1})
     }
   }
+
+  async selectJobs(jobs: GroupedDockerJobs, processTypes: string[], recursive: boolean) {
+    let filteredJobs: GroupedDockerJobs = {}
+    let selectedJobs: DockerJob[] = []
+
+    if (Object.keys(jobs).length === 0) {
+      return selectedJobs
+    }
+
+    if (recursive) {
+      if (processTypes.length > 0) {
+        filteredJobs = this.dockerHelper.filterByProcessType(jobs, processTypes)
+      } else {
+        filteredJobs = jobs
+      }
+
+      selectedJobs = await this.dockerHelper.chooseJobs(filteredJobs)
+    } else if (jobs.standard) {
+      jobs.standard.forEach(pj => {
+        pj.resource = pj.resource.replace(/standard$/, processTypes[0])
+      })
+      selectedJobs = jobs.standard || []
+    }
+
+    return selectedJobs
+  }
 }
-*/

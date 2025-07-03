@@ -1,11 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import * as DockerHelper from '../../lib/container/docker_helper'
-import {ensureContainerStack} from '../../lib/container/helpers'
-import {debug} from '../../lib/container/debug'
-import color from '@heroku-cli/color'
+import {DockerHelper, DockerJob} from '../../lib/container/docker_helper.js'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {debug} from '../../lib/container/debug.js'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Run extends Command {
@@ -25,6 +24,8 @@ export default class Run extends Command {
     port: flags.integer({char: 'p', description: 'port the app will run on', default: 5000}),
     verbose: flags.boolean({char: 'v'}),
   }
+
+  dockerHelper = new DockerHelper()
 
   async run() {
     const {argv, flags} = await this.parse(Run)
@@ -46,10 +47,10 @@ export default class Run extends Command {
 
     const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
     const registry = `registry.${herokuHost}`
-    const dockerfiles = DockerHelper.getDockerfiles(process.cwd(), false)
-    const possibleJobs = DockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
+    const dockerfiles = this.dockerHelper.getDockerfiles(process.cwd(), false)
+    const possibleJobs = this.dockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
 
-    let jobs: DockerHelper.dockerJob[] = []
+    let jobs: DockerJob[] = []
 
     if (possibleJobs.standard) {
       possibleJobs.standard.forEach((pj: { resource: string }) => {
@@ -71,10 +72,9 @@ export default class Run extends Command {
     }
 
     try {
-      await DockerHelper.runImage(job.resource, command, port)
+      await this.dockerHelper.runImage(job.resource, command, port)
     } catch (error) {
       ux.error(`docker run exited with ${error}`)
     }
   }
 }
-*/
