@@ -1,4 +1,4 @@
-import * as shell from 'shell-quote'
+import shell from 'shell-quote'
 
 // slightly modified form of shell-quote to default to using single-quotes over backslashes
 export function quote(s: string): string {
@@ -24,6 +24,7 @@ export function parse(a: string): string {
 
   const parsed = shell.parse(a)
   if (parsed.length > 1) throw new Error(`Invalid token: ${a}`)
+  if (parsed.length === 0) return ''
   const result = parsed[0]
   if (typeof result !== 'string') throw new Error(`Invalid token: ${a}`)
   return result

@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('config', function () {
   test
     .nock('https://api.heroku.com', api => api
@@ -37,5 +36,3 @@ RACK_ENV=production
 `)
     })
 })
-
-*/

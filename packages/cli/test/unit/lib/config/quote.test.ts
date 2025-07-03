@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {parse, quote} from '../../../../src/lib/config/quote.js'
+import {parse, quote} from '../../../lib/config/quote.js'
 
 /*
 describe('quote', function () {

@@ -1,15 +1,15 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 
-// import {stringToConfig} from '../../../../src/commands/config/edit'
+import {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {Editor} from '../../../../src/lib/config/util.js'
 import {expect, test} from '@oclif/test'
 
 let sandbox: any
 let updated: string | Record<string, unknown>
-const editedConfig = ''
+let editedConfig = ''
 
-/*
 describe('config:edit', function () {
   describe('stringToConfig', function () {
     it('handles config vars with empty string values', function () {
@@ -26,11 +26,11 @@ describe('config:edit', function () {
         .callsFake(() => {
           return Promise.resolve(editedConfig)
         })
-      sandbox.stub(ux, 'confirm')
+      sandbox.stub(hux, 'confirm')
         .value(() => {
           return Promise.resolve(true)
         })
-      sandbox.stub(ux, 'log')
+      sandbox.stub(ux, 'stdout')
         .value(() => {
           return Promise.resolve()
         })
@@ -120,5 +120,3 @@ describe('config:edit', function () {
     })
   })
 })
-
-*/
