@@ -1,8 +1,7 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
-import {ensureContainerStack} from '../../lib/container/helpers'
+import {color} from '@heroku-cli/color'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Rm extends Command {
@@ -43,4 +42,3 @@ export default class Rm extends Command {
     }
   }
 }
-*/

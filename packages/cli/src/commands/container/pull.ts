@@ -1,10 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
-import * as DockerHelper from '../../lib/container/docker_helper'
-import {ensureContainerStack} from '../../lib/container/helpers'
-import {debug} from '../../lib/container/debug'
-import color from '@heroku-cli/color'
+import {DockerHelper} from '../../lib/container/docker_helper.js'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {debug} from '../../lib/container/debug.js'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Pull extends Command {
@@ -23,6 +22,8 @@ export default class Pull extends Command {
     remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
+
+  dockerHelper = new DockerHelper()
 
   async run() {
     const {argv, flags} = await this.parse(Pull)
@@ -45,8 +46,7 @@ export default class Pull extends Command {
     for (const process of argv as string[]) {
       const tag = `${registry}/${app}/${process}`
       hux.styledHeader(`Pulling ${process} as ${tag}`)
-      await DockerHelper.pullImage(tag)
+      await this.dockerHelper.pullImage(tag)
     }
   }
 }
-*/

@@ -1,14 +1,12 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/pull'
+import Cmd from '../../../../src/commands/container/pull.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
+import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
 import nock from 'nock'
+import {Errors} from '@oclif/core'
 
-// import {CLIError} from '@oclif/core/lib/errors'
-
-/*
 describe('container pull', function () {
   let sandbox: sinon.SinonSandbox
 
@@ -43,7 +41,7 @@ describe('container pull', function () {
     ]).catch((error_: any) => {
       error = error_
     })
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal('This command is for Docker apps only.')
     expect(oclif.exit).to.equal(1)
 
@@ -55,7 +53,7 @@ describe('container pull', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'container'}})
-    const pull = sandbox.stub(DockerHelper, 'pullImage')
+    const pull = sandbox.stub(DockerHelper.prototype, 'pullImage')
       .withArgs('registry.heroku.com/testapp/web')
     await runCommand(Cmd, [
       '--app',
@@ -67,5 +65,3 @@ describe('container pull', function () {
     api.done()
   })
 })
-
-*/
