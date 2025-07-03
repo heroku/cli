@@ -1,9 +1,7 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import * as _ from 'lodash'
 
 export class ConfigUnset extends Command {
   static aliases = [
@@ -47,13 +45,9 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
     ux.action.start(`Unsetting ${vars} and restarting ${color.app(flags.app)}`)
     await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
       // body will be like {FOO: null, BAR: null}
-      body: _.reduce(argv, (vars, v) => {
-        vars[v] = null
-        return vars
-      }, {} as {[k: string]: null}),
+      body: Object.fromEntries(argv.map(v => [v, null])),
     })
     const release = await lastRelease()
     ux.action.stop('done, ' + color.release(`v${release.version}`))
   }
 }
-*/
