@@ -10,8 +10,8 @@ if [[ -z "$USE_BINRUN" ]]; then
   CMD_BIN="heroku"
 else
   CMD_BIN="./bin/run"
-  yarn
-  yarn build
+  npm ci
+npm run build
 fi
 
 declare -a COMMANDS=(

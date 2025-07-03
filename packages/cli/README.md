@@ -87,15 +87,15 @@ Developing
 This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). 
 
 After cloning the repo
-1. Run `yarn` to install dependencies
-2. Run `yarn build` to build the CLI. This will need to be re-run any time you make changes and want to test them locally.
+1. Run `npm install` to install dependencies
+2. Run `npm run build` to build the CLI. This will need to be re-run any time you make changes and want to test them locally.
 
 To execute Heroku CLI commands locally, use `./bin/run <command>`. For example, to run the `heroku apps` command with your local code, run `./bin/run apps` from the root directory.
 
 Testing
 =======
 
-Run all tests with `yarn test`.
+Run all tests with `npm test`.
 
 ## Debugging
 

@@ -20,8 +20,8 @@ describe.skip('plugins', function () {
       await execa('git', ['clone', pkg.repository.url.split('+')[1], cwd])
       const opts = {cwd, stdio: [0, 1, 2]}
       await execa('git', ['checkout', `v${pkg.version}`], opts)
-      await execa('yarn', [], opts)
-      await execa('yarn', ['test'], opts)
+      await execa('npm run', [], opts)
+      await execa('npm run', ['test'], opts)
     })
   })
 })

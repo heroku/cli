@@ -35,15 +35,15 @@ BRANCH_NAME="release-$(date +%s)"
 echo "Creating git branch ${BRANCH_NAME}"
 git checkout -b "${BRANCH_NAME}"
 
-echo "Installing dependencies with yarn..."
-yarn
-echo "Done installing dependencies with yarn"
+echo "Installing dependencies with npm..."
+npm ci
+echo "Done installing dependencies with npm"
 
 # remove any oclif manifests. They interfere with doc generation
 rm -rf ./packages/*/oclif.manifest.json
 
-echo "Creating new CLI package(s) versions with yarn lerna version..."
-yarn lerna version \
+echo "Creating new CLI package(s) versions with npm lerna version..."
+npx lerna version \
   --allow-branch ${BRANCH_NAME} \
   --no-push \
   --no-git-tag-version \
@@ -51,8 +51,8 @@ yarn lerna version \
 PACKAGE_VERSION=`node -e "console.log(require('./lerna.json').version)"`
 echo "Done creating new CLI package(s) versions"
 
-echo "Updating yarn.lock with new package versions"
-yarn
+echo "Updating package-lock.json with new package versions"
+npm ci
 
 git add . -u
 echo "Creating git commit and pushing to GitHub..."
