@@ -8,7 +8,6 @@
 /dist
 /lib
 node_modules
-/package-lock.json
 /tmp
 /packages/cli/docs/*
 
