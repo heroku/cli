@@ -148,8 +148,8 @@ www.example.com  CNAME            www.example.herokudns.com
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
 
-        if (customDomains.length > 100 && !flags.csv) {
-          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cmd('heroku domains -a example-app --csv > example-file.csv')}`)
+        if (customDomains.length > 100 && !flags.json) {
+          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can output domains in JSON format with: ${color.cmd('heroku domains -a example-app --json')}`)
           displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
           if (!displayTotalDomains) {
             return
