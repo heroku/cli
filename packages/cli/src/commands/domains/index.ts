@@ -30,12 +30,15 @@ www.example.com  CNAME            www.example.herokudns.com
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
+    extended: flags.boolean({description: 'show extra columns', char: 'x'}),
+    filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
+    remote: flags.remote(),
+    sort: flags.string({description: 'sort by property'}),
   }
 
-  tableConfig = (needsEndpoints: boolean) => {
-    const tableConfig = {
+  tableConfig = (needsEndpoints: boolean, extended: boolean) => {
+    const tableConfig: Record<string, any> = {
       hostname: {
         header: 'Domain Name',
       },
@@ -48,8 +51,11 @@ www.example.com  CNAME            www.example.herokudns.com
         },
       },
       cname: {header: 'DNS Target'},
-      acm_status: {header: 'ACM Status', extended: true},
-      acm_status_reason: {header: 'ACM Status', extended: true},
+    }
+
+    if (extended) {
+      tableConfig.acm_status = {header: 'ACM Status'}
+      tableConfig.acm_status_reason = {header: 'ACM Status'}
     }
 
     const sniConfig = {
@@ -107,6 +113,18 @@ www.example.com  CNAME            www.example.herokudns.com
     return filteredInfo
   }
 
+  mapSortFieldToProperty = (sortField: string): string => {
+    const headerToPropertyMap: Record<string, string> = {
+      'Domain Name': 'hostname',
+      'DNS Record Type': 'kind',
+      'DNS Target': 'cname',
+      'SNI Endpoint': 'sni_endpoint',
+      'ACM Status': 'acm_status',
+    }
+
+    return headerToPropertyMap[sortField] || sortField
+  }
+
   async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
@@ -131,7 +149,7 @@ www.example.com  CNAME            www.example.herokudns.com
         ux.stdout()
 
         if (customDomains.length > 100 && !flags.csv) {
-          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cyan('heroku domains -a example-app --csv > example-file.csv')}`)
+          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cmd('heroku domains -a example-app --csv > example-file.csv')}`)
           displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
           if (!displayTotalDomains) {
             return
@@ -140,9 +158,9 @@ www.example.com  CNAME            www.example.herokudns.com
 
         ux.stdout()
         hux.styledHeader(`${flags.app} Custom Domains`)
-        hux.table(customDomains, this.tableConfig(true), {
-          ...flags,
-          'no-truncate': true,
+        hux.table(customDomains, this.tableConfig(true, flags.extended), {
+          overflow: 'wrap',
+          sort: flags.sort ? {[this.mapSortFieldToProperty(flags.sort)]: 'asc'} : undefined,
         })
       }
     }
