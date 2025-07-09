@@ -1,13 +1,12 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import * as Uri from 'urijs'
+import Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
-import {paginateRequest} from '../../lib/utils/paginator'
-import parseKeyValue from '../../lib/utils/keyValueParser'
+import {paginateRequest} from '../../lib/utils/paginator.js'
+import parseKeyValue from '../../lib/utils/keyValueParser.js'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -30,11 +29,9 @@ www.example.com  CNAME            www.example.herokudns.com
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
-    ...ux.table.flags({except: 'no-truncate'}),
   }
 
   tableConfig = (needsEndpoints: boolean) => {
@@ -110,6 +107,10 @@ www.example.com  CNAME            www.example.herokudns.com
     return filteredInfo
   }
 
+  async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
+    return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
+  }
+
   async run() {
     const {flags} = await this.parse(DomainsIndex)
     const domains = await paginateRequest<Heroku.Domain>(this.heroku, `/apps/${flags.app}/domains`, 1000)
@@ -125,20 +126,19 @@ www.example.com  CNAME            www.example.herokudns.com
       hux.styledJSON(domains)
     } else {
       hux.styledHeader(`${flags.app} Heroku Domain`)
-      ux.log(herokuDomain && herokuDomain.hostname)
+      ux.stdout(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
-        ux.log()
+        ux.stdout()
 
         if (customDomains.length > 100 && !flags.csv) {
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cyan('heroku domains -a example-app --csv > example-file.csv')}`)
-          displayTotalDomains = await confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
-
+          displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
           if (!displayTotalDomains) {
             return
           }
         }
 
-        ux.log()
+        ux.stdout()
         hux.styledHeader(`${flags.app} Custom Domains`)
         hux.table(customDomains, this.tableConfig(true), {
           ...flags,
@@ -148,4 +148,3 @@ www.example.com  CNAME            www.example.herokudns.com
     }
   }
 }
-*/

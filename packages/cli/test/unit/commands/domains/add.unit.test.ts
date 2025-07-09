@@ -1,8 +1,7 @@
-import * as inquirer from 'inquirer'
-
 import {expect, test} from '@oclif/test'
+import DomainsAdd from '../../../../src/commands/domains/add.js'
+import sinon from 'sinon'
 
-/*
 describe('domains:add', function () {
   const domainsResponse = {
     acm_status: null,
@@ -67,11 +66,18 @@ describe('domains:add', function () {
         },
       ]
 
+      let promptForCertStub: sinon.SinonStub
+
+      beforeEach(async function () {
+        promptForCertStub = sinon.stub(DomainsAdd.prototype, 'promptForCert').resolves('my-cert')
+      })
+
+      afterEach(function () {
+        promptForCertStub.restore()
+      })
+
       test
         .stderr()
-        .stub(inquirer, 'prompt', () => {
-          return Promise.resolve({cert: 'my-cert'})
-        })
         .nock('https://api.heroku.com', api => api
           .post('/apps/myapp/domains', {
             hostname: 'example.com',
@@ -88,5 +94,3 @@ describe('domains:add', function () {
     })
   })
 })
-
-*/

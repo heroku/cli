@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('domains:wait', function () {
   test
     .stderr()
@@ -32,5 +31,3 @@ describe('domains:wait', function () {
       expect(ctx.stderr).to.contain('Waiting for example.com... done')
     })
 })
-
-*/
