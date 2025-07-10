@@ -1,15 +1,13 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 
-import waitForDomain from '../../lib/domains/wait-for-domain'
+import waitForDomain from '../../lib/domains/wait-for-domain.js'
 
 export default class DomainsWait extends Command {
   static description = 'wait for domain to be active for an app'
 
   static flags = {
-    help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
@@ -35,4 +33,3 @@ export default class DomainsWait extends Command {
     }
   }
 }
-*/

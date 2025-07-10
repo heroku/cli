@@ -1,4 +1,3 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -12,7 +11,6 @@ export default class DomainsInfo extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
@@ -31,4 +29,3 @@ export default class DomainsInfo extends Command {
     hux.styledObject(domain)
   }
 }
-*/
