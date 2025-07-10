@@ -30,6 +30,7 @@ www.example.com  CNAME            www.example.herokudns.com
 
   static flags = {
     app: flags.app({required: true}),
+    columns: flags.string({description: 'only show provided columns (comma-separated)'}),
     extended: flags.boolean({description: 'show extra columns', char: 'x'}),
     filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
@@ -37,7 +38,7 @@ www.example.com  CNAME            www.example.herokudns.com
     sort: flags.string({description: 'sort by property'}),
   }
 
-  tableConfig = (needsEndpoints: boolean, extended: boolean) => {
+  tableConfig = (needsEndpoints: boolean, extended: boolean, requestedColumns?: string[]) => {
     const tableConfig: Record<string, any> = {
       hostname: {
         header: 'Domain Name',
@@ -69,14 +70,26 @@ www.example.com  CNAME            www.example.herokudns.com
       },
     }
 
+    let fullConfig = tableConfig
     if (needsEndpoints) {
-      return {
+      fullConfig = {
         ...tableConfig,
         ...sniConfig,
       }
     }
 
-    return tableConfig
+    // If specific columns are requested, filter the configuration
+    if (requestedColumns && requestedColumns.length > 0) {
+      const filteredConfig: Record<string, any> = {}
+      requestedColumns.forEach(columnKey => {
+        if (fullConfig[columnKey]) {
+          filteredConfig[columnKey] = fullConfig[columnKey]
+        }
+      })
+      return filteredConfig
+    }
+
+    return fullConfig
   }
 
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
@@ -125,6 +138,18 @@ www.example.com  CNAME            www.example.herokudns.com
     return headerToPropertyMap[sortField] || sortField
   }
 
+  mapColumnHeadersToKeys = (columnHeaders: string[]): string[] => {
+    const headerToKeyMap: Record<string, string> = {
+      'Domain Name': 'hostname',
+      'DNS Record Type': 'kind',
+      'DNS Target': 'cname',
+      'SNI Endpoint': 'sni_endpoint',
+      'ACM Status': 'acm_status',
+    }
+
+    return columnHeaders.map(header => headerToKeyMap[header.trim()] || header.trim())
+  }
+
   async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
@@ -158,7 +183,7 @@ www.example.com  CNAME            www.example.herokudns.com
 
         ux.stdout()
         hux.styledHeader(`${flags.app} Custom Domains`)
-        hux.table(customDomains, this.tableConfig(true, flags.extended), {
+        hux.table(customDomains, this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined), {
           overflow: 'wrap',
           sort: flags.sort ? {[this.mapSortFieldToProperty(flags.sort)]: 'asc'} : undefined,
         })
