@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('domains:info', function () {
   const domainInfoResponse = {
     acm_status: 'pending',
@@ -37,5 +36,3 @@ describe('domains:info', function () {
       expect(ctx.stdout).to.contain('updated_at:        2012-01-01T12:00:00Z')
     })
 })
-
-*/

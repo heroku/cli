@@ -135,7 +135,6 @@ describe('apps:create', function () {
 
     beforeEach(async function () {
       readManifestStub = sinon.stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
-      // urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async () => {})
     })
 
     afterEach(function () {

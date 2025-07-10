@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('domains:remove', function () {
   test
     .stderr()
@@ -13,5 +12,3 @@ describe('domains:remove', function () {
       expect(ctx.stderr).to.contain('Removing example.com from ⬢ myapp... done')
     })
 })
-
-*/
