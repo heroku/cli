@@ -1,13 +1,13 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {prompt} from 'inquirer'
-import {isUUID} from 'validator'
+import inquirer from 'inquirer'
+import validator from 'validator'
 import {ux} from '@oclif/core'
 
 export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: APIClient) {
   const headers = {Accept: 'application/vnd.heroku+json; version=3.pipelines'}
 
-  if (isUUID(pipelineIDOrName)) {
+  if (validator.isUUID(pipelineIDOrName)) {
     const {body: pipeline} = await herokuAPI.get<Heroku.Pipeline>(`/pipelines/${pipelineIDOrName}`, {headers})
     return pipeline
   }
@@ -34,7 +34,7 @@ export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: API
       choices,
     }]
 
-    return prompt(questions)
+    return inquirer.prompt(questions)
   }
 }
 

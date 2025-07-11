@@ -1,10 +1,9 @@
-/*
+
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-// import * as shellescape from 'shell-escape'
-import {parse, quote} from '../../lib/config/quote'
-import {getPipelineConfigVars} from '../../../lib/api'
-import {getPipeline} from '../../../lib/ci/pipelines'
+import {quote} from '../../../lib/config/quote.js'
+import {getPipelineConfigVars} from '../../../lib/api.js'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
 
 export default class CiConfigGet extends Command {
   static description = 'get a CI config var'
@@ -15,7 +14,6 @@ export default class CiConfigGet extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     app: flags.app(),
     remote: flags.remote(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
@@ -33,10 +31,9 @@ export default class CiConfigGet extends Command {
     const value = config[args.key]
 
     if (flags.shell) {
-      ux.log(`${args.key}=${shellescape([value])}`)
+      ux.stdout(`${args.key}=${quote(value)}`)
     } else {
-      ux.log((value !== null && value !== undefined) ? value : 'undefined')
+      ux.stdout((value !== null && value !== undefined) ? value : 'undefined')
     }
   }
 }
-*/

@@ -1,8 +1,7 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
-import * as fs from 'async-file'
+import {color} from '@heroku-cli/color'
+import {promises as fs} from 'node:fs'
 
 const writeFile = fs.writeFile
 const unlinkFile = fs.unlink
@@ -20,7 +19,7 @@ export default class CiMigrateManifest extends Command {
     let action: string
 
     function showWarning() {
-      ux.log(color.green('Please check the contents of your app.json before committing to your repo.'))
+      ux.stdout(color.green('Please check the contents of your app.json before committing to your repo.'))
     }
 
     async function updateAppJson() {
@@ -49,12 +48,12 @@ export default class CiMigrateManifest extends Command {
       if (appJSON.environments == null) {
         msg += `, but we're ${action} ${action === 'updating' ? 'your' : 'a new'} app.json manifest for you.`
         appJSON.environments = {}
-        ux.log(msg)
+        ux.stdout(msg)
         await updateAppJson()
         showWarning()
       } else {
         msg += ', and your app.json already has the environments key.'
-        ux.log(msg)
+        ux.stdout(msg)
       }
     }
 
@@ -76,7 +75,6 @@ export default class CiMigrateManifest extends Command {
       showWarning()
     }
 
-    ux.log('You\'re all set! 🎉')
+    ux.stdout('You\'re all set! 🎉')
   }
 }
-*/

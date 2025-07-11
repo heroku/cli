@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {getPipeline} from '../../../lib/ci/pipelines'
-import {setPipelineConfigVars} from '../../../lib/api'
-import {validateArgvPresent} from '../../../lib/ci/validate'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
+import {setPipelineConfigVars} from '../../../lib/api.js'
+import {validateArgvPresent} from '../../../lib/ci/validate.js'
 
 export default class CiConfigUnset extends Command {
   static description = 'unset CI config vars'
@@ -41,4 +40,3 @@ export default class CiConfigUnset extends Command {
     ux.action.stop()
   }
 }
-*/

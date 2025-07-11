@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as fs from 'async-file'
+import {promises as fs} from 'fs'
 import * as _ from 'lodash'
 const writeFile = fs.writeFile
 const unlinkFile = fs.unlink

@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as fs from 'async-file'
+import {promises as fs} from 'fs'
 
 import * as git from '../../../../src/lib/ci/git.js'
 import got from 'got'

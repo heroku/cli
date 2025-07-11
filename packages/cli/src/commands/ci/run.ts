@@ -1,13 +1,12 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
-import * as git from '../../lib/ci/git'
-import {getPipeline} from '../../lib/ci/pipelines'
-import {createSourceBlob} from '../../lib/ci/source'
-import {displayAndExit} from '../../lib/ci/test-run'
+import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
+import * as git from '../../lib/ci/git.js'
+import {getPipeline} from '../../lib/ci/pipelines.js'
+import {createSourceBlob} from '../../lib/ci/source.js'
+import {displayAndExit} from '../../lib/ci/test-run.js'
 
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
@@ -49,4 +48,3 @@ export default class CiRun extends Command {
     await displayAndExit(pipeline, testRun.number!, this)
   }
 }
-*/

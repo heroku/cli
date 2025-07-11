@@ -1,13 +1,11 @@
-/*
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi'
-import {getPipeline} from '../../lib/ci/pipelines'
-import {createSourceBlob} from '../../lib/ci/source'
-import {displayAndExit} from '../../lib/ci/test-run'
+import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
+import {getPipeline} from '../../lib/ci/pipelines.js'
+import {createSourceBlob} from '../../lib/ci/source.js'
+import {displayAndExit} from '../../lib/ci/test-run.js'
 
 export default class CiReRun extends Command {
   static description = 'rerun tests against current directory'
@@ -66,4 +64,3 @@ export default class CiReRun extends Command {
     await displayAndExit(pipeline, testRun.number!, this)
   }
 }
-*/

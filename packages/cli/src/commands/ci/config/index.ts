@@ -1,14 +1,12 @@
-/*
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-// import * as shellescape from 'shell-escape'
-import {parse, quote} from '../../lib/config/quote'
+import {quote} from '../../../lib/config/quote.js'
 
-import {getPipeline} from '../../../lib/ci/pipelines'
-import {getPipelineConfigVars} from '../../../lib/api'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
+import {getPipelineConfigVars} from '../../../lib/api.js'
 
 export default class CiConfig extends Command {
   static description = 'display CI config vars'
@@ -33,7 +31,7 @@ export default class CiConfig extends Command {
 
     if (flags.shell) {
       Object.keys(config).forEach(key => {
-        ux.log(`${key}=${shellescape([config[key]])}`)
+        ux.stdout(`${key}=${quote(config[key])}`)
       })
     } else if (flags.json) {
       hux.styledJSON(config)
@@ -47,4 +45,3 @@ export default class CiConfig extends Command {
     }
   }
 }
-*/
