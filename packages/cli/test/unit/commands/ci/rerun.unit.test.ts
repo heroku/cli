@@ -2,7 +2,6 @@ import {test, expect} from '@oclif/test'
 
 import * as git from '../../../../src/lib/ci/git.js'
 
-/*
 describe('ci:rerun', function () {
   test
     .command(['ci:rerun'])
@@ -203,5 +202,3 @@ describe('ci:rerun', function () {
     })
   })
 })
-
-*/
