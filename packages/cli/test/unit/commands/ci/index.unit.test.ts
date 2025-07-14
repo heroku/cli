@@ -1,8 +1,7 @@
 import {expect, test} from '@oclif/test'
-import Inquirer from 'inquirer'
 import sinon from 'sinon'
+import * as pipelines from '../../../../src/lib/ci/pipelines.js'
 
-/*
 describe('ci', function () {
   test
     .command(['ci'])
@@ -19,7 +18,7 @@ describe('ci', function () {
     const statuses = ['succeeded', 'errored', 'failed', 'creating', 'cancelled', 'foo', '']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
-    let promptStub: any = sinon.stub()
+    let promptStub: sinon.SinonStub
 
     const chosenOption = {
       pipeline: {
@@ -104,7 +103,7 @@ describe('ci', function () {
 
     describe('specifying a pipeline with prompt', function () {
       before(function () {
-        promptStub = sinon.stub(Inquirer, 'prompt')
+        promptStub = sinon.stub(pipelines, 'promptForPipeline')
         promptStub.onFirstCall().resolves(chosenOption)
       })
 
@@ -170,4 +169,3 @@ describe('ci', function () {
   })
 })
 
-*/

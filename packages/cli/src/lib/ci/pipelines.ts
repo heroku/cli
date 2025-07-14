@@ -4,6 +4,17 @@ import inquirer from 'inquirer'
 import validator from 'validator'
 import {ux} from '@oclif/core'
 
+export function promptForPipeline(pipelineIDOrName: string, choices: {name: string, value: Heroku.Pipeline}[]) {
+  const questions = [{
+    type: 'list',
+    name: 'pipeline',
+    message: `Which ${pipelineIDOrName} pipeline?`,
+    choices,
+  }]
+
+  return inquirer.prompt(questions)
+}
+
 export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: APIClient) {
   const headers = {Accept: 'application/vnd.heroku+json; version=3.pipelines'}
 
@@ -15,7 +26,6 @@ export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: API
   const {body: pipelines} = await herokuAPI.get<Heroku.Pipeline>(`/pipelines?eq[name]=${pipelineIDOrName}`, {headers})
 
   let choices
-  let questions
   switch (pipelines.length) {
   case 0:
     ux.error('Pipeline not found')
@@ -27,14 +37,7 @@ export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: API
       return {name: new Date(x.created_at!), value: x}
     })
 
-    questions = [{
-      type: 'list',
-      name: 'pipeline',
-      message: `Which ${pipelineIDOrName} pipeline?`,
-      choices,
-    }]
-
-    return inquirer.prompt(questions)
+    return promptForPipeline(pipelineIDOrName, choices)
   }
 }
 
