@@ -118,10 +118,6 @@ describe('ci:run', function () {
           .reply(200, 'New Test output')
       })
       .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-        kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${ghRepository.ref}`)
-          .reply(200, {
-            archive_link: 'https://kolkrabbi.heroku.com/source/archive/gAAAAABb',
-          })
         kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, {
             ci: true,
@@ -138,8 +134,6 @@ describe('ci:run', function () {
               type: 'github',
             },
           })
-        kolkrabbiAPI.head('/source/archive/gAAAAABb')
-          .reply(200)
       })
       .stub(git, 'readCommit', gitFake.readCommit)
       .stub(git, 'githubRepository', gitFake.githubRepository)
