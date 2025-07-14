@@ -251,7 +251,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
 export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
   const testNode = await display(pipeline, number, command)
 
-  testNode ? processExitCode(command, testNode) : command.exit(1)
+  testNode ? processExitCode(command, testNode) : ux.exit(1)
 }
 
 export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {

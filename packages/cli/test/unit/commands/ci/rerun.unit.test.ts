@@ -130,10 +130,6 @@ describe('ci:rerun', function () {
             .reply(200, 'New Test output')
         })
         .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-          kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${oldTestRun.commit_sha}`)
-            .reply(200, {
-              archive_link: 'https://kolkrabbi.heroku.com/source/archive/gAAAAABb',
-            })
           kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
             .reply(200, {
               ci: true,
@@ -150,8 +146,6 @@ describe('ci:rerun', function () {
                 type: 'github',
               },
             })
-          kolkrabbiAPI.head('/source/archive/gAAAAABb')
-            .reply(200)
         })
         .stub(git, 'githubRepository', gitFake.githubRepository)
         .stub(git, 'createArchive', gitFake.createArchive)
@@ -222,10 +216,6 @@ describe('ci:rerun', function () {
             .reply(200, 'New Test output')
         })
         .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-          kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${oldTestRun.commit_sha}`)
-            .reply(200, {
-              archive_link: 'https://kolkrabbi.heroku.com/source/archive/gAAAAABb',
-            })
           kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
             .reply(200, {
               ci: true,
@@ -242,8 +232,6 @@ describe('ci:rerun', function () {
                 type: 'github',
               },
             })
-          kolkrabbiAPI.head('/source/archive/gAAAAABb')
-            .reply(200)
         })
         .stub(git, 'githubRepository', gitFake.githubRepository)
         .stub(git, 'createArchive', gitFake.createArchive)
