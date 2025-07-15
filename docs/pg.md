@@ -52,7 +52,7 @@ manage postgresql databases
 * [`heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-nested-statements-database-value)
 * [`heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-triggers-database-value)
 * [`heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`](#heroku-pgsettingsauto-explainlog-verbose-database-value)
-* [`heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE]`](#heroku-pgsettingsexplain-data-connector-details-database-value)
+* [`heroku pg:settings:data-connector-details-logs [DATABASE] [VALUE]`](#heroku-pgsettingsdata-connector-details-logs-database-value)
 * [`heroku pg:settings:log-connections [DATABASE] [VALUE]`](#heroku-pgsettingslog-connections-database-value)
 * [`heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`](#heroku-pgsettingslog-lock-waits-database-value)
 * [`heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`](#heroku-pgsettingslog-min-duration-statement-database-value)
@@ -1340,13 +1340,13 @@ DESCRIPTION
 
 _See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v10.11.0/packages/cli/src/commands/pg/settings/auto-explain/log-verbose.ts)_
 
-## `heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE]`
+## `heroku pg:settings:data-connector-details-logs [DATABASE] [VALUE]`
 
 displays stats on replication slots on your database, the default value is "off"
 
 ```
 USAGE
-  $ heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE] -a <value> [-r <value>]
+  $ heroku pg:settings:data-connector-details-logs [DATABASE] [VALUE] -a <value> [-r <value>]
 
 ARGUMENTS
   DATABASE  config var containing the connection string, unique name, ID, or alias of the database. To access another
@@ -1362,7 +1362,7 @@ DESCRIPTION
   displays stats on replication slots on your database, the default value is "off"
 ```
 
-_See code: [src/commands/pg/settings/explain-data-connector-details.ts](https://github.com/heroku/cli/blob/v10.11.0/packages/cli/src/commands/pg/settings/explain-data-connector-details.ts)_
+_See code: [src/commands/pg/settings/data-connector-details-logs.ts](https://github.com/heroku/cli/blob/v10.10.0/packages/cli/src/commands/pg/settings/data-connector-details-logs.ts)_
 
 ## `heroku pg:settings:log-connections [DATABASE] [VALUE]`
 
