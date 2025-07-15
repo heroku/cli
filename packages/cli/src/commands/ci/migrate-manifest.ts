@@ -5,6 +5,7 @@ import {promises as fs} from 'node:fs'
 
 const writeFile = fs.writeFile
 const unlinkFile = fs.unlink
+const readFile = fs.readFile
 
 export default class CiMigrateManifest extends Command {
   static description = 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.'
@@ -33,7 +34,8 @@ export default class CiMigrateManifest extends Command {
     let appCiJSON
 
     try {
-      appJSON = require(appJSONPath)
+      const fileContents = await readFile(appJSONPath, 'utf8')
+      appJSON = JSON.parse(fileContents)
       action = 'updating'
     } catch {
       action = 'creating'
@@ -41,7 +43,8 @@ export default class CiMigrateManifest extends Command {
     }
 
     try {
-      appCiJSON = require(appCiJSONPath)
+      const fileContents = await readFile(appCiJSONPath, 'utf8')
+      appCiJSON = JSON.parse(fileContents)
     } catch {
       let msg = 'We couldn\'t find an app-ci.json file in the current directory'
       // eslint-disable-next-line no-eq-null, eqeqeq
