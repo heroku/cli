@@ -202,8 +202,6 @@ describe('ci:run', function () {
             .reply(200, 'New Test output')
         })
         .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-          kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${ghRepository.ref}`)
-            .reply(404)
           kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
             .reply(200, {
               ci: true,
