@@ -243,6 +243,7 @@ export type SettingKey =
   | 'auto_explain.log_verbose'
   | 'auto_explain.log_nested_statements'
   | 'auto_explain.log_format'
+  | 'explain_data_connector_details'
 export type Setting<T> = {
   value: T
   values: Record<string, string>

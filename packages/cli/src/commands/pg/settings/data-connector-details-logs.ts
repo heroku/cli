@@ -20,7 +20,7 @@ export default class DataConnectorDetailsLogs extends PGSettingsCommand {
     value: Args.string({description: 'boolean indicating if data replication slot details get logged'}),
   }
 
-  protected settingKey:SettingKey = 'data_connector_details_logs'
+  protected settingKey:SettingKey = 'explain_data_connector_details'
 
   protected convertValue(val: BooleanAsString): boolean {
     return booleanConverter(val)
