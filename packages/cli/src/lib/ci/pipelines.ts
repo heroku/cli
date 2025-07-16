@@ -1,8 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import inquirer from 'inquirer'
-import validator from 'validator'
 import {ux} from '@oclif/core'
+import {uuidValidate} from '../utils/uuid-validate.js'
 
 export class PipelineService {
   // eslint-disable-next-line no-useless-constructor
@@ -21,10 +21,10 @@ export class PipelineService {
     return inquirer.prompt(questions)
   }
 
-  async disambiguatePipeline(pipelineIDOrName: any) {
+  async disambiguatePipeline(pipelineIDOrName: string) {
     const headers = {Accept: 'application/vnd.heroku+json; version=3.pipelines'}
 
-    if (validator.isUUID(pipelineIDOrName)) {
+    if (uuidValidate(pipelineIDOrName)) {
       const {body: pipeline} = await this.herokuAPI.get<Heroku.Pipeline>(`/pipelines/${pipelineIDOrName}`, {headers})
       return pipeline
     }
@@ -47,7 +47,7 @@ export class PipelineService {
     }
   }
 
-  async getPipeline(flags: any) {
+  async getPipeline(flags: { pipeline: string | null; app: string | null }) {
     let pipeline
 
     if ((!flags.pipeline) && (!flags.app)) {
@@ -79,7 +79,7 @@ export function promptForPipeline(pipelineIDOrName: string, choices: {name: stri
   return service.promptForPipeline(pipelineIDOrName, choices)
 }
 
-export async function disambiguatePipeline(pipelineIDOrName: any, herokuAPI: APIClient) {
+export async function disambiguatePipeline(pipelineIDOrName: string, herokuAPI: APIClient) {
   const service = new PipelineService(herokuAPI)
   return service.disambiguatePipeline(pipelineIDOrName)
 }
