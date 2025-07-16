@@ -65,17 +65,14 @@ describe('ci', function () {
         for (let i = 7; i < 10; i++) {
           expected = removeAllWhitespace(`${statusIcon[i % 7]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
           expect(actual).to.contain(expected)
-          // expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
         }
 
         for (let i = 10; i < 20; i++) {
           expected = removeAllWhitespace(`${statusIcon[i % 7]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
           expect(actual).to.contain(expected)
-          // expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
         }
 
         expect(actual).not.to.contain(removeAllWhitespace(`${testRuns[4].number} ${testRuns[4].commit_sha}`))
-        // expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
       })
 
     test
