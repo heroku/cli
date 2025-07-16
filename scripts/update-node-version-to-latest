@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the last line of the version output
-last_line=$(npm show node@20 version | tail -n 1)
+last_line=$(npm show node@22 version | tail -n 1)
 
 # Extract the second token using awk and remove quotes
 version=$(echo "$last_line" | awk '{print $2}' | tr -d "'")
