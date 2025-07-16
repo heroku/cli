@@ -1362,7 +1362,7 @@ DESCRIPTION
   displays stats on replication slots on your database, the default value is "off"
 ```
 
-_See code: [src/commands/pg/settings/data-connector-details-logs.ts](https://github.com/heroku/cli/blob/v10.10.0/packages/cli/src/commands/pg/settings/data-connector-details-logs.ts)_
+_See code: [src/commands/pg/settings/data-connector-details-logs.ts](https://github.com/heroku/cli/blob/v10.11.0/packages/cli/src/commands/pg/settings/data-connector-details-logs.ts)_
 
 ## `heroku pg:settings:log-connections [DATABASE] [VALUE]`
 

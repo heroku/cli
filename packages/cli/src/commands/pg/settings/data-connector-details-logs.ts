@@ -6,6 +6,7 @@ import type {Setting, SettingKey} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
 export default class DataConnectorDetailsLogs extends PGSettingsCommand {
+  static aliases = ['pg:settings:explain-data-connector-details']
   static description = heredoc(`
   displays stats on replication slots on your database, the default value is "off"
   `)
