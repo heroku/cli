@@ -11,7 +11,7 @@ export default class Logs extends Command {
   `
 
   static examples = [
-    'heroku logs --app=my-app',
+    'heroku  logs --app=my-app',
     'heroku logs --num=50 --app=my-app',
     'heroku logs --dyno-name=web-123-456 --app=my-app',
     'heroku logs --process-type=web --app=my-app',
