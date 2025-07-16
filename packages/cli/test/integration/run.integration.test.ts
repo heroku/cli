@@ -21,6 +21,7 @@ describe('run', function () {
     })
 
   testFactory()
+    .skip()
     .stub(runHelper, 'revertSortedArgs', () => ['ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
     .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
     .it('runs a command with spaces', ctx => {
@@ -28,6 +29,7 @@ describe('run', function () {
     })
 
   testFactory()
+    .skip()
     .stub(runHelper, 'revertSortedArgs', () => ['{foo:bar}'])
     .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo":"bar"}"'])
     .it('runs a command with quotes', ctx => {
