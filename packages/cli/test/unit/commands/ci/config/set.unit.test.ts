@@ -7,7 +7,6 @@ const pipeline = {
   name: 'test-pipeline',
 }
 
-/*
 describe('heroku ci:config:set', function () {
   test
     .stdout()
@@ -40,4 +39,3 @@ describe('heroku ci:config:set', function () {
     .it('errors with explanation of required flags')
 })
 
-*/
