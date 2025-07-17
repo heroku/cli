@@ -9,6 +9,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * adding alias ([#3335](https://github.com/heroku/cli/issues/3335)) ([7b83b54](https://github.com/heroku/cli/commit/7b83b541a3261acb0b8dbfc5eb3a8b383f69c1ef))
+* verify ([#3319](https://github.com/heroku/cli/issues/3319)) ([798e3cb](https://github.com/heroku/cli/commit/798e3cb4f9eaf4f376e79d47918400646076d0d4))
 
 
 
