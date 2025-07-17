@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.12.0-beta.0](https://github.com/heroku/cli/compare/v10.11.0...v10.12.0-beta.0) (2025-07-17)
+
+
+### Features
+
+* adding alias ([#3335](https://github.com/heroku/cli/issues/3335)) ([7b83b54](https://github.com/heroku/cli/commit/7b83b541a3261acb0b8dbfc5eb3a8b383f69c1ef))
+
+
+
+
+
 # [10.11.0](https://github.com/heroku/cli/compare/v10.10.1...v10.11.0) (2025-06-23)
 
 
