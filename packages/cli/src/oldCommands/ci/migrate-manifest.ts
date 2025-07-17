@@ -4,9 +4,9 @@ import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {promises as fs} from 'node:fs'
 
-const writeFile = fs.writeFile
-const unlinkFile = fs.unlink
-const readFile = fs.readFile
+const {writeFile, unlink} = fs
+const unlinkFile = unlink
+const {readFile} = fs
 
 export default class CiMigrateManifest extends Command {
   static description = 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.'

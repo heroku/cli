@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import {promises as fs} from 'node:fs'
 const {readFile, writeFile, unlink} = fs
 const unlinkFile = unlink
 

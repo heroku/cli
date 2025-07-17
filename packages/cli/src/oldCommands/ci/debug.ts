@@ -41,8 +41,8 @@ export default class Debug extends Command {
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
     const pipelineRepository = await kolkrabbi.getPipelineRepository(pipeline.id)
-    const organization = pipelineRepository.organization &&
-      pipelineRepository.organization.name
+    const organization = pipelineRepository.organization
+      && pipelineRepository.organization.name
 
     const git = new Git()
     const commit = await git.readCommit('HEAD')
