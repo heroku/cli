@@ -1,8 +1,8 @@
 import {expect, test} from '@oclif/test'
-import Inquirer from 'inquirer'
 import sinon from 'sinon'
+import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('ci', function () {
   test
     .command(['ci'])
@@ -19,7 +19,7 @@ describe('ci', function () {
     const statuses = ['succeeded', 'errored', 'failed', 'creating', 'cancelled', 'foo', '']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
-    let promptStub: any = sinon.stub()
+    let promptStub: sinon.SinonStub
 
     const chosenOption = {
       pipeline: {
@@ -60,15 +60,19 @@ describe('ci', function () {
       .it('shows the latest 15 test runs', ({stdout}) => {
         expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
+        const actual = removeAllWhitespace(stdout)
+        let expected: string
         for (let i = 7; i < 10; i++) {
-          expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+          expected = removeAllWhitespace(`${statusIcon[i % 7]} ${testRuns[i].number}  main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+          expect(actual).to.contain(expected)
         }
 
         for (let i = 10; i < 20; i++) {
-          expect(stdout).to.contain(`${statusIcon[i % 7]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+          expected = removeAllWhitespace(`${statusIcon[i % 7]} ${testRuns[i].number} main   ${testRuns[i].commit_sha} ${testRuns[i].status} `)
+          expect(actual).to.contain(expected)
         }
 
-        expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
+        expect(actual).not.to.contain(removeAllWhitespace(`${testRuns[4].number} ${testRuns[4].commit_sha}`))
       })
 
     test
@@ -104,7 +108,7 @@ describe('ci', function () {
 
     describe('specifying a pipeline with prompt', function () {
       before(function () {
-        promptStub = sinon.stub(Inquirer, 'prompt')
+        promptStub = sinon.stub(PipelineService.prototype, 'promptForPipeline')
         promptStub.onFirstCall().resolves(chosenOption)
       })
 
@@ -170,4 +174,3 @@ describe('ci', function () {
   })
 })
 
-*/

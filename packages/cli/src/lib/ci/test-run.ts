@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -10,10 +9,9 @@ import {randomUUID} from 'node:crypto'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
 import WebSocket = require('ws')
-
-const debug = require('debug')('ci')
-const ansiEscapes = require('ansi-escapes')
-
+import debug from 'debug'
+import ansiEscapes from 'ansi-escapes'
+const ciDebug = debug('ci')
 const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
@@ -133,16 +131,15 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     data,
     {
       iconStatus: {
-        minWidth: 1, header: '', // header '' is to make sure that width is 1 character
+        header: ' ', // header '' is to make sure that width is 1 character
       },
       number: {
-        header: '', // header '' is to make sure that width is 1 character
+        header: ' ', // header '' is to make sure that width is 1 character
       },
       branch: {},
       sha: {},
       status: {},
-    },
-    {printHeader: undefined})
+    })
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
@@ -169,7 +166,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
       token: command.heroku.auth,
       tab_id: `heroku-cli-${randomUUID()}`,
     },
-    logger: (kind: any, msg: any, data: any) => debug(`${kind}: ${msg}\n${inspect(data)}`),
+    logger: (kind: any, msg: any, data: any) => ciDebug(`${kind}: ${msg}\n${inspect(data)}`),
   })
   socket.connect()
 
@@ -254,7 +251,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
 export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
   const testNode = await display(pipeline, number, command)
 
-  testNode ? processExitCode(command, testNode) : command.exit(1)
+  testNode ? processExitCode(command, testNode) : ux.exit(1)
 }
 
 export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {
@@ -286,4 +283,3 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     processExitCode(command, testNode)
   }
 }
-*/

@@ -1,10 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import {getPipeline} from '../../lib/ci/pipelines'
-import {displayTestRunInfo} from '../../lib/ci/test-run'
+import {getPipeline} from '../../lib/ci/pipelines.js'
+import {displayTestRunInfo} from '../../lib/ci/test-run.js'
 
 export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
@@ -37,4 +36,3 @@ export default class CiLast extends Command {
     await displayTestRunInfo(this, testRun, testNodes, flags.node)
   }
 }
-*/

@@ -6,7 +6,6 @@ import _ from 'lodash'
 import push from '../git/push.js'
 import {OciImage} from '../../lib/types/fir.js'
 import * as Heroku from '@heroku-cli/schema'
-import validator from 'validator'
 
 export type BuildpackResponse = {
   buildpack: {
@@ -14,6 +13,16 @@ export type BuildpackResponse = {
     name: string;
   };
   ordinal: number;
+}
+
+// Simple URL validation function that returns boolean
+function isValidURL(url: string): boolean {
+  try {
+    const urlObj = new URL(url)
+    return Boolean(urlObj)
+  } catch {
+    return false
+  }
 }
 
 export class BuildpackCommand {
@@ -78,7 +87,7 @@ export class BuildpackCommand {
   }
 
   async registryNameToUrl(buildpack: string): Promise<string> {
-    if (validator.isURL(buildpack)) {
+    if (isValidURL(buildpack)) {
       return buildpack
     }
 

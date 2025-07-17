@@ -1,14 +1,13 @@
-/*
 import {ux} from '@oclif/core'
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
-import {get} from 'lodash'
-import {createTestRun, getAppSetup, getTestNodes, updateTestRun} from '../../lib/api'
-import {getPipeline} from '../../lib/ci/pipelines'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import Dyno from '../../lib/run/dyno'
-import Git from '../../lib/git/git'
-import {createSourceBlob} from '../../lib/ci/source'
-import {waitForStates} from '../../lib/ci/test-run'
+import * as Heroku from '@heroku-cli/schema'
+import {createTestRun, getAppSetup, getTestNodes, updateTestRun} from '../../lib/api.js'
+import {getPipeline} from '../../lib/ci/pipelines.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import Dyno from '../../lib/run/dyno.js'
+import Git from '../../lib/git/git.js'
+import {createSourceBlob} from '../../lib/ci/source.js'
+import {waitForStates} from '../../lib/ci/test-run.js'
 
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
@@ -34,7 +33,7 @@ export default class Debug extends Command {
 
   static topic = 'ci'
 
-  async run() {
+  public async run(): Promise<void> {
     const {flags} = await this.parse(Debug)
     const pipeline = await getPipeline(flags, this.heroku)
 
@@ -47,12 +46,12 @@ export default class Debug extends Command {
     const git = new Git()
     const commit = await git.readCommit('HEAD')
     ux.action.start('Preparing source')
-    const sourceBlobUrl = await createSourceBlob(commit.ref, this)
+    const sourceBlobUrl: string = await createSourceBlob(commit.ref, this)
     ux.action.stop()
     // Create test run and wait for it to transition to `debugging`
     ux.action.start('Creating test run')
 
-    const {body: run} = await createTestRun(this.heroku, {
+    const {body: run}: {body: Heroku.TestRun} = await createTestRun(this.heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
@@ -62,7 +61,7 @@ export default class Debug extends Command {
       pipeline: pipeline.id,
       source_blob_url: sourceBlobUrl,
     })
-    const testRun = await waitForStates(['debugging', 'errored'], run, this)
+    const testRun: Heroku.TestRun = await waitForStates(['debugging', 'errored'], run, this)
     ux.action.stop()
 
     if (testRun.status === 'errored') {
@@ -72,7 +71,7 @@ export default class Debug extends Command {
     const {body: appSetup} = await getAppSetup(this.heroku, testRun.app_setup?.id)
     const noSetup = flags['no-setup']
 
-    ux.log(`${noSetup ? 'Attaching' : 'Running setup and attaching'} to test dyno...`)
+    ux.stdout(`${noSetup ? 'Attaching' : 'Running setup and attaching'} to test dyno...`)
 
     if (noSetup) {
       ux.warn('Skipping test setup phase.')
@@ -89,7 +88,7 @@ export default class Debug extends Command {
       command: '', // command is required, but is not used.
     })
 
-    dyno.dyno = {attach_url: get(testNodes, [0, 'dyno', 'attach_url'])}
+    dyno.dyno = {attach_url: testNodes?.[0]?.dyno?.attach_url}
 
     function sendSetup(data: any) {
       if (data.toString().includes('$')) {
@@ -117,4 +116,3 @@ export default class Debug extends Command {
     await ux.action.stop()
   }
 }
-*/

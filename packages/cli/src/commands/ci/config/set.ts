@@ -1,11 +1,10 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {getPipeline} from '../../../lib/ci/pipelines'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {Command, flags} from '@heroku-cli/command'
-import {setPipelineConfigVars} from '../../../lib/api'
-import {validateArgvPresent} from '../../../lib/ci/validate'
-import color from '@heroku-cli/color'
+import {setPipelineConfigVars} from '../../../lib/api.js'
+import {validateArgvPresent} from '../../../lib/ci/validate.js'
+import {color} from '@heroku-cli/color'
 
 function validateInput(str: string) {
   if (!str.includes('=')) {
@@ -61,4 +60,3 @@ export default class CiConfigSet extends Command {
     )
   }
 }
-*/

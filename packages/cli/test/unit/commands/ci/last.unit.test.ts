@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('ci:last', function () {
   const testRunNumber = 10
   const testRunId = 'f53d34b4-c3a9-4608-a186-17257cf71d62'
@@ -173,5 +172,3 @@ describe('ci:last', function () {
       .it('shows an error about not test nodes found')
   })
 })
-
-*/

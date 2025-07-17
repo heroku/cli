@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('ci:info', function () {
   const testRunNumber = 10
   const testRun = {id: 'f53d34b4-c3a9-4608-a186-17257cf71d62', number: 10}
@@ -299,10 +298,4 @@ describe('ci:info', function () {
       })
     })
   })
-
-  describe('when specifying an application', function () {
-    // TODO: Check it has a similar behavior, but via pipeline couplings
-  })
 })
-
-*/

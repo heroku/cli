@@ -1,10 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 
-import {getPipeline} from '../../lib/ci/pipelines'
-import {displayTestRunInfo} from '../../lib/ci/test-run'
+import {getPipeline} from '../../lib/ci/pipelines.js'
+import {displayTestRunInfo} from '../../lib/ci/test-run.js'
 
 export default class CiInfo extends Command {
   static description = 'show the status of a specific test run'
@@ -34,4 +33,3 @@ export default class CiInfo extends Command {
     await displayTestRunInfo(this, testRun, testNodes, flags.node)
   }
 }
-*/

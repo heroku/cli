@@ -1,5 +1,6 @@
 import {Command} from '@heroku-cli/command'
-import * as fs from 'async-file'
+import {promises as fs} from 'fs'
+import {createReadStream} from 'fs'
 import * as git from './git.js'
 import {got} from 'got'
 import debug from 'debug'
@@ -13,7 +14,7 @@ async function uploadArchive(url: string, filePath: string) {
     },
   })
 
-  fs.createReadStream(filePath).pipe(request)
+  createReadStream(filePath).pipe(request)
 
   return new Promise((resolve: any, reject: any) => {
     request.on('error', reject)
