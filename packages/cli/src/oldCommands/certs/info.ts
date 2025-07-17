@@ -8,15 +8,15 @@ import {Domain} from '../../lib/types/domain.js'
 
 /*
 export default class Info extends Command {
-  static topic = 'certs';
-  static description = 'show certificate information for an SSL certificate';
+  static topic = 'certs'
+  static description = 'show certificate information for an SSL certificate'
   static flags = {
     name: flags.string({description: 'name to check info on'}),
     endpoint: flags.string({description: 'endpoint to check info on'}),
     'show-domains': flags.boolean({description: 'show associated domains'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Info)

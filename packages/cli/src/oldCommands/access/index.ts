@@ -48,11 +48,11 @@ function printAccess(app: Heroku.App, collaborators: any[]) {
     .sortBy(c => c.email || c.user.email)
     .reject(c => /herokumanager\.com$/.test(c.user.email))
     .map(collab => {
-      const email = collab.user.email
-      const role = collab.role
-      const data: MemberData = {email: email, role: role || 'collaborator'}
+      const {email} = collab.user
+      const {role, permissions} = collab
+      const data: MemberData = {email, role: role || 'collaborator'}
       if (showPermissions) {
-        data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name').join(', ')
+        data.permissions = _.map(_.sortBy(permissions, 'name'), 'name').join(', ')
       }
 
       return data
@@ -91,7 +91,7 @@ export default class AccessIndex extends Command {
         const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
         let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')
         const {body: adminPermissions} = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
-        admins = _.forEach(admins, function (admin) {
+        admins = _.forEach(admins, admin => {
           admin.user = {email: admin.email}
           admin.permissions = adminPermissions
           return admin

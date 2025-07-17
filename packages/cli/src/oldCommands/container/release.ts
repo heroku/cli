@@ -66,13 +66,16 @@ export default class ContainerRelease extends Command {
       let imageID
       let v1Comp
       switch (imageResp.schemaVersion) {
-      case 1:
+      case 1: {
         v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
         imageID = v1Comp.id
         break
-      case 2:
+      }
+
+      case 2: {
         imageID = imageResp.config.digest
         break
+      }
       }
 
       updateData.push({

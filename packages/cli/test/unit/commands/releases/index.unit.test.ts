@@ -4,7 +4,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 
-const isTTY = process.stdout.isTTY
+const {isTTY} = process.stdout
 
 const assertLineWidths = function (blob: string, lineWidth: number) {
   const lines = blob.split('\n')

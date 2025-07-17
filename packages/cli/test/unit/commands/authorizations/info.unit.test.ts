@@ -29,12 +29,12 @@ describe('authorizations:info', function () {
     .command(['authorizations:info', authorizationID])
     .it('shows the authorization', ctx => {
       expect(ctx.stdout).to.eq(
-        'Client:      <none>\n' +
-        'ID:          4UTHOri24tIoN-iD-3X4mPl3\n' +
-        'Description: desc\n' +
-        'Scope:       global\n' +
-        'Token:       secrettoken\n' +
-        `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`,
+        'Client:      <none>\n'
+        + 'ID:          4UTHOri24tIoN-iD-3X4mPl3\n'
+        + 'Description: desc\n'
+        + 'Scope:       global\n'
+        + 'Token:       secrettoken\n'
+        + `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`,
       )
     })
 

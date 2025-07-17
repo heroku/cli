@@ -101,7 +101,7 @@ export default class Index extends Command {
           },
           ...(domains.some(d => d.acm_status_reason) ? {
             Reason: {
-              get: (domain: Domain) => domain.acm_status_reason ? domain.acm_status_reason : '',
+              get: (domain: Domain) => domain.acm_status_reason ?? '',
             },
           } : {}),
           lastUpdated: {

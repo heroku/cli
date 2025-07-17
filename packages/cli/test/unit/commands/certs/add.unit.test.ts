@@ -29,8 +29,10 @@ describe('heroku certs:add', function () {
 
   beforeEach(async function () {
     stubbedSelectDomains = sinon.stub(Cmd.prototype, 'selectDomains')
+    // eslint-disable-next-line arrow-body-style
     stubbedSelectDomains.callsFake(async (domainOptions: string[]) => {
       // Let the method execute normally but return our stubbed value
+      // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return Promise.resolve(stubbedSelectDomainsReturnValue)
     })
     stubbedGetCertAndKey = sinon.stub(CertAndKeyManager.prototype, 'getCertAndKey')

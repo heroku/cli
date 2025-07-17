@@ -12,7 +12,7 @@ const heredoc = tsheredoc.default
 
 /*
 export default class Update extends Command {
-  static topic = 'certs';
+  static topic = 'certs'
   static description = heredoc`
     update an SSL certificate on an app
     Note: certificates with PEM encoding are also valid

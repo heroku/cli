@@ -6,7 +6,7 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import nock from 'nock'
 import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 
-const cache = resolveAddon.cache
+const {cache} = resolveAddon
 
 /*
 describe('addons:info', function () {

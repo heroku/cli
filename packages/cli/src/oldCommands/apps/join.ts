@@ -5,23 +5,23 @@ import * as Heroku from '@heroku-cli/schema'
 
 /*
 export default class AppsJoin extends Command {
-    static topic = 'apps';
-    static description = 'add yourself to a team app';
-    static aliases = ['join']
-    static flags = {
-      app: flags.app({required: true}),
-      remote: flags.remote({char: 'r'}),
-    };
+  static topic = 'apps'
+  static description = 'add yourself to a team app'
+  static aliases = ['join']
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote({char: 'r'}),
+  }
 
-    public async run(): Promise<void> {
-      const {flags} = await this.parse(AppsJoin)
-      const {app} = flags
-      ux.action.start(`Joining ${color.app(app)}`)
-      const {body: user} = await this.heroku.get<Heroku.Account>('/account')
-      await this.heroku.post<Heroku.TeamAppCollaborator>(`/teams/apps/${app}/collaborators`, {
-        body: {user: user.email},
-      })
-      ux.action.stop()
-    }
+  public async run(): Promise<void> {
+    const {flags} = await this.parse(AppsJoin)
+    const {app} = flags
+    ux.action.start(`Joining ${color.app(app)}`)
+    const {body: user} = await this.heroku.get<Heroku.Account>('/account')
+    await this.heroku.post<Heroku.TeamAppCollaborator>(`/teams/apps/${app}/collaborators`, {
+      body: {user: user.email},
+    })
+    ux.action.stop()
+  }
 }
 */

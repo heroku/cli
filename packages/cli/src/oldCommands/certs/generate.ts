@@ -56,7 +56,7 @@ export default class Generate extends Command {
     }
 
     const subject = this.getSubject(args, flags)
-    const domain = args.domain
+    const {domain} = args
     const keysize = flags.keysize || 2048
     const keyfile = `${domain}.key`
     const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${app}/sni-endpoints`)

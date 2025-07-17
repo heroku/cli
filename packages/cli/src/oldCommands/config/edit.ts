@@ -22,9 +22,7 @@ interface UploadConfig {
 function configToString(config: Config): string {
   return Object.keys(config)
     .sort()
-    .map(key => {
-      return `${key}=${quote(config[key])}`
-    })
+    .map(key => `${key}=${quote(config[key])}`)
     .join('\n')
 }
 

@@ -79,9 +79,7 @@ Created www-redis as REDIS_URL
         provisionedAddon.config_vars = ['REDIS_URL']
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, () => {
-            return provisionedAddon
-          })
+          .reply(200, () => provisionedAddon)
         await runCommand(Cmd, [
           '--wait-interval',
           '1',

@@ -45,12 +45,12 @@ www.example.com  CNAME            www.example.herokudns.com
         header: 'Domain Name',
       },
       kind: {
-        header: 'DNS Record Type',
-        get: (domain: Heroku.Domain) => {
+        get(domain: Heroku.Domain) {
           if (domain.hostname) {
             return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
           }
         },
+        header: 'DNS Record Type',
       },
       cname: {header: 'DNS Target'},
     }
@@ -63,7 +63,7 @@ www.example.com  CNAME            www.example.herokudns.com
     const sniConfig = {
       sni_endpoint: {
         header: 'SNI Endpoint',
-        get: (domain: Heroku.Domain) => {
+        get(domain: Heroku.Domain) {
           if (domain.sni_endpoint) {
             return domain.sni_endpoint.name
           }

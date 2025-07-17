@@ -17,8 +17,8 @@ type PlanWithMeteredPrice = Plan & {
 }
 
 export default class Plans extends Command {
-  static topic = 'addons';
-  static description = 'list all available plans for an add-on service';
+  static topic = 'addons'
+  static description = 'list all available plans for an add-on service'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }

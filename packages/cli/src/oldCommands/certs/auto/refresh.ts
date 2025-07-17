@@ -3,12 +3,12 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
 export default class Refresh extends Command {
-  static topic = 'certs';
-  static description = 'refresh ACM for an app';
+  static topic = 'certs'
+  static description = 'refresh ACM for an app'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Refresh)

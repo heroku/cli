@@ -6,12 +6,12 @@ import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 /*
 export default class Index extends Command {
-  static topic = 'certs';
-  static description = 'list SSL certificates for an app';
+  static topic = 'certs'
+  static description = 'list SSL certificates for an app'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)

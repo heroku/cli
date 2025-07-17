@@ -43,19 +43,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
     })
     .command(['apps:errors', '--app', APP])
@@ -75,19 +69,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
     })
     .command(['apps:errors', '--app', APP])
@@ -108,19 +96,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(400, {id: 'bad_request', message: ERROR_MESSAGE})
     })
     .command(['apps:errors', '--app', APP])
@@ -140,19 +122,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, errors.router)
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {R14: [1]}})
     })
     .command(['apps:errors', '--app', APP])
@@ -178,19 +154,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, errors.router)
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
     })
     .command(['apps:errors', '--app', APP, '--json'])

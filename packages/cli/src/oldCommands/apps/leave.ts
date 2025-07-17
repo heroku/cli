@@ -5,7 +5,7 @@ import * as Heroku from '@heroku-cli/schema'
 /*
 export default class Leave extends Command {
   static topic = 'apps'
-  static aliases = ['leave'];
+  static aliases = ['leave']
   static description = 'remove yourself from a team app'
   static example = 'heroku apps:leave -a APP'
   static flags = {

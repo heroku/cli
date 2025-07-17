@@ -35,9 +35,9 @@ export default class AnalyticsCommand {
 
   http: typeof deps.HTTP
 
-  initialize: Promise<void>;
+  initialize: Promise<void>
 
-  private netrc: any;
+  private netrc: any
 
   constructor(config: Interfaces.Config) {
     this.config = config
@@ -51,7 +51,7 @@ export default class AnalyticsCommand {
     await this.initialize
     const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
     const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
-    const plugin = opts.Command.plugin
+    const {id, plugin} = opts.Command
     if (!plugin) {
       analyticsDebug('no plugin found for analytics')
       return
@@ -60,12 +60,11 @@ export default class AnalyticsCommand {
     if (this.userConfig.skipAnalytics) return
 
     const analyticsData: AnalyticsInterface = {
-      source: 'cli',
-      event: opts.Command.id,
+      event: id,
       properties: {
         cli: this.config.name,
-        command: opts.Command.id,
-        completion: await this._acAnalytics(opts.Command.id),
+        command: id,
+        completion: await this._acAnalytics(id),
         version: `${this.config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
         plugin: plugin.name,
         plugin_version: plugin.version,
@@ -75,6 +74,7 @@ export default class AnalyticsCommand {
         language: 'node',
         install_id: this.userConfig.install,
       },
+      source: 'cli',
     }
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
