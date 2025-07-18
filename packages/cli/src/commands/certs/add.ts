@@ -52,11 +52,9 @@ export default class Add extends Command {
     if (matchedDomains.length > 0) {
       hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
       const selections = await this.selectDomains(matchedDomains)
-      await Promise.all(selections?.domains.map(domain => {
-        return heroku.patch(`/apps/${app}/domains/${domain}`, {
-          body: {sni_endpoint: cert.name},
-        })
-      }))
+      await Promise.all(selections?.domains.map(domain => heroku.patch(`/apps/${app}/domains/${domain}`, {
+        body: {sni_endpoint: cert.name},
+      })))
     }
   }
 
@@ -89,9 +87,7 @@ export default class Add extends Command {
 }
 
 function splitDomains(domains: string[]): [string, string][] {
-  return domains.map(domain => {
-    return [domain.slice(0, 1), domain.slice(1)]
-  })
+  return domains.map(domain => [domain.slice(0, 1), domain.slice(1)])
 }
 
 function createMatcherFromSplitDomain([firstChar, rest]: [string, string]) {

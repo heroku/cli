@@ -68,9 +68,9 @@ export default class Upgrade extends Command {
       let errorToThrow = error as Error
       if (error instanceof HerokuAPIError) {
         const {http} = error
-        if (http.statusCode === 422 &&
-          http.body.message &&
-          http.body.message.startsWith('Couldn\'t find either the add-on')) {
+        if (http.statusCode === 422
+          && http.body.message
+          && http.body.message.startsWith('Couldn\'t find either the add-on')) {
           const plans = await this.getPlans(addonServiceName)
           errorToThrow = new Error(`${http.body.message}
 

@@ -34,13 +34,9 @@ const myotherappConfig = {
 const mylowercaseappConfig = {
   LOWERCASE_DATABASE_URL: 'postgres://heroku/lowercasedb',
 }
-const copyingText = () => {
-  return process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying...\nCopying... done\n'
-}
+const copyingText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying...\nCopying... done\n'
 
-const copyingFailText = () => {
-  return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
-}
+const copyingFailText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 
 /*
 describe('pg:copy', function () {

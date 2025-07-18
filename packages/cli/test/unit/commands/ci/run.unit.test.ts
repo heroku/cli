@@ -38,12 +38,15 @@ describe('ci:run', function () {
       createArchive: () => Promise.resolve('new-archive.tgz'),
       spawn: () => Promise.resolve(),
       urlExists: () => Promise.resolve(),
-      exec: (args: any) => {
+      exec(args: any) {
         switch (args.join(' ')) {
-        case 'remote':
+        case 'remote': {
           return Promise.resolve('heroku')
-        default:
+        }
+
+        default: {
           return Promise.resolve()
+        }
         }
       },
     }
@@ -51,7 +54,7 @@ describe('ci:run', function () {
     const fsFake = {
       stat: () => Promise.resolve({size: 500}),
       createReadStream: () => ({
-        pipe: (dest: any) => {
+        pipe(dest: any) {
           // Simulate a readable stream that properly pipes to destination
           if (dest && typeof dest.once === 'function') {
             dest.once('response', () => {})
@@ -59,13 +62,13 @@ describe('ci:run', function () {
 
           return dest
         },
-        once: () => {},
-        on: () => {},
+        once() {},
+        on() {},
       }),
     }
 
     const gotFake = {
-      stream: {put: () => {
+      stream: {put() {
         const stream = new PassThrough()
         // Simulate HTTP response by emitting 'response' event
         setImmediate(() => {

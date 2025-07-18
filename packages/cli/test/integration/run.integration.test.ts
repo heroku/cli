@@ -2,15 +2,13 @@ import {expect, test} from '@oclif/test'
 import * as runHelper from '../../src/lib/run/helpers.js'
 import {unwrap} from '../helpers/utils/unwrap.js'
 
-const testFactory = () => {
-  return test
-    .stdout()
-    .do(() => {
+const testFactory = () => test
+  .stdout()
+  .do(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-      process.stdout.isTTY = false
-    })
-}
+    process.stdout.isTTY = false
+  })
 
 /*
 describe('run', function () {

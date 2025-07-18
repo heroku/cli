@@ -13,7 +13,7 @@ export function stubUxActionStart() {
   }
 
   return {
-    restore: () => {
+    restore() {
       ux.action.start = originalStart
       ux.action.stop = originalStop
     },

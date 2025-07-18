@@ -50,9 +50,9 @@ describe('addons:create', function () {
         'foobar',
       ])
         .catch((error: any) => {
-          expect(error.message).to.equal('Missing 1 required arg:\n' +
-            'service:plan  unique identifier or unique name of the add-on service plan\n' +
-            'See more help with --help')
+          expect(error.message).to.equal('Missing 1 required arg:\n'
+            + 'service:plan  unique identifier or unique name of the add-on service plan\n'
+            + 'See more help with --help')
         })
     })
   })

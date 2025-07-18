@@ -73,4 +73,3 @@ describe('ci:config', function () {
       expect(stdout).to.equal('KEY1=VALUE1\nOTHER=test\nRAILS_ENV=test\n')
     })
 })
-

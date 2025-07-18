@@ -14,11 +14,11 @@ const config = new Config({root})
 
 let runtest: any
 
-(async () => {
-  const mod = await import('../../../helpers/autocomplete/runtest.js')
-  runtest = mod.default
-  runtest('Create', () => {})
-})()
+// (async () => {
+//   const mod = await import('../../../helpers/autocomplete/runtest.js')
+//   runtest = mod.default
+//   runtest('Create', () => {})
+// })()
 
 const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'autocomplete-scripts')
 

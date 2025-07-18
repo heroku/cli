@@ -55,6 +55,7 @@ const provider = new NodeTracerProvider({
   resource,
 })
 
+// eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
 const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
 
 const exporter = new OTLPTraceExporter({
@@ -234,6 +235,7 @@ export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
     rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
   } catch {
     debug('Could not send error report')
+    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
     return Promise.reject()
   }
 

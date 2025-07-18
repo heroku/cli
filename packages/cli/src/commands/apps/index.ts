@@ -90,7 +90,7 @@ export default class AppsIndex extends Command {
 
     const teamIdentifier = flags.team
     let team = (!flags.personal && teamIdentifier) ? teamIdentifier : null
-    const space = flags.space
+    const {all, json, space} = flags
     const internalRouting = flags['internal-routing']
     if (space) {
       const teamResponse = await this.heroku.get<Heroku.Team>(`/spaces/${space}`)
@@ -99,7 +99,7 @@ export default class AppsIndex extends Command {
 
     let path = '/users/~/apps'
     if (team) path = `/teams/${team}/apps`
-    else if (flags.all) path = '/apps'
+    else if (all) path = '/apps'
     const [appsResponse, userResponse] = await Promise.all([
       this.heroku.get<Heroku.App>(path),
       this.heroku.get<Heroku.Account>('/account'),
@@ -116,7 +116,7 @@ export default class AppsIndex extends Command {
       apps = apps.filter((a: App) => a.internal_routing)
     }
 
-    if (flags.json) {
+    if (json) {
       hux.styledJSON(apps)
     } else {
       print(apps, user, space, team)

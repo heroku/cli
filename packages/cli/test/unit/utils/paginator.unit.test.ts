@@ -5,7 +5,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as path from 'path'
 import nock from 'nock'
-import {fileURLToPath} from 'url'
+import {fileURLToPath} from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

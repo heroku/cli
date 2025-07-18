@@ -36,11 +36,9 @@ export default class Info extends Command {
       Plan: addon.plan.name,
       Price: formatPrice({price: addon.plan.price, hourly: true}),
       'Max Price': formatPrice({price: addon.plan.price, hourly: false}),
-      Attachments: addon.attachments.map(function (att: Heroku.AddOnAttachment) {
-        return [
-          color.cyan(att.app?.name || ''), color.green(att.name || ''),
-        ].join('::')
-      })
+      Attachments: addon.attachments.map((att: Heroku.AddOnAttachment) => [
+        color.cyan(att.app?.name || ''), color.green(att.name || ''),
+      ].join('::'))
         .sort(), 'Owning app': color.cyan(addon.app?.name ?? ''), 'Installed at': (new Date(addon.created_at ?? ''))
         .toString(), State: formatState(addon.state),
     })

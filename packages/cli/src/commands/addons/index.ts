@@ -48,7 +48,7 @@ async function addonGetter(api: APIClient, app?: string) {
 
   const groupedAttachments = _.groupBy<Heroku.AddOnAttachment>(potentialAttachments?.body, 'addon.id')
   const addons: Heroku.AddOn[] = []
-  addonsRaw.forEach(function (addon: Heroku.AddOn) {
+  addonsRaw.forEach((addon: Heroku.AddOn) => {
     addon.attachments = groupedAttachments[addon.id as string]  || []
     delete groupedAttachments[addon.id as string]
     if (isRelevantToApp(addon)) {
@@ -65,7 +65,7 @@ async function addonGetter(api: APIClient, app?: string) {
   // but it could also be due to certain types of permissions issues, so check
   // if the attachment looks relevant to the app, and then render whatever
   _.values(groupedAttachments)
-    .forEach(function (atts) {
+    .forEach(atts => {
       const inaccessibleAddon = {
         app: atts[0].addon.app, name: atts[0].addon.name, addon_service: {}, plan: {}, attachments: atts,
       }
@@ -94,38 +94,43 @@ function displayAll(addons: Heroku.AddOn[]) {
         get: ({name}) => color.magenta(name || ''),
       },
       Plan: {
-        get: function ({plan}) {
-          if (typeof plan === 'undefined')
+        get({plan}) {
+          if (plan === undefined)
             return color.dim('?')
           return plan.name
         },
       },
       Price: {
-        get: function ({plan}) {
-          if (typeof plan?.price === 'undefined')
+        get({plan}) {
+          if (plan?.price === undefined)
             return color.dim('?')
           return formatPrice({price: plan?.price, hourly: true})
         },
       },
       'Max Price': {
-        get: function ({plan}) {
-          if (typeof plan?.price === 'undefined')
+        get({plan}) {
+          if (plan?.price === undefined)
             return color.dim('?')
           return formatPrice({price: plan?.price, hourly: false})
         },
       },
       State: {
-        get: function ({state}) {
+        get({state}) {
           let result: string = state || ''
           switch (state) {
-          case 'provisioned':
+          case 'provisioned': {
             result = 'created'
             break
-          case 'provisioning':
+          }
+
+          case 'provisioning': {
             result = 'creating'
             break
-          case 'deprovisioned':
+          }
+
+          case 'deprovisioned': {
             result = 'errored'
+          }
           }
 
           return result
@@ -172,7 +177,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
     const addonLine = `${service} (${name})`
     const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
     // render each attachment under the add-on
-    const attLines = atts.map(function (attachment, idx) {
+    const attLines = atts.map((attachment, idx) => {
       const isFirst = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isFirst)
     })
@@ -187,12 +192,12 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
     {
       'Add-on': {get: presentAddon},
       Plan: {
-        get: ({plan}) => plan && plan.name !== undefined ?
-          plan.name.replace(/^[^:]+:/, '') :
-          color.dim('?'),
+        get: ({plan}) => plan && plan.name !== undefined
+          ? plan.name.replace(/^[^:]+:/, '')
+          : color.dim('?'),
       },
       Price: {
-        get: function (addon) {
+        get(addon) {
           if (addon.app?.name === app) {
             return formatPrice({price: addon.plan?.price, hourly: true})
           }
@@ -201,7 +206,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
         },
       },
       'Max Price': {
-        get: function (addon) {
+        get(addon) {
           if (addon.app?.name === app) {
             return formatPrice({price: addon.plan?.price, hourly: false})
           }

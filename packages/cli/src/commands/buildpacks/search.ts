@@ -44,13 +44,11 @@ export default class Search extends Command {
       category: Category;
       description: string;
     }
-    const buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => {
-      return {
-        buildpack: `${buildpack.namespace}/${buildpack.name}`,
-        category: buildpack.category,
-        description: buildpack.description,
-      }
-    })
+    const buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => ({
+      buildpack: `${buildpack.namespace}/${buildpack.name}`,
+      category: buildpack.category,
+      description: buildpack.description,
+    }))
     const displayTable = (buildpacks: TableRow[]) => {
       hux.table(buildpacks, {
         buildpack: {

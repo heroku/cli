@@ -28,4 +28,3 @@ describe('heroku ci:config:unset', function () {
     })
     .it('errors with example of valid args')
 })
-

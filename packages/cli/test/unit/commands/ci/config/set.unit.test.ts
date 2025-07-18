@@ -38,4 +38,3 @@ describe('heroku ci:config:set', function () {
     })
     .it('errors with explanation of required flags')
 })
-

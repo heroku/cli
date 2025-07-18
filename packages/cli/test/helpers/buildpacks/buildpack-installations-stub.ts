@@ -1,24 +1,21 @@
 import {FancyTypes} from '@oclif/test'
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace BuildpackInstallationsStub {
   export function get(nock: FancyTypes.NockScope, buildpacks?: Array<string | {url: string; name: string}>) {
     let response: any
 
     if (buildpacks && buildpacks.length > 0) {
       typeof (buildpacks[0]) === 'string' ? (
-        response = buildpacks.map((b, i) => {
-          return {
-            buildpack: {url: b},
-            ordinal: i,
-          }
-        })
+        response = buildpacks.map((b, i) => ({
+          buildpack: {url: b},
+          ordinal: i,
+        }))
       ) : (
-        response = buildpacks.map((b, i) => {
-          return {
-            buildpack: b,
-            ordinal: i,
-          }
-        })
+        response = buildpacks.map((b, i) => ({
+          buildpack: b,
+          ordinal: i,
+        }))
       )
     } else {
       response = []
@@ -40,9 +37,7 @@ export namespace BuildpackInstallationsStub {
     }> = []
 
     if (buildpacks) {
-      updates = buildpacks.map(b => {
-        return {buildpack: b}
-      })
+      updates = buildpacks.map(b => ({buildpack: b}))
       response = buildpacks.map((b, index) => {
         let buildpack: {url: string; name?: string} = {url: b}
 

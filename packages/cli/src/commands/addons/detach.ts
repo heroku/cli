@@ -13,11 +13,11 @@ export default class Detach extends Command {
 
   static args = {
     attachment_name: Args.string({required: true, description: 'unique identifier of the add-on attachment'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Detach)
-    const app = flags.app
+    const {app} = flags
     const {body: attachment} = await this.heroku.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments/${args.attachment_name}`)
 
     ux.action.start(`Detaching ${color.cyan(attachment.name || '')} to ${color.yellow(attachment.addon?.name || '')} from ${color.magenta(app)}`)

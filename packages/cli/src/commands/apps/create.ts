@@ -114,8 +114,8 @@ async function runFromFlags(context: Interfaces.ParserOutput, heroku: APIClient,
   async function addBuildpack(app: Heroku.App, buildpack: string) {
     ux.action.start(`Setting buildpack to ${color.cyan(buildpack)}`)
     await heroku.put(`/apps/${app.name}/buildpack-installations`, {
+      body: {updates: [{buildpack}]},
       headers: {Range: ''},
-      body: {updates: [{buildpack: buildpack}]},
     })
     ux.action.stop()
   }

@@ -6,6 +6,8 @@ import {HTTP} from '@heroku/http-call'
 
 import {maxBy} from '../lib/status/util.js'
 
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]
   let message = capitalize(status)
@@ -15,10 +17,6 @@ const printStatus = (status: string) => {
   }
 
   return colorize(message)
-}
-
-function capitalize(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
 export default class Status extends Command {

@@ -52,7 +52,7 @@ export function teamApp(locked = false) {
     .reply(200, {
       name: 'myapp',
       owner: {email: 'myteam@herokumanager.com'},
-      locked: locked,
+      locked,
     })
 }
 
@@ -90,7 +90,7 @@ export function teamInfo(type = 'enterprise') {
     .reply(200, {
       name: 'myteam',
       role: 'admin',
-      type: type,
+      type,
     })
 }
 
@@ -152,7 +152,7 @@ export function userFeatureFlags(features: any) {
 }
 
 export function variableSizeTeamInvites(teamSize: number) {
-  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  teamSize = ((teamSize) === undefined) ? 1 : teamSize
   const invites = []
   for (let i = 0; i < teamSize; i++) {
     invites.push({
@@ -168,7 +168,7 @@ export function variableSizeTeamInvites(teamSize: number) {
 }
 
 export function variableSizeTeamMembers(teamSize: number) {
-  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  teamSize = ((teamSize) === undefined) ? 1 : teamSize
   const teamMembers = []
   for (let i = 0; i < teamSize; i++) {
     teamMembers.push({

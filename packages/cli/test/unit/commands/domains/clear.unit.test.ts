@@ -16,4 +16,3 @@ describe('domains:clear', function () {
       expect(ctx.stderr).to.contain('Removing all domains from ⬢ myapp... done')
     })
 })
-
