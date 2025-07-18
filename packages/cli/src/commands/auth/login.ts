@@ -2,7 +2,6 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-/*
 export default class Login extends Command {
   static description = 'login with your Heroku credentials'
 

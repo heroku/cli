@@ -1,11 +1,10 @@
 import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-// import Cmd from '../../../../src/commands/accounts/index.js'
+import Cmd from '../../../../src/commands/accounts/index.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stdout} from 'stdout-stderr'
 
-/*
 describe('accounts', function () {
   let currentStub: sinon.SinonStub
   let listStub: sinon.SinonStub
@@ -34,5 +33,3 @@ describe('accounts', function () {
       })
   })
 })
-
-*/

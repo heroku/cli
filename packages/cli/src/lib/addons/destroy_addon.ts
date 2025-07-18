@@ -4,7 +4,6 @@ import {ux} from '@oclif/core'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-/*
 export default async function (heroku: APIClient, addon: Heroku.AddOn, force = false, wait = false) {
   const addonName = addon.name || ''
 
@@ -49,4 +48,3 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
 
   return addonResponse
 }
-*/

@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/pull.js'
+import Cmd from '../../../../src/commands/container/pull.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import {expect} from 'chai'
@@ -7,7 +7,6 @@ import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
 import nock from 'nock'
 import {Errors} from '@oclif/core'
 
-/*
 describe('container pull', function () {
   let sandbox: sinon.SinonSandbox
 
@@ -66,5 +65,3 @@ describe('container pull', function () {
     api.done()
   })
 })
-
-*/

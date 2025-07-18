@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/access/index'
+import Cmd from '../../../../src/commands/access/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {
   personalApp,
@@ -13,7 +13,6 @@ import {
 } from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('heroku access', function () {
   context('with personal app', function () {
     afterEach(function () {
@@ -54,5 +53,3 @@ describe('heroku access', function () {
     })
   })
 })
-
-*/

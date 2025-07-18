@@ -1,12 +1,11 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/rename.js'
+import Cmd from '../../../../src/commands/addons/rename.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 
-/*
 describe('addons:rename', function () {
   context('when the add-on exists', function () {
     let redis_name: string
@@ -38,5 +37,3 @@ describe('addons:rename', function () {
     })
   })
 })
-
-*/

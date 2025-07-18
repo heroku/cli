@@ -1,7 +1,6 @@
 import {expect, test} from '@oclif/test'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('authorizations', function () {
   const exampleAuthorization1 = {
     description: 'b description',
@@ -50,5 +49,3 @@ describe('authorizations', function () {
       })
   })
 })
-
-*/

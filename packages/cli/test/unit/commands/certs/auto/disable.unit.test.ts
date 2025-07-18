@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/certs/auto/disable.js'
+import Cmd from '../../../../../src/commands/certs/auto/disable.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
@@ -9,7 +9,6 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
-/*
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -43,5 +42,3 @@ describe('heroku certs:auto:disable', function () {
       })
   })
 })
-
-*/

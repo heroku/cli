@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
+import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import tsheredoc from 'tsheredoc'
@@ -7,7 +7,6 @@ import nock from 'nock'
 
 const heredoc = tsheredoc.default
 
-/*
 describe('heroku certs:auto:refresh', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -27,5 +26,3 @@ describe('heroku certs:auto:refresh', function () {
     expectOutput((stdout.output), '')
   })
 })
-
-*/

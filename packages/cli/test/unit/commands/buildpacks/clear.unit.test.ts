@@ -4,7 +4,6 @@ import nock from 'nock'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-/*
 describe('buildpacks:clear', function () {
   test
     .nock('https://api.heroku.com', (api: nock.Scope) => {
@@ -51,5 +50,3 @@ describe('buildpacks:clear', function () {
       expect(unwrap(ctx.stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
     })
 })
-
-*/

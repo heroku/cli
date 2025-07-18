@@ -104,7 +104,6 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
-/*
 describe('apps:info', function () {
   test
     .stdout()
@@ -450,5 +449,3 @@ stack=cedar-14
       expect(unwrap(stderr)).to.contains('')
     })
 })
-
-*/

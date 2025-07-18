@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/info.js'
+import Cmd from '../../../../src/commands/addons/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
@@ -8,7 +8,6 @@ import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 
 const {cache} = resolveAddon
 
-/*
 describe('addons:info', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -268,5 +267,3 @@ State:        destroying\n
     })
   })
 })
-
-*/

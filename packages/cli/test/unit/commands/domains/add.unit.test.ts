@@ -2,7 +2,6 @@ import {expect, test} from '@oclif/test'
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 import sinon from 'sinon'
 
-/*
 describe('domains:add', function () {
   const domainsResponse = {
     acm_status: null,
@@ -95,5 +94,3 @@ describe('domains:add', function () {
     })
   })
 })
-
-*/

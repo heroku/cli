@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/certs/info.js'
+import Cmd from '../../../../src/commands/certs/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import tsheredoc from 'tsheredoc'
@@ -19,7 +19,6 @@ import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default
 
-/*
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
     nock('https://api.heroku.com')
@@ -120,5 +119,3 @@ describe('heroku shared', function () {
 
   sharedSni.shouldHandleArgs('certs:info', Cmd, callback, {stderr, stdout})
 })
-
-*/

@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-// import Cmd from '../../../../src/commands/accounts/remove.js'
+import Cmd from '../../../../src/commands/accounts/remove.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
-/*
 describe('accounts:remove', function () {
   let currentStub: sinon.SinonStub
   let listStub: sinon.SinonStub
@@ -45,5 +44,3 @@ describe('accounts:remove', function () {
       })
   })
 })
-
-*/

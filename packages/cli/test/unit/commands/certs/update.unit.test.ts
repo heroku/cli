@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/certs/update.js'
+import Cmd from '../../../../src/commands/certs/update.js'
 import runCommand from '../../../helpers/runCommand.js'
 import tsheredoc from 'tsheredoc'
 import nock from 'nock'
@@ -10,7 +10,11 @@ import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
 import * as sinon from 'sinon'
 import {Errors} from '@oclif/core'
-/*
+import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
+import {SinonStub} from 'sinon'
+
+const heredoc = tsheredoc.default
+
 describe('heroku certs:update', function () {
   let stubbedGetCertAndKey: SinonStub
 
@@ -147,5 +151,3 @@ describe('shared', function () {
 
   sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {stdout, stderr, flags: {confirm: 'example'}, args: ['pem_file', 'key_file']})
 })
-
-*/

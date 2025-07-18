@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/certs/remove.js'
+import Cmd from '../../../../src/commands/certs/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import tsheredoc from 'tsheredoc'
 import nock from 'nock'
@@ -11,9 +11,10 @@ import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 
-/*
 describe('heroku certs:remove', function () {
   afterEach(function () {
+    nock.cleanAll()
+  })
 
   it('# deletes the endpoint', async function () {
     const api = nock('https://api.heroku.com')
@@ -76,5 +77,3 @@ describe('heroku shared', function () {
 
   sharedSni.shouldHandleArgs('certs:remove', Cmd, callback, {stderr, flags: {confirm: 'example'}})
 })
-
-*/

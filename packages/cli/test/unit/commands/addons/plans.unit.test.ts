@@ -1,12 +1,11 @@
 import {stdout} from 'stdout-stderr'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/addons/plans.js'
+import Cmd from '../../../../src/commands/addons/plans.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('addons:plans', function () {
   context('with non-metered plans', function () {
     beforeEach(function () {
@@ -62,5 +61,3 @@ describe('addons:plans', function () {
     })
   })
 })
-
-*/

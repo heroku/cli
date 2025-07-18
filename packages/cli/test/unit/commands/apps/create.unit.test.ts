@@ -1,8 +1,7 @@
 import {test, expect} from '@oclif/test'
 import sinon from 'sinon'
-// import CreateCommand from '../../../../src/commands/apps/create.js'
+import CreateCommand from '../../../../src/commands/apps/create.js'
 
-/*
 describe('apps:create', function () {
   test
     .stdout()
@@ -266,5 +265,3 @@ describe('apps:create', function () {
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     })
 })
-
-*/

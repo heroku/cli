@@ -2,7 +2,6 @@ import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test} from '@oclif/test'
 import nock from 'nock'
 
-/*
 describe('buildpacks:versions', function () {
   test
     .env({HEROKU_API_KEY: 'authtoken'})
@@ -43,5 +42,3 @@ describe('buildpacks:versions', function () {
     .catch('Problem fetching versions, 500: some error')
     .it('handles server error')
 })
-
-*/

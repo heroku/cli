@@ -39,10 +39,8 @@ export const shouldHandleArgs = (
 
   const additionalFlags = Object.entries(options?.flags || {}).map(([k, v]) => `--${k}=${v}`)
   const additionalArgs: string[] = options.args || []
-}
 
-/*
-describe(`${commandText}`, function () {
+  describe(`${commandText}`, function () {
     beforeEach(function () {
       nock.cleanAll()
     })
@@ -129,5 +127,3 @@ describe(`${commandText}`, function () {
     })
   })
 }
-
-*/

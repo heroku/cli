@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/attach.js'
+import Cmd from '../../../../src/commands/addons/attach.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -8,7 +8,6 @@ import sinon from 'sinon'
 
 let confirmStub: sinon.SinonStub
 
-/*
 describe('addons:attach', function () {
   beforeEach(function () {
     confirmStub = sinon.stub(ConfirmCommand.prototype, 'confirm').resolves()
@@ -167,5 +166,3 @@ describe('addons:attach', function () {
       .catch(error => expect(error.message).to.equal('Could not find credential hello for database postgres-123'))
   })
 })
-
-*/

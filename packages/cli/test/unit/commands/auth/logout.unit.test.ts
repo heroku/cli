@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('auth:logout', function () {
   test
     .stderr()
@@ -9,5 +8,3 @@ describe('auth:logout', function () {
       expect(stderr).to.equal('Logging out... done\n')
     })
 })
-
-*/

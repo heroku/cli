@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients:create', function () {
   const createResponse = {
     name: 'awesome',
@@ -35,5 +34,3 @@ describe('clients:create', function () {
       expect(ctx.stderr).to.contain('Creating awesome... done\n')
     })
 })
-
-*/

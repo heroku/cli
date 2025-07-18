@@ -3,7 +3,6 @@ import {promises as fs} from 'node:fs'
 const {readFile, writeFile, unlink} = fs
 const unlinkFile = unlink
 
-/*
 describe('ci:migrate-manifest', function () {
   let appJsonFileContents
   const appJsonPath = './app.json'
@@ -166,5 +165,3 @@ describe('ci:migrate-manifest', function () {
       expect(appJsonFileContents).to.deep.equal(mockConvertedAppJSONFileContents)
     })
 })
-
-*/

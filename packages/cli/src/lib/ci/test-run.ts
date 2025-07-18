@@ -13,7 +13,7 @@ import debug from 'debug'
 import ansiEscapes from 'ansi-escapes'
 const ciDebug = debug('ci')
 const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
-/*
+
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
 }
@@ -45,18 +45,29 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
   case 'creating':
   case 'building':
   case 'running':
-  case 'debugging':
+  case 'debugging': {
     return color.yellow('-')
-  case 'errored':
+  }
+
+  case 'errored': {
     return color.red('!')
-  case 'failed':
+  }
+
+  case 'failed': {
     return color.red('✗')
-  case 'succeeded':
+  }
+
+  case 'succeeded': {
     return color.green('✓')
-  case 'cancelled':
+  }
+
+  case 'cancelled': {
     return color.yellow('!')
-  default:
+  }
+
+  default: {
     return color.yellow('?')
+  }
   }
 }
 
@@ -283,4 +294,3 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     processExitCode(command, testNode)
   }
 }
-*/

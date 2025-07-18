@@ -4,7 +4,6 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import sinon from 'sinon'
 
-/*
 describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
     acm_status: null,
@@ -177,5 +176,3 @@ describe('domains', function () {
       expect(unwrap(ctx.stderr)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
     })
 })
-
-*/

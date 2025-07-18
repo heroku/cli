@@ -1,13 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/apps/join.js'
+import Cmd from '../../../../src/commands/apps/join.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
-/*
 describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope
   let apiPostCollaborators: nock.Scope
@@ -51,5 +50,3 @@ describe('heroku apps:join', function () {
     apiPostCollaborators.done()
   })
 })
-
-*/

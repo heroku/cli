@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/push.js'
+import Cmd from '../../../../src/commands/container/push.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -8,7 +8,6 @@ import nock from 'nock'
 import {color} from '@heroku-cli/color'
 import {Errors} from '@oclif/core'
 
-/*
 describe('container push', function () {
   let api: nock.Scope
   let sandbox: sinon.SinonSandbox
@@ -334,5 +333,3 @@ describe('container push', function () {
     expect(stdout.output).to.equal('')
   })
 })
-
-*/

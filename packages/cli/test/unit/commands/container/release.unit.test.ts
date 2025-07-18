@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/release.js'
+import Cmd from '../../../../src/commands/container/release.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import sinon from 'sinon'
@@ -8,7 +8,6 @@ import stdMocks from 'std-mocks'
 import {Errors} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 
-/*
 describe('container release', function () {
   let api: nock.Scope
   let sandbox: sinon.SinonSandbox
@@ -519,5 +518,3 @@ describe('container release', function () {
     })
   })
 })
-
-*/

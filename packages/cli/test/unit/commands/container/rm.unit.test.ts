@@ -1,12 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/container/rm.js'
+import Cmd from '../../../../src/commands/container/rm.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import {Errors} from '@oclif/core'
 
-/*
 describe('container removal', function () {
   let api: nock.Scope
 
@@ -93,5 +92,3 @@ describe('container removal', function () {
     })
   })
 })
-
-*/

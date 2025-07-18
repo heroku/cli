@@ -3,9 +3,8 @@ import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import sinon from 'sinon'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/addons/docs.js'
+import Cmd from '../../../../src/commands/addons/docs.js'
 
-/*
 describe('addons:docs', function () {
   let urlOpenerStub: sinon.SinonStub
 
@@ -76,5 +75,3 @@ describe('addons:docs', function () {
     api.done()
   })
 })
-
-*/

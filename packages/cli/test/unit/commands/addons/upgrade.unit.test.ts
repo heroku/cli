@@ -1,12 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/upgrade.js'
+import Cmd from '../../../../src/commands/addons/upgrade.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
 
-/*
 describe('addons:upgrade', function () {
   let api: ReturnType<typeof nock>
 
@@ -213,5 +212,3 @@ describe('addons:upgrade', function () {
     }
   })
 })
-
-*/

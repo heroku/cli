@@ -9,7 +9,6 @@ const testWithAuthorizationsCreate = (requestBody = {}) =>
         .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
     })
 
-/*
 describe('authorizations:create', function () {
   testWithAuthorizationsCreate({description: 'awesome'})
     .command(['authorizations:create', '--description', 'awesome'])
@@ -41,5 +40,3 @@ describe('authorizations:create', function () {
       })
   })
 })
-
-*/

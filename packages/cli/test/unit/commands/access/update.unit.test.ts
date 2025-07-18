@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/access/update'
+import Cmd from '../../../../src/commands/access/update.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
@@ -7,7 +7,6 @@ import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 import stripAnsi from 'strip-ansi'
 
-/*
 describe('heroku access:update', function () {
   context('with a team app with permissions', function () {
     afterEach(function () {
@@ -62,5 +61,3 @@ describe('heroku access:update', function () {
     })
   })
 })
-
-*/

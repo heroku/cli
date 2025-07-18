@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/apps/leave.js'
+import Cmd from '../../../../src/commands/apps/leave.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from '@oclif/test'
@@ -21,7 +21,6 @@ function mockCollaboratorsPersonalAppDeleteFailure(app: string, email: string) {
     .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`).reply(404, {})
 }
 
-/*
 describe('heroku apps:leave', function () {
   let apiGetUserAccount: ReturnType<typeof mockUserAccount>
   let apiDeletePersonalAppCollaborator: ReturnType<typeof mockCollaboratorsPersonalApp>
@@ -85,5 +84,3 @@ describe('heroku apps:leave', function () {
     })
   })
 })
-
-*/

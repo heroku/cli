@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('authorizations:update', function () {
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
@@ -30,5 +29,3 @@ describe('authorizations:update', function () {
       )
     })
 })
-
-*/

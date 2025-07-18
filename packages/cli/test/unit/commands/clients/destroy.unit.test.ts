@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('clients:destroy', function () {
   test
     .stdout()
@@ -14,4 +13,3 @@ describe('clients:destroy', function () {
     })
 })
 
-*/

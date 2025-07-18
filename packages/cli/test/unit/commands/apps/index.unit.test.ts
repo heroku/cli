@@ -71,11 +71,10 @@ const teamSpaceInternalApp = {
   internal_routing: true,
 }
 
-const euLockedApp = {}
-const euInternalApp = {}
-const euInternalLockedApp = {}
+let euLockedApp = {}
+let euInternalApp = {}
+let euInternalLockedApp = {}
 
-/*
 describe('apps', function () {
   describe('with no args', function () {
     test
@@ -374,5 +373,3 @@ describe('apps', function () {
       })
   })
 })
-
-*/

@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/addons/wait.js'
+import Cmd from '../../../../src/commands/addons/wait.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import nock from 'nock'
@@ -11,7 +11,6 @@ import lolex from 'lolex'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
-/*
 describe('addons:wait', function () {
   let sandbox: any
 
@@ -333,5 +332,3 @@ Created www-redis as REDIS_URL
     })
   })
 })
-
-*/

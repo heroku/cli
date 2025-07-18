@@ -2,7 +2,6 @@ import {expect, test} from '@oclif/test'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
 
-/*
 describe('apps:open', function () {
   const app = {
     web_url: 'https://myapp.herokuapp.com',
@@ -57,5 +56,3 @@ describe('apps:open', function () {
       })
   })
 })
-
-*/

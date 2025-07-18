@@ -1,7 +1,7 @@
 import {stderr, stdout} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/access/add'
+import Cmd from '../../../../src/commands/access/add.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
 import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'
@@ -9,7 +9,7 @@ import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.j
 let apiGet: nock.Scope
 let apiPost: nock.Scope
 let apiGetOrgFeatures: nock.Scope
-/*
+
 describe('heroku access:add', function () {
   context('with a team app with user permissions', function () {
     beforeEach(function () {
@@ -115,5 +115,3 @@ describe('heroku access:add', function () {
     })
   })
 })
-
-*/

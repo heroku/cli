@@ -5,7 +5,6 @@ import nock from 'nock'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-/*
 describe('buildpacks:remove', function () {
   describe('-i INDEX', function () {
     test
@@ -283,5 +282,3 @@ Run git push heroku main to create a new release using these buildpacks.
       .it('# returns an error message neither i or url are specified')
   })
 })
-
-*/
