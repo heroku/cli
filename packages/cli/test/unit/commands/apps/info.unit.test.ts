@@ -153,6 +153,7 @@ describe('apps:info', function () {
 
 --- Extended Information ---
 
+
 { foo: 'bar', id: 12345 }
 `)
       expect(unwrap(stderr)).to.contains('')
@@ -178,6 +179,7 @@ describe('apps:info', function () {
       expect(stdout).to.equal(`${BASE_INFO}
 
 --- Extended Information ---
+
 
 `)
       expect(unwrap(stderr)).to.contains('')
