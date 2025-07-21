@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {trapConfirmationRequired} from '../../lib/addons/util.js'
 
+/*
 export default class Attach extends Command {
   static topic = 'addons'
   static description = 'attach an existing add-on resource to an app'
@@ -54,3 +55,4 @@ export default class Attach extends Command {
     ux.action.stop(`done, v${releases[0].version}`)
   }
 }
+*/

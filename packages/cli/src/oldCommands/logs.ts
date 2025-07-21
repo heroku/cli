@@ -1,4 +1,3 @@
-
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'

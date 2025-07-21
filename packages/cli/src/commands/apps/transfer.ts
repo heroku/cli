@@ -9,19 +9,19 @@ import {appTransfer} from '../../lib/apps/app-transfer.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
 
 export default class AppsTransfer extends Command {
-  static topic = 'apps';
-  static description = 'transfer applications to another user or team';
+  static topic = 'apps'
+  static description = 'transfer applications to another user or team'
   static flags = {
     locked: flags.boolean({char: 'l', required: false, description: 'lock the app upon transfer'}),
     bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
     app: flags.app(),
     remote: flags.remote({char: 'r'}),
     confirm: flags.string({char: 'c', hidden: true}),
-  };
+  }
 
   static args = {
     recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
-  };
+  }
 
   static examples = [`$ heroku apps:transfer collaborator@example.com
 Transferring example to collaborator@example.com... done
@@ -38,18 +38,16 @@ $ heroku apps:transfer --bulk acme-widgets
       name: 'choices',
       pageSize: 20,
       message: 'Select applications you would like to transfer',
-      choices: apps.map(function (app) {
-        return {
-          name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
-        }
-      }),
+      choices: apps.map(app => ({
+        name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
+      })),
     }])
   }
 
   public async run() {
     const {flags, args} = await this.parse(AppsTransfer)
     const {app, bulk, locked, confirm} = flags
-    const recipient = args.recipient
+    const {recipient} = args
     if (bulk) {
       const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
       const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')))
@@ -59,7 +57,7 @@ $ heroku apps:transfer --bulk acme-widgets
           await appTransfer({
             heroku: this.heroku,
             appName: app.name,
-            recipient: recipient,
+            recipient,
             personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
             bulk: true,
           })

@@ -23,17 +23,11 @@ describe('config:edit', function () {
     beforeEach(function () {
       sandbox = sinon.createSandbox()
       sandbox.stub(Editor.prototype, 'edit')
-        .callsFake(() => {
-          return Promise.resolve(editedConfig)
-        })
+        .callsFake(() => Promise.resolve(editedConfig))
       sandbox.stub(hux, 'confirm')
-        .value(() => {
-          return Promise.resolve(true)
-        })
+        .value(() => Promise.resolve(true))
       sandbox.stub(ux, 'stdout')
-        .value(() => {
-          return Promise.resolve()
-        })
+        .value(() => Promise.resolve())
       sandbox.stub(ux.action, 'start')
         .value(() => {})
       sandbox.stub(ux.action, 'stop')

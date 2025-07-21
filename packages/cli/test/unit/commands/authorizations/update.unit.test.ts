@@ -21,11 +21,11 @@ describe('authorizations:update', function () {
     )
     .it('updates the authorization', ctx => {
       expect(ctx.stdout).to.eq(
-        'Client:      <none>\n' +
-        'ID:          100\n' +
-        'Description: awesome\n' +
-        'Scope:       global\n' +
-        'Token:       secrettoken\n',
+        'Client:      <none>\n'
+        + 'ID:          100\n'
+        + 'Description: awesome\n'
+        + 'Scope:       global\n'
+        + 'Token:       secrettoken\n',
       )
     })
 })

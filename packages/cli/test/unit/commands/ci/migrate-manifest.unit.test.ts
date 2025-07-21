@@ -1,8 +1,7 @@
 import {expect, test} from '@oclif/test'
 import {promises as fs} from 'node:fs'
-const writeFile = fs.writeFile
-const unlinkFile = fs.unlink
-const readFile = fs.readFile
+const {readFile, writeFile, unlink} = fs
+const unlinkFile = unlink
 
 describe('ci:migrate-manifest', function () {
   let appJsonFileContents

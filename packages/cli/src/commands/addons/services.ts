@@ -5,11 +5,11 @@ import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Services extends Command {
-  static topic = 'addons';
-  static description = 'list all available add-on services';
+  static topic = 'addons'
+  static description = 'list all available add-on services'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Services)

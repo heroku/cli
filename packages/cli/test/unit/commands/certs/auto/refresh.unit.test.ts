@@ -26,4 +26,3 @@ describe('heroku certs:auto:refresh', function () {
     expectOutput((stdout.output), '')
   })
 })
-

@@ -1,5 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-// import type {SpaceTopology} from '../../../src/commands/spaces/topology'
+// import type {SpaceTopology} from '../../../src/commands/spaces/topology.js'
 import {SpaceWithOutboundIps} from '../../../src/lib/types/spaces.js'
 
 // export const spaces: Record<string, SpaceWithOutboundIps> = {

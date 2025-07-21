@@ -52,15 +52,13 @@ export class BuildpackCommand {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
-      buildpacks = ociImages[0].buildpacks.map((b, index) => {
-        return {
-          buildpack: {
-            url: b.id || b.homepage,
-            name: b.id,
-          },
-          ordinal: index,
-        }
-      })
+      buildpacks = ociImages[0].buildpacks.map((b, index) => ({
+        buildpack: {
+          url: b.id || b.homepage,
+          name: b.id,
+        },
+        ordinal: index,
+      }))
     } else {
       const {body: buildpackInstallations} = await this.heroku.get(`/apps/${app}/buildpack-installations`)
       buildpacks = buildpackInstallations
@@ -115,9 +113,7 @@ export class BuildpackCommand {
 
   async findUrl(buildpacks: BuildpackResponse[], buildpack: string): Promise<number> {
     const mappedUrl = await this.registryNameToUrl(buildpack)
-    return _.findIndex(buildpacks, (b: BuildpackResponse) => {
-      return b.buildpack.url === buildpack || b.buildpack.url === mappedUrl
-    })
+    return _.findIndex(buildpacks, (b: BuildpackResponse) => b.buildpack.url === buildpack || b.buildpack.url === mappedUrl)
   }
 
   async validateUrlNotSet(buildpacks: BuildpackResponse[], buildpack: string) {
@@ -128,18 +124,14 @@ export class BuildpackCommand {
 
   findIndex(buildpacks: BuildpackResponse[], index?: number) {
     if (index) {
-      return _.findIndex(buildpacks, function (b: BuildpackResponse) {
-        return b.ordinal + 1 === index
-      })
+      return _.findIndex(buildpacks, (b: BuildpackResponse) => b.ordinal + 1 === index)
     }
 
     return -1
   }
 
   async mutate(app: string, buildpacks: BuildpackResponse[], spliceIndex: number, buildpack: string, command: 'add' | 'set' | 'remove'): Promise<BuildpackResponse[]> {
-    const buildpackUpdates = buildpacks.map(function (b: BuildpackResponse) {
-      return {buildpack: b.buildpack.url}
-    })
+    const buildpackUpdates = buildpacks.map((b: BuildpackResponse) => ({buildpack: b.buildpack.url}))
 
     const howmany = (command === 'add') ? 0 : 1
     const urls = (command === 'remove') ? [] : [{buildpack: await this.registryNameToUrl(buildpack)}]

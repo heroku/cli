@@ -6,12 +6,15 @@
     "oclif-typescript",
     "plugin:mocha/recommended"
   ],
-  "ignorePatterns": ["**/test/**/*.js"],
+  "ignorePatterns": ["**/test/**/*.js", "**/oldCommands/**/*"],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": ["warn", {"ignoreRestSiblings": true}], // TODO: fix issues and turn this back on
     "camelcase":"off",
+    "import/default": "warn",
+    "import/namespace": "warn",
     "import/no-unresolved": "error",
     "indent": ["error", 2, {"MemberExpression": 1}],
     "func-names":"warn", // TODO: fix issues and turn this back on
@@ -27,8 +30,18 @@
     "no-promise-executor-return": "warn", // TODO: fix issues and turn this back on
     "no-prototype-builtins": "warn", // TODO: fix issues and turn this back on
     "no-return-await":"warn", // TODO: fix issues and turn this back on
-    "node/no-deprecated-api": "warn", // TODO: fix issues and turn this back on
+    "n/no-deprecated-api": "warn", // TODO: fix issues and turn this back on
     "node/no-missing-import": "off", // using import/no-unresolved instead
+    "object-curly-newline": "warn",
+    "perfectionist/sort-classes": "warn",
+    "perfectionist/sort-imports": "warn",
+    "perfectionist/sort-interfaces": "warn",
+    "perfectionist/sort-intersection-types": "warn",
+    "perfectionist/sort-named-imports": "warn",
+    "perfectionist/sort-object-types": "warn",
+    "perfectionist/sort-objects": "warn",
+    "perfectionist/sort-union-types": "warn",
+    "prefer-object-spread": "warn",
     "radix":"warn", // TODO: fix issues and turn this back on
     "wrap-iife": "warn", // TODO: fix issues and turn this back on
     "unicorn/better-regex": "off", // TODO: fix issues and turn this back on
@@ -39,16 +52,19 @@
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "warn", // TODO: fix issues and turn this back on
+    "unicorn/no-empty-file": "warn",
     "unicorn/no-lonely-if":"off",
     "unicorn/no-process-exit": "off",
     "unicorn/no-useless-undefined": "warn", // TODO: fix issues and turn this back on
     "unicorn/numeric-separators-style":"off",
     "unicorn/prefer-array-some": "warn", // TODO: fix issues and turn this back on
+    "unicorn/prefer-event-target": "warn",
     "unicorn/prefer-module": "off",
     "unicorn/prefer-node-protocol": "off",
     "unicorn/prefer-object-from-entries": "warn", // TODO: fix issues and turn this back on
     "unicorn/prefer-regexp-test": "off",
     "unicorn/prefer-spread": "off", // TODO: fix issues and turn this back on
+    "unicorn/prefer-string-replace-all": "warn",
     "unicorn/prefer-string-slice": "warn", // TODO: fix issues and turn this back on
     "unicorn/prefer-ternary": "off" // TODO: fix issues and turn this back on
   },
@@ -66,6 +82,13 @@
             "project": "packages/*/tsconfig.json"
           }
         }
+      }
+    },
+    {
+      "files": ["**/test/**/*.ts", "**/test/**/*.js", "test/**/*.ts", "test/**/*.js"],
+      "rules": {
+        "prefer-arrow-callback": "off",
+        "mocha/prefer-arrow-callback": "off"
       }
     }
   ]

@@ -26,11 +26,11 @@ export default class Info extends Command {
 
     const result = await registry.info(args.buildpack)
     Result.match({
-      Ok: (buildpack: unknown) => {
+      Ok(buildpack: unknown) {
         hux.styledHeader(args.buildpack)
         hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
       },
-      Err: (err: any) => {
+      Err(err: any) {
         if (err.status === 404) {
           ux.error(`Could not find the buildpack '${args.buildpack}'`)
         } else {

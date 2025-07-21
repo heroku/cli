@@ -32,10 +32,8 @@ export default class Versions extends Command {
 
     const result = await registry.listVersions(args.buildpack)
     Result.match({
-      Ok: (versions: RevisionBody[]) => {
-        hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => {
-          return a.release > b.release ? -1 : 1
-        }), {
+      Ok(versions: RevisionBody[]) {
+        hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => a.release > b.release ? -1 : 1), {
           release: {
             header: 'Version',
           },
@@ -47,7 +45,7 @@ export default class Versions extends Command {
           },
         })
       },
-      Err: (err: any) => {
+      Err(err: any) {
         if (err.status === 404) {
           ux.error(`Could not find '${args.buildpack}'`)
         } else {

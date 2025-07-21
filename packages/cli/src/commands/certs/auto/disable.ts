@@ -7,13 +7,13 @@ import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
 export default class Disable extends Command {
-  static topic = 'certs';
-  static description = 'disable ACM for an app';
+  static topic = 'certs'
+  static description = 'disable ACM for an app'
   static flags = {
     confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Disable)

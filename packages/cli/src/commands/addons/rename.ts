@@ -4,13 +4,13 @@ import * as Heroku from '@heroku-cli/schema'
 import {color} from '@heroku-cli/color'
 
 export default class Rename extends Command {
-  static topic = 'addons';
-  static description = 'rename an add-on';
+  static topic = 'addons'
+  static description = 'rename an add-on'
 
   static args = {
     addon_name: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
     new_name: Args.string({required: true, description: 'new globally unique name of the add-on'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {args} = await this.parse(Rename)

@@ -5,6 +5,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import {getDomains, waitForDomains, printDomains, waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
 import notify from '../../../lib/notify.js'
 
+/*
 export default class Enable extends Command {
   static topic = 'certs'
   static description = 'enable ACM status for an app'
@@ -55,3 +56,4 @@ export default class Enable extends Command {
     }
   }
 }
+*/
