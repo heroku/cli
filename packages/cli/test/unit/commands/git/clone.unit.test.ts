@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('git:clone', function () {
   test
     .stderr()
@@ -10,5 +9,3 @@ describe('git:clone', function () {
     })
     .it('errors if no app given')
 })
-
-*/

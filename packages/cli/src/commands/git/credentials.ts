@@ -1,6 +1,5 @@
-/*
 import {Command} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 
 export class GitCredentials extends Command {
   static hidden = true
@@ -14,20 +13,24 @@ export class GitCredentials extends Command {
   async run() {
     const {args} = await this.parse(GitCredentials)
     switch (args.command) {
-    case 'get':
+    case 'get': {
       if (!this.heroku.auth) throw new Error('not logged in')
-      this.log(`protocol=https
+      ux.stdout(`protocol=https
 host=git.heroku.com
 username=heroku
 password=${this.heroku.auth}`)
       break
+    }
+
     case 'erase':
-    case 'store':
+    case 'store': {
       // ignore
       break
-    default:
+    }
+
+    default: {
       throw new Error(`unknown command: ${args.command}`)
+    }
     }
   }
 }
-*/
