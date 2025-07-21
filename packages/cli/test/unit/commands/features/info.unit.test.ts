@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('features:info', function () {
   test
     .stderr()
@@ -21,5 +20,3 @@ Enabled:     true
       expect(stderr).to.equal('')
     })
 })
-
-*/

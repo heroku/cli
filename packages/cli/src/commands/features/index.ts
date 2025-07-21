@@ -1,7 +1,6 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 import {sortBy} from 'lodash'
@@ -32,10 +31,8 @@ export default class Features extends Command {
         let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest)}`
         if (f.enabled) line = color.green(line)
         line = `${line}  ${f.description}`
-        ux.log(line)
+        ux.stdout(line)
       }
     }
   }
 }
-
-*/

@@ -1,6 +1,5 @@
-/*
 import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
@@ -34,5 +33,3 @@ export default class Disable extends Command {
     ux.action.stop()
   }
 }
-
-*/
