@@ -55,5 +55,5 @@ export default function (endpoints: SniEndpoint[]) {
     columns.associated_domains = {header: 'Domains'}
   }
 
-  // hux.table(mapped, columns)
+  hux.table(mapped, columns)
 }

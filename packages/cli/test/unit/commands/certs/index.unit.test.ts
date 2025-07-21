@@ -18,6 +18,8 @@ const heredoc = tsheredoc.default
 describe('heroku certs', function () {
   it('warns about no SSL certificates if the app has no certs', async function () {
     nock('https://api.heroku.com')
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [])
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, '')
     expectOutput(stdout.output, heredoc(`
