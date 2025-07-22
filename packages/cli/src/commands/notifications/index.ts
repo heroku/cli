@@ -1,22 +1,21 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {Notifications} from '../../lib/types/notifications'
-import * as time from '../../lib/time'
-import * as wrap from 'word-wrap'
+import {Notifications} from '../../lib/types/notifications.js'
+import * as time from '../../lib/time.js'
+import wrap from 'word-wrap'
 
 function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
   const read = readNotification ? 'Read' : 'Unread'
   hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
   for (const n of notifications) {
-    ux.log(color.yellow(`\n${n.title}\n`))
-    ux.log(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
+    ux.stdout(color.yellow(`\n${n.title}\n`))
+    ux.stdout(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
     for (const followup of n.followup) {
-      ux.log()
-      ux.log(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`, {width: 80}))
+      ux.stdout()
+      ux.stdout(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`, {width: 80}))
     }
   }
 }
@@ -53,11 +52,10 @@ export default class NotificationsIndex extends Command {
 
     if (notifications.length === 0) {
       if (flags.read) {
-        if (app) ux.log(`You have no notifications on ${color.green(app.name!)}.\nRun heroku notifications --all to view notifications for all apps.`)
-        else ux.log('You have no notifications.')
-      } else if (app) ux.log(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
-      else ux.log(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
+        if (app) ux.stdout(`You have no notifications on ${color.green(app.name!)}.\nRun heroku notifications --all to view notifications for all apps.`)
+        else ux.stdout('You have no notifications.')
+      } else if (app) ux.stdout(`No unread notifications on ${color.green(app.name!)}.\nRun ${color.cmd('heroku notifications --all')} to view notifications for all apps.`)
+      else ux.stdout(`No unread notifications.\nRun ${color.cmd('heroku notifications --read')} to view read notifications.`)
     } else displayNotifications(notifications, app!, flags.read)
   }
 }
-*/
