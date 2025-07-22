@@ -1,5 +1,5 @@
 import {vars} from '@heroku-cli/command'
-import cp from 'child_process'
+import cp from 'node:child_process'
 import {ux} from '@oclif/core'
 import fs from 'fs'
 import {promisify} from 'node:util'
@@ -74,11 +74,11 @@ export default class Git {
     const ref = await this.getRef(commit)
     const message = await this.getCommitTitle(ref)
 
-    return Promise.resolve({
-      branch: branch,
-      ref: ref,
-      message: message,
-    })
+    return {
+      branch,
+      message,
+      ref,
+    }
   }
 
   inGitRepo() {
@@ -92,12 +92,13 @@ export default class Git {
 
   hasGitRemote(remote: string) {
     return this.remoteUrl(remote)
+      // eslint-disable-next-line unicorn/prefer-native-coercion-functions
       .then((remote?: string) => Boolean(remote))
   }
 
   createRemote(remote: string, url: string) {
     return this.hasGitRemote(remote)
-      .then(exists => !exists ? this.exec(['remote', 'add', remote, url]) : null)
+      .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
   }
 }
 

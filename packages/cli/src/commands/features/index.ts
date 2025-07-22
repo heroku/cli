@@ -1,10 +1,8 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
-import {sortBy} from 'lodash'
 
 export default class Features extends Command {
   static description = 'list available app features'
@@ -20,7 +18,7 @@ export default class Features extends Command {
 
     let {body: features} = await this.heroku.get<Heroku.AppFeature[]>(`/apps/${app}/features`)
     features = features.filter(f => f.state === 'general')
-    features = sortBy(features, 'name')
+    features = features.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 
     if (json) {
       hux.styledJSON(features)
@@ -32,10 +30,8 @@ export default class Features extends Command {
         let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest)}`
         if (f.enabled) line = color.green(line)
         line = `${line}  ${f.description}`
-        ux.log(line)
+        ux.stdout(line)
       }
     }
   }
 }
-
-*/

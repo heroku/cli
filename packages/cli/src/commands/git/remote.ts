@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import Git from '../../lib/git/git'
+import Git from '../../lib/git/git.js'
 
 export class GitRemote extends Command {
   static description = `adds a git remote to an app repo
@@ -47,4 +46,3 @@ extra arguments will be passed to git remote add
     this.log(`set git remote ${color.cyan(remote)} to ${color.cyan(newRemote)}`)
   }
 }
-*/
