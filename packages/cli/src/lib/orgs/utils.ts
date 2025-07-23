@@ -1,13 +1,11 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import * as _ from 'lodash'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 export const printGroups = function (teams: Heroku.Team[], type: {label: string}) {
-  const typeLabel = type.label ? type.label : 'Team'
-  teams = _.sortBy(teams, 'name')
+  const typeLabel = type.label ?? 'Team'
+  teams = teams.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 
   hux.table(
     teams,
@@ -24,6 +22,5 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
 }
 
 export const printGroupsJSON = function (teams: Heroku.Team[]) {
-  ux.log(JSON.stringify(teams, null, 2))
+  ux.stdout(JSON.stringify(teams, null, 2))
 }
-*/

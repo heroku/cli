@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('sessions:destroy', function () {
   test
     .stderr()
@@ -16,5 +15,3 @@ describe('sessions:destroy', function () {
       )
     })
 })
-
-*/

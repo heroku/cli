@@ -1,11 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
-// import Cmd from '../../../../src/commands/orgs'
+import nock from 'nock'
+import Cmd from '../../../../src/commands/orgs/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {teams} from '../../../helpers/stubs/get.js'
 
-/*
 describe('heroku teams', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -31,5 +30,3 @@ describe('heroku teams', function () {
       .then(() => apiGetTeamsOnly.done())
   })
 })
-
-*/

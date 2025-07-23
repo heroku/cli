@@ -1,11 +1,10 @@
-// import Cmd from '../../../../src/commands/orgs/open'
+import Cmd from '../../../../src/commands/orgs/open.js'
 import runCommand from '../../../helpers/runCommand.js'
 import sinon from 'sinon'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import {teamInfo} from '../../../helpers/stubs/get.js'
 
-/*
 describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope
   let urlOpenerStub: sinon.SinonStub
@@ -39,5 +38,3 @@ describe('heroku org:open', function () {
       .then(() => expect(urlOpenerStub.called).to.equal(true))
   })
 })
-
-*/

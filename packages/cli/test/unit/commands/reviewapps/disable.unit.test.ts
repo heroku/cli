@@ -1,7 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-/*
-describe('reviewapps:disable', function () {
+describe.only('reviewapps:disable', function () {
   const pipeline = {
     id: '123-pipeline',
     name: 'my-pipeline',
@@ -282,5 +281,3 @@ describe('reviewapps:disable', function () {
       })
   })
 })
-
-*/
