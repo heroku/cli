@@ -11,11 +11,12 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
     teams,
     {
       name: {
-        header: typeLabel,
         get: ({name}: any): string => color.green(name),
+        header: typeLabel,
       },
       role: {
         get: ({role}: any): string => role,
+        header: 'Role',
       },
     },
   )
