@@ -29,8 +29,13 @@ export default class SessionsIndex extends Command {
       ux.stdout('No OAuth sessions.')
     } else {
       hux.table(sessions, {
-        description: {get: (v: any) => color.green(v.description)},
-        id: {},
+        description: {
+          get: (v: any) => color.green(v.description),
+          header: 'Description',
+        },
+        id: {
+          header: 'ID',
+        },
       })
     }
   }
