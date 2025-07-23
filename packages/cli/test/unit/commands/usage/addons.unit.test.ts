@@ -131,7 +131,7 @@ describe('usage:addons', function () {
       const expectedColumnHeader = removeAllWhitespace('Add-on    Meter        Quantity')
       const expectedOne = removeAllWhitespace('redis-123 Data Storage 2.5')
       const expectedHeaderTwo = removeAllWhitespace('=== Usage for ⬢ App Two')
-      const expectedTwo = 'redis-456 Data Storage 5'
+      const expectedTwo = removeAllWhitespace('redis-456 Data Storage 5')
 
       expect(actual).to.contain(expectedHeaderOne)
       expect(actual).to.contain(expectedColumnHeader)
