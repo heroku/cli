@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 import * as child_process from 'node:child_process'
-import {EventEmitter} from 'node:stream'
+import {EventEmitter} from 'node:events'
 import {join} from 'path'
 import * as sinon from 'sinon'
 import MCPStart from '../../../../src/commands/mcp/start.js'
