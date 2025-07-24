@@ -1,17 +1,16 @@
-/*
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {flags, Command} from '@heroku-cli/command'
-import * as  inquirer from 'inquirer'
-import * as  path from 'path'
-import * as os from 'os'
-import * as fs from 'fs-extra'
+import inquirer from 'inquirer'
+import path from 'node:path'
+import os from 'node:os'
+import fs from 'fs-extra'
+import {spawn} from 'node:child_process'
 
 function sshKeygen(file: string, quiet: boolean) {
-  const spawn = require('child_process').spawn
-  return new Promise(function (resolve, reject) {
-    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
+  return new Promise((resolve, reject) => {
+    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? 'ignore' : 'inherit'})
       .on('close', (code: number) => code === 0 ? resolve(null) : reject(code))
   })
 }
@@ -21,7 +20,7 @@ async function confirmPrompt(message: string) {
     return inquirer.prompt([{
       type: 'confirm',
       name: 'yes',
-      message: message,
+      message,
     }])
   }
 
@@ -81,7 +80,7 @@ Uploading SSH public key /my/key.pub... done`
 
       if (keys.length === 1) {
         const key = keys[0]
-        ux.log(`Found an SSH public key at ${color.cyan(key)}`)
+        ux.stdout(`Found an SSH public key at ${color.cyan(key)}`)
 
         if (!flags.yes) {
           const resp = await confirmPrompt('Would you like to upload it to Heroku?')
@@ -100,7 +99,7 @@ Uploading SSH public key /my/key.pub... done`
       return resp.key
     }
 
-    let key = args.key
+    let {key} = args
     if (!key) key = await findKey()
     if (!key) throw new Error('No key to upload')
     ux.action.start(`Uploading ${color.cyan(key)} SSH key`)
@@ -113,4 +112,3 @@ Uploading SSH public key /my/key.pub... done`
     ux.action.stop()
   }
 }
-*/

@@ -1,13 +1,14 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/telemetry'
+import Cmd from '../../../../src/commands/telemetry/index.js'
 import runCommand from '../../../helpers/runCommand.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('telemetry:index', function () {
   let appId: string
   let spaceId: string
@@ -74,5 +75,3 @@ describe('telemetry:index', function () {
     `))
   })
 })
-
-*/

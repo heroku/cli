@@ -4,7 +4,6 @@ import * as sinon from 'sinon'
 
 const promptStub = sinon.stub()
 
-/*
 describe('labs:disable', function () {
   test
     .nock('https://api.heroku.com', api => api
@@ -80,5 +79,3 @@ describe('labs:disable', function () {
       expect(stderr).to.contain('Disabling feature-a for myapp...')
     })
 })
-
-*/

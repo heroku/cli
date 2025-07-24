@@ -1,12 +1,10 @@
 import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import * as rimraf from 'rimraf'
-import * as fs from 'fs-extra'
-import * as path from 'path'
-import * as inquirer from 'inquirer'
-import * as os from 'os'
+import fs from 'fs-extra'
+import path from 'node:path'
+import inquirer from 'inquirer'
+import os from 'node:os'
 
-/*
 describe('keys:add', function () {
   const home = path.join('tmp', 'home')
   const sshDir = path.join(home, '.ssh')
@@ -95,5 +93,3 @@ describe('keys:add', function () {
       })
   })
 })
-
-*/

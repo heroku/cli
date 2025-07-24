@@ -66,19 +66,19 @@ export default class ReviewappsDisable extends Command {
 
     // flags.autodeploy are back supported
     if (flags['no-autodeploy'] || flags.autodeploy) {
-      this.log('Disabling auto deployment...')
+      ux.stdout('Disabling auto deployment...')
       settings.automatic_review_apps = false
     }
 
     // flags.autodestroy are back supported
     if (flags['no-autodestroy'] || flags.autodestroy) {
-      this.log('Disabling auto destroy...')
+      ux.stdout('Disabling auto destroy...')
       settings.destroy_stale_apps = false
     }
 
     // flags['wait-for-ci'] are back supported
     if (flags['no-wait-for-ci'] || flags['wait-for-ci']) {
-      this.log('Disabling wait for CI...')
+      ux.stdout('Disabling wait for CI...')
       settings.wait_for_ci = false
     }
 
