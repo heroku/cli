@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command} from '@heroku-cli/command'
 import {spawn as cpSpawn} from 'node:child_process'
 import {join} from 'path'
 import {fileURLToPath} from 'node:url'

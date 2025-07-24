@@ -6,7 +6,7 @@ describe('labs:enable', function () {
     .stderr()
     .nock('https://api.heroku.com:443', api => api
       .get('/account')
-      .reply(200, {email: 'jeff@heroku.com'})
+      .reply(200, {email: 'gandalf@heroku.com'})
       .get('/account/features/feature-a')
       .reply(200, {
         enabled: false,
@@ -20,7 +20,7 @@ describe('labs:enable', function () {
     .command(['labs:enable', 'feature-a'])
     .it('enables a user lab feature', ({stdout, stderr}) => {
       expect(stdout).to.be.empty
-      expect(stderr).to.equal('Enabling feature-a for jeff@heroku.com...\nEnabling feature-a for jeff@heroku.com... done\n')
+      expect(stderr).to.equal('Enabling feature-a for gandalf@heroku.com... done\n')
     })
 
   test

@@ -35,7 +35,6 @@
     "@opentelemetry/sdk-trace-base": "^1.15.1",
     "@opentelemetry/sdk-trace-node": "^1.15.1",
     "@opentelemetry/semantic-conventions": "^1.24.1",
-    "@types/js-yaml": "^3.12.5",
     "@types/tunnel-ssh": "4.1.1",
     "ansi-escapes": "3.2.0",
     "bytes": "^3.1.2",

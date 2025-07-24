@@ -39,7 +39,6 @@ describe('telemetry:remove', function () {
       spaceTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${spaceTelemetryDrain1.id}...
       Removing telemetry drain ${spaceTelemetryDrain1.id}... done
     `))
   })
@@ -56,7 +55,6 @@ describe('telemetry:remove', function () {
       appTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${appTelemetryDrain1.id}...
       Removing telemetry drain ${appTelemetryDrain1.id}... done
     `))
   })
@@ -76,7 +74,6 @@ describe('telemetry:remove', function () {
       '--app', appId,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing all telemetry drains from app ${appId}...
       Removing all telemetry drains from app ${appId}... done
     `))
   })
@@ -93,7 +90,6 @@ describe('telemetry:remove', function () {
       '--space', spaceId,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing all telemetry drains from space ${spaceId}...
       Removing all telemetry drains from space ${spaceId}... done
     `))
   })

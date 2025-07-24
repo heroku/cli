@@ -30,7 +30,6 @@ describe('telemetry:update', function () {
       'logs',
     ])
     expectOutput(stderr.output, heredoc(`
-      Updating telemetry drain ${appTelemetryDrain1.id}...
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -80,7 +79,6 @@ describe('telemetry:update', function () {
       'grpc',
     ])
     expectOutput(stderr.output, heredoc(`
-      Updating telemetry drain ${appTelemetryDrain1.id}...
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
     expectOutput(stdout.output, heredoc(`

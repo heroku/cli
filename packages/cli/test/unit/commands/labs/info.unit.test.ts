@@ -15,7 +15,7 @@ describe('labs:info', function () {
     )
     .command(['labs:info', 'feature-a'])
     .it('shows user labs feature info', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== feature-a\n\nDescription: a user lab feature\nDocs:        https://devcenter.heroku.com\nEnabled:     true\n')
+      expect(stdout).to.equal('=== feature-a\n\nDescription: a user lab feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
       expect(stderr).to.be.empty
     })
 
@@ -52,7 +52,7 @@ describe('labs:info', function () {
     )
     .command(['labs:info', 'feature-a', '-a', 'myapp'])
     .it('shows app labs feature info', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== feature-a\n\nDescription: an app labs feature\nDocs:        https://devcenter.heroku.com\nEnabled:     true\n')
+      expect(stdout).to.equal('=== feature-a\n\nDescription: an app labs feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
       expect(stderr).to.be.empty
     })
 })

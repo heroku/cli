@@ -5472,13 +5472,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/js-yaml@npm:^3.12.5":
-  version: 3.12.10
-  resolution: "@types/js-yaml@npm:3.12.10"
-  checksum: 5b5bc63d368f9499fe29ac61a51a802d7ce984599772e421a8dd29cc70ff0dd48149391ca1a56305a71b8707fda6fc50ba5b97412d9c1c4470f547f3a1fcf2bc
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:^7.0.12":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -11802,7 +11795,6 @@ __metadata:
     "@types/github-url-to-object": ^4.0.4
     "@types/glob": ^7.1.1
     "@types/inquirer": ^8.2.10
-    "@types/js-yaml": ^3.12.5
     "@types/lodash": ^4.14.123
     "@types/mocha": ^10.0.10
     "@types/node": 22.16.5
