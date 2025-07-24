@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('sessions:index', function () {
   const exampleSession1 = {
     description: 'B Session @ 166.176.184.223',
@@ -21,10 +21,12 @@ describe('sessions:index', function () {
   testWithSessions()
     .command(['sessions'])
     .it('lists the sessions alphabetically by description', ctx => {
-      expect(ctx.stdout).to.equal(
-        ' A Session @ 166.176.184.223 f6e8d969-129f-42d2-854b-c2eca9d5a42e \n' +
-        ' B Session @ 166.176.184.223 aBcD1234-129f-42d2-854b-dEf123abc123 \n',
+      const actual = removeAllWhitespace(ctx.stdout)
+      const expected = removeAllWhitespace(
+        ' A Session @ 166.176.184.223 f6e8d969-129f-42d2-854b-c2eca9d5a42e \n'
+        + ' B Session @ 166.176.184.223 aBcD1234-129f-42d2-854b-dEf123abc123 \n',
       )
+      expect(actual).to.include(expected)
     })
 
   context('with json flag', function () {
@@ -46,5 +48,3 @@ describe('sessions:index', function () {
       })
   })
 })
-
-*/

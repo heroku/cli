@@ -1,15 +1,14 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Index extends Command {
-  static topic = 'teams';
-  static description = `list the teams that you are a member of\n\nUse ${color.cyan.bold('heroku members:*')} to manage team members.`;
+  static topic = 'teams'
+  static description = `list the teams that you are a member of\n\nUse ${color.cmd('heroku members:*')} to manage team members.`
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -29,4 +28,3 @@ export default class Index extends Command {
     }
   }
 }
-*/

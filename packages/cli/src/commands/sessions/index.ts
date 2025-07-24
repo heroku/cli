@@ -1,11 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {OAuthSession} from '../../lib/sessions/sessions'
-const {sortBy} = require('lodash')
+import {OAuthSession} from '../../lib/sessions/sessions.js'
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
@@ -19,19 +17,26 @@ export default class SessionsIndex extends Command {
 
     let {body: sessions} = await this.heroku.get<Array<OAuthSession>>('/oauth/sessions')
 
-    sessions = sortBy(sessions, 'description')
+    sessions = sessions.sort((a, b) => {
+      const descA = a.description || ''
+      const descB = b.description || ''
+      return descA.localeCompare(descB)
+    })
 
     if (flags.json) {
       hux.styledJSON(sessions)
     } else if (sessions.length === 0) {
-      ux.log('No OAuth sessions.')
+      ux.stdout('No OAuth sessions.')
     } else {
-      const printLine: typeof this.log = (...args) => this.log(...args)
       hux.table(sessions, {
-        description: {get: (v: any) => color.green(v.description)},
-        id: {},
-      }, {'no-header': true, printLine})
+        description: {
+          get: (v: any) => color.green(v.description),
+          header: 'Description',
+        },
+        id: {
+          header: 'ID',
+        },
+      })
     }
   }
 }
-*/

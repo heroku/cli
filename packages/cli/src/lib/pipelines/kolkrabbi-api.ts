@@ -18,7 +18,7 @@ export default class {
       'User-Agent': this.version,
     }
 
-    if (['POST', 'PATCH', 'DELETE'].includes(options.method)) {
+    if (['DELETE', 'PATCH', 'POST'].includes(options.method)) {
       options.headers['Content-type'] = 'application/json'
     }
 

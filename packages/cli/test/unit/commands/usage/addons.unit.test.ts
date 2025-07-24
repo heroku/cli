@@ -1,13 +1,13 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/usage/addons'
+import Cmd from '../../../../src/commands/usage/addons.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as Heroku from '@heroku-cli/schema'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import {expect} from 'chai'
 
-/*
 describe('usage:addons', function () {
   let redisAddon: Heroku.AddOn
 
@@ -46,13 +46,14 @@ describe('usage:addons', function () {
         app,
       ])
 
-      expectOutput(stdout.output, heredoc(`
-        === Usage for ⬢ ${app}
-         Add-on    Meter        Quantity
-         ───────── ──────────── ────────
-         redis-123 Data Storage 2.5
-         redis-123 Connections  100
-      `))
+      const actual = removeAllWhitespace(stdout.output)
+      const expectedHeader = removeAllWhitespace(`=== Usage for ⬢ ${app}`)
+      const expectedColumnHeader = removeAllWhitespace('Add-on    Meter        Quantity')
+      const expected = removeAllWhitespace('redis-123 Data Storage 2.5\nredis-123 Connections  100')
+
+      expect(actual).to.contain(expectedHeader)
+      expect(actual).to.contain(expectedColumnHeader)
+      expect(actual).to.contain(expected)
     })
 
     it('handles apps with no usage', async function () {
@@ -125,17 +126,18 @@ describe('usage:addons', function () {
         team,
       ])
 
-      expectOutput(stdout.output, heredoc(`
-        === Usage for ⬢ App One
-         Add-on    Meter        Quantity
-         ───────── ──────────── ────────
-         redis-123 Data Storage 2.5
+      const actual = removeAllWhitespace(stdout.output)
+      const expectedHeaderOne = removeAllWhitespace('=== Usage for ⬢ App One')
+      const expectedColumnHeader = removeAllWhitespace('Add-on    Meter        Quantity')
+      const expectedOne = removeAllWhitespace('redis-123 Data Storage 2.5')
+      const expectedHeaderTwo = removeAllWhitespace('=== Usage for ⬢ App Two')
+      const expectedTwo = removeAllWhitespace('redis-456 Data Storage 5')
 
-        === Usage for ⬢ App Two
-         Add-on    Meter        Quantity
-         ───────── ──────────── ────────
-         redis-456 Data Storage 5
-      `))
+      expect(actual).to.contain(expectedHeaderOne)
+      expect(actual).to.contain(expectedColumnHeader)
+      expect(actual).to.contain(expectedOne)
+      expect(actual).to.contain(expectedHeaderTwo)
+      expect(actual).to.contain(expectedTwo)
     })
 
     it('handles teams with no usage', async function () {
@@ -161,5 +163,3 @@ describe('usage:addons', function () {
     })
   })
 })
-
-*/

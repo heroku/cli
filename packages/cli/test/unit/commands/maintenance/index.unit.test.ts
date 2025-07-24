@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('maintenance', function () {
   test
     .stdout()
@@ -28,5 +27,3 @@ describe('maintenance', function () {
       expect(stderr).to.be.empty
     })
 })
-
-*/

@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 interface AppUsage {
   addons: Array<{
@@ -48,7 +47,7 @@ export default class UsageAddons extends Command {
     hux.styledHeader(`Usage for ${color.app(app)}`)
     hux.table(metersArray, {
       'Add-on': {
-        get: row => {
+        get(row) {
           const matchingAddon = appAddons.find(a => a.id === row.addonId)
           return matchingAddon?.name || row.addonId
         },
@@ -87,11 +86,11 @@ export default class UsageAddons extends Command {
     }
 
     ux.action.stop()
-    ux.log()
+    ux.stdout()
     const usageAddons = usageData.addons
 
     if (usageAddons.length === 0) {
-      ux.log(`No usage found for app ${color.app(app)}`)
+      ux.stdout(`No usage found for app ${color.app(app)}`)
       return
     }
 
@@ -110,10 +109,10 @@ export default class UsageAddons extends Command {
     ])
 
     ux.action.stop()
-    ux.log()
+    ux.stdout()
 
     if (!usageData.apps || usageData.apps.length === 0) {
-      ux.log(`No usage found for team ${color.magenta(team)}`)
+      ux.stdout(`No usage found for team ${color.magenta(team)}`)
       return
     }
 
@@ -123,7 +122,7 @@ export default class UsageAddons extends Command {
     usageData.apps.forEach((app: { id: string; addons: any[] }) => {
       const appInfo = appInfoArray.find(info => info.id === app.id)
       this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
-      ux.log()
+      ux.stdout()
     })
   }
 
@@ -155,4 +154,3 @@ export default class UsageAddons extends Command {
     }
   }
 }
-*/

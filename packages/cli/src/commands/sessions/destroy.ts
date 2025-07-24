@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {OAuthSession} from '../../lib/sessions/sessions'
+import {OAuthSession} from '../../lib/sessions/sessions.js'
 
 export default class SessionsDestroy extends Command {
   static description = 'delete (logout) OAuth session by ID'
@@ -24,4 +23,4 @@ export default class SessionsDestroy extends Command {
     ux.action.stop()
   }
 }
-*/
+

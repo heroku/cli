@@ -1,7 +1,6 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 
 export default class MaintenanceOn extends Command {
@@ -20,4 +19,3 @@ export default class MaintenanceOn extends Command {
     ux.action.stop()
   }
 }
-*/
