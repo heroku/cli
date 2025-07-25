@@ -1,6 +1,6 @@
 import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
-import fs from 'fs-extra'
+import * as fs from 'fs-extra'
 import path from 'node:path'
 import inquirer from 'inquirer'
 import os from 'node:os'
@@ -23,6 +23,7 @@ describe('keys:add', function () {
 
   describe('direct key addition', function () {
     test
+      .env({HEROKU_API_KEY: 'authtoken'})
       .stderr()
       .stdout()
       .nock('https://api.heroku.com:443', api => {
@@ -40,6 +41,7 @@ describe('keys:add', function () {
 
   describe('key generation scenarios', function () {
     test
+      .env({HEROKU_API_KEY: 'authtoken'})
       .stderr()
       .stdout()
       .nock('https://api.heroku.com:443', api => {
@@ -65,6 +67,7 @@ describe('keys:add', function () {
     })
 
     test
+      .env({HEROKU_API_KEY: 'authtoken'})
       .stderr()
       .stdout()
       .nock('https://api.heroku.com:443', api => {

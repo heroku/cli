@@ -40,7 +40,7 @@ describe('telemetry:index', function () {
     const actual = removeAllWhitespace(stdout.output)
     const expectedHeader = removeAllWhitespace(`=== ${spaceId} Telemetry Drains`)
     const expectedTableHeader = removeAllWhitespace('ID                                   Signals                         Endpoint')
-    const expected = removeAllWhitespace('44444321-5717-4562-b3fc-2c963f66afa6 \'traces\', \'metrics\', \'logs\'  https://api.honeycomb.io/')
+    const expected = removeAllWhitespace('44444321-5717-4562-b3fc-2c963f66afa6 traces, metrics, logs  https://api.honeycomb.io/')
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expectedTableHeader)
     expect(actual).to.include(expected)
