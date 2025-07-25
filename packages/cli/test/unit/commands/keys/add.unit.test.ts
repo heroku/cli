@@ -1,10 +1,9 @@
-import {ux} from '@oclif/core'
 import {expect, test} from '@oclif/test'
 import * as fs from 'fs-extra'
 import path from 'node:path'
 import inquirer from 'inquirer'
 import os from 'node:os'
-import childProcess from 'node:child_process'
+import {hux} from '@heroku/heroku-cli-util'
 
 describe('keys:add', function () {
   const home = path.join('tmp', 'home')
@@ -48,16 +47,9 @@ describe('keys:add', function () {
       .nock('https://api.heroku.com:443', api => {
         api.post('/account/keys').reply(200)
       })
-      .stub(ux, 'prompt', () => Promise.resolve('yes'))
       .stub(os, 'homedir', () => home)
       .stub(inquirer, 'prompt', () => Promise.resolve({yes: true}))
-      .stub(childProcess, 'spawn', () => ({
-        on(event: string, callback: (code: number) => void) {
-          if (event === 'close') {
-            callback(0)
-          }
-        },
-      }))
+      .stub(hux, 'prompt', () => Promise.resolve('yes'))
       .command(['keys:add', '--quiet'])
       .it('generates and adds a new key when none exists', ({stderr}) => {
         expect(stderr).to.include('Could not find an existing SSH key')
