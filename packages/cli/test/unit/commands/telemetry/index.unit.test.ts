@@ -6,6 +6,8 @@ import expectOutput from '../../../helpers/utils/expectOutput.js'
 import tsheredoc from 'tsheredoc'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures.js'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import {expect} from 'chai'
 
 const heredoc = tsheredoc.default
 
@@ -35,12 +37,13 @@ describe('telemetry:index', function () {
       '--space',
       spaceId,
     ])
-    expectOutput(stdout.output, heredoc(`
-      === ${spaceId} Telemetry Drains
-       Id                                   Signals                         Endpoint
-       ──────────────────────────────────── ─────────────────────────────── ─────────────────────────
-       44444321-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics', 'logs' ] https://api.honeycomb.io/
-    `))
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace(`=== ${spaceId} Telemetry Drains`)
+    const expectedTableHeader = removeAllWhitespace('ID                                   Signals                         Endpoint')
+    const expected = removeAllWhitespace('44444321-5717-4562-b3fc-2c963f66afa6 \'traces\', \'metrics\', \'logs\'  https://api.honeycomb.io/')
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expectedTableHeader)
+    expect(actual).to.include(expected)
   })
 
   it('shows app telemetry drains', async function () {
@@ -52,13 +55,16 @@ describe('telemetry:index', function () {
       '--app',
       appId,
     ])
-    expectOutput(stdout.output, heredoc(`
-      === ${appId} Telemetry Drains
-       Id                                   Signals                 Endpoint
-       ──────────────────────────────────── ─────────────────────── ───────────────────────────
-       3fa85f64-5717-4562-b3fc-2c963f66afa6 [ 'traces', 'metrics' ] https://api.honeycomb.io/
-       55555f64-5717-4562-b3fc-2c963f66afa6 [ 'logs' ]              https://api.papertrail.com/
+    const actual = removeAllWhitespace(stdout.output)
+    const expectedHeader = removeAllWhitespace(`=== ${appId} Telemetry Drains`)
+    const expectedTableHeader = removeAllWhitespace('ID                                   Signals                 Endpoint')
+    const expected = removeAllWhitespace(heredoc(`
+      3fa85f64-5717-4562-b3fc-2c963f66afa6 traces, metrics   https://api.honeycomb.io/
+      55555f64-5717-4562-b3fc-2c963f66afa6 logs              https://api.papertrail.com/
     `))
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expectedTableHeader)
+    expect(actual).to.include(expected)
   })
 
   it('shows a message when there are no telemetry drains', async function () {

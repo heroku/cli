@@ -26,13 +26,12 @@ export function validateAndFormatSignals(signalInput: string | undefined): strin
 }
 
 export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, heroku: APIClient) {
-  // hux.styledHeader(telemetryDrain.id)
-  const displayObject: TelemetryDisplayObject = {
-    Signals: telemetryDrain.signals.join(', '),
-    Endpoint: telemetryDrain.exporter.endpoint,
-    Transport: (telemetryDrain.exporter.type === 'otlp' ? 'gRPC' : 'HTTP'),
-  }
+  hux.styledHeader(telemetryDrain.id)
 
+  // Start with an empty object
+  const displayObject: Partial<TelemetryDisplayObject> = {}
+
+  // Add App or Space first
   if (telemetryDrain.owner.type === 'space') {
     const {body: space} = await heroku.get<Heroku.Space>(`/spaces/${telemetryDrain.owner.id}`, {
       headers: {
@@ -48,6 +47,11 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
     })
     displayObject.App = app.name
   }
+
+  // Add the other properties after App/Space
+  displayObject.Signals = telemetryDrain.signals.join(', ')
+  displayObject.Endpoint = telemetryDrain.exporter.endpoint
+  displayObject.Transport = (telemetryDrain.exporter.type === 'otlp' ? 'gRPC' : 'HTTP')
 
   if (telemetryDrain.exporter.headers) {
     displayObject.Headers = JSON.stringify(telemetryDrain.exporter.headers)
