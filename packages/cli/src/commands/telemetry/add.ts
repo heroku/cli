@@ -1,10 +1,11 @@
-/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {TelemetryDrain} from '../../lib/types/telemetry'
-import heredoc from 'tsheredoc'
-import {validateAndFormatSignals} from '../../lib/telemetry/util'
+import {TelemetryDrain} from '../../lib/types/telemetry.js'
+import tsheredoc from 'tsheredoc'
+import {validateAndFormatSignals} from '../../lib/telemetry/util.js'
 import {App, Space} from '@heroku-cli/schema'
+
+const heredoc = tsheredoc.default
 
 export default class Add extends Command {
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
@@ -63,7 +64,6 @@ export default class Add extends Command {
       },
     })
 
-    ux.log(`successfully added drain ${drain.exporter.endpoint}`)
+    ux.stdout(`successfully added drain ${drain.exporter.endpoint}`)
   }
 }
-*/

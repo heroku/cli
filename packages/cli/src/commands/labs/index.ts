@@ -1,10 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {sortBy} from 'lodash'
 
 interface Features {
   currentUser: Heroku.Account,
@@ -13,17 +11,18 @@ interface Features {
 }
 
 function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.AppFeature) {
-  ux.log(JSON.stringify(features, null, 2))
+  ux.stdout(JSON.stringify(features, null, 2))
 }
 
-function printFeatures(features: Heroku.AppFeature | Heroku.AccountFeature) {
-  const groupedFeatures = sortBy<(Heroku.AppFeature | Heroku.AccountFeature)>(features, 'name')
-  const longest = Math.max(...groupedFeatures.map(f => f.name.length))
+function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
+  const groupedFeatures = features.sort((a: Heroku.AccountFeature | Heroku.AppFeature, b: Heroku.AppFeature | Heroku.AccountFeature) =>
+    (a.name || '').localeCompare(b.name || ''))
+  const longest = Math.max(...groupedFeatures.map((f: Heroku.AccountFeature | Heroku.AppFeature) => (f.name || '').length))
   for (const f of groupedFeatures) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
     if (f.enabled) line = color.green(line)
     line = `${line}  ${f.description}`
-    ux.log(line)
+    ux.stdout(line)
   }
 }
 
@@ -55,7 +54,7 @@ export default class LabsIndex extends Command {
     }
 
     // makes sure app isn't added to json object if null
-    // eslint-disable-next-line no-negated-condition
+    // eslint-disable-next-line unicorn/no-negated-condition
     if (appResponse !== null) {
       app = appResponse?.body
       features.app = app
@@ -72,11 +71,10 @@ export default class LabsIndex extends Command {
       hux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
       printFeatures(features.user)
       if (features.app) {
-        ux.log()
+        ux.stdout()
         hux.styledHeader(`App Features ${color.app(flags.app!)}`)
         printFeatures(features.app)
       }
     }
   }
 }
-*/

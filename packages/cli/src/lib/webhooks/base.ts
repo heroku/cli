@@ -14,7 +14,7 @@ export default abstract class extends Command {
       ...this.heroku.defaults.headers,
       Accept: 'application/vnd.heroku+json; version=3.webhooks',
       authorization: `Basic ${Buffer.from(':' + this.heroku.auth).toString('base64')}`,
-    }
+    } as any
     this.webhooksClient = client
   }
 

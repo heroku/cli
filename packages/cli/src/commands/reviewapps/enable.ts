@@ -55,17 +55,17 @@ export default class ReviewappsEnable extends Command {
     }
 
     if (flags.autodeploy) {
-      this.log('Enabling auto deployment...')
+      ux.stdout('Enabling auto deployment...')
       settings.automatic_review_apps = true
     }
 
     if (flags.autodestroy) {
-      this.log('Enabling auto destroy...')
+      ux.stdout('Enabling auto destroy...')
       settings.destroy_stale_apps = true
     }
 
     if (flags['wait-for-ci']) {
-      this.log('Enabling wait for CI...')
+      ux.stdout('Enabling wait for CI...')
       settings.wait_for_ci = true
     }
 

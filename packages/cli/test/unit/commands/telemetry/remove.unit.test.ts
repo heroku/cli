@@ -1,14 +1,15 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/telemetry/remove'
+import Cmd from '../../../../src/commands/telemetry/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
 import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('telemetry:remove', function () {
   let appId: string
   let spaceId: string
@@ -38,7 +39,6 @@ describe('telemetry:remove', function () {
       spaceTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${spaceTelemetryDrain1.id}...
       Removing telemetry drain ${spaceTelemetryDrain1.id}... done
     `))
   })
@@ -55,7 +55,6 @@ describe('telemetry:remove', function () {
       appTelemetryDrain1.id,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing telemetry drain ${appTelemetryDrain1.id}...
       Removing telemetry drain ${appTelemetryDrain1.id}... done
     `))
   })
@@ -75,7 +74,6 @@ describe('telemetry:remove', function () {
       '--app', appId,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing all telemetry drains from app ${appId}...
       Removing all telemetry drains from app ${appId}... done
     `))
   })
@@ -92,7 +90,6 @@ describe('telemetry:remove', function () {
       '--space', spaceId,
     ])
     expectOutput(stderr.output, heredoc(`
-      Removing all telemetry drains from space ${spaceId}...
       Removing all telemetry drains from space ${spaceId}... done
     `))
   })
@@ -104,5 +101,3 @@ describe('telemetry:remove', function () {
     })
   })
 })
-
-*/

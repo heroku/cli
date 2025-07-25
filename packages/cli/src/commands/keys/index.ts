@@ -1,7 +1,6 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
@@ -27,12 +26,10 @@ export default class Keys extends Command {
     } else {
       hux.styledHeader(`${color.cyan(keys[0].email || '')} keys`)
       if (flags.long) {
-        keys.forEach(k => ux.log(k.public_key))
+        keys.forEach(k => ux.stdout(k.public_key))
       } else {
-        keys.map(k => ux.log(formatKey(k.public_key || '')))
+        keys.map(k => ux.stdout(formatKey(k.public_key || '')))
       }
     }
   }
 }
-
-*/

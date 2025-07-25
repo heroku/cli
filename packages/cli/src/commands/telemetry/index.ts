@@ -1,8 +1,7 @@
-/*
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {TelemetryDrains} from '../../lib/types/telemetry'
+import {TelemetryDrains} from '../../lib/types/telemetry.js'
 
 export default class Index extends Command {
   static topic = 'telemetry'
@@ -10,7 +9,7 @@ export default class Index extends Command {
   static flags = {
     space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
     app: Flags.string({char: 'a', description: 'filter by app name'}),
-  };
+  }
 
   static example = '$ heroku telemetry'
 
@@ -39,7 +38,7 @@ export default class Index extends Command {
 
   protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {
     if (telemetryDrains.length === 0) {
-      ux.log(`There are no telemetry drains in ${owner}`)
+      ux.stdout(`There are no telemetry drains in ${owner}`)
     } else {
       hux.styledHeader(`${owner} Telemetry Drains`)
       hux.table(
@@ -53,4 +52,3 @@ export default class Index extends Command {
     }
   }
 }
-*/

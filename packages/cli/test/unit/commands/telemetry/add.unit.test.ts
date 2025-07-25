@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/telemetry/add'
+import Cmd from '../../../../src/commands/telemetry/add.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -14,7 +14,6 @@ const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
-/*
 describe('telemetry:add', function () {
   let space: SpaceWithOutboundIps
 
@@ -166,5 +165,3 @@ describe('telemetry:add', function () {
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
   })
 })
-
-*/

@@ -1,8 +1,8 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {TelemetryDrain} from '../../lib/types/telemetry'
-import {displayTelemetryDrain} from '../../lib/telemetry/util'
+import {TelemetryDrain} from '../../lib/types/telemetry.js'
+import {displayTelemetryDrain} from '../../lib/telemetry/util.js'
+
 export default class Info extends Command {
   static topic = 'telemetry'
   static description = 'show a telemetry drain\'s info'
@@ -24,4 +24,3 @@ export default class Info extends Command {
     await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }
-*/

@@ -5,22 +5,8 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
 import color from '@heroku-cli/color'
+import {SpaceTopology} from '../../lib/types/spaces.js'
 
-export type SpaceTopology = {
-  version: number,
-  apps: Array<{
-    id?: string
-    domains: string[]
-    formations: Array<{
-      process_type: string
-      dynos: Array<{
-        number: number
-        private_ip: string
-        hostname: string
-      }>
-    }>
-  }>
-}
 /*
 export default class Topology extends Command {
   static topic = 'spaces';
