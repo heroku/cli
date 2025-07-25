@@ -4,6 +4,7 @@ import * as fs from 'fs-extra'
 import path from 'node:path'
 import inquirer from 'inquirer'
 import os from 'node:os'
+import childProcess from 'node:child_process'
 
 describe('keys:add', function () {
   const home = path.join('tmp', 'home')
@@ -50,6 +51,13 @@ describe('keys:add', function () {
       .stub(ux, 'prompt', () => Promise.resolve('yes'))
       .stub(os, 'homedir', () => home)
       .stub(inquirer, 'prompt', () => Promise.resolve({yes: true}))
+      .stub(childProcess, 'spawn', () => ({
+        on(event: string, callback: (code: number) => void) {
+          if (event === 'close') {
+            callback(0)
+          }
+        },
+      }))
       .command(['keys:add', '--quiet'])
       .it('generates and adds a new key when none exists', ({stderr}) => {
         expect(stderr).to.include('Could not find an existing SSH key')
