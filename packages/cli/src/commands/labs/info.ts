@@ -1,8 +1,7 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
 function print(feature: Record<string, string>) {
@@ -50,4 +49,3 @@ export default class LabsInfo extends Command {
     }
   }
 }
-*/

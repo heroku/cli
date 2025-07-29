@@ -1,13 +1,14 @@
 import {stderr, stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/telemetry/update'
+import Cmd from '../../../../src/commands/telemetry/update.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
 import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('telemetry:update', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -29,7 +30,6 @@ describe('telemetry:update', function () {
       'logs',
     ])
     expectOutput(stderr.output, heredoc(`
-      Updating telemetry drain ${appTelemetryDrain1.id}...
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -79,7 +79,6 @@ describe('telemetry:update', function () {
       'grpc',
     ])
     expectOutput(stderr.output, heredoc(`
-      Updating telemetry drain ${appTelemetryDrain1.id}...
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -99,5 +98,3 @@ describe('telemetry:update', function () {
     })
   })
 })
-
-*/

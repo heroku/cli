@@ -4,8 +4,7 @@ import {color} from '@heroku-cli/color'
 import colorize from './colorize.js'
 import {LogSession} from '../types/fir.js'
 import {getGenerationByAppId} from '../apps/generation.js'
-
-const EventSource = require('@heroku/eventsource')
+import EventSource from '@heroku/eventsource'
 
 interface LogDisplayerOptions {
   app: string,
@@ -17,7 +16,7 @@ interface LogDisplayerOptions {
 }
 
 function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number) {
-  return new Promise<void>(function (resolve, reject) {
+  return new Promise<void>((resolve, reject) => {
     const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
     const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
     const es = new EventSource(logplexURL, {
@@ -27,11 +26,11 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       },
     })
 
-    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
+    es.addEventListener('error', (err: { status?: number; message?: string | null }) => {
       if (err && (err.status || err.message)) {
-        const msg = (isTail && (err.status === 404 || err.status === 403)) ?
-          'Log stream timed out. Please try again.' :
-          `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
+        const msg = (isTail && (err.status === 404 || err.status === 403))
+          ? 'Log stream timed out. Please try again.'
+          : `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
         reject(new Error(msg))
         es.close()
       }
@@ -44,7 +43,7 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       // should only land here if --tail and no error status or message
     })
 
-    es.addEventListener('message', function (e: { data: string }) {
+    es.addEventListener('message', (e: { data: string }) => {
       e.data.trim().split(/\n+/).forEach(line => {
         ux.stdout(colorize(line))
       })
@@ -62,6 +61,7 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
 async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
   process.stdout.on('error', err => {
     if (err.code === 'EPIPE') {
+      // eslint-disable-next-line n/no-process-exit
       process.exit(0)
     } else {
       ux.error(err.stack, {exit: 1})

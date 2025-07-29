@@ -8,7 +8,7 @@ import {get, RequestOptions} from 'https'
 import {randomUUID} from 'node:crypto'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
-import WebSocket = require('ws')
+import WebSocket from 'ws'
 import debug from 'debug'
 import ansiEscapes from 'ansi-escapes'
 const ciDebug = debug('ci')

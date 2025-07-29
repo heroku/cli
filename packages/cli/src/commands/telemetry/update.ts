@@ -1,9 +1,10 @@
-/*
 import {flags as Flags, Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry'
-import heredoc from 'tsheredoc'
-import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util'
+import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry.js'
+import tsheredoc from 'tsheredoc'
+import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util.js'
+
+const heredoc = tsheredoc.default
 
 export default class Update extends Command {
   static topic = 'telemetry'
@@ -68,4 +69,3 @@ export default class Update extends Command {
     await displayTelemetryDrain(telemetryDrain, this.heroku)
   }
 }
-*/

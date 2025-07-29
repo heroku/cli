@@ -1,4 +1,4 @@
-import yaml = require('js-yaml')
+import {parse} from 'yaml'
 import fs from 'fs-extra'
 import {APIClient, flags, Command} from '@heroku-cli/command'
 import {
@@ -201,7 +201,7 @@ $ heroku apps:create --region eu`,
 
   async readManifest() {
     const buffer = await fs.readFile('heroku.yml')
-    return yaml.load(buffer.toString(), {filename: 'heroku.yml'})
+    return parse(buffer.toString())
   }
 
   async runFromManifest(context: Interfaces.ParserOutput, heroku: APIClient) {
