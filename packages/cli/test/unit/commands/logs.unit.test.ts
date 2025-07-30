@@ -1,24 +1,15 @@
 import {expect} from 'chai'
-import * as proxyquire from 'proxyquire'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import runCommand, {GenericCmd} from '../../helpers/runCommand.js'
-// import {CLIError} from '@oclif/core/lib/errors'
+import {Errors} from '@oclif/core'
+import Cmd from '../../../src/commands/logs.js'
+import * as logDisplayerModule from '../../../src/lib/run/log-displayer.js'
 
-/*
 describe('logs', function () {
   let logDisplayerStub: sinon.SinonStub
-  let Cmd: GenericCmd
 
   beforeEach(async function () {
-    logDisplayerStub = sinon.stub()
-    Cmd = proxyquire(
-      '../../../src/commands/logs',
-      {
-        '../lib/run/log-displayer': {
-          default: logDisplayerStub,
-        },
-      },
-    ).default
+    logDisplayerStub = sinon.stub(logDisplayerModule, 'default')
   })
 
   afterEach(function () {
@@ -123,7 +114,7 @@ describe('logs', function () {
           '--ps=worker',
         ])
       } catch (error: unknown) {
-        const {message} = error as CLIError
+        const {message} = error as Errors.CLIError
         expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --ps')
       }
 
@@ -140,7 +131,7 @@ describe('logs', function () {
           '--process-type=worker',
         ])
       } catch (error: unknown) {
-        const {message} = error as CLIError
+        const {message} = error as Errors.CLIError
         expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --process-type')
       }
 
@@ -157,7 +148,7 @@ describe('logs', function () {
           '--process-type=worker',
         ])
       } catch (error: unknown) {
-        const {message} = error as CLIError
+        const {message} = error as Errors.CLIError
         expect(message).to.include('--ps=web cannot also be provided when using --process-type')
       }
 
@@ -246,7 +237,7 @@ describe('logs', function () {
           '--no-color',
         ])
       } catch (error: unknown) {
-        const {message} = error as CLIError
+        const {message} = error as Errors.CLIError
         expect(message).to.include('--force-colors=true cannot also be provided when using --no-color')
       }
 
@@ -254,5 +245,3 @@ describe('logs', function () {
     })
   })
 })
-
-*/
