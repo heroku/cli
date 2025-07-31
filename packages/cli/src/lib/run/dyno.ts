@@ -286,7 +286,7 @@ export default class Dyno extends Duplex {
   _handle(localServer: net.Server) {
     const addr = localServer.address() as net.AddressInfo
     const host = addr.address
-    const port = addr.port
+    const {port} = addr
     let lastErr = ''
 
     // does not actually uncork but allows error to be displayed when attempting to read
@@ -433,7 +433,7 @@ export default class Dyno extends Duplex {
 
   _readStdin(c: tls.TLSSocket) {
     this.input = c
-    const stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
+    const {stdin} = process
     stdin.setEncoding('utf8')
 
     // without this the CLI will hang on rake db:migrate
@@ -447,7 +447,7 @@ export default class Dyno extends Duplex {
       stdin.setRawMode(true)
       stdin.pipe(c)
       let sigints: any[] = []
-      stdin.on('data', function (c) {
+      stdin.on('data', c => {
         if (c.toString() === '\u0003') {
           sigints.push(Date.now())
         }
