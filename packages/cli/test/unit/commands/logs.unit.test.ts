@@ -1,15 +1,17 @@
+import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import runCommand, {GenericCmd} from '../../helpers/runCommand.js'
-import {Errors} from '@oclif/core'
+
 import Cmd from '../../../src/commands/logs.js'
-import * as logDisplayerModule from '../../../src/lib/run/log-displayer.js'
+import {LogDisplayer} from '../../../src/lib/run/log-displayer.js'
+import runCommand from '../../helpers/runCommand.js'
 
 describe('logs', function () {
   let logDisplayerStub: sinon.SinonStub
 
   beforeEach(async function () {
-    logDisplayerStub = sinon.stub(logDisplayerModule, 'default')
+    // Stub only the display method
+    logDisplayerStub = sinon.stub(LogDisplayer.prototype, 'display').resolves()
   })
 
   afterEach(function () {
@@ -22,14 +24,18 @@ describe('logs', function () {
         '--app=my-app',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -40,14 +46,18 @@ describe('logs', function () {
         '--num=20',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 20,
         source: undefined,
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -58,14 +68,18 @@ describe('logs', function () {
         '--dyno-name=web.2',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: 'web.2',
         lines: 100,
         source: undefined,
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -76,14 +90,18 @@ describe('logs', function () {
         '--process-type=web',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: false,
         type: 'web',
-      })).to.be.true
+      })
     })
   })
 
@@ -94,19 +112,23 @@ describe('logs', function () {
         '--ps=web',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: false,
         type: 'web',
-      })).to.be.true
+      })
     })
   })
 
   context('with both --dyno-name and --ps options', function () {
-    it('shows an error and doesn’t call logDisplayer function', async function () {
+    it('shows an error and doesn\'t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',
@@ -123,7 +145,7 @@ describe('logs', function () {
   })
 
   context('with both --dyno-name and --type options', function () {
-    it('shows an error and doesn’t call logDisplayer function', async function () {
+    it('shows an error and doesn\'t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',
@@ -140,7 +162,7 @@ describe('logs', function () {
   })
 
   context('with both --ps and --type options', function () {
-    it('shows an error and doesn’t call logDisplayer function', async function () {
+    it('shows an error and doesn\'t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',
@@ -163,14 +185,18 @@ describe('logs', function () {
         '--source=heroku',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: 'heroku',
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -181,14 +207,18 @@ describe('logs', function () {
         '--tail',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: true,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -199,14 +229,18 @@ describe('logs', function () {
         '--force-colors',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
@@ -217,19 +251,23 @@ describe('logs', function () {
         '--no-color',
       ])
 
-      expect(logDisplayerStub.calledWith(sinon.match.any, {
+      expect(logDisplayerStub.called).to.be.true
+
+      // Verify display was called with correct parameters
+      const displayCall = logDisplayerStub.getCall(0)
+      expect(displayCall.args[0]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
         source: undefined,
         tail: false,
         type: undefined,
-      })).to.be.true
+      })
     })
   })
 
   context('with both --force-colors and --no-color flag', function () {
-    it('shows an error and doesn’t call logDisplayer function', async function () {
+    it('shows an error and doesn\'t call logDisplayer function', async function () {
       try {
         await runCommand(Cmd, [
           '--app=my-app',

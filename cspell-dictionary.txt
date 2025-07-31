@@ -133,6 +133,7 @@ logfile
 logplex
 lolex
 lowercasedb
+lshift
 lshztxe
 ltrim
 mactive

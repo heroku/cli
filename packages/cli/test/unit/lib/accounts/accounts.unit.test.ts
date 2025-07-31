@@ -1,11 +1,11 @@
 import {expect} from 'chai'
-import * as fs from 'fs'
-import * as sinon from 'sinon'
-import * as accounts from '../../../../src/lib/accounts/accounts.js'
-import * as path from 'node:path'
-import * as os from 'node:os'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import sinon from 'sinon'
 
-/*
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
+
 describe('accounts', function () {
   let fsReaddirStub: sinon.SinonStub
   let fsReadFileStub: sinon.SinonStub
@@ -23,7 +23,7 @@ describe('accounts', function () {
   describe('list()', function () {
     it('should return an empty array when directory is not accessible', function () {
       fsReaddirStub.throws(new Error('Directory not found'))
-      const result = accounts.list()
+      const result = AccountsModule.list()
       expect(result).to.be.an('array').that.is.empty
     })
 
@@ -34,7 +34,7 @@ describe('accounts', function () {
       fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
         .returns('{"username": "user2", "password": "pass2"}')
 
-      const result = accounts.list()
+      const result = AccountsModule.list()
 
       expect(result).to.be.an('array')
       expect(result).to.have.lengthOf(2)
@@ -55,7 +55,7 @@ describe('accounts', function () {
       fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
         .returns('{":username": "user1", ":password": "pass1"}')
 
-      const result = accounts.list()
+      const result = AccountsModule.list()
 
       expect(result).to.be.an('array')
       expect(result).to.have.lengthOf(1)
@@ -82,7 +82,7 @@ describe('accounts', function () {
     })
 
     it('should create directory with recursive option', function () {
-      accounts.add('test-user', 'username123', 'password123')
+      AccountsModule.add('test-user', 'username123', 'password123')
 
       expect(mkdirSyncStub.calledOnce).to.be.true
       expect(mkdirSyncStub.firstCall.args[1]).to.deep.equal({recursive: true})
@@ -93,7 +93,7 @@ describe('accounts', function () {
       const testUsername = 'username123'
       const testPassword = 'password123'
 
-      accounts.add(testName, testUsername, testPassword)
+      AccountsModule.add(testName, testUsername, testPassword)
 
       expect(writeFileSyncStub.calledOnce).to.be.true
       expect(writeFileSyncStub.firstCall.args[1]).to.equal('username: username123\npassword: password123\n')
@@ -103,7 +103,7 @@ describe('accounts', function () {
     it('should set correct file permissions', function () {
       const testName = 'test-user'
 
-      accounts.add(testName, 'username123', 'password123')
+      AccountsModule.add(testName, 'username123', 'password123')
 
       expect(chmodSyncStub.calledOnce).to.be.true
       expect(chmodSyncStub.firstCall.args[1]).to.equal(0o600)
@@ -112,7 +112,7 @@ describe('accounts', function () {
     it('should throw error if directory creation fails', function () {
       mkdirSyncStub.throws(new Error('Directory creation failed'))
 
-      expect(() => accounts.add('test-user', 'username123', 'password123')).to.throw()
+      expect(() => AccountsModule.add('test-user', 'username123', 'password123')).to.throw()
     })
   })
 
@@ -135,7 +135,7 @@ describe('accounts', function () {
       osHomeStub.returns(basedir)
       existsSyncStub.returns(false)
 
-      accounts.remove(accountName)
+      AccountsModule.remove(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
       expect(unlinkStub.firstCall.args[0]).to.equal(
@@ -148,9 +148,7 @@ describe('accounts', function () {
       const error = new Error('File not found')
       unlinkStub.throws(error)
 
-      expect(() => accounts.remove(accountName)).to.throw(Error)
+      expect(() => AccountsModule.remove(accountName)).to.throw(Error)
     })
   })
 })
-
-*/

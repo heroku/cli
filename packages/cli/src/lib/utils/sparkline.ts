@@ -15,22 +15,27 @@ export function sparkline(values: number[]): string {
     return ''
   }
 
-  // Find min and max for normalization
-  const min = Math.min(...validValues)
-  const max = Math.max(...validValues)
+  // Unicode block characters for different heights
+  const ticks = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
 
-  // If all values are the same, return flat line
-  if (min === max) {
+  // NPM sparkline algorithm
+  function lshift(n: number, bits: number): number {
+    // eslint-disable-next-line prefer-exponentiation-operator
+    return Math.floor(n) * Math.pow(2, bits)
+  }
+
+  const max = Math.max.apply(null, validValues)
+  const min = Math.min.apply(null, validValues)
+  const f = Math.floor(lshift(max - min, 8) / (ticks.length - 1))
+  if (f < 1) {
     return '▁'.repeat(validValues.length)
   }
 
-  // Unicode block characters for different heights
-  const blocks = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
+  const results: string[] = []
+  for (const validValue of validValues) {
+    const value = ticks[Math.floor(lshift(validValue - min, 8) / f)]
+    results.push(value)
+  }
 
-  // Normalize values to 0-7 range and map to block characters
-  return validValues.map(value => {
-    const normalized = ((value - min) / (max - min)) * (blocks.length - 1)
-    const index = Math.round(normalized)
-    return blocks[Math.max(0, Math.min(blocks.length - 1, index))]
-  }).join('')
+  return results.join('')
 }

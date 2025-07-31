@@ -160,8 +160,10 @@ describe('dashboard', function () {
         .reply(200, {data: {}})
 
       await runCommand(Cmd, [])
+
       expect(stdout.output).to.contain(heredoc(`
-        myapp
+        === ⬢ myapp
+
           Owner: foo@bar.com
           Dynos: 1 | Standard-1X
           Last release: ${ago(now)}
