@@ -1,7 +1,8 @@
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {expect, test} from '@oclif/test'
-import ConfirmCommand from '../../../src/lib/confirmCommand.js'
 import stripAnsi from 'strip-ansi'
+
+import ConfirmCommand from '../../../src/lib/confirmCommand.js'
 
 describe('confirmApp', function () {
   test
@@ -25,7 +26,7 @@ describe('confirmApp', function () {
   test
     .stdout()
     .stderr()
-    .stub(ux, 'prompt', () => Promise.resolve('app'))
+    .stub(hux, 'prompt', () => Promise.resolve('app'))
     .do(() => new ConfirmCommand().confirm('app'))
     .it('should not err on confirm prompt match', ({stderr, stdout}) => {
       expect(stderr).to.contain('Warning: WARNING: Destructive Action')
@@ -37,7 +38,7 @@ describe('confirmApp', function () {
   test
     .stdout()
     .stderr()
-    .stub(ux, 'prompt', () => Promise.resolve('app'))
+    .stub(hux, 'prompt', () => Promise.resolve('app'))
     .do(() => new ConfirmCommand().confirm('app', undefined, customMessage))
     .it('should display custom message', ({stderr, stdout}) => {
       expect(stderr).to.contain(customMessage)
@@ -45,7 +46,7 @@ describe('confirmApp', function () {
     })
 
   test
-    .stub(ux, 'prompt', () => Promise.resolve('nope'))
+    .stub(hux, 'prompt', () => Promise.resolve('nope'))
     .do(() => new ConfirmCommand().confirm('app'))
     .catch((error: Error) => {
       expect(stripAnsi(error.message)).to.equal('Confirmation did not match app. Aborted.')
