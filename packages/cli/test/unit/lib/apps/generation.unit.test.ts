@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import {APIClient} from '@heroku-cli/command'
 import nock from 'nock'
-// import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation'
+import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation.js'
 import {Config} from '@oclif/core'
 
-/*
 describe('generation', function () {
   describe('getGeneration', function () {
     it('identifies fir generation from string format web-xxxxxxxxx-xxxxx', function () {
@@ -81,5 +80,3 @@ describe('generation', function () {
     })
   })
 })
-
-*/
