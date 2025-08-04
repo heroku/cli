@@ -49,6 +49,7 @@
     "github-url-to-object": "^4.0.6",
     "glob": "^10.3.10",
     "got": "^13.0.0",
+    "https-proxy-agent": "^7.0.6",
     "inquirer": "^8.2.6",
     "lodash": "^4.17.21",
     "netrc-parser": "3.1.6",

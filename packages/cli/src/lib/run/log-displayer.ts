@@ -5,6 +5,7 @@ import colorize from './colorize.js'
 import {LogSession} from '../types/fir.js'
 import {getGenerationByAppId} from '../apps/generation.js'
 import {EventSource} from 'eventsource'
+import {HttpsProxyAgent} from 'https-proxy-agent'
 
 interface LogDisplayerOptions {
   app: string,
@@ -97,6 +98,10 @@ export class LogDisplayer {
     return logSession
   }
 
+  public createEventSourceInstance(url: string, options?: any): EventSource {
+    return new EventSource(url, options)
+  }
+
   private readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
@@ -107,17 +112,21 @@ export class LogDisplayer {
         const headers = new Headers(init?.headers)
         headers.set('User-Agent', userAgent)
 
-        const fetchOptions: RequestInit = {
+        const fetchOptions: RequestInit & { agent?: any } = {
           ...init,
           headers,
         }
 
-        // If proxy is set, we need to handle it through environment variables
-        // The fetch implementation will automatically use https_proxy/HTTPS_PROXY
+        // If proxy is set, use https-proxy-agent
+        if (proxy) {
+          const proxyAgent = new HttpsProxyAgent(proxy)
+          fetchOptions.agent = proxyAgent
+        }
+
         return fetch(input, fetchOptions)
       }
 
-      const es = new EventSource(logplexURL, {
+      const es = this.createEventSourceInstance(logplexURL, {
         fetch: customFetch,
       })
 

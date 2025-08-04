@@ -11825,6 +11825,7 @@ __metadata:
     glob: ^10.3.10
     globby: ^10.0.2
     got: ^13.0.0
+    https-proxy-agent: ^7.0.6
     inquirer: ^8.2.6
     lodash: ^4.17.21
     lolex: ^3.1.0
