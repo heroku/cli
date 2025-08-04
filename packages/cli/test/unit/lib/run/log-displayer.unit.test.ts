@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/prefer-add-event-listener */
-/* eslint-disable max-nested-callbacks */
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import {Errors} from '@oclif/core'
