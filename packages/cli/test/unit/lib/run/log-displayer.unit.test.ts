@@ -42,6 +42,12 @@ describe('logDisplayer', function () {
         this.url = url
         this.errorCode = 401
 
+        // Determine behavior based on URL
+        if (url.includes('telemetry.heroku.com')) {
+          // For Fir apps (telemetry URLs), return 500 error
+          this.errorCode = 500
+        }
+
         // Simulate connection attempt
         setTimeout(() => {
           if (this.onerror) {
