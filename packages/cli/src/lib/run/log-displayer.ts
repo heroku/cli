@@ -18,7 +18,6 @@ interface LogDisplayerOptions {
 
 export class LogDisplayer {
   private heroku: APIClient
-  // private options: LogDisplayerOptions
 
   constructor(heroku: APIClient) {
     this.heroku = heroku

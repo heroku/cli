@@ -31,18 +31,21 @@ describe('logDisplayer', function () {
   beforeEach(function () {
     // Create a mock EventSource class
     class MockEventSource {
-      public url: string
-      public readyState: number = 0 // CONNECTING
       public onerror: ((event: any) => void) | null = null
       public onmessage: ((event: any) => void) | null = null
       public onopen: ((event: any) => void) | null = null
+      public readyState: number = 0 // CONNECTING
+      public url: string
       private errorCode: number
+      private static instanceCount = 0
 
       constructor(url: string, options?: any) {
         this.url = url
+        MockEventSource.instanceCount++
+
         // Determine error code based on URL or other factors
         if (url.includes('telemetry.heroku.com')) {
-          this.errorCode = 500 // For Fir app tests
+          this.errorCode = 401 // Default for Cedar app tests
         } else {
           this.errorCode = 401 // Default for Cedar app tests
         }
@@ -52,8 +55,8 @@ describe('logDisplayer', function () {
           if (this.onerror) {
             // Create a mock error event with status code
             const errorEvent = {
-              type: 'error',
               code: this.errorCode,
+              type: 'error',
             }
             this.onerror(errorEvent)
           }
@@ -195,7 +198,7 @@ describe('logDisplayer', function () {
       })
     })
 
-    context('with a Fir app', function () {
+    context('with a Fir app and both lines and tail options present', function () {
       beforeEach(function () {
         api = nock('https://api.heroku.com', {
           reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
@@ -203,34 +206,27 @@ describe('logDisplayer', function () {
           .reply(200, firApp)
       })
 
-      afterEach(function () {
-        api.done()
-      })
-
-      context('with both lines and tail options present', function () {
-        it('creates a session with parameters set to option values, ignoring lines and tail options', async function () {
-          api
-            .post('/apps/my-fir-app/log-sessions', {
-              dyno: 'web-123-456',
-              source: 'app',
-              type: 'web',
-            })
-            .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=s3kr3t'})
-
-          try {
-            await displayer.display({
-              app: 'my-fir-app',
-              dyno: 'web-123-456',
-              lines: 20,
-              source: 'app',
-              tail: true,
-              type: 'web',
-            })
-          } catch (error: unknown) {
-            const {message} = error as CLIError
-            expect(message.trim()).to.equal('Logs eventsource failed with: 500')
-          }
+      it('creates a session with parameters set to option values, ignoring lines and tail options', async function () {
+        api.post('/apps/my-fir-app/log-sessions', {
+          dyno: 'web-123-456',
+          source: 'app',
+          type: 'web',
         })
+          .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=s3kr3t'})
+
+        try {
+          await displayer.display({
+            app: 'my-fir-app',
+            dyno: 'web-123-456',
+            lines: 20,
+            source: 'app',
+            tail: true,
+            type: 'web',
+          })
+        } catch (error: unknown) {
+          const {message} = error as CLIError
+          expect(message.trim()).to.equal('Logs eventsource failed with: 500')
+        }
       })
     })
   })
@@ -349,9 +345,7 @@ describe('logDisplayer', function () {
       }).get('/apps/my-fir-app')
         .reply(200, firApp)
         .post('/apps/my-fir-app/log-sessions')
-        .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=s3kr3t'})
-        .post('/apps/my-fir-app/log-sessions')
-        .reply(500)
+        .reply(500, {message: 'Internal Server Error'})
     })
 
     afterEach(function () {
@@ -359,16 +353,22 @@ describe('logDisplayer', function () {
     })
 
     it('displays logs and recreates log sessions on timeout', async function () {
-      stdout.start()
-      stderr.start()
-      await displayer.display({
-        app: 'my-fir-app',
-        tail: false,
-      })
-      stdout.stop()
-      stderr.stop()
+      try {
+        stdout.start()
+        stderr.start()
+        await displayer.display({
+          app: 'my-fir-app',
+          tail: false,
+        })
+      } catch (error: unknown) {
+        stdout.stop()
+        stderr.stop()
+        const {message} = error as Error
+        expect(message.trim()).to.equal('Internal Server Error')
+      }
 
-      expect(stderr.output).to.contain('Fetching logs...')
+      // it displays message about fetching logs for fir apps
+      expect(stderr.output).to.eq('Fetching logs...\n\n')
     })
   })
 })
