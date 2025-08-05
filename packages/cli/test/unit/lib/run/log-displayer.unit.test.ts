@@ -37,18 +37,10 @@ describe('logDisplayer', function () {
       public readyState: number = 0 // CONNECTING
       public url: string
       private errorCode: number
-      private static instanceCount = 0
 
       constructor(url: string, options?: any) {
         this.url = url
-        MockEventSource.instanceCount++
-
-        // Determine error code based on URL or other factors
-        if (url.includes('telemetry.heroku.com')) {
-          this.errorCode = 401 // Default for Cedar app tests
-        } else {
-          this.errorCode = 401 // Default for Cedar app tests
-        }
+        this.errorCode = 401
 
         // Simulate connection attempt
         setTimeout(() => {
@@ -345,7 +337,7 @@ describe('logDisplayer', function () {
       }).get('/apps/my-fir-app')
         .reply(200, firApp)
         .post('/apps/my-fir-app/log-sessions')
-        .reply(500, {message: 'Internal Server Error'})
+        .reply(500)
     })
 
     afterEach(function () {
@@ -364,7 +356,7 @@ describe('logDisplayer', function () {
         stdout.stop()
         stderr.stop()
         const {message} = error as Error
-        expect(message.trim()).to.equal('Internal Server Error')
+        expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
       }
 
       // it displays message about fetching logs for fir apps
