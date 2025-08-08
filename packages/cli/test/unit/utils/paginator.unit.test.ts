@@ -3,8 +3,8 @@ import {Config} from '@oclif/core'
 import {paginateRequest} from '../../../src/lib/utils/paginator.js'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as path from 'path'
 import nock from 'nock'
+import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -13,11 +13,8 @@ const root = path.resolve(__dirname, '../package.json')
 const config = new Config({root})
 const exampleAPIClient = new APIClient(config)
 
-nock.disableNetConnect()
-
 const requestUrl = '/apps/myapp/domains'
 
-/*
 describe('paginator', function () {
   it('paginates through 2 requests', async function () {
     nock('https://api.heroku.com')
@@ -43,5 +40,3 @@ describe('paginator', function () {
     expect(results[0].id).to.equal('1')
   })
 })
-
-*/

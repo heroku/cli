@@ -2,7 +2,6 @@ import {expect, test} from '@oclif/test'
 
 import {validateURL} from '../../../../src/lib/clients/clients.js'
 
-/*
 describe('validateURL', function () {
   describe('secure URLs', function () {
     [
@@ -49,5 +48,3 @@ describe('validateURL', function () {
     })
   })
 })
-
-*/

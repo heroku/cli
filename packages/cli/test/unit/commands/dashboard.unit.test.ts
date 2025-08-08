@@ -1,15 +1,16 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../src/commands/dashboard'
+import Cmd from '../../../src/commands/dashboard.js'
 import runCommand from '../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import {ago} from '../../../src/lib/time.js'
 import {unwrap} from '../../helpers/utils/unwrap.js'
-import * as os from 'os'
-import heredoc from 'tsheredoc'
-import * as sinon from 'sinon'
+import os from 'node:os'
+import tsheredoc from 'tsheredoc'
+import sinon from 'sinon'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
     it('does not run on Windows', function () {
@@ -159,8 +160,10 @@ describe('dashboard', function () {
         .reply(200, {data: {}})
 
       await runCommand(Cmd, [])
+
       expect(stdout.output).to.contain(heredoc(`
-        myapp
+        === ⬢ myapp
+
           Owner: foo@bar.com
           Dynos: 1 | Standard-1X
           Last release: ${ago(now)}
@@ -218,5 +221,3 @@ describe('dashboard', function () {
     })
   })
 })
-
-*/

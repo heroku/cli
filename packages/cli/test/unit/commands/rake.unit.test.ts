@@ -2,9 +2,8 @@
 import {expect, test} from '@oclif/test'
 import * as sinon from 'sinon'
 
-// import Dyno from '../../../src/lib/run/dyno'
+import Dyno from '../../../src/lib/run/dyno.js'
 
-/*
 describe('rake', function () {
   let dynoOpts: { command: any }
 
@@ -38,5 +37,3 @@ describe('rake', function () {
     .catch(error => expect(error.message).to.equal('rake error'))
     .it('catches error without an exit code')
 })
-
-*/

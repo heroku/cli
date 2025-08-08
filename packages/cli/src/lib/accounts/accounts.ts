@@ -1,7 +1,7 @@
 import {parse, stringify} from 'yaml'
-import * as fs from 'fs'
-import * as os from 'node:os'
-import * as path from 'node:path'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import * as Heroku from '@heroku-cli/schema'
 
 export interface IAccountsWrapper {
