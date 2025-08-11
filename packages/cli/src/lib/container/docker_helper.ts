@@ -184,7 +184,7 @@ export const buildImage = async function ({dockerfile, resource, buildArgs, path
   // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
   if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
 
-  // newer docker versions support attestations and SBOMS, so we want to disable them to save time/space
+  // newer docker versions support attestations and software bill of materials, so we want to disable them to save time/space
   // Heroku's container registry doesn't support pushing them right now
   if (await version() >= [24, 0, 0]) {
     args.push('--provenance', 'false')
