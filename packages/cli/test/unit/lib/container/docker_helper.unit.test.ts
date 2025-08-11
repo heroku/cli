@@ -208,16 +208,42 @@ describe('DockerHelper', function () {
     })
 
     it('successfully pushes image to DockerHelper cmd', async function () {
+      const argsArray = ['push', 'registry.heroku.com/testapp/web', '--platform', 'linux/amd64']
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.pushImage('registry.heroku.com/testapp/web')
+      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'arm64')
+      const options = eventStub.getCall(0).args[2]
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
+    })
 
-      expect(eventStub.calledOnce).to.equal(true)
+    it('includes the platform flag when the arch is aarch64', async function () {
+      const argsArray = ['push', 'registry.heroku.com/testapp/web', '--platform', 'linux/amd64']
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'aarch64')
+      const options = eventStub.getCall(0).args[2]
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
+    })
+
+    it('does not include the platform flag when the arch is not arm64', async function () {
+      const argsArray = ['push', 'registry.heroku.com/testapp/web']
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'amd64')
+      const options = eventStub.getCall(0).args[2]
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
   })
 
   describe('.buildImage', function () {
     const sandbox = sinon.createSandbox()
+
+    let versionStub: sinon.SinonStub
+
+    beforeEach(function () {
+      versionStub = sandbox.stub(DockerHelper, 'version')
+      versionStub.resolves([23, 99, 99])
+    })
 
     afterEach(function () {
       return sandbox.restore()
@@ -241,7 +267,56 @@ describe('DockerHelper', function () {
         buildArgs: [],
       })
       const options = eventStub.getCall(0).args[2]
-      console.log(eventStub.getCall(0).args)
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
+    })
+
+    it('includes the provenance and sbom flags when docker version is >= 24.0.0', async function () {
+      versionStub.resolves([24, 0, 0])
+
+      const argsArray = [
+        'build',
+        '-f',
+        'dockerfile',
+        '-t',
+        'registry.heroku.com/test-app/web',
+        '--platform',
+        'linux/amd64',
+        '--provenance',
+        'false',
+        '--sbom',
+        'false',
+        '.',
+      ]
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await DockerHelper.buildImage({
+        dockerfile: 'dockerfile',
+        resource: 'registry.heroku.com/test-app/web',
+        buildArgs: [],
+        arch: 'arm64',
+      })
+      const options = eventStub.getCall(0).args[2]
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
+    })
+
+    it('does not include the platform flag when the arch is not arm64', async function () {
+      const argsArray = [
+        'build',
+        '-f',
+        'dockerfile',
+        '-t',
+        'registry.heroku.com/test-app/web',
+        '.',
+      ]
+
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await DockerHelper.buildImage({
+        dockerfile: 'dockerfile',
+        resource: 'registry.heroku.com/test-app/web',
+        buildArgs: [],
+      })
+      const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
 
@@ -263,6 +338,29 @@ describe('DockerHelper', function () {
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
         arch: 'arm64',
+      })
+      const options = eventStub.getCall(0).args[2]
+      expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
+    })
+
+    it('includes the platform flag when arch is aarch64', async function () {
+      const argsArray = [
+        'build',
+        '-f',
+        'dockerfile',
+        '-t',
+        'registry.heroku.com/test-app/web',
+        '--platform',
+        'linux/amd64',
+        '.',
+      ]
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await DockerHelper.buildImage({
+        dockerfile: 'dockerfile',
+        resource: 'registry.heroku.com/test-app/web',
+        buildArgs: [],
+        arch: 'aarch64',
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
