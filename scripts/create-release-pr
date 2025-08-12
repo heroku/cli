@@ -35,6 +35,10 @@ BRANCH_NAME="release-$(date +%s)"
 echo "Creating git branch ${BRANCH_NAME}"
 git checkout -b "${BRANCH_NAME}"
 
+echo "Updating Node.js version to latest..."
+scripts/update-node-version-to-latest
+echo "Done updating Node.js version"
+
 echo "Installing dependencies with yarn..."
 yarn
 echo "Done installing dependencies with yarn"

@@ -344,7 +344,7 @@
     },
     "update": {
       "node": {
-        "version": "20.19.1"
+        "version": "20.19.4"
       },
       "s3": {
         "xz": true,
