@@ -19,6 +19,15 @@ else
     echo "nodejs $version" >> .tool-versions
 fi
 
+# Install the Node.js version via asdf to ensure it's available
+echo "Installing Node.js version $version via asdf..."
+if asdf install nodejs "$version"; then
+    echo "Successfully installed Node.js version $version"
+else
+    echo "Warning: Failed to install Node.js version $version via asdf" >&2
+    echo "Continuing with package.json update..." >&2
+fi
+
 # Update the Node.js version in package.json's oclif update configuration
 # Using node to update the JSON file correctly
 node -e "
