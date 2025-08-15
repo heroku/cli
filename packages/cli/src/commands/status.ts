@@ -147,10 +147,16 @@ export default class Status extends Command {
       return
     }
 
-    for (const item of body.status) {
-      const message = printStatus(item.status)
+    const systemStatus = herokuStatus ? herokuStatus.status : formattedTrustStatus?.status
 
-      this.log(`${(item.system + ':').padEnd(11)}${message}`)
+    if (systemStatus) {
+      for (const item of systemStatus) {
+        const message = printStatus(item.status)
+
+        this.log(`${(item.system + ':').padEnd(11)}${message}`)
+      }
+    } else {
+      ux.error(errorMessage, {exit: 1})
     }
 
     for (const incident of body.incidents) {
