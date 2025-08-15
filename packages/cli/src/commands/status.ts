@@ -12,6 +12,7 @@ import {
   FormattedTrustStatus, SystemStatus,
 } from '../lib/types/status'
 
+import {getMaxUpdateTypeLength} from '../lib/status/util'
 
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
 
@@ -197,7 +198,7 @@ export default class Status extends Command {
       ux.log()
       hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
-      const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
+      const padding = getMaxUpdateTypeLength(incident.updates)
       for (const u of incident.updates) {
         ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
         ux.log(`${u.contents}\n`)

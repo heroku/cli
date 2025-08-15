@@ -1,11 +1,16 @@
-export function maxBy<T>(arr: T[], fn: (i: T) => number): T | undefined {
-  let max: {element: T; i: number} | undefined
-  for (const cur of arr) {
-    const i = fn(cur)
-    if (!max || i > max.i) {
-      max = {i, element: cur}
+type Update = {
+  update_type: string,
+  updated_at: string,
+  contents: string,
+}
+
+export function getMaxUpdateTypeLength(updatesArray: Update[]): number {
+  let max = 0
+  for (const update of updatesArray) {
+    if (!max || update.update_type.length > max) {
+      max = update.update_type.length
     }
   }
 
-  return max && max.element
+  return max
 }
