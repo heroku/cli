@@ -1,7 +1,13 @@
-export type FormattedStatus = {
-  status: HerokuStatus[]
-  incidents: HerokuIncident[] | TrustIncident[] | []
-  scheduled: HerokuScheduledMaintenance[] | TrustMaintenance[] | []
+export type HerokuStatus = {
+  status: SystemStatus[]
+  incidents: HerokuIncident[] | []
+  scheduled: HerokuScheduledMaintenance[] | []
+}
+
+export type FormattedTrustStatus = {
+  status: SystemStatus[]
+  incidents: TrustIncident[]
+  scheduled: TrustMaintenance[]
 }
 
 /*
@@ -74,8 +80,9 @@ type TrustIncidentImpact = {
   id: number;
   startTime: string;
   endTime?: string;
-  serviceIssue: string;
-  endUserImpact: string;
+  serviceIssue?: string;
+  endUserImpact?: string;
+  severity?: string;
   type: string;
   createdAt: string;
   updatedAt: string;
@@ -125,7 +132,7 @@ type TrustTag = {
 Heroku Status API
  */
 
-type HerokuStatus = {
+type SystemStatus = {
   system: string;
   status: string;
 }
