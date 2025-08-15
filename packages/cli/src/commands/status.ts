@@ -143,7 +143,7 @@ export default class Status extends Command {
     if (!herokuStatus && !formattedTrustStatus) ux.error(errorMessage, {exit: 1})
 
     if (flags.json) {
-      hux.styledJSON(body)
+      hux.styledJSON(herokuStatus ?? formattedTrustStatus)
       return
     }
 
