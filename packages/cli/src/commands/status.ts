@@ -114,6 +114,38 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
   }
 }
 
+const getIncidentDetails = (herokuStatus: HerokuStatus | undefined, formattedTrustStatus: FormattedTrustStatus | undefined) => {
+  if (herokuStatus) {
+    const {incidents} = herokuStatus
+    if (incidents.length === 0) return []
+    return incidents
+  } else if (formattedTrustStatus) {
+    const {incidents} = formattedTrustStatus
+    if (incidents.length === 0) return []
+
+    return incidents.map(incident => {
+      const incidentInfo = {
+        title: incident.id,
+        created_at: incident.createdAt,
+        full_url: `https://status.salesforce.com/incidents/${incident.id}`,
+      }
+      const incidentUpdates = incident.IncidentEvents.map(event => {
+        return {
+          update_type: event.type,
+          updated_at: event.updatedAt,
+          contents: event.message,
+        }
+      })
+      return {
+        ...incidentInfo,
+        updates: incidentUpdates,
+      }
+    })
+  }
+
+  return []
+}
+
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
 
@@ -159,7 +191,9 @@ export default class Status extends Command {
       ux.error(errorMessage, {exit: 1})
     }
 
-    for (const incident of body.incidents) {
+    const incidentDetails = getIncidentDetails(herokuStatus, formattedTrustStatus)
+
+    for (const incident of incidentDetails) {
       ux.log()
       hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
