@@ -4,8 +4,16 @@ import {hux} from '@heroku/heroku-cli-util'
 import {capitalize} from '@oclif/core/lib/util'
 import {formatDistanceToNow} from 'date-fns'
 import HTTP from '@heroku/http-call'
+import {
+  TrustInstance,
+  TrustIncident,
+  TrustMaintenance,
+  HerokuStatus,
+  FormattedTrustStatus, SystemStatus,
+} from '../lib/types/status'
 
-import {maxBy} from '../lib/status/util'
+
+const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
 
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]
@@ -18,6 +26,94 @@ const printStatus = (status: string) => {
   return colorize(message)
 }
 
+const getTrustStatus = async () => {
+  const trustInstancesPath = '/instances'
+  const trustActiveIncidentsPath = '/incidents/active'
+  const trustMaintenancesPath = '/maintenances'
+  const trustHost = process.env.HEROKU_TRUST_STAGING ? 'https://status-api-stg.test.edgekey.net/v1' : 'https://api.status.salesforce.com/v1'
+  let instances: TrustInstance[] = []
+  let activeIncidents: TrustIncident[] = []
+  let maintenances: TrustMaintenance[] = []
+
+  try {
+    const instanceResponse = await HTTP.get<TrustInstance[]>(`${trustHost}${trustInstancesPath}?products=Heroku`)
+    const activeIncidentsResponse = await HTTP.get<TrustIncident[]>(`${trustHost}${trustActiveIncidentsPath}`)
+    const maintenancesResponse = await HTTP.get<TrustMaintenance[]>(`${trustHost}${trustMaintenancesPath}?limit=10&offset=0&product=Heroku&locale=en`)
+    instances = instanceResponse.body
+    activeIncidents = activeIncidentsResponse.body
+    maintenances = maintenancesResponse.body
+  } catch {
+    ux.error(errorMessage, {exit: 1})
+  }
+
+  return formatTrustResponse(instances, activeIncidents, maintenances)
+}
+
+const determineIncidentSeverity = (incidents: TrustIncident[]) => {
+  const severityArray: string[] = []
+  incidents.forEach(incident => {
+    incident.IncidentImpacts.forEach(impact => {
+      if (!impact.endTime && impact.severity) {
+        severityArray.push(impact.severity)
+      }
+    })
+  })
+  if (severityArray.includes('major')) return 'red'
+  if (severityArray.includes('minor')) return 'yellow'
+  return 'green'
+}
+
+const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustIncident[], maintenances: TrustMaintenance[]): FormattedTrustStatus => {
+  const systemStatus: SystemStatus[] = []
+  const incidents: TrustIncident[] = []
+  const scheduled: TrustMaintenance[] = []
+  const instanceKeyArray = new Set(instances.map(instance => instance.key))
+  const herokuActiveIncidents = activeIncidents.filter(incident => {
+    return incident.instanceKeys.some(key => instanceKeyArray.has(key))
+  })
+  const toolsIncidents = herokuActiveIncidents.filter(incident => {
+    return incident.instanceKeys.includes('TOOLS')
+  })
+  const appsIncidents = herokuActiveIncidents.filter(incident => {
+    return incident.serviceKeys.includes('HerokuApps')
+  })
+  const dataIncidents = herokuActiveIncidents.filter(incident => {
+    return incident.serviceKeys.includes('HerokuData')
+  })
+
+  if (toolsIncidents.length > 0) {
+    const severity = determineIncidentSeverity(toolsIncidents)
+    systemStatus.push({system: 'Tools', status: severity})
+    incidents.push(...toolsIncidents)
+  } else {
+    systemStatus.push({system: 'Tools', status: 'green'})
+  }
+
+  if (appsIncidents.length > 0) {
+    const severity = determineIncidentSeverity(appsIncidents)
+    systemStatus.push({system: 'Apps', status: severity})
+    incidents.push(...appsIncidents)
+  } else {
+    systemStatus.push({system: 'Apps', status: 'green'})
+  }
+
+  if (dataIncidents.length > 0) {
+    const severity = determineIncidentSeverity(appsIncidents)
+    systemStatus.push({system: 'Data', status: severity})
+    incidents.push(...dataIncidents)
+  } else {
+    systemStatus.push({system: 'Data', status: 'green'})
+  }
+
+  if (maintenances.length > 0) scheduled.push(...maintenances)
+
+  return {
+    status: systemStatus,
+    incidents,
+    scheduled,
+  }
+}
+
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
 
@@ -27,10 +123,24 @@ export default class Status extends Command {
 
   async run() {
     const {flags} = await this.parse(Status)
-    const apiPath = '/api/v4/current-status'
+    const herokuApiPath = '/api/v4/current-status'
+    let herokuStatus
+    let formattedTrustStatus
 
-    const host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-    const {body} = await HTTP.get<any>(host + apiPath)
+    if (process.env.TRUST_ONLY) {
+      formattedTrustStatus = await getTrustStatus()
+    } else {
+      try {
+        // Try calling the Heroku status API first
+        const herokuHost = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
+        const herokuStatusResponse = await HTTP.get<HerokuStatus>(herokuHost + herokuApiPath)
+        herokuStatus = herokuStatusResponse.body
+      } catch {
+        formattedTrustStatus = await getTrustStatus()
+      }
+    }
+
+    if (!herokuStatus && !formattedTrustStatus) ux.error(errorMessage, {exit: 1})
 
     if (flags.json) {
       hux.styledJSON(body)
