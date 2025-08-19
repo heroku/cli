@@ -9,7 +9,9 @@ import {
   TrustIncident,
   TrustMaintenance,
   HerokuStatus,
-  FormattedTrustStatus, SystemStatus,
+  FormattedTrustStatus,
+  SystemStatus,
+  Localization,
 } from '../lib/types/status'
 
 import {getMaxUpdateTypeLength} from '../lib/status/util'
@@ -28,26 +30,28 @@ const printStatus = (status: string) => {
 }
 
 const getTrustStatus = async () => {
-  const trustInstancesPath = '/instances'
-  const trustActiveIncidentsPath = '/incidents/active'
-  const trustMaintenancesPath = '/maintenances'
-  const trustHost = process.env.HEROKU_TRUST_STAGING ? 'https://status-api-stg.test.edgekey.net/v1' : 'https://api.status.salesforce.com/v1'
+  const trustHost = process.env.SF_TRUST_STAGING ? 'https://status-api-stg.test.edgekey.net/v1' : 'https://api.status.salesforce.com/v1'
   let instances: TrustInstance[] = []
   let activeIncidents: TrustIncident[] = []
   let maintenances: TrustMaintenance[] = []
+  let localizations: Localization[] = []
 
   try {
-    const instanceResponse = await HTTP.get<TrustInstance[]>(`${trustHost}${trustInstancesPath}?products=Heroku`)
-    const activeIncidentsResponse = await HTTP.get<TrustIncident[]>(`${trustHost}${trustActiveIncidentsPath}`)
-    const maintenancesResponse = await HTTP.get<TrustMaintenance[]>(`${trustHost}${trustMaintenancesPath}?limit=10&offset=0&product=Heroku&locale=en`)
+    const [instanceResponse, activeIncidentsResponse, maintenancesResponse, localizationsResponse] = await Promise.all([
+      HTTP.get<TrustInstance[]>(`${trustHost}/instances?products=Heroku`),
+      HTTP.get<TrustIncident[]>(`${trustHost}/incidents/active`),
+      HTTP.get<TrustMaintenance[]>(`${trustHost}/maintenances?limit=10&offset=0&product=Heroku&locale=en`),
+      HTTP.get<Localization[]>(`${trustHost}/localizations?locale=en`),
+    ])
     instances = instanceResponse.body
     activeIncidents = activeIncidentsResponse.body
     maintenances = maintenancesResponse.body
+    localizations = localizationsResponse.body
   } catch {
     ux.error(errorMessage, {exit: 1})
   }
 
-  return formatTrustResponse(instances, activeIncidents, maintenances)
+  return formatTrustResponse(instances, activeIncidents, maintenances, localizations)
 }
 
 const determineIncidentSeverity = (incidents: TrustIncident[]) => {
@@ -64,7 +68,7 @@ const determineIncidentSeverity = (incidents: TrustIncident[]) => {
   return 'green'
 }
 
-const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustIncident[], maintenances: TrustMaintenance[]): FormattedTrustStatus => {
+const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustIncident[], maintenances: TrustMaintenance[], localizations: Localization[]): FormattedTrustStatus => {
   const systemStatus: SystemStatus[] = []
   const incidents: TrustIncident[] = []
   const scheduled: TrustMaintenance[] = []
@@ -73,13 +77,13 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
     return incident.instanceKeys.some(key => instanceKeyArray.has(key))
   })
   const toolsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.instanceKeys.includes('TOOLS')
+    return incident.instanceKeys.includes('TOOLS' || 'Tools' || 'CLI' || 'Dashboard' || 'Platform API')
   })
   const appsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuApps')
+    return incident.serviceKeys.includes('HerokuApps' || 'Apps')
   })
   const dataIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuData')
+    return incident.serviceKeys.includes('HerokuData' || 'Data')
   })
 
   if (toolsIncidents.length > 0) {
@@ -108,43 +112,19 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
 
   if (maintenances.length > 0) scheduled.push(...maintenances)
 
+  if (incidents.length > 0) {
+    incidents.forEach(incident => {
+      incident.IncidentEvents.forEach(event => {
+        event.localizedType = localizations.find((l: any) => l.modelKey === event.type)?.text
+      })
+    })
+  }
+
   return {
     status: systemStatus,
     incidents,
     scheduled,
   }
-}
-
-const getIncidentDetails = (herokuStatus: HerokuStatus | undefined, formattedTrustStatus: FormattedTrustStatus | undefined) => {
-  if (herokuStatus) {
-    const {incidents} = herokuStatus
-    if (incidents.length === 0) return []
-    return incidents
-  } else if (formattedTrustStatus) {
-    const {incidents} = formattedTrustStatus
-    if (incidents.length === 0) return []
-
-    return incidents.map(incident => {
-      const incidentInfo = {
-        title: incident.id,
-        created_at: incident.createdAt,
-        full_url: `https://status.salesforce.com/incidents/${incident.id}`,
-      }
-      const incidentUpdates = incident.IncidentEvents.map(event => {
-        return {
-          update_type: event.type,
-          updated_at: event.updatedAt,
-          contents: event.message,
-        }
-      })
-      return {
-        ...incidentInfo,
-        updates: incidentUpdates,
-      }
-    })
-  }
-
-  return []
 }
 
 export default class Status extends Command {
@@ -169,6 +149,7 @@ export default class Status extends Command {
         const herokuStatusResponse = await HTTP.get<HerokuStatus>(herokuHost + herokuApiPath)
         herokuStatus = herokuStatusResponse.body
       } catch {
+        // If the Heroku status API call fails, call the SF Trust API
         formattedTrustStatus = await getTrustStatus()
       }
     }
@@ -192,16 +173,28 @@ export default class Status extends Command {
       ux.error(errorMessage, {exit: 1})
     }
 
-    const incidentDetails = getIncidentDetails(herokuStatus, formattedTrustStatus)
+    if (herokuStatus) {
+      for (const incident of herokuStatus.incidents) {
+        ux.log()
+        hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
-    for (const incident of incidentDetails) {
-      ux.log()
-      hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
+        const padding = getMaxUpdateTypeLength(incident.updates.map(update => update.update_type))
+        for (const u of incident.updates) {
+          ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
+          ux.log(`${u.contents}\n`)
+        }
+      }
+    } else if (formattedTrustStatus) {
+      for (const incident of formattedTrustStatus.incidents) {
+        ux.log()
+        hux.styledHeader(`${incident.id} ${color.yellow(incident.createdAt)} ${color.cyan(`https://status.salesforce.com/incidents/${incident.id}`)}`)
 
-      const padding = getMaxUpdateTypeLength(incident.updates)
-      for (const u of incident.updates) {
-        ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
-        ux.log(`${u.contents}\n`)
+        const padding = getMaxUpdateTypeLength(incident.IncidentEvents.map(event => event.localizedType ?? event.type))
+        for (const event of incident.IncidentEvents) {
+          const eventType = event.localizedType ?? event.type
+          ux.log(`${color.yellow(eventType.padEnd(padding))} ${new Date(event.createdAt).toISOString()} (${formatDistanceToNow(new Date(event.createdAt))} ago)`)
+          ux.log(`${event.message}\n`)
+        }
       }
     }
   }

@@ -1,14 +1,8 @@
-type Update = {
-  update_type: string,
-  updated_at: string,
-  contents: string,
-}
-
-export function getMaxUpdateTypeLength(updatesArray: Update[]): number {
+export function getMaxUpdateTypeLength(updateTypes: string[]): number {
   let max = 0
-  for (const update of updatesArray) {
-    if (!max || update.update_type.length > max) {
-      max = update.update_type.length
+  for (const update of updateTypes) {
+    if (!max || update.length > max) {
+      max = update.length
     }
   }
 

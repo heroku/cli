@@ -76,6 +76,15 @@ export type TrustMaintenance = {
   updatedAt: string;
 }
 
+export type Localization = {
+  id: number;
+  modelName: string;
+  modelKey: string;
+  modelAttribute: string;
+  text: string;
+  locale: string;
+}
+
 type TrustIncidentImpact = {
   id: number;
   startTime: string;
@@ -94,6 +103,7 @@ type TrustIncidentEvent = {
   message: string;
   createdAt: string;
   updatedAt: string;
+  localizedType?: string;
 }
 
 type TrustMaintenanceImpact = {
@@ -137,7 +147,7 @@ type SystemStatus = {
   status: string;
 }
 
-type HerokuIncident = {
+export type HerokuIncident = {
   title: string;
   created_at: string;
   full_url: string;
