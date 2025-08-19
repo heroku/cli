@@ -1,22 +1,14 @@
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import {expect, test as base} from '@oclif/test'
+import {expect, test} from '@oclif/test'
 
-const test = base
-
-const api = nock('https://status.heroku.com:443')
-
-beforeEach(function () {
-  return nock.cleanAll()
-})
-afterEach(function () {
-  return api.done()
-})
+const herokuStatusApi = 'https://status.heroku.com:443'
+const trustApi = 'https://api.status.salesforce.com/v1'
 
 describe('when heroku is green', function () {
   test
     .stdout()
-    .nock('https://status.heroku.com', api => {
+    .nock(herokuStatusApi, api => {
       api.get('/api/v4/current-status').reply(200, {
         status: [
           {system: 'Apps', status: 'green'},
@@ -36,7 +28,7 @@ Tools:     No known issues at this time.\n`)
 
   test
     .stdout()
-    .nock('https://status.heroku.com', api => {
+    .nock(herokuStatusApi, api => {
       api.get('/api/v4/current-status').reply(200, {
         status: [
           {system: 'Apps', status: 'green'},
@@ -67,7 +59,7 @@ describe('when heroku has issues', function () {
 
   test
     .stdout()
-    .nock('https://status.heroku.com', api => {
+    .nock(herokuStatusApi, api => {
       api.get('/api/v4/current-status').reply(200, {
         status: [
           {system: 'Apps', status: 'red'},
