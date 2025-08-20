@@ -14,7 +14,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "^9.0.2",
-    "@heroku/http-call": "^5.4.0",
+    "@heroku/http-call": "^5.5.0",
     "@heroku/mcp-server": "1.0.7-alpha.1",
     "@heroku/plugin-ai": "^1.0.1",
     "@inquirer/prompts": "^5.0.5",
