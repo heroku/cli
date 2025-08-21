@@ -31,6 +31,7 @@ const printStatus = (status: string) => {
 
 const getTrustStatus = async () => {
   const trustHost = process.env.SF_TRUST_STAGING ? 'https://status-api-stg.test.edgekey.net/v1' : 'https://api.status.salesforce.com/v1'
+  const currentDateTime = new Date(Date.now()).toISOString()
   let instances: TrustInstance[] = []
   let activeIncidents: TrustIncident[] = []
   let maintenances: TrustMaintenance[] = []
@@ -40,7 +41,7 @@ const getTrustStatus = async () => {
     const [instanceResponse, activeIncidentsResponse, maintenancesResponse, localizationsResponse] = await Promise.all([
       HTTP.get<TrustInstance[]>(`${trustHost}/instances?products=Heroku`),
       HTTP.get<TrustIncident[]>(`${trustHost}/incidents/active`),
-      HTTP.get<TrustMaintenance[]>(`${trustHost}/maintenances?limit=10&offset=0&product=Heroku&locale=en`),
+      HTTP.get<TrustMaintenance[]>(`${trustHost}/maintenances?startTime=${currentDateTime}&limit=10&offset=0&product=Heroku&locale=en`),
       HTTP.get<Localization[]>(`${trustHost}/localizations?locale=en`),
     ])
     instances = instanceResponse.body

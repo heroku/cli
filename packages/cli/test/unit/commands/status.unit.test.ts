@@ -32,8 +32,8 @@ describe('status - Heroku Status API', () => {
       .command(['status'])
       .it('shows success message', ctx => {
         expect(ctx.stdout).to.equal(`Apps:      No known issues at this time.
-  Data:      No known issues at this time.
-  Tools:     No known issues at this time.\n`)
+Data:      No known issues at this time.
+Tools:     No known issues at this time.\n`)
       })
 
     test
@@ -90,15 +90,15 @@ describe('status - Heroku Status API', () => {
       .command(['status'])
       .it('shows the issues', ctx => {
         expect(ctx.stdout).to.equal(`Apps:      Red
-  Data:      No known issues at this time.
-  Tools:     No known issues at this time.
-  
-  === incident title ${timeISO} https://status.heroku.com
-  
-  update type ${timeISO} (less than a minute ago)
-  update contents
-  
-  `)
+Data:      No known issues at this time.
+Tools:     No known issues at this time.
+
+=== incident title ${timeISO} https://status.heroku.com
+
+update type ${timeISO} (less than a minute ago)
+update contents
+
+`)
       })
   })
 })
@@ -113,7 +113,11 @@ describe('status - SF Trust API', function () {
       .nock(salesforceTrustApi, api => {
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
-        api.get('/maintenances?limit=10&offset=0&product=Heroku&locale=en').reply(200)
+        api.get('/maintenances')
+          .query(params => {
+            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
+          })
+          .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
       .command(['status'])
@@ -131,7 +135,11 @@ Tools:     No known issues at this time.\n`)
       .nock(salesforceTrustApi, api => {
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
-        api.get('/maintenances?limit=10&offset=0&product=Heroku&locale=en').reply(200)
+        api.get('/maintenances')
+          .query(params => {
+            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
+          })
+          .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
       .command(['status', '--json'])
@@ -147,7 +155,11 @@ Tools:     No known issues at this time.\n`)
       .nock(salesforceTrustApi, api => {
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
-        api.get('/maintenances?limit=10&offset=0&product=Heroku&locale=en').reply(200, herokuMaintenanceResponse)
+        api.get('/maintenances')
+          .query(params => {
+            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
+          })
+          .reply(200, herokuMaintenanceResponse)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
       .command(['status', '--json'])
@@ -173,7 +185,11 @@ Tools:     No known issues at this time.\n`)
       .nock(salesforceTrustApi, api => {
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, herokuDataAppsToolsIncidentResponse)
-        api.get('/maintenances?limit=10&offset=0&product=Heroku&locale=en').reply(200)
+        api.get('/maintenances')
+          .query(params => {
+            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
+          })
+          .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
       .command(['status'])
