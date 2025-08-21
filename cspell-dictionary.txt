@@ -9,6 +9,7 @@ allkeys
 amyapp
 amannn
 aname
+APAC
 appname
 apresharedkey
 armel
@@ -38,6 +39,7 @@ buildpack
 buildpacks
 buildpath
 cachecompl
+CEDARPRIVATESPACES
 ckey
 clearsign
 clientsecret
@@ -77,6 +79,7 @@ ECCN
 echoerr
 Edmonds
 elif
+EMEA
 envfile
 envl
 eventsource
@@ -88,6 +91,7 @@ favoriteid
 favoriting
 filebase
 filesize
+FIRPRIVATESPACES
 flagscompletions
 fooapp
 fooexample

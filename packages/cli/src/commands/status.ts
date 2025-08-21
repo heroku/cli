@@ -86,14 +86,6 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
     return incident.serviceKeys.includes('HerokuData' || 'Data')
   })
 
-  if (toolsIncidents.length > 0) {
-    const severity = determineIncidentSeverity(toolsIncidents)
-    systemStatus.push({system: 'Tools', status: severity})
-    incidents.push(...toolsIncidents)
-  } else {
-    systemStatus.push({system: 'Tools', status: 'green'})
-  }
-
   if (appsIncidents.length > 0) {
     const severity = determineIncidentSeverity(appsIncidents)
     systemStatus.push({system: 'Apps', status: severity})
@@ -103,11 +95,19 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
   }
 
   if (dataIncidents.length > 0) {
-    const severity = determineIncidentSeverity(appsIncidents)
+    const severity = determineIncidentSeverity(dataIncidents)
     systemStatus.push({system: 'Data', status: severity})
     incidents.push(...dataIncidents)
   } else {
     systemStatus.push({system: 'Data', status: 'green'})
+  }
+
+  if (toolsIncidents.length > 0) {
+    const severity = determineIncidentSeverity(toolsIncidents)
+    systemStatus.push({system: 'Tools', status: severity})
+    incidents.push(...toolsIncidents)
+  } else {
+    systemStatus.push({system: 'Tools', status: 'green'})
   }
 
   if (maintenances.length > 0) scheduled.push(...maintenances)

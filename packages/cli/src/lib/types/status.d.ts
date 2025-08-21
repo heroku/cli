@@ -30,24 +30,24 @@ export type TrustInstance = {
   Services: TrustService[];
   Products: TrustProduct[];
   Incidents: TrustIncident[];
-  tags: TrustTag[];
+  Tags: TrustTag[];
 }
 
 export type TrustIncident = {
   id: number;
   message?: {
-    pathToResolution?: string;
-    actionPlan?: string;
-    rootCause?: string;
+    pathToResolution?: string | null;
+    actionPlan?: string | null;
+    rootCause?: string | null;
   },
-  externalId?: string;
+  externalId?: string | null;
   affectsAll: boolean;
   isCore: boolean;
   additionalInformation?: string;
   serviceKeys: string[];
   instanceKeys: string[];
   IncidentImpacts: TrustIncidentImpact[]
-  IncidentEvents: TrustIncidentEvent[]
+  IncidentEvents: TrustEvent[]
   createdAt: string;
   updatedAt: string;
 }
@@ -61,9 +61,9 @@ export type TrustMaintenance = {
   }
   externalId?: string;
   name?: string;
-  externalMaintenanceType?: string;
-  releaseType?: string;
-  substrate?: string;
+  externalMaintenanceType?: string | null;
+  releaseType?: string | null;
+  substrate?: string | null;
   affectsAll: boolean;
   isCore: boolean;
   plannedStartTime?: string;
@@ -72,6 +72,7 @@ export type TrustMaintenance = {
   serviceKeys: string[];
   instanceKeys: string[];
   MaintenanceImpacts: TrustMaintenanceImpact[]
+  MaintenanceEvents: TrustEvent[]
   createdAt: string;
   updatedAt: string;
 }
@@ -88,16 +89,20 @@ export type Localization = {
 type TrustIncidentImpact = {
   id: number;
   startTime: string;
-  endTime?: string;
+  endTime?: string | null;
   serviceIssue?: string;
   endUserImpact?: string;
   severity?: string;
   type: string;
   createdAt: string;
   updatedAt: string;
+  startTimeCreatedAt: string;
+  startTimeModifiedAt: string | null;
+  endTimeCreatedAt: string | null;
+  endTimeModifiedAt: string | null;
 }
 
-type TrustIncidentEvent = {
+type TrustEvent = {
   id: number;
   type: string;
   message: string;
@@ -111,9 +116,14 @@ type TrustMaintenanceImpact = {
   startTime: string;
   endTime?: string;
   type: string;
-  systemAvailability: string;
+  systemAvailability?: string;
   createdAt: string;
   updatedAt: string;
+  severity?: string;
+  startTimeCreatedAt: string;
+  startTimeModifiedAt: string | null;
+  endTimeCreatedAt: string | null;
+  endTimeModifiedAt: string | null;
 }
 
 type TrustService = {
