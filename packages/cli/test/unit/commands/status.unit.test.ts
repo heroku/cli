@@ -236,4 +236,27 @@ Incident update 3
 `)
       })
   })
+
+  describe('when calls to both the Heroku Status API and the SF Trust API fail', function () {
+    test
+      .stdout()
+      .nock(herokuStatusApi, api => {
+        api.get('/api/v4/current-status').reply(404)
+      })
+      .nock(salesforceTrustApi, api => {
+        api.get('/instances?products=Heroku').reply(404, instancesResponse)
+        api.get('/incidents/active').reply(200, herokuDataAppsToolsIncidentResponse)
+        api.get('/maintenances')
+          .query(params => {
+            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
+          })
+          .reply(200)
+        api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
+      })
+      .command(['status'])
+      .catch((error: any) => {
+        expect(error.message).to.include('Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.')
+      })
+      .it('displays an error message')
+  })
 })
