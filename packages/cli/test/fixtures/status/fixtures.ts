@@ -10,7 +10,7 @@ export const fixtureNowISO = new Date(fixtureNow).toISOString()
 
 export const instancesResponse: TrustInstance[] = [
   {
-    key: 'CEDARPRIVATESPACES-VIRGINIA',
+    key: 'Heroku London',
     location: 'NA',
     environment: 'production',
     releaseVersion: '',
@@ -49,7 +49,7 @@ export const instancesResponse: TrustInstance[] = [
     Tags: [],
   },
   {
-    key: 'CEDARPRIVATESPACES-TOKYO',
+    key: 'Heroku Tokyo',
     location: 'APAC',
     environment: 'production',
     releaseVersion: '',
@@ -88,7 +88,7 @@ export const instancesResponse: TrustInstance[] = [
     Tags: [],
   },
   {
-    key: 'FIRPRIVATESPACES-DUBLIN',
+    key: 'Heroku Europe',
     location: 'EMEA',
     environment: 'production',
     releaseVersion: '',
@@ -127,7 +127,7 @@ export const instancesResponse: TrustInstance[] = [
     Tags: [],
   },
   {
-    key: 'FIRPRIVATESPACES-FRANKFURT',
+    key: 'Heroku Asia',
     location: 'EMEA',
     environment: 'production',
     releaseVersion: '',
@@ -166,7 +166,7 @@ export const instancesResponse: TrustInstance[] = [
     Tags: [],
   },
   {
-    key: 'TOOLS',
+    key: 'Heroku North America',
     location: 'NA',
     environment: 'production',
     releaseVersion: '',
@@ -232,7 +232,7 @@ export const herokuMaintenanceResponse: TrustMaintenance[] = [
     createdAt: '2025-08-07T16:00:22.214Z',
     updatedAt: '2025-08-07T16:00:22.226Z',
     instanceKeys: [
-      'CEDARPRIVATESPACES-VIRGINIA',
+      'Heroku North America',
     ],
     serviceKeys: [
       'HerokuApps',
@@ -370,10 +370,10 @@ const herokuDataIncident: TrustIncident = {
   createdAt: `${fixtureNowISO}`,
   updatedAt: '2025-08-21T08:53:30.069Z',
   instanceKeys: [
-    'CEDARPRIVATESPACES-VIRGINIA',
+    'Heroku North America',
   ],
   serviceKeys: [
-    'HerokuData',
+    'Data',
   ],
   IncidentImpacts: [
     {
@@ -429,10 +429,10 @@ const herokuAppsIncident: TrustIncident = {
   createdAt: `${fixtureNowISO}`,
   updatedAt: '2025-08-21T08:53:30.069Z',
   instanceKeys: [
-    'CEDARPRIVATESPACES-VIRGINIA',
+    'Heroku Europe',
   ],
   serviceKeys: [
-    'HerokuApps',
+    'Apps',
   ],
   IncidentImpacts: [
     {
@@ -488,7 +488,7 @@ const herokuToolsIncident: TrustIncident = {
   createdAt: `${fixtureNowISO}`,
   updatedAt: '2025-08-21T08:53:30.069Z',
   instanceKeys: [
-    'TOOLS',
+    'Heroku Asia',
   ],
   serviceKeys: [
     'Dashboard',

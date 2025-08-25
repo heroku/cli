@@ -14,7 +14,7 @@ import {
 const herokuStatusApi = 'https://status.heroku.com:443'
 const salesforceTrustApi = 'https://api.status.salesforce.com/v1'
 
-describe('status - Heroku Status API', () => {
+describe('status - Heroku Status API', function () {
   describe('when heroku is green', function () {
     test
       .stdout()

@@ -78,13 +78,14 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
     return incident.instanceKeys.some(key => instanceKeyArray.has(key))
   })
   const toolsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.instanceKeys.includes('TOOLS' || 'Tools' || 'CLI' || 'Dashboard' || 'Platform API')
+    const tools = ['TOOLS', 'Tools', 'CLI', 'Dashboard', 'Platform API']
+    return tools.some(tool => incident.serviceKeys.includes(tool))
   })
   const appsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuApps' || 'Apps')
+    return incident.serviceKeys.includes('HerokuApps') || incident.serviceKeys.includes('Apps')
   })
   const dataIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuData' || 'Data')
+    return incident.serviceKeys.includes('HerokuData') || incident.serviceKeys.includes('Data')
   })
 
   if (appsIncidents.length > 0) {
