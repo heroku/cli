@@ -6915,6 +6915,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "chalk@npm:5.6.0"
+  checksum: 245d4b53c29c88da9e291f318c86b6b3ee65aa81568f9e10fafc984a6ef520412dee513057d07cc0f4614ab5a46cb07a0394fab3794d88d48c89c17b2d8fbf7f
+  languageName: node
+  linkType: hard
+
 "change-case@npm:^4":
   version: 4.1.2
   resolution: "change-case@npm:4.1.2"
@@ -10836,7 +10843,7 @@ __metadata:
     bytes: ^3.1.2
     chai: ^4.4.1
     chai-as-promised: ^7.1.1
-    chalk: ^2.4.2
+    chalk: ^5.6.0
     commander: ^2.15.1
     date-fns: ^2.30.0
     debug: 4.3.4
