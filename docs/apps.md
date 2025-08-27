@@ -34,7 +34,7 @@ FLAGS
   -j, --json           output in json format
   -p, --personal       list apps in personal account when a default team is set
   -s, --space=<value>  filter by space
-  -t, --team=<value>   [default: terraform-ci-test-team] team to use
+  -t, --team=<value>   team to use
 
 DESCRIPTION
   list your apps
@@ -62,7 +62,7 @@ FLAGS
   -n, --no-remote          do not create a git remote
   -r, --remote=<value>     [default: heroku] the git remote to create, default "heroku"
   -s, --stack=<value>      the stack to create the app on
-  -t, --team=<value>       [default: terraform-ci-test-team] team to use
+  -t, --team=<value>       team to use
       --addons=<value>     comma-delimited list of addons to install
       --json               output in json format
       --region=<value>     specify region for the app to run in
