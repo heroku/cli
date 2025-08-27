@@ -103,7 +103,7 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
-  -t, --team=<value>    [default: terraform-ci-test-team] the team which will own the apps
+  -t, --team=<value>    the team which will own the apps
 
 DESCRIPTION
   create a new pipeline
