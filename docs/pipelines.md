@@ -281,7 +281,7 @@ ARGUMENTS
   REPO  a GitHub repository to connect the pipeline to
 
 FLAGS
-  -t, --team=<value>  [default: terraform-ci-test-team] the team to assign pipeline ownership to (defaults to current
+  -t, --team=<value>  the team to assign pipeline ownership to (defaults to current
                       user)
   -y, --yes           accept all default settings without prompting
 
