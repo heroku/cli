@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.13.0-beta.0](https://github.com/heroku/cli/compare/v10.12.0...v10.13.0-beta.0) (2025-08-27)
+
+
+### Bug Fixes
+
+* Disable attestations and SBOMs for Heroku's container registry ([#3350](https://github.com/heroku/cli/issues/3350)) ([cc64191](https://github.com/heroku/cli/commit/cc64191097b84e4bc2c389bb06719a1a496c5119))
+
+
+### Features
+
+* **W-19005486:** add support for SF Trust API to status command ([#3357](https://github.com/heroku/cli/issues/3357)) ([32eb409](https://github.com/heroku/cli/commit/32eb4093a8657a767e5d16c7cb5778cd931786b3))
+* **W-19386384:** add domain name validation for Heroku API requests ([#3358](https://github.com/heroku/cli/issues/3358)) ([b139bad](https://github.com/heroku/cli/commit/b139bad52ea64c93b348df49f658492391b6b11e))
+
+
+
+
+
 # [10.12.0](https://github.com/heroku/cli/compare/v10.11.0...v10.12.0) (2025-07-17)
 
 
