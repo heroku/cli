@@ -33,7 +33,7 @@ USAGE
   $ heroku orgs:open -t <value>
 
 FLAGS
-  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  (required) team to use
 
 DESCRIPTION
   open the team interface in a browser window
