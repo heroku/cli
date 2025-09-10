@@ -23,7 +23,7 @@
     "tmp": "^0.2.1",
     "ts-node": "^10.9.2"
   },
-  "resolutions": {
+  "overrides": {
     "ansi-regex": "4.1.1",
     "@heroku/http-call": "^5.5.0"
   },
@@ -39,17 +39,17 @@
   },
   "private": true,
   "scripts": {
-    "build": "cd packages/cli && yarn prepack",
+    "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
-    "lint": "cd packages/cli && yarn lint",
+    "lint": "cd packages/cli && npm run lint",
+    "cspell": "cspell",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache",
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules",
     "postinstall": "husky install"
   },
   "workspaces": {
     "packages": [
       "packages/*"
     ]
-  },
-  "packageManager": "yarn@3.6.1"
+  }
 }
