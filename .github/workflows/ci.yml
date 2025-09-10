@@ -16,12 +16,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --immutable --network-timeout 1000000
+          cache: npm
+      - run: npm ci
       - name: unit tests
-        run: yarn test
+        run: npm test
       - name: linting
-        run: yarn lint
+        run: npm run lint
 
   integration:
     runs-on: ${{ matrix.os }}
@@ -39,12 +39,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --immutable --network-timeout 1500000
+          cache: npm
+      - run: npm ci
       - name: Run cli package integration tests
         run: |
           cd packages/cli
-          yarn test:integration
+          npm run test:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -62,16 +62,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --immutable --network-timeout 1000000
+          cache: npm
+      - run: npm ci
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
-        run: cd packages/cli && yarn test:smoke
+        run: cd packages/cli && npm run test:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
-        run: cd packages/cli && yarn test:acceptance
+        run: cd packages/cli && npm run test:acceptance
 
   spell-check:
     runs-on: ${{ matrix.os }}
@@ -87,11 +87,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn add cspell@7.3.9
+      - run: npm install cspell@7.3.9
       - name: Run spell check on changed files
         run: |
           git fetch origin main:refs/remotes/origin/main --quiet
-          git diff origin/main...HEAD --diff-filter=d --name-only | yarn run cspell --no-progress --gitignore --no-must-find-files --file-list stdin
+          git diff origin/main...HEAD --diff-filter=d --name-only | npm run cspell --no-progress --gitignore --no-must-find-files --file-list stdin
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
