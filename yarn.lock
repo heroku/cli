@@ -3747,6 +3747,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oclif/plugin-help@npm:^6":
+  version: 6.2.33
+  resolution: "@oclif/plugin-help@npm:6.2.33"
+  dependencies:
+    "@oclif/core": ^4
+  checksum: c2fc7a2071f1149bc911f5d6a877616c471773ef128490bae09b465d54c025d2a675c179113ccf33e27d79f467bcfcf402c7e203572deb8e44ba42a6f15ae27a
+  languageName: node
+  linkType: hard
+
 "@oclif/plugin-help@npm:^6.2.10":
   version: 6.2.14
   resolution: "@oclif/plugin-help@npm:6.2.14"
@@ -10783,7 +10792,7 @@ __metadata:
     "@istanbuljs/nyc-config-typescript": ^1.0.2
     "@oclif/core": ^2.16.0
     "@oclif/plugin-commands": 2.2.28
-    "@oclif/plugin-help": ^5
+    "@oclif/plugin-help": ^6
     "@oclif/plugin-legacy": ^1.3.0
     "@oclif/plugin-not-found": 2.3.16
     "@oclif/plugin-plugins": 2.4.3
