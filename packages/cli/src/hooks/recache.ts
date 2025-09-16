@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
+import {createAPIClient} from '../lib/api-client'
 import {Interfaces, ux} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -28,7 +29,7 @@ const completions: Interfaces.Hook<'app' | 'addon' | 'config' | 'login' | 'logou
 
   // if user is not logged in, exit
   try {
-    const heroku = new APIClient(this.config)
+    const heroku = createAPIClient(this.config)
     if (!heroku.auth) return
     await heroku.get('/account', {retryAuth: false})
   } catch (error: any) {

@@ -1,6 +1,7 @@
 import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
+import {createAPIClient} from './lib/api-client'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
@@ -17,7 +18,7 @@ const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
 
 function getToken() {
   const config = new Config({root})
-  const heroku = new APIClient(config)
+  const heroku = createAPIClient(config)
   return heroku.auth
 }
 

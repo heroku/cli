@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
+import {createAPIClient} from '../api-client'
 
 import {Config} from '@oclif/core'
 
@@ -9,7 +10,7 @@ export default abstract class extends Command {
   protected constructor(argv: string[], config: Config) {
     super(argv, config)
 
-    const client = new APIClient(this.config, {})
+    const client = createAPIClient(this.config, {})
     client.defaults.headers = {
       ...this.heroku.defaults.headers,
       Accept: 'application/vnd.heroku+json; version=3.webhooks',

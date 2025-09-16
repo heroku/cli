@@ -5,6 +5,19 @@ import * as path from 'node:path'
 import * as Heroku from '@heroku-cli/schema'
 import Netrc from 'netrc-parser'
 
+function getAPIHostname(): string {
+  const customApiUrl = process.env.HEROKU_API_URL
+  if (customApiUrl) {
+    try {
+      return new URL(customApiUrl).hostname
+    } catch {
+      // If URL parsing fails, fall back to default
+      return 'api.heroku.com'
+    }
+  }
+  return 'api.heroku.com'
+}
+
 function configDir() {
   const legacyDir = path.join(os.homedir(), '.heroku')
   if (fs.existsSync(legacyDir)) {
@@ -40,8 +53,9 @@ export function list(): Heroku.Account[] | [] {
 }
 
 export function current(): string | null {
-  if (Netrc.machines['api.heroku.com']) {
-    const current = list().find(a => a.username === Netrc.machines['api.heroku.com'].login)
+  const apiHost = getAPIHostname()
+  if (Netrc.machines[apiHost]) {
+    const current = list().find(a => a.username === Netrc.machines[apiHost].login)
     return current && current.name ? current.name : null
   }
 
@@ -67,12 +81,13 @@ export function remove(name: string) {
 
 export function set(name: string) {
   const current = account(name)
+  const apiHost = getAPIHostname()
   Netrc.machines['git.heroku.com'] = {}
-  Netrc.machines['api.heroku.com'] = {}
+  Netrc.machines[apiHost] = {}
   Netrc.machines['git.heroku.com'].login = current.username
-  Netrc.machines['api.heroku.com'].login = current.username
+  Netrc.machines[apiHost].login = current.username
   Netrc.machines['git.heroku.com'].password = current.password
-  Netrc.machines['api.heroku.com'].password = current.password
+  Netrc.machines[apiHost].password = current.password
 
   Netrc.saveSync()
 }

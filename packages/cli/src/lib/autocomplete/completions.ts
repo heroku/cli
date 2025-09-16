@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {deps} from '@heroku-cli/command/lib/deps'
+import {createAPIClient} from '../api-client'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git'
 import {Completion, CompletionContext} from '@oclif/core/lib/interfaces/parser'
 import * as path from 'path'
@@ -8,7 +9,7 @@ import {flatten} from 'lodash'
 export const oneDay = 60 * 60 * 24
 
 export const herokuGet = async (resource: string, ctx: CompletionContext): Promise<string[]> => {
-  const heroku = new APIClient(ctx.config)
+  const heroku = createAPIClient(ctx.config)
   let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
   if (typeof body === 'string') body = JSON.parse(body)
   return (body as any[]).map((a: any) => a.name).sort()
@@ -72,7 +73,7 @@ const ConfigCompletion: Completion = {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_vars` : ''
   },
   options: async (ctx: any) => {
-    const heroku = new APIClient(ctx.config)
+    const heroku = createAPIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs)
@@ -88,7 +89,7 @@ const ConfigSetCompletion: Completion = {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_set_vars` : ''
   },
   options: async (ctx: any) => {
-    const heroku = new APIClient(ctx.config)
+    const heroku = createAPIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs).map(k => `${k}=`)
