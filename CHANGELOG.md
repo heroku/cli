@@ -9,6 +9,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
+* Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
 
 
 
