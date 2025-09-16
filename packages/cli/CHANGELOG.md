@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.13.2](https://github.com/heroku/cli/compare/v10.13.1...v10.13.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
+
+
+
+
+
 ## [10.13.1](https://github.com/heroku/cli/compare/v10.13.0...v10.13.1) (2025-09-04)
 
 
