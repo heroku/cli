@@ -1618,8 +1618,8 @@ __metadata:
   linkType: hard
 
 "@heroku-cli/command@npm:^12.0.0":
-  version: 12.0.1
-  resolution: "@heroku-cli/command@npm:12.0.1"
+  version: 12.1.0
+  resolution: "@heroku-cli/command@npm:12.1.0"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku/http-call": ^5.4.0
@@ -1630,7 +1630,7 @@ __metadata:
     open: ^10.1.2
     yargs-parser: ^20.2.9
     yargs-unparser: ^2.0.0
-  checksum: f86b37961375b63c1b07b58d40485cfc1a56ff2d6fd3854672321af70ce6079066379ed05bfcf0c051399b282c8038ce8b206e765d1c01154f04c670a6fdf1e7
+  checksum: 79fe29c5ffb7f65768a31676985ee292973e50c655bf74d9b237214176dc5705e0e0e41c8c34a22ed27214068cce3913a16f47c09dcd4d6030e62e707da62e60
   languageName: node
   linkType: hard
 
@@ -1701,6 +1701,15 @@ __metadata:
     node-fetch: ^2.2.0
     true-myth: ^2.0.0
   checksum: 8aa9216af96eda795a6121e541f3f6418a48e3e979801f5a655834054930db17d049e852f8abf7fb80a9f2164832ea254923e0034fc8da3e814515148ee73dcb
+  languageName: node
+  linkType: hard
+
+"@heroku/eventsource@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@heroku/eventsource@npm:1.0.7"
+  dependencies:
+    original: ^1.0.0
+  checksum: f7a01f77c7624ab283f6bc7cc023742a06c6acc3e19ac74ca4da884b4e7cfe633e64dc4c41d6f94faf03c2268281918fe3d720a080490f9ff3b006a5ff4d4170
   languageName: node
   linkType: hard
 
@@ -10734,13 +10743,15 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "form-data@npm:4.0.0"
+  version: 4.0.4
+  resolution: "form-data@npm:4.0.4"
   dependencies:
     asynckit: ^0.4.0
     combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
+    hasown: ^2.0.2
     mime-types: ^2.1.12
-  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
+  checksum: 9b7788836df9fa5a6999e0c02515b001946b2a868cfe53f026c69e2c537a2ff9fbfb8e9d2b678744628f3dc7a2d6e14e4e45dfaf68aa6239727f0bdb8ce0abf2
   languageName: node
   linkType: hard
 
@@ -11754,8 +11765,9 @@ __metadata:
     "@heroku-cli/plugin-ps-exec": 2.6.2
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
+    "@heroku/eventsource": ^1.0.7
     "@heroku/heroku-cli-util": ^10.0.0-beta.1
-    "@heroku/http-call": ^5.4.0
+    "@heroku/http-call": ^5.5.0
     "@heroku/mcp-server": 1.0.7-alpha.1
     "@heroku/plugin-ai": ^1.0.1
     "@inquirer/prompts": ^5.0.5
@@ -15965,6 +15977,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"original@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "original@npm:1.0.2"
+  dependencies:
+    url-parse: ^1.4.3
+  checksum: 8dca9311dab50c8953366127cb86b7c07bf547d6aa6dc6873a75964b7563825351440557e5724d9c652c5e99043b8295624f106af077f84bccf19592e421beb9
+  languageName: node
+  linkType: hard
+
 "os-tmpdir@npm:~1.0.2":
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
@@ -16978,6 +16999,13 @@ __metadata:
   dependencies:
     side-channel: ^1.1.0
   checksum: 189b52ad4e9a0da1a16aff4c58b2a554a8dad9bd7e287c7da7446059b49ca2e33a49e570480e8be406b87fccebf134f51c373cbce36c8c83859efa0c9b71d635
+  languageName: node
+  linkType: hard
+
+"querystringify@npm:^2.1.1":
+  version: 2.2.0
+  resolution: "querystringify@npm:2.2.0"
+  checksum: 5641ea231bad7ef6d64d9998faca95611ed4b11c2591a8cae741e178a974f6a8e0ebde008475259abe1621cb15e692404e6b6626e927f7b849d5c09392604b15
   languageName: node
   linkType: hard
 
@@ -20158,6 +20186,16 @@ __metadata:
   version: 1.19.11
   resolution: "urijs@npm:1.19.11"
   checksum: f9b95004560754d30fd7dbee44b47414d662dc9863f1cf5632a7c7983648df11d23c0be73b9b4f9554463b61d5b0a520b70df9e1ee963ebb4af02e6da2cc80f3
+  languageName: node
+  linkType: hard
+
+"url-parse@npm:^1.4.3":
+  version: 1.5.10
+  resolution: "url-parse@npm:1.5.10"
+  dependencies:
+    querystringify: ^2.1.1
+    requires-port: ^1.0.0
+  checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
   languageName: node
   linkType: hard
 

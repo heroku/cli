@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.13.2](https://github.com/heroku/cli/compare/v10.13.1...v10.13.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
+* Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
+
+
+
+
+
+## [10.13.1](https://github.com/heroku/cli/compare/v10.13.0...v10.13.1) (2025-09-04)
+
+
+### Bug Fixes
+
+* **W-19527406:** update domain name validation for Heroku API requests ([#3361](https://github.com/heroku/cli/issues/3361)) ([3a8d7c1](https://github.com/heroku/cli/commit/3a8d7c193b8b03af78541badb7a47238f2a9f935))
+
+
+
+
+
+# [10.13.0](https://github.com/heroku/cli/compare/v10.12.0...v10.13.0) (2025-08-27)
+
+
+### Bug Fixes
+
+* Disable attestations and SBOMs for Heroku's container registry ([#3350](https://github.com/heroku/cli/issues/3350)) ([cc64191](https://github.com/heroku/cli/commit/cc64191097b84e4bc2c389bb06719a1a496c5119))
+
+
+### Features
+
+* **W-19005486:** add support for SF Trust API to status command ([#3357](https://github.com/heroku/cli/issues/3357)) ([32eb409](https://github.com/heroku/cli/commit/32eb4093a8657a767e5d16c7cb5778cd931786b3))
+* **W-19386384:** add domain name validation for Heroku API requests ([#3358](https://github.com/heroku/cli/issues/3358)) ([b139bad](https://github.com/heroku/cli/commit/b139bad52ea64c93b348df49f658492391b6b11e))
+
+
+
+
+
 # [10.12.0](https://github.com/heroku/cli/compare/v10.11.0...v10.12.0) (2025-07-17)
 
 

@@ -112,7 +112,6 @@ describe('pg:upgrade:dryrun', function () {
       .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
 
     const message = heredoc(`
-      Destructive action
       This command starts a test upgrade for ${addon.name} to Postgres version 15.
       `)
 
@@ -148,7 +147,6 @@ describe('pg:upgrade:dryrun', function () {
       .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
 
     const message = heredoc(`
-      Destructive action
       This command starts a test upgrade for ${addon.name} to the latest supported Postgres version.
       `)
 
