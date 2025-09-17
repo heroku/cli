@@ -1,6 +1,5 @@
-/*
 import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
@@ -21,8 +20,6 @@ export default class Add extends Command {
     const {body: drain} = await this.heroku.post<Heroku.LogDrain>(`/apps/${flags.app}/log-drains`, {
       body: {url: args.url},
     })
-    ux.log(`Successfully added drain ${color.cyan(drain.url || '')}`)
+    ux.stdout(`Successfully added drain ${color.cyan(drain.url || '')}`)
   }
 }
-
-*/
