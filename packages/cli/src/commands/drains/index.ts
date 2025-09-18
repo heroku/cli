@@ -35,13 +35,14 @@ export default class Drains extends Command {
     } else {
       const [drainsWithAddons, drainsWithoutAddons] = drains.reduce<Heroku.LogDrain[]>(
         (acc, drain) => {
-          if(drain.addon){
+          if (drain.addon) {
             acc[0].push(drain)
-          } else{
-             acc[1].push(drain) 
+          } else {
+            acc[1].push(drain)
           }
+
           return acc
-        }, [[],[]]
+        }, [[], []],
       )
 
       if (drainsWithoutAddons.length > 0) {
