@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -21,8 +20,6 @@ export default class Remove extends Command {
     const {flags, args} = await this.parse(Remove)
 
     const {body: drain} = await this.heroku.delete<Heroku.LogDrain>(`/apps/${flags.app}/log-drains/${encodeURIComponent(args.url)}`)
-    ux.log(`Successfully removed drain ${color.cyan(drain.url || '')}`)
+    ux.stdout(`Successfully removed drain ${color.cyan(drain.url || '')}`)
   }
 }
-
-*/

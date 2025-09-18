@@ -1,15 +1,13 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
-import {partition} from 'lodash'
 
 function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
   let output = `${id} (${name})`
   if (drain.extended) output += ` drain_id=${drain.extended.drain_id}`
-  ux.log(output)
+  ux.stdout(output)
 }
 
 export default class Drains extends Command {
@@ -35,7 +33,18 @@ export default class Drains extends Command {
     if (flags.json) {
       hux.styledJSON(drains)
     } else {
-      const [drainsWithAddons, drainsWithoutAddons] = partition<Heroku.LogDrain>(drains, 'addon')
+      const [drainsWithAddons, drainsWithoutAddons] = drains.reduce<Heroku.LogDrain[]>(
+        (acc, drain) => {
+          if (drain.addon) {
+            acc[0].push(drain)
+          } else {
+            acc[1].push(drain)
+          }
+
+          return acc
+        }, [[], []],
+      )
+
       if (drainsWithoutAddons.length > 0) {
         hux.styledHeader('Drains')
         drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
@@ -55,4 +64,3 @@ export default class Drains extends Command {
     }
   }
 }
-*/

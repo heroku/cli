@@ -14,6 +14,8 @@ process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // prerun and postrun hooks from initializing
 process.env.IS_HEROKU_TEST_ENV = 'true'
 
+process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
+
 nock.disableNetConnect()
 if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
