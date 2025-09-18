@@ -99,7 +99,7 @@ export async function waitForPSQLExit(psql: EventEmitter) {
     pgDebug('psql process error', error)
     const {code} = error as {code: string}
     if (code === 'ENOENT') {
-      errorToThrow = new Error('The local psql command could not be located. For help installing psql, see https://devcenter.heroku.com/articles/heroku-postgresql#local-setup')
+      errorToThrow = new Error('The local psql command could not be located. For help installing psql, see https://devcenter.heroku.com/articles/local-setup-heroku-postgres')
     }
   }
 
