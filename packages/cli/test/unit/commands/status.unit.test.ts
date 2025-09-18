@@ -114,9 +114,7 @@ describe('status - SF Trust API', function () {
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
         api.get('/maintenances')
-          .query(params => {
-            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
-          })
+          .query(params => params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en')
           .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
@@ -136,9 +134,7 @@ Tools:     No known issues at this time.\n`)
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
         api.get('/maintenances')
-          .query(params => {
-            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
-          })
+          .query(params => params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en')
           .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
@@ -156,9 +152,7 @@ Tools:     No known issues at this time.\n`)
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, nonHerokuIncidentResponse)
         api.get('/maintenances')
-          .query(params => {
-            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
-          })
+          .query(params => params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en')
           .reply(200, herokuMaintenanceResponse)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
@@ -186,9 +180,7 @@ Tools:     No known issues at this time.\n`)
         api.get('/instances?products=Heroku').reply(200, instancesResponse)
         api.get('/incidents/active').reply(200, herokuDataAppsToolsIncidentResponse)
         api.get('/maintenances')
-          .query(params => {
-            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
-          })
+          .query(params => params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en')
           .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })
@@ -247,9 +239,7 @@ Incident update 3
         api.get('/instances?products=Heroku').reply(404, instancesResponse)
         api.get('/incidents/active').reply(200, herokuDataAppsToolsIncidentResponse)
         api.get('/maintenances')
-          .query(params => {
-            return params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en'
-          })
+          .query(params => params.limit === '10' && params.offset === '0' && params.product === 'Heroku' && params.locale === 'en')
           .reply(200)
         api.get('/localizations?locale=en').reply(200, trustLocalizationsResponse)
       })

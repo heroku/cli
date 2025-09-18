@@ -74,19 +74,13 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
   const incidents: TrustIncident[] = []
   const scheduled: TrustMaintenance[] = []
   const instanceKeyArray = new Set(instances.map(instance => instance.key))
-  const herokuActiveIncidents = activeIncidents.filter(incident => {
-    return incident.instanceKeys.some(key => instanceKeyArray.has(key))
-  })
+  const herokuActiveIncidents = activeIncidents.filter(incident => incident.instanceKeys.some(key => instanceKeyArray.has(key)))
   const toolsIncidents = herokuActiveIncidents.filter(incident => {
     const tools = ['TOOLS', 'Tools', 'CLI', 'Dashboard', 'Platform API']
     return tools.some(tool => incident.serviceKeys.includes(tool))
   })
-  const appsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuApps') || incident.serviceKeys.includes('Apps')
-  })
-  const dataIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuData') || incident.serviceKeys.includes('Data')
-  })
+  const appsIncidents = herokuActiveIncidents.filter(incident => incident.serviceKeys.includes('HerokuApps') || incident.serviceKeys.includes('Apps'))
+  const dataIncidents = herokuActiveIncidents.filter(incident => incident.serviceKeys.includes('HerokuData') || incident.serviceKeys.includes('Data'))
 
   if (appsIncidents.length > 0) {
     const severity = determineIncidentSeverity(appsIncidents)
