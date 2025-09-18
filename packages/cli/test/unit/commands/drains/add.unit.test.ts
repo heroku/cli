@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('drains:add', function () {
   test
     .stderr()
@@ -16,5 +15,3 @@ describe('drains:add', function () {
       expect(stderr).to.equal('')
     })
 })
-
-*/

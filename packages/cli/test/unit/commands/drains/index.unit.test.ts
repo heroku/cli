@@ -21,7 +21,6 @@ const EXTENDED_DRAINS = [
   },
 ]
 
-/*
 describe('drains', function () {
   test
     .stderr()
@@ -95,5 +94,3 @@ add-on:test (add-on-123) drain_id=12345
       expect(JSON.parse(stdout)).to.deep.equal(EXTENDED_DRAINS)
     })
 })
-
-*/
