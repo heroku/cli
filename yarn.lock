@@ -1773,19 +1773,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/http-call@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "@heroku/http-call@npm:5.4.0"
-  dependencies:
-    content-type: ^1.0.5
-    debug: ^4.4.0
-    is-retry-allowed: ^2.2.0
-    is-stream: ^2.0.0
-    tunnel-agent: ^0.6.0
-  checksum: 46e522a6f1d1ae44d857db202862aa0ca800804af7ba04b13a46a99f7bb1233adaf47d7d22dbf4fcd7443e78603e3793b3d6662486e8eb1c9ab6e3569e116f25
-  languageName: node
-  linkType: hard
-
 "@heroku/http-call@npm:^5.5.0":
   version: 5.5.0
   resolution: "@heroku/http-call@npm:5.5.0"
