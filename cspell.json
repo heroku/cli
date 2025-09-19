@@ -12,11 +12,9 @@
       "./cspell-dictionary.txt", 
       "./packages/cli/CHANGELOG.md", 
       "./CHANGELOG.md", 
-      "./package-lock.json",
       "**/package-lock.json",
       "**/node_modules/**",
-      "**/coverage/**",
-      "**/lib/**"
+      "**/coverage/**"
     ]
   }
   
