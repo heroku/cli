@@ -21,6 +21,13 @@ describe('run', function () {
     })
 
   testFactory()
+    .stub(runHelper, 'revertSortedArgs', () => ['echo 1 2 3'])
+    .command(['run', '--app=heroku-cli-ci-smoke-test-app', '--no-launcher', 'echo 1 2 3'])
+    .it('respects --no-launcher', async ctx => {
+      expect(ctx.stdout).to.include('1 2 3')
+    })
+
+  testFactory()
     .skip()
     .stub(runHelper, 'revertSortedArgs', () => ['ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
     .command(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
