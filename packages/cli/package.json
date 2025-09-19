@@ -142,7 +142,7 @@
     "/lib",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json",
-    "/yarn.lock"
+    "/package-lock.json"
   ],
   "homepage": "https://cli.heroku.com",
   "keywords": [
@@ -372,15 +372,15 @@
     "coverage:check": "nyc --check-coverage --branches 80 --statements 80 --functions 80 --lines 80 npm run test",
     "postpublish": "rm -f oclif.manifest.json",
     "manifest": "oclif manifest",
-    "prepack": "yarn run build",
-    "pretest": "tsc -p test --noEmit && cd ../.. && yarn build",
-    "test:acceptance": "yarn pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
-    "test:integration": "yarn pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
-    "test:smoke": "yarn pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
+    "prepack": "npm run build",
+    "pretest": "tsc -p test --noEmit && cd ../.. && npm run build",
+    "test:acceptance": "npm run pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
+    "test:integration": "npm run pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
+    "test:smoke": "npm run pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
     "test:unit:justTest:local": "mocha \"test/**/*.unit.test.ts\"",
     "test:unit:justTest:ci": "nyc --reporter=lcov --reporter=text-summary mocha --forbid-only \"test/**/*.unit.test.ts\"",
-    "test": "yarn pretest && yarn test:unit:justTest:ci",
-    "test:local": "yarn pretest && yarn test:unit:justTest:local",
+    "test": "npm run pretest && npm run test:unit:justTest:ci",
+    "test:local": "npm run pretest && npm run test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "type": "module",

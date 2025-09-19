@@ -148,6 +148,7 @@ mbytes
 mbare
 mcli
 mcode
+mocharc
 mcolorized
 mcomplete
 mcompleted

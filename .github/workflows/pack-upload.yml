@@ -17,9 +17,9 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
       - name: Building deb
-        run: yarn oclif pack:deb --root="./packages/cli"
+        run: npm run oclif pack:deb --root="./packages/cli"
       - uses: actions/upload-artifact@v4
         with:
           name: packed-deb
@@ -35,9 +35,9 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
       - name: Building tarballs
-        run: yarn oclif pack tarballs --root="./packages/cli"
+        run: npm run oclif pack tarballs --root="./packages/cli"
       - uses: actions/upload-artifact@v4
         with:
           name: packed-tarballs
@@ -92,10 +92,10 @@ jobs:
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
       - name: yarn install
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
       - name: Upload production artifacts
         run: |
           cd packages/cli
           pwd
-          yarn oclif upload tarballs
+          npm run oclif upload tarballs
           ./scripts/upload/deb
