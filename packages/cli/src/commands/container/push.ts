@@ -89,7 +89,7 @@ export default class Push extends Command {
           hux.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
         }
 
-        await this.dockerHelper.pushImage(job.resource)
+        await this.dockerHelper.pushImage(job.resource, this.config.arch)
       }
 
       const plural = jobs.length !== 1

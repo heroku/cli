@@ -44,7 +44,6 @@ export default class Upgrade extends Command {
       ux.error(`You can't use ${color.cmd('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
     await confirmCommand(app, confirm, heredoc(`
-        Destructive action
         This command starts a test upgrade for ${color.addon(db.name)} to ${versionPhrase}.
     `))
 

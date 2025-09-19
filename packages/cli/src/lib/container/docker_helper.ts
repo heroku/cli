@@ -183,7 +183,14 @@ export class DockerHelper {
     const args = ['build', '-f', dockerfile, '-t', resource]
     // Older Docker versions don't allow for this flag, but we are
     // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
-    if (arch === 'arm64') args.push('--platform', 'linux/amd64')
+    if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
+
+    // newer docker versions support attestations and software bill of materials, so we want to disable them to save time/space
+    // Heroku's container registry doesn't support pushing them right now
+    if (await this.version() >= [24, 0, 0]) {
+      args.push('--provenance', 'false')
+      args.push('--sbom', 'false')
+    }
 
     for (const element of buildArgs) {
       if (element.length > 0) {
@@ -196,8 +203,13 @@ export class DockerHelper {
     return this.cmd('docker', args)
   }
 
-  async pushImage(resource: string): Promise<string> {
+  async pushImage(resource: string, arch: string): Promise<string> {
     const args = ['push', resource]
+
+    // Older Docker versions don't allow for this flag, but we are
+    // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
+    // Heroku's container registry doesn't support pushing multi-arch images so we need to push the expected arch
+    if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
 
     return this.cmd('docker', args)
   }
