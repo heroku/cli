@@ -40,7 +40,6 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku apps`](docs/apps.md) - manage apps on Heroku
 * [`heroku auth`](docs/auth.md) - manage authentication for your Heroku account
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
-* [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - SSL certificates
 * [`heroku ci`](docs/ci.md) - test runner for Heroku Pipelines
@@ -54,30 +53,21 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
-* [`heroku local`](docs/local.md) - run Heroku app locally
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
-* [`heroku members`](docs/members.md) - manage organization members
 * [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
-* [`heroku pg`](docs/pg.md) - manage postgresql databases
-* [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
-* [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
-* [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
-* [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
-* [`heroku spaces`](docs/spaces.md) - list available spaces
 * [`heroku status`](docs/status.md) - display current status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
 * [`heroku version`](docs/version.md)
-* [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
 
