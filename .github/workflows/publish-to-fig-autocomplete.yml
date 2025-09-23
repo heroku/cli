@@ -16,21 +16,21 @@ jobs:
           cache: yarn
       - name: Install Fig Oclif Plugin
         run: cd packages/cli && yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
-      # - run: yarn --immutable --network-timeout 1000000
-      # - name: Build Heroku CLI
-      #   run: yarn build
-      # - name: Get Heroku Version
-      #   id: cli-version
-      #   run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')" >> $GITHUB_OUTPUT
-      # - name: Generate Fig Spec
-      #   run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
-      # - name: Create Fig Autocomplete PR
-      #   uses: withfig/push-to-fig-autocomplete-action@v2
-      #   with:
-      #     token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
-      #     autocomplete-spec-name: 'heroku'
-      #     spec-path: ./packages/cli/spec.ts
-      #     integration: oclif
-      #     diff-based-versioning: true
-      #     new-spec-version: ${{ steps.cli-version.outputs.version }}
-      #     pr-body: Automated PR for latest Heroku CLI release
+      - run: yarn --immutable --network-timeout 1000000
+      - name: Build Heroku CLI
+        run: yarn build
+      - name: Get Heroku Version
+        id: cli-version
+        run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')" >> $GITHUB_OUTPUT
+      - name: Generate Fig Spec
+        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
+      - name: Create Fig Autocomplete PR
+        uses: withfig/push-to-fig-autocomplete-action@v2
+        with:
+          token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
+          autocomplete-spec-name: 'heroku'
+          spec-path: ./packages/cli/spec.ts
+          integration: oclif
+          diff-based-versioning: true
+          new-spec-version: ${{ steps.cli-version.outputs.version }}
+          pr-body: Automated PR for latest Heroku CLI release

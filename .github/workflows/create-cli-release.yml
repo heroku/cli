@@ -31,40 +31,40 @@ jobs:
         with:
           path: './packages/cli/package.json'
 
-  # publish-npm:
-  #   needs: [get-version-channel]
-  #   # if NOT isStableCandidate confirm dist tag is in package.json version
-  #   if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
-  #   uses: ./.github/workflows/publish-npm.yml
-  #   with:
-  #     isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
-  #     channel: ${{ needs.get-version-channel.outputs.channel }}
-  #   secrets: inherit
+  publish-npm:
+    needs: [get-version-channel]
+    # if NOT isStableCandidate confirm dist tag is in package.json version
+    if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
+    uses: ./.github/workflows/publish-npm.yml
+    with:
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      channel: ${{ needs.get-version-channel.outputs.channel }}
+    secrets: inherit
 
-  # pack-upload:
-  #   needs: [publish-npm]
-  #   uses: ./.github/workflows/pack-upload.yml
-  #   secrets: inherit
+  pack-upload:
+    needs: [publish-npm]
+    uses: ./.github/workflows/pack-upload.yml
+    secrets: inherit
 
-  # promote:
-  #   needs: [get-version-channel, pack-upload]
-  #   if: needs.pack-upload.result == 'success'
-  #   uses: ./.github/workflows/promote-release.yml
-  #   with:
-  #     version: ${{ needs.get-version-channel.outputs.version }}
-  #     isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
-  #     channel: ${{ needs.get-version-channel.outputs.channel }}
-  #   secrets: inherit
+  promote:
+    needs: [get-version-channel, pack-upload]
+    if: needs.pack-upload.result == 'success'
+    uses: ./.github/workflows/promote-release.yml
+    with:
+      version: ${{ needs.get-version-channel.outputs.version }}
+      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+      channel: ${{ needs.get-version-channel.outputs.channel }}
+    secrets: inherit
 
   create-fig-autocomplete-pr:
-    needs: [get-version-channel]
+    needs: [get-version-channel, promote]
     if: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
     ## Calls publish-to-fig-autocomplete workflow during post release jobs
     uses: ./.github/workflows/publish-to-fig-autocomplete.yml
 
-  # publish-docs:
-  #   needs: [get-version-channel, promote]
-  #   uses: ./.github/workflows/devcenter-doc-update.yml
-  #   with:
-  #     isStableRelease: ${{ fromJSON(inputs.isStableCandidate) }}
-  #   secrets: inherit
+  publish-docs:
+    needs: [get-version-channel, promote]
+    uses: ./.github/workflows/devcenter-doc-update.yml
+    with:
+      isStableRelease: ${{ fromJSON(inputs.isStableCandidate) }}
+    secrets: inherit
