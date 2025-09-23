@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [11.0.0-alpha.3](https://github.com/heroku/cli/compare/v10.13.2...v11.0.0-alpha.3) (2025-09-23)
+
+
+### Features
+
+* update to node 22 ([#3337](https://github.com/heroku/cli/issues/3337)) ([bac2d56](https://github.com/heroku/cli/commit/bac2d563e98669606582cff06012aa3d17a455d7)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+
+
+
+
+
 # [11.0.0-alpha.2](https://github.com/heroku/cli/compare/v10.13.2...v11.0.0-alpha.2) (2025-09-23)
 
 

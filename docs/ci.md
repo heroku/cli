@@ -38,7 +38,7 @@ EXAMPLES
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -62,7 +62,7 @@ EXAMPLES
   $ heroku ci:config --app murmuring-headland-14719 --json
 ```
 
-_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/config/index.ts)_
+_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/config/index.ts)_
 
 ## `heroku ci:config:get KEY`
 
@@ -89,7 +89,7 @@ EXAMPLES
       test
 ```
 
-_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/config/get.ts)_
+_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/config/get.ts)_
 
 ## `heroku ci:config:set`
 
@@ -113,7 +113,7 @@ EXAMPLES
       RAILS_ENV: test
 ```
 
-_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/config/set.ts)_
+_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/config/set.ts)_
 
 ## `heroku ci:config:unset`
 
@@ -135,7 +135,7 @@ EXAMPLES
   $ heroku ci:config:unset RAILS_ENV
 ```
 
-_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/config/unset.ts)_
+_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/config/unset.ts)_
 
 ## `heroku ci:debug`
 
@@ -155,7 +155,7 @@ DESCRIPTION
   opens an interactive test debugging session with the contents of the current directory
 ```
 
-_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/debug.ts)_
+_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/debug.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -181,7 +181,7 @@ EXAMPLES
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -204,7 +204,7 @@ EXAMPLES
   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -221,7 +221,7 @@ EXAMPLES
   $ heroku ci:migrate-manifest
 ```
 
-_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/migrate-manifest.ts)_
+_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/migrate-manifest.ts)_
 
 ## `heroku ci:open`
 
@@ -243,7 +243,7 @@ EXAMPLES
   $ heroku ci:open --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/open.ts)_
+_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/open.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -268,7 +268,7 @@ EXAMPLES
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -290,4 +290,4 @@ EXAMPLES
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.2/packages/cli/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.3/packages/cli/src/commands/ci/run.ts)_
