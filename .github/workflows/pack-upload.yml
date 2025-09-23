@@ -19,7 +19,7 @@ jobs:
       - name: Install package deps
         run: npm ci
       - name: Building deb
-        run: npm run pack:deb --root="./packages/cli"
+        run: npm run pack:deb
       - uses: actions/upload-artifact@v4
         with:
           name: packed-deb
@@ -37,7 +37,7 @@ jobs:
       - name: Install package deps
         run: npm ci
       - name: Building tarballs
-        run: npm run pack:tarballs --root="./packages/cli"
+        run: npm run pack:tarballs
       - uses: actions/upload-artifact@v4
         with:
           name: packed-tarballs
