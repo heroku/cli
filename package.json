@@ -41,7 +41,7 @@
     "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
     "lint": "cd packages/cli && npm run lint",
-    "cspell": "cspell",
+    "cspell": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
     "pack:deb": "oclif pack:deb --root=\"./packages/cli\"",
     "pack:tarballs": "oclif pack:tarballs --root=\"./packages/cli\" --xz --parallel",
     "pack:win": "oclif pack:win --root=\"./packages/cli\" --defender-exclusion hidden",
