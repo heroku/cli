@@ -23,10 +23,10 @@ jobs:
     if: ${{ fromJSON(inputs.isStableRelease) }}
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 22.x
           cache: npm
       - name: Use Ruby 3.2.x
         uses: ruby/setup-ruby@v1
