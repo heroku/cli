@@ -59,7 +59,7 @@ jobs:
           prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          npm run promote:deb  --root="./packages/cli" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
+          npm run promote:deb -- --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js
