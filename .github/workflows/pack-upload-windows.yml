@@ -21,6 +21,6 @@ jobs:
       - name: npm install
         run: npm ci
       - name: pack windows installer
-        run: npm run oclif pack win --defender-exclusion hidden --root="./packages/cli"
+        run: npm run pack:win --root="./packages/cli"
       - name: upload windows installer
-        run: npm run oclif upload win --root="./packages/cli"
+        run: npm run upload:win --root="./packages/cli"
