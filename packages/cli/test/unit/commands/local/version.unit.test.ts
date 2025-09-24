@@ -10,9 +10,8 @@ let existsSyncSpy: any
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const extensionRoot = path.join(__dirname, '..', '..', '..', '..', 'src', 'lib', 'local')
-const jsExtensionPath = path.join(extensionRoot, 'run-foreman.js')
+const cjsExtensionPath = path.join(extensionRoot, 'run-foreman.cjs')
 
-/*
 describe('local:version', function () {
   test
     .stub(foreman, 'fork', function () {
@@ -29,7 +28,7 @@ describe('local:version', function () {
     })
     .command(['local:version'])
     .it('selects correct extensions', () => {
-      expect(existsSyncSpy.calledWith(jsExtensionPath)).to.be.true
+      expect(existsSyncSpy.calledWith(cjsExtensionPath)).to.be.true
     })
 
   test
@@ -37,5 +36,3 @@ describe('local:version', function () {
     .catch(error => expect(error.message).to.equal('Unexpected argument: extra\nSee more help with --help'))
     .it('is throws an error when extra arguments are passed in')
 })
-
-*/
