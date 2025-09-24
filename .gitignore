@@ -19,6 +19,7 @@ node_modules
 .pnp.*
 # Ignore .yarn directory from previous yarn setup
 .yarn/
+yarn.lock
 
 # TEMP
 /packages/**/converted/*
