@@ -91,7 +91,7 @@ jobs:
       - name: List all the downloaded files (for debugging)
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - name: yarn install
+      - name: Install dependencies
         run: npm ci
       - name: Upload production artifacts
         run: |
