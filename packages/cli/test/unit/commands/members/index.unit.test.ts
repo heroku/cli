@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
-// import Cmd from '../../../../src/commands/members'
+import Cmd from '../../../../src/commands/members/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {
   teamInfo,
@@ -10,7 +10,6 @@ import {
   teamMembers,
 } from '../../../helpers/stubs/get.js'
 
-/*
 describe('heroku members', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -129,5 +128,3 @@ describe('heroku members', function () {
     })
   })
 })
-
-*/

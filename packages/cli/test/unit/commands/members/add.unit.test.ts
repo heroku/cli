@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
-// import Cmd from '../../../../src/commands/members/add'
+import Cmd from '../../../../src/commands/members/add.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {sendInvite, updateMemberRole} from '../../../helpers/stubs/put.js'
 import {
@@ -11,7 +11,6 @@ import {
   variableSizeTeamMembers,
 } from '../../../helpers/stubs/get.js'
 
-/*
 describe('heroku members:add', function () {
   let apiUpdateMemberRole: nock.Scope
 
@@ -65,5 +64,3 @@ describe('heroku members:add', function () {
     })
   })
 })
-
-*/

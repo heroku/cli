@@ -2,7 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
 
-// import Cmd from '../../../../src/commands/members/remove'
+import Cmd from '../../../../src/commands/members/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {
   teamFeatures,
@@ -11,7 +11,6 @@ import {
 } from '../../../helpers/stubs/get.js'
 import {memberFromTeam, teamInvite} from '../../../helpers/stubs/delete.js'
 
-/*
 describe('heroku members:remove', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -103,5 +102,3 @@ describe('heroku members:remove', function () {
     })
   })
 })
-
-*/

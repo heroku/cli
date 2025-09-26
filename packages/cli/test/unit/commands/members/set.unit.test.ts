@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
-// import Cmd from '../../../../src/commands/members/set'
+import Cmd from '../../../../src/commands/members/set.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {
   teamFeatures,
@@ -11,7 +11,6 @@ import {
 } from '../../../helpers/stubs/get.js'
 import {updateMemberRole} from '../../../helpers/stubs/patch.js'
 
-/*
 describe('heroku members:set', function () {
   let apiUpdateMemberRole: nock.Scope
 
@@ -78,5 +77,3 @@ describe('heroku members:set', function () {
     })
   })
 })
-
-*/
