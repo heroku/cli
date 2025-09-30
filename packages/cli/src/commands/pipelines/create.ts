@@ -1,14 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {StageCompletion} from '@heroku-cli/command/lib/completions'
+import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
 import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api'
-import infer from '../../lib/pipelines/infer'
-import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
-import {getGenerationByAppId} from '../../lib/apps/generation'
+import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api.js'
+import infer from '../../lib/pipelines/infer.js'
+import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
+import {getGenerationByAppId} from '../../lib/apps/generation.js'
 
 export default class Create extends Command {
   static description = `create a new pipeline
@@ -101,4 +100,3 @@ export default class Create extends Command {
     ux.action.stop()
   }
 }
-*/
