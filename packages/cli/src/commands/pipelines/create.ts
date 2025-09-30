@@ -2,7 +2,7 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
-import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
+import inquirer, {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
 import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api.js'
 import infer from '../../lib/pipelines/infer.js'
@@ -86,7 +86,7 @@ export default class Create extends Command {
 
     owner = {id: ownerID, type: ownerType}
 
-    const answers: Answers = await prompt(questions)
+    const answers: Answers = await inquirer.prompt(questions)
     if (answers.name) name = answers.name
     if (answers.stage) stage = answers.stage
 

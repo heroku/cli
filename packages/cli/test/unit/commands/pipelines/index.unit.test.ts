@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('pipelines', function () {
   test
     .stderr()
@@ -41,5 +40,3 @@ describe('pipelines', function () {
       ])
     })
 })
-
-*/

@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('pipelines:diff', function () {
   const apiUrl = 'https://api.heroku.com'
   const kolkrabbiApi = 'https://kolkrabbi.heroku.com'
@@ -416,5 +415,3 @@ describe('pipelines:diff', function () {
       })
   })
 })
-
-*/

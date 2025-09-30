@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('pipelines:destroy', function () {
   test
     .stderr()
@@ -15,5 +14,3 @@ describe('pipelines:destroy', function () {
       expect(ctx.stderr).to.include('Destroying example pipeline... done')
     })
 })
-
-*/

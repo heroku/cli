@@ -3,7 +3,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {sortBy} from 'lodash'
+import lodash from 'lodash'
 
 import {getOwner, warnMixedOwnership} from './ownership.js'
 import {AppWithPipelineCoupling} from '../api.js'
@@ -53,10 +53,10 @@ export default async function renderPipeline(
     }
   }
 
-  const developmentApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'development'), ['name'])
-  const reviewApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'review'), ['name'])
-  const stagingApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'staging'), ['name'])
-  const productionApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'production'), ['name'])
+  const developmentApps = lodash.sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'development'), ['name'])
+  const reviewApps = lodash.sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'review'), ['name'])
+  const stagingApps = lodash.sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'staging'), ['name'])
+  const productionApps = lodash.sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'production'), ['name'])
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
   hux.table(apps, columns)

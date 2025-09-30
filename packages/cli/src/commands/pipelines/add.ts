@@ -2,7 +2,7 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
-import {prompt} from 'inquirer'
+import inquirer from 'inquirer'
 
 import {createCoupling} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
@@ -57,7 +57,7 @@ The stage of the app will be guessed based on its name if not specified.`
       })
     }
 
-    const answers: any = await prompt(questions)
+    const answers: any = await inquirer.prompt(questions)
     if (answers.stage) stage = answers.stage
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
