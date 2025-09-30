@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {sortBy} from 'lodash'
 
-import {getOwner, warnMixedOwnership} from './ownership'
-import {AppWithPipelineCoupling} from '../api'
+import {getOwner, warnMixedOwnership} from './ownership.js'
+import {AppWithPipelineCoupling} from '../api.js'
 
 export default async function renderPipeline(
   heroku: APIClient,
@@ -21,12 +20,12 @@ export default async function renderPipeline(
 
   if (pipeline.owner) {
     owner = await getOwner(heroku, pipelineApps, pipeline)
-    ux.log(`owner: ${owner}`)
+    ux.stdout(`owner: ${owner}`)
   }
 
-  ux.log('')
+  ux.stdout('')
 
-  const columns: ux.Table.table.Columns<AppWithPipelineCoupling> = {
+  const columns: Parameters<typeof hux.table<AppWithPipelineCoupling>>[1] = {
     name: {
       header: 'app name',
       get(row) {
@@ -66,4 +65,3 @@ export default async function renderPipeline(
     warnMixedOwnership(pipelineApps, pipeline, owner)
   }
 }
-*/
