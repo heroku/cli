@@ -68,11 +68,21 @@ $ heroku local web=1,worker=2`,
       execArgv.push(args.processname)
     } else {
       const procfile = flags.procfile || 'Procfile'
-      const procHash = loadProc(procfile)
+      const procHash = this.loadProcfile(procfile)
       const processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
     }
 
-    await foreman(execArgv)
+    await this.runForeman(execArgv)
+  }
+
+  // Proxy method to make foreman calls testable
+  public async runForeman(execArgv: string[]): Promise<void> {
+    return foreman(execArgv)
+  }
+
+  // Proxy method to make procfile loading testable
+  public loadProcfile(procfilePath: string): Record<string, string> {
+    return loadProc(procfilePath)
   }
 }
