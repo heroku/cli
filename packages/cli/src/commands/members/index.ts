@@ -4,7 +4,6 @@ import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import _ from 'lodash'
 import {isTeamInviteFeatureEnabled, getTeamInvites} from '../../lib/members/team-invite-utils.js'
 
 type MemberWithStatus = Heroku.TeamMember & { status?: string }
@@ -53,7 +52,7 @@ export default class MembersIndex extends Command {
 
     if (await isTeamInviteFeatureEnabled(team, this.heroku)) {
       const invites = await getTeamInvites(team, this.heroku)
-      teamInvites = _.map(invites, (invite: Heroku.TeamInvitation): MemberWithStatus => ({
+      teamInvites = invites.map((invite: Heroku.TeamInvitation): MemberWithStatus => ({
         email: invite.user?.email || '',
         role: invite.role,
         status: 'pending',
@@ -67,11 +66,11 @@ export default class MembersIndex extends Command {
 
     let {body: members} = await this.heroku.get<MemberWithStatus[]>(`/teams/${team}/members`)
     // Set status '' to all existing members
-    _.map(members, (member: MemberWithStatus) => {
+    members.forEach((member: MemberWithStatus) => {
       member.status = ''
     })
 
-    members = _.sortBy(_.union(members, teamInvites), 'email')
+    members = [...members, ...teamInvites].sort((a, b) => a.email.localeCompare(b.email))
 
     if (role)
       members = members.filter(m => m.role === role)
