@@ -1634,9 +1634,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/command@npm:^12.0.2-beta.0":
-  version: 12.0.2-beta.0
-  resolution: "@heroku-cli/command@npm:12.0.2-beta.0"
+"@heroku-cli/command@npm:^12.1.1":
+  version: 12.1.1
+  resolution: "@heroku-cli/command@npm:12.1.1"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku/http-call": ^5.4.0
@@ -1647,7 +1647,7 @@ __metadata:
     open: ^10.1.2
     yargs-parser: ^20.2.9
     yargs-unparser: ^2.0.0
-  checksum: aa0183e2e8bec32c1ccdc51bbca7fd3bc23f5dac365eaf0a92495c6f9e39a272fc4306fff3a6d46c4156c0488d799228154b9a02fe11509b9a1fbd00c7e1de95
+  checksum: b5381a968affb610c22602c152dcd269d7e2c8ccd370a1d6c708742add4cd47d5f379cb755a6c5213b79acc4eba4eaa6e552ee11f49bc20a6958f3384b3fe298
   languageName: node
   linkType: hard
 
@@ -1713,9 +1713,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/heroku-cli-util@npm:^10.0.0-beta.1":
-  version: 10.0.0-beta.1
-  resolution: "@heroku/heroku-cli-util@npm:10.0.0-beta.1"
+"@heroku/heroku-cli-util@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "@heroku/heroku-cli-util@npm:10.1.2"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku-cli/command": ^12.0.0
@@ -1724,8 +1724,8 @@ __metadata:
     "@oclif/table": 0.4.8
     debug: ^4.4.0
     inquirer: ^12.6.1
-    tunnel-ssh: 4.1.6
-  checksum: 064f45cf098b1c5cc0bacfff94a5d4c52574d1b4511c51063d881ae82f80e59d78e96cb6e09e6ff1492e4a6dc20fb9f572def24ca5822a8d23b86c9627fe88a3
+    tunnel-ssh: 5.2.0
+  checksum: 74c567c1aea502d4520676f29785a5877eb1a6f35462fc4b9755f094e1533db2ba87a3f67fbf6a05b34857148d2fbfb1fd0ba57b5c89ad3d2f2767dd0f28d126
   languageName: node
   linkType: hard
 
@@ -1773,7 +1773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/http-call@npm:^5.5.0":
+"@heroku/http-call@npm:^5.4.0, @heroku/http-call@npm:^5.5.0":
   version: 5.5.0
   resolution: "@heroku/http-call@npm:5.5.0"
   dependencies:
@@ -11747,13 +11747,13 @@ __metadata:
   resolution: "heroku@workspace:packages/cli"
   dependencies:
     "@heroku-cli/color": 2.0.1
-    "@heroku-cli/command": ^12.0.2-beta.0
+    "@heroku-cli/command": ^12.1.1
     "@heroku-cli/notifications": ^1.2.4
     "@heroku-cli/plugin-ps-exec": 2.6.2
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/heroku-cli-util": ^10.0.0-beta.1
+    "@heroku/heroku-cli-util": ^10.1.2
     "@heroku/http-call": ^5.5.0
     "@heroku/mcp-server": 1.0.7-alpha.1
     "@heroku/plugin-ai": ^1.0.1
@@ -14843,6 +14843,15 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 984c07db9f94b7faf19c643d20a7bf66bb311e4c21d62204bb3a09310081550773441bacc928427c2438b9169e3dbd671cf0c8f1765eb4d87c5bd556d38af76b
+  languageName: node
+  linkType: hard
+
+"nan@npm:^2.23.0":
+  version: 2.23.0
+  resolution: "nan@npm:2.23.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 2d1fd612d69d4cf4dd63c8ce61ee6aa36ace2caf5363c98b3232833fc24ab761fb96742682997716dea5fb9abf57e2fe7e94e76e0c4c302ed1fcde5b908f3e8f
   languageName: node
   linkType: hard
 
@@ -18599,6 +18608,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssh2@npm:^1.15.0":
+  version: 1.17.0
+  resolution: "ssh2@npm:1.17.0"
+  dependencies:
+    asn1: ^0.2.6
+    bcrypt-pbkdf: ^1.0.2
+    cpu-features: ~0.0.10
+    nan: ^2.23.0
+  dependenciesMeta:
+    cpu-features:
+      optional: true
+    nan:
+      optional: true
+  checksum: 1661b020e367e358603187a1efbb7628cb9b2f75543f60e354ede67be1216d331f2b99a73c57fb01a04be050a1e06fc97d04760d1396ea658ca816ddf80df9a9
+  languageName: node
+  linkType: hard
+
 "ssri@npm:^10.0.0":
   version: 10.0.4
   resolution: "ssri@npm:10.0.4"
@@ -19609,6 +19635,15 @@ __metadata:
     lodash.defaults: ^4.1.0
     ssh2: 1.4.0
   checksum: 4d39e3a7ffee1ebfa24607b9f4d920f4b2aa3fa841e60301ef7a115b5227243a97cbbc9d6032a2bab9a35888b6b736013e51fa55882fa7538ecf86e17bfe5289
+  languageName: node
+  linkType: hard
+
+"tunnel-ssh@npm:5.2.0":
+  version: 5.2.0
+  resolution: "tunnel-ssh@npm:5.2.0"
+  dependencies:
+    ssh2: ^1.15.0
+  checksum: 3a6c395adf2fad6f72567d23b65b52b4ed592203e3c119ffc1c3e3c1a76e2e8dc640e7043a0569e7dab9175b6a19fea3cef02d0fe84c509de1baaff0f2b05ded
   languageName: node
   linkType: hard
 
