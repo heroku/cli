@@ -52,14 +52,12 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
 
     ux.stdout('')
     hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
-    const mapped = githubDiff.commits.map((commit: Commit) => {
-      return {
-        sha: commit.sha.slice(0, 7),
-        date: commit.commit.author.date,
-        author: commit.commit.author.name,
-        message: commit.commit.message.split('\n')[0],
-      }
-    }).reverse()
+    const mapped = githubDiff.commits.map((commit: Commit) => ({
+      sha: commit.sha.slice(0, 7),
+      date: commit.commit.author.date,
+      author: commit.commit.author.name,
+      message: commit.commit.message.split('\n')[0],
+    })).reverse()
     hux.table(mapped, {
       sha: {
         header: 'SHA',
@@ -92,9 +90,7 @@ export default class PipelinesDiff extends Command {
   getAppInfo = async (appName: string, appId: string, generation: GenerationKind): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
-      .catch(() => {
-        return {name: appName, repo: null, hash: null}
-      })
+      .catch(() => ({name: appName, repo: null, hash: null}))
 
     // Find the commit hash of the latest release for this app
     let slug: Slug

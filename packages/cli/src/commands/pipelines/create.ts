@@ -44,14 +44,13 @@ export default class Create extends Command {
 
   async run() {
     const {args, flags} = await this.parse(Create)
+    const {app, stage: inputStage, team: teamName} = flags
 
     let name
     let stage
     let owner: Owner
-    const guesses = infer(flags.app)
+    const guesses = infer(app)
     const questions: (InputQuestion | ListQuestion)[] = []
-
-    const app = flags.app
 
     if (args.name) {
       name = args.name
@@ -64,8 +63,8 @@ export default class Create extends Command {
       })
     }
 
-    if (flags.stage) {
-      stage = flags.stage
+    if (inputStage) {
+      stage = inputStage
     } else {
       questions.push({
         type: 'list',
@@ -76,7 +75,6 @@ export default class Create extends Command {
       })
     }
 
-    const teamName = flags.team
     const ownerType = teamName ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
