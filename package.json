@@ -24,8 +24,7 @@
     "ts-node": "^10.9.2"
   },
   "resolutions": {
-    "ansi-regex": "4.1.1",
-    "@heroku/http-call": "^5.5.0"
+    "ansi-regex": "4.1.1"
   },
   "standard": {
     "env": "mocha",
