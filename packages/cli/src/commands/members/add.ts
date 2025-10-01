@@ -7,12 +7,12 @@ import {isTeamInviteFeatureEnabled, ROLE_DESCRIPTION} from '../../lib/members/te
 export default class MembersAdd extends Command {
   static topic = 'members'
   static description = 'adds a user to a team'
-  
+
   static flags = {
     role: flags.string({
-      char: 'r', 
-      required: true, 
-      description: ROLE_DESCRIPTION, 
+      char: 'r',
+      required: true,
+      description: ROLE_DESCRIPTION,
       completion: RoleCompletion,
     }),
     team: flags.team({required: true}),
@@ -25,7 +25,7 @@ export default class MembersAdd extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(MembersAdd)
     const {team, role} = flags
-    const email = args.email
+    const {email} = args
 
     if (await isTeamInviteFeatureEnabled(team, this.heroku)) {
       await inviteMemberToTeam(email, role, team, this.heroku)

@@ -16,7 +16,6 @@ const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
   ux.action.stop()
 }
 
-
 const removeUserMembership = async (email: string, team: string, heroku: APIClient) => {
   ux.action.start(`Removing ${color.cyan(email)} from ${color.magenta(team)}`)
   await heroku.delete(`/teams/${team}/members/${encodeURIComponent(email)}`)
@@ -26,7 +25,7 @@ const removeUserMembership = async (email: string, team: string, heroku: APIClie
 export default class MembersRemove extends Command {
   static topic = 'members'
   static description = 'removes a user from a team'
-  
+
   static flags = {
     team: flags.team({required: true}),
   }

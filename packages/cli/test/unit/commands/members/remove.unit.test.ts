@@ -1,103 +1,79 @@
-import {stdout, stderr} from 'stdout-stderr'
-import {expect} from 'chai'
-import nock from 'nock'
-
-import Cmd from '../../../../src/commands/members/remove.js'
-import runCommand from '../../../helpers/runCommand.js'
-import {
-  teamFeatures,
-  teamInfo,
-  teamInvites,
-} from '../../../helpers/stubs/get.js'
-import {memberFromTeam, teamInvite} from '../../../helpers/stubs/delete.js'
+import {expect, test} from '@oclif/test'
 
 describe('heroku members:remove', function () {
-  afterEach(function () {
-    return nock.cleanAll()
-  })
-
   context('from an org', function () {
-    beforeEach(function () {
-      teamInfo('enterprise')
-    })
-    it('removes a member from an org', function () {
-      const apiRemoveMemberFromOrg = memberFromTeam()
-      return runCommand(Cmd, [
-        '--team',
-        'myteam',
-        'foo@foo.com',
-      ])
-        .then(() => expect('').to.eq(stdout.output))
-        .then(() => expect('Removing foo@foo.com from myteam...\nRemoving foo@foo.com from myteam... done\n').to.eq(stderr.output))
-        .then(() => apiRemoveMemberFromOrg.done())
-    })
+    test
+      .stderr()
+      .nock('https://api.heroku.com', api => {
+        api.get('/teams/myteam')
+          .reply(200, {name: 'myteam', role: 'admin', type: 'enterprise'})
+        api.delete('/teams/myteam/members/foo%40foo.com')
+          .reply(200)
+      })
+      .command(['members:remove', '--team', 'myteam', 'foo@foo.com'])
+      .it('removes a member from an org', ctx => {
+        expect(ctx.stderr).to.contain('Removing foo@foo.com from myteam')
+      })
   })
   context('from a team', function () {
-    beforeEach(function () {
-      teamInfo('team')
-    })
     context('without the feature flag team-invite-acceptance', function () {
-      beforeEach(function () {
-        teamFeatures([])
-      })
-      it('removes a member from an org', function () {
-        const apiRemoveMemberFromOrg = memberFromTeam()
-        return runCommand(Cmd, [
-          '--team',
-          'myteam',
-          'foo@foo.com',
-        ])
-          .then(() => expect('').to.eq(stdout.output))
-          .then(() => expect('Removing foo@foo.com from myteam...\nRemoving foo@foo.com from myteam... done\n').to.eq(stderr.output))
-          .then(() => apiRemoveMemberFromOrg.done())
-      })
+      test
+        .stderr()
+        .nock('https://api.heroku.com', api => {
+          api.get('/teams/myteam')
+            .reply(200, {name: 'myteam', role: 'admin', type: 'team'})
+          api.get('/teams/myteam/features')
+            .reply(200, [])
+          api.delete('/teams/myteam/members/foo%40foo.com')
+            .reply(200)
+        })
+        .command(['members:remove', '--team', 'myteam', 'foo@foo.com'])
+        .it('removes a member from an org', ctx => {
+          expect(ctx.stderr).to.contain('Removing foo@foo.com from myteam')
+        })
     })
+
     context('with the feature flag team-invite-acceptance', function () {
-      let apiGetTeamInvites: nock.Scope
-      beforeEach(function () {
-        teamFeatures([{name: 'team-invite-acceptance', enabled: true}])
-      })
       context('with no pending invites', function () {
-        beforeEach(function () {
-          apiGetTeamInvites = teamInvites([])
-        })
-        it('removes a member', function () {
-          const apiRemoveMemberFromOrg = memberFromTeam()
-          return runCommand(Cmd, [
-            '--team',
-            'myteam',
-            'foo@foo.com',
-          ])
-            .then(() => expect('').to.eq(stdout.output))
-            .then(() => expect('Removing foo@foo.com from myteam...\nRemoving foo@foo.com from myteam... done\n').to.eq(stderr.output))
-            .then(() => apiGetTeamInvites.done())
-            .then(() => apiRemoveMemberFromOrg.done())
-        })
+        test
+          .stderr()
+          .nock('https://api.heroku.com', api => {
+            api.get('/teams/myteam')
+              .reply(200, {name: 'myteam', role: 'admin', type: 'team'})
+            api.get('/teams/myteam/features')
+              .reply(200, [{enabled: true, name: 'team-invite-acceptance'}])
+            api.get('/teams/myteam/invitations')
+              .reply(200, [])
+            api.delete('/teams/myteam/members/foo%40foo.com')
+              .reply(200)
+          })
+          .command(['members:remove', '--team', 'myteam', 'foo@foo.com'])
+          .it('removes a member', ctx => {
+            expect(ctx.stderr).to.contain('Removing foo@foo.com from myteam')
+          })
       })
+
       context('with pending invites', function () {
-        it('revokes the invite', function () {
-          apiGetTeamInvites = teamInvites([
-            {
-              invited_by: {
-                email: 'invite@foo.com',
-              },
-              role: 'member',
-              user: {
-                email: 'foo@foo.com',
-              },
-            },
-          ])
-          const apiRevokeTeamInvite = teamInvite('foo@foo.com')
-          return runCommand(Cmd, [
-            '--team',
-            'myteam',
-            'foo@foo.com',
-          ])
-            .then(() => expect('').to.eq(stdout.output))
-            .then(() => expect('Revoking invite for foo@foo.com in myteam...\nRevoking invite for foo@foo.com in myteam... done\n').to.eq(stderr.output))
-            .then(() => apiGetTeamInvites.done())
-            .then(() => apiRevokeTeamInvite.done())
-        })
+        test
+          .stderr()
+          .nock('https://api.heroku.com', api => {
+            api.get('/teams/myteam')
+              .reply(200, {name: 'myteam', role: 'admin', type: 'team'})
+            api.get('/teams/myteam/features')
+              .reply(200, [{enabled: true, name: 'team-invite-acceptance'}])
+            api.get('/teams/myteam/invitations')
+              .reply(200, [{
+                invited_by: {email: 'invite@foo.com'},
+                role: 'member',
+                user: {email: 'foo@foo.com'},
+              }])
+            api.delete('/teams/myteam/invitations/foo@foo.com')
+              .reply(200, {})
+          })
+          .command(['members:remove', '--team', 'myteam', 'foo@foo.com'])
+          .it('revokes the invite', ctx => {
+            expect(ctx.stderr).to.contain('Revoking invite for foo@foo.com in myteam')
+          })
       })
     })
   })

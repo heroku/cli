@@ -34,11 +34,11 @@ const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
 export default class MembersIndex extends Command {
   static topic = 'members'
   static description = 'list members of a team'
-  
+
   static flags = {
     role: flags.string({
-      char: 'r', 
-      description: 'filter by role', 
+      char: 'r',
+      description: 'filter by role',
       completion: RoleCompletion,
     }),
     pending: flags.boolean({description: 'filter by pending team invitations'}),
@@ -50,21 +50,19 @@ export default class MembersIndex extends Command {
     const {flags} = await this.parse(MembersIndex)
     const {role, pending, json, team} = flags
     let teamInvites: MemberWithStatus[] = []
-    
+
     if (await isTeamInviteFeatureEnabled(team, this.heroku)) {
       const invites = await getTeamInvites(team, this.heroku)
-      teamInvites = _.map(invites, function (invite: Heroku.TeamInvitation): MemberWithStatus {
-        return {
-          email: invite.user?.email || '',
-          role: invite.role,
-          status: 'pending',
-          federated: false,
-          user: invite.user,
-          two_factor_authentication: false,
-          created_at: invite.created_at || '',
-          updated_at: invite.updated_at || '',
-        }
-      })
+      teamInvites = _.map(invites, (invite: Heroku.TeamInvitation): MemberWithStatus => ({
+        email: invite.user?.email || '',
+        role: invite.role,
+        status: 'pending',
+        federated: false,
+        user: invite.user,
+        two_factor_authentication: false,
+        created_at: invite.created_at || '',
+        updated_at: invite.updated_at || '',
+      }))
     }
 
     let {body: members} = await this.heroku.get<MemberWithStatus[]>(`/teams/${team}/members`)
@@ -72,14 +70,14 @@ export default class MembersIndex extends Command {
     _.map(members, (member: MemberWithStatus) => {
       member.status = ''
     })
-    
+
     members = _.sortBy(_.union(members, teamInvites), 'email')
-    
+
     if (role)
       members = members.filter(m => m.role === role)
     if (pending)
       members = members.filter(m => m.status === 'pending')
-      
+
     if (json) {
       ux.stdout(JSON.stringify(members, null, 3))
     } else if (members.length === 0) {
