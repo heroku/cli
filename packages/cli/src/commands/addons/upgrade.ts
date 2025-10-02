@@ -6,7 +6,7 @@ import {addonResolver} from '../../lib/addons/resolve'
 import type {AddOn, Plan} from '@heroku-cli/schema'
 import {HTTP} from '@heroku/http-call'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../lib/pg/types'
+import type {ExtendedAddon} from '../../lib/pg/types'
 
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
@@ -38,7 +38,7 @@ export default class Upgrade extends Command {
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
 
-    let resolvedAddon: Required<AddOn> | AddOnAttachmentWithConfigVarsAndPlan
+    let resolvedAddon: Required<AddOn> | ExtendedAddon
     try {
       resolvedAddon = await addonResolver(this.heroku, app, addon)
     } catch (error) {

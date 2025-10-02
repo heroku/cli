@@ -2,10 +2,9 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import pghost from '../../../lib/pg/host'
 import heredoc from 'tsheredoc'
 import {essentialPlan} from '../../../lib/pg/util'
-import {getAddon} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../../nls'
 
 export default class Attach extends Command {
@@ -28,15 +27,15 @@ export default class Attach extends Command {
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Attach)
       const {app} = flags
-      const db = await getAddon(this.heroku, app, args.database)
-      const {body: addon} = await this.heroku.get<Required<Heroku.AddOn>>(`/addons/${encodeURIComponent(db.name)}`)
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
       if (essentialPlan(db))
         ux.error('You can’t perform this operation on Essential-tier databases.')
 
-      ux.action.start(`Enabling Connection Pooling on ${color.yellow(addon.name)} to ${color.magenta(app)}`)
+      ux.action.start(`Enabling Connection Pooling on ${color.yellow(db.name)} to ${color.magenta(app)}`)
       const {body: attachment} = await this.heroku.post<Required<Heroku.AddOnAttachment>>(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
-        body: {name: flags.as, credential: 'default', app: app}, hostname: pghost(),
+        body: {name: flags.as, credential: 'default', app: app}, hostname: utils.pg.host(),
       })
       ux.action.stop()
 

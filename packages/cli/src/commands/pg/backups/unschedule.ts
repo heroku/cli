@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {arbitraryAppDB, getAddon} from '../../../lib/pg/fetcher'
+import {arbitraryAppDB} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {TransferSchedule} from '../../../lib/pg/types'
-import pgHost from '../../../lib/pg/host'
 import {nls} from '../../../nls'
 
 export default class Unschedule extends Command {
@@ -27,7 +27,7 @@ export default class Unschedule extends Command {
       const appDB = await arbitraryAppDB(this.heroku, app)
       const {body: schedules} = await this.heroku.get<TransferSchedule[]>(
         `/client/v11/databases/${appDB.id}/transfer-schedules`,
-        {hostname: pgHost()},
+        {hostname: utils.pg.host()},
       )
       if (schedules.length === 0)
         throw new Error(`No schedules on ${color.app(app)}`)
@@ -40,17 +40,18 @@ export default class Unschedule extends Command {
     }
 
     ux.action.start(`Unscheduling ${color.green(db)} daily backups`)
-    const addon = await getAddon(this.heroku, app, db)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon} = await dbResolver.getAttachment(app, db)
     const {body: schedules} = await this.heroku.get<TransferSchedule[]>(
       `/client/v11/databases/${addon.id}/transfer-schedules`,
-      {hostname: pgHost()},
+      {hostname: utils.pg.host()},
     )
     const schedule = schedules.find(s => s.name.match(new RegExp(`${db}`, 'i')))
     if (!schedule)
       throw new Error(`No daily backups found for ${color.yellow(addon.name)}`)
     await this.heroku.delete(
       `/client/v11/databases/${addon.id}/transfer-schedules/${schedule.uuid}`,
-      {hostname: pgHost()},
+      {hostname: utils.pg.host()},
     )
     ux.action.stop()
   }

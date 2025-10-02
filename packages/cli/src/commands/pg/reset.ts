@@ -2,8 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import confirmCommand from '../../lib/confirmCommand'
-import pgHost from '../../lib/pg/host'
-import {getAddon} from '../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import heredoc from 'tsheredoc'
 import {nls} from '../../nls'
 
@@ -24,7 +23,8 @@ export default class Reset extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Reset)
     const {app, confirm, extensions} = flags
-    const db = await getAddon(this.heroku, app, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, args.database)
     let extensionsArray
     if (extensions) {
       extensionsArray = extensions.split(',')
@@ -39,7 +39,7 @@ export default class Reset extends Command {
     `))
     ux.action.start(`Resetting ${color.addon(db.name)}`)
     await this.heroku.put(`/client/v11/databases/${db.id}/reset`, {
-      body: {extensions: extensionsArray}, hostname: pgHost(),
+      body: {extensions: extensionsArray}, hostname: utils.pg.host(),
     })
     ux.action.stop()
   }

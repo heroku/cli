@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {getAddon} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from '../../../lib/pg/util'
 import confirmCommand from '../../../lib/confirmCommand'
 import heredoc from 'tsheredoc'
-import pgHost from '../../../lib/pg/host'
 import {nls} from '../../../nls'
 
 export default class RepairDefault extends Command {
@@ -25,7 +24,8 @@ export default class RepairDefault extends Command {
     const {flags, args} = await this.parse(RepairDefault)
     const {app, confirm} = flags
     const {database} = args
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       throw new Error("You can't perform this operation on Essential-tier databases.")
     await confirmCommand(app, confirm, heredoc(`
@@ -34,7 +34,7 @@ export default class RepairDefault extends Command {
       This command will also grant the default credential admin option for all additional credentials.
     `))
     ux.action.start('Resetting permissions and object ownership for default role to factory settings')
-    await this.heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {hostname: pgHost()})
+    await this.heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {hostname: utils.pg.host()})
     ux.action.stop()
   }
 }

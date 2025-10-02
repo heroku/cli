@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {database} from '../../lib/pg/fetcher'
-import {exec} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../nls'
 
 export default class Ps extends Command {
@@ -22,7 +21,9 @@ export default class Ps extends Command {
     const {flags, args} = await this.parse(Ps)
     const {database: databaseName} = args
     const {verbose, app} = flags
-    const db = await database(this.heroku, app, databaseName)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(app, databaseName)
+    const psqlService = new utils.pg.PsqlService(db)
     const num = Math.random()
     const waitingMarker = `${num}${num}`
     const waitingQuery = heredoc(`
@@ -34,7 +35,7 @@ export default class Ps extends Command {
            AND TABLE_NAME = 'pg_stat_activity'
            AND COLUMN_NAME = 'waiting')
     `)
-    const waitingOutput = await exec(db, waitingQuery)
+    const waitingOutput = await psqlService.execQuery(waitingQuery)
     const waiting = waitingOutput.includes(waitingMarker) ? 'waiting' : 'wait_event IS NOT NULL AS waiting'
     const query = heredoc(`SELECT pid,
            state,
@@ -47,7 +48,7 @@ export default class Ps extends Command {
       AND pid <> pg_backend_pid()
     ORDER BY query_start DESC
     `)
-    const output = await exec(db, query)
+    const output = await psqlService.execQuery(query)
     process.stdout.write(output)
   }
 }

@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import * as proxyquire from 'proxyquire'
+import Cmd from '../../../../../src/commands/pg/upgrade/wait'
 import heredoc from 'tsheredoc'
 import {CLIError} from '@oclif/core/lib/errors'
 import runCommand from '../../../../helpers/runCommand'
@@ -11,19 +11,13 @@ const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
   {id: 2, name: 'postgres-2', plan: {name: 'heroku-postgresql:hobby-dev'}},
 ]
-const fetcher =  {
-  all: () => Promise.resolve(all),
-  getAddon: () => Promise.resolve(all[0]),
-}
-
-const {default: Cmd} = proxyquire('../../../../../src/commands/pg/upgrade/wait', {
-  '../../../lib/pg/fetcher': fetcher,
-})
 
 describe('pg:upgrade:wait', function () {
+  let api: nock.Scope
   let pg: nock.Scope
 
   beforeEach(function () {
+    api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
@@ -33,6 +27,9 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('waits till upgrade is finished', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': true, message: 'preparing upgrade service'})
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'recreating followers', step: '7/7'})
@@ -52,6 +49,9 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('displays when the upgrade has been scheduled', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.'})
 
@@ -77,6 +77,9 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('displays errors', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
 

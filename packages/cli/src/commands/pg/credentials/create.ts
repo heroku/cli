@@ -2,8 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {getAttachment} from '../../../lib/pg/fetcher'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from '../../../lib/pg/util'
 import {nls} from '../../../nls'
 
@@ -23,7 +22,8 @@ export default class Create extends Command {
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Create)
       const {app, name} = flags
-      const {addon: db} = await getAttachment(this.heroku, app as string, args.database)
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon: db} = await dbResolver.getAttachment(app, args.database)
       if (essentialPlan(db)) {
         throw new Error("You can't create a custom credential on Essential-tier databases.")
       }
@@ -31,7 +31,7 @@ export default class Create extends Command {
       const data = {name}
       ux.action.start(`Creating credential ${color.cyan.bold(name)}`)
 
-      await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {hostname: host(), body: data})
+      await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {hostname: utils.pg.host(), body: data})
       ux.action.stop()
 
       const attachCmd = `heroku addons:attach ${db.name} --credential ${name} -a ${app}`

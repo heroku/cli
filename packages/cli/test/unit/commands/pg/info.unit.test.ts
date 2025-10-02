@@ -1,30 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import * as sinon from 'sinon'
-import * as fetcher from '../../../../src/lib/pg/fetcher'
 import runCommand from '../../../helpers/runCommand'
-const proxyquire = require('proxyquire')
-let all = []
-let addon
-let allSinonStub: sinon.SinonStub
-let addonSinonStub: sinon.SinonStub
+import Cmd from '../../../../src/commands/pg/info'
 
-const getCmd = (resultsObject: {allResult: any, addonResult: any}) => {
-  const {allResult, addonResult} = resultsObject
-  allSinonStub = sinon.stub(fetcher, 'all').returns(allResult)
-  addonSinonStub = sinon.stub(fetcher, 'getAddon').returns(addonResult)
-  const {default: Cmd} = proxyquire(
-    '../../../../src/commands/pg/info',
-    {
-      getAddOn: addonSinonStub,
-      all: allSinonStub,
-    },
-  )
-  return Cmd
-}
-
-describe('pg', function () {
+describe('pg:info', function () {
   let api: nock.Scope
   let pg: nock.Scope
 
@@ -37,14 +17,13 @@ describe('pg', function () {
     nock.cleanAll()
     api.done()
     pg.done()
-    allSinonStub.restore()
-    addonSinonStub.restore()
   })
   context('with 0 dbs', function () {
     it('shows empty state', async function () {
-      const Cmd = getCmd({allResult: [], addonResult: {}})
       api.get('/apps/myapp/config-vars')
         .reply(200, {})
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [])
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -68,9 +47,14 @@ describe('pg', function () {
       {name: 'Plan', values: ['Hobby-dev']}, {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-55-111-111-1.compute-1.amazonaws.com/dxxxxxxxxxxxx']},
     ], resource_url: config.HEROKU_POSTGRESQL_PURPLE_URL}
     it('shows postgres info', async function () {
-      const Cmd = getCmd({allResult: addons, addonResult: {}})
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          {addon: addons[0], name: 'HEROKU_POSTGRESQL_COBALT', config_vars: ['HEROKU_POSTGRESQL_COBALT_URL']},
+          {addon: addons[0], name: 'DATABASE', config_vars: ['DATABASE_URL']},
+          {addon: addons[1], name: 'HEROKU_POSTGRESQL_PURPLE', config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL']},
+        ])
       pg.get('/client/v11/databases/1')
         .reply(200, dbA)
         .get('/client/v11/databases/2')
@@ -83,7 +67,7 @@ describe('pg', function () {
       expect(stderr.output).to.equal('')
     })
     it('shows postgres info using attachment names', async function () {
-      all = [
+      const all = [
         {
           id: 1,
           name: 'postgres-1',
@@ -94,12 +78,17 @@ describe('pg', function () {
       ]
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          {addon: all[0], name: 'DATABASE', config_vars: ['DATABASE_URL']},
+          {addon: all[0], name: 'ATTACHMENT_NAME', config_vars: ['ATTACHMENT_NAME_URL']},
+          {addon: all[1], name: 'HEROKU_POSTGRESQL_PURPLE', config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL']},
+        ])
       pg.get('/client/v11/databases/1')
         .reply(200, dbA)
         .get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      const Cmd = getCmd({allResult: all, addonResult: {}})
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -107,13 +96,14 @@ describe('pg', function () {
       expect(stdout.output).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
     })
     it('shows postgres info for single database when arg sent in', async function () {
-      addon = addons[1]
+      const addon = addons[1]
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
+        .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-2', addon_service: 'heroku-postgresql', app: 'myapp'})
+        .reply(200, [{addon}])
       pg.get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      const Cmd = getCmd({addonResult: addon, allResult: []})
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -123,15 +113,19 @@ describe('pg', function () {
       expect(stderr.output).to.equal('')
     })
     it('shows warning for 404', async function () {
-      all = addons
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          {addon: addons[0], name: 'HEROKU_POSTGRESQL_COBALT', config_vars: ['HEROKU_POSTGRESQL_COBALT_URL']},
+          {addon: addons[0], name: 'DATABASE', config_vars: ['DATABASE_URL']},
+          {addon: addons[1], name: 'HEROKU_POSTGRESQL_PURPLE', config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL']},
+        ])
       pg.get('/client/v11/databases/1')
         .reply(404)
         .get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      const Cmd = getCmd({allResult: addons, addonResult: {}})
       await runCommand(Cmd, [
         '--app',
         'myapp',

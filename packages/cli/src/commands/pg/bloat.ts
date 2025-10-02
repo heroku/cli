@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {database} from '../../lib/pg/fetcher'
-import {exec} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../nls'
 
 const query = `
@@ -82,9 +81,10 @@ export default class Bloat extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Bloat)
     const {app} = flags
-    const db = await database(this.heroku, app, args.database)
-    const output = await exec(db, query)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(app, args.database)
+    const psqlService = new utils.pg.PsqlService(db)
+    const output = await psqlService.execQuery(query)
     process.stdout.write(output)
   }
 }
-
