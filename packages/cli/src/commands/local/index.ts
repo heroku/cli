@@ -1,12 +1,7 @@
-/*
-import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Args, Command, Flags} from '@oclif/core'
-import * as fs from 'fs'
-import color from '@heroku-cli/color'
-import {fork as foreman} from '../../lib/local/fork-foreman'
-
-// eslint-disable-next-line node/no-missing-require
-const Procfile: any = require('../../lib/local/load-foreman-procfile')
+import {fork as foreman} from '../../lib/local/fork-foreman.js'
+import {loadProc} from '../../lib/local/load-foreman-procfile.js'
+import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 
 export default class Index extends Command {
   // \n splits the description between the title shown in the help
@@ -30,12 +25,10 @@ $ heroku local web=1,worker=2`,
     procfile: Flags.string({
       char: 'f',
       description: 'use a different Procfile',
-      completion: FileCompletion,
     }),
     env: Flags.string({
       char: 'e',
       description: 'location of env file (defaults to .env)',
-      completion: FileCompletion,
     }),
     port: Flags.string({
       char: 'p',
@@ -65,11 +58,7 @@ $ heroku local web=1,worker=2`,
       this.error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
 
-    let envFile = flags.env || '.env'
-    if (fs.existsSync(envFile) && !fs.statSync(envFile).isFile()) {
-      this.warn(`The specified location for the env file, ${color.bold(envFile)}, is not a file, ignoring.`)
-      envFile = ''
-    }
+    const envFile = validateEnvFile(flags.env, this.warn.bind(this))
 
     if (flags.procfile) execArgv.push('--procfile', flags.procfile)
     execArgv.push('--env', envFile)
@@ -79,12 +68,21 @@ $ heroku local web=1,worker=2`,
       execArgv.push(args.processname)
     } else {
       const procfile = flags.procfile || 'Procfile'
-      const procHash = Procfile.loadProc(procfile)
+      const procHash = this.loadProcfile(procfile)
       const processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
     }
 
-    await foreman(execArgv)
+    await this.runForeman(execArgv)
+  }
+
+  // Proxy method to make foreman calls testable
+  public async runForeman(execArgv: string[]): Promise<void> {
+    return foreman(execArgv)
+  }
+
+  // Proxy method to make procfile loading testable
+  public loadProcfile(procfilePath: string): Record<string, string> {
+    return loadProc(procfilePath)
   }
 }
-*/

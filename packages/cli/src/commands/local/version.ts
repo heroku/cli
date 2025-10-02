@@ -1,7 +1,6 @@
-/*
 import {Command} from '@oclif/core'
 
-import {fork as foreman} from '../../lib/local/fork-foreman'
+import {fork as foreman} from '../../lib/local/fork-foreman.js'
 
 export default class Version extends Command {
   static description = 'display node-foreman version'
@@ -13,4 +12,3 @@ export default class Version extends Command {
     await foreman(execArgv)
   }
 }
-*/
