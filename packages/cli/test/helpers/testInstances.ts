@@ -9,8 +9,10 @@ export const getConfig = async () => {
   if (!conf) {
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
-    const pjsonPath = path.resolve(__dirname, '../../package.json')
-    conf = new Config({root: pjsonPath})
+    const root = path.resolve(__dirname, '../..')
+    conf = new Config({
+      root,
+    })
     await conf.load()
   }
 
