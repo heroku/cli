@@ -254,6 +254,7 @@ pico
 pinentry
 pipefail
 pjson
+printenv
 pooler
 portfinder
 postdeploy
