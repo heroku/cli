@@ -53,7 +53,6 @@ describe('psql', function () {
 
   beforeEach(function () {
     env = process.env
-    process.env = {}
     sandbox = sinon.createSandbox()
     psqlServiceExecQuerySpy = sinon.spy((query: string) => {
       queryString = query
@@ -112,6 +111,7 @@ describe('psql', function () {
         username: 'bastion',
       }
       const expectedEnv = Object.freeze({
+        ...process.env,
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
         PGUSER: 'jeff',
@@ -144,6 +144,7 @@ describe('psql', function () {
         localPort: 49152,
       }
       const expectedEnv = Object.freeze({
+        ...process.env,
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
         PGUSER: 'jeff',
@@ -209,6 +210,7 @@ describe('psql', function () {
             'sslmode=require',
           ]
           const expectedEnv = Object.freeze({
+            ...process.env,
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer',
             HEROKU_PSQL_HISTORY: historyPath,
@@ -240,6 +242,7 @@ describe('psql', function () {
 
         it('is the path to the history file', async function () {
           const expectedEnv = Object.freeze({
+            ...process.env,
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer',
             HEROKU_PSQL_HISTORY: historyPath,
@@ -275,6 +278,7 @@ describe('psql', function () {
           mockHerokuPSQLHistory(invalidPath)
           const expectedMessage = `Warning: HEROKU_PSQL_HISTORY is set but is not a valid path (${invalidPath})\n`
           const expectedEnv = Object.freeze({
+            ...process.env,
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer',
             HEROKU_PSQL_HISTORY: invalidPath,
