@@ -94,10 +94,7 @@ outputs current CLI authentication token.
 
 ```
 USAGE
-  $ heroku auth:token [-h]
-
-FLAGS
-  -h, --help  Show CLI help.
+  $ heroku auth:token
 
 DESCRIPTION
   outputs current CLI authentication token.

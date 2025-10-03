@@ -134,6 +134,7 @@ libexec
 localdb
 localspace
 logfile
+loglevel
 logplex
 lolex
 lowercasedb
