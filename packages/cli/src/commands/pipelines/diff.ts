@@ -1,15 +1,14 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import HTTP from '@heroku/http-call'
+import {HTTP} from '@heroku/http-call'
 
-import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import type {OciImage, Slug, PipelineCoupling} from '../../lib/types/fir'
-import type {Commit, GitHubDiff} from '../../lib/types/github'
-import {GenerationKind, getGeneration} from '../../lib/apps/generation'
+import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import type {OciImage, Slug, PipelineCoupling} from '../../lib/types/fir.js'
+import type {Commit, GitHubDiff} from '../../lib/types/github.js'
+import {GenerationKind, getGeneration} from '../../lib/apps/generation.js'
 
 interface AppInfo {
   name: string;
@@ -21,19 +20,19 @@ const PROMOTION_ORDER = ['development', 'staging', 'production']
 
 async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
   if (!downstreamApp.repo) {
-    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
   }
 
   if (downstreamApp.repo !== targetApp.repo) {
-    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
   }
 
   if (!downstreamApp.hash) {
-    return ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
   }
 
   if (downstreamApp.hash === targetApp.hash) {
-    return ux.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
+    return ux.stdout(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
   }
 
   // Do the actual GitHub diff
@@ -51,16 +50,14 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
 
     const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
 
-    ux.log('')
+    ux.stdout('')
     hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
-    const mapped = githubDiff.commits.map((commit: Commit) => {
-      return {
-        sha: commit.sha.slice(0, 7),
-        date: commit.commit.author.date,
-        author: commit.commit.author.name,
-        message: commit.commit.message.split('\n')[0],
-      }
-    }).reverse()
+    const mapped = githubDiff.commits.map((commit: Commit) => ({
+      sha: commit.sha.slice(0, 7),
+      date: commit.commit.author.date,
+      author: commit.commit.author.name,
+      message: commit.commit.message.split('\n')[0],
+    })).reverse()
     hux.table(mapped, {
       sha: {
         header: 'SHA',
@@ -69,10 +66,10 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       author: {},
       message: {},
     })
-    ux.log(`\nhttps://github.com/${path}`)
+    ux.stdout(`\nhttps://github.com/${path}`)
   } catch {
-    ux.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
-    ux.log('are you sure you have pushed your latest commits to GitHub?')
+    ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
+    ux.stdout('are you sure you have pushed your latest commits to GitHub?')
   }
 }
 
@@ -93,9 +90,7 @@ export default class PipelinesDiff extends Command {
   getAppInfo = async (appName: string, appId: string, generation: GenerationKind): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
-      .catch(() => {
-        return {name: appName, repo: null, hash: null}
-      })
+      .catch(() => ({name: appName, repo: null, hash: null}))
 
     // Find the commit hash of the latest release for this app
     let slug: Slug
@@ -198,4 +193,3 @@ export default class PipelinesDiff extends Command {
     }
   }
 }
-*/

@@ -1,14 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {StageCompletion} from '@heroku-cli/command/lib/completions'
+import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
-import {prompt} from 'inquirer'
+import inquirer from 'inquirer'
 
-import {createCoupling} from '../../lib/api'
-import disambiguate from '../../lib/pipelines/disambiguate'
-import infer from '../../lib/pipelines/infer'
-import {inferrableStageNames as stageNames} from '../../lib/pipelines/stages'
+import {createCoupling} from '../../lib/api.js'
+import disambiguate from '../../lib/pipelines/disambiguate.js'
+import infer from '../../lib/pipelines/infer.js'
+import {inferrableStageNames as stageNames} from '../../lib/pipelines/stages.js'
 
 export default class PipelinesAdd extends Command {
   static description = `add this app to a pipeline
@@ -38,7 +37,7 @@ The stage of the app will be guessed based on its name if not specified.`
 
   async run() {
     const {args, flags} = await this.parse(PipelinesAdd)
-    const app = flags.app
+    const {app} = flags
 
     let stage
     const guesses = infer(app)
@@ -58,7 +57,7 @@ The stage of the app will be guessed based on its name if not specified.`
       })
     }
 
-    const answers: any = await prompt(questions)
+    const answers: any = await inquirer.prompt(questions)
     if (answers.stage) stage = answers.stage
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
@@ -66,4 +65,4 @@ The stage of the app will be guessed based on its name if not specified.`
     ux.action.stop()
   }
 }
-*/
+

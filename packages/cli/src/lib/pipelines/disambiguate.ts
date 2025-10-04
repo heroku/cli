@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {prompt} from 'inquirer'
+import inquirer from 'inquirer'
 import {uuidValidate} from '../utils/uuid-validate.js'
 
 import {
@@ -39,7 +39,7 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
 
       // eslint-disable-next-line no-async-promise-executor
       pipeline = await new Promise(async function (resolve, reject) {
-        const answers: any = await prompt(questions)
+        const answers: any = await inquirer.prompt(questions)
         if (answers.pipeline) {
           resolve(answers.pipeline)
         } else {

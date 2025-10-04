@@ -1,14 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {StageCompletion} from '@heroku-cli/command/lib/completions'
+import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
-import {prompt, type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
+import inquirer, {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api'
-import infer from '../../lib/pipelines/infer'
-import {inferrableStageNames as stages} from '../../lib/pipelines/stages'
-import {getGenerationByAppId} from '../../lib/apps/generation'
+import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api.js'
+import infer from '../../lib/pipelines/infer.js'
+import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
+import {getGenerationByAppId} from '../../lib/apps/generation.js'
 
 export default class Create extends Command {
   static description = `create a new pipeline
@@ -45,14 +44,13 @@ export default class Create extends Command {
 
   async run() {
     const {args, flags} = await this.parse(Create)
+    const {app, stage: inputStage, team: teamName} = flags
 
     let name
     let stage
     let owner: Owner
-    const guesses = infer(flags.app)
+    const guesses = infer(app)
     const questions: (InputQuestion | ListQuestion)[] = []
-
-    const app = flags.app
 
     if (args.name) {
       name = args.name
@@ -65,8 +63,8 @@ export default class Create extends Command {
       })
     }
 
-    if (flags.stage) {
-      stage = flags.stage
+    if (inputStage) {
+      stage = inputStage
     } else {
       questions.push({
         type: 'list',
@@ -77,7 +75,6 @@ export default class Create extends Command {
       })
     }
 
-    const teamName = flags.team
     const ownerType = teamName ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
@@ -87,7 +84,7 @@ export default class Create extends Command {
 
     owner = {id: ownerID, type: ownerType}
 
-    const answers: Answers = await prompt(questions)
+    const answers: Answers = await inquirer.prompt(questions)
     if (answers.name) name = answers.name
     if (answers.stage) stage = answers.stage
 
@@ -101,4 +98,3 @@ export default class Create extends Command {
     ux.action.stop()
   }
 }
-*/

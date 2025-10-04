@@ -1,12 +1,11 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {listPipelineApps} from '../../lib/api'
-import disambiguate from '../../lib/pipelines/disambiguate'
-import renderPipeline from '../../lib/pipelines/render-pipeline'
+import {listPipelineApps} from '../../lib/api.js'
+import disambiguate from '../../lib/pipelines/disambiguate.js'
+import renderPipeline from '../../lib/pipelines/render-pipeline.js'
 
 export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
@@ -47,4 +46,3 @@ export default class PipelinesInfo extends Command {
     }
   }
 }
-*/

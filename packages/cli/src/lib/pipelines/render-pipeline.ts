@@ -1,13 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {sortBy} from 'lodash'
 
-import {getOwner, warnMixedOwnership} from './ownership'
-import {AppWithPipelineCoupling} from '../api'
+import {getOwner, warnMixedOwnership} from './ownership.js'
+import {AppWithPipelineCoupling} from '../api.js'
 
 export default async function renderPipeline(
   heroku: APIClient,
@@ -21,12 +19,12 @@ export default async function renderPipeline(
 
   if (pipeline.owner) {
     owner = await getOwner(heroku, pipelineApps, pipeline)
-    ux.log(`owner: ${owner}`)
+    ux.stdout(`owner: ${owner}`)
   }
 
-  ux.log('')
+  ux.stdout('')
 
-  const columns: ux.Table.table.Columns<AppWithPipelineCoupling> = {
+  const columns: Parameters<typeof hux.table<AppWithPipelineCoupling>>[1] = {
     name: {
       header: 'app name',
       get(row) {
@@ -54,10 +52,25 @@ export default async function renderPipeline(
     }
   }
 
-  const developmentApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'development'), ['name'])
-  const reviewApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'review'), ['name'])
-  const stagingApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'staging'), ['name'])
-  const productionApps = sortBy(pipelineApps.filter(app => app.pipelineCoupling.stage === 'production'), ['name'])
+  const sortByName = (a: AppWithPipelineCoupling, b: AppWithPipelineCoupling) => {
+    const nameA = a.name || ''
+    const nameB = b.name || ''
+    if (nameA === nameB) return 0
+    return nameA < nameB ? -1 : 1
+  }
+
+  const developmentApps = pipelineApps
+    .filter(app => app.pipelineCoupling.stage === 'development')
+    .sort(sortByName)
+  const reviewApps = pipelineApps
+    .filter(app => app.pipelineCoupling.stage === 'review')
+    .sort(sortByName)
+  const stagingApps = pipelineApps
+    .filter(app => app.pipelineCoupling.stage === 'staging')
+    .sort(sortByName)
+  const productionApps = pipelineApps
+    .filter(app => app.pipelineCoupling.stage === 'production')
+    .sort(sortByName)
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
   hux.table(apps, columns)
@@ -66,4 +79,3 @@ export default async function renderPipeline(
     warnMixedOwnership(pipelineApps, pipeline, owner)
   }
 }
-*/

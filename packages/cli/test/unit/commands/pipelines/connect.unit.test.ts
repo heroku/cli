@@ -1,6 +1,5 @@
 import {expect, test} from '@oclif/test'
 
-/*
 describe('pipelines:connect', function () {
   describe('when the user is not linked to GitHub', function () {
     test
@@ -84,4 +83,3 @@ describe('pipelines:connect', function () {
   })
 })
 
-*/

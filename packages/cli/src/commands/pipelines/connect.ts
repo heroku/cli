@@ -1,14 +1,13 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {getPipeline} from '../../lib/api'
-import GitHubAPI from '../../lib/pipelines/github-api'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
-import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
-import getRepo from '../../lib/pipelines/setup/get-repo'
-import {nameAndRepo} from '../../lib/pipelines/setup/validate'
+import {getPipeline} from '../../lib/api.js'
+import GitHubAPI from '../../lib/pipelines/github-api.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import getGitHubToken from '../../lib/pipelines/setup/get-github-token.js'
+import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo.js'
+import getRepo from '../../lib/pipelines/setup/get-repo.js'
+import {nameAndRepo} from '../../lib/pipelines/setup/validate.js'
 
 export default class Connect extends Command {
   static description = 'connect a GitHub repo to an existing pipeline'
@@ -65,4 +64,3 @@ export default class Connect extends Command {
     ux.action.stop()
   }
 }
-*/
