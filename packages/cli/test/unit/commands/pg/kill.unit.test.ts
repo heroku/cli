@@ -1,27 +1,45 @@
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
-import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
+import * as sinon from 'sinon'
+import * as proxyquire from 'proxyquire'
+import {GenericCmd} from '../../../helpers/runCommand'
 
 describe('pg:kill', function () {
+  let databaseResolverStub: sinon.SinonStub
+  let psqlServiceExecQuerySpy: sinon.SinonSpy
+  let Cmd: GenericCmd
   let queryString = ''
-  const db = {}
-  const psql = {
-    exec: (_db: unknown, query: string) => {
+
+  beforeEach(function () {
+    databaseResolverStub = sinon.stub().resolves({})
+    psqlServiceExecQuerySpy = sinon.spy((query: string) => {
       queryString = heredoc(query).trim()
       return Promise.resolve('')
-    },
-  }
-  const fetcher = {
-    database: () => db,
-  }
-  const {default: Cmd} = proxyquire('../../../../src/commands/pg/kill', {
-    '../../lib/pg/fetcher': fetcher,
-    '../../lib/pg/psql': psql,
+    })
+
+    // Mock the utils.pg classes
+    const mockUtils = {
+      pg: {
+        DatabaseResolver: class {
+          getDatabase = databaseResolverStub
+        },
+        PsqlService: class {
+          execQuery = psqlServiceExecQuerySpy
+        },
+      },
+    }
+
+    Cmd = proxyquire('../../../../src/commands/pg/kill', {
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
+    }).default
   })
 
   afterEach(function () {
     queryString = ''
+    sinon.restore()
   })
 
   it('kills pid 100', async function () {

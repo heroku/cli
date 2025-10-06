@@ -2,8 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {getAddon} from '../../../lib/pg/fetcher'
-import pgHost from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import {legacyEssentialPlan, essentialNumPlan, formatResponseWithCommands} from '../../../lib/pg/util'
 import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types'
 import confirmCommand from '../../../lib/confirmCommand'
@@ -29,14 +28,15 @@ export default class Upgrade extends Command {
     const {app, confirm} = flags
     const {database} = args
 
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (legacyEssentialPlan(db))
       ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     if (essentialNumPlan(db))
       ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
 
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
+    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
     if (replica.following)
       ux.error(`You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
@@ -49,7 +49,7 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Cancelling upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/cancel`, {hostname: pgHost(), body: {}})
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/cancel`, {hostname: utils.pg.host(), body: {}})
       ux.action.stop('done\n' + formatResponseWithCommands(response.body.message))
     } catch (error) {
       const response = error as PgUpgradeError

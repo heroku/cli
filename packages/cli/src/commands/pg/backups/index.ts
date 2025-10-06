@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import backupsFactory from '../../../lib/pg/backups'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import type {BackupTransfer} from '../../../lib/pg/types'
 
 export default class Index extends Command {
@@ -24,7 +24,7 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
 
-    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: host()})
+    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => {
       if (transferA.created_at > transferB.created_at) {

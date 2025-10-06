@@ -4,7 +4,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import {SettingKey, SettingsResponse} from '../../../lib/pg/types'
 import {addonResolver} from '../../../lib/addons/resolve'
 import {essentialPlan} from '../../../lib/pg/util'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../../nls'
 
 export default class Index extends Command {
@@ -27,7 +27,7 @@ export default class Index extends Command {
 
     if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
 
-    const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: host()})
+    const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
     hux.styledHeader(db.name)
     const remapped: Record<string, unknown> = {}
     Object.keys(settings).forEach(k => {

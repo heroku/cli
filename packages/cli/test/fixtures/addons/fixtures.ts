@@ -1,4 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
+import {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
 
 export const apps: Record<string, Heroku.App> = {
   api: {
@@ -365,5 +366,36 @@ export const attachments: Record<string, Heroku.AddOnAttachment> = {
       name: addons['www-redis'].name as string,
       app: addons['www-redis'].app as Heroku.App,
     },
+  },
+}
+
+export const resolvedAttachments: Record<string, ExtendedAddonAttachment> = {
+  'myapp::postgres-1': {
+    addon: {
+      id: '3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
+      name: 'postgres-1',
+      app: {
+        id: 'a463b82a-6a06-4906-be0f-77d3108143c2',
+        name: 'myapp',
+      },
+      plan: {
+        id: '0ca9652e-52b8-4fbb-9798-131b764da83a',
+        name: 'heroku-postgresql:premium-0',
+      },
+    },
+    app: {
+      id: 'a463b82a-6a06-4906-be0f-77d3108143c2',
+      name: 'myapp',
+    },
+    id: '6da14ba4-1aa6-4e8d-80cb-ef5e2865d557',
+    name: 'DATABASE',
+    namespace: null,
+    created_at: '2025-01-01T00:00:00Z',
+    updated_at: '2025-01-01T00:00:00Z',
+    web_url: 'https://addons-sso.heroku.com/apps/a463b82a-6a06-4906-be0f-77d3108143c2/addons/3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
+    log_input_url: null,
+    config_vars: [
+      'DATABASE_URL',
+    ],
   },
 }

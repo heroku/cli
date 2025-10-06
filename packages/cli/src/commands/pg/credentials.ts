@@ -2,8 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import pghost from '../../lib/pg/host'
-import {getAddon} from '../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {CredentialInfo, CredentialsInfo} from '../../lib/pg/types'
 import {presentCredentialAttachments} from '../../lib/pg/util'
 import {nls} from '../../nls'
@@ -24,12 +23,13 @@ export default class Credentials extends Command {
     const {flags, args} = await this.parse(Credentials)
     const {app} = flags
     const {database} = args
-    const addon = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon} = await dbResolver.getAttachment(app, database)
 
     const {body: credentials} = await this.heroku.get<CredentialsInfo>(
       `/postgres/v0/databases/${addon.id}/credentials`,
       {
-        hostname: pghost(),
+        hostname: utils.pg.host(),
         headers: {
           Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
         },

@@ -1,9 +1,9 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {database} from '../../lib/pg/fetcher'
-import {exec, execFile, interactive} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../nls'
+import {execFile, interactive} from '../../lib/pg/psql'
 
 export default class Psql extends Command {
     static description = 'open a psql shell to the database';
@@ -26,8 +26,9 @@ export default class Psql extends Command {
       const {app, command, credential, file} = flags
       const namespace = credential ? `credential:${credential}` : undefined
       let db
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       try {
-        db = await database(this.heroku, app, args.database, namespace)
+        db = await dbResolver.getDatabase(app, args.database, namespace)
       } catch (error) {
         if (namespace && error instanceof Error && error.message === "Couldn't find that addon.") {
           throw new Error("Credential doesn't match, make sure credential is attached")
@@ -36,9 +37,11 @@ export default class Psql extends Command {
         throw error
       }
 
+      const psqlService = new utils.pg.PsqlService(db)
+
       console.error(`--> Connecting to ${color.yellow(db.attachment.addon.name)}`)
       if (command) {
-        const output = await exec(db, command)
+        const output = await psqlService.execQuery(command)
         process.stdout.write(output)
       } else if (file) {
         const output = await execFile(db, file)

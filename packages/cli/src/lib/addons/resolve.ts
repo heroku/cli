@@ -2,15 +2,16 @@ import {APIClient} from '@heroku-cli/command'
 import {HTTP, HTTPError} from '@heroku/http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../pg/types'
+import type {ExtendedAddon} from '../pg/types'
+import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
 
 const addonHeaders = {
   Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Expansion': 'addon_service,plan',
 }
 
-export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}) {
-  const response = await heroku.post<AddOnAttachmentWithConfigVarsAndPlan[]>('/actions/addons/resolve', {
+export const appAddon = async function (heroku: APIClient, app: string, id: string, options: AddOnAttachment = {}): Promise<ExtendedAddon> {
+  const response = await heroku.post<ExtendedAddon[]>('/actions/addons/resolve', {
     headers: addonHeaders,
     body: {app: app, addon: id, addon_service: options.addon_service},
   })
@@ -26,9 +27,9 @@ const handleNotFound = function (err: { statusCode: number, body?: { resource: s
   throw err
 }
 
-export const addonResolver = async (heroku: APIClient, app: string | undefined, id: string, options?: AddOnAttachment) => {
-  const getAddon = async (addonId: string) => {
-    const response = await heroku.post<AddOnAttachmentWithConfigVarsAndPlan[]>('/actions/addons/resolve', {
+export const addonResolver = async (heroku: APIClient, app: string | undefined, id: string, options?: AddOnAttachment): Promise<ExtendedAddon> => {
+  const getAddon = async (addonId: string): Promise<ExtendedAddon> => {
+    const response = await heroku.post<ExtendedAddon[]>('/actions/addons/resolve', {
       headers: addonHeaders,
       body: {app: null, addon: addonId, addon_service: options?.addon_service},
     })
@@ -74,12 +75,10 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
 export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
-} = {}): Promise<AddOnAttachment & { addon: AddOnAttachmentWithConfigVarsAndPlan }> => {
-  const result = await heroku.post<(AddOnAttachment & {
-    addon: AddOnAttachmentWithConfigVarsAndPlan
-  })[]>('/actions/addon-attachments/resolve', {
-      headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
-    })
+} = {}): Promise<ExtendedAddonAttachment> => {
+  const result = await heroku.post<ExtendedAddonAttachment[]>('/actions/addon-attachments/resolve', {
+    headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
+  })
   return singularize('addon_attachment', options.namespace)(result.body)
 }
 
@@ -100,7 +99,7 @@ export const attachmentResolver = async (heroku: APIClient, app: string | undefi
     }
   }
 
-  async function getAppAddonAttachment(addon: AddOnAttachment, app: string | undefined): Promise<AddOnAttachment | void> {
+  async function getAppAddonAttachment(addon: ExtendedAddon, app: string | undefined): Promise<AddOnAttachment | void> {
     try {
       const result: HTTP<AddOn[]> = await heroku.get(`/addons/${encodeURIComponent(addon.id ?? '')}/addon-attachments`, {headers: attachmentHeaders})
       const matches = filter(app, options.addon_service)(result.body)

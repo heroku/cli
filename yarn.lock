@@ -1783,17 +1783,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/heroku-cli-util@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@heroku/heroku-cli-util@npm:9.0.2"
+"@heroku/heroku-cli-util@npm:^9.1.3":
+  version: 9.1.3
+  resolution: "@heroku/heroku-cli-util@npm:9.1.3"
   dependencies:
     "@heroku-cli/color": ^2.0.4
-    "@heroku-cli/command": ^11.5.0
-    "@heroku/http-call": ^5.4.0
+    "@heroku-cli/command": ^11.8.0
+    "@heroku/http-call": ^5.5.0
     "@oclif/core": ^2.16.0
     debug: ^4.4.0
-    tunnel-ssh: 4.1.6
-  checksum: 7db511fe64f8e7e31d8b6fff53bcf3e87c7abcc1f6091eb0bdb6fd4dcd724dbdf5accbc07d40f5705223d1b909bc1c5f2e2cde2eed55121ac27b1bc0457a4491
+    tunnel-ssh: 5.2.0
+  checksum: d23a3894f2e69cdc9552696e648afa44133f95b807658310562a2cad3e9a6581785fdceea60bb1efb51a7a1481c6ac243cb5aa249e01636c1693238bc7d8040f
   languageName: node
   linkType: hard
 
@@ -5464,15 +5464,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tunnel-ssh@npm:4.1.1":
-  version: 4.1.1
-  resolution: "@types/tunnel-ssh@npm:4.1.1"
-  dependencies:
-    "@types/node": "*"
-  checksum: 25beaca18691d83fbf115af0403788b6637e8034538d0b0f1720f05d116ccb4238cb0a22555a263bc5a766102dac1087f360ac6d054b838c6486fe27e11780f8
-  languageName: node
-  linkType: hard
-
 "@types/urijs@npm:^1.19.4":
   version: 1.19.4
   resolution: "@types/urijs@npm:1.19.4"
@@ -6274,7 +6265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1@npm:^0.2.4, asn1@npm:^0.2.6":
+"asn1@npm:^0.2.6":
   version: 0.2.6
   resolution: "asn1@npm:0.2.6"
   dependencies:
@@ -7632,16 +7623,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cpu-features@npm:0.0.2":
-  version: 0.0.2
-  resolution: "cpu-features@npm:0.0.2"
-  dependencies:
-    nan: ^2.14.1
-    node-gyp: latest
-  checksum: 15177f9a2d465e4d84390f902c977b34f237dadb29fd8553853b13d906ffe5f15be9f091c72db4f34c71412d5ff4e0e4edf04caebc875b02d1d7ecfce2963299
-  languageName: node
-  linkType: hard
-
 "cpu-features@npm:~0.0.10":
   version: 0.0.10
   resolution: "cpu-features@npm:0.0.10"
@@ -7872,15 +7853,6 @@ __metadata:
   version: 3.0.3
   resolution: "dateformat@npm:3.0.3"
   checksum: ca4911148abb09887bd9bdcd632c399b06f3ecad709a18eb594d289a1031982f441e08e281db77ffebcb2cbcbfa1ac578a7cbfbf8743f41009aa5adc1846ed34
-  languageName: node
-  linkType: hard
-
-"debug@npm:2.6.9":
-  version: 2.6.9
-  resolution: "debug@npm:2.6.9"
-  dependencies:
-    ms: 2.0.0
-  checksum: d2f51589ca66df60bf36e1fa6e4386b318c3f1e06772280eea5b1ae9fd3d05e9c2b7fd8a7d862457d00853c75b00451aa2d7459b924629ee385287a650f58fe6
   languageName: node
   linkType: hard
 
@@ -10775,7 +10747,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/heroku-cli-util": ^9.0.2
+    "@heroku/heroku-cli-util": ^9.1.3
     "@heroku/http-call": ^5.5.0
     "@heroku/mcp-server": 1.0.7-alpha.1
     "@heroku/plugin-ai": ^1.0.1
@@ -10824,7 +10796,6 @@ __metadata:
     "@types/strftime": ^0.9.8
     "@types/supports-color": ^8.1.3
     "@types/tmp": ^0.2.6
-    "@types/tunnel-ssh": 4.1.1
     "@types/urijs": ^1.19.4
     "@types/uuid": ^8.3.0
     "@types/validator": ^10.9.0
@@ -10887,7 +10858,6 @@ __metadata:
     ts-node: ^10.9.2
     tsheredoc: ^1.0.1
     tslib: 1.14.1
-    tunnel-ssh: 4.1.6
     typescript: 4.8.4
     urijs: ^1.19.11
     validator: ^13.7.0
@@ -12504,13 +12474,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.defaults@npm:^4.1.0":
-  version: 4.2.0
-  resolution: "lodash.defaults@npm:4.2.0"
-  checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
-  languageName: node
-  linkType: hard
-
 "lodash.find@npm:^4.6.0":
   version: 4.6.0
   resolution: "lodash.find@npm:4.6.0"
@@ -13206,13 +13169,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:2.0.0":
-  version: 2.0.0
-  resolution: "ms@npm:2.0.0"
-  checksum: 0e6a22b8b746d2e0b65a430519934fefd41b6db0682e3477c10f60c76e947c4c0ad06f63ffdf1d78d335f83edee8c0aa928aa66a36c7cd95b69b26f468d527f4
-  languageName: node
-  linkType: hard
-
 "ms@npm:2.1.2, ms@npm:^2.0.0":
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
@@ -13270,12 +13226,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.14.1, nan@npm:^2.15.0, nan@npm:^2.19.0, nan@npm:^2.20.0":
+"nan@npm:^2.19.0, nan@npm:^2.20.0":
   version: 2.22.1
   resolution: "nan@npm:2.22.1"
   dependencies:
     node-gyp: latest
   checksum: 984c07db9f94b7faf19c643d20a7bf66bb311e4c21d62204bb3a09310081550773441bacc928427c2438b9169e3dbd671cf0c8f1765eb4d87c5bd556d38af76b
+  languageName: node
+  linkType: hard
+
+"nan@npm:^2.23.0":
+  version: 2.23.0
+  resolution: "nan@npm:2.23.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 2d1fd612d69d4cf4dd63c8ce61ee6aa36ace2caf5363c98b3232833fc24ab761fb96742682997716dea5fb9abf57e2fe7e94e76e0c4c302ed1fcde5b908f3e8f
   languageName: node
   linkType: hard
 
@@ -16221,20 +16186,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssh2@npm:1.4.0":
-  version: 1.4.0
-  resolution: "ssh2@npm:1.4.0"
+"ssh2@npm:^1.15.0":
+  version: 1.17.0
+  resolution: "ssh2@npm:1.17.0"
   dependencies:
-    asn1: ^0.2.4
+    asn1: ^0.2.6
     bcrypt-pbkdf: ^1.0.2
-    cpu-features: 0.0.2
-    nan: ^2.15.0
+    cpu-features: ~0.0.10
+    nan: ^2.23.0
   dependenciesMeta:
     cpu-features:
       optional: true
     nan:
       optional: true
-  checksum: 354ed1a4ed5df39e4d898b9ad02f0207851c2256adfddd34ca53971a67b793e72b4581d8812b2155c9d70bceb69b4c582445e743a013867516595c31e922d674
+  checksum: 1661b020e367e358603187a1efbb7628cb9b2f75543f60e354ede67be1216d331f2b99a73c57fb01a04be050a1e06fc97d04760d1396ea658ca816ddf80df9a9
   languageName: node
   linkType: hard
 
@@ -17142,14 +17107,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tunnel-ssh@npm:4.1.6":
-  version: 4.1.6
-  resolution: "tunnel-ssh@npm:4.1.6"
+"tunnel-ssh@npm:5.2.0":
+  version: 5.2.0
+  resolution: "tunnel-ssh@npm:5.2.0"
   dependencies:
-    debug: 2.6.9
-    lodash.defaults: ^4.1.0
-    ssh2: 1.4.0
-  checksum: 4d39e3a7ffee1ebfa24607b9f4d920f4b2aa3fa841e60301ef7a115b5227243a97cbbc9d6032a2bab9a35888b6b736013e51fa55882fa7538ecf86e17bfe5289
+    ssh2: ^1.15.0
+  checksum: 3a6c395adf2fad6f72567d23b65b52b4ed592203e3c119ffc1c3e3c1a76e2e8dc640e7043a0569e7dab9175b6a19fea3cef02d0fe84c509de1baaff0f2b05ded
   languageName: node
   linkType: hard
 

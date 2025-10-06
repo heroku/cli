@@ -4,8 +4,7 @@ import {APIClient} from '@heroku-cli/command/lib/api-client'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import confirmCommand from '../../../lib/confirmCommand'
-import {getAttachment} from '../../../lib/pg/fetcher'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import {legacyEssentialPlan} from '../../../lib/pg/util'
 import {nls} from '../../../nls'
 
@@ -31,7 +30,8 @@ export default class Rotate extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Rotate)
     const {app, all, confirm, name, force} = flags
-    const {addon: db} = await getAttachment(this.heroku, app, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, args.database)
     const warnings: string[] = []
     const cred = name || 'default'
     if (all && name !== undefined) {
@@ -75,7 +75,7 @@ export default class Rotate extends Command {
 
     await confirmCommand(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
     const options: APIClient.Options = {
-      hostname: host(),
+      hostname: utils.pg.host(),
       body: {forced: force ?? undefined},
       headers: {
         Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,

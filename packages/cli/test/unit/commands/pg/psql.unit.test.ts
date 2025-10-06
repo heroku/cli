@@ -2,8 +2,7 @@ import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
-import runCommand from '../../../helpers/runCommand'
-import * as psql from '../../../../src/lib/pg/psql'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 
 const db = {
   user: 'jeff', password: 'pass', database: 'mydb', port: 5432, host: 'localhost', attachment: {
@@ -13,22 +12,48 @@ const db = {
   },
 }
 
-const fetcher = {
-  database: () => db,
-}
-const {default: Cmd} = proxyquire('../../../../src/commands/pg/psql', {
-  '../../lib/pg/fetcher': fetcher,
-})
 describe('psql', function () {
-  let stub: sinon.SinonStub
+  let databaseResolverStub: sinon.SinonStub
+  let psqlServiceExecQueryStub: sinon.SinonStub
+  let Cmd: GenericCmd
+  const psql = {
+    fetchVersion: () => {
+      return Promise.resolve('')
+    },
+    execFile: () => {
+      return Promise.resolve('')
+    },
+  }
+
+  beforeEach(function () {
+    databaseResolverStub = sinon.stub().resolves(db)
+    psqlServiceExecQueryStub = sinon.stub().resolves('')
+
+    // Mock the utils.pg classes
+    const mockUtils = {
+      pg: {
+        DatabaseResolver: class {
+          getDatabase = databaseResolverStub
+        },
+        PsqlService: class {
+          execQuery = psqlServiceExecQueryStub
+        },
+      },
+    }
+
+    Cmd = proxyquire('../../../../src/commands/pg/psql', {
+      '../../lib/pg/psql': psql,
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
+    }).default
+  })
 
   afterEach(function () {
-    stub.restore()
+    sinon.restore()
   })
 
   it('runs psql', async function () {
-    stub = sinon.stub(psql, 'exec').returns(Promise.resolve(''))
-
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -40,7 +65,6 @@ describe('psql', function () {
   })
 
   it('runs psql with file', async function () {
-    stub = sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
     await runCommand(Cmd, [
       '--app',
       'myapp',

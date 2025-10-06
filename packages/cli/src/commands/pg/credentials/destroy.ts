@@ -3,8 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {essentialPlan} from '../../../lib/pg/util'
-import {getAddon} from '../../../lib/pg/fetcher'
-import pgHost from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import confirmCommand from '../../../lib/confirmCommand'
 import {nls} from '../../../nls'
 
@@ -31,7 +30,8 @@ export default class Destroy extends Command {
       throw new Error('Default credential cannot be destroyed.')
     }
 
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db)) {
       throw new Error("You can't destroy the default credential on Essential-tier databases.")
     }
@@ -45,7 +45,7 @@ export default class Destroy extends Command {
 
     await confirmCommand(app, confirm)
     ux.action.start(`Destroying credential ${color.cyan.bold(name)}`)
-    await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: pgHost()})
+    await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: utils.pg.host()})
     ux.action.stop()
     ux.log(`The credential has been destroyed within ${db.name}.`)
     ux.log(`Database objects owned by ${name} will be assigned to the default credential.`)

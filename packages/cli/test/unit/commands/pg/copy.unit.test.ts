@@ -113,7 +113,7 @@ describe('pg:copy', function () {
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'myotherapp::DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/myapp/config-vars')
@@ -196,7 +196,7 @@ describe('pg:copy', function () {
       })
         .reply(200, [lowercaseAttachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'mylowercaseapp', addon_attachment: 'myotherapp::DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/mylowercaseapp/config-vars')

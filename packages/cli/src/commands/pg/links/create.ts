@@ -3,9 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {addonResolver} from '../../../lib/addons/resolve'
-import {getAddon} from '../../../lib/pg/fetcher'
-import host from '../../../lib/pg/host'
-import type {AddOnAttachmentWithConfigVarsAndPlan, Link} from '../../../lib/pg/types'
+import {utils} from '@heroku/heroku-cli-util'
+import type {Link} from '../../../lib/pg/types'
 import {essentialPlan} from '../../../lib/pg/util'
 import {nls} from '../../../nls'
 
@@ -39,10 +38,11 @@ export default class Create extends Command {
       return addon
     }
 
-    const [db, target] = await Promise.all([
-      getAddon(this.heroku, app, args.database),
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const [{addon: db}, target] = await Promise.all([
+      dbResolver.getAttachment(app, args.database),
       service(args.remote),
-    ]) as [AddOnAttachmentWithConfigVarsAndPlan, AddOnAttachmentWithConfigVarsAndPlan]
+    ])
 
     if (essentialPlan(db))
       throw new Error('pg:links isn’t available for Essential-tier databases.')
@@ -55,12 +55,14 @@ export default class Create extends Command {
         target: target.name,
         as: flags.as,
       },
-      hostname: host(),
+      hostname: utils.pg.host(),
     })
 
-    if (link.message) {
-      throw new Error(link.message)
-    }
+    // This doesn't exist according to Shogun's link serializer. May it be that the original idea was to use to catch
+    // a Data API error and then show an re-throw the error here?
+    // if (link.message) {
+    //   throw new Error(link.message)
+    // }
 
     ux.action.stop(`done, ${color.cyan(link.name)}`)
   }

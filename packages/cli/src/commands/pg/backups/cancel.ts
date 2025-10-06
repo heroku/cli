@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import backupsFactory from '../../../lib/pg/backups'
 import {BackupTransfer} from '../../../lib/pg/types'
 
@@ -30,15 +30,15 @@ export default class Cancel extends Command {
         ux.error(`Invalid Backup: ${backup_id}`)
       }
 
-      ({body: transfer} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${num}`, {hostname: host()}))
+      ({body: transfer} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()}))
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
       transfer = this.sortByCreatedAtDesc(transfers).find(t => !t.finished_at)
     }
 
     if (transfer) {
       ux.action.start(`Cancelling ${pgbackups.name(transfer)}`)
-      this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: host()})
+      this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
       ux.action.stop()
     } else {
       ux.error('No active backups/transfers')

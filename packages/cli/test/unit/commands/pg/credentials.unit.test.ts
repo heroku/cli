@@ -2,7 +2,7 @@ import {stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
-import * as proxyquire from 'proxyquire'
+import Cmd from '../../../../src/commands/pg/credentials'
 import heredoc from 'tsheredoc'
 
 describe('pg:credentials', function () {
@@ -11,14 +11,6 @@ describe('pg:credentials', function () {
     name: 'postgres-1',
     plan: {name: 'heroku-postgresql:standard-0'},
   }
-  const fetcher = {
-    getAddon: () => addon,
-  }
-
-  const {default: Cmd} = proxyquire('../../../../src/commands/pg/credentials', {
-    '../../lib/pg/fetcher': fetcher,
-  })
-
   let api: nock.Scope
   let pg: nock.Scope
 
@@ -91,7 +83,9 @@ describe('pg:credentials', function () {
       },
     ]
 
-    api.get('/addons/1/addon-attachments')
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp'})
+      .reply(200, [{addon}])
+      .get('/addons/1/addon-attachments')
       .reply(200, attachments)
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
@@ -173,7 +167,9 @@ describe('pg:credentials', function () {
       },
     ]
 
-    api.get('/addons/1/addon-attachments')
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp'})
+      .reply(200, [{addon}])
+      .get('/addons/1/addon-attachments')
       .reply(200, attachments)
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)

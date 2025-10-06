@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {getAddon} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from '../../../lib/pg/util'
-import pgHost from '../../../lib/pg/host'
 import {MaintenanceApiResponse} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
@@ -22,10 +21,11 @@ export default class Index extends Command {
     const {flags, args} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       ux.error('pg:maintenance isn’t available for Essential-tier databases.')
-    const {body: info} = await this.heroku.get<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: pgHost()})
+    const {body: info} = await this.heroku.get<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: utils.pg.host()})
     ux.log(info.message)
   }
 }
