@@ -10839,7 +10839,7 @@ __metadata:
     read-pkg: ^4.0.1
     redis-parser: ^3.0.0
     rimraf: 5.0.5
-    rollbar: ^2.26.2
+    rollbar: ^2.26.4
     semver: 7.6.1
     shell-escape: ^0.2.0
     shell-quote: ^1.8.1
@@ -15449,9 +15449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollbar@npm:^2.26.2":
-  version: 2.26.2
-  resolution: "rollbar@npm:2.26.2"
+"rollbar@npm:^2.26.4":
+  version: 2.26.4
+  resolution: "rollbar@npm:2.26.4"
   dependencies:
     async: ~3.2.3
     console-polyfill: 0.3.0
@@ -15464,7 +15464,7 @@ __metadata:
   dependenciesMeta:
     decache:
       optional: true
-  checksum: 71a1a4fb68f2918af545e335389fef2b1de78abe65cf44deef3a025f8abc2b5ecc9e962ef0dd6724865aed7cc195d83d2547ea7f66852b92875522616d538c9c
+  checksum: ea0b24264a101112c720e786b7c8903e9f8d2cdf8ebab77ced64e4bb3899a0a1ed5f52c6ba0aa10a01faa85e354fb5142e6d0c4f3a282ad2e038175f3bba6ff0
   languageName: node
   linkType: hard
 
