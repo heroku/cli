@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [11.0.0-alpha.7](https://github.com/heroku/cli/compare/v10.13.2...v11.0.0-alpha.7) (2025-10-07)
+
+
+### Features
+
+* update local commands to oclif/core v4 ([#3376](https://github.com/heroku/cli/issues/3376)) ([debfc39](https://github.com/heroku/cli/commit/debfc391c001bd70af973936b9a55f3e528e7998))
+* update member commands to oclif/core v4 ([#3377](https://github.com/heroku/cli/issues/3377)) ([eb56c4d](https://github.com/heroku/cli/commit/eb56c4dca1e114e2019bdc5e440aee972d0b2ec6))
+* update to node 22 ([#3337](https://github.com/heroku/cli/issues/3337)) ([bac2d56](https://github.com/heroku/cli/commit/bac2d563e98669606582cff06012aa3d17a455d7)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+
+
+
+
+
 ## [10.13.2](https://github.com/heroku/cli/compare/v10.13.1...v10.13.2) (2025-09-16)
 
 
@@ -10,7 +23,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
 * Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
-
 
 
 
