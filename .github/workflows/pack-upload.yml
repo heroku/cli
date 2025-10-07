@@ -99,7 +99,7 @@ jobs:
         run: npm ci
       - name: Upload production artifacts
         run: |
-          cd packages/cli
           pwd
           npm run upload:tarballs
+          cd packages/cli
           ./scripts/upload/deb
