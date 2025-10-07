@@ -17,6 +17,8 @@ node_modules
 **/.nyc_output
 **/coverage/
 .pnp.*
+npm-shrinkwrap.json
+
 # Ignore .yarn directory from previous yarn setup
 .yarn/
 yarn.lock
