@@ -10,13 +10,6 @@ manage pipelines
 * [`heroku pipelines:destroy PIPELINE`](#heroku-pipelinesdestroy-pipeline)
 * [`heroku pipelines:diff`](#heroku-pipelinesdiff)
 * [`heroku pipelines:info PIPELINE`](#heroku-pipelinesinfo-pipeline)
-* [`heroku pipelines:open PIPELINE`](#heroku-pipelinesopen-pipeline)
-* [`heroku pipelines:promote`](#heroku-pipelinespromote)
-* [`heroku pipelines:remove`](#heroku-pipelinesremove)
-* [`heroku pipelines:rename PIPELINE NAME`](#heroku-pipelinesrename-pipeline-name)
-* [`heroku pipelines:setup [NAME] [REPO]`](#heroku-pipelinessetup-name-repo)
-* [`heroku pipelines:transfer OWNER`](#heroku-pipelinestransfer-owner)
-* [`heroku pipelines:update`](#heroku-pipelinesupdate)
 
 ## `heroku pipelines`
 
@@ -36,7 +29,7 @@ EXAMPLES
   $ heroku pipelines
 ```
 
-_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/index.ts)_
+_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/index.ts)_
 
 ## `heroku pipelines:add PIPELINE`
 
@@ -63,7 +56,7 @@ EXAMPLES
   $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
-_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/add.ts)_
+_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/add.ts)_
 
 ## `heroku pipelines:connect NAME`
 
@@ -86,7 +79,7 @@ EXAMPLES
   $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
 
-_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/connect.ts)_
+_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
@@ -118,7 +111,7 @@ EXAMPLES
   $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/create.ts)_
+_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/create.ts)_
 
 ## `heroku pipelines:destroy PIPELINE`
 
@@ -138,7 +131,7 @@ EXAMPLES
   $ heroku pipelines:destroy my-pipeline
 ```
 
-_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/destroy.ts)_
+_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -159,7 +152,7 @@ EXAMPLES
   $ heroku pipelines:diff -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/diff.ts)_
+_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -182,162 +175,4 @@ EXAMPLES
   $ heroku pipelines:info my-pipeline
 ```
 
-_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/info.ts)_
-
-## `heroku pipelines:open PIPELINE`
-
-open a pipeline in dashboard
-
-```
-USAGE
-  $ heroku pipelines:open PIPELINE
-
-ARGUMENTS
-  PIPELINE  name of pipeline
-
-DESCRIPTION
-  open a pipeline in dashboard
-
-EXAMPLES
-  $ heroku pipelines:open my-pipeline
-```
-
-_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/open.ts)_
-
-## `heroku pipelines:promote`
-
-promote the latest release of this app to its downstream app(s)
-
-```
-USAGE
-  $ heroku pipelines:promote -a <value> [-r <value>] [-t <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  -t, --to=<value>      comma separated list of apps to promote to
-
-DESCRIPTION
-  promote the latest release of this app to its downstream app(s)
-
-EXAMPLES
-  $ heroku pipelines:promote -a my-app-staging
-```
-
-_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/promote.ts)_
-
-## `heroku pipelines:remove`
-
-remove this app from its pipeline
-
-```
-USAGE
-  $ heroku pipelines:remove -a <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  remove this app from its pipeline
-
-EXAMPLES
-  $ heroku pipelines:remove -a my-app
-```
-
-_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/remove.ts)_
-
-## `heroku pipelines:rename PIPELINE NAME`
-
-rename a pipeline
-
-```
-USAGE
-  $ heroku pipelines:rename PIPELINE NAME
-
-ARGUMENTS
-  PIPELINE  current name of pipeline
-  NAME      new name of pipeline
-
-DESCRIPTION
-  rename a pipeline
-
-EXAMPLES
-  $ heroku pipelines:rename my-pipeline new-pipeline-name
-```
-
-_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/rename.ts)_
-
-## `heroku pipelines:setup [NAME] [REPO]`
-
-bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)
-
-```
-USAGE
-  $ heroku pipelines:setup [NAME] [REPO] [-t <value>] [-y]
-
-ARGUMENTS
-  NAME  name of pipeline
-  REPO  a GitHub repository to connect the pipeline to
-
-FLAGS
-  -t, --team=<value>  the team to assign pipeline ownership to (defaults to current user)
-  -y, --yes           accept all default settings without prompting
-
-DESCRIPTION
-  bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed
-  app.json in the repo)
-
-EXAMPLES
-  $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
-```
-
-_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/setup.ts)_
-
-## `heroku pipelines:transfer OWNER`
-
-transfer ownership of a pipeline
-
-```
-USAGE
-  $ heroku pipelines:transfer OWNER -p <value> [-c <value>]
-
-ARGUMENTS
-  OWNER  the owner to transfer the pipeline to
-
-FLAGS
-  -c, --confirm=<value>
-  -p, --pipeline=<value>  (required) name of pipeline
-
-DESCRIPTION
-  transfer ownership of a pipeline
-
-EXAMPLES
-  $ heroku pipelines:transfer admin@example.com -p my-pipeline
-
-  $ heroku pipelines:transfer admin-team -p my-pipeline
-```
-
-_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/transfer.ts)_
-
-## `heroku pipelines:update`
-
-update the app's stage in a pipeline
-
-```
-USAGE
-  $ heroku pipelines:update -a <value> -s <value> [-r <value>]
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -r, --remote=<value>  git remote of app to use
-  -s, --stage=<value>   (required) new stage of app
-
-DESCRIPTION
-  update the app's stage in a pipeline
-
-EXAMPLES
-  $ heroku pipelines:update -s staging -a my-app
-```
-
-_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/pipelines/update.ts)_
+_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.5/packages/cli/src/commands/pipelines/info.ts)_
