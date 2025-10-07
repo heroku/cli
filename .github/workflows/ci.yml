@@ -87,7 +87,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install cspell@7.3.9
+      - run: npm install cspell@9.2.1
       - name: Run spell check on changed files
         run: |
           git fetch origin main:refs/remotes/origin/main --quiet
