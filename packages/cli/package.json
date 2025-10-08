@@ -140,7 +140,6 @@
     "/autocomplete-scripts",
     "/bin",
     "/lib",
-    "/package-lock.json",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
