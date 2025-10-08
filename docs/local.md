@@ -38,7 +38,7 @@ EXAMPLES
   $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.11/packages/cli/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -49,8 +49,8 @@ USAGE
   $ heroku local:run [-e <value>] [-p <value>]
 
 FLAGS
-  -e, --env=<value>
-  -p, --port=<value>
+  -e, --env=<value>   location of env file (defaults to .env)
+  -p, --port=<value>  port to listen on
 
 DESCRIPTION
   run a one-off command
@@ -59,7 +59,7 @@ EXAMPLES
   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.11/packages/cli/src/commands/local/run.ts)_
 
 ## `heroku local:start [PROCESSNAME]`
 
@@ -103,4 +103,4 @@ DESCRIPTION
   display node-foreman version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.11/packages/cli/src/commands/local/version.ts)_
