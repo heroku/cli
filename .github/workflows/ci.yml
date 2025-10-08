@@ -91,7 +91,7 @@ jobs:
       - name: Run spell check on changed files
         run: |
           git fetch origin main:refs/remotes/origin/main --quiet
-          git diff origin/main...HEAD --diff-filter=d --name-only | npm run cspell
+          git diff origin/main...HEAD --diff-filter=d --name-only | npm run cspell:ci
 
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
