@@ -46,7 +46,10 @@ jobs:
           prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          npm run promote:win -- --sha="$SHA" --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
+          npm run promote:win -- \
+            --sha="$SHA" \
+            --version=${{ inputs.version }} \
+            --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
 
   invalidate-cdn-cache:
