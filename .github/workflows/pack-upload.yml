@@ -17,9 +17,11 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
+      - name: Create npm-shrinkwrap.json for oclif pack:deb
+        run: cd packages/cli && npm run create-shrinkwrap
       - name: Building deb
-        run: yarn oclif pack:deb --root="./packages/cli"
+        run: npm run pack:deb
       - uses: actions/upload-artifact@v4
         with:
           name: packed-deb
@@ -35,9 +37,11 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
+      - name: Create npm-shrinkwrap.json for oclif pack:tarballs
+        run: cd packages/cli && npm run create-shrinkwrap
       - name: Building tarballs
-        run: yarn oclif pack tarballs --root="./packages/cli"
+        run: npm run pack:tarballs
       - uses: actions/upload-artifact@v4
         with:
           name: packed-tarballs
@@ -91,11 +95,11 @@ jobs:
       - name: List all the downloaded files (for debugging)
         run: ls -R
         working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - name: yarn install
-        run: yarn --immutable --network-timeout 1000000
+      - name: Install dependencies
+        run: npm ci
       - name: Upload production artifacts
         run: |
-          cd packages/cli
           pwd
-          yarn oclif upload tarballs
+          npm run upload:tarballs
+          cd packages/cli
           ./scripts/upload/deb

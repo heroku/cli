@@ -3,7 +3,6 @@
 
 deploy your Docker-based app to Heroku
 
-* [`heroku container`](#heroku-container)
 * [`heroku container:login`](#heroku-containerlogin)
 * [`heroku container:logout`](#heroku-containerlogout)
 * [`heroku container:pull -a APP [-v] PROCESS_TYPE...`](#heroku-containerpull--a-app--v-process_type)
@@ -11,20 +10,6 @@ deploy your Docker-based app to Heroku
 * [`heroku container:release`](#heroku-containerrelease)
 * [`heroku container:rm -a APP [-v] PROCESS_TYPE...`](#heroku-containerrm--a-app--v-process_type)
 * [`heroku container:run -a APP [-v] PROCESS_TYPE...`](#heroku-containerrun--a-app--v-process_type)
-
-## `heroku container`
-
-Use containers to build and deploy Heroku apps
-
-```
-USAGE
-  $ heroku container
-
-DESCRIPTION
-  Use containers to build and deploy Heroku apps
-```
-
-_See code: [src/commands/container/index.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/container/index.ts)_
 
 ## `heroku container:login`
 

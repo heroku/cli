@@ -121,7 +121,7 @@
     "mocha": "^10.8.2",
     "nock": "^13.5.1",
     "nyc": "^15.1.0",
-    "oclif": "4.17.46",
+    "oclif": "^4.22.27",
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
     "read-pkg": "^9.0.1",
@@ -141,8 +141,7 @@
     "/bin",
     "/lib",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json",
-    "/yarn.lock"
+    "/oclif.manifest.json"
   ],
   "homepage": "https://cli.heroku.com",
   "keywords": [
@@ -327,7 +326,7 @@
     },
     "update": {
       "node": {
-        "version": "22.17.1"
+        "version": "22.20.0"
       },
       "s3": {
         "xz": true,
@@ -370,17 +369,19 @@
     "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
     "coverage:html": "nyc --reporter=html --reporter=text-summary npm run test",
     "coverage:check": "nyc --check-coverage --branches 80 --statements 80 --functions 80 --lines 80 npm run test",
+    "create-shrinkwrap": "cp ../../package-lock.json ./npm-shrinkwrap.json && echo '✅ npm-shrinkwrap.json created from package-lock.json'",
+    "prepublishOnly": "npm run create-shrinkwrap",
     "postpublish": "rm -f oclif.manifest.json",
     "manifest": "oclif manifest",
-    "prepack": "yarn run build",
-    "pretest": "tsc -p test --noEmit && cd ../.. && yarn build",
-    "test:acceptance": "yarn pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
-    "test:integration": "yarn pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
-    "test:smoke": "yarn pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
+    "prepack": "npm run build && npm run manifest",
+    "pretest": "tsc -p test --noEmit && cd ../.. && npm run build",
+    "test:acceptance": "npm run pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
+    "test:integration": "npm run pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
+    "test:smoke": "npm run pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
     "test:unit:justTest:local": "mocha \"test/**/*.unit.test.ts\"",
     "test:unit:justTest:ci": "nyc --reporter=lcov --reporter=text-summary mocha --forbid-only \"test/**/*.unit.test.ts\"",
-    "test": "yarn pretest && yarn test:unit:justTest:ci",
-    "test:local": "yarn pretest && yarn test:unit:justTest:local",
+    "test": "npm run pretest && npm run test:unit:justTest:ci",
+    "test:local": "npm run pretest && npm run test:unit:justTest:local",
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "type": "module",

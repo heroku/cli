@@ -5,9 +5,7 @@ forward logs to syslog or HTTPS
 
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)
-* [`heroku drains:get`](#heroku-drainsget)
 * [`heroku drains:remove URL`](#heroku-drainsremove-url)
-* [`heroku drains:set URL`](#heroku-drainsset-url)
 
 ## `heroku drains`
 
@@ -49,25 +47,6 @@ DESCRIPTION
 
 _See code: [src/commands/drains/add.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/drains/add.ts)_
 
-## `heroku drains:get`
-
-display the log drain for a space
-
-```
-USAGE
-  $ heroku drains:get -s <value> [--json]
-
-FLAGS
-  -s, --space=<value>  (required) space for which to get log drain
-      --json           output in json format
-
-DESCRIPTION
-  display the log drain for a space
-
-ALIASES
-  $ heroku drains:get
-```
-
 ## `heroku drains:remove URL`
 
 removes a log drain from an app
@@ -91,24 +70,3 @@ EXAMPLES
 ```
 
 _See code: [src/commands/drains/remove.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/drains/remove.ts)_
-
-## `heroku drains:set URL`
-
-replaces the log drain for a space
-
-```
-USAGE
-  $ heroku drains:set URL -s <value>
-
-ARGUMENTS
-  URL  URL to replace the log drain with
-
-FLAGS
-  -s, --space=<value>  (required) space for which to set log drain
-
-DESCRIPTION
-  replaces the log drain for a space
-
-ALIASES
-  $ heroku drains:set
-```

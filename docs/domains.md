@@ -17,22 +17,16 @@ list domains for an app
 
 ```
 USAGE
-  $ heroku domains -a <value> [-h] [-r <value>] [-j] [--columns <value> | -x] [--sort <value>] [--filter
-    <value>] [--output csv|json|yaml |  | [--csv | ]] [--no-header | ]
+  $ heroku domains -a <value> [--columns <value>] [-x] [--filter <value>] [-j] [-r <value>] [--sort <value>]
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
-  -h, --help             Show CLI help.
   -j, --json             output in json format
   -r, --remote=<value>   git remote of app to use
   -x, --extended         show extra columns
       --columns=<value>  only show provided columns (comma-separated)
-      --csv              output is csv format [alias: --output=csv]
       --filter=<value>   filter property by partial string matching, ex: name=foo
-      --no-header        hide table header from output
-      --output=<option>  output in a more machine friendly format
-                         <options: csv|json|yaml>
-      --sort=<value>     property to sort by (prepend '-' for descending)
+      --sort=<value>     sort by property
 
 DESCRIPTION
   list domains for an app
@@ -56,7 +50,7 @@ add a domain to an app
 
 ```
 USAGE
-  $ heroku domains:add HOSTNAME -a <value> [-h] [-c <value>] [-j] [--wait] [-r <value>]
+  $ heroku domains:add HOSTNAME -a <value> [-c <value>] [-j] [--wait] [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
@@ -64,7 +58,6 @@ ARGUMENTS
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -c, --cert=<value>    the name of the SSL cert you want to use for this domain
-  -h, --help            Show CLI help.
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   --wait
@@ -84,11 +77,10 @@ remove all domains from an app
 
 ```
 USAGE
-  $ heroku domains:clear -a <value> [-h] [-r <value>]
+  $ heroku domains:clear -a <value> [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -106,14 +98,13 @@ show detailed information for a domain on an app
 
 ```
 USAGE
-  $ heroku domains:info HOSTNAME -a <value> [-h] [-r <value>]
+  $ heroku domains:info HOSTNAME -a <value> [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -131,14 +122,13 @@ remove a domain from an app
 
 ```
 USAGE
-  $ heroku domains:remove HOSTNAME -a <value> [-h] [-r <value>]
+  $ heroku domains:remove HOSTNAME -a <value> [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -156,14 +146,13 @@ update a domain to use a different SSL certificate on an app
 
 ```
 USAGE
-  $ heroku domains:update HOSTNAME -a <value> --cert <value> [-h] [-r <value>]
+  $ heroku domains:update HOSTNAME -a <value> --cert <value> [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
       --cert=<value>    (required) the name or id of the certificate you want to use for this domain
 
@@ -182,14 +171,13 @@ wait for domain to be active for an app
 
 ```
 USAGE
-  $ heroku domains:wait [HOSTNAME] -a <value> [-h] [-r <value>]
+  $ heroku domains:wait [HOSTNAME] -a <value> [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION

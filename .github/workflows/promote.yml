@@ -44,12 +44,12 @@ jobs:
       AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          cache: yarn
-      - run: yarn --immutable --network-timeout 1000000
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
       - name: install apt-get dependencies
         run: |
           sudo apt-get update
@@ -59,7 +59,10 @@ jobs:
           prerelease-channel: ${{ inputs.channel || 'beta'}}
         run: |
           SHA=$(npm view heroku@${{ inputs.version }} --json | jq -r '.gitHead[0:7]')
-          yarn oclif promote --deb --xz --root="./packages/cli" --sha="$SHA" --indexes --version=${{ inputs.version }} --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
+          npm run promote:deb -- \
+            --sha="$SHA" \
+            --version=${{ inputs.version }} \
+            --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
       - name: promote Linux install scripts
         run: node ./scripts/postrelease/install_scripts.js

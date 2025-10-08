@@ -18,9 +18,9 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@41775cf0c82ef066f1eb39cea1bd74697ca5b735
       - name: Install NSIS
         run: brew install nsis
-      - name: yarn install
-        run: yarn --immutable --network-timeout 1000000
+      - name: npm install
+        run: npm ci
       - name: pack windows installer
-        run: yarn oclif pack win --defender-exclusion hidden --root="./packages/cli"
+        run: npm run pack:win
       - name: upload windows installer
-        run: yarn oclif upload win --root="./packages/cli"
+        run: npm run upload:win
