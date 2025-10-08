@@ -53,10 +53,13 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku help`](docs/help.md) - Display help for heroku.
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
+* [`heroku local`](docs/local.md) - run Heroku app locally
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
+* [`heroku members`](docs/members.md) - manage organization members
 * [`heroku notifications`](docs/notifications.md) - display notifications
 * [`heroku orgs`](docs/orgs.md) - manage organizations
+* [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
 * [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
