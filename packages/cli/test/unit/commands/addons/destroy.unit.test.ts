@@ -3,7 +3,6 @@ import Cmd from '../../../../src/commands/addons/destroy.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import lolex from 'lolex'
 import sinon from 'sinon'
 import stripAnsi from 'strip-ansi'
 
@@ -59,18 +58,18 @@ describe('addons:destroy', function () {
       api.done()
     })
     context('--wait', function () {
-      let clock: ReturnType<typeof lolex.install>
+      let clock: sinon.SinonFakeTimers
       let sandbox: ReturnType<typeof sinon.createSandbox>
       beforeEach(function () {
         sandbox = sinon.createSandbox()
-        clock = lolex.install()
+        clock = sinon.useFakeTimers()
         clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
           callback()
           return 1
         }
       })
       afterEach(function () {
-        clock.uninstall()
+        clock.restore()
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {

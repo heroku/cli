@@ -7,7 +7,6 @@ import _ from 'lodash'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import lolex from 'lolex'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
@@ -17,14 +16,14 @@ describe('addons:wait', function () {
   beforeEach(function () {
     sandbox = sinon.createSandbox()
     nock.cleanAll()
-    clock = lolex.install()
+    clock = sinon.useFakeTimers()
     clock.setTimeout = function (fn: any) {
       process.nextTick(fn)
     }
   })
 
   afterEach(function () {
-    clock.uninstall()
+    clock.restore()
     sandbox.restore()
   })
   context('waiting for an individual add-on to provision', function () {

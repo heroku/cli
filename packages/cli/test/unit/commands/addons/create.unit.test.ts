@@ -8,7 +8,6 @@ import nock from 'nock'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import {HTTPError} from '@heroku/http-call'
 import stripAnsi from 'strip-ansi'
-import lolex from 'lolex'
 
 describe('addons:create', function () {
   let api: ReturnType<typeof nock>
@@ -187,18 +186,18 @@ describe('addons:create', function () {
       })
     })
     context('--wait', function () {
-      let clock: ReturnType<typeof lolex.install>
+      let clock: sinon.SinonFakeTimers
       let sandbox: ReturnType<typeof sinon.createSandbox>
       beforeEach(function () {
         sandbox = sinon.createSandbox()
-        clock = lolex.install()
+        clock = sinon.useFakeTimers()
         clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
           callback()
           return 1
         }
       })
       afterEach(function () {
-        clock.uninstall()
+        clock.restore()
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {

@@ -2,7 +2,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import * as stream from 'stream'
-import lolex from 'lolex'
+import sinon from 'sinon'
 import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {
@@ -22,17 +22,17 @@ MockOut.prototype._write = function (d: any) {
 
 /*
 describe('streaming', function () {
-  let clock: ReturnType<typeof lolex.install>
+  let clock: sinon.SinonFakeTimers
 
   beforeEach(function () {
-    clock = lolex.install()
+    clock = sinon.useFakeTimers()
     clock.setTimeout = function (fn: any) {
       fn()
     }
   })
 
   afterEach(function () {
-    clock.uninstall()
+    clock.restore()
   })
 
   it('streams data', function () {

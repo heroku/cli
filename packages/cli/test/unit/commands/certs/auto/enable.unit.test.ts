@@ -2,9 +2,8 @@ import {stdout, stderr} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 import nock from 'nock'
-import lolex from 'lolex'
 import tsheredoc from 'tsheredoc'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 const heredoc = tsheredoc.default
@@ -110,10 +109,10 @@ describe('heroku certs:auto:enable', function () {
   })
 
   context('--wait', function () {
-    let clock: lolex.InstalledClock<lolex.Clock>
+    let clock: sinon.SinonFakeTimers
 
     beforeEach(function () {
-      clock = lolex.install()
+      clock = sinon.useFakeTimers()
       clock.setTimeout = function (fn) {
         fn()
         return 1
@@ -121,7 +120,7 @@ describe('heroku certs:auto:enable', function () {
     })
 
     afterEach(function () {
-      clock.uninstall()
+      clock.restore()
       sandbox.restore()
     })
 
