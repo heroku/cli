@@ -16,10 +16,11 @@ describe('addons:wait', function () {
   beforeEach(function () {
     sandbox = sinon.createSandbox()
     nock.cleanAll()
-    clock = sinon.useFakeTimers()
-    clock.setTimeout = function (fn: any) {
+    clock = sandbox.useFakeTimers()
+    sandbox.stub(global, 'setTimeout').callsFake((fn: any) => {
       process.nextTick(fn)
-    }
+      return 1 as any
+    })
   })
 
   afterEach(function () {

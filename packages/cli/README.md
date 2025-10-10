@@ -15,9 +15,10 @@ To get started see <https://devcenter.heroku.com/start>
 Overview
 ========
 
-The Heroku CLI is a powerful command-line interface for managing Heroku applications and services. Built with Node.js and [oclif](https://oclif.io), it provides a fast, extensible, and plugin-based architecture for interacting with the Heroku platform.
+The Heroku CLI is a command-line interface for managing Heroku applications and services. Built with Node.js and [oclif](https://oclif.io), it provides a fast, extensible, and plugin-based architecture for interacting with the Heroku platform.
 
 Key features include:
+
 - **Comprehensive app management** - Deploy, scale, and monitor your applications
 - **Plugin ecosystem** - Extend functionality with community and custom plugins
 - **Modern architecture** - Fast, reliable, and built for developer productivity

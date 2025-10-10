@@ -62,11 +62,11 @@ describe('addons:destroy', function () {
       let sandbox: ReturnType<typeof sinon.createSandbox>
       beforeEach(function () {
         sandbox = sinon.createSandbox()
-        clock = sinon.useFakeTimers()
-        clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
+        clock = sandbox.useFakeTimers()
+        sandbox.stub(global, 'setTimeout').callsFake((callback: () => void) => {
           callback()
-          return 1
-        }
+          return 1 as any
+        })
       })
       afterEach(function () {
         clock.restore()
