@@ -2,7 +2,6 @@ const fs = require('fs')
 const execa = require('execa')
 const path = require('path')
 const rm = require('rimraf')
-const mkdirp = require('mkdirp')
 const {promisify} = require('util')
 const {pipeline} = require('stream')
 const crypto = require('crypto')
@@ -93,7 +92,7 @@ async function setupGit() {
 async function updateHomebrew() {
   const tmp = path.join(__dirname, 'tmp')
   const homebrewDir = path.join(tmp, 'homebrew-brew')
-  mkdirp.sync(tmp)
+  fs.mkdirSync(tmp, {recursive: true})
   rm.sync(homebrewDir)
 
   await setupGit()

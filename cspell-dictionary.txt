@@ -136,7 +136,6 @@ localspace
 logfile
 loglevel
 logplex
-lolex
 lowercasedb
 lshift
 lshztxe
