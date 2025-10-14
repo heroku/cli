@@ -136,6 +136,7 @@ localspace
 logfile
 loglevel
 logplex
+lolex
 lowercasedb
 lshift
 lshztxe
@@ -224,6 +225,7 @@ nqry
 nsis
 nspname
 oclif
+oclifrc
 oldname
 openredis
 optfile

@@ -34,8 +34,7 @@ module.exports = {
   },
   topics: {
     "2fa": {
-      description: "two-factor authentication",
-      hidden: true
+      description: "two-factor authentication"
     },
     access: {
       description: "manage user access to apps"

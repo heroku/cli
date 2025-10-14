@@ -3,6 +3,7 @@ import Cmd from '../../../../src/commands/addons/create.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import _ from 'lodash'
+import lolex from 'lolex'
 import sinon from 'sinon'
 import nock from 'nock'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
@@ -186,18 +187,18 @@ describe('addons:create', function () {
       })
     })
     context('--wait', function () {
-      let clock: sinon.SinonFakeTimers
+      let clock: ReturnType<typeof lolex.install>
       let sandbox: ReturnType<typeof sinon.createSandbox>
       beforeEach(function () {
         sandbox = sinon.createSandbox()
-        clock = sandbox.useFakeTimers()
-        sandbox.stub(global, 'setTimeout').callsFake((callback: () => void) => {
+        clock = lolex.install()
+        clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
           callback()
-          return 1 as any
-        })
+          return 1
+        }
       })
       afterEach(function () {
-        clock.restore()
+        clock.uninstall()
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {
