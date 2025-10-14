@@ -34,6 +34,7 @@ www.example.com  CNAME            www.example.herokudns.com
     extended: flags.boolean({description: 'show extra columns', char: 'x'}),
     filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
+    csv: flags.boolean({description: 'output in csv format', char: 'c'}),
     remote: flags.remote(),
     sort: flags.string({description: 'sort by property'}),
   }
@@ -150,6 +151,18 @@ www.example.com  CNAME            www.example.herokudns.com
     return columnHeaders.map(header => headerToKeyMap[header.trim()] || header.trim())
   }
 
+  getCSVOutput = (domains: Heroku.Domain[], tableConfig: Record<string, any>) => {
+    // print column headers in csv format
+    const columnHeaders = Object.entries(tableConfig).map(([key, config]) => config.header || key)
+    ux.stdout(columnHeaders.join(','))
+    
+    // print domain values (rows) in csv format
+    for (const domain of domains) {
+      const row = Object.entries(tableConfig).map(([key, config]) => config.get ? config.get(domain) : domain[key])
+      ux.stdout(row.join(','))
+    }
+  }
+
   async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
@@ -173,8 +186,8 @@ www.example.com  CNAME            www.example.herokudns.com
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
 
-        if (customDomains.length > 100 && !flags.json) {
-          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can output domains in JSON format with: ${color.cmd('heroku domains -a example-app --json')}`)
+        if (customDomains.length > 100 && !flags.json && !flags.csv) {
+          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cmd('heroku domains -a example-app --csv > example-file.csv')}`)
           displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
           if (!displayTotalDomains) {
             return
@@ -183,10 +196,16 @@ www.example.com  CNAME            www.example.herokudns.com
 
         ux.stdout()
         hux.styledHeader(`${flags.app} Custom Domains`)
-        hux.table(customDomains, this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined), {
-          overflow: 'wrap',
-          sort: flags.sort ? {[this.mapSortFieldToProperty(flags.sort)]: 'asc'} : undefined,
-        })
+
+        const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
+        if(flags.csv) {
+          this.getCSVOutput(customDomains, tableConfig)
+        } else {
+          hux.table(customDomains, tableConfig, {
+            overflow: 'wrap',
+            sort: flags.sort ? {[this.mapSortFieldToProperty(flags.sort)]: 'asc'} : undefined,
+          })
+        }
       }
     }
   }
