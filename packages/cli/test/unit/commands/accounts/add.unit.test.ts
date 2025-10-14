@@ -4,14 +4,17 @@ import * as nock from 'nock'
 import * as sinon from 'sinon'
 import Cmd from '../../../../src/commands/accounts/add'
 import * as accounts from '../../../../src/lib/accounts/accounts'
+import {APIClient} from '@heroku-cli/command'
 
 describe('accounts:add', function () {
   let api: nock.Scope
   let addStub: sinon.SinonStub
+  let loginStub: sinon.SinonStub
 
   beforeEach(function () {
     sinon.stub(accounts, 'list').returns([])
     addStub = sinon.stub(accounts, 'add')
+    loginStub = sinon.stub(APIClient.prototype, 'login').resolves()
     api = nock('https://api.heroku.com')
   })
 
