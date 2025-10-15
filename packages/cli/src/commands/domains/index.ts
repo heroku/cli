@@ -87,7 +87,8 @@ www.example.com  CNAME            www.example.herokudns.com
           filteredConfig[columnKey] = fullConfig[columnKey]
         }
       })
-      return filteredConfig
+      // If requested columns are invalid, return all columns
+      return Object.keys(filteredConfig).length > 0 ? filteredConfig : fullConfig
     }
 
     return fullConfig
@@ -151,14 +152,21 @@ www.example.com  CNAME            www.example.herokudns.com
     return columnHeaders.map(header => headerToKeyMap[header.trim()] || header.trim())
   }
 
-  getCSVOutput = (domains: Heroku.Domain[], tableConfig: Record<string, any>) => {
-    // print column headers in csv format
-    const columnHeaders = Object.entries(tableConfig).map(([key, config]) => config.header || key)
+  outputCSV = (customDomains: Heroku.Domain[], tableConfig: Record<string, any>, sortProperty?: string) => {
+    const columns = Object.entries(tableConfig)
+
+    const columnHeaders = columns.map(([key, config]) => config.header || key)
     ux.stdout(columnHeaders.join(','))
-    
-    // print domain values (rows) in csv format
-    for (const domain of domains) {
-      const row = Object.entries(tableConfig).map(([key, config]) => config.get ? config.get(domain) : domain[key])
+
+    if (sortProperty) {
+      customDomains.sort((a, b) => (a[sortProperty] || '').localeCompare((b[sortProperty] || ''), undefined, {numeric: true}))
+    }
+
+    for (const domain of customDomains) {
+      const row = columns.map(([key, config]) => {
+        const value = config.get ? config.get(domain) : domain[key]
+        return value ?? ''
+      })
       ux.stdout(row.join(','))
     }
   }
@@ -198,12 +206,14 @@ www.example.com  CNAME            www.example.herokudns.com
         hux.styledHeader(`${flags.app} Custom Domains`)
 
         const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
-        if(flags.csv) {
-          this.getCSVOutput(customDomains, tableConfig)
+        const sortProperty = this.mapSortFieldToProperty(flags.sort)
+
+        if (flags.csv) {
+          this.outputCSV(customDomains, tableConfig, sortProperty)
         } else {
           hux.table(customDomains, tableConfig, {
             overflow: 'wrap',
-            sort: flags.sort ? {[this.mapSortFieldToProperty(flags.sort)]: 'asc'} : undefined,
+            sort: flags.sort ? {[sortProperty]: 'asc'} : undefined,
           })
         }
       }
