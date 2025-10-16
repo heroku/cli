@@ -29,9 +29,15 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
 
     es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
       if (err && (err.status || err.message)) {
-        const msg = (isTail && (err.status === 404 || err.status === 403)) ?
-          'Log stream timed out. Please try again.' :
-          `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
+        let msg: string
+        if (err.status === 401) {
+          msg = 'You can\'t access this app from your IP address'
+        } else if (isTail && (err.status === 404 || err.status === 403)) {
+          msg = 'Log stream timed out. Please try again.'
+        } else {
+          msg = `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
+        }
+
         reject(new Error(msg))
         es.close()
       }

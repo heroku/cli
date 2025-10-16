@@ -249,6 +249,13 @@ export default class Dyno extends Duplex {
       r.end()
 
       r.on('error', this.reject)
+
+      r.on('response', response => {
+        const statusCode = response.statusCode
+        if (statusCode === 401) {
+          this.reject?.(new Error('You can\'t access this app from your IP address'))
+        }
+      })
       r.on('upgrade', (_, remote) => {
         const s = net.createServer(client => {
           client.on('end', () => {
