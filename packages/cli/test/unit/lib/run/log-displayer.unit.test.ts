@@ -65,7 +65,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('Logs eventsource failed with: 401')
+            expect(message).to.equal('You can\'t access this app from your IP address')
           }
 
           logServer.done()
@@ -99,7 +99,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('Logs eventsource failed with: 401')
+            expect(message).to.equal('You can\'t access this app from your IP address')
           }
 
           logServer.done()
@@ -134,7 +134,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('Logs eventsource failed with: 401')
+            expect(message).to.equal('You can\'t access this app from your IP address')
           }
 
           logServer.done()
@@ -225,7 +225,7 @@ describe('logDisplayer', function () {
           })
         } catch (error: unknown) {
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('Logs eventsource failed with: 401')
+          expect(message).to.equal('You can\'t access this app from your IP address')
           expect(oclif.exit).to.eq(1)
         }
 
@@ -291,7 +291,7 @@ describe('logDisplayer', function () {
           })
         } catch (error: unknown) {
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('Logs eventsource failed with: 401')
+          expect(message).to.equal('You can\'t access this app from your IP address')
           expect(oclif.exit).to.eq(1)
         }
 
