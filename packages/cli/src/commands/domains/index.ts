@@ -87,8 +87,7 @@ www.example.com  CNAME            www.example.herokudns.com
           filteredConfig[columnKey] = fullConfig[columnKey]
         }
       })
-      // If requested columns are invalid, return all columns
-      return Object.keys(filteredConfig).length > 0 ? filteredConfig : fullConfig
+      return filteredConfig
     }
 
     return fullConfig
@@ -153,20 +152,27 @@ www.example.com  CNAME            www.example.herokudns.com
   }
 
   outputCSV = (customDomains: Heroku.Domain[], tableConfig: Record<string, any>, sortProperty?: string) => {
+    const getValue = (domain: Heroku.Domain, key: string, config?: Record<string, any>) => {
+      const cfg = config ?? tableConfig[key]
+      return cfg?.get?.(domain) ?? domain[key] ?? ''
+    }
+
+    const escapeCSV = (value: string) => {
+      const needsEscaping = value.includes('"') || value.includes('\n') || value.includes('\r') || value.includes(',')
+      return needsEscaping ? `"${value.replaceAll('"', '""')}"` : value
+    }
+
     const columns = Object.entries(tableConfig)
 
     const columnHeaders = columns.map(([key, config]) => config.header || key)
     ux.stdout(columnHeaders.join(','))
 
     if (sortProperty) {
-      customDomains.sort((a, b) => (a[sortProperty] || '').localeCompare((b[sortProperty] || ''), undefined, {numeric: true}))
+      customDomains.sort((a, b) => getValue(a, sortProperty).localeCompare(getValue(b, sortProperty), undefined, {numeric: true}))
     }
 
     for (const domain of customDomains) {
-      const row = columns.map(([key, config]) => {
-        const value = config.get ? config.get(domain) : domain[key]
-        return value ?? ''
-      })
+      const row = columns.map(([key, config]) => escapeCSV(getValue(domain, key, config)))
       ux.stdout(row.join(','))
     }
   }
