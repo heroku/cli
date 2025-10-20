@@ -3,12 +3,12 @@ import Cmd from '../../../../src/commands/addons/create.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import _ from 'lodash'
+import lolex from 'lolex'
 import sinon from 'sinon'
 import nock from 'nock'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import {HTTPError} from '@heroku/http-call'
 import stripAnsi from 'strip-ansi'
-import lolex from 'lolex'
 
 describe('addons:create', function () {
   let api: ReturnType<typeof nock>

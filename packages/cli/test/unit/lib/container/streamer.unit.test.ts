@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import * as stream from 'stream'
 import lolex from 'lolex'
+import sinon from 'sinon'
 import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {

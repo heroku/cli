@@ -6,8 +6,8 @@ import nock from 'nock'
 import _ from 'lodash'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import sinon from 'sinon'
 import lolex from 'lolex'
+import sinon from 'sinon'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
