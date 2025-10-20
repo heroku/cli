@@ -5,6 +5,7 @@ import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
+import {orderBy} from 'natural-orderby'
 import {paginateRequest} from '../../lib/utils/paginator.js'
 import parseKeyValue from '../../lib/utils/keyValueParser.js'
 
@@ -153,12 +154,12 @@ www.example.com  CNAME            www.example.herokudns.com
 
   outputCSV = (customDomains: Heroku.Domain[], tableConfig: Record<string, any>, sortProperty?: string) => {
     const getValue = (domain: Heroku.Domain, key: string, config?: Record<string, any>) => {
-      const cfg = config ?? tableConfig[key]
-      return cfg?.get?.(domain) ?? domain[key] ?? ''
+      const columnConfig = config ?? tableConfig[key]
+      return columnConfig?.get?.(domain) ?? domain[key] ?? ''
     }
 
     const escapeCSV = (value: string) => {
-      const needsEscaping = value.includes('"') || value.includes('\n') || value.includes('\r') || value.includes(',')
+      const needsEscaping = /["\n\r,]/.test(value)
       return needsEscaping ? `"${value.replaceAll('"', '""')}"` : value
     }
 
@@ -168,7 +169,7 @@ www.example.com  CNAME            www.example.herokudns.com
     ux.stdout(columnHeaders.join(','))
 
     if (sortProperty) {
-      customDomains.sort((a, b) => getValue(a, sortProperty).localeCompare(getValue(b, sortProperty), undefined, {numeric: true}))
+      customDomains = orderBy(customDomains, [domain => getValue(domain, sortProperty)], ['asc'])
     }
 
     for (const domain of customDomains) {
