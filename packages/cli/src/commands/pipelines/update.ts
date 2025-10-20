@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {StageCompletion} from '@heroku-cli/command/lib/completions'
+import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
 
-import {updateCoupling} from '../../lib/api'
+import {updateCoupling} from '../../lib/api.js'
 
 export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
@@ -35,4 +34,3 @@ export default class PipelinesUpdate extends Command {
     ux.action.stop()
   }
 }
-*/

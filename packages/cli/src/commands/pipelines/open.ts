@@ -1,9 +1,8 @@
-/*
 import {Command} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import * as open from 'open'
+import open from 'open'
 
-import disambiguate from '../../lib/pipelines/disambiguate'
+import disambiguate from '../../lib/pipelines/disambiguate.js'
 
 export default class Open extends Command {
   static description = 'open a pipeline in dashboard'
@@ -21,4 +20,3 @@ export default class Open extends Command {
     await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
   }
 }
-*/
