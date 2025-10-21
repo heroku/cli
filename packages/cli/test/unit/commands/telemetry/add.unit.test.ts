@@ -166,7 +166,6 @@ describe('telemetry:add', function () {
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
   })
 
-
   it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
     const httpApp = {...firApp, id: appId}
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
@@ -273,5 +272,4 @@ describe('telemetry:add', function () {
 
     expectOutput(stdout.output, `successfully added drain ${splunkhecEndpoint}`)
   })
-
 })
