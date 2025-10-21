@@ -61,14 +61,14 @@ export default class Setup extends Command {
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
     const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
 
-    const {team} = flags
+    const {team, yes} = flags
 
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = await getRepo(github, repoName)
-    const settings = await getSettings(team.yes, repo.default_branch)
+    const settings = await getSettings(yes, repo.default_branch)
 
-    const ciSettings = await getCISettings(team.yes, team)
+    const ciSettings = await getCISettings(yes, team)
     const ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
