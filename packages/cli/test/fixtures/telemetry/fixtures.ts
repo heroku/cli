@@ -64,7 +64,7 @@ export const splunkhecAppTelemetryDrain: TelemetryDrain = {
     type: 'splunkhec',
     endpoint: 'https://splunk.example.com/services/collector',
     headers: {
-      'Authorization': 'Splunk your-hec-token',
+      Authorization: 'Splunk your-hec-token',
     },
   },
 }
