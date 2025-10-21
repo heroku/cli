@@ -62,10 +62,9 @@ export const splunkhecAppTelemetryDrain: TelemetryDrain = {
   signals: ['traces', 'metrics', 'logs'],
   exporter: {
     type: 'splunkhec',
-    endpoint: 'https://http-inputs-heroku.splunkcloud.com/services/collector',
+    endpoint: 'https://splunk.example.com/services/collector',
     headers: {
       'Authorization': 'Splunk your-hec-token',
-      'X-Splunk-Request-Channel': 'your-channel',
     },
   },
 }
