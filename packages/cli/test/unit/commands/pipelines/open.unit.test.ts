@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
-  const spawnStub = sinon.stub().returns({unref: () => {}})
+  const spawnStub = sinon.stub().returns({unref() {}})
 
   test
     .stdout()

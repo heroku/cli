@@ -11,9 +11,7 @@ import * as util from 'util'
 import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api.js'
 import keyBy from '../../lib/pipelines/key-by.js'
 
-export const sleep  = (time: number) => {
-  return new Promise(resolve => setTimeout(resolve, time))
-}
+export const sleep  = (time: number) => new Promise(resolve => setTimeout(resolve, time))
 
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
@@ -43,7 +41,7 @@ function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
 }
 
 function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
-  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
+  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(({body: targets}) => {
     if (targets.every(isComplete)) {
       return targets
     }
@@ -160,9 +158,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
     }
   }
 
-  await retry(100, () => {
-    return streamReleaseOutput(release.output_stream_url!)
-  })
+  await retry(100, () => streamReleaseOutput(release.output_stream_url!))
 
   return pollPromotionStatus(heroku, promotion.id, false)
 }
@@ -243,7 +239,7 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    const styledTargets = promotionTargets.reduce(function (memo: Heroku.App, target: Heroku.App) {
+    const styledTargets = promotionTargets.reduce((memo: Heroku.App, target: Heroku.App) => {
       const app = appsByID[target.app.id]
       const details = [target.status]
 

@@ -21,8 +21,8 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/vali
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
-  static description =
-    'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
+  static description
+    = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
   static examples = ['$ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team']
 
@@ -61,14 +61,14 @@ export default class Setup extends Command {
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
     const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
 
-    const team = flags.team
+    const {team} = flags
 
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = await getRepo(github, repoName)
-    const settings = await getSettings(flags.yes, repo.default_branch)
+    const settings = await getSettings(team.yes, repo.default_branch)
 
-    const ciSettings = await getCISettings(flags.yes, team)
+    const ciSettings = await getCISettings(team.yes, team)
     const ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating

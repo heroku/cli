@@ -19,7 +19,7 @@ describe('pipelines:setup', function () {
     const kolkrabbiAccount = {github: {token: '123-abc'}}
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
-    const spawnStub = sinon.stub().returns({unref: () => {}})
+    const spawnStub = sinon.stub().returns({unref() {}})
 
     function setupApiNock(api: any) {
       api

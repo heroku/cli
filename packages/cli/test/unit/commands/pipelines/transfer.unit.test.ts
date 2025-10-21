@@ -31,14 +31,12 @@ describe('pipelines:transfer', function () {
 
   let update: {isDone(): boolean}
 
-  const addMocks = (testInstance: typeof test) => {
-    return testInstance
-      .nock('https://api.heroku.com', api => {
-        api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
-        api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
-        api.post('/filters/apps').reply(200, [app])
-      })
-  }
+  const addMocks = (testInstance: typeof test) => testInstance
+    .nock('https://api.heroku.com', api => {
+      api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
+      api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
+      api.post('/filters/apps').reply(200, [app])
+    })
 
   addMocks(test)
     .stderr()

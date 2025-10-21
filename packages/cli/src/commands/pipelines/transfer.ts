@@ -19,9 +19,7 @@ async function getAccountOwner(heroku: APIClient, name: string) {
 
 function getOwner(heroku: APIClient, name: string) {
   return getTeamOwner(heroku, name)
-    .catch(() => {
-      return getAccountOwner(heroku, name)
-    })
+    .catch(() => getAccountOwner(heroku, name))
     .catch(() => {
       throw new Error(`Cannot find a team or account for "${name}"`)
     })

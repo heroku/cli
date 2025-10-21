@@ -253,9 +253,7 @@ describe('pipelines:promote', function () {
     mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
       .stderr()
       .stdout()
-      .stub(PromoteCmd, 'sleep', () => {
-        return Promise.resolve()
-      })
+      .stub(PromoteCmd, 'sleep', () => Promise.resolve())
       .command(['pipelines:promote', `--app=${sourceApp.name}`])
       .catch((error: any) => {
         expect(error.oclif.exit).to.equal(2)
