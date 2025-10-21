@@ -1,8 +1,7 @@
 import {expect, test} from '@oclif/test'
 
-// import * as PromoteCmd from '../../../../src/commands/pipelines/promote'
+import * as PromoteCmd from '../../../../src/commands/pipelines/promote.js'
 
-/*
 describe('pipelines:promote', function () {
   const apiUrl = 'https://api.heroku.com'
 
@@ -265,5 +264,3 @@ describe('pipelines:promote', function () {
       .it('attempts stream and returns error')
   })
 })
-
-*/

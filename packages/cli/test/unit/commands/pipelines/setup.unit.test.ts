@@ -1,11 +1,10 @@
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {expect, test} from '@oclif/test'
 import * as childProcess from 'child_process'
 import * as sinon from 'sinon'
 import pollAppSetups from '../../../../src/lib/pipelines/setup/poll-app-setups.js'
 
-/*
 describe('pipelines:setup', function () {
   test
     .nock('https://kolkrabbi.heroku.com', kolkrabbi => kolkrabbi.get('/account/github/token').replyWithError(''))
@@ -96,8 +95,8 @@ describe('pipelines:setup', function () {
               })
               .reply(200)
           })
-          .stub(ux, 'prompt', promptStub)
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'prompt', promptStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup'])
           .it('creates apps in the personal account with CI enabled')
@@ -120,8 +119,8 @@ describe('pipelines:setup', function () {
               })
               .reply(200)
           })
-          .stub(ux, 'prompt', promptStub)
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'prompt', promptStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup', pipeline.name.toUpperCase()])
           .it('downcases capitalized pipeline names')
@@ -143,7 +142,7 @@ describe('pipelines:setup', function () {
               })
               .reply(200)
           })
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
           .it('does not prompt for options with the -y flag', () => {
@@ -198,8 +197,8 @@ describe('pipelines:setup', function () {
               })
               .reply(200)
           })
-          .stub(ux, 'prompt', promptStub)
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'prompt', promptStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup', '--team', team])
           .it('creates apps in a team with CI enabled')
@@ -247,7 +246,7 @@ describe('pipelines:setup', function () {
               .post(`/pipelines/${pipeline.id}/repository`)
               .reply(201, {})
           })
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .command(['pipelines:setup', 'my-pipeline', 'my-org/my-repo', '--team', team])
           .catch(error => {
@@ -299,7 +298,7 @@ describe('pipelines:setup', function () {
               .post(`/pipelines/${pipeline.id}/repository`)
               .reply(201, {})
           })
-          .stub(ux, 'confirm', confirmStub)
+          .stub(hux, 'confirm', confirmStub)
           .stub(childProcess, 'spawn', spawnStub)
           .stub(pollAppSetups, 'wait', () => {
             pollAppSetups('foo', 'bar')
@@ -313,5 +312,3 @@ describe('pipelines:setup', function () {
     })
   })
 })
-
-*/
