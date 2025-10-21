@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import {FlagInvalidOptionError} from '@oclif/core/lib/parser/errors'
 import {TelemetryDrain} from '../../lib/types/telemetry'
 import heredoc from 'tsheredoc'
 import {validateAndFormatSignals} from '../../lib/telemetry/util'
@@ -13,7 +14,8 @@ export default class Add extends Command {
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    transport: Flags.string({default: 'http', options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
+    // TODO: When splunkhec is promoted, this should have options: ['http', 'grpc', 'splunkhec']
+    transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
 
   static args = {
@@ -25,10 +27,21 @@ export default class Add extends Command {
     $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
   `)
 
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
     const {app, headers, space, signals, transport} = flags
     const {endpoint} = args
+    
+    // Allow splunkhec, but do not show splunkhec in error message until promoted
+    // TODO: When splunkhec is promoted, and options are added for the transport flag, this should be removed
+    const publicTransports = ['http', 'grpc']
+    const validTransports = [...publicTransports, 'splunkhec']
+    if (!validTransports.includes(transport)) {
+      const reconstructedFlag = Flags.string({options: publicTransports, name: Add.flags.transport.name})
+      throw new FlagInvalidOptionError(reconstructedFlag, transport)
+    }
+    
     let id
     if (app) {
       const {body: herokuApp} = await this.heroku.get<App>(
@@ -50,7 +63,7 @@ export default class Add extends Command {
       signals: validateAndFormatSignals(signals),
       exporter: {
         endpoint,
-        type: (transport === 'grpc') ? 'otlp' : 'otlphttp',
+        type: this.getExporterType(transport),
         headers: JSON.parse(exporterHeaders),
       },
     }
@@ -63,5 +76,16 @@ export default class Add extends Command {
     })
 
     ux.log(`successfully added drain ${drain.exporter.endpoint}`)
+  }
+  
+  private getExporterType(transport: string): string {
+    switch (transport) {
+      case 'grpc':
+        return 'otlp'
+      case 'splunkhec':
+        return 'splunkhec'
+      default:
+        return 'otlphttp'
+    }
   }
 }
