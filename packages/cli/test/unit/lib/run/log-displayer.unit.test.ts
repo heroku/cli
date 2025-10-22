@@ -299,8 +299,8 @@ describe('logDisplayer', function () {
       })
     })
 
-    context('when the log server responds with a stream of log lines and then timeouts', function () {
-      it('displays log lines and exits showing a timeout error', async function () {
+    context('when the log server responds with a stream of log lines and the token expires ending the stream', function () {
+      it('displays log lines and exits showing a stream access expired error', async function () {
         const logServer = nock('https://logs.heroku.com', {
           reqheaders: {Accept: 'text/event-stream'},
         }).get('/stream')
@@ -326,7 +326,7 @@ describe('logDisplayer', function () {
         } catch (error: unknown) {
           stdout.stop()
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('Log stream timed out. Please try again.')
+          expect(message).to.equal('Log stream access expired. Please try again.')
           expect(oclif.exit).to.eq(1)
         }
 
