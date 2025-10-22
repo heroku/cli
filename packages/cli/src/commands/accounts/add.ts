@@ -3,6 +3,9 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {add, list} from '../../lib/accounts/accounts'
 import {FlagInput} from '@oclif/core/lib/interfaces/parser'
+import {confirm} from '@inquirer/prompts'
+import * as open from 'open'
+
 
 export default class Add extends Command {
   static description = 'add a Heroku account to your cache'
@@ -22,12 +25,23 @@ export default class Add extends Command {
     const {name} = args
     const {sso} = flags
     const logInMessage = 'You must be logged in to run this command.'
+    const dashboardUrl = 'https://dashboard.heroku.com'
+    let redirectToDashboard = false
 
     if (list().some(a => a.name === name)) {
       ux.error(`${name} already exists`)
     }
 
-    await this.heroku.login({method: sso ? 'sso' : 'interactive'})
+    if (!sso) {
+      ux.warn('You may be signed into a different Heroku account from the browser.')
+      redirectToDashboard = await confirm({default: false, message: `Redirect to Dashboard for sign out?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
+
+      if (redirectToDashboard) {
+        return await open(dashboardUrl)
+      }
+    }
+
+    await this.heroku.login({method: sso ? 'sso' : 'browser'})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
     const email = account.email || ''
 
