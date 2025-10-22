@@ -1,8 +1,7 @@
 import {expect, test} from '@oclif/test'
 
-// import * as PromoteCmd from '../../../../src/commands/pipelines/promote'
+import * as PromoteCmd from '../../../../src/commands/pipelines/promote.js'
 
-/*
 describe('pipelines:promote', function () {
   const apiUrl = 'https://api.heroku.com'
 
@@ -254,9 +253,7 @@ describe('pipelines:promote', function () {
     mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
       .stderr()
       .stdout()
-      .stub(PromoteCmd, 'sleep', () => {
-        return Promise.resolve()
-      })
+      .stub(PromoteCmd, 'sleep', () => Promise.resolve())
       .command(['pipelines:promote', `--app=${sourceApp.name}`])
       .catch((error: any) => {
         expect(error.oclif.exit).to.equal(2)
@@ -265,5 +262,3 @@ describe('pipelines:promote', function () {
       .it('attempts stream and returns error')
   })
 })
-
-*/

@@ -1,20 +1,17 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import * as assert from 'assert'
+import assert from 'assert'
 import fetch from 'node-fetch'
 import * as Stream from 'stream'
 import * as util from 'util'
 
-import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api'
-import keyBy from '../../lib/pipelines/key-by'
+import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api.js'
+import keyBy from '../../lib/pipelines/key-by.js'
 
-export const sleep  = (time: number) => {
-  return new Promise(resolve => setTimeout(resolve, time))
-}
+export const sleep  = (time: number) => new Promise(resolve => setTimeout(resolve, time))
 
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
@@ -44,7 +41,7 @@ function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
 }
 
 function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
-  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
+  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(({body: targets}) => {
     if (targets.every(isComplete)) {
       return targets
     }
@@ -66,7 +63,7 @@ function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand:
 }
 
 async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
-  ux.log('Fetching app info...')
+  ux.stdout('Fetching app info...')
   const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
   return coupling
 }
@@ -86,7 +83,7 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
   }
 
   try {
-    ux.log(`${label}...`)
+    ux.stdout(`${label}...`)
     const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
     return promotions
   } catch (error: any) {
@@ -112,7 +109,7 @@ function assertApps(app: string, targetApps: Array<AppWithPipelineCoupling>, tar
 }
 
 async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
-  ux.log('Fetching release info...')
+  ux.stdout('Fetching release info...')
   const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
   return release
 }
@@ -129,7 +126,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
     return pollPromotionStatus(heroku, promotion.id, false)
   }
 
-  ux.log('Running release command...')
+  ux.stdout('Running release command...')
 
   async function streamReleaseOutput(releaseStreamUrl: string) {
     const finished = util.promisify(Stream.finished)
@@ -161,9 +158,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
     }
   }
 
-  await retry(100, () => {
-    return streamReleaseOutput(release.output_stream_url!)
-  })
+  await retry(100, () => streamReleaseOutput(release.output_stream_url!))
 
   return pollPromotionStatus(heroku, promotion.id, false)
 }
@@ -190,7 +185,7 @@ export default class Promote extends Command {
     const {flags} = await this.parse(Promote)
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
-    ux.log(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
+    ux.stdout(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
     const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
     const sourceStage = coupling.stage
 
@@ -201,11 +196,11 @@ export default class Promote extends Command {
       // We don't have to infer the apps or the stage they want to promote to
 
       // Strip out any empty app names due to something like a trailing comma
-      const targetAppNames = flags.to.split(',').filter(appName => appName.length > 0)
+      const targetAppNames = flags.to.split(',').filter((appName: string) => appName.length > 0)
 
       // Now let's make sure that we can find every target app they specified
       // The only requirement is that the app be in this pipeline. They can be at any stage.
-      targetApps = targetAppNames.reduce((acc: Array<AppWithPipelineCoupling>, targetAppNameOrId) => {
+      targetApps = targetAppNames.reduce((acc: Array<AppWithPipelineCoupling>, targetAppNameOrId: string) => {
         assertNotPromotingToSelf(appNameOrId, targetAppNameOrId)
         const app = findAppInPipeline(allApps, targetAppNameOrId)
         if (app) {
@@ -233,7 +228,7 @@ export default class Promote extends Command {
     )
 
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
-    ux.log('Waiting for promotion to complete...')
+    ux.stdout('Waiting for promotion to complete...')
     let promotionTargets = await pollLoop
 
     try {
@@ -244,7 +239,7 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    const styledTargets = promotionTargets.reduce(function (memo: Heroku.App, target: Heroku.App) {
+    const styledTargets = promotionTargets.reduce((memo: Heroku.App, target: Heroku.App) => {
       const app = appsByID[target.app.id]
       const details = [target.status]
 
@@ -257,7 +252,7 @@ export default class Promote extends Command {
     }, {})
 
     if (promotionTargets.every(isSucceeded)) {
-      ux.log('\nPromotion successful')
+      ux.stdout('\nPromotion successful')
     } else {
       ux.warn('\nPromotion to some apps failed')
     }
@@ -265,4 +260,3 @@ export default class Promote extends Command {
     hux.styledObject(styledTargets)
   }
 }
-*/
