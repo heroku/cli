@@ -2,9 +2,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {getAddon} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from '../../../lib/pg/util'
-import pgHost from '../../../lib/pg/host'
 import {MaintenanceApiResponse} from '../../../lib/pg/types'
 import * as Heroku from '@heroku-cli/schema'
 import {nls} from '../../../nls'
@@ -26,7 +25,8 @@ export default class Run extends Command {
     const {flags, args} = await this.parse(Run)
     const {app, force} = flags
     const {database} = args
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       ux.error("pg:maintenance isn't available for Essential-tier databases.")
     ux.action.start(`Starting maintenance for ${color.yellow(db.name)}`)
@@ -36,7 +36,7 @@ export default class Run extends Command {
         ux.error('Application must be in maintenance mode or run with --force')
     }
 
-    const {body: response} = await this.heroku.post<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: pgHost()})
+    const {body: response} = await this.heroku.post<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: utils.pg.host()})
     ux.action.stop(response.message || 'done')
   }
 }

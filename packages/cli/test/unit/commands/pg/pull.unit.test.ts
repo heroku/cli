@@ -1,43 +1,33 @@
+/*
 import {stderr, stdout} from 'stdout-stderr'
 import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-// import {ConnectionDetailsWithAttachment} from '../../../../src/lib/pg/util'
-import sinon from 'sinon'
-// import * as psql from '../../../../src/lib/pg/psql'
-// import * as childProcess from 'node:child_process'
-// import {TunnelConfig} from '../../../../src/lib/pg/bastion'
+import {ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import sinon = require('sinon')
+import * as childProcess from 'node:child_process'
 
-/*
+
 describe('pg:pull', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
-  let db: Pick<ConnectionDetailsWithAttachment, 'user' | 'password' | 'database' | 'port' | 'host' | 'bastionHost' | 'bastionKey'> & {
-    attachment: {
-      addon: {name: string},
-      config_vars: string[],
-      app: {name: string},
-    }
-  }
-  const fetcher = {
-    database: () => db,
-  }
-  let tunnelStub: sinon.SinonStub
-  let bastion: unknown
+  let db: ConnectionDetailsWithAttachment
   let push_pull: unknown
   let Cmd: GenericCmd
-  let mathRandomStub: sinon.SinonStub
   let createDbStub: sinon.SinonStub
   let spawnStub: sinon.SinonStub
-  let psqlStub: sinon.SinonStub
+  let env: NodeJS.ProcessEnv
+  let sshTunnelStub: sinon.SinonStub
 
   const exitHandler = (_key: string, func: CallableFunction) => {
     func(0)
   }
 
   beforeEach(function () {
+    env = process.env
+    process.env = {}
     db = {
       user: 'jeff',
       password: 'pass',
@@ -51,22 +41,41 @@ describe('pg:pull', function () {
         config_vars: ['DATABASE_URL'],
         app: {name: 'myapp'},
       },
+    } as ConnectionDetailsWithAttachment
+    sshTunnelStub = sinon.stub().resolves()
+    const mockUtils = {
+      pg: {
+        DatabaseResolver: class {
+          getDatabase = sinon.stub().callsFake(() => db)
+          static parsePostgresConnectionString(url: string) {
+            return utils.pg.DatabaseResolver.parsePostgresConnectionString(url)
+          }
+        },
+        PsqlService: class {
+          execQuery = sinon.stub().resolves('')
+        },
+        psql: {
+          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetailsWithAttachment) => {
+            return utils.pg.psql.getPsqlConfigs(db)
+          }),
+          sshTunnel: sshTunnelStub,
+        },
+      },
     }
-    tunnelStub = sinon.stub().callsArg(1)
-    bastion = proxyquire('../../../../src/lib/pg/bastion', {
-      'tunnel-ssh': tunnelStub,
-    })
     push_pull = proxyquire('../../../../src/lib/pg/push_pull', {
-      './bastion': bastion,
-    });
-    ({default: Cmd} = proxyquire('../../../../src/commands/pg/pull', {
-      '../../lib/pg/fetcher': fetcher,
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
+    })
+    Cmd = proxyquire('../../../../src/commands/pg/pull', {
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
       '../../lib/pg/push_pull': push_pull,
-    }))
-    mathRandomStub = sinon.stub(Math, 'random').callsFake(() => 0)
+    }).default
+    sinon.stub(Math, 'random').callsFake(() => 0)
     createDbStub = sinon.stub(childProcess, 'execSync')
     spawnStub = sinon.stub(childProcess, 'spawn')
-    psqlStub = sinon.stub(psql, 'exec')
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
       stdout: {
@@ -83,11 +92,8 @@ describe('pg:pull', function () {
   })
 
   afterEach(function () {
-    createDbStub.restore()
-    tunnelStub.reset()
-    mathRandomStub.restore()
-    psqlStub.restore()
-    spawnStub.restore()
+    sinon.restore()
+    process.env = env
   })
 
   skipOnWindows('pulls a db in', async () => {
@@ -112,16 +118,6 @@ describe('pg:pull', function () {
     db.bastionHost = 'bastion-host'
     db.bastionKey = 'super-private-key'
 
-    const tunnelConf: TunnelConfig = {
-      username: 'bastion',
-      host: 'bastion-host',
-      privateKey: 'super-private-key',
-      dstHost: 'herokai.com',
-      dstPort: 5432,
-      localHost: '127.0.0.1',
-      localPort: 49152,
-    }
-
     await runCommand(Cmd, [
       'postgres-1',
       'localdb',
@@ -137,7 +133,6 @@ describe('pg:pull', function () {
       Pulling complete.
     `)
     expect(stderr.output).to.eq('')
-    expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.eq(true)
   })
 })
 

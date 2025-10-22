@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {ux} from '@oclif/core'
+import type {APIClient} from '@heroku-cli/command'
+import type {App} from '../types/fir.js'
 
 // this function exists because oclif sorts argv
 // and to capture all non-flag command inputs
@@ -59,4 +61,31 @@ export function buildEnvFromFlag(flag: string) {
   }
 
   return env
+}
+
+/**
+ * Determines whether to prepend `launcher` to the command for a given app.
+ * Behavior: Only prepend on CNB stack apps and when not explicitly disabled.
+ */
+export async function shouldPrependLauncher(heroku: APIClient, appName: string, disableLauncher: boolean): Promise<boolean> {
+  if (disableLauncher) return false
+
+  const {body: app} = await heroku.get<App>(`/apps/${appName}` , {
+    headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+  })
+
+  return (app.stack && app.stack.name) === 'cnb'
+}
+
+/**
+ * Builds the command string, automatically deciding whether to prepend `launcher`.
+ */
+export async function buildCommandWithLauncher(
+  heroku: APIClient,
+  appName: string,
+  args: string[],
+  disableLauncher: boolean,
+): Promise<string> {
+  const prependLauncher = await shouldPrependLauncher(heroku, appName, disableLauncher)
+  return buildCommand(args, prependLauncher)
 }

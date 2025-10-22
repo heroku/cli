@@ -4,7 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import {ux} from '@oclif/core'
 import Dyno from '../../lib/run/dyno'
-import {buildCommand} from '../../lib/run/helpers'
+import {buildCommandWithLauncher} from '../../lib/run/helpers'
 import logDisplayer from '../../lib/run/log-displayer'
 
 export default class RunDetached extends Command {
@@ -23,6 +23,10 @@ export default class RunDetached extends Command {
     size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
     tail: flags.boolean({char: 't', description: 'continually stream logs'}),
     type: flags.string({description: 'process type', completion: ProcessTypeCompletion}),
+    'no-launcher': flags.boolean({
+      description: 'don’t prepend ‘launcher’ before a command',
+      default: false,
+    }),
   }
 
   async run() {
@@ -31,7 +35,7 @@ export default class RunDetached extends Command {
     const opts = {
       heroku: this.heroku,
       app: flags.app,
-      command: buildCommand(argv as string[]),
+      command: await buildCommandWithLauncher(this.heroku, flags.app, argv as string[], flags['no-launcher']),
       size: flags.size,
       type: flags.type,
       env: flags.env,

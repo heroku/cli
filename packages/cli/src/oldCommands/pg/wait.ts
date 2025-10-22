@@ -3,10 +3,10 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
-import {all, getAddon} from '../../lib/pg/fetcher'
-import pgHost from '../../lib/pg/host'
+import {ExtendedAddonAttachment, utils} from '@heroku/heroku-cli-util'
+import {all} from '../../lib/pg/fetcher'
 import notify from '../../lib/notify'
-import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgStatus} from '../../lib/pg/types'
+import {PgStatus} from '../../lib/pg/types'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../nls'
 
@@ -34,7 +34,7 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
-    const waitFor = async (db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData) => {
+    const waitFor = async (db: ExtendedAddonAttachment['addon']) => {
       let interval = waitInterval && Number.parseInt(waitInterval, 10)
       if (!interval || interval < 0) interval = 5
       let status
@@ -46,7 +46,7 @@ export default class Wait extends Command {
         try {
           ({body: status} = await this.heroku.get<PgStatus>(
             `/client/v11/databases/${db.id}/wait_status`,
-            {hostname: pgHost()},
+            {hostname: utils.pg.host()},
           ))
         } catch (error) {
           const httpError = error as HTTPError
@@ -80,9 +80,11 @@ export default class Wait extends Command {
       }
     }
 
-    let dbs: AddOnAttachmentWithConfigVarsAndPlan[] | AddOnWithRelatedData[] | [] = []
+    let dbs: ExtendedAddonAttachment['addon'][]
     if (dbName) {
-      dbs = [await getAddon(this.heroku, app, dbName)]
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon} = await dbResolver.getAttachment(app, dbName)
+      dbs = [addon]
     } else {
       dbs = await all(this.heroku, app)
     }

@@ -3,7 +3,7 @@ import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import host from './host'
+import {utils} from '@heroku/heroku-cli-util'
 import type {BackupTransfer} from './types'
 import bytes = require('bytes')
 
@@ -69,7 +69,7 @@ class Backups {
     if (m) return Number.parseInt(m[1], 10)
     m = name.match(/^o[ab]\d+$/)
     if (m) {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: utils.pg.host()})
       const transfer = transfers.find(t => this.name(t) === name)
       if (transfer) return transfer.num
     }
@@ -123,7 +123,7 @@ class Backups {
 
     while (failures < 21) {
       try {
-        ({body: backup} = await this.heroku.get<BackupTransfer>(url, {hostname: host()}))
+        ({body: backup} = await this.heroku.get<BackupTransfer>(url, {hostname: utils.pg.host()}))
       } catch (error) {
         if (failures++ > 20) {
           throw error
@@ -149,7 +149,7 @@ class Backups {
         }
 
         // logs is undefined unless verbose=true is passed
-        ({body: backup} = await this.heroku.get<BackupTransfer>(verboseUrl, {hostname: host()}))
+        ({body: backup} = await this.heroku.get<BackupTransfer>(verboseUrl, {hostname: utils.pg.host()}))
 
         throw new Error(heredoc(`
           An error occurred and the backup did not finish.

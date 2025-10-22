@@ -3,7 +3,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import confirmCommand from '../../../lib/confirmCommand'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import backupsFactory from '../../../lib/pg/backups'
 
 export default class Delete extends Command {
@@ -37,7 +37,7 @@ export default class Delete extends Command {
       throw new Error(`Invalid Backup: ${backup_id}`)
     }
 
-    await this.heroku.delete(`/client/v11/apps/${app}/transfers/${num}`, {hostname: host()})
+    await this.heroku.delete(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()})
     ux.action.stop()
   }
 }

@@ -1,8 +1,7 @@
 /*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {database} from '../../lib/pg/fetcher'
-import {exec} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import heredoc from 'tsheredoc'
 import {nls} from '../../nls'
 
@@ -23,13 +22,15 @@ export default class Kill extends Command {
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Kill)
     const {app, force} = flags
-    const {pid} = args
+    const {pid, database} = args
 
-    const db = await database(this.heroku, app, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(app, database)
+    const psqlService = new utils.pg.PsqlService(db)
     const query = heredoc`
       SELECT ${force ? 'pg_terminate_backend' : 'pg_cancel_backend'}(${Number.parseInt(pid, 10)});
     `
-    const output = await exec(db, query)
+    const output = await psqlService.execQuery(query)
     ux.log(output)
   }
 }

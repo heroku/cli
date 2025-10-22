@@ -2,9 +2,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import pgHost from '../../../lib/pg/host'
 import {essentialPlan} from '../../../lib/pg/util'
-import {getAddon} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {MaintenanceApiResponse} from '../../../lib/pg/types'
 import heredoc from 'tsheredoc'
 import {nls} from '../../../nls'
@@ -32,7 +31,8 @@ export default class Window extends Command {
     const {args, flags} = await this.parse(Window)
     const {database, window} = args
     const {app} = flags
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       ux.error("pg:maintenance isn't available for Essential-tier databases.")
     if (!window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/))
@@ -42,7 +42,7 @@ export default class Window extends Command {
     const {body: response} = await this.heroku.put<MaintenanceApiResponse>(
       `/client/v11/databases/${db.id}/maintenance_window`,
       {
-        body: {description: window}, hostname: pgHost(),
+        body: {description: window}, hostname: utils.pg.host(),
       },
     )
     ux.action.stop(response.message || 'done')

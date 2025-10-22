@@ -57,8 +57,8 @@ jobs:
     secrets: inherit
 
   create-fig-autocomplete-pr:
-    needs: [promote]
-    if: fromJSON(inputs.isStableRelease)
+    needs: [get-version-channel, promote]
+    if: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
     ## Calls publish-to-fig-autocomplete workflow during post release jobs
     uses: ./.github/workflows/publish-to-fig-autocomplete.yml
 

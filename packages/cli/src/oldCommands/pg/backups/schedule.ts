@@ -2,8 +2,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import pgHost from '../../../lib/pg/host'
-import {getAttachment} from '../../../lib/pg/fetcher'
+import {utils} from '@heroku/heroku-cli-util'
 import {PgDatabase} from '../../../lib/pg/types'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls'
@@ -76,11 +75,12 @@ export default class Schedule extends Command {
     const {database} = args
 
     const schedule = this.parseDate(flags.at)
-    const attachment = await getAttachment(this.heroku, app, database)
-    const db = attachment.addon
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const attachment = await dbResolver.getAttachment(app, database)
+    const {addon: db, name} = attachment
     const at = color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
 
-    const pgResponse = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgHost()})
+    const pgResponse = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
       .catch((error: HTTPError) => {
         if (error.statusCode !== 404)
           throw error
@@ -96,9 +96,9 @@ export default class Schedule extends Command {
     }
 
     ux.action.start(`Scheduling automatic daily backups of ${color.yellow(db.name)} at ${at}`)
-    schedule.schedule_name = attachment.name + '_URL'
+    schedule.schedule_name = name + '_URL'
     await this.heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
-      body: schedule, hostname: pgHost(),
+      body: schedule, hostname: utils.pg.host(),
     })
     ux.action.stop()
   }

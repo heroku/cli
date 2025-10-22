@@ -1,8 +1,7 @@
 /*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {database} from '../../lib/pg/fetcher'
-import {exec} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import heredoc from 'tsheredoc'
 import {nls} from '../../nls'
 
@@ -20,7 +19,9 @@ export default class VacuumStats extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(VacuumStats)
-    const db = await database(this.heroku, flags.app, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(flags.app, args.database)
+    const psqlService = new utils.pg.PsqlService(db)
     const query = heredoc(`
       WITH table_opts AS (
         SELECT
@@ -61,7 +62,7 @@ export default class VacuumStats extends Command {
           INNER JOIN vacuum_settings ON pg_class.oid = vacuum_settings.oid
       ORDER BY 1
     `)
-    const output = await exec(db, query)
+    const output = await psqlService.execQuery(query)
     ux.log(output)
   }
 }

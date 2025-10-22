@@ -1,9 +1,8 @@
 /*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {database} from '../../lib/pg/fetcher'
-import {exec, fetchVersion} from '../../lib/pg/psql'
-import {getConnectionDetails} from '../../lib/pg/util'
+import {utils} from '@heroku/heroku-cli-util'
+import {fetchVersion} from '../../lib/pg/psql'
 import heredoc from 'tsheredoc'
 import {nls} from '../../nls'
 
@@ -22,16 +21,20 @@ export default class Outliers extends Command {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  private psqlService: InstanceType<typeof utils.pg.PsqlService> | undefined
+
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Outliers)
     const {app, reset, truncate, num} = flags
 
-    const db = await database(this.heroku, app, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(app, args.database)
+    this.psqlService = new utils.pg.PsqlService(db)
     const version = await fetchVersion(db)
-    await this.ensurePGStatStatement(db)
+    await this.ensurePGStatStatement()
 
     if (reset) {
-      await exec(db, 'SELECT pg_stat_statements_reset();')
+      await this.psqlService.execQuery('SELECT pg_stat_statements_reset();')
       return
     }
 
@@ -45,11 +48,11 @@ export default class Outliers extends Command {
     }
 
     const query = this.outliersQuery(version, limit, truncate)
-    const output = await exec(db, query)
+    const output = await this.psqlService.execQuery(query)
     ux.log(output)
   }
 
-  protected async ensurePGStatStatement(db: ReturnType<typeof getConnectionDetails>) {
+  protected async ensurePGStatStatement() {
     const query = heredoc`
       SELECT exists(
         SELECT 1
@@ -58,7 +61,7 @@ export default class Outliers extends Command {
         WHERE e.extname = 'pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
       ) AS available;
     `
-    const output = await exec(db, query)
+    const output = await this.psqlService!.execQuery(query)
 
     if (!output.includes('t')) {
       ux.error(heredoc`

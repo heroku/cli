@@ -1,19 +1,20 @@
+/*
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import type {AddOnAttachmentWithConfigVarsAndPlan} from '../../../../src/lib/pg/types.js'
-// import Cmd from '../../../../src/commands/pg/diagnose'
+import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
+import Cmd  from '../../../../src/commands/pg/diagnose'
 import runCommand from '../../../helpers/runCommand.js'
 
-/*
+
 describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let diagnose: nock.Scope
-  let db: Pick<AddOnAttachmentWithConfigVarsAndPlan, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
+  let db: Pick<ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
   let dbName: string | undefined
   let app: { name: string; id?: string; }
   let addon: AddOn
@@ -33,7 +34,7 @@ describe('pg:diagnose', function () {
         return plan
       },
       config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
-      app: {name: 'myapp'},
+      app: {name: 'myapp', id: randomUUID()},
     }
     attachment = {
       id: '1', get name() {

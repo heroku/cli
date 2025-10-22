@@ -3,8 +3,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {database} from '../../lib/pg/fetcher'
-import {ConnectionDetails, parsePostgresConnectionString} from '../../lib/pg/util'
+import {utils, ConnectionDetails} from '@heroku/heroku-cli-util'
 import {
   connArgs,
   maybeTunnel,
@@ -53,8 +52,9 @@ export default class Push extends Command {
     const {app, 'exclude-table-data': excludeTableData} = flags
 
     const exclusions = parseExclusions(excludeTableData)
-    const source = parsePostgresConnectionString(args.source)
-    const target = await database(this.heroku, app, args.target)
+    const source = utils.pg.DatabaseResolver.parsePostgresConnectionString(args.source)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const target = await dbResolver.getDatabase(app, args.target)
 
     ux.log(`Pushing ${color.cyan(args.source)} to ${color.addon(target.attachment.addon.name)}`)
     await this.push(source, target, exclusions)
