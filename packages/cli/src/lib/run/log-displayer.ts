@@ -30,10 +30,17 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
     es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
       if (err && (err.status || err.message)) {
         let msg: string
-        if (err.status === 401) {
-          msg = 'You can\'t access this app from your IP address'
-        } else if (isTail && (err.status === 404 || err.status === 403)) {
-          msg = 'Log stream timed out. Please try again.'
+        if (err.status === 404) {
+          msg = 'Log stream access expired. Please try again.'
+        } else if (err.status === 403) {
+          // For 403 errors, distinguish between stream expiration and IP restrictions
+          if (isTail) {
+            // When tailing, 403 typically means stream access expired
+            msg = 'Log stream access expired. Please try again.'
+          } else {
+            // When not tailing, 403 means IP access restriction
+            msg = 'You can\'t access this app from your IP address'
+          }
         } else {
           msg = `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
         }
