@@ -36,7 +36,7 @@ USAGE
   $ heroku spaces [--json] [-t <value>]
 
 FLAGS
-  -t, --team=<value>  [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  team to use
       --json          output in json format
 
 DESCRIPTION
@@ -56,7 +56,7 @@ USAGE
 
 FLAGS
   -s, --space=<value>        name of space to create
-  -t, --team=<value>         (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>         (required) team to use
       --cidr=<value>         RFC-1918 CIDR the space will use
       --data-cidr=<value>    RFC-1918 CIDR used by Heroku Data resources for the space
       --generation=<option>  [default: cedar] generation for space
