@@ -1,9 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering'
-import heredoc from 'tsheredoc'
+import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Index extends Command {
     static topic = 'spaces';
@@ -35,4 +36,3 @@ export default class Index extends Command {
         displayPeerings(spaceName as string, peerings)
     }
 }
-*/

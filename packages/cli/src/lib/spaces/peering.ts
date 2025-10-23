@@ -1,7 +1,6 @@
-/*
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {displayCIDR, peeringStatus} from './format'
+import {displayCIDR, peeringStatus} from './format.js'
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
 
 export function displayPeeringInfo(space: string, info: PeeringInfo) {
@@ -17,7 +16,7 @@ export function displayPeeringInfo(space: string, info: PeeringInfo) {
 }
 
 export function displayPeeringsAsJSON(peerings: Peering[]) {
-  ux.log(JSON.stringify(peerings, null, 2))
+  ux.stdout(JSON.stringify(peerings, null, 2))
 }
 
 export function displayPeerings(space: string, peerings: Peering[]) {
@@ -51,4 +50,3 @@ export function displayPeerings(space: string, peerings: Peering[]) {
     },
   })
 }
-*/
