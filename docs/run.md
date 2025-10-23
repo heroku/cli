@@ -14,7 +14,7 @@ run a one-off process inside a heroku dyno
 ```
 USAGE
   $ heroku run -a <value> [-r <value>] [-s <value>] [--type <value>] [-x] [-e <value>] [--no-tty]
-    [--no-notify]
+    [--no-notify] [--no-launcher]
 
 FLAGS
   -a, --app=<value>     (required) parent app used by review apps
@@ -22,6 +22,7 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
   -x, --exit-code       passthrough the exit code of the remote command
+      --no-launcher     don’t prepend ‘launcher’ before a command
       --no-notify       disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
       --no-tty          force the command to not run in a tty
       --type=<value>    process type
@@ -29,6 +30,7 @@ FLAGS
 DESCRIPTION
   run a one-off process inside a heroku dyno
   Shows a notification if the dyno takes more than 20 seconds to start.
+  Heroku automatically prepends ‘launcher’ to the command on CNB apps (use --no-launcher to disable).
 
 EXAMPLES
   $ heroku run bash
@@ -36,7 +38,7 @@ EXAMPLES
   $ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v10.14.0/packages/cli/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -44,7 +46,7 @@ run a detached dyno, where output is sent to your logs
 
 ```
 USAGE
-  $ heroku run:detached -a <value> [-r <value>] [-e <value>] [-s <value>] [-t] [--type <value>]
+  $ heroku run:detached -a <value> [-r <value>] [-e <value>] [-s <value>] [-t] [--type <value>] [--no-launcher]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -52,6 +54,7 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
   -t, --tail            continually stream logs
+      --no-launcher     don’t prepend ‘launcher’ before a command
       --type=<value>    process type
 
 DESCRIPTION
@@ -61,7 +64,7 @@ EXAMPLES
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v10.14.0/packages/cli/src/commands/run/detached.ts)_
 
 ## `heroku run:inside DYNO_NAME COMMAND`
 
@@ -98,4 +101,4 @@ EXAMPLES
     $ heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app
 ```
 
-_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/run/inside.ts)_
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v10.14.0/packages/cli/src/commands/run/inside.ts)_

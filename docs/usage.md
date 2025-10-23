@@ -15,10 +15,10 @@ USAGE
 
 FLAGS
   -a, --app=<value>   app to list metered add-ons usage for
-  -t, --team=<value>  team to list metered add-ons usage for
+  -t, --team=<value>  [default: terraform-ci-test-team] team to list metered add-ons usage for
 
 DESCRIPTION
   list usage for metered add-ons attached to an app or apps within a team
 ```
 
-_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/usage/addons.ts)_
+_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v10.14.0/packages/cli/src/commands/usage/addons.ts)_
