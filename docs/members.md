@@ -18,7 +18,7 @@ USAGE
 
 FLAGS
   -r, --role=<value>  filter by role
-  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  (required) team to use
       --json          output in json format
       --pending       filter by pending team invitations
 
@@ -41,7 +41,7 @@ ARGUMENTS
 
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  (required) team to use
 
 DESCRIPTION
   adds a user to a team
@@ -58,7 +58,7 @@ USAGE
   $ heroku members:remove -t <value>
 
 FLAGS
-  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  (required) team to use
 
 DESCRIPTION
   removes a user from a team
@@ -76,7 +76,7 @@ USAGE
 
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
+  -t, --team=<value>  (required) team to use
 
 DESCRIPTION
   sets a members role in a team
