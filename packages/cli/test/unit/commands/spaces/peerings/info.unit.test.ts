@@ -1,13 +1,14 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/spaces/peerings/info'
+import Cmd from '../../../../../src/commands/spaces/peerings/info.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('spaces:peering:info', function () {
   let peeringInfo: Heroku.PeeringInfo
 
@@ -54,5 +55,3 @@ describe('spaces:peering:info', function () {
     expect(JSON.parse(stdout.output)).to.eql(peeringInfo)
   })
 })
-
-*/

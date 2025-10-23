@@ -2,9 +2,8 @@ import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../src/commands/spaces/peerings/accept'
+import Cmd from '../../../../../src/commands/spaces/peerings/accept.js'
 
-/*
 describe('spaces:peerings:accept', function () {
   it('accepts a pending peering connection', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -17,5 +16,3 @@ describe('spaces:peerings:accept', function () {
     api.done()
   })
 })
-
-*/
