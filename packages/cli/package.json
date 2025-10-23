@@ -26,7 +26,7 @@
     "@oclif/plugin-plugins": "2.4.3",
     "@oclif/plugin-update": "3.2.4",
     "@oclif/plugin-version": "^1.2.1",
-    "@oclif/plugin-warn-if-update-available": "2.0.29",
+    "@oclif/plugin-warn-if-update-available": "3.1.50",
     "@oclif/plugin-which": "2.2.8",
     "@opentelemetry/api": "^1.4.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.41.1",
