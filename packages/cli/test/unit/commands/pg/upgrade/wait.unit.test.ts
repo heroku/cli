@@ -1,7 +1,7 @@
 /*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import Cmd from '../../../../../src/commands/pg/upgrade/wait'
 import heredoc from 'tsheredoc'
 // import {CLIError} from '@oclif/core/lib/errors'

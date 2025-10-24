@@ -1,6 +1,6 @@
 import {createTestRun, getTestNodes, updateTestRun} from '../../../src/lib/api.js'
 import {getHerokuAPI} from '../../helpers/testInstances.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 import {APIClient} from '@heroku-cli/command'
 

@@ -1,7 +1,7 @@
 /*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 import runCommand from '../../../helpers/runCommand.js'
 import Cmd from '../../../../src/commands/pg/info'
 
