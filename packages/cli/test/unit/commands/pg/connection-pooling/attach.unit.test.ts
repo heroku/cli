@@ -1,3 +1,4 @@
+/*
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
@@ -5,7 +6,7 @@ import * as nock from 'nock'
 import Cmd from '../../../../../src/commands/pg/connection-pooling/attach'
 import {resolvedAttachments} from '../../../../fixtures/addons/fixtures'
 
-/*
+
 describe('pg:connection-pooling:attach', function () {
   const addon = {
     name: 'postgres-1',
