@@ -1,6 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {FlagInvalidOptionError} from '@oclif/core/lib/parser/errors'
 import {TelemetryDrain} from '../../lib/types/telemetry'
 import heredoc from 'tsheredoc'
 import {validateAndFormatSignals} from '../../lib/telemetry/util'
@@ -14,7 +13,7 @@ export default class Add extends Command {
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    // If splunkhec transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk_hec']
+    // If splunk transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk']
     transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
 
@@ -32,13 +31,12 @@ export default class Add extends Command {
     const {app, headers, space, signals, transport} = flags
     const {endpoint} = args
 
-    // Allow splunkhec, but do not show splunkhec in error message until splunkhec transport is accepted as a feature
-    // When splunkhec transport is accepted as a feature, and options are added for the transport flag, this section should be removed
+    // Allow splunk, but do not show splunk in error message until splunk transport is accepted as a feature
+    // When splunk transport is accepted as a feature, and options are added for the transport flag, this section should be removed
     const publicTransports = ['http', 'grpc']
-    const validTransports = [...publicTransports, 'splunk_hec']
+    const validTransports = [...publicTransports, 'splunk']
     if (!validTransports.includes(transport)) {
-      const reconstructedFlag = Flags.string({options: publicTransports, name: Add.flags.transport.name})
-      throw new FlagInvalidOptionError(reconstructedFlag, transport)
+      throw new Error(`Expected --transport=${transport} to be one of: ${publicTransports.join(', ')}`)
     }
 
     let id
@@ -74,14 +72,14 @@ export default class Add extends Command {
       },
     })
 
-    ux.log(`successfully added drain ${drain.exporter.endpoint}`)
+    ux.stdout(`successfully added drain ${drain.exporter.endpoint}`)
   }
 
   private getExporterType(transport: string): string {
     switch (transport) {
     case 'grpc':
       return 'otlp'
-    case 'splunk_hec':
+    case 'splunk':
       return 'splunk_hec'
     default:
       return 'otlphttp'
