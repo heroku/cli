@@ -5,7 +5,7 @@ import runCommand from '../../../../helpers/runCommand.js'
 import Cmd from '../../../../../src/commands/spaces/drains/set.js'
 
 describe('spaces:drains:set', function () {
-  it('shows the log drain', async function () {
+  it('sets the log drain', async function () {
     const api = nock('https://api.heroku.com:443')
       .put('/spaces/my-space/log-drain', {
         url: 'https://example.com',
