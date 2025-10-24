@@ -1,17 +1,17 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/telemetry/add'
+import Cmd from '../../../../src/commands/telemetry/add'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
-import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkhecAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures'
+import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures'
 import {firApp} from '../../../fixtures/apps/fixtures'
 import * as spaceFixtures from '../../../fixtures/spaces/fixtures'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
-const splunkhecDrainAppId = splunkhecAppTelemetryDrain.owner.id
+const splunkDrainAppId = splunkAppTelemetryDrain.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
@@ -242,34 +242,34 @@ describe('telemetry:add', function () {
   })
 
   it('successfully creates a telemetry drain splunk transport', async function () {
-    const splunkhecEndpoint = splunkhecAppTelemetryDrain.exporter.endpoint
-    const splunkhecApp = {...firApp, id: splunkhecDrainAppId}
+    const splunkEndpoint = splunkAppTelemetryDrain.exporter.endpoint
+    const splunkApp = {...firApp, id: splunkDrainAppId}
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${splunkhecDrainAppId}`)
-      .reply(200, splunkhecApp)
+      .get(`/apps/${splunkDrainAppId}`)
+      .reply(200, splunkApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
         owner: {
           type: 'app',
-          id: splunkhecDrainAppId,
+          id: splunkDrainAppId,
         },
         signals: ['traces', 'metrics', 'logs'],
         exporter: {
-          endpoint: splunkhecEndpoint,
+          endpoint: splunkEndpoint,
           type: 'splunk_hec',
           headers: {},
         },
       })
-      .reply(200, splunkhecAppTelemetryDrain)
+      .reply(200, splunkAppTelemetryDrain)
 
     await runCommand(Cmd, [
-      splunkhecEndpoint,
+      splunkEndpoint,
       '--app',
-      splunkhecDrainAppId,
+      splunkDrainAppId,
       '--transport',
       'splunk',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${splunkhecEndpoint}`)
+    expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
   })
 })
