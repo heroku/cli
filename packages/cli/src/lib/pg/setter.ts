@@ -2,7 +2,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {addonResolver} from '../addons/resolve'
-import host from './host'
+import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from './util'
 import {SettingKey, Setting, SettingsResponse} from './types'
 
@@ -29,14 +29,14 @@ export abstract class PGSettingsCommand extends Command {
 
     if (value) {
       const {body: settings} = await this.heroku.patch<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {
-        hostname: host(),
+        hostname: utils.pg.host(),
         body: {[this.settingKey]: this.convertValue(value)},
       })
       const setting = settings[this.settingKey]
       ux.log(`${this.settingKey.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
       ux.log(this.explain(setting))
     } else {
-      const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: host()})
+      const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
       const setting = settings[this.settingKey]
       ux.log(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       ux.log(this.explain(setting))

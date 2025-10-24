@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-import {buildCommand, buildEnvFromFlag} from '../../../../src/lib/run/helpers.js'
+import {buildCommand, buildEnvFromFlag, buildCommandWithLauncher} from '../../../../src/lib/run/helpers.js'
 
 /*
 describe('helpers.buildCommand()', function () {
@@ -51,6 +51,34 @@ describe('helpers.buildEnvFromFlag()', function () {
     .it('returns a warning when a semicolon is used as part of the value', context => {
       expect(context.stderr).to.contain("Warning: env flag ue appears invalid. Avoid using ';' in values.")
     })
+})
+
+// New tests for buildCommandWithLauncher
+
+describe('helpers.buildCommandWithLauncher()', function () {
+  it('prepends launcher on CNB apps when not disabled', async function () {
+    const heroku: any = {
+      get: async () => ({body: {stack: {name: 'cnb'}}}),
+    }
+    const cmd = await buildCommandWithLauncher(heroku, 'my-app', ['echo', 'foo bar'], false)
+    expect(cmd).to.equal('launcher echo "foo bar"')
+  })
+
+  it('does not prepend launcher on non-CNB apps', async function () {
+    const heroku: any = {
+      get: async () => ({body: {stack: {name: 'heroku-22'}}}),
+    }
+    const cmd = await buildCommandWithLauncher(heroku, 'my-app', ['echo', 'foo'], false)
+    expect(cmd).to.equal('echo foo')
+  })
+
+  it('does not prepend launcher when disabled even on CNB', async function () {
+    const heroku: any = {
+      get: async () => ({body: {stack: {name: 'cnb'}}}),
+    }
+    const cmd = await buildCommandWithLauncher(heroku, 'my-app', ['echo', 'foo'], true)
+    expect(cmd).to.equal('echo foo')
+  })
 })
 
 */

@@ -1,7 +1,7 @@
 import {stderr} from 'stdout-stderr'
 // import Cmd from '../../../../../src/commands/spaces/peerings/destroy'
 import runCommand from '../../../../helpers/runCommand.js'
-import * as nock from 'nock'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 

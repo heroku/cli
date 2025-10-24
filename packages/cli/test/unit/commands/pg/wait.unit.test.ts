@@ -13,7 +13,6 @@ const all = [
 ]
 const fetcher =  {
   all: () => Promise.resolve(all),
-  getAddon: () => Promise.resolve(all[0]),
 }
 
 // const {default: Cmd} = proxyquire('../../../../src/commands/pg/wait', {
@@ -23,8 +22,10 @@ const fetcher =  {
 /*
 describe('pg:wait', function () {
   let pg: nock.Scope
+  let api: nock.Scope
 
   beforeEach(function () {
+    api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
@@ -34,6 +35,9 @@ describe('pg:wait', function () {
   })
 
   it('waits for a database to be available', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'pending'})
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
@@ -80,6 +84,9 @@ describe('pg:wait', function () {
   })
 
   it('receives steps but does not display them', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'upgrading', step: '1/3'})
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})

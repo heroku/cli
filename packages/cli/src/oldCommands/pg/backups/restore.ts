@@ -5,8 +5,7 @@ import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import confirmCommand from '../../../lib/confirmCommand'
 import backupsFactory from '../../../lib/pg/backups'
-import {getAttachment} from '../../../lib/pg/fetcher'
-import host from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import type {BackupTransfer} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
@@ -78,7 +77,8 @@ export default class Restore extends Command {
     const {flags, args} = await this.parse(Restore)
     const {app, 'wait-interval': waitInterval, extensions, confirm, verbose} = flags
     const interval = Math.max(3, waitInterval)
-    const {addon: db} = await getAttachment(this.heroku, app as string, args.database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app as string, args.database)
     const {name, wait} = backupsFactory(app, this.heroku)
     let backupURL
     let backupName = args.backup
@@ -93,7 +93,7 @@ export default class Restore extends Command {
         backupApp = app
       }
 
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${backupApp}/transfers`, {hostname: host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${backupApp}/transfers`, {hostname: utils.pg.host()})
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
 
       let backup
@@ -135,7 +135,7 @@ export default class Restore extends Command {
     `))
 
     const {body: restore} = await this.heroku.post<{uuid: string}>(`/client/v11/databases/${db.id}/restores`, {
-      body: {backup_url: backupURL, extensions: this.getSortedExtensions(extensions as string)}, hostname: host(),
+      body: {backup_url: backupURL, extensions: this.getSortedExtensions(extensions as string)}, hostname: utils.pg.host(),
     })
 
     ux.action.stop()

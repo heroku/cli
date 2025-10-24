@@ -5,8 +5,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import heredoc from 'tsheredoc'
-import {getAttachment, getRelease} from '../../lib/pg/fetcher'
-import pgHost from '../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
+import {getRelease} from '../../lib/pg/fetcher'
 import {PgStatus, PgDatabase} from '../../lib/pg/types'
 import {nls} from '../../nls'
 
@@ -27,7 +27,8 @@ export default class Promote extends Command {
     const {flags, args} = await this.parse(Promote)
     const {force, app} = flags
     const {database} = args
-    const attachment = await getAttachment(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const attachment = await dbResolver.getAttachment(app, database)
     ux.action.start(`Ensuring an alternate alias for existing ${color.green('DATABASE_URL')}`)
     const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/apps/${app}/addon-attachments`)
     const current = attachments.find(a => a.name === 'DATABASE')
@@ -63,7 +64,7 @@ export default class Promote extends Command {
 
     if (!force) {
       const {body: status} = await this.heroku.get<PgStatus>(`/client/v11/databases/${attachment.addon.id}/wait_status`, {
-        hostname: pgHost(),
+        hostname: utils.pg.host(),
       })
       if (status['waiting?']) {
         ux.error(heredoc(`
@@ -110,7 +111,7 @@ export default class Promote extends Command {
     }
 
     const {body: promotedDatabaseDetails} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${attachment.addon.id}`, {
-      hostname: pgHost(),
+      hostname: utils.pg.host(),
     })
     if (promotedDatabaseDetails.following) {
       const unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`

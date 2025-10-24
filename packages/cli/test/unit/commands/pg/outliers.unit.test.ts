@@ -1,39 +1,54 @@
+/*
 import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import nock from 'nock'
 import heredoc from 'tsheredoc'
+import * as sinon from 'sinon'
 
-/*
 describe('pg:outliers', function () {
+  let databaseResolverStub: sinon.SinonStub
+  let psqlServiceExecQuerySpy: sinon.SinonSpy
+  let Cmd: GenericCmd
   let api: nock.Scope
   let fetchVersionCalled = false
   let queryString = ''
   let serverVersion = ''
-
   const expected_output_text = 'slow things'
-  const db = {}
-  const fetcher = {
-    database: () => db,
-  }
   const psql = {
     fetchVersion: () => {
       fetchVersionCalled = true
       return Promise.resolve(serverVersion)
     },
-    exec: (_db: unknown, query: string) => {
-      queryString = heredoc(query).trim()
-      return Promise.resolve(expected_output_text)
-    },
   }
-  const {default: Cmd} = proxyquire('../../../../src/commands/pg/outliers', {
-    '../../lib/pg/fetcher': fetcher,
-    '../../lib/pg/psql': psql,
-  })
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
+    databaseResolverStub = sinon.stub().resolves({})
+    psqlServiceExecQuerySpy = sinon.spy((query: string) => {
+      queryString = heredoc(query).trim()
+      return Promise.resolve(expected_output_text)
+    })
+
+    // Mock the utils.pg classes
+    const mockUtils = {
+      pg: {
+        DatabaseResolver: class {
+          getDatabase = databaseResolverStub
+        },
+        PsqlService: class {
+          execQuery = psqlServiceExecQuerySpy
+        },
+      },
+    }
+
+    Cmd = proxyquire('../../../../src/commands/pg/outliers', {
+      '../../lib/pg/psql': psql,
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
+    }).default
   })
 
   afterEach(function () {
@@ -42,6 +57,7 @@ describe('pg:outliers', function () {
     queryString = ''
     serverVersion = ''
     nock.cleanAll()
+    sinon.restore()
   })
 
   it('resets query stats', async function () {

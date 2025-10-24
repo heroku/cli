@@ -46,11 +46,10 @@ export type BackupTransfer = {
   }>
 }
 
-export type AddOnWithRelatedData = Required<Heroku.AddOnAttachment['addon']> & {
-  attachment_names?: string[],
-  links?: Link[],
-  plan: Required<Heroku.AddOn['plan']>
-}
+export type ExtendedAddon = {
+  addon_service: Required<Heroku.AddOnService>,
+  plan: Required<Heroku.Plan>,
+} & Required<Heroku.AddOn>
 
 type ServiceInfo =
   'Status'
@@ -185,17 +184,16 @@ export type PgUpgradeError = {
   }
 }
 
-export type AddOnWithPlan = Required<Heroku.AddOnAttachment['addon']> & {plan: Required<Heroku.AddOn['plan']>}
-export type AddOnAttachmentWithConfigVarsAndPlan = Required<Heroku.AddOnAttachment> & {
-  config_vars: Heroku.AddOn['config_vars']
-  addon: AddOnWithRelatedData
-}
+// Updated according to https://github.com/heroku/shogun/blob/main/lib/shogun/serializers/link_serializer.rb
 export type Link = {
-  attachment_name?: string,
+  id: string,
   created_at: string,
-  message: string,
   name: string,
-  remote?: Link,
+  remote_name: string,
+  remote: {
+    name: string,
+    attachment_name: string,
+  },
 }
 type CredentialState = 'enabling' | 'active' | 'revoking' | 'revoked' | 'archived'
 export type Credential = {

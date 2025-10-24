@@ -4,8 +4,7 @@ import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import heredoc from 'tsheredoc'
 import Dyno from '../../lib/run/dyno'
-import {buildCommand} from '../../lib/run/helpers'
-import {App} from '../../lib/types/fir'
+import {buildCommandWithLauncher} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run:inside')
 
@@ -58,17 +57,10 @@ export default class RunInside extends Command {
 
     const {dyno_name: dynoName} = args
     const {app: appName, 'exit-code': exitCode, listen, 'no-launcher': noLauncher} = flags
-    const prependLauncher = !noLauncher
-
-    const {body: app} = await this.heroku.get<App>(
-      `/apps/${appName}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      })
-    const appStackIsCnb = app.stack.name === 'cnb'
 
     const opts = {
       app: appName,
-      command: buildCommand(argv.slice(1) as string[], appStackIsCnb && prependLauncher),
+      command: await buildCommandWithLauncher(this.heroku, appName, argv.slice(1) as string[], noLauncher),
       dyno: dynoName,
       'exit-code': exitCode,
       heroku: this.heroku,

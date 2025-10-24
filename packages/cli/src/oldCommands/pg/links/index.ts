@@ -2,9 +2,8 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {getAddon, all} from '../../../lib/pg/fetcher'
-import pgHost from '../../../lib/pg/host'
+import {hux, utils} from '@heroku/heroku-cli-util'
+import {all} from '../../../lib/pg/fetcher'
 import type {Link} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
@@ -24,15 +23,17 @@ export default class Index extends Command {
     const {flags, args} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    let dbs
-    if (database)
-      dbs = await Promise.all([getAddon(this.heroku, app, database)])
-    else
+    let dbs: Array<(Awaited<ReturnType<typeof all>>)[number] & {links?: Link[]}>
+    if (database) {
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon} = await dbResolver.getAttachment(app, database)
+      dbs = [addon]
+    } else
       dbs = await all(this.heroku, app)
     if (dbs.length === 0)
       throw new Error(`No databases on ${color.app(app)}`)
     dbs = await Promise.all(dbs.map(async db => {
-      const {body: links} = await this.heroku.get<Link[]>(`/client/v11/databases/${db.id}/links`, {hostname: pgHost()})
+      const {body: links} = await this.heroku.get<Link[]>(`/client/v11/databases/${db.id}/links`, {hostname: utils.pg.host()})
       db.links = links
       return db
     }))
@@ -43,11 +44,14 @@ export default class Index extends Command {
       else
         once = true
       hux.styledHeader(color.yellow(db.name))
-      if (db.links.message)
-        return ux.log(db.links.message)
-      if (db.links.length === 0)
+      // This doesn't exist according to Shogun's link serializer. May it be that the original idea was to use Promise.allSettled
+      // and capture here and show only the error message if an error was returned for some database? Currently a CLI error is
+      // thrown instead, because Promise.all will reject if any of the promises reject and there's no catch block for that.
+      // if (db.links?.message)
+      //   return ux.log(db.links.message)
+      if (db.links?.length === 0)
         return ux.log('No data sources are linked into this database')
-      db.links.forEach((link: Link) => {
+      db.links?.forEach((link: Link) => {
         ux.log(` * ${color.cyan(link.name)}`)
         const remoteAttachmentName = link.remote?.attachment_name || ''
         const remoteName = link.remote?.name || ''

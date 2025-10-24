@@ -2,16 +2,16 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {ExtendedAddonAttachment, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import pghost from '../../lib/pg/host'
-import {getAddon, all} from '../../lib/pg/fetcher'
+import {all} from '../../lib/pg/fetcher'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
-import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgDatabaseTenant} from '../../lib/pg/types'
+import {PgDatabaseTenant} from '../../lib/pg/types'
 import {nls} from '../../nls'
+import {utils} from '@heroku/heroku-cli-util'
 
 type DBObject = {
-  addon: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData,
+  addon: ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
   configVars?: string[],
   dbInfo: PgDatabaseTenant | null,
   config: Heroku.ConfigVars,
@@ -68,10 +68,12 @@ export default class Info extends Command {
       const {app} = flags
       const {sortBy} = require('lodash')
       const {database: db} = args
-      let addons: AddOnAttachmentWithConfigVarsAndPlan[] | AddOnWithRelatedData[]
+      let addons: Array<ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>
       const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       if (db) {
-        addons = await Promise.all([getAddon(this.heroku, app, db)])
+        const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+        const {addon} = await dbResolver.getAttachment(app, db)
+        addons = [addon]
       } else {
         addons = await all(this.heroku, app)
         if (addons.length === 0) {
@@ -84,7 +86,7 @@ export default class Info extends Command {
         const pgResponse = await this.heroku.get<PgDatabaseTenant>(
           `/client/v11/databases/${addon.id}`,
           {
-            hostname: pghost(),
+            hostname: utils.pg.host(),
           })
           .catch(error => {
             if (error.statusCode !== 404)

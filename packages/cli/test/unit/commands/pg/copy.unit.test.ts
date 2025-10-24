@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
 // import Cmd from '../../../../src/commands/pg/copy'
 import runCommand from '../../../helpers/runCommand.js'
@@ -110,7 +110,7 @@ describe('pg:copy', function () {
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'myotherapp::DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/myapp/config-vars')
@@ -193,7 +193,7 @@ describe('pg:copy', function () {
       })
         .reply(200, [lowercaseAttachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'mylowercaseapp', addon_attachment: 'myotherapp::DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/mylowercaseapp/config-vars')

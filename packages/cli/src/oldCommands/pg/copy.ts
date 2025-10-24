@@ -3,16 +3,16 @@ import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import pghost from '../../lib/pg/host'
 import backupsFactory from '../../lib/pg/backups'
-import {getAttachment} from '../../lib/pg/fetcher'
-import {parsePostgresConnectionString} from '../../lib/pg/util'
+import {utils} from '@heroku/heroku-cli-util'
 import confirmCommand from '../../lib/confirmCommand'
 import {BackupTransfer, CredentialsInfo} from '../../lib/pg/types'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
+  const dbResolver = new utils.pg.DatabaseResolver(heroku)
+
   if (db.match(/^postgres:\/\//)) {
-    const conn = parsePostgresConnectionString(db)
+    const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(db)
     const host = `${conn.host}:${conn.port}`
     return {
       name: conn.database ? `database ${conn.database} on ${host}` : `database on ${host}`,
@@ -21,7 +21,7 @@ const getAttachmentInfo = async function (heroku: APIClient, db: string, app: st
     }
   }
 
-  const attachment = await getAttachment(heroku, app, db)
+  const attachment = await dbResolver.getAttachment(app, db)
   if (!attachment)
     throw new Error(`${db} not found on ${color.magenta(app)}`)
 
@@ -79,7 +79,7 @@ export default class Copy extends Command {
         body: {
           from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
         },
-        hostname: pghost(),
+        hostname: utils.pg.host(),
       })
       ux.action.stop()
 
@@ -87,7 +87,7 @@ export default class Copy extends Command {
         const {body: credentials} = await this.heroku.get<CredentialsInfo>(
           `/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
           {
-            hostname: pghost(),
+            hostname: utils.pg.host(),
             headers: {
               Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
             },

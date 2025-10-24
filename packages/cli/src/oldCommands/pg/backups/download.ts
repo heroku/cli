@@ -2,7 +2,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import pgHost from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import pgBackupsApi from '../../../lib/pg/backups'
 import {sortBy} from 'lodash'
 import download from '../../../lib/pg/download'
@@ -45,7 +45,7 @@ export default class Download extends Command {
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pgHost()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
       const lastBackup = sortBy(transfers.filter(t => t.succeeded && t.to_type === 'gof3r'), 'created_at')
         .pop()
       if (!lastBackup)
@@ -54,7 +54,7 @@ export default class Download extends Command {
     }
 
     ux.action.status = `fetching url of #${num}`
-    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pgHost()})
+    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
 
     ux.action.stop(`done, #${num}`)
     await download(info.url, output, {progress: true})

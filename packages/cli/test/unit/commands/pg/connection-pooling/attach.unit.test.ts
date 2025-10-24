@@ -1,26 +1,17 @@
+/*
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import * as proxyquire from 'proxyquire'
+import nock from 'nock'
+import Cmd from '../../../../../src/commands/pg/connection-pooling/attach'
+import {resolvedAttachments} from '../../../../fixtures/addons/fixtures'
 
-/*
 describe('pg:connection-pooling:attach', function () {
   const addon = {
     name: 'postgres-1',
     id: '1234',
     plan: {name: 'heroku-postgresql:standard-0'},
   }
-  const fetcher = () => {
-    return {
-      getAddon: () => addon,
-    }
-  }
-
-  const {default: Cmd} = proxyquire('../../../../../src/commands/pg/connection-pooling/attach', {
-    '../../../lib/pg/fetcher': fetcher(),
-  })
-
   let api: nock.Scope
   let pg: nock.Scope
   const defaultCredential = 'default'
@@ -28,6 +19,8 @@ describe('pg:connection-pooling:attach', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-1', addon_service: 'heroku-postgresql', app: 'myapp'})
+      .reply(200, [resolvedAttachments['myapp::postgres-1']])
       .get('/addons/postgres-1')
       .reply(200, addon)
       .get('/apps/myapp/releases')

@@ -5,12 +5,12 @@ import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import * as Heroku from '@heroku-cli/schema'
 import Dyno from '../../lib/run/dyno'
-import {buildCommand, revertSortedArgs} from '../../lib/run/helpers'
+import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers'
 
 const debug = debugFactory('heroku:run')
 
 export default class Run extends Command {
-  static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.'
+  static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.\nHeroku automatically prepends ‘launcher’ to the command on CNB apps (use --no-launcher to disable).'
 
   static examples = [
     '$ heroku run bash',
@@ -30,17 +30,22 @@ export default class Run extends Command {
     'no-tty': flags.boolean({description: 'force the command to not run in a tty'}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
     'no-notify': flags.boolean({description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)'}),
+    'no-launcher': flags.boolean({
+      description: 'don’t prepend ‘launcher’ before a command',
+      default: false,
+    }),
   }
 
   async run() {
     const {argv, flags} = await this.parse(Run)
     const command = revertSortedArgs(process.argv, argv as string[])
+    const builtCommand = await buildCommandWithLauncher(this.heroku, flags.app, command, flags['no-launcher'])
     const opts = {
       'exit-code': flags['exit-code'],
       'no-tty': flags['no-tty'],
       app: flags.app,
       attach: true,
-      command: buildCommand(command),
+      command: builtCommand,
       env: flags.env,
       heroku: this.heroku,
       listen: flags.listen,

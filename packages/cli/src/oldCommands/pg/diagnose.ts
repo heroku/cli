@@ -1,23 +1,18 @@
 /*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {ExtendedAddonAttachment, hux} from '@heroku/heroku-cli-util'
 import {table} from '@oclif/core/lib/cli-ux/styled/table'
 import {capitalize} from '@oclif/core/lib/util'
 import heredoc from 'tsheredoc'
-import {getAttachment} from '../../lib/pg/fetcher'
-import host from '../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
+import host from '@heroku/heroku-cli-util/dist/utils/pg/host'
 import type {
-  AddOnAttachmentWithConfigVarsAndPlan,
   PGDiagnoseCheck, PGDiagnoseRequest,
   PGDiagnoseResponse,
   PGDiagnoseResult,
 } from '../../lib/pg/types'
-import {
-  essentialPlan,
-  getConfigVarNameFromAttachment,
-  getConnectionDetails,
-} from '../../lib/pg/util'
+import {essentialPlan} from '../../lib/pg/util'
 import color from '@heroku-cli/color'
 import {uuidValidate} from '../../lib/utils/uuid-validate'
 
@@ -98,7 +93,7 @@ export default class Diagnose extends Command {
     })
   }
 
-  private async generateParams(url: string, db: AddOnAttachmentWithConfigVarsAndPlan, dbName: string): Promise<PGDiagnoseRequest> {
+  private async generateParams(url: string, db: ExtendedAddonAttachment['addon'], dbName: string): Promise<PGDiagnoseRequest> {
     const base_params: PGDiagnoseRequest = {
       url,
       plan: db.plan.name.split(':')[1],
@@ -121,11 +116,12 @@ export default class Diagnose extends Command {
   }
 
   private async generateReport(database: string | undefined, app: string) {
-    const attachment = await getAttachment(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const attachment = await dbResolver.getAttachment(app, database)
     const {addon: db} = attachment
     const {body: config} = await this.heroku.get<Record<string, string>>(`/apps/${app}/config-vars`)
-    const {url} = getConnectionDetails(attachment, config)
-    const dbName = getConfigVarNameFromAttachment(attachment, config)
+    const {url} = dbResolver.getConnectionDetails(attachment, config)
+    const dbName = utils.pg.psql.getConfigVarNameFromAttachment(attachment, config)
     const body = await this.generateParams(url, db, dbName)
     const {body: report} = await this.heroku.post<PGDiagnoseResponse>('/reports', {hostname: PGDIAGNOSE_HOST, body})
 

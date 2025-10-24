@@ -2,8 +2,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import heredoc from 'tsheredoc'
-import {database} from '../../lib/pg/fetcher'
-import {exec} from '../../lib/pg/psql'
+import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../nls'
 
 export default class Blocking extends Command {
@@ -38,8 +37,10 @@ export default class Blocking extends Command {
         WHERE NOT bl.granted
       `
 
-      const db = await database(this.heroku, app, args.database)
-      const output = await exec(db, query)
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const db = await dbResolver.getDatabase(app, args.database)
+      const psqlService = new utils.pg.PsqlService(db)
+      const output = await psqlService.execQuery(query)
 
       ux.log(output)
     }

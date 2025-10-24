@@ -1,10 +1,7 @@
 /*
-import {ConnectionDetails} from './util'
-import {exec as psqlExec} from './psql'
+import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
-import {Server} from 'net'
-import {getConfigs, sshTunnel} from './bastion'
 import {ChildProcess, SpawnSyncReturns, execSync} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'
 import heredoc from 'tsheredoc'
@@ -18,6 +15,7 @@ export const parseExclusions = (rawExcludeList: string | undefined) => {
 }
 
 export const prepare = async (target: ConnectionDetails) => {
+  const psqlService = new utils.pg.PsqlService(target)
   if (target.host === 'localhost' || !target.host) {
     exec(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
@@ -27,21 +25,17 @@ export const prepare = async (target: ConnectionDetails) => {
     // of --echo-all is set.
     const num = Math.random()
     const emptyMarker = `${num}${num}`
-    const result = await psqlExec(target, `SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
+    const result = await psqlService.execQuery(`SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
     if (!result.includes(emptyMarker)) ux.error(`Remote database is not empty. Please create a new database or use ${color.cmd('heroku pg:reset')}`)
   }
 }
 
-export type ConnectionDetailsWithOptionalTunnel = ConnectionDetails & {
-  _tunnel?: Server
-}
-
 export const maybeTunnel = async (
   herokuDb: ConnectionDetails,
-): Promise<ConnectionDetailsWithOptionalTunnel> => {
-  let withTunnel: ConnectionDetailsWithOptionalTunnel = Object.assign({}, herokuDb)
-  const configs = getConfigs(herokuDb)
-  const tunnel = await sshTunnel(herokuDb, configs.dbTunnelConfig)
+): Promise<ConnectionDetails> => {
+  let withTunnel: ConnectionDetails = Object.assign({}, herokuDb)
+  const configs = utils.pg.psql.getPsqlConfigs(herokuDb)
+  const tunnel = await utils.pg.psql.sshTunnel(herokuDb, configs.dbTunnelConfig)
 
   if (tunnel) {
     const tunnelHost = {
@@ -94,6 +88,8 @@ export const spawnPipe = async (pgDump: ChildProcess, pgRestore: ChildProcess) =
 }
 
 export const verifyExtensionsMatch = async function (source: ConnectionDetails, target: ConnectionDetails) {
+  const psqlSource = new utils.pg.PsqlService(source)
+  const psqlTarget = new utils.pg.PsqlService(target)
   // It's pretty common for local DBs to not have extensions available that
   // are used by the remote app, so take the final precaution of warning if
   // the extensions available in the local database don't match. We don't
@@ -101,8 +97,8 @@ export const verifyExtensionsMatch = async function (source: ConnectionDetails, 
   // used, though.
   const sql = 'SELECT extname FROM pg_extension ORDER BY extname;'
   const [extensionTarget, extensionSource] = await Promise.all([
-    psqlExec(target, sql),
-    psqlExec(source, sql),
+    psqlTarget.execQuery(sql),
+    psqlSource.execQuery(sql),
   ])
   const extensions = {
     target: extensionTarget,

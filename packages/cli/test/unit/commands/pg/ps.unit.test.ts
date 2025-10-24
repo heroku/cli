@@ -1,31 +1,60 @@
+/*
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import tsheredoc from 'tsheredoc'
-// import Cmd from '../../../../src/commands/pg/ps'
+import heredoc from 'tsheredoc'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import * as proxyquire from 'proxyquire'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-// import * as psql from '../../../../src/lib/pg/psql'
-const heredoc = tsheredoc.default
 
 const FAKE_OUTPUT_TEXT = heredoc(`
   pid  | state  | source  | username | running_for | transaction_start | waiting | query
   -------+--------+---------+----------+-------------+-------------------+---------+-------
    17496 | active | standby | postgres |             |                   | t       |
    (1 row)
-   
+
  `)
 
-/*
 describe('pg:ps', function () {
+  let databaseResolverStub: sinon.SinonStub
+  let psqlServiceExecQuerySpy: sinon.SinonSpy
+  let Cmd: GenericCmd
   let api: nock.Scope
-  let stub: sinon.SinonStub
+  let queryString = ''
   const addon = fixtures.addons['www-db']
   const app = fixtures.apps.api
+  const psql = {
+    fetchVersion: () => {
+      return Promise.resolve('')
+    },
+  }
 
   beforeEach(function () {
-    stub = sinon.stub(psql, 'exec').resolves(FAKE_OUTPUT_TEXT)
+    databaseResolverStub = sinon.stub().resolves({})
+    psqlServiceExecQuerySpy = sinon.spy((query: string) => {
+      queryString = heredoc(query)
+      return Promise.resolve(FAKE_OUTPUT_TEXT)
+    })
+
+    // Mock the utils.pg classes
+    const mockUtils = {
+      pg: {
+        DatabaseResolver: class {
+          getDatabase = databaseResolverStub
+        },
+        PsqlService: class {
+          execQuery = psqlServiceExecQuerySpy
+        },
+      },
+    }
+
+    Cmd = proxyquire('../../../../src/commands/pg/ps', {
+      '../../lib/pg/psql': psql,
+      '@heroku/heroku-cli-util': {
+        utils: mockUtils,
+      },
+    }).default
     api = nock('https://api.heroku.com:443')
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon, app, config_vars: ['DATABASE_URL']}])
@@ -34,9 +63,9 @@ describe('pg:ps', function () {
   })
 
   afterEach(function () {
-    stub.restore()
     nock.cleanAll()
     api.done()
+    sinon.restore()
   })
 
   it('runs query', async function () {
@@ -44,7 +73,7 @@ describe('pg:ps', function () {
       '--app',
       'myapp',
     ])
-    expect(stub.lastCall.lastArg).to.equal(heredoc(`
+    expect(queryString).to.equal(heredoc(`
 SELECT pid,
            state,
            application_name AS SOURCE,
@@ -65,7 +94,7 @@ SELECT pid,
       'myapp',
       '--verbose',
     ])
-    expect(stub.lastCall.lastArg).to.equal(heredoc(`
+    expect(queryString).to.equal(heredoc(`
 SELECT pid,
            state,
            application_name AS SOURCE,

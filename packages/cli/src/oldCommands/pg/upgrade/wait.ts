@@ -4,10 +4,9 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import heredoc from 'tsheredoc'
-import {getAddon} from '../../../lib/pg/fetcher'
-import pgHost from '../../../lib/pg/host'
+import {ExtendedAddonAttachment, utils} from '@heroku/heroku-cli-util'
 import notify from '../../../lib/notify'
-import {AddOnAttachmentWithConfigVarsAndPlan, AddOnWithRelatedData, PgUpgradeStatus} from '../../../lib/pg/types'
+import {PgUpgradeStatus} from '../../../lib/pg/types'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls'
 import {formatResponseWithCommands} from '../../../lib/pg/util'
@@ -51,7 +50,7 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
-    const waitFor = async (db: AddOnAttachmentWithConfigVarsAndPlan | AddOnWithRelatedData) => {
+    const waitFor = async (db: ExtendedAddonAttachment['addon']) => {
       const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
       let status
       let waiting = false
@@ -62,7 +61,7 @@ export default class Wait extends Command {
         try {
           ({body: status} = await this.heroku.get<PgUpgradeStatus>(
             `/client/v11/databases/${db.id}/upgrade/wait_status`,
-            {hostname: pgHost()},
+            {hostname: utils.pg.host()},
           ))
         } catch (error) {
           if (error instanceof HTTPError && (!retries || error.statusCode !== 404)) {
@@ -105,9 +104,15 @@ export default class Wait extends Command {
       }
     }
 
-    let dbs: AddOnAttachmentWithConfigVarsAndPlan[] | AddOnWithRelatedData[] | [] = []
+    // This is actually incorrect, if we're only using one db we should make the database arg required and
+    // just use the resolver to get the add-on to be waited on.
+    // This looks similar to other implementations where you also can wait on all databases from the same app.
+    // Maybe it was initially thought to implement this in the future, but it was never implemented.
+    let dbs: ExtendedAddonAttachment['addon'][] = []
     if (dbName) {
-      dbs = [await getAddon(this.heroku, app, dbName)]
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon} = await dbResolver.getAttachment(app, dbName)
+      dbs = [addon]
     } else {
       ux.error(heredoc('You must provide a database. Run `--help` for more information on the command.'))
     }

@@ -3,8 +3,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {legacyEssentialPlan} from '../../../lib/pg/util'
-import {getAddon} from '../../../lib/pg/fetcher'
-import pgHost from '../../../lib/pg/host'
+import {utils} from '@heroku/heroku-cli-util'
 import {URL} from 'url'
 import type {CredentialInfo} from '../../../lib/pg/types'
 import heredoc from 'tsheredoc'
@@ -31,7 +30,8 @@ export default class Url extends Command {
     const {flags, args} = await this.parse(Url)
     const {app, name} = flags
     const {database} = args
-    const db = await getAddon(this.heroku, app, database)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
     if (legacyEssentialPlan(db) && name !== 'default') {
       ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
@@ -39,7 +39,7 @@ export default class Url extends Command {
     const {body: credInfo} = await this.heroku.get<CredentialInfo>(
       `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
       {
-        hostname: pgHost(),
+        hostname: utils.pg.host(),
         headers: {
           Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
         },
