@@ -72,7 +72,7 @@ export default class Add extends Command {
       },
     })
 
-    ux.stdout(`successfully added drain ${drain.exporter.endpoint}`)
+    ux.log(`successfully added drain ${drain.exporter.endpoint}`)
   }
 
   private getExporterType(transport: string): string {
