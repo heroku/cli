@@ -9,7 +9,6 @@ import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
 import Cmd  from '../../../../src/commands/pg/diagnose'
 import runCommand from '../../../helpers/runCommand.js'
 
-
 describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope

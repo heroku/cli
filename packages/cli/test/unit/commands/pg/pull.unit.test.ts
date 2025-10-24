@@ -8,7 +8,6 @@ import {ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
 import sinon = require('sinon')
 import * as childProcess from 'node:child_process'
 
-
 describe('pg:pull', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']

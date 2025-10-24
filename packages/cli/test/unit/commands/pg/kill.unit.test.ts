@@ -6,7 +6,6 @@ import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
 import {GenericCmd} from '../../../helpers/runCommand'
 
-
 describe('pg:kill', function () {
   let databaseResolverStub: sinon.SinonStub
   let psqlServiceExecQuerySpy: sinon.SinonSpy

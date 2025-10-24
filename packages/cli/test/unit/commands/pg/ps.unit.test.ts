@@ -13,9 +13,8 @@ const FAKE_OUTPUT_TEXT = heredoc(`
   -------+--------+---------+----------+-------------+-------------------+---------+-------
    17496 | active | standby | postgres |             |                   | t       |
    (1 row)
-   
- `)
 
+ `)
 
 describe('pg:ps', function () {
   let databaseResolverStub: sinon.SinonStub

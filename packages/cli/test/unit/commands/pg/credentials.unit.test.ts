@@ -6,7 +6,6 @@ import * as nock from 'nock'
 import Cmd from '../../../../src/commands/pg/credentials'
 import heredoc from 'tsheredoc'
 
-
 describe('pg:credentials', function () {
   const addon = {
     id: 1,

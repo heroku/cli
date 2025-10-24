@@ -6,7 +6,6 @@ import Cmd from '../../../../src/commands/pg/killall'
 import * as nock from 'nock'
 import heredoc from 'tsheredoc'
 
-
 describe('pg:killall', function () {
   let pg: nock.Scope
   let api: nock.Scope

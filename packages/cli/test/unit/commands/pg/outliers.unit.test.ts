@@ -7,7 +7,6 @@ import nock from 'nock'
 import heredoc from 'tsheredoc'
 import * as sinon from 'sinon'
 
-
 describe('pg:outliers', function () {
   let databaseResolverStub: sinon.SinonStub
   let psqlServiceExecQuerySpy: sinon.SinonSpy
