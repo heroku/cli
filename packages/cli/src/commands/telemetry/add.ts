@@ -14,7 +14,7 @@ export default class Add extends Command {
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    // If splunkhec transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunkhec']
+    // If splunkhec transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk_hec']
     transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
 
@@ -35,7 +35,7 @@ export default class Add extends Command {
     // Allow splunkhec, but do not show splunkhec in error message until splunkhec transport is accepted as a feature
     // When splunkhec transport is accepted as a feature, and options are added for the transport flag, this section should be removed
     const publicTransports = ['http', 'grpc']
-    const validTransports = [...publicTransports, 'splunkhec']
+    const validTransports = [...publicTransports, 'splunk_hec']
     if (!validTransports.includes(transport)) {
       const reconstructedFlag = Flags.string({options: publicTransports, name: Add.flags.transport.name})
       throw new FlagInvalidOptionError(reconstructedFlag, transport)
@@ -81,8 +81,8 @@ export default class Add extends Command {
     switch (transport) {
     case 'grpc':
       return 'otlp'
-    case 'splunkhec':
-      return 'splunkhec'
+    case 'splunk_hec':
+      return 'splunk_hec'
     default:
       return 'otlphttp'
     }

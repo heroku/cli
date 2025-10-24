@@ -256,7 +256,7 @@ describe('telemetry:add', function () {
         signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: splunkhecEndpoint,
-          type: 'splunkhec',
+          type: 'splunk_hec',
           headers: {},
         },
       })
@@ -267,7 +267,7 @@ describe('telemetry:add', function () {
       '--app',
       splunkhecDrainAppId,
       '--transport',
-      'splunkhec',
+      'splunk_hec',
     ])
 
     expectOutput(stdout.output, `successfully added drain ${splunkhecEndpoint}`)

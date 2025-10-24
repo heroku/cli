@@ -320,7 +320,6 @@ someplugin
 somethingelse
 someuser
 sparkline
-splunkhec
 sshdir
 sslmode
 stampy
