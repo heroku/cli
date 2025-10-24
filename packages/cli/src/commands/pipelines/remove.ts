@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
-import {removeCoupling} from '../../lib/api'
+import {removeCoupling} from '../../lib/api.js'
 
 export default class PipelinesRemove extends Command {
   static description = 'remove this app from its pipeline'
@@ -25,4 +24,3 @@ export default class PipelinesRemove extends Command {
     ux.action.stop()
   }
 }
-*/

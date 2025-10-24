@@ -1,12 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/api'
-import disambiguate from '../../lib/pipelines/disambiguate'
-import renderPipeline from '../../lib/pipelines/render-pipeline'
+import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/api.js'
+import disambiguate from '../../lib/pipelines/disambiguate.js'
+import renderPipeline from '../../lib/pipelines/render-pipeline.js'
 
 async function getTeamOwner(heroku: APIClient, name: string) {
   const {body: team} = await getTeam(heroku, name)
@@ -20,9 +19,7 @@ async function getAccountOwner(heroku: APIClient, name: string) {
 
 function getOwner(heroku: APIClient, name: string) {
   return getTeamOwner(heroku, name)
-    .catch(() => {
-      return getAccountOwner(heroku, name)
-    })
+    .catch(() => getAccountOwner(heroku, name))
     .catch(() => {
       throw new Error(`Cannot find a team or account for "${name}"`)
     })
@@ -58,7 +55,7 @@ export default class PipelinesTransfer extends Command {
 
     if (!confirmName) {
       await renderPipeline(this.heroku, pipeline, apps)
-      ux.log('')
+      ux.stdout('')
       ux.warn(`This will transfer ${color.pipeline(pipeline.name!)} and all of the listed apps to the ${args.owner} ${displayType}`)
       ux.warn(`to proceed, type ${color.red(pipeline.name!)} or re-run this command with ${color.red('--confirm')} ${pipeline.name}`)
       confirmName = await hux.prompt('', {})
@@ -74,4 +71,3 @@ export default class PipelinesTransfer extends Command {
     ux.action.stop()
   }
 }
-*/

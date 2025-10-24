@@ -1,29 +1,28 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as open from 'open'
+import open from 'open'
 import Debug from 'debug'
 
-import {createPipeline, getAccountInfo, getTeam} from '../../lib/api'
-import GitHubAPI from '../../lib/pipelines/github-api'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
-import createApps from '../../lib/pipelines/setup/create-apps'
-import getCISettings from '../../lib/pipelines/setup/get-ci-settings'
-import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
-import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
-import getRepo from '../../lib/pipelines/setup/get-repo'
-import getSettings from '../../lib/pipelines/setup/get-settings'
-import pollAppSetups from '../../lib/pipelines/setup/poll-app-setups'
-import setupPipeline from '../../lib/pipelines/setup/setup-pipeline'
-import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/validate'
+import {createPipeline, getAccountInfo, getTeam} from '../../lib/api.js'
+import GitHubAPI from '../../lib/pipelines/github-api.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import createApps from '../../lib/pipelines/setup/create-apps.js'
+import getCISettings from '../../lib/pipelines/setup/get-ci-settings.js'
+import getGitHubToken from '../../lib/pipelines/setup/get-github-token.js'
+import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo.js'
+import getRepo from '../../lib/pipelines/setup/get-repo.js'
+import getSettings from '../../lib/pipelines/setup/get-settings.js'
+import pollAppSetups from '../../lib/pipelines/setup/poll-app-setups.js'
+import setupPipeline from '../../lib/pipelines/setup/setup-pipeline.js'
+import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/validate.js'
 
 // eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
-  static description =
-    'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
+  static description
+    = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
   static examples = ['$ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team']
 
@@ -62,14 +61,14 @@ export default class Setup extends Command {
     const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
     const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
 
-    const team = flags.team
+    const {team, yes} = flags
 
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = await getRepo(github, repoName)
-    const settings = await getSettings(flags.yes, repo.default_branch)
+    const settings = await getSettings(yes, repo.default_branch)
 
-    const ciSettings = await getCISettings(flags.yes, team)
+    const ciSettings = await getCISettings(yes, team)
     const ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
@@ -113,4 +112,3 @@ export default class Setup extends Command {
     }
   }
 }
-*/
