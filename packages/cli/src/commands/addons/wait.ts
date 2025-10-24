@@ -20,20 +20,22 @@ export default class Wait extends Command {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on'}),
   }
 
-    public async run(): Promise<void> {
-      const {flags, args} = await this.parse(Wait)
-      // TODO: remove this type once the schema is fixed
-      type AddonWithDeprovisioningState  = Omit<ExtendedAddon, 'state'> & {state?: ExtendedAddon['state'] | 'deprovisioning'}
-      let addonsToWaitFor: AddonWithDeprovisioningState[]
-      if (args.addon) {
-        addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
-      } else if (flags.app) {
-        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>(`/apps/${flags.app}/addons`)
-        addonsToWaitFor = addons
-      } else {
-        const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>('/addons')
-        addonsToWaitFor = addons
-      }
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
+  public async run(): Promise<void> {
+    const {flags, args} = await this.parse(Wait)
+    // TODO: remove this type once the schema is fixed
+    type AddonWithDeprovisioningState  = Omit<ExtendedAddon, 'state'> & {state?: ExtendedAddon['state'] | 'deprovisioning'}
+    let addonsToWaitFor: AddonWithDeprovisioningState[]
+    if (args.addon) {
+      addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
+    } else if (flags.app) {
+      const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>(`/apps/${flags.app}/addons`)
+      addonsToWaitFor = addons
+    } else {
+      const {body: addons} = await this.heroku.get<AddonWithDeprovisioningState[]>('/addons')
+      addonsToWaitFor = addons
+    }
 
     addonsToWaitFor = addonsToWaitFor.filter((addon: AddonWithDeprovisioningState) => addon.state === 'provisioning' || addon.state === 'deprovisioning')
     let interval = Number.parseInt(flags['wait-interval'] || '', 10)
@@ -49,7 +51,7 @@ export default class Wait extends Command {
         try {
           addonResponse = await waitForAddonProvisioning(this.heroku, addon as Heroku.AddOn, interval)
         } catch (error) {
-          notify(`heroku addons:wait ${addonName}`, 'Add-on failed to provision', false)
+          Wait.notifier(`heroku addons:wait ${addonName}`, 'Add-on failed to provision', false)
           throw error
         }
 
@@ -61,16 +63,14 @@ export default class Wait extends Command {
         }
 
         if (Date.now() - startTime.valueOf() >= 1000 * 5) {
-          notify(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
+          Wait.notifier(`heroku addons:wait ${addonName}`, 'Add-on successfully provisioned')
         }
-
-        
       } else if (addon.state === 'deprovisioning') {
         await waitForAddonDeprovisioning(this.heroku, addon as Heroku.AddOn, interval)
         if (Date.now() - startTime.valueOf() >= 1000 * 5) {
-          notify(`heroku addons:wait ${addonName}`, 'Add-on successfully deprovisioned')
+          Wait.notifier(`heroku addons:wait ${addonName}`, 'Add-on successfully deprovisioned')
         }
-      }  
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-import {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
+import {ExtendedAddonAttachment} from '@heroku/heroku-cli-util/dist/types/pg/data-api.js'
 
 export const apps: Record<string, Heroku.App> = {
   api: {
