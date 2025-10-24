@@ -241,7 +241,7 @@ describe('telemetry:add', function () {
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
   })
 
-  it('successfully creates a telemetry drain with hidden splunkhec transport', async function () {
+  it('successfully creates a telemetry drain splunk transport', async function () {
     const splunkhecEndpoint = splunkhecAppTelemetryDrain.exporter.endpoint
     const splunkhecApp = {...firApp, id: splunkhecDrainAppId}
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
@@ -267,7 +267,7 @@ describe('telemetry:add', function () {
       '--app',
       splunkhecDrainAppId,
       '--transport',
-      'splunk_hec',
+      'splunk',
     ])
 
     expectOutput(stdout.output, `successfully added drain ${splunkhecEndpoint}`)
