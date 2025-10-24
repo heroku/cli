@@ -1,5 +1,4 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -7,7 +6,6 @@ import * as Heroku from '@heroku-cli/schema'
 export default class Get extends Command {
   static topic = 'spaces'
   static aliases = ['drains:get']
-  static hidden = true
   static description = 'display the log drain for a space'
   static flags = {
     space: flags.string({char: 's', description: 'space for which to get log drain', required: true}),
@@ -23,10 +21,9 @@ export default class Get extends Command {
     )
 
     if (json) {
-      ux.log(JSON.stringify(drain, null, 2))
+      ux.stdout(JSON.stringify(drain, null, 2))
     } else {
-      ux.log(`${color.cyan(drain.url)} (${color.green(drain.token)})`)
+      ux.stdout(`${color.cyan(drain.url)} (${color.green(drain.token)})`)
     }
   }
 }
-*/

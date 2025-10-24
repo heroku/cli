@@ -1,11 +1,9 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/spaces/peerings/destroy'
+import Cmd from '../../../../../src/commands/spaces/peerings/destroy.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
-/*
 describe('spaces:peering:destroy', function () {
   it('destroys an active peering connection', async function () {
     nock('https://api.heroku.com')
@@ -20,11 +18,6 @@ describe('spaces:peering:destroy', function () {
       '--confirm',
       'pcx-12345',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Tearing down peering connection pcx-12345...
-      Tearing down peering connection pcx-12345... done
-    `))
+    expectOutput(stderr.output, 'Tearing down peering connection pcx-12345... done\n')
   })
 })
-
-*/

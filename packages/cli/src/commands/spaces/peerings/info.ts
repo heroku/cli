@@ -1,9 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import {displayPeeringInfo} from '../../../lib/spaces/peering'
+import tsheredoc from 'tsheredoc'
+import {displayPeeringInfo} from '../../../lib/spaces/peering.js'
+
+const heredoc = tsheredoc.default
 
 export default class Info extends Command {
   static topic = 'spaces'
@@ -57,9 +58,8 @@ export default class Info extends Command {
 
     const {body: pInfo} = await this.heroku.get<Heroku.PeeringInfo>(`/spaces/${spaceName}/peering-info`)
     if (flags.json)
-      ux.log(JSON.stringify(pInfo, null, 2))
+      ux.stdout(JSON.stringify(pInfo, null, 2))
     else
       displayPeeringInfo(spaceName as string, pInfo)
   }
 }
-*/

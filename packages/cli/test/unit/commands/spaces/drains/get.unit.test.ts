@@ -1,10 +1,9 @@
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../src/commands/spaces/drains/get'
+import Cmd from '../../../../../src/commands/spaces/drains/get.js'
 import {expect} from 'chai'
 import nock from 'nock'
 
-/*
 describe('spaces:drains:get', function () {
   const drain = {
     addon: null,
@@ -46,5 +45,3 @@ describe('spaces:drains:get', function () {
     expect(JSON.parse(stdout.output)).to.eql(drain)
   })
 })
-
-*/

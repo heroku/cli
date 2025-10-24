@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import confirmCommand from '../../../lib/confirmCommand'
+import tsheredoc from 'tsheredoc'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+
+const heredoc = tsheredoc.default
 
 export default class Destroy extends Command {
   static topic = 'spaces'
@@ -16,7 +17,7 @@ export default class Destroy extends Command {
       required: true,
     }),
     confirm: flags.string({description: 'set to PCX ID to bypass confirm prompt'}),
-  };
+  }
 
   static args = {
     pcxid: Args.string({hidden: true}),
@@ -38,7 +39,7 @@ export default class Destroy extends Command {
       `)
     }
 
-    await confirmCommand(pcxID as string, flags.confirm, heredoc(`
+    await new ConfirmCommand().confirm(pcxID as string, flags.confirm, heredoc(`
       Destructive Action
       This command will attempt to destroy the peering connection ${color.bold.red(pcxID)}
     `))
@@ -47,4 +48,3 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
-*/
