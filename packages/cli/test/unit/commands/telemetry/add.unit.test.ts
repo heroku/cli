@@ -1,16 +1,17 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/telemetry/add'
+import Cmd from '../../../../src/commands/telemetry/add'
 import runCommand from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput'
-import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures'
+import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures'
 import {firApp} from '../../../fixtures/apps/fixtures'
 import * as spaceFixtures from '../../../fixtures/spaces/fixtures'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
+const splunkDrainAppId = splunkAppTelemetryDrain.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
@@ -163,5 +164,116 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
+    const httpApp = {...firApp, id: appId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}`)
+      .reply(200, httpApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: appId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: testEndpoint,
+          type: 'otlphttp',
+          headers: {},
+        },
+      })
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      appId,
+      '--transport',
+      'http',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('returns an error for invalid transport option', async function () {
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--app',
+        appId,
+        '--transport',
+        'invalid-transport',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
+    }
+  })
+
+  it('uses default http transport when no transport is specified', async function () {
+    const defaultApp = {...firApp, id: appId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}`)
+      .reply(200, defaultApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: appId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: testEndpoint,
+          type: 'otlphttp',
+          headers: {},
+        },
+      })
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      appId,
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('successfully creates a telemetry drain splunk transport', async function () {
+    const splunkEndpoint = splunkAppTelemetryDrain.exporter.endpoint
+    const splunkApp = {...firApp, id: splunkDrainAppId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${splunkDrainAppId}`)
+      .reply(200, splunkApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: splunkDrainAppId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: splunkEndpoint,
+          type: 'splunk',
+          headers: {
+            Authorization: 'Splunk your-hec-token',
+          },
+        },
+      })
+      .reply(200, splunkAppTelemetryDrain)
+
+    await runCommand(Cmd, [
+      splunkEndpoint,
+      '--app',
+      splunkDrainAppId,
+      '--transport',
+      'splunk',
+      '--headers',
+      '{"Authorization": "Splunk your-hec-token"}',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
   })
 })
