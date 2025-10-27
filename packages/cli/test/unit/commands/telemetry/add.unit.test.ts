@@ -256,8 +256,10 @@ describe('telemetry:add', function () {
         signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: splunkEndpoint,
-          type: 'splunk_hec',
-          headers: {},
+          type: 'splunk',
+          headers: {
+            Authorization: 'Splunk your-hec-token',
+          },
         },
       })
       .reply(200, splunkAppTelemetryDrain)
@@ -268,6 +270,8 @@ describe('telemetry:add', function () {
       splunkDrainAppId,
       '--transport',
       'splunk',
+      '--headers',
+      '{"Authorization": "Splunk your-hec-token"}',
     ])
 
     expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
