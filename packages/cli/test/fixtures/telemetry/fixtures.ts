@@ -61,7 +61,7 @@ export const splunkAppTelemetryDrain: TelemetryDrain = {
   owner: {id: '845c1486-ad78-4de7-8da7-20d4f8b15b71', type: 'app'},
   signals: ['traces', 'metrics', 'logs'],
   exporter: {
-    type: 'splunk_hec',
+    type: 'splunk',
     endpoint: 'https://splunk.example.com/services/collector',
     headers: {
       Authorization: 'Splunk your-hec-token',
