@@ -80,7 +80,7 @@ export default class Add extends Command {
     case 'grpc':
       return 'otlp'
     case 'splunk':
-      return 'splunk_hec'
+      return 'splunk'
     default:
       return 'otlphttp'
     }
