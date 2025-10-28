@@ -1,8 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {displayHostsAsJSON, displayHosts, type Host} from '../../lib/spaces/hosts'
+import tsheredoc from 'tsheredoc'
+import {displayHostsAsJSON, displayHosts, type Host} from '../../lib/spaces/hosts.js'
+
+const heredoc = tsheredoc.default
 
 export default class Hosts extends Command {
   static topic = 'spaces'
@@ -38,4 +39,3 @@ export default class Hosts extends Command {
       displayHosts(spaceName as string, hosts)
   }
 }
-*/

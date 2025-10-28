@@ -1,12 +1,13 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {renderInfo} from '../../lib/spaces/spaces'
+import tsheredoc from 'tsheredoc'
+import {renderInfo} from '../../lib/spaces/spaces.js'
 import debug from 'debug'
 import {IncomingHttpHeaders} from 'node:http'
-import {Space, SpaceNat} from '../../lib/types/fir'
-import {SpaceWithOutboundIps} from '../../lib/types/spaces'
+import {Space, SpaceNat} from '../../lib/types/fir.js'
+import {SpaceWithOutboundIps} from '../../lib/types/spaces.js'
+
+const heredoc = tsheredoc.default
 
 const spacesDebug = debug('spaces:info')
 
@@ -55,4 +56,3 @@ export default class Info extends Command {
     renderInfo(space, flags.json)
   }
 }
-*/
