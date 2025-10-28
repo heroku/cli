@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
   static topic = 'spaces'
@@ -28,7 +29,7 @@ export default class Remove extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Remove)
-    const space = flags.space
+    const {space} = flags
     const url = `/spaces/${space}/inbound-ruleset`
     const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url)
     if (rules.rules?.length === 0) {
@@ -42,8 +43,7 @@ export default class Remove extends Command {
     }
 
     await this.heroku.put(url, {body: rules})
-    ux.log(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
+    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
     ux.warn('It may take a few moments for the changes to take effect.')
   }
 }
-*/

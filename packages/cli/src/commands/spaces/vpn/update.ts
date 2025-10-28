@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {splitCsv} from '../../../lib/spaces/parsers'
-import heredoc from 'tsheredoc'
+import {splitCsv} from '../../../lib/spaces/parsers.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Update extends Command {
   static topic = 'spaces'
@@ -42,4 +43,3 @@ export default class Update extends Command {
     ux.action.stop()
   }
 }
-*/

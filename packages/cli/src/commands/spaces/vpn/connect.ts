@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {splitCsv} from '../../../lib/spaces/parsers'
+import tsheredoc from 'tsheredoc'
+import {splitCsv} from '../../../lib/spaces/parsers.js'
+
+const heredoc = tsheredoc.default
 
 export default class Connect extends Command {
   static topic = 'spaces'
@@ -50,4 +51,3 @@ export default class Connect extends Command {
     ux.warn(`Use ${color.cmd('heroku spaces:vpn:wait')} to track allocation.`)
   }
 }
-*/

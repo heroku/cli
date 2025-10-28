@@ -1,12 +1,13 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import {displayVPNStatus} from '../../../lib/spaces/format'
+import tsheredoc from 'tsheredoc'
+import {displayVPNStatus} from '../../../lib/spaces/format.js'
 
 type VpnConnectionTunnels = Required<Heroku.PrivateSpacesVpn>['tunnels']
+
+const heredoc = tsheredoc.default
 
 export default class Connections extends Command {
   static topic = 'spaces'
@@ -40,7 +41,7 @@ export default class Connections extends Command {
 
   protected displayVPNConnections(space: string, connections: Required<Heroku.PrivateSpacesVpn>[]) {
     if (connections.length === 0) {
-      ux.log('No VPN Connections have been created yet')
+      ux.stdout('No VPN Connections have been created yet')
       return
     }
 
@@ -66,4 +67,3 @@ export default class Connections extends Command {
     return t.map(tunnel => displayVPNStatus(tunnel.status)).join('/')
   }
 }
-*/

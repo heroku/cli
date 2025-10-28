@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Add extends Command {
   static topic = 'spaces'
@@ -19,11 +20,11 @@ export default class Add extends Command {
   static flags = {
     space: flags.string({char: 's', description: 'space to add rule to', required: true}),
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
-  };
+  }
 
   static args = {
     source: Args.string({required: true, description: 'IP address in CIDR notation'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)
@@ -36,7 +37,7 @@ export default class Add extends Command {
 
     ruleset.rules.push({action: 'allow', source: args.source})
     await this.heroku.put(url, {body: ruleset})
-    ux.log(`Added ${color.cyan.bold(args.source)} to trusted IP ranges on ${color.cyan.bold(space)}`)
+    ux.stdout(`Added ${color.cyan.bold(args.source)} to trusted IP ranges on ${color.cyan.bold(space)}`)
     ux.warn('It may take a few moments for the changes to take effect.')
   }
 
@@ -44,4 +45,3 @@ export default class Add extends Command {
     return Array.isArray(ruleset.rules) && !ruleset.rules.some(rs => rs.source === source)
   }
 }
-*/
