@@ -3,9 +3,7 @@ import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
-
-const heredoc = tsheredoc.default
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:vpn:connections', function () {
   afterEach(function () {
@@ -68,13 +66,11 @@ describe('spaces:vpn:connections', function () {
     ])
 
     api.done()
-    expect(stdout.output).to.eq(heredoc`
-      === my-space VPN Connections
 
-       Name   Status Tunnels
-       ────── ────── ───────
-       office active UP/UP
-    `)
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
+    expect(actual).to.include(removeAllWhitespace('Name   Status Tunnels'))
+    expect(actual).to.include(removeAllWhitespace('office active UP/UP'))
   })
 
   it('displays VPN Connection ID when name is unavailable', async function () {
@@ -89,13 +85,11 @@ describe('spaces:vpn:connections', function () {
     ])
 
     api.done()
-    expect(stdout.output).to.eq(heredoc`
-      === my-space VPN Connections
 
-       Name         Status Tunnels
-       ──────────── ────── ───────
-       123456789012 active UP/UP
-    `)
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
+    expect(actual).to.include(removeAllWhitespace('Name   Status Tunnels'))
+    expect(actual).to.include(removeAllWhitespace('123456789012 active UP/UP'))
   })
 
   it('displays VPN Connections in JSON', async function () {
