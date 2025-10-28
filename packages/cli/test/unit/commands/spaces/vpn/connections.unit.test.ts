@@ -1,11 +1,12 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/spaces/vpn/connections'
+import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('spaces:vpn:connections', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -112,5 +113,3 @@ describe('spaces:vpn:connections', function () {
     expect(JSON.parse(stdout.output)).to.eql([space])
   })
 })
-
-*/

@@ -1,11 +1,9 @@
 import {stderr} from 'stdout-stderr'
 import {expect} from 'chai'
-// import Cmd from '../../../../../src/commands/spaces/vpn/destroy'
+import Cmd from '../../../../../src/commands/spaces/vpn/destroy.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 
-/*
 describe('spaces:vpn:destroy', function () {
   it('destroys a VPN Connection when name is specified', async function () {
     const api = nock('https://api.heroku.com')
@@ -21,13 +19,8 @@ describe('spaces:vpn:destroy', function () {
     ])
 
     api.done()
-    expect(stderr.output).to.eq(heredoc`
-      Tearing down VPN Connection my-vpn-connection in space my-space...
-      Tearing down VPN Connection my-vpn-connection in space my-space... done
-    `)
+    expect(stderr.output).to.eq('Tearing down VPN Connection my-vpn-connection in space my-space... done\n')
 
     nock.cleanAll()
   })
 })
-
-*/

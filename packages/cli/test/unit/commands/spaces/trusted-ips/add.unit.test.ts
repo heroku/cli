@@ -1,11 +1,9 @@
-import color from '@heroku-cli/color'
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
+import Cmd from '../../../../../src/commands/spaces/trusted-ips/add.js'
 
-/*
 describe('trusted-ips:add', function () {
   it('adds a CIDR entry to the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -29,5 +27,3 @@ describe('trusted-ips:add', function () {
     api.done()
   })
 })
-
-*/

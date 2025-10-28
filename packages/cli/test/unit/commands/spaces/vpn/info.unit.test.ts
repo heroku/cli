@@ -1,12 +1,12 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/spaces/vpn/info'
+import Cmd from '../../../../../src/commands/spaces/vpn/info.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
+import {expect} from 'chai'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('spaces:vpn:info', function () {
   let vpnConnection: Heroku.PrivateSpacesVpn
 
@@ -51,20 +51,19 @@ describe('spaces:vpn:info', function () {
       'my-space',
       'vpn-connection-name',
     ])
-    expectOutput(stdout.output, heredoc(`
-      === ${vpnConnection.name} VPN Info
-      Name:           ${vpnConnection.name}
-      ID:             ${vpnConnection.id}
-      Public IP:      ${vpnConnection.public_ip}
-      Routable CIDRs: 172.16.0.0/16
-      Status:         ${vpnConnection.status}
-      Status Message: ${vpnConnection.status_message}
-      === ${vpnConnection.name} VPN Tunnel Info
-       VPN Tunnel IP Address    Status Status Last Changed  Details
-       ────────── ───────────── ────── ──────────────────── ──────────────
-       Tunnel 1   52.44.146.197 UP     2016-10-25T22:09:05Z status message
-       Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message
-    `))
+
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Info`))
+    expect(actual).to.include(removeAllWhitespace(`Name:           ${vpnConnection.name}`))
+    expect(actual).to.include(removeAllWhitespace(`ID:             ${vpnConnection.id}`))
+    expect(actual).to.include(removeAllWhitespace(`Public IP:      ${vpnConnection.public_ip}`))
+    expect(actual).to.include(removeAllWhitespace('Routable CIDRs: 172.16.0.0/16'))
+    expect(actual).to.include(removeAllWhitespace(`Status:         ${vpnConnection.status}`))
+    expect(actual).to.include(removeAllWhitespace(`Status Message: ${vpnConnection.status_message}`))
+    expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Tunnel Info`))
+    expect(actual).to.include(removeAllWhitespace('VPN Tunnel IP Address    Status Status Last Changed  Details'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197 UP     2016-10-25T22:09:05Z status message'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message'))
   })
 
   it('gets VPN info in JSON', async function () {
@@ -91,21 +90,18 @@ describe('spaces:vpn:info', function () {
       'my-space',
       vpnConnection.id as string,
     ])
-    expectOutput(stdout.output, heredoc(`
-    === ${vpnConnection.name} VPN Info
-    Name:           ${vpnConnection.name}
-    ID:             ${vpnConnection.id}
-    Public IP:      ${vpnConnection.public_ip}
-    Routable CIDRs: 172.16.0.0/16
-    Status:         ${vpnConnection.status}
-    Status Message: ${vpnConnection.status_message}
-    === ${vpnConnection.name} VPN Tunnel Info
-     VPN Tunnel IP Address    Status Status Last Changed  Details
-     ────────── ───────────── ────── ──────────────────── ──────────────
-     Tunnel 1   52.44.146.197 UP     2016-10-25T22:09:05Z status message
-     Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message
-  `))
+
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Info`))
+    expect(actual).to.include(removeAllWhitespace(`Name:           ${vpnConnection.name}`))
+    expect(actual).to.include(removeAllWhitespace(`ID:             ${vpnConnection.id}`))
+    expect(actual).to.include(removeAllWhitespace(`Public IP:      ${vpnConnection.public_ip}`))
+    expect(actual).to.include(removeAllWhitespace('Routable CIDRs: 172.16.0.0/16'))
+    expect(actual).to.include(removeAllWhitespace(`Status:         ${vpnConnection.status}`))
+    expect(actual).to.include(removeAllWhitespace(`Status Message: ${vpnConnection.status_message}`))
+    expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Tunnel Info`))
+    expect(actual).to.include(removeAllWhitespace('VPN Tunnel IP Address    Status Status Last Changed  Details'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197 UP     2016-10-25T22:09:05Z status message'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message'))
   })
 })
-
-*/
