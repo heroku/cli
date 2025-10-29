@@ -1,18 +1,20 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/spaces/destroy'
+import Cmd from '../../../../src/commands/spaces/destroy.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
-import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('spaces:destroy', function () {
   const now = new Date()
 
   beforeEach(function () {
-    sinon.stub(ux, 'prompt').resolves('my-space')
+    sinon.stub(hux, 'prompt').resolves('my-space')
   })
 
   afterEach(function () {
@@ -38,28 +40,20 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-    const replacer = /([»›])/g
-    expect(stderr.output.replace(replacer, '')).to.eq(heredoc(`     ›   Warning: Destructive Action
-     ›   This command will destroy the space my-space
-     ›   === WARNING: Outbound IPs Will Be Reused
-     ›   ⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs
-     ›   for reuse:
-     ›   1.1.1.1, 2.2.2.2
-     ›
-     ›   Update the following configurations:
-     ›   = IP allowlists
-     ›   = Firewall rules
-     ›   = Security group configurations
-     ›   = Network ACLs
-     ›
-     ›   Ensure that you remove the listed IPv4 and IPv6 addresses from your
-     ›   security configurations.
-     ›
-     ›
 
-    Destroying space my-space...
-    Destroying space my-space... done
-    `.replace(replacer, '')))
+    const actual = removeAllWhitespace(stderr.output)
+    expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
+    expect(actual).to.include(removeAllWhitespace('This command will destroy the space my-space'))
+    expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))
+    expect(actual).to.include(removeAllWhitespace('⚠️ Deleting this space frees up the following outbound IPv4 and IPv6 IPs for reuse:'))
+    expect(actual).to.include(removeAllWhitespace('1.1.1.1, 2.2.2.2'))
+    expect(actual).to.include(removeAllWhitespace('Update the following configurations:'))
+    expect(actual).to.include(removeAllWhitespace('= IP allowlists'))
+    expect(actual).to.include(removeAllWhitespace('= Firewall rules'))
+    expect(actual).to.include(removeAllWhitespace('= Security group configurations'))
+    expect(actual).to.include(removeAllWhitespace('= Network ACLs'))
+    expect(actual).to.include(removeAllWhitespace('Ensure that you remove the listed IPv4 and IPv6 addresses from your security configurations.'))
+    expect(actual).to.include(removeAllWhitespace('Destroying space my-space... done'))
   })
 
   it('shows simple NAT warning for non-fir generation space', async function () {
@@ -80,28 +74,19 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-    const replacer = /([»›])/g
-    expect(stderr.output.replace(replacer, '')).to.eq(heredoc(`     ›   Warning: Destructive Action
-     ›   This command will destroy the space my-space
-     ›   === WARNING: Outbound IPs Will Be Reused
-     ›   ⚠️ Deleting this space frees up the following outbound IPv4 IPs for reuse:
-     ›   1.1.1.1, 2.2.2.2
-     ›
-     ›   Update the following configurations:
-     ›   = IP allowlists
-     ›   = Firewall rules
-     ›   = Security group configurations
-     ›   = Network ACLs
-     ›
-     ›   Ensure that you remove the listed IPv4 addresses from your security
-     ›   configurations.
-     ›
-     ›
+    const actual = removeAllWhitespace(stderr.output)
 
-    Destroying space my-space...
-    Destroying space my-space... done
-    `.replace(replacer, '')))
+    expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
+    expect(actual).to.include(removeAllWhitespace('This command will destroy the space my-space'))
+    expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))
+    expect(actual).to.include(removeAllWhitespace('⚠️ Deleting this space frees up the following outbound IPv4 IPs for reuse:'))
+    expect(actual).to.include(removeAllWhitespace('1.1.1.1, 2.2.2.2'))
+    expect(actual).to.include(removeAllWhitespace('Update the following configurations:'))
+    expect(actual).to.include(removeAllWhitespace('= IP allowlists'))
+    expect(actual).to.include(removeAllWhitespace('= Firewall rules'))
+    expect(actual).to.include(removeAllWhitespace('= Security group configurations'))
+    expect(actual).to.include(removeAllWhitespace('= Network ACLs'))
+    expect(actual).to.include(removeAllWhitespace('Ensure that you remove the listed IPv4 addresses from your security configurations.'))
+    expect(actual).to.include(removeAllWhitespace('Destroying space my-space... done'))
   })
 })
-
-*/

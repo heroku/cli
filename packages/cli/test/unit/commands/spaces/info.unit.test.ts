@@ -1,14 +1,15 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/spaces/info'
+import Cmd from '../../../../src/commands/spaces/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
-// import {getGeneration} from '../../../../src/lib/apps/generation'
+import {getGeneration} from '../../../../src/lib/apps/generation.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps
   let shieldSpace: SpaceWithOutboundIps
@@ -176,5 +177,3 @@ describe('spaces:info', function () {
     `))
   })
 })
-
-*/
