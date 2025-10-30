@@ -1,14 +1,15 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import {displayCIDR, displayVPNStatus} from '../../../lib/spaces/format'
+import tsheredoc from 'tsheredoc'
+import {displayCIDR, displayVPNStatus} from '../../../lib/spaces/format.js'
+
+const heredoc = tsheredoc.default
 
 export default class Info extends Command {
-  static topic = 'spaces';
-  static description = 'display the information for VPN';
+  static topic = 'spaces'
+  static description = 'display the information for VPN'
   static example = heredoc(`
     $ heroku spaces:vpn:info vpn-connection-name --space my-space
     === vpn-connection-name VPN Tunnel Info
@@ -85,4 +86,3 @@ export default class Info extends Command {
     }
   }
 }
-*/

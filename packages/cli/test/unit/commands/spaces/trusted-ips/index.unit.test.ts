@@ -1,13 +1,14 @@
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/spaces/trusted-ips'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/spaces/trusted-ips/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
+
+const heredoc = tsheredoc.default
 
 const now = new Date()
 
-/*
 describe('trusted-ips', function () {
   it('shows the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
@@ -64,5 +65,3 @@ describe('trusted-ips', function () {
     api.done()
   })
 })
-
-*/

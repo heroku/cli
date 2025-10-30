@@ -1,13 +1,11 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/spaces/vpn/config'
+import Cmd from '../../../../../src/commands/spaces/vpn/config.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
-/*
 describe('spaces:vpn:config', function () {
   let vpnConnection: Heroku.PrivateSpacesVpn
 
@@ -52,13 +50,12 @@ describe('spaces:vpn:config', function () {
       'my-space',
       'vpn-connection-name-config',
     ])
-    expectOutput(stdout.output, heredoc(`
-      === vpn-connection-name-config VPN Tunnels
-       VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version
-       ────────── ──────────────── ───────────── ────────────── ──────────────── ───────────
-       Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1
-       Tunnel 2   52.44.146.199    52.44.146.198 apresharedkey2 10.0.0.0/16      1
-    `))
+
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('=== vpn-connection-name-config VPN Tunnels'))
+    expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 2   52.44.146.199    52.44.146.198 apresharedkey2 10.0.0.0/16      1'))
   })
 
   it('gets VPN config in JSON', async function () {
@@ -75,5 +72,3 @@ describe('spaces:vpn:config', function () {
     expect(JSON.parse(stdout.output)).to.eql(vpnConnection)
   })
 })
-
-*/

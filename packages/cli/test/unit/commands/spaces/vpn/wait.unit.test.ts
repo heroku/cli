@@ -1,13 +1,16 @@
 import nock from 'nock'
 import {expect} from 'chai'
 import {stderr, stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import {CLIError} from '@oclif/core/lib/errors'
-// import Cmd from '../../../../../src/commands/spaces/vpn/wait'
+import tsheredoc from 'tsheredoc'
+import {Errors} from '@oclif/core'
+import Cmd from '../../../../../src/commands/spaces/vpn/wait.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
-/*
+const heredoc = tsheredoc.default
+type CLIError = Errors.CLIError
+
 describe('spaces:vpn:wait', function () {
   let api: nock.Scope
 
@@ -191,14 +194,13 @@ describe('spaces:vpn:wait', function () {
       '0',
     ])
 
-    expect(stderr.output).to.equal('Waiting for VPN Connection vpn-connection-name-wait to allocate......\nWaiting for VPN Connection vpn-connection-name-wait to allocate...... done\n')
-    expectOutput(stdout.output, heredoc(`
-    === vpn-connection-name-wait VPN Tunnels
-     VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version
-     ────────── ──────────────── ───────────── ────────────── ──────────────── ───────────
-     Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1
-     Tunnel 2   52.44.146.199    52.44.146.198 apresharedkey2 10.0.0.0/16      1
-    `))
+    expect(stderr.output).to.equal('Waiting for VPN Connection vpn-connection-name-wait to allocate...... done\n')
+
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('=== vpn-connection-name-wait VPN Tunnels'))
+    expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))
+    expect(actual).to.include(removeAllWhitespace('Tunnel 2   52.44.146.199    52.44.146.198 apresharedkey2 10.0.0.0/16      1'))
   })
 
   it('tells the user if the VPN has been allocated', async function () {
@@ -226,5 +228,3 @@ describe('spaces:vpn:wait', function () {
     expectOutput(stdout.output, 'VPN has been allocated.\n')
   })
 })
-
-*/

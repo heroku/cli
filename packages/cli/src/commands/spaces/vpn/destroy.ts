@@ -1,9 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import confirmCommand from '../../../lib/confirmCommand'
-import heredoc from 'tsheredoc'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Destroy extends Command {
   static topic = 'spaces'
@@ -30,7 +31,7 @@ export default class Destroy extends Command {
     const {space, confirm} = flags
     const {name} = args
 
-    await confirmCommand(
+    await new ConfirmCommand().confirm(
       name,
       confirm,
       heredoc`
@@ -44,4 +45,3 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
-*/
