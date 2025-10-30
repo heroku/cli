@@ -1,13 +1,14 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/spaces/create'
+import Cmd from '../../../../src/commands/spaces/create.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
-// import {getGeneration} from '../../../../src/lib/apps/generation'
+import tsheredoc from 'tsheredoc'
+import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('spaces:create', function () {
   const now = new Date()
   const features = ['one', 'two']
@@ -274,5 +275,3 @@ describe('spaces:create', function () {
     `)
   })
 })
-
-*/

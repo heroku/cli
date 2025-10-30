@@ -1,14 +1,15 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {Space} from '../../lib/types/fir'
-import heredoc from 'tsheredoc'
-import {displayShieldState} from '../../lib/spaces/spaces'
-import {RegionCompletion} from '../../lib/autocomplete/completions'
-import {splitCsv} from '../../lib/spaces/parsers'
-import {getGeneration} from '../../lib/apps/generation'
+import {Space} from '../../lib/types/fir.js'
+import tsheredoc from 'tsheredoc'
+import {displayShieldState} from '../../lib/spaces/spaces.js'
+import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
+import {splitCsv} from '../../lib/spaces/parsers.js'
+import {getGeneration} from '../../lib/apps/generation.js'
+
+const heredoc = tsheredoc.default
 
 export default class Create extends Command {
   static topic = 'spaces'
@@ -95,4 +96,3 @@ export default class Create extends Command {
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }
 }
-*/
