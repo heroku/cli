@@ -39,6 +39,8 @@ export default class Add extends Command {
 
       if (redirectToDashboard) {
         await open(dashboardUrl)
+        ux.log('Sign out in the browser and run this command again.')
+        ux.exit()
       }
     }
 

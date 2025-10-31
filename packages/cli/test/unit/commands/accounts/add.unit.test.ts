@@ -7,6 +7,7 @@ import * as accounts from '../../../../src/lib/accounts/accounts'
 import {APIClient} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import * as proxyquire from 'proxyquire'
+import {stdout} from 'stdout-stderr'
 
 describe('accounts:add', function () {
   let api: nock.Scope
@@ -51,7 +52,7 @@ describe('accounts:add', function () {
       expect(loginStub.calledWith({method: 'browser', expiresIn: undefined, browser: undefined})).to.equal(true)
     })
 
-    it('should open dashboard if the user confirms they would like to logout in the browser', async function () {
+    it('should open dashboard and exit if the user confirms they would like to logout in the browser', async function () {
       process.env.HEROKU_API_KEY = 'testHerokuAPIKey'
       const openStub = sinon.stub()
       confirmStub.resolves(true)
@@ -59,13 +60,13 @@ describe('accounts:add', function () {
         '../../../../src/commands/accounts/add',
         {open: openStub},
       )
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
 
-      await runCommand(proxyCmd, ['testAccountName'])
-
-      expect(openStub.called).to.equal(true)
-      expect(openStub.calledWith('https://dashboard.heroku.com')).to.equal(true)
+      await runCommand(proxyCmd, ['testAccountName']).catch(() => {
+        expect(openStub.called).to.equal(true)
+        expect(openStub.calledWith('https://dashboard.heroku.com')).to.equal(true)
+        expect(stdout.output).to.include('Sign out in the browser and run this command again.')
+        expect(loginStub.called).to.equal(false)
+      })
     })
   })
 
