@@ -40,8 +40,8 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-
-    const actual = removeAllWhitespace(stderr.output)
+    const replacer = /([»›])/g
+    const actual = removeAllWhitespace(stderr.output.replace(replacer, ''))
     expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
     expect(actual).to.include(removeAllWhitespace('This command will destroy the space my-space'))
     expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))
@@ -74,8 +74,8 @@ describe('spaces:destroy', function () {
 
     await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
-    const actual = removeAllWhitespace(stderr.output)
-
+    const replacer = /([»›])/g
+    const actual = removeAllWhitespace(stderr.output.replace(replacer, ''))
     expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
     expect(actual).to.include(removeAllWhitespace('This command will destroy the space my-space'))
     expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))
