@@ -326,7 +326,7 @@ describe('logDisplayer', function () {
         } catch (error: unknown) {
           stdout.stop()
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('Log stream access expired. Please try again.')
+          expect(message).to.equal('Your access to the log stream expired. Try again.')
           expect(oclif.exit).to.eq(1)
         }
 

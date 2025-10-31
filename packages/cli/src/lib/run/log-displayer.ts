@@ -33,8 +33,20 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
         if (err.status === 404) {
           msg = 'Log stream access expired. Please try again.'
         } else if (err.status === 403) {
-          // For 403 errors, distinguish between stream expiration and IP restrictions
-          if (isTail) {
+          // Output the actual error message for testing to distinguish between stream expiration and IP restrictions
+          const errorDetails = {
+            status: err.status,
+            message: err.message,
+            isTail,
+            errorKeys: Object.keys(err),
+          }
+          console.error('403 Error Details:', JSON.stringify(errorDetails, null, 2))
+          console.error('Full error object:', err)
+
+          // Temporary: Use message from error if available, otherwise use isTail logic
+          if (err.message) {
+            msg = err.message
+          } else if (isTail) {
             // When tailing, 403 typically means stream access expired
             msg = 'Log stream access expired. Please try again.'
           } else {
