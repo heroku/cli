@@ -3,9 +3,8 @@ import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {add, list} from '../../lib/accounts/accounts'
 import {FlagInput} from '@oclif/core/lib/interfaces/parser'
-import {confirm} from '@inquirer/prompts'
+import {hux} from '@heroku/heroku-cli-util'
 import * as open from 'open'
-
 
 export default class Add extends Command {
   static description = 'add a Heroku account to your cache'
@@ -15,7 +14,9 @@ export default class Add extends Command {
   }
 
   static flags: FlagInput  = {
+    browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO'}),
+    'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),
   }
 
   static example = 'heroku accounts:add my-account'
@@ -23,7 +24,7 @@ export default class Add extends Command {
   async run() {
     const {args, flags} = await this.parse(Add)
     const {name} = args
-    const {sso} = flags
+    const {sso, browser, 'expires-in': expiresIn} = flags
     const logInMessage = 'You must be logged in to run this command.'
     const dashboardUrl = 'https://dashboard.heroku.com'
     let redirectToDashboard = false
@@ -34,14 +35,14 @@ export default class Add extends Command {
 
     if (!sso) {
       ux.warn('You may be signed into a different Heroku account from the browser.')
-      redirectToDashboard = await confirm({default: false, message: `Redirect to Dashboard for sign out?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
+      redirectToDashboard = await hux.confirm('Redirect to Dashboard for sign out?')
 
       if (redirectToDashboard) {
-        return await open(dashboardUrl)
+        await open(dashboardUrl)
       }
     }
 
-    await this.heroku.login({method: sso ? 'sso' : 'browser'})
+    await this.heroku.login({method: sso ? 'sso' : 'browser', expiresIn, browser})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
     const email = account.email || ''
 
