@@ -1,6 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
+import * as https from 'https'
+import {URL} from 'url'
 import colorize from './colorize'
 import {LogSession} from '../types/fir'
 import {getGenerationByAppId} from '../apps/generation'
@@ -16,6 +18,84 @@ interface LogDisplayerOptions {
   type?: string
 }
 
+/**
+ * Fetches the response body from an HTTP request when the response body isn't available
+ * from the error object (e.g., EventSource doesn't expose response bodies).
+ * Uses Node's https module directly (like dyno.ts) to handle staging SSL certificates.
+ *
+ * @param url - The URL to fetch the response body from
+ * @param expectedStatusCode - Only return body if status code matches (default: 403)
+ * @returns The response body as a string, or empty string if unavailable or status doesn't match
+ */
+async function fetchHttpResponseBody(url: string, expectedStatusCode: number = 403): Promise<string> {
+  return new Promise(resolve => {
+    let req: ReturnType<typeof https.request> | null = null
+    let timeout: NodeJS.Timeout | null = null
+    const TIMEOUT_MS = 5000 // 5 second timeout
+
+    const cleanup = (): void => {
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
+
+      if (req) {
+        req.destroy()
+        req = null
+      }
+    }
+
+    try {
+      const parsedUrl = new URL(url)
+      const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
+
+      const options: https.RequestOptions = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || 443,
+        path: parsedUrl.pathname + parsedUrl.search,
+        method: 'GET',
+        headers: {
+          'User-Agent': userAgent,
+          Accept: 'text/plain',
+        },
+        rejectUnauthorized: false, // Allow staging self-signed certificates
+      }
+
+      req = https.request(options, res => {
+        let body = ''
+        res.setEncoding('utf8')
+        res.on('data', chunk => {
+          body += chunk
+        })
+        res.on('end', () => {
+          cleanup()
+          if (res.statusCode === expectedStatusCode) {
+            resolve(body)
+          } else {
+            resolve('')
+          }
+        })
+      })
+
+      req.on('error', (): void => {
+        cleanup()
+        resolve('')
+      })
+
+      // Set timeout to prevent hanging requests
+      timeout = setTimeout(() => {
+        cleanup()
+        resolve('')
+      }, TIMEOUT_MS)
+
+      req.end()
+    } catch {
+      cleanup()
+      resolve('')
+    }
+  })
+}
+
 function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number) {
   return new Promise<void>(function (resolve, reject) {
     const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
@@ -27,43 +107,52 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       },
     })
 
-    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
+    let isResolved = false
+
+    const safeReject = (error: Error) => {
+      if (!isResolved) {
+        isResolved = true
+        es.close()
+        reject(error)
+      }
+    }
+
+    const safeResolve = () => {
+      if (!isResolved) {
+        isResolved = true
+        es.close()
+        resolve()
+      }
+    }
+
+    es.addEventListener('error', async function (err: { status?: number; message?: string | null }) {
       if (err && (err.status || err.message)) {
         let msg: string
         if (err.status === 404) {
-          msg = 'Log stream access expired. Please try again.'
+          msg = 'Your access to the log stream expired. Try again.'
+          safeReject(new Error(msg))
         } else if (err.status === 403) {
-          // Output the actual error message for testing to distinguish between stream expiration and IP restrictions
-          const errorDetails = {
-            status: err.status,
-            message: err.message,
-            isTail,
-            errorKeys: Object.keys(err),
-          }
-          console.error('403 Error Details:', JSON.stringify(errorDetails, null, 2))
-          console.error('Full error object:', err)
+          // EventSource doesn't expose response bodies, so fetch it via HTTP request
+          const responseBody = await fetchHttpResponseBody(logplexURL, 403)
 
-          // Temporary: Use message from error if available, otherwise use isTail logic
-          if (err.message) {
-            msg = err.message
-          } else if (isTail) {
-            // When tailing, 403 typically means stream access expired
-            msg = 'Log stream access expired. Please try again.'
+          // Check if response contains IP restriction message
+          // Match both "space" (for spaces) and "app" (for apps) IP restriction messages
+          if (responseBody && responseBody.includes("can't access") && responseBody.includes('IP address')) {
+            // Extract and use the server's error message
+            msg = responseBody.trim()
           } else {
-            // When not tailing, 403 means IP access restriction
-            msg = 'You can\'t access this app from your IP address'
+            // For other 403 errors (like stream expiration), use default message
+            msg = 'Your access to the log stream expired. Try again.'
           }
+
+          safeReject(new Error(msg))
         } else {
           msg = `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
+
+          safeReject(new Error(msg))
         }
-
-        reject(new Error(msg))
-        es.close()
-      }
-
-      if (!isTail) {
-        resolve()
-        es.close()
+      } else if (!isTail) {
+        safeResolve()
       }
 
       // should only land here if --tail and no error status or message

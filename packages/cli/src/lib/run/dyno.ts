@@ -253,7 +253,7 @@ export default class Dyno extends Duplex {
       r.on('response', response => {
         const statusCode = response.statusCode
         if (statusCode === 403) {
-          this.reject?.(new Error('You can\'t access this app from your IP address'))
+          this.reject?.(new Error('You can\'t access this space from your IP address. Contact your team admin.'))
         }
       })
       r.on('upgrade', (_, remote) => {

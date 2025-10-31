@@ -53,7 +53,12 @@ describe('logDisplayer', function () {
             reqheaders: {Accept: 'text/event-stream'},
           }).get('/stream')
             .query(true)
-            .reply(401)
+            .reply(403)
+
+          nock('https://logs.heroku.com')
+            .get('/stream')
+            .query(true)
+            .reply(403, 'You can\'t access this space from your IP address. Contact your team admin.')
 
           try {
             await logDisplayer(heroku, {
@@ -65,7 +70,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('You can\'t access this app from your IP address')
+            expect(message).to.equal('You can\'t access this space from your IP address. Contact your team admin.')
           }
 
           logServer.done()
@@ -87,7 +92,12 @@ describe('logDisplayer', function () {
             reqheaders: {Accept: 'text/event-stream'},
           }).get('/stream')
             .query(true)
-            .reply(401)
+            .reply(403)
+
+          nock('https://logs.heroku.com')
+            .get('/stream')
+            .query(true)
+            .reply(403, 'You can\'t access this space from your IP address. Contact your team admin.')
 
           try {
             await logDisplayer(heroku, {
@@ -99,7 +109,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('You can\'t access this app from your IP address')
+            expect(message).to.equal('You can\'t access this space from your IP address. Contact your team admin.')
           }
 
           logServer.done()
@@ -121,7 +131,12 @@ describe('logDisplayer', function () {
             reqheaders: {Accept: 'text/event-stream'},
           }).get('/stream')
             .query(true)
-            .reply(401)
+            .reply(403)
+
+          nock('https://logs.heroku.com')
+            .get('/stream')
+            .query(true)
+            .reply(403, 'You can\'t access this space from your IP address. Contact your team admin.')
 
           try {
             await logDisplayer(heroku, {
@@ -134,7 +149,7 @@ describe('logDisplayer', function () {
             })
           } catch (error: unknown) {
             const {message} = error as CLIError
-            expect(message).to.equal('You can\'t access this app from your IP address')
+            expect(message).to.equal('You can\'t access this space from your IP address. Contact your team admin.')
           }
 
           logServer.done()
@@ -216,7 +231,12 @@ describe('logDisplayer', function () {
           reqheaders: {Accept: 'text/event-stream'},
         }).get('/stream')
           .query(true)
-          .reply(401)
+          .reply(403)
+
+        nock('https://logs.heroku.com')
+          .get('/stream')
+          .query(true)
+          .reply(403, 'You can\'t access this space from your IP address. Contact your team admin.')
 
         try {
           await logDisplayer(heroku, {
@@ -225,7 +245,7 @@ describe('logDisplayer', function () {
           })
         } catch (error: unknown) {
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('You can\'t access this app from your IP address')
+          expect(message).to.equal('You can\'t access this space from your IP address. Contact your team admin.')
           expect(oclif.exit).to.eq(1)
         }
 
@@ -282,7 +302,12 @@ describe('logDisplayer', function () {
           reqheaders: {Accept: 'text/event-stream'},
         }).get('/stream')
           .query(true)
-          .reply(401)
+          .reply(403)
+
+        nock('https://logs.heroku.com')
+          .get('/stream')
+          .query(true)
+          .reply(403, 'You can\'t access this space from your IP address. Contact your team admin.')
 
         try {
           await logDisplayer(heroku, {
@@ -291,7 +316,7 @@ describe('logDisplayer', function () {
           })
         } catch (error: unknown) {
           const {message, oclif} = error as CLIError
-          expect(message).to.equal('You can\'t access this app from your IP address')
+          expect(message).to.equal('You can\'t access this space from your IP address. Contact your team admin.')
           expect(oclif.exit).to.eq(1)
         }
 
