@@ -20,7 +20,7 @@ describe('spaces:create', function () {
   it('creates a Standard space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -65,7 +65,7 @@ describe('spaces:create', function () {
   it('shows Standard Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -99,7 +99,7 @@ describe('spaces:create', function () {
   it('creates a Shield space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -146,7 +146,7 @@ describe('spaces:create', function () {
   it('shows Shield Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -184,7 +184,7 @@ describe('spaces:create', function () {
       .post('/spaces', {
         cidr: '10.0.0.0/24',
         data_cidr: '172.23.0.0/28',
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',

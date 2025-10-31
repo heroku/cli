@@ -13,7 +13,7 @@ export default class Index extends Command {
   static flags = {
     json: Flags.boolean({description: 'output in json format'}),
     team: Flags.team(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -42,9 +42,7 @@ export default class Index extends Command {
   }
 
   protected sortByName(spaces: SpaceArray) {
-    spaces.sort((a, b) => {
-      return a.name === b.name ? 0 : (a.name < b.name ? -1 : 1)
-    })
+    spaces.sort((a, b) => a.name === b.name ? 0 : (a.name < b.name ? -1 : 1))
     return spaces
   }
 
