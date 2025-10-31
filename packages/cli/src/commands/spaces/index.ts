@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {Space} from '../../lib/types/fir'
-import {getGeneration} from '../../lib/apps/generation'
+import {Space} from '../../lib/types/fir.js'
+import {getGeneration} from '../../lib/apps/generation.js'
 
 type SpaceArray = Array<Required<Space>>
 
@@ -14,7 +13,7 @@ export default class Index extends Command {
   static flags = {
     json: Flags.boolean({description: 'output in json format'}),
     team: Flags.team(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -43,14 +42,12 @@ export default class Index extends Command {
   }
 
   protected sortByName(spaces: SpaceArray) {
-    spaces.sort((a, b) => {
-      return a.name === b.name ? 0 : (a.name < b.name ? -1 : 1)
-    })
+    spaces.sort((a, b) => a.name === b.name ? 0 : (a.name < b.name ? -1 : 1))
     return spaces
   }
 
   protected displayJSON(spaces: SpaceArray) {
-    ux.log(JSON.stringify(spaces, null, 2))
+    ux.stdout(JSON.stringify(spaces, null, 2))
   }
 
   protected display(spaces: SpaceArray) {
@@ -70,4 +67,3 @@ export default class Index extends Command {
     )
   }
 }
-*/

@@ -1,13 +1,14 @@
-/*
 import {Args, ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import confirmCommand from '../../lib/confirmCommand'
-import {displayNat} from '../../lib/spaces/spaces'
-import color from '@heroku-cli/color'
-import {Space} from '../../lib/types/fir'
-import {getGeneration} from '../../lib/apps/generation'
+import tsheredoc from 'tsheredoc'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import {displayNat} from '../../lib/spaces/spaces.js'
+import {color} from '@heroku-cli/color'
+import {Space} from '../../lib/types/fir.js'
+import {getGeneration} from '../../lib/apps/generation.js'
+
+const heredoc = tsheredoc.default
 
 type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
@@ -64,7 +65,7 @@ export default class Destroy extends Command {
       }
     }
 
-    await confirmCommand(
+    await new ConfirmCommand().confirm(
       spaceName as string,
       confirm,
       `Destructive Action\nThis command will destroy the space ${color.bold.red(spaceName as string)}\n${natWarning}\n`,
@@ -75,4 +76,3 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
-*/
