@@ -55,3 +55,16 @@ export const grpcAppTelemetryDrain: TelemetryDrain = {
     },
   },
 }
+
+export const splunkAppTelemetryDrain: TelemetryDrain = {
+  id: '6fa85f64-5717-4562-b3fc-2c963f66afa6',
+  owner: {id: '845c1486-ad78-4de7-8da7-20d4f8b15b71', type: 'app'},
+  signals: ['traces', 'metrics', 'logs'],
+  exporter: {
+    type: 'splunk',
+    endpoint: 'https://splunk.example.com/services/collector',
+    headers: {
+      Authorization: 'Splunk your-hec-token',
+    },
+  },
+}

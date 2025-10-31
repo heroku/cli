@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.15.0](https://github.com/heroku/cli/compare/v10.13.2...v10.15.0) (2025-10-29)
+
+
+### Bug Fixes
+
+* Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
+
+
+### Features
+
+* **cli:** Introduce splunkhec drain type ([#3395](https://github.com/heroku/cli/issues/3395)) ([31e7341](https://github.com/heroku/cli/commit/31e7341b1a105b3aaebb8a550fcb90f49cf3e4d6))
+* Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
+
+
+
+
+
+# [10.14.0](https://github.com/heroku/cli/compare/v10.13.2...v10.14.0) (2025-10-23)
+
+
+### Bug Fixes
+
+* Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
+
+
+### Features
+
+* Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
+
+
+
+
+
 ## [10.13.2](https://github.com/heroku/cli/compare/v10.13.1...v10.13.2) (2025-09-16)
 
 
@@ -10,7 +43,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
 * Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
-
 
 
 
