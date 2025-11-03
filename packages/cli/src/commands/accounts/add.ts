@@ -7,7 +7,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import * as open from 'open'
 
 export default class Add extends Command {
-  static description = 'add a Heroku account to your cache'
+  static description = 'add a Heroku account to your cache (requires login)'
 
   static args = {
     name: Args.string({description: 'name of Heroku account to add', required: true}),
@@ -16,7 +16,7 @@ export default class Add extends Command {
   static flags: FlagInput  = {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO'}),
-    'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),
+    'expires-in': flags.integer({char: 'e', description: 'duration of login token in seconds (default 30 days)'}),
   }
 
   static example = 'heroku accounts:add my-account'
