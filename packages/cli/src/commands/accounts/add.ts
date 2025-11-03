@@ -14,7 +14,7 @@ export default class Add extends Command {
   }
 
   static flags: FlagInput  = {
-    browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
+    browser: flags.string({description: 'browser to open login with (example: "firefox", "safari")'}),
     sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of login token in seconds (default 30 days)'}),
   }
