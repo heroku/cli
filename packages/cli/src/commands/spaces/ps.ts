@@ -12,16 +12,16 @@ type SpaceDynosInfo = {
   dynos: Required<Heroku.Dyno>[]
 }
 export default class Ps extends Command {
-  static topic = 'spaces';
-  static description = 'list dynos for a space';
+  static topic = 'spaces'
+  static description = 'list dynos for a space'
   static flags = {
     space: flags.string({char: 's', description: 'space to get dynos of'}),
     json: flags.boolean({description: 'output in json format'}),
-  };
+  }
 
   static args = {
     space: Args.string({hidden: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Ps)

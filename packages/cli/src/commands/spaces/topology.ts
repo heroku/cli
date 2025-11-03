@@ -9,16 +9,16 @@ import {SpaceTopology} from '../../lib/types/spaces.js'
 const heredoc = tsheredoc.default
 
 export default class Topology extends Command {
-  static topic = 'spaces';
-  static description = 'show space topology';
+  static topic = 'spaces'
+  static description = 'show space topology'
   static flags = {
     space: flags.string({char: 's', description: 'space to get topology of'}),
     json: flags.boolean({description: 'output in json format'}),
-  };
+  }
 
   static args = {
     space: Args.string({hidden: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Topology)
