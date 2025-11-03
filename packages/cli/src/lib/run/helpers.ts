@@ -97,12 +97,10 @@ export async function buildCommandWithLauncher(
  * from the error object (e.g., EventSource doesn't expose response bodies).
  *
  * Uses native fetch API with a custom https.Agent to handle staging SSL certificates
- * (rejectUnauthorized: false). This provides modern TypeScript patterns while maintaining
- * compatibility with staging environments.
+ * (rejectUnauthorized: false).
  *
  * Note: Node.js native fetch doesn't support custom agents directly, so we use
  * https.request when rejectUnauthorized is needed, but structure the code with
- * modern patterns (AbortController, async/await, proper error handling).
  *
  * @param url - The URL to fetch the response body from
  * @param expectedStatusCode - Only return body if status code matches (default: 403)
