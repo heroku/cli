@@ -2,6 +2,8 @@
 import {ux} from '@oclif/core'
 import type {APIClient} from '@heroku-cli/command'
 import type {App} from '../types/fir'
+import * as https from 'https'
+import {URL} from 'url'
 
 // this function exists because oclif sorts argv
 // and to capture all non-flag command inputs
@@ -88,4 +90,114 @@ export async function buildCommandWithLauncher(
 ): Promise<string> {
   const prependLauncher = await shouldPrependLauncher(heroku, appName, disableLauncher)
   return buildCommand(args, prependLauncher)
+}
+
+/**
+ * Fetches the response body from an HTTP request when the response body isn't available
+ * from the error object (e.g., EventSource doesn't expose response bodies).
+ *
+ * Uses native fetch API with a custom https.Agent to handle staging SSL certificates
+ * (rejectUnauthorized: false). This provides modern TypeScript patterns while maintaining
+ * compatibility with staging environments.
+ *
+ * Note: Node.js native fetch doesn't support custom agents directly, so we use
+ * https.request when rejectUnauthorized is needed, but structure the code with
+ * modern patterns (AbortController, async/await, proper error handling).
+ *
+ * @param url - The URL to fetch the response body from
+ * @param expectedStatusCode - Only return body if status code matches (default: 403)
+ * @returns The response body as a string, or empty string if unavailable or status doesn't match
+ */
+export async function fetchHttpResponseBody(url: string, expectedStatusCode: number = 403): Promise<string> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
+  try {
+    const parsedUrl = new URL(url)
+    const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
+
+    // Note: Native fetch in Node.js doesn't support custom https.Agent for SSL certificate handling.
+    // We use https.request when rejectUnauthorized: false is needed (staging environments).
+    // This maintains compatibility while using modern async/await and AbortController patterns.
+    if (parsedUrl.protocol !== 'https:') {
+      // For non-HTTPS URLs, use native fetch
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'User-Agent': userAgent,
+          Accept: 'text/plain',
+        },
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (response.status === expectedStatusCode) {
+        return await response.text()
+      }
+
+      return ''
+    }
+
+    // For HTTPS with rejectUnauthorized: false (staging), use https.request
+    // This is the same pattern as dyno.ts - necessary for staging SSL certs
+    return await new Promise<string>(resolve => {
+      const cleanup = (): void => {
+        clearTimeout(timeoutId)
+        controller.abort()
+      }
+
+      const options: https.RequestOptions = {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || 443,
+        path: parsedUrl.pathname + parsedUrl.search,
+        method: 'GET',
+        headers: {
+          'User-Agent': userAgent,
+          Accept: 'text/plain',
+        },
+        rejectUnauthorized: false, // Allow staging self-signed certificates
+      }
+
+      const req = https.request(options, res => {
+        let body = ''
+        res.setEncoding('utf8')
+        res.on('data', chunk => {
+          body += chunk
+        })
+        res.on('end', () => {
+          cleanup()
+          if (res.statusCode === expectedStatusCode) {
+            resolve(body)
+          } else {
+            resolve('')
+          }
+        })
+      })
+
+      req.on('error', () => {
+        cleanup()
+        resolve('')
+      })
+
+      // Abort on timeout
+      controller.signal.addEventListener('abort', () => {
+        req.destroy()
+        resolve('')
+      }, {once: true})
+
+      req.end()
+    })
+  } catch (error: unknown) {
+    clearTimeout(timeoutId)
+
+    // AbortError is expected on timeout - return empty string
+    if (error instanceof Error && error.name === 'AbortError') {
+      return ''
+    }
+
+    // For other errors, return empty string for graceful degradation
+    // This matches the previous behavior where errors returned empty string
+    return ''
+  }
 }

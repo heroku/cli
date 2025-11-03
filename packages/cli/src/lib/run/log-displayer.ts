@@ -1,9 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
-import * as https from 'https'
-import {URL} from 'url'
 import colorize from './colorize'
+import {fetchHttpResponseBody} from './helpers'
 import {LogSession} from '../types/fir'
 import {getGenerationByAppId} from '../apps/generation'
 
@@ -16,84 +15,6 @@ interface LogDisplayerOptions {
   source?: string
   tail: boolean
   type?: string
-}
-
-/**
- * Fetches the response body from an HTTP request when the response body isn't available
- * from the error object (e.g., EventSource doesn't expose response bodies).
- * Uses Node's https module directly (like dyno.ts) to handle staging SSL certificates.
- *
- * @param url - The URL to fetch the response body from
- * @param expectedStatusCode - Only return body if status code matches (default: 403)
- * @returns The response body as a string, or empty string if unavailable or status doesn't match
- */
-async function fetchHttpResponseBody(url: string, expectedStatusCode: number = 403): Promise<string> {
-  return new Promise(resolve => {
-    let req: ReturnType<typeof https.request> | null = null
-    let timeout: NodeJS.Timeout | null = null
-    const TIMEOUT_MS = 5000 // 5 second timeout
-
-    const cleanup = (): void => {
-      if (timeout) {
-        clearTimeout(timeout)
-        timeout = null
-      }
-
-      if (req) {
-        req.destroy()
-        req = null
-      }
-    }
-
-    try {
-      const parsedUrl = new URL(url)
-      const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
-
-      const options: https.RequestOptions = {
-        hostname: parsedUrl.hostname,
-        port: parsedUrl.port || 443,
-        path: parsedUrl.pathname + parsedUrl.search,
-        method: 'GET',
-        headers: {
-          'User-Agent': userAgent,
-          Accept: 'text/plain',
-        },
-        rejectUnauthorized: false, // Allow staging self-signed certificates
-      }
-
-      req = https.request(options, res => {
-        let body = ''
-        res.setEncoding('utf8')
-        res.on('data', chunk => {
-          body += chunk
-        })
-        res.on('end', () => {
-          cleanup()
-          if (res.statusCode === expectedStatusCode) {
-            resolve(body)
-          } else {
-            resolve('')
-          }
-        })
-      })
-
-      req.on('error', (): void => {
-        cleanup()
-        resolve('')
-      })
-
-      // Set timeout to prevent hanging requests
-      timeout = setTimeout(() => {
-        cleanup()
-        resolve('')
-      }, TIMEOUT_MS)
-
-      req.end()
-    } catch {
-      cleanup()
-      resolve('')
-    }
-  })
 }
 
 function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number) {
