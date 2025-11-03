@@ -1,8 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Transfer extends Command {
   static topic = 'spaces'
@@ -33,4 +34,3 @@ export default class Transfer extends Command {
     }
   }
 }
-*/
