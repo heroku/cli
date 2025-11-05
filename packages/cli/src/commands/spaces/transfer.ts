@@ -1,8 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Transfer extends Command {
   static topic = 'spaces'
@@ -19,8 +20,8 @@ export default class Transfer extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Transfer)
-    const space = flags.space
-    const team = flags.team
+    const {space} = flags
+    const {team} = flags
 
     try {
       ux.action.start(`Transferring space ${color.yellow(space)} to team ${color.green(team)}`)
@@ -33,4 +34,3 @@ export default class Transfer extends Command {
     }
   }
 }
-*/

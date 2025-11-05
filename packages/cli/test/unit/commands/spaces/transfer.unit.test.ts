@@ -1,10 +1,9 @@
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/spaces/transfer'
+import Cmd from '../../../../src/commands/spaces/transfer.js'
 import runCommand from '../../../helpers/runCommand.js'
 
-/*
 describe('spaces:transfer', function () {
   it('yields success when the API succeeds', async function () {
     const space = 'dimension-c137'
@@ -60,5 +59,3 @@ describe('spaces:transfer', function () {
     api.done()
   })
 })
-
-*/

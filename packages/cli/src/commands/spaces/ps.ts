@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {ago} from '../../lib/time'
+import {ago} from '../../lib/time.js'
 
 const getProcessNum = (s: string) => Number.parseInt(s.split('.', 2)[1], 10)
 
@@ -13,16 +12,16 @@ type SpaceDynosInfo = {
   dynos: Required<Heroku.Dyno>[]
 }
 export default class Ps extends Command {
-  static topic = 'spaces';
-  static description = 'list dynos for a space';
+  static topic = 'spaces'
+  static description = 'list dynos for a space'
   static flags = {
     space: flags.string({char: 's', description: 'space to get dynos of'}),
     json: flags.boolean({description: 'output in json format'}),
-  };
+  }
 
   static args = {
     space: Args.string({hidden: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Ps)
@@ -86,11 +85,10 @@ export default class Ps extends Command {
       hux.styledHeader(`${appName} ${key} (${color.yellow(dynos.length)})`)
       dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
       for (const dyno of dynos) {
-        ux.log(dyno)
+        ux.stdout(dyno)
       }
 
-      ux.log()
+      ux.stdout()
     }
   }
 }
-*/

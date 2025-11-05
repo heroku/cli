@@ -1,15 +1,16 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
+import tsheredoc from 'tsheredoc'
+import {action} from '@oclif/core/ux'
 import debug from 'debug'
-import {renderInfo} from '../../lib/spaces/spaces'
+import {renderInfo} from '../../lib/spaces/spaces.js'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {IncomingHttpHeaders} from 'node:http'
-import {SpaceNat} from '../../lib/types/fir'
-import {SpaceWithOutboundIps} from '../../lib/types/spaces'
+import {SpaceNat} from '../../lib/types/fir.js'
+import {SpaceWithOutboundIps} from '../../lib/types/spaces.js'
+
+const heredoc = tsheredoc.default
 
 const spacesDebug = debug('spaces:wait')
 
@@ -49,7 +50,6 @@ export default class Wait extends Command {
     const interval = flags.interval * 1000
     const timeout = flags.timeout * 1000
     const deadline = new Date(Date.now() + timeout)
-    const action = new Spinner()
     action.start(`Waiting for space ${color.green(spaceName as string)} to allocate`)
 
     const headers: IncomingHttpHeaders = {
@@ -102,4 +102,3 @@ export default class Wait extends Command {
     }
   }
 }
-*/

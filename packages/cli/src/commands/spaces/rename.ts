@@ -1,12 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Rename extends Command {
-  static topic = 'spaces';
-  static description = 'renames a space';
+  static topic = 'spaces'
+  static description = 'renames a space'
   static example = heredoc(`
     $ heroku spaces:rename --from old-space-name --to new-space-name
     Renaming space old-space-name to new-space-name... done
@@ -15,7 +16,7 @@ export default class Rename extends Command {
   static flags = {
     from: flags.string({required: true, description: 'current name of space'}),
     to: flags.string({required: true, description: 'desired name of space'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Rename)
@@ -25,4 +26,3 @@ export default class Rename extends Command {
     ux.action.stop()
   }
 }
-*/

@@ -2,9 +2,11 @@ import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import strftime from 'strftime'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../src/commands/spaces/ps'
-import runCommand from '../../helpers/runCommand.js'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../src/commands/spaces/ps.js'
+import runCommand from '../../../helpers/runCommand.js'
+
+const heredoc = tsheredoc.default
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
@@ -40,7 +42,7 @@ const privateDynos = [
     ],
   },
 ]
-/*
+
 describe('spaces:ps', function () {
   let api: nock.Scope
   let apiSpace: nock.Scope
@@ -134,5 +136,3 @@ describe('spaces:ps', function () {
     expect(JSON.parse(stdout.output)).to.eql(spaceDynos)
   })
 })
-
-*/
