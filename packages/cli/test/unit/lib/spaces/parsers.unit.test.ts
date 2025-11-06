@@ -1,7 +1,6 @@
 import {expect} from 'chai'
 import {splitCsv} from '../../../../src/lib/spaces/parsers.js'
 
-/*
 describe('splitCsv', function () {
   it('splits single value', function () {
     return expect(splitCsv('a')).to.deep.equal(['a'])
@@ -27,5 +26,3 @@ describe('splitCsv', function () {
     return expect(splitCsv('')).to.deep.equal([])
   })
 })
-
-*/
