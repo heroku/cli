@@ -249,6 +249,14 @@ export default class Dyno extends Duplex {
       r.end()
 
       r.on('error', this.reject)
+
+      r.on('response', response => {
+        const statusCode = response.statusCode
+        if (statusCode === 403) {
+          r.destroy()
+          this.reject?.(new Error("You can't access this space from your IP address. Contact your team admin."))
+        }
+      })
       r.on('upgrade', (_, remote) => {
         const s = net.createServer(client => {
           client.on('end', () => {
@@ -317,7 +325,7 @@ export default class Dyno extends Duplex {
 
         // suppress host key and permission denied messages
         const messages = [
-          "Warning: Permanently added '[127.0.0.1]"
+          "Warning: Permanently added '[127.0.0.1]",
         ]
 
         const killMessages = [
