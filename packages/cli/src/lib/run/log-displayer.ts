@@ -2,7 +2,6 @@ import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import color from '@heroku-cli/color'
 import colorize from './colorize'
-import {fetchHttpResponseBody} from './helpers'
 import {LogSession} from '../types/fir'
 import {getGenerationByAppId} from '../apps/generation'
 
@@ -29,6 +28,7 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
     })
 
     let isResolved = false
+    let hasReceivedMessages = false
 
     const safeReject = (error: Error) => {
       if (!isResolved) {
@@ -46,43 +46,32 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       }
     }
 
-    es.addEventListener('error', async function (err: { status?: number; message?: string | null }) {
+    es.addEventListener('message', function (e: { data: string }) {
+      hasReceivedMessages = true
+      e.data.trim().split(/\n+/).forEach(line => {
+        ux.log(colorize(line))
+      })
+    })
+
+    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
       if (err && (err.status || err.message)) {
         let msg: string
-        if (err.status === 404) {
-          msg = 'Your access to the log stream expired. Try again.'
-          safeReject(new Error(msg))
-        } else if (err.status === 403) {
-          // EventSource doesn't expose response bodies, so fetch it via HTTP request
-          const responseBody = await fetchHttpResponseBody(logplexURL, 403)
-
-          // Check if response contains IP restriction message
-          // Match both "space" (for spaces) and "app" (for apps) IP restriction messages
-          if (responseBody && responseBody.includes("can't access") && responseBody.includes('IP address')) {
-            // Extract and use the server's error message
-            msg = responseBody.trim()
-          } else {
-            // For other 403 errors (like stream expiration), use default message
-            msg = 'Your access to the log stream expired. Try again.'
-          }
-
-          safeReject(new Error(msg))
+        if (err.status === 403) {
+          msg = hasReceivedMessages ?
+            'Log stream access expired. Please try again.' :
+            "You can't access this space from your IP address. Contact your team admin."
+        } else if (err.status === 404 && isTail) {
+          msg = 'Log stream access expired. Please try again.'
         } else {
           msg = `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
-
-          safeReject(new Error(msg))
         }
+
+        safeReject(new Error(msg))
       } else if (!isTail) {
         safeResolve()
       }
 
       // should only land here if --tail and no error status or message
-    })
-
-    es.addEventListener('message', function (e: { data: string }) {
-      e.data.trim().split(/\n+/).forEach(line => {
-        ux.log(colorize(line))
-      })
     })
 
     if (isTail && recreateSessionTimeout) {
