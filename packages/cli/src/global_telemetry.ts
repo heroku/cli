@@ -97,9 +97,11 @@ export function setupTelemetry(config: any, opts: any) {
   Sentry.init({
     dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
     environment: isDev ? 'development' : 'production',
+    release: config.version,
     beforeSend(event) {
       return scrubber.scrub(event).data
     },
+    debug: true,
   })
 
   const irregularTelemetryObject = {
@@ -172,8 +174,8 @@ export async function sendTelemetry(currentTelemetry: any) {
   if (telemetry instanceof Error) {
     await Promise.all([
       sendToHoneycomb(telemetry),
+      sendToSentry(telemetry),
     ])
-    sendToSentry(telemetry)
   } else {
     await sendToHoneycomb(telemetry)
   }
@@ -211,10 +213,13 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
   }
 }
 
-export function sendToSentry(data: CLIError) {
+export async function sendToSentry(data: CLIError) {
   try {
     Sentry.captureException(data)
+    // ensures all events are sent to Sentry before exiting.
+    await Sentry.flush()
   } catch {
     debug('Could not send error report')
+    return Promise.reject()
   }
 }
