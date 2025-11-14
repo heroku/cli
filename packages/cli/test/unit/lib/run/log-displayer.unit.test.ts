@@ -375,7 +375,6 @@ describe('logDisplayer', function () {
 
     context('when the log server responds with a stream of log lines and then returns 403', function () {
       it('displays log lines and exits showing a stream access expired error for delayed 403', async function () {
-        nock.cleanAll()
         // Set up GET and POST in same scope chain - GET happens first, then POST
         const api = nock('https://api.heroku.com', {
           reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
