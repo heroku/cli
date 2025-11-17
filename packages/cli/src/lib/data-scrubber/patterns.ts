@@ -16,7 +16,4 @@ export const PII_PATTERNS = [
 
   // JWT tokens
   /\beyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g,
-
-  // API keys (generic 32+ char alphanumeric strings)
-  /\b[A-Za-z0-9]{32,}\b/g,
 ]
