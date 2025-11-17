@@ -101,7 +101,6 @@ export function setupTelemetry(config: any, opts: any) {
     beforeSend(event) {
       return scrubber.scrub(event).data
     },
-    debug: true,
   })
 
   const irregularTelemetryObject = {
