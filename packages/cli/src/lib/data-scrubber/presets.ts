@@ -38,10 +38,8 @@ export const HEROKU_FIELDS = [
   'password_confirmation',
   /client[-_]?secret/i, // Matches client_secret, client-secret, clientsecret
 
-  // Tokens & Codes
+  // Tokens
   'token',
-  'code',
-  'state',
   'bouncer.token',
   'bouncer.refresh_token',
 
@@ -58,7 +56,7 @@ export const HEROKU_FIELDS = [
 
   // Infrastructure
   'logplexUrl',
-];
+]
 
 /**
  * GDPR-relevant PII field patterns
@@ -88,7 +86,7 @@ export const GDPR_FIELDS = [
   'postal_code',
   'ssn',
   'tax_id',
-];
+]
 
 /**
  * PCI-DSS relevant field patterns
@@ -119,4 +117,4 @@ export const PCI_FIELDS = [
   'cvv',
   'credit_card',
   'payment_method',
-];
+]

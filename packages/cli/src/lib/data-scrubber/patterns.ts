@@ -5,9 +5,6 @@ export const PII_PATTERNS = [
   // Social Security Numbers (US)
   /\b\d{3}-\d{2}-\d{4}\b/g,
 
-  // Credit Cards (basic - matches common formats)
-  /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
-
   // Email addresses
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
 
