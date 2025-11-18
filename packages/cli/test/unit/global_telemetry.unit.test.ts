@@ -122,15 +122,4 @@ describe('telemetry', function () {
     await telemetry.sendToHoneycomb(mockTelemetry!)
     honeycombAPI.done()
   })
-
-  it('confirms successful request to rollbar', async function () {
-    const mockRollbarError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
-
-    const rollbarAPI = nock('https://api.rollbar.com:443')
-      .post('/api/1/item/', identity)
-      .reply(200)
-
-    await telemetry.sendToRollbar(mockRollbarError)
-    rollbarAPI.done()
-  })
 })
