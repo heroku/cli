@@ -1,4 +1,3 @@
-import * as Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
@@ -22,14 +21,6 @@ function getToken() {
 }
 
 const debug = require('debug')('global_telemetry')
-
-const rollbar = new Rollbar({
-  accessToken: '20783109b0064dbb85be0b2c5a5a5f79',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-  environment: isDev ? 'development' : 'production',
-  codeVersion: version,
-})
 
 registerInstrumentations({
   instrumentations: [],
@@ -153,22 +144,15 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => void) {
-  // send telemetry to honeycomb and rollbar
+export async function sendTelemetry(currentTelemetry: any) {
+  // send telemetry to honeycomb
   if (isTelemetryDisabled) {
     return
   }
 
   const telemetry = currentTelemetry
 
-  if (telemetry instanceof Error) {
-    await Promise.all([
-      sendToRollbar(telemetry, rollbarCb),
-      sendToHoneycomb(telemetry),
-    ])
-  } else {
-    await sendToHoneycomb(telemetry)
-  }
+  await sendToHoneycomb(telemetry)
 }
 
 export async function sendToHoneycomb(data: Telemetry | CLIError) {
@@ -201,33 +185,4 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
   } catch {
     debug('could not send telemetry')
   }
-}
-
-export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
-  // Make this awaitable so we can wait for it to finish before exiting
-  let promiseResolve
-  const rollbarPromise = new Promise((resolve, reject) => {
-    promiseResolve = () => {
-      if (rollbarCb) {
-        try {
-          rollbarCb()
-        } catch (error: any) {
-          reject(error)
-        }
-      }
-
-      resolve(null)
-    }
-  })
-
-  const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
-  try {
-    // send data to rollbar
-    rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
-  } catch {
-    debug('Could not send error report')
-    return Promise.reject()
-  }
-
-  return rollbarPromise
 }
