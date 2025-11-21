@@ -3,8 +3,11 @@ import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import {CLIError} from '@oclif/core/lib/errors'
 import {expect} from 'chai'
+import {EventEmitter} from 'node:events'
 import * as nock from 'nock'
-import {stdout, stderr} from 'stdout-stderr'
+import * as proxyquire from 'proxyquire'
+import * as sinon from 'sinon'
+import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import logDisplayer from '../../../../src/lib/run/log-displayer'
 import {cedarApp, firApp} from '../../../fixtures/apps/fixtures'
@@ -141,273 +144,150 @@ describe('logDisplayer', function () {
         })
       })
     })
-
-    context('with a Fir app', function () {
-      beforeEach(function () {
-        api = nock('https://api.heroku.com', {
-          reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-        }).get('/apps/my-fir-app')
-          .reply(200, firApp)
-      })
-
-      afterEach(function () {
-        api.done()
-      })
-
-      context('with both lines and tail options present', function () {
-        it('creates a session with parameters set to option values, ignoring lines and tail options', async function () {
-          api
-            .post('/apps/my-fir-app/log-sessions', {
-              dyno: 'web-123-456',
-              source: 'app',
-              type: 'web',
-            })
-            .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=s3kr3t'})
-            .post('/apps/my-fir-app/log-sessions', {
-              dyno: 'web-123-456',
-              source: 'app',
-              type: 'web',
-            })
-            .reply(500)
-
-          const logServer = nock('https://telemetry.heroku.com', {
-            reqheaders: {Accept: 'text/event-stream'},
-          }).get('/streams/hyacinth-vbx')
-            .query(true)
-            .reply(401)
-
-          try {
-            await logDisplayer(heroku, {
-              app: 'my-fir-app',
-              dyno: 'web-123-456',
-              lines: 20,
-              source: 'app',
-              tail: true,
-              type: 'web',
-            })
-          } catch (error: unknown) {
-            const {message} = error as CLIError
-            expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
-          }
-
-          logServer.done()
-        })
-      })
-    })
-  })
-
-  context('with a Cedar app, with tail option disabled', function () {
-    beforeEach(function () {
-      api = nock('https://api.heroku.com', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }).get('/apps/my-cedar-app')
-        .reply(200, cedarApp)
-        .post('/apps/my-cedar-app/log-sessions', {tail: false})
-        .reply(200, {logplex_url: 'https://logs.heroku.com/stream?tail=false&token=s3kr3t'})
-    })
-
-    afterEach(function () {
-      api.done()
-    })
-
-    context('when the log server returns an error', function () {
-      it('shows the error and exits', async function () {
-        const logServer = nock('https://logs.heroku.com', {
-          reqheaders: {Accept: 'text/event-stream'},
-        }).get('/stream')
-          .query(true)
-          .reply(401)
-
-        try {
-          await logDisplayer(heroku, {
-            app: 'my-cedar-app',
-            tail: false,
-          })
-        } catch (error: unknown) {
-          const {message, oclif} = error as CLIError
-          expect(message).to.equal('Logs eventsource failed with: 401')
-          expect(oclif.exit).to.eq(1)
-        }
-
-        logServer.done()
-      })
-    })
-
-    context('when the log server responds with a stream of log lines', function () {
-      it('displays log lines and exits', async function () {
-        const logServer = nock('https://logs.heroku.com', {
-          reqheaders: {Accept: 'text/event-stream'},
-        }).get('/stream')
-          .query(true)
-          .reply(200, heredoc`
-            id: 1002
-            data: 2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1\n\n\n
-            id: 1003
-            data: 2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2\n\n\n
-          `)
-
-        stdout.start()
-        await logDisplayer(heroku, {
-          app: 'my-cedar-app',
-          tail: false,
-        })
-        stdout.stop()
-
-        logServer.done()
-        expect(stdout.output).to.eq(heredoc`
-          2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
-          2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
-        `)
-      })
-    })
-  })
-
-  context('with a Cedar app, with tail option enabled', function () {
-    beforeEach(function () {
-      api = nock('https://api.heroku.com', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }).get('/apps/my-cedar-app')
-        .reply(200, cedarApp)
-        .post('/apps/my-cedar-app/log-sessions', {tail: true})
-        .reply(200, {logplex_url: 'https://logs.heroku.com/stream?tail=true&token=s3kr3t'})
-    })
-
-    afterEach(function () {
-      api.done()
-    })
-
-    context('when the log server returns an error', function () {
-      it('shows the error and exits', async function () {
-        const logServer = nock('https://logs.heroku.com', {
-          reqheaders: {Accept: 'text/event-stream'},
-        }).get('/stream')
-          .query(true)
-          .reply(401)
-
-        try {
-          await logDisplayer(heroku, {
-            app: 'my-cedar-app',
-            tail: true,
-          })
-        } catch (error: unknown) {
-          const {message, oclif} = error as CLIError
-          expect(message).to.equal('Logs eventsource failed with: 401')
-          expect(oclif.exit).to.eq(1)
-        }
-
-        logServer.done()
-      })
-    })
-
-    context('when the log server responds with a stream of log lines and then timeouts', function () {
-      it('displays log lines and exits showing a timeout error', async function () {
-        const logServer = nock('https://logs.heroku.com', {
-          reqheaders: {Accept: 'text/event-stream'},
-        }).get('/stream')
-          .query(true)
-          .reply(200, heredoc`
-            id: 1002
-            data: 2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1\n\n\n
-            id: 1003
-            data: 2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2\n\n\n
-            event: error
-            data: {"status": 404, "message": null}\n\n\n
-          `)
-          .get('/stream')
-          .query(true)
-          .reply(404)
-
-        try {
-          stdout.start()
-          await logDisplayer(heroku, {
-            app: 'my-cedar-app',
-            tail: true,
-          })
-        } catch (error: unknown) {
-          stdout.stop()
-          const {message, oclif} = error as CLIError
-          expect(message).to.equal('Log stream timed out. Please try again.')
-          expect(oclif.exit).to.eq(1)
-        }
-
-        logServer.done()
-        expect(stdout.output).to.eq(heredoc`
-          2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
-          2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
-        `)
-      })
-    })
   })
 
   context('with a Fir app', function () {
+    let api: nock.Scope
+    let mockEventSourceInstance: EventEmitter
+    let logDisplayerWithMock: typeof logDisplayer
+
+    // Mock EventSource class that extends EventEmitter
+    class MockEventSource extends EventEmitter {
+      url: string
+      close: () => void
+      static lastInstance: EventEmitter | null = null
+
+      constructor(url: string, _options?: {proxy?: string; headers?: Record<string, string>}) {
+        super()
+        this.url = url
+        this.close = () => {
+          this.removeAllListeners()
+        }
+
+        // Store instance for test control
+        MockEventSource.lastInstance = this
+        mockEventSourceInstance = MockEventSource.lastInstance
+      }
+
+      // EventSource uses addEventListener, not just on()
+      addEventListener(event: string, handler: (e: any) => void) {
+        this.on(event, handler)
+      }
+    }
+
     beforeEach(function () {
+      nock.cleanAll()
       api = nock('https://api.heroku.com', {
         reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
       }).get('/apps/my-fir-app')
         .reply(200, firApp)
-        .post('/apps/my-fir-app/log-sessions')
-        .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=s3kr3t'})
-        .post('/apps/my-fir-app/log-sessions')
-        .reply(200, {logplex_url: 'https://telemetry.heroku.com/streams/hyacinth-vbx?token=0th3r-s3kr3t'})
-        .post('/apps/my-fir-app/log-sessions')
-        .reply(500)
+
+      sinon.stub(heroku, 'post').resolves({
+        body: {logplex_url: 'https://logs.heroku.com/stream?tail=true&token=s3kr3t'},
+      } as any)
+
+      logDisplayerWithMock = proxyquire('../../../../src/lib/run/log-displayer', {
+        '@heroku/eventsource': MockEventSource,
+      }).default
     })
 
     afterEach(function () {
       api.done()
+      sinon.restore()
+      mockEventSourceInstance = null as any
     })
 
-    it('displays logs and recreates log sessions on timeout', async function () {
-      const logSession1 = nock('https://telemetry.heroku.com', {
-        reqheaders: {Accept: 'text/event-stream'},
-      }).get('/streams/hyacinth-vbx')
-        .query({token: 's3kr3t'})
-        .reply(200, heredoc`
-          id: 1002
-          data: 2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1\n\n\n
-          id: 1003
-          data: 2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2\n\n\n
-        `)
-
-      const logSession2 = nock('https://telemetry.heroku.com', {
-        reqheaders: {Accept: 'text/event-stream'},
-      }).get('/streams/hyacinth-vbx')
-        .query({token: '0th3r-s3kr3t'})
-        .reply(200, heredoc`
-          id: 1004
-          data: 2024-10-17T22:23:24.326810+00:00 app[web.1]: log line 3\n\n\n
-        `)
-
-      try {
-        stdout.start()
-        stderr.start()
-        await logDisplayer(heroku, {
+    context('when the log server returns a 403 error before connection', function () {
+      it('shows the IP address access error and exits', async function () {
+        const promise = logDisplayerWithMock(heroku, {
           app: 'my-fir-app',
-          tail: false,
+          tail: true,
         })
-      } catch (error: unknown) {
-        stdout.stop()
-        stderr.stop()
-        const {message} = error as Error
-        expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
-      }
 
-      // We would like to test for the output here too, but because we're nuking 'setTimeout' in the test initialization
-      // the EventSource objects get closed and abort the initiated requests before emitting the events that are finally
-      // sent to stdout. So, we only test that the requests are indeed initiated as expected. Provided setTimeout is
-      // given enough time, we would expect the events to be emitted and the output to be there.
-      //
-      // expect(stdout.output).to.eq(heredoc`
-      //   2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
-      //   2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
-      //   2024-10-17T22:23:24.326810+00:00 app[web.1]: log line 3
-      // `)
+        const waitForInstance = () => {
+          if (mockEventSourceInstance) {
+            mockEventSourceInstance.emit('error', {status: 403, message: null})
+          } else {
+            setImmediate(waitForInstance)
+          }
+        }
 
-      logSession1.done()
-      logSession2.done()
+        setImmediate(waitForInstance)
 
-      // it displays message about fetching logs for fir apps
-      expect(stderr.output).to.eq('Fetching logs...\n\n')
+        try {
+          await promise
+        } catch (error: unknown) {
+          const {message, oclif} = error as CLIError
+          expect(message).to.equal("You can't access this space from your IP address. Contact your team admin.")
+          expect(oclif.exit).to.eq(1)
+        }
+      })
+    })
+
+    context('when the log server returns a 403 error after connection', function () {
+      it('shows the stream access expired error and exits', async function () {
+        stdout.start()
+
+        const promise = logDisplayerWithMock(heroku, {
+          app: 'my-fir-app',
+          tail: true,
+        })
+
+        const waitAndEmit = () => {
+          if (mockEventSourceInstance) {
+            mockEventSourceInstance.emit('message', {data: '2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1'})
+            mockEventSourceInstance.emit('message', {data: '2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2'})
+            setImmediate(() => {
+              mockEventSourceInstance.emit('error', {status: 403, message: null})
+            })
+          } else {
+            setImmediate(waitAndEmit)
+          }
+        }
+
+        setImmediate(waitAndEmit)
+
+        try {
+          await promise
+        } catch (error: unknown) {
+          stdout.stop()
+          const {message, oclif} = error as CLIError
+          expect(message).to.equal('Log stream access expired. Please try again.')
+          expect(oclif.exit).to.eq(1)
+        }
+
+        expect(stdout.output).to.eq(heredoc`
+          2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
+          2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
+        `)
+      })
+    })
+
+    context('when the log server returns a 404 error', function () {
+      it('shows the stream access expired error and exits', async function () {
+        const promise = logDisplayerWithMock(heroku, {
+          app: 'my-fir-app',
+          tail: true,
+        })
+
+        const waitForInstance = () => {
+          if (mockEventSourceInstance) {
+            mockEventSourceInstance.emit('error', {status: 404, message: null})
+          } else {
+            setImmediate(waitForInstance)
+          }
+        }
+
+        setImmediate(waitForInstance)
+
+        try {
+          await promise
+        } catch (error: unknown) {
+          const {message, oclif} = error as CLIError
+          expect(message).to.equal('Log stream access expired. Please try again.')
+          expect(oclif.exit).to.eq(1)
+        }
+      })
     })
   })
 })

@@ -27,27 +27,51 @@ function readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: 
       },
     })
 
-    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
-      if (err && (err.status || err.message)) {
-        const msg = (isTail && (err.status === 404 || err.status === 403)) ?
-          'Log stream timed out. Please try again.' :
-          `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
-        reject(new Error(msg))
-        es.close()
-      }
+    let isResolved = false
+    let hasReceivedMessages = false
 
-      if (!isTail) {
+    const safeReject = (error: Error) => {
+      if (!isResolved) {
+        isResolved = true
+        es.close()
+        reject(error)
+      }
+    }
+
+    const safeResolve = () => {
+      if (!isResolved) {
+        isResolved = true
+        es.close()
         resolve()
-        es.close()
       }
-
-      // should only land here if --tail and no error status or message
-    })
+    }
 
     es.addEventListener('message', function (e: { data: string }) {
+      hasReceivedMessages = true
       e.data.trim().split(/\n+/).forEach(line => {
         ux.log(colorize(line))
       })
+    })
+
+    es.addEventListener('error', function (err: { status?: number; message?: string | null }) {
+      if (err && (err.status || err.message)) {
+        let msg: string
+        if (err.status === 403) {
+          msg = hasReceivedMessages ?
+            'Log stream access expired. Please try again.' :
+            "You can't access this space from your IP address. Contact your team admin."
+        } else if (err.status === 404 && isTail) {
+          msg = 'Log stream access expired. Please try again.'
+        } else {
+          msg = `Logs eventsource failed with: ${err.status}${err.message ? ` ${err.message}` : ''}`
+        }
+
+        safeReject(new Error(msg))
+      } else if (!isTail) {
+        safeResolve()
+      }
+
+      // should only land here if --tail and no error status or message
     })
 
     if (isTail && recreateSessionTimeout) {
