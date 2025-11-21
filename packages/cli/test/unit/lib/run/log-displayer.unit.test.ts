@@ -237,7 +237,8 @@ describe('logDisplayer', function () {
           if (mockEventSourceInstance) {
             mockEventSourceInstance.emit('message', {data: '2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1'})
             mockEventSourceInstance.emit('message', {data: '2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2'})
-            setImmediate(() => {
+            // Use process.nextTick to ensure message handlers complete before emitting error
+            process.nextTick(() => {
               mockEventSourceInstance.emit('error', {status: 403, message: null})
             })
           } else {
