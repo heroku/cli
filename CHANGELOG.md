@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.15.2-beta.0](https://github.com/heroku/cli/compare/v10.15.1...v10.15.2-beta.0) (2025-11-21)
+
+
+### Bug Fixes
+
+* ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
+
+
+
+
+
 ## [10.15.1](https://github.com/heroku/cli/compare/v10.15.0...v10.15.1) (2025-11-20)
 
 **Note:** Version bump only for package heroku
