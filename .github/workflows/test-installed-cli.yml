@@ -42,5 +42,3 @@ jobs:
         shell: bash
       - name: test release
         run: ./scripts/postrelease/test_release
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

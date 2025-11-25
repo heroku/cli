@@ -27,6 +27,9 @@ on:
         description: Release channel for prereleases
         required: false
 
+permissions:
+  id-token: write
+
 jobs:
   publish-npm:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
@@ -37,10 +40,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          registry-url: 'https://registry.npmjs.org'
           cache: yarn
       - run: yarn --immutable --network-timeout 1000000
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
           if ${{ fromJSON(inputs.isStableRelease) }}
