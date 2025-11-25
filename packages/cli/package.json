@@ -61,7 +61,7 @@
     "printf": "0.6.1",
     "psl": "^1.9.0",
     "redis-parser": "^3.0.0",
-    "semver": "7.6.1",
+    "semver": "^7.7.3",
     "shell-escape": "^0.2.0",
     "shell-quote": "^1.8.1",
     "smooth-progress": "^1.1.0",
