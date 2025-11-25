@@ -1,6 +1,5 @@
 {
   "version": "10.15.1",
-  "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "publish": {
@@ -10,5 +9,6 @@
       ],
       "conventionalCommits": true
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
