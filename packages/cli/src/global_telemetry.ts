@@ -2,6 +2,10 @@ import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 import * as Sentry from '@sentry/node'
+import {
+  SentryPropagator,
+  SentrySampler,
+} from '@sentry/opentelemetry'
 import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets'
 import {Scrubber} from './lib/data-scrubber/scrubber'
 import {PII_PATTERNS} from './lib/data-scrubber/patterns'
@@ -31,6 +35,25 @@ registerInstrumentations({
   instrumentations: [],
 })
 
+const scrubber = new Scrubber({
+  fields: [...HEROKU_FIELDS, ...GDPR_FIELDS, ...PCI_FIELDS],
+  patterns: [...PII_PATTERNS],
+})
+
+const sentryClient = Sentry.init({
+  dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
+  environment: isDev ? 'development' : 'production',
+  release: version,
+  tracesSampleRate: 1,
+  beforeSend(event) {
+    return scrubber.scrub(event).data
+  },
+  beforeSendTransaction() {
+    return null
+  },
+  skipOpenTelemetrySetup: true,
+})
+
 const resource = Resource
   .default()
   .merge(
@@ -42,6 +65,7 @@ const resource = Resource
 
 const provider = new NodeTracerProvider({
   resource,
+  sampler: sentryClient ? new SentrySampler(sentryClient) : undefined,
 })
 
 const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
@@ -80,7 +104,11 @@ interface CLIError extends Error {
 }
 
 export function initializeInstrumentation() {
-  provider.register()
+  provider.register({
+    propagator: new SentryPropagator(),
+    contextManager: new Sentry.SentryContextManager(),
+  })
+  // provider.register()
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -89,19 +117,6 @@ export function setupTelemetry(config: any, opts: any) {
   const isRegularCmd = Boolean(opts.Command)
   const mcpMode = process.env.HEROKU_MCP_MODE === 'true'
   const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
-  const scrubber = new Scrubber({
-    fields: [...HEROKU_FIELDS, ...GDPR_FIELDS, ...PCI_FIELDS],
-    patterns: [...PII_PATTERNS],
-  })
-
-  Sentry.init({
-    dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
-    environment: isDev ? 'development' : 'production',
-    release: config.version,
-    beforeSend(event) {
-      return scrubber.scrub(event).data
-    },
-  })
 
   const irregularTelemetryObject = {
     command: opts.id,
@@ -206,7 +221,7 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
     }
 
     span.end()
-    processor.forceFlush()
+    await processor.forceFlush()
   } catch {
     debug('could not send telemetry')
   }
