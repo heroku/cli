@@ -44,14 +44,11 @@ const sentryClient = Sentry.init({
   dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
   environment: isDev ? 'development' : 'production',
   release: version,
-  tracesSampleRate: 1,
+  tracesSampleRate: 1, // needed to ensure we send OTEL data to Honeycomb
   beforeSend(event) {
     return scrubber.scrub(event).data
   },
-  beforeSendTransaction() {
-    return null
-  },
-  skipOpenTelemetrySetup: true,
+  skipOpenTelemetrySetup: true, // needed since we have our own OTEL setup
 })
 
 const resource = Resource
