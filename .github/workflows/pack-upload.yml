@@ -10,7 +10,7 @@ jobs:
     env:
       HEROKU_AUTHOR: 'Heroku'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install system deps
         run: |
           sudo apt-get update
@@ -28,7 +28,7 @@ jobs:
   pack_tarballs:
     runs-on: pub-hk-ubuntu-22.04-2xlarge
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install system deps
         run: |
           sudo apt-get update
@@ -53,7 +53,7 @@ jobs:
       HEROKU_DEB_KEY_ID: ${{ secrets.HEROKU_DEB_KEY_ID }}
       HEROKU_DEB_PUBLIC_KEY: ${{ secrets.HEROKU_DEB_PUBLIC_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
       - uses: actions/download-artifact@v6
         with:
@@ -77,7 +77,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_EC2_METADATA_DISABLED: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
       - uses: actions/download-artifact@v6
         with:
