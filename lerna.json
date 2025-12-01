@@ -1,6 +1,5 @@
 {
   "version": "10.15.1",
-  "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "publish": {
