@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Stampy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Empty Stampy signed and unsigned buckets
         env:
           STAMPY_ARN: ${{ secrets.STAMPY_ARN }}
