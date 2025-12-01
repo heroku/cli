@@ -231,6 +231,5 @@ export async function sendToSentry(data: CLIError) {
     await Sentry.flush()
   } catch {
     debug('Could not send error report')
-    return Promise.reject()
   }
 }
