@@ -2,6 +2,8 @@ import {expect} from '@oclif/test'
 import * as telemetry from '../../src/global_telemetry'
 import {identity} from 'lodash'
 import * as os from 'os'
+import * as Sentry from '@sentry/node'
+import * as sinon from 'sinon'
 const {version} = require('../../../../packages/cli/package.json')
 const nock = require('nock')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
@@ -121,5 +123,12 @@ describe('telemetry', function () {
 
     await telemetry.sendToHoneycomb(mockTelemetry!)
     honeycombAPI.done()
+  })
+
+  it('sends error data to sentry', async function () {
+    const mockError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
+    const stubCaptureException = sinon.stub(Sentry, 'captureException')
+    await telemetry.sendToSentry(mockError)
+    expect(stubCaptureException.calledWith(mockError)).to.be.true
   })
 })

@@ -1,6 +1,15 @@
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
+import * as Sentry from '@sentry/node'
+import {
+  SentryPropagator,
+  SentrySampler,
+} from '@sentry/opentelemetry'
+import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets'
+import {Scrubber} from './lib/data-scrubber/scrubber'
+import {PII_PATTERNS} from './lib/data-scrubber/patterns'
+
 const {Resource} = require('@opentelemetry/resources')
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
 const {registerInstrumentations} = require('@opentelemetry/instrumentation')
@@ -26,6 +35,22 @@ registerInstrumentations({
   instrumentations: [],
 })
 
+const scrubber = new Scrubber({
+  fields: [...HEROKU_FIELDS, ...GDPR_FIELDS, ...PCI_FIELDS],
+  patterns: [...PII_PATTERNS],
+})
+
+const sentryClient = Sentry.init({
+  dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
+  environment: isDev ? 'development' : 'production',
+  release: version,
+  tracesSampleRate: 1, // needed to ensure we send OTEL data to Honeycomb
+  beforeSend(event) {
+    return scrubber.scrub(event).data
+  },
+  skipOpenTelemetrySetup: true, // needed since we have our own OTEL setup
+})
+
 const resource = Resource
   .default()
   .merge(
@@ -37,6 +62,7 @@ const resource = Resource
 
 const provider = new NodeTracerProvider({
   resource,
+  sampler: sentryClient ? new SentrySampler(sentryClient) : undefined,
 })
 
 const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
@@ -75,7 +101,11 @@ interface CLIError extends Error {
 }
 
 export function initializeInstrumentation() {
-  provider.register()
+  provider.register({
+    propagator: new SentryPropagator(),
+    contextManager: new Sentry.SentryContextManager(),
+  })
+  // provider.register()
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -152,7 +182,14 @@ export async function sendTelemetry(currentTelemetry: any) {
 
   const telemetry = currentTelemetry
 
-  await sendToHoneycomb(telemetry)
+  if (telemetry instanceof Error) {
+    await Promise.all([
+      sendToHoneycomb(telemetry),
+      sendToSentry(telemetry),
+    ])
+  } else {
+    await sendToHoneycomb(telemetry)
+  }
 }
 
 export async function sendToHoneycomb(data: Telemetry | CLIError) {
@@ -181,8 +218,18 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
     }
 
     span.end()
-    processor.forceFlush()
+    await processor.forceFlush()
   } catch {
     debug('could not send telemetry')
+  }
+}
+
+export async function sendToSentry(data: CLIError) {
+  try {
+    Sentry.captureException(data)
+    // ensures all events are sent to Sentry before exiting.
+    await Sentry.flush()
+  } catch {
+    debug('Could not send error report')
   }
 }
