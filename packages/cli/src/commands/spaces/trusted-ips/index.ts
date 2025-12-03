@@ -54,7 +54,7 @@ export default class Index extends Command {
     if (ruleset.applied === true) {
       ux.log('Trusted IP rules are applied to this space.')
     } else if (ruleset.applied === false) {
-      ux.warn('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+      ux.log('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     }
   }
 }
