@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {expect} from '@oclif/test'
 import * as nock from 'nock'
-import {stdout} from 'stdout-stderr'
+import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand'
 import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
 
@@ -65,7 +65,7 @@ describe('trusted-ips:add', function () {
       })
     await runCommand(Cmd, ['127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
     expect(stdout.output).to.include('Added 127.0.0.1/20 to trusted IP ranges on my-space')
-    expect(stdout.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+    expect(stderr.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     api.done()
   })
 

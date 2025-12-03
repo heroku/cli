@@ -1,6 +1,6 @@
 import {expect} from '@oclif/test'
 import * as nock from 'nock'
-import {stdout} from 'stdout-stderr'
+import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/spaces/trusted-ips'
 import runCommand from '../../../../helpers/runCommand'
@@ -81,7 +81,7 @@ describe('trusted-ips', function () {
         applied: false,
       })
     await runCommand(Cmd, ['--space', 'my-space'])
-    expect(stdout.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+    expect(stderr.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     api.done()
   })
 
