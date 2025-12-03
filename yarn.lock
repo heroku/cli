@@ -1695,20 +1695,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/heroku-exec-util@npm:0.9.2":
-  version: 0.9.2
-  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.2"
+"@heroku-cli/heroku-exec-util@npm:0.9.3":
+  version: 0.9.3
+  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.3"
   dependencies:
     "@heroku/heroku-cli-util": ^8.0.13
     "@heroku/socksv5": ^0.0.9
     co: 4.6.0
     co-wait: 0.0.0
     keypair: 1.0.4
-    node-forge: 1.3.0
+    node-forge: 1.3.2
     smooth-progress: 1.1.0
     ssh2: 1.16.0
-    temp: 0.9.1
-  checksum: 0930fcaeb37b009d41dbe42266b32bfec193001bad75af0ba502891c64e30329af9a263be6036669ae74d87fd5158eb31f2faa40d75197184b4643dc923652fa
+    temp: 0.9.4
+  checksum: 13160c34cf8a96cc3604d3f6d0e2e3e831607c9d624963d194174a471d49d906705f0ee0ba1568425b9744333458e94e11fcf3279b694cc34f179c2e807892a1
   languageName: node
   linkType: hard
 
@@ -1721,13 +1721,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps-exec@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.2"
+"@heroku-cli/plugin-ps-exec@npm:2.6.4":
+  version: 2.6.4
+  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.4"
   dependencies:
-    "@heroku-cli/heroku-exec-util": 0.9.2
+    "@heroku-cli/heroku-exec-util": 0.9.3
     "@heroku/heroku-cli-util": ^8.0.15
-  checksum: 858893bbb80fdc65aa162556daaf1a69be8cb8ba1ac8a13d95f4e16cdb11307fd1fad0573cd6ac8a7819a30e662f55be7cb73590a28288116956c4a774bb297b
+  checksum: ad390821c8031b688ea87e5d964e0646ddbf715b9d33807f13df352fe8c16a991ff4e19ddb6f75a7a2b17e84d1532cf9e777623892936bc42089745a3252f303
   languageName: node
   linkType: hard
 
@@ -10867,7 +10867,7 @@ __metadata:
     "@heroku-cli/color": 2.0.1
     "@heroku-cli/command": ^11.8.0
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-ps-exec": 2.6.2
+    "@heroku-cli/plugin-ps-exec": 2.6.4
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
@@ -13363,7 +13363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.2, mkdirp@npm:^0.5.6":
+"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.2, mkdirp@npm:^0.5.6":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -13647,10 +13647,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:1.3.0":
-  version: 1.3.0
-  resolution: "node-forge@npm:1.3.0"
-  checksum: 3d8124168dd82006fafbb079f40a529afa0de5bf4d77e6a5a471877e9d39bece31fdc8339e8aee30d5480dc79ffcd1059cfcb21983d350dd3f2a9f226db6ca85
+"node-forge@npm:1.3.2":
+  version: 1.3.2
+  resolution: "node-forge@npm:1.3.2"
+  checksum: b6f905b0fcc39a2d59598e12ca2c071bfd760e56a9163aab8da7f8d6622547f8db60cfb2aefc39277d5a13af32e58573674b38107a2d4df7c243e12794839546
   languageName: node
   linkType: hard
 
@@ -17267,12 +17267,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"temp@npm:0.9.1":
-  version: 0.9.1
-  resolution: "temp@npm:0.9.1"
+"temp@npm:0.9.4":
+  version: 0.9.4
+  resolution: "temp@npm:0.9.4"
   dependencies:
+    mkdirp: ^0.5.1
     rimraf: ~2.6.2
-  checksum: 568be30ec54f2a9d74b10caebb0c8e169577741122822aaeee13150af83fab2a73954ef12d7772b85f136529ffa80e940a51b42735d010dea0a634fbc70c0223
+  checksum: 8709d4d63278bd309ca0e49e80a268308dea543a949e71acd427b3314cd9417da9a2cc73425dd9c21c6780334dbffd67e05e7be5aaa73e9affe8479afc6f20e3
   languageName: node
   linkType: hard
 
