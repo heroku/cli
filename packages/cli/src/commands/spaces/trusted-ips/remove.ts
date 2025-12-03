@@ -42,6 +42,13 @@ export default class Remove extends Command {
 
     await this.heroku.put(url, {body: rules})
     ux.log(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
-    ux.warn('It may take a few moments for the changes to take effect.')
+    
+    // Fetch updated ruleset to check applied status
+    const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
+    if (updatedRuleset.applied === true) {
+      ux.log('Trusted IP rules are applied to this space.')
+    } else if (updatedRuleset.applied === false) {
+      ux.warn('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+    }
   }
 }

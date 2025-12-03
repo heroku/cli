@@ -50,5 +50,11 @@ export default class Index extends Command {
     } else {
       hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
     }
+    
+    if (ruleset.applied === true) {
+      ux.log('Trusted IP rules are applied to this space.')
+    } else if (ruleset.applied === false) {
+      ux.warn('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+    }
   }
 }
