@@ -36,7 +36,7 @@ export default class Add extends Command {
     ruleset.rules.push({action: 'allow', source: args.source})
     await this.heroku.put(url, {body: ruleset})
     ux.log(`Added ${color.cyan.bold(args.source)} to trusted IP ranges on ${color.cyan.bold(space)}`)
-    
+
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
     if (updatedRuleset.applied === true) {
