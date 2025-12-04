@@ -13,7 +13,7 @@
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/eventsource": "^1.0.7",
-    "@heroku/heroku-cli-util": "^9.1.3",
+    "@heroku/heroku-cli-util": "^9.2.0",
     "@heroku/http-call": "^5.5.0",
     "@heroku/mcp-server": "1.0.7-alpha.1",
     "@heroku/plugin-ai": "^1.0.1",
