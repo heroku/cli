@@ -1695,20 +1695,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/heroku-exec-util@npm:0.9.2":
-  version: 0.9.2
-  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.2"
+"@heroku-cli/heroku-exec-util@npm:0.9.3":
+  version: 0.9.3
+  resolution: "@heroku-cli/heroku-exec-util@npm:0.9.3"
   dependencies:
     "@heroku/heroku-cli-util": ^8.0.13
     "@heroku/socksv5": ^0.0.9
     co: 4.6.0
     co-wait: 0.0.0
     keypair: 1.0.4
-    node-forge: 1.3.0
+    node-forge: 1.3.2
     smooth-progress: 1.1.0
     ssh2: 1.16.0
-    temp: 0.9.1
-  checksum: 0930fcaeb37b009d41dbe42266b32bfec193001bad75af0ba502891c64e30329af9a263be6036669ae74d87fd5158eb31f2faa40d75197184b4643dc923652fa
+    temp: 0.9.4
+  checksum: 13160c34cf8a96cc3604d3f6d0e2e3e831607c9d624963d194174a471d49d906705f0ee0ba1568425b9744333458e94e11fcf3279b694cc34f179c2e807892a1
   languageName: node
   linkType: hard
 
@@ -1721,13 +1721,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku-cli/plugin-ps-exec@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.2"
+"@heroku-cli/plugin-ps-exec@npm:2.6.4":
+  version: 2.6.4
+  resolution: "@heroku-cli/plugin-ps-exec@npm:2.6.4"
   dependencies:
-    "@heroku-cli/heroku-exec-util": 0.9.2
+    "@heroku-cli/heroku-exec-util": 0.9.3
     "@heroku/heroku-cli-util": ^8.0.15
-  checksum: 858893bbb80fdc65aa162556daaf1a69be8cb8ba1ac8a13d95f4e16cdb11307fd1fad0573cd6ac8a7819a30e662f55be7cb73590a28288116956c4a774bb297b
+  checksum: ad390821c8031b688ea87e5d964e0646ddbf715b9d33807f13df352fe8c16a991ff4e19ddb6f75a7a2b17e84d1532cf9e777623892936bc42089745a3252f303
   languageName: node
   linkType: hard
 
@@ -2390,21 +2390,32 @@ __metadata:
   linkType: hard
 
 "@modelcontextprotocol/sdk@npm:^1.8.0":
-  version: 1.12.1
-  resolution: "@modelcontextprotocol/sdk@npm:1.12.1"
+  version: 1.24.2
+  resolution: "@modelcontextprotocol/sdk@npm:1.24.2"
   dependencies:
-    ajv: ^6.12.6
+    ajv: ^8.17.1
+    ajv-formats: ^3.0.1
     content-type: ^1.0.5
     cors: ^2.8.5
     cross-spawn: ^7.0.5
     eventsource: ^3.0.2
+    eventsource-parser: ^3.0.0
     express: ^5.0.1
     express-rate-limit: ^7.5.0
+    jose: ^6.1.1
     pkce-challenge: ^5.0.0
     raw-body: ^3.0.0
-    zod: ^3.23.8
-    zod-to-json-schema: ^3.24.1
-  checksum: afab5337bc6eac42607171a42d67f086fcc72b8b3637ce8a0560940455034743debd5e88d2cf8ecfdaff053a73c979a2ded743415b2755b30784a586a84d2e8e
+    zod: ^3.25 || ^4.0
+    zod-to-json-schema: ^3.25.0
+  peerDependencies:
+    "@cfworker/json-schema": ^4.1.1
+    zod: ^3.25 || ^4.0
+  peerDependenciesMeta:
+    "@cfworker/json-schema":
+      optional: true
+    zod:
+      optional: false
+  checksum: 6e302bcfcbf368afb9406a1e13bc5fd470d32bed8e789ff01ec97bd6aa2f5b81f41e2ad6ed862381a260075ae843714d9dd2dbfe544b2a724d3e914c2cb55f89
   languageName: node
   linkType: hard
 
@@ -5937,7 +5948,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^6.10.0, ajv@npm:^6.12.4, ajv@npm:^6.12.6":
+"ajv-formats@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "ajv-formats@npm:3.0.1"
+  dependencies:
+    ajv: ^8.0.0
+  peerDependencies:
+    ajv: ^8.0.0
+  peerDependenciesMeta:
+    ajv:
+      optional: true
+  checksum: f4e1fe232d67fcafc02eafe373a7a9962351e0439dd0736647ca75c93c3da23b430b6502c255ab4315410ae330d4f3013ac9fe226c40b2524ca93a58e786d086
+  languageName: node
+  linkType: hard
+
+"ajv@npm:^6.10.0, ajv@npm:^6.12.4":
   version: 6.12.6
   resolution: "ajv@npm:6.12.6"
   dependencies:
@@ -5946,6 +5971,18 @@ __metadata:
     json-schema-traverse: ^0.4.1
     uri-js: ^4.2.2
   checksum: 874972efe5c4202ab0a68379481fbd3d1b5d0a7bd6d3cc21d40d3536ebff3352a2a1fabb632d4fd2cc7fe4cbdcd5ed6782084c9bbf7f32a1536d18f9da5007d4
+  languageName: node
+  linkType: hard
+
+"ajv@npm:^8.0.0, ajv@npm:^8.17.1":
+  version: 8.17.1
+  resolution: "ajv@npm:8.17.1"
+  dependencies:
+    fast-deep-equal: ^3.1.3
+    fast-uri: ^3.0.1
+    json-schema-traverse: ^1.0.0
+    require-from-string: ^2.0.2
+  checksum: 1797bf242cfffbaf3b870d13565bd1716b73f214bb7ada9a497063aada210200da36e3ed40237285f3255acc4feeae91b1fb183625331bad27da95973f7253d9
   languageName: node
   linkType: hard
 
@@ -9282,6 +9319,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eventsource-parser@npm:^3.0.0":
+  version: 3.0.6
+  resolution: "eventsource-parser@npm:3.0.6"
+  checksum: b90ec27f8d992afa7df171db202faaedb1782214f64e50690cbf78bc2629f7751575aa27a72d8ae447e5a7094938406b1a3ea1d89e5f0f2d6916cc8a694b6587
+  languageName: node
+  linkType: hard
+
 "eventsource-parser@npm:^3.0.1":
   version: 3.0.2
   resolution: "eventsource-parser@npm:3.0.2"
@@ -9553,6 +9597,13 @@ __metadata:
   dependencies:
     fastest-levenshtein: ^1.0.7
   checksum: 02732ba6c656797ca7e987c25f3e53718c8fcc39a4bfab46def78eef7a8729eb629632d4a7eca4c27a33e10deabffa9984839557e18a96e91ecf7ccaeedb9890
+  languageName: node
+  linkType: hard
+
+"fast-uri@npm:^3.0.1":
+  version: 3.1.0
+  resolution: "fast-uri@npm:3.1.0"
+  checksum: daab0efd3548cc53d0db38ecc764d125773f8bd70c34552ff21abdc6530f26fa4cb1771f944222ca5e61a0a1a85d01a104848ff88c61736de445d97bd616ea7e
   languageName: node
   linkType: hard
 
@@ -10867,7 +10918,7 @@ __metadata:
     "@heroku-cli/color": 2.0.1
     "@heroku-cli/command": ^11.8.0
     "@heroku-cli/notifications": ^1.2.4
-    "@heroku-cli/plugin-ps-exec": 2.6.2
+    "@heroku-cli/plugin-ps-exec": 2.6.4
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
@@ -12260,6 +12311,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^6.1.1":
+  version: 6.1.3
+  resolution: "jose@npm:6.1.3"
+  checksum: 7f51c7e77f82b70ef88ede9fd1760298bc0ffbf143b9d94f78c08462987ae61864535c1856bc6c26d335f857c7d41f4fffcc29134212c19ea929ce34a4c790f0
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -13363,7 +13421,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.2, mkdirp@npm:^0.5.6":
+"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.2, mkdirp@npm:^0.5.6":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -13647,10 +13705,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:1.3.0":
-  version: 1.3.0
-  resolution: "node-forge@npm:1.3.0"
-  checksum: 3d8124168dd82006fafbb079f40a529afa0de5bf4d77e6a5a471877e9d39bece31fdc8339e8aee30d5480dc79ffcd1059cfcb21983d350dd3f2a9f226db6ca85
+"node-forge@npm:1.3.2":
+  version: 1.3.2
+  resolution: "node-forge@npm:1.3.2"
+  checksum: b6f905b0fcc39a2d59598e12ca2c071bfd760e56a9163aab8da7f8d6622547f8db60cfb2aefc39277d5a13af32e58573674b38107a2d4df7c243e12794839546
   languageName: node
   linkType: hard
 
@@ -17267,12 +17325,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"temp@npm:0.9.1":
-  version: 0.9.1
-  resolution: "temp@npm:0.9.1"
+"temp@npm:0.9.4":
+  version: 0.9.4
+  resolution: "temp@npm:0.9.4"
   dependencies:
+    mkdirp: ^0.5.1
     rimraf: ~2.6.2
-  checksum: 568be30ec54f2a9d74b10caebb0c8e169577741122822aaeee13150af83fab2a73954ef12d7772b85f136529ffa80e940a51b42735d010dea0a634fbc70c0223
+  checksum: 8709d4d63278bd309ca0e49e80a268308dea543a949e71acd427b3314cd9417da9a2cc73425dd9c21c6780334dbffd67e05e7be5aaa73e9affe8479afc6f20e3
   languageName: node
   linkType: hard
 
@@ -18716,7 +18775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod-to-json-schema@npm:^3.24.1, zod-to-json-schema@npm:^3.24.5":
+"zod-to-json-schema@npm:^3.24.5":
   version: 3.24.5
   resolution: "zod-to-json-schema@npm:3.24.5"
   peerDependencies:
@@ -18725,9 +18784,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.8, zod@npm:^3.24.2":
+"zod-to-json-schema@npm:^3.25.0":
+  version: 3.25.0
+  resolution: "zod-to-json-schema@npm:3.25.0"
+  peerDependencies:
+    zod: ^3.25 || ^4
+  checksum: 074954856eabf6f1e6d932ba505686f69cb170306e6fc611348c92fd0ac2c69bcc2c6167e07c5c1157d8df8e05007fea66dec6304f12a14481f4cf2e1590118d
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.24.2":
   version: 3.25.51
   resolution: "zod@npm:3.25.51"
   checksum: 37ff0e4ef274d4a5d46882d351797f609d14decae16af46692295a68a0f34f4895bd3233ce2514027d08f7a77abcc8b47d005dba0a17bfe4f7e8410f99595441
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.25 || ^4.0":
+  version: 4.1.13
+  resolution: "zod@npm:4.1.13"
+  checksum: e5459280d46567df0adc188b0c687d425e616a206d4a73ee3bacf62d246f5546e24ef45790c7c4762d3ce7659c5e41052a29445d32d0d272410be9fe23162d03
   languageName: node
   linkType: hard
