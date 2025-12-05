@@ -45,6 +45,10 @@ export default class Remove extends Command {
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
+    // Check applied status to inform users whether rules are effectively applied to the space.
+    // The applied field is optional for backward compatibility with API versions that don't include it yet.
+    // Once the API always includes the applied field (W-19525612), this can be simplified to:
+    //   if (updatedRuleset.applied) { ... } else { ... }
     if (updatedRuleset.applied === true) {
       ux.log('Trusted IP rules are applied to this space.')
     } else if (updatedRuleset.applied === false) {

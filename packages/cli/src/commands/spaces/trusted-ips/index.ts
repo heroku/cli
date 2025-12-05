@@ -51,6 +51,10 @@ export default class Index extends Command {
       hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
     }
 
+    // Check applied status to inform users whether rules are effectively applied to the space.
+    // The applied field is optional for backward compatibility with API versions that don't include it yet.
+    // Once the API always includes the applied field (W-19525612), this can be simplified to:
+    //   if (ruleset.applied) { ... } else { ... }
     if (ruleset.applied === true) {
       ux.log('Trusted IP rules are applied to this space.')
     } else if (ruleset.applied === false) {
