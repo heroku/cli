@@ -3,13 +3,13 @@ import runCommand, {GenericCmd} from '../../../helpers/runCommand'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-import {ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
 import sinon = require('sinon')
 import * as childProcess from 'node:child_process'
 
 describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
-  let db: ConnectionDetailsWithAttachment
+  let db: ConnectionDetails
   let push_pull: unknown
   const emptyResponse = '00'
   let Cmd: GenericCmd
@@ -37,7 +37,7 @@ describe('pg:push', function () {
         config_vars: ['DATABASE_URL'],
         app: {name: 'myapp'},
       },
-    } as ConnectionDetailsWithAttachment
+    } as ConnectionDetails
     sshTunnelStub = sinon.stub().resolves()
     const mockUtils = {
       pg: {
@@ -51,7 +51,7 @@ describe('pg:push', function () {
           execQuery = sinon.stub().resolves(emptyResponse)
         },
         psql: {
-          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetailsWithAttachment) => {
+          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetails) => {
             return utils.pg.psql.getPsqlConfigs(db)
           }),
           sshTunnel: sshTunnelStub,

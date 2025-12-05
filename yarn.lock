@@ -1801,9 +1801,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@heroku/heroku-cli-util@npm:^9.1.3":
-  version: 9.1.3
-  resolution: "@heroku/heroku-cli-util@npm:9.1.3"
+"@heroku/heroku-cli-util@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@heroku/heroku-cli-util@npm:9.2.0"
   dependencies:
     "@heroku-cli/color": ^2.0.4
     "@heroku-cli/command": ^11.8.0
@@ -1811,7 +1811,7 @@ __metadata:
     "@oclif/core": ^2.16.0
     debug: ^4.4.0
     tunnel-ssh: 5.2.0
-  checksum: d23a3894f2e69cdc9552696e648afa44133f95b807658310562a2cad3e9a6581785fdceea60bb1efb51a7a1481c6ac243cb5aa249e01636c1693238bc7d8040f
+  checksum: 95fdc285d3d095bc8a04e6d0ae61c5260e5e5a5aa4e555505fdc134cc5b7f6f99825acfeaa4ff401fbb66aff7e88b4d1b60f5d0c1bf1c6e9f3e75a90b8acd16e
   languageName: node
   linkType: hard
 
@@ -10922,7 +10922,7 @@ __metadata:
     "@heroku-cli/schema": ^1.0.25
     "@heroku/buildpack-registry": ^1.0.1
     "@heroku/eventsource": ^1.0.7
-    "@heroku/heroku-cli-util": ^9.1.3
+    "@heroku/heroku-cli-util": ^9.2.0
     "@heroku/http-call": ^5.5.0
     "@heroku/mcp-server": 1.0.7-alpha.1
     "@heroku/plugin-ai": ^1.0.1
