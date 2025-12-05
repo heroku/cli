@@ -4423,13 +4423,19 @@ export interface InboundRuleset {
   * @example "2012-01-01T12:00:00Z"
   */
   readonly created_at: string;
- rules: Rule[];
- /**
-  * unique email address of account
-  *
-  * @example "username@example.com"
-  */
+  rules: Rule[];
+  /**
+   * unique email address of account
+   *
+   * @example "username@example.com"
+   */
   created_by: string;
+  /**
+   * whether the trusted IP rules have been applied to the space
+   * 
+   * @example true
+   */
+  applied?: boolean;
 }
 /**
  *
