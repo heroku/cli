@@ -1,11 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/releases/rollback'
+import Cmd from '../../../../src/commands/releases/rollback.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-/*
 describe('releases:rollback', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -106,5 +105,3 @@ describe('releases:rollback', function () {
     expect(unwrap(stderr.output)).to.contain('Release command starting. Use `heroku releases:output` to view the log.')
   })
 })
-
-*/

@@ -1,10 +1,9 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/releases/retry'
+import Cmd from '../../../../src/commands/releases/retry.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 
-/*
 describe('releases:retry', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -103,5 +102,3 @@ describe('releases:retry', function () {
     })
   })
 })
-
-*/

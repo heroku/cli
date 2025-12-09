@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/releases'
+import Cmd from '../../../../src/commands/releases/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
@@ -13,7 +13,6 @@ const assertLineWidths = function (blob: string, lineWidth: number) {
   }
 }
 
-/*
 describe('releases', function () {
   before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
@@ -377,5 +376,3 @@ describe('releases', function () {
     api.done()
   })
 })
-
-*/

@@ -1,13 +1,14 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/releases/info'
+import Cmd from '../../../../src/commands/releases/info.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 const d = new Date(2000, 1, 1)
-/*
 describe('releases:info', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -214,5 +215,3 @@ describe('releases:info', function () {
     `))
   })
 })
-
-*/
