@@ -4,6 +4,7 @@ import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import _ from 'lodash'
 import * as Heroku from '@heroku-cli/schema'
+
 import * as statusHelper from '../../lib/releases/status_helper.js'
 import * as time from '../../lib/time.js'
 import stripAnsi from 'strip-ansi'
@@ -115,7 +116,31 @@ export default class Index extends Command {
       const status = statusHelper.description(release)
       if (status) {
         const statusColor = statusHelper.color(release.status)
-        const colorFn = statusColor === 'red' ? color.red : statusColor === 'yellow' ? color.yellow : statusColor === 'gray' ? color.gray : color.cyan
+        let colorFn: (s: string) => string
+        switch (statusColor) {
+        case 'red': {
+          colorFn = color.red
+
+          break
+        }
+
+        case 'yellow': {
+          colorFn = color.yellow
+
+          break
+        }
+
+        case 'gray': {
+          colorFn = color.gray
+
+          break
+        }
+
+        default: {
+          colorFn = color.cyan
+        }
+        }
+
         const sc = colorFn(status)
         return trunc(status.length + 1, description) + ' ' + sc
       }
@@ -146,7 +171,7 @@ export default class Index extends Command {
     optimizationWidth = getDescriptionTruncation(releases, columns, 'description')
 
     if (json) {
-      ux.stdout(JSON.stringify(releases, null, 2))
+      hux.styledJSON(releases)
     } else if (releases.length === 0) {
       ux.stdout(`${app} has no releases.`)
     } else {

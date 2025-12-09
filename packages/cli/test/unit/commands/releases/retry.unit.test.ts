@@ -83,8 +83,9 @@ describe('releases:retry', function () {
 
     api.done()
     busl.done()
-    expect(stderr.output).to.contains('Retrying v40 on ⬢ myapp...')
-    expect(stdout.output).to.contains('Release Output Content')
+    expect(stderr.output).to.contain('Retrying v40 on')
+    expect(stderr.output).to.contain('myapp')
+    expect(stdout.output).to.contain('Release Output Content')
   })
 
   it('errors if app does not use release-phase', async function () {

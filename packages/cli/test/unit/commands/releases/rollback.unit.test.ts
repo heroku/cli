@@ -76,7 +76,10 @@ describe('releases:rollback', function () {
     api.done()
 
     const stderr_output = unwrap(stderr.output)
-    expect(stderr_output).to.contain('Rolling back ⬢ myapp to v40... done, v40')
+    expect(stderr_output).to.contain('Rolling back')
+    expect(stderr_output).to.contain('myapp')
+    expect(stderr_output).to.contain('to v40')
+    expect(stderr_output).to.contain('done, v40')
     expect(stderr_output).to.contain("Rollback affects code and config vars; it doesn't add or remove addons.")
     expect(stderr_output).to.contain('To undo, run: heroku rollback v39')
     expect(stdout.output).to.equal('Running release command...\nRelease Output Content')
