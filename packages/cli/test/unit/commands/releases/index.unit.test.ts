@@ -5,8 +5,6 @@ import nock from 'nock'
 import {expect} from 'chai'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const {isTTY} = process.stdout
-
 const assertLineWidths = function (blob: string, lineWidth: number) {
   const lines = blob.split('\n')
   for (let i = 1; i < lines.length - 1; i++) {
@@ -15,12 +13,31 @@ const assertLineWidths = function (blob: string, lineWidth: number) {
 }
 
 describe('releases', function () {
+  let originalColumns: number | undefined
+  let originalIsTTY: boolean | undefined
+
   before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
   })
 
+  beforeEach(function () {
+    originalColumns = process.stdout.columns
+    originalIsTTY = process.stdout.isTTY
+  })
+
   afterEach(function () {
-    process.stdout.isTTY = isTTY
+    // Restore original values, handling undefined case
+    if (originalIsTTY === undefined) {
+      delete (process.stdout as {isTTY?: boolean}).isTTY
+    } else {
+      process.stdout.isTTY = originalIsTTY
+    }
+
+    if (originalColumns === undefined) {
+      delete (process.stdout as {columns?: number}).columns
+    } else {
+      process.stdout.columns = originalColumns
+    }
   })
 
   const releases = [
@@ -363,7 +380,7 @@ describe('releases', function () {
     process.stdout.columns = 80
     // Create a copy to avoid mutating the shared releases array
     const releasesCopy = releases.map((r: any) => ({...r}))
-    releasesCopy[releasesCopy.length - 1].current = false
+    releasesCopy.at(-1)!.current = false
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releasesCopy)
