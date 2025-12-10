@@ -28,7 +28,7 @@ getColorForIdentifier('web')
 getColorForIdentifier('postgres')
 getColorForIdentifier('heroku-postgres')
 
-const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
+const lineRegex = /^(.*?\[([\w-]+)([\w.]+)?]:)(.*)?$/
 
 const red = c.red
 const dim = (i: string) => c.dim(i)

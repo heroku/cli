@@ -219,6 +219,7 @@ notinteger
 notloggedin
 npmjs
 nullhdr
+ngpg
 nqry
 nsis
 nspname
