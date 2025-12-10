@@ -84,4 +84,12 @@ describe('colorize', function () {
     expect(pgTest1).to.equal('\u001B[35m2018-01-01T00:00:00.00+00:00 heroku[postgres]:\u001B[39m \u001B[2m[DATABASE] test-database \u001B[22m\u001B[35mCREATE TABLE\u001B[39m\u001B[36m test-table\u001B[39m')
     expect(pgTest2).to.equal('\u001B[35m2018-01-01T00:00:00.00+00:00 heroku[postgres]:\u001B[39m \u001B[2msource=testsource sample#333\u001B[22m')
   })
+
+  it('colorizes ngpg postgres', function () {
+    const ngpgTest1 = colorize('2025-12-10T18:46:21.000000+00:00 app[postgres.abc123xyz]: [DATABASE] test-database CREATE TABLE test-table')
+    const ngpgTest2 = colorize('2025-12-10T18:46:21.000000+00:00 app[postgres.foo456bar]: source=testsource sample#333')
+
+    expect(ngpgTest1).to.equal('\u001B[35m2025-12-10T18:46:21.000000+00:00 app[postgres.abc123xyz]:\u001B[39m \u001B[2m[DATABASE] test-database \u001B[22m\u001B[35mCREATE TABLE\u001B[39m\u001B[36m test-table\u001B[39m')
+    expect(ngpgTest2).to.equal('\u001B[35m2025-12-10T18:46:21.000000+00:00 app[postgres.foo456bar]:\u001B[39m \u001B[2msource=testsource sample#333\u001B[22m')
+  })
 })
