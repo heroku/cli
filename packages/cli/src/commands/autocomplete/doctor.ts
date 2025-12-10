@@ -75,7 +75,11 @@ export default class Doctor extends AutocompleteBase {
     hux.table(data, {
       name: {},
       value: {},
-    }, {printLine})
+    }, {
+      // @ts-expect-error - no-header option exists but may not be in type definition
+      'no-header': true,
+      printLine,
+    })
 
     if (flags.verbose) this.printList()
   }
