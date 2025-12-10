@@ -20,7 +20,9 @@ import path from 'path'
 import {promises as fs} from 'fs'
 import {fileURLToPath} from 'url'
 import debug from 'debug'
-import pkg from '../package.json' with { type: 'json' };
+
+// @ts-expect-error - TS requires import attributes for JSON in NodeNext, but our version doesn't support them.
+import pkg from '../package.json'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

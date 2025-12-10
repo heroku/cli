@@ -4,7 +4,9 @@ import {identity} from 'lodash'
 import * as os from 'os'
 import * as Sentry from '@sentry/node'
 import * as sinon from 'sinon'
-import pkg from '../../../../packages/cli/package.json' with { type: 'json' }
+
+// @ts-expect-error - TS requires import attributes for JSON in NodeNext, but our version doesn't support them.
+import pkg from '../../../../packages/cli/package.json'
 import nock from 'nock'
 
 const { version } = pkg;
