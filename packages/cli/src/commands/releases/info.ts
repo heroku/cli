@@ -42,14 +42,17 @@ export default class Info extends Command {
           colorFn = color.red
           break
         }
+
         case 'yellow': {
           colorFn = color.yellow
           break
         }
+
         case 'gray': {
           colorFn = color.gray
           break
         }
+
         default: {
           colorFn = color.cyan
         }

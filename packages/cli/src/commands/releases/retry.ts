@@ -6,13 +6,13 @@ import {stream} from '../../lib/releases/output.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
 
 export default class Retry extends Command {
-  static topic = 'releases';
-  static description = 'retry the latest release-phase command';
+  static topic = 'releases'
+  static description = 'retry the latest release-phase command'
   static examples = ['heroku releases:retry --app happy-samurai-42']
   static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
   static flags = {
     app: flags.app({required: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Retry)
