@@ -1,8 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/releases/retry.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 
 describe('releases:retry', function () {
   afterEach(function () {
@@ -10,9 +11,9 @@ describe('releases:retry', function () {
   })
 
   const release = [{
+    description: 'A release',
     slug: {id: 'slug_uuid'},
     version: 40,
-    description: 'A release',
   }]
 
   const formationWithReleasePhase = [
@@ -29,8 +30,8 @@ describe('releases:retry', function () {
   }]
 
   const releaseRetry = {
-    slug: 'slug_uuid',
     description: 'Retry of v40: A release',
+    slug: 'slug_uuid',
   }
 
   it('errors when there are no releases yet', async function () {
@@ -43,7 +44,7 @@ describe('releases:retry', function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: any) => {
+    ]).catch((error: Error) => {
       expect(error.message).to.eq('No release found for this app.')
     })
   })
@@ -98,7 +99,7 @@ describe('releases:retry', function () {
     await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: any) => {
+    ]).catch((error: Error) => {
       expect(error.message).to.eq('App must have a release-phase command to use this command.')
     })
   })

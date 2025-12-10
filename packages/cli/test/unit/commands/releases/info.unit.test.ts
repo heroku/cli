@@ -1,10 +1,11 @@
+import {expect} from 'chai'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../src/commands/releases/info.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
@@ -15,15 +16,16 @@ describe('releases:info', function () {
   })
 
   const release = {
-    description: 'something changed',
+    addon_plan_names: ['addon1', 'addon2'],
+    created_at: d, description: 'something changed',
+    eligible_for_rollback: true,
     user: {
       email: 'foo@foo.com',
-    }, created_at: d,
+    },
     version: 10,
-    eligible_for_rollback: true,
-    addon_plan_names: ['addon1', 'addon2'],
   }
 
+  // eslint-disable-next-line perfectionist/sort-objects
   const configVars = {FOO: 'foo', BAR: 'bar'}
 
   it('shows most recent release info', async function () {
@@ -123,11 +125,11 @@ describe('releases:info', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
       .reply(200, [{
-        description: 'something changed',
-        status: 'failed',
-        eligible_for_rollback: false,
-        user: {email: 'foo@foo.com'},
         created_at: d,
+        description: 'something changed',
+        eligible_for_rollback: false,
+        status: 'failed',
+        user: {email: 'foo@foo.com'},
         version: 10,
       }])
       .get('/apps/myapp/releases/10/config-vars')
@@ -155,12 +157,12 @@ describe('releases:info', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{
         addon_plan_names: ['addon1', 'addon2'],
+        created_at: d,
         description: 'something changed',
+        eligible_for_rollback: false,
         status: 'pending',
         user: {email: 'foo@foo.com'},
         version: 10,
-        eligible_for_rollback: false,
-        created_at: d,
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
@@ -188,11 +190,11 @@ describe('releases:info', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/releases')
       .reply(200, [{
-        description: 'something changed',
-        status: 'expired',
-        eligible_for_rollback: false,
-        user: {email: 'foo@foo.com'},
         created_at: d,
+        description: 'something changed',
+        eligible_for_rollback: false,
+        status: 'expired',
+        user: {email: 'foo@foo.com'},
         version: 10,
       }])
       .get('/apps/myapp/releases/10/config-vars')

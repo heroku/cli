@@ -1,8 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/releases/rollback.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('releases:rollback', function () {
@@ -29,7 +30,11 @@ describe('releases:rollback', function () {
   it('rolls back to the latest release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded', eligible_for_rollback: true}, {id: 'previous_release', version: 40, status: 'succeeded', eligible_for_rollback: true}])
+      .reply(200, [{
+        eligible_for_rollback: true, id: 'current_release', status: 'succeeded', version: 41,
+      }, {
+        eligible_for_rollback: true, id: 'previous_release', status: 'succeeded', version: 40,
+      }])
       .post('/apps/myapp/releases', {release: 'previous_release'})
       .reply(200, {})
 
@@ -44,7 +49,13 @@ describe('releases:rollback', function () {
   it('does not roll back to a failed release', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 'current_release', version: 41, status: 'succeeded', eligible_for_rollback: true}, {id: 'failed_release', version: 40, status: 'failed', eligible_for_rollback: false}, {id: 'succeeded_release', version: 39, status: 'succeeded', eligible_for_rollback: true}])
+      .reply(200, [{
+        eligible_for_rollback: true, id: 'current_release', status: 'succeeded', version: 41,
+      }, {
+        eligible_for_rollback: false, id: 'failed_release', status: 'failed', version: 40,
+      }, {
+        eligible_for_rollback: true, id: 'succeeded_release', status: 'succeeded', version: 39,
+      }])
       .post('/apps/myapp/releases', {release: 'succeeded_release'})
       .reply(200, {})
 
@@ -64,7 +75,7 @@ describe('releases:rollback', function () {
       .get('/apps/myapp/releases/10')
       .reply(200, {id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', version: 40})
       .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
-      .reply(200, {version: 40, output_stream_url: 'https://busl.test/streams/release.log'})
+      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
     await runCommand(Cmd, [
       '--app',
@@ -93,7 +104,7 @@ describe('releases:rollback', function () {
       .get('/apps/myapp/releases/10')
       .reply(200, {id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', version: 40})
       .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
-      .reply(200, {version: 40, output_stream_url: 'https://busl.test/streams/release.log'})
+      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
     await runCommand(Cmd, [
       '--app',

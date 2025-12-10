@@ -1,16 +1,10 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/releases/index.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
-
-const assertLineWidths = function (blob: string, lineWidth: number) {
-  const lines = blob.split('\n')
-  for (let i = 1; i < lines.length - 1; i++) {
-    expect(lines[i].length).to.be.lessThan(lineWidth + 1)
-  }
-}
 
 describe('releases', function () {
   let originalColumns: number | undefined
@@ -42,87 +36,87 @@ describe('releases', function () {
 
   const releases = [
     {
-      created_at: '2015-11-18T01:36:38Z', description: 'third commit', status: 'pending', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'third commit', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'pending', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 41, current: false,
+      }, version: 41,
     }, {
-      created_at: '2015-11-18T01:37:41Z', description: 'Set foo config vars', status: 'succeeded', id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
+      created_at: '2015-11-18T01:37:41Z', current: false, description: 'Set foo config vars', id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:37:41Z', user: {
+      }, status: 'succeeded', updated_at: '2015-11-18T01:37:41Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 40, current: false,
+      }, version: 40,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'Remove AWS_SECRET_ACCESS_KEY config vars', status: 'failed', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'Remove AWS_SECRET_ACCESS_KEY config vars', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'failed', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 39, current: false,
+      }, version: 39,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'second commit', status: 'pending', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'second commit', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'pending', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 38, current: false,
+      }, version: 38,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'first commit', status: null, id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: true, description: 'first commit', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: null, updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 37, current: true,
+      }, version: 37,
     },
   ]
 
   const onlySuccessfulReleases = [
     {
-      created_at: '2015-11-18T01:36:38Z', description: 'third commit', status: 'succeeded', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'third commit', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'succeeded', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 41, current: false,
+      }, version: 41,
     }, {
-      created_at: '2015-11-18T01:37:41Z', description: 'Set foo config vars', status: 'succeeded', id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
+      created_at: '2015-11-18T01:37:41Z', current: false, description: 'Set foo config vars', id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:37:41Z', user: {
+      }, status: 'succeeded', updated_at: '2015-11-18T01:37:41Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 40, current: false,
+      }, version: 40,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'Remove AWS_SECRET_ACCESS_KEY config vars', status: 'succeeded', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'Remove AWS_SECRET_ACCESS_KEY config vars', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'succeeded', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 39, current: false,
+      }, version: 39,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'second commit', status: 'succeeded', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'second commit', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: 'succeeded', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 38, current: false,
+      }, version: 38,
     }, {
-      created_at: '2015-11-18T01:36:38Z', description: 'first commit', status: null, id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
+      created_at: '2015-11-18T01:36:38Z', current: true, description: 'first commit', id: '7be47426-2c1b-4e4d-b6e5-77c79169aa41', slug: {
         id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:36:38Z', user: {
+      }, status: null, updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 37, current: true,
+      }, version: 37,
     },
   ]
   const releasesNoSlug = [
     {
-      created_at: '2015-11-18T01:36:38Z', description: 'first commit', status: 'pending', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: null, updated_at: '2015-11-18T01:36:38Z', user: {
+      created_at: '2015-11-18T01:36:38Z', current: false, description: 'first commit', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: null, status: 'pending', updated_at: '2015-11-18T01:36:38Z', user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 1, current: false,
+      }, version: 1,
     },
   ]
   const extended = [
     {
-      created_at: '2015-11-18T01:37:41Z', description: 'Set foo config vars', status: 'succeeded', id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
-        id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
-      }, updated_at: '2015-11-18T01:37:41Z', user: {
-        email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 40, extended: {
+      created_at: '2015-11-18T01:37:41Z', description: 'Set foo config vars', extended: {
         slug_id: 1, slug_uuid: 'uuid',
-      },
+      }, id: '5efa3510-e8df-4db0-a176-83ff8ad91eb5', slug: {
+        id: '37994c83-39a3-4cbf-b318-8f9dc648f701',
+      }, status: 'succeeded', updated_at: '2015-11-18T01:37:41Z', user: {
+        email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
+      }, version: 40,
     },
   ]
 
@@ -379,7 +373,7 @@ describe('releases', function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
     // Create a copy to avoid mutating the shared releases array
-    const releasesCopy = releases.map((r: any) => ({...r}))
+    const releasesCopy = releases.map(r => ({...r}))
     releasesCopy.at(-1)!.current = false
     const api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
