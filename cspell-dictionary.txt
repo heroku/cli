@@ -10,6 +10,7 @@ amyapp
 amannn
 aname
 APAC
+apikey
 appname
 apresharedkey
 armel
@@ -325,6 +326,7 @@ someplugin
 somethingelse
 someuser
 sparkline
+splunkhec
 sshdir
 sslmode
 stampy

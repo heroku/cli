@@ -23,8 +23,12 @@
     "tmp": "^0.2.1",
     "ts-node": "^10.9.2"
   },
-  "overrides": {
-    "ansi-regex": "4.1.1"
+  "resolutions": {
+    "ansi-regex@^2.0.0": "4.1.1",
+    "ansi-regex@^3.0.0": "4.1.1",
+    "js-yaml@4.1.0": "4.1.1",
+    "semver": "7.7.3",
+    "tmp": "0.2.5"
   },
   "standard": {
     "env": "mocha",

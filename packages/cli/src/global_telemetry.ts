@@ -1,7 +1,15 @@
-import Rollbar from 'rollbar'
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
+import * as Sentry from '@sentry/node'
+import {
+  SentryPropagator,
+  SentrySampler,
+} from '@sentry/opentelemetry'
+import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets.js'
+import {Scrubber} from './lib/data-scrubber/scrubber.js'
+import {PII_PATTERNS} from './lib/data-scrubber/patterns.js'
+
 import {Resource} from '@opentelemetry/resources'
 import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
 import {registerInstrumentations} from '@opentelemetry/instrumentation'
@@ -12,17 +20,14 @@ import path from 'path'
 import {promises as fs} from 'fs'
 import {fileURLToPath} from 'url'
 import debug from 'debug'
+import pkg from '../package.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
-
-async function getVersion() {
-  const pkg = JSON.parse(await fs.readFile(root, 'utf8'))
-  return pkg.version
-}
+const version = pkg.version
 
 function getToken() {
   const config = new Config({root})
@@ -30,16 +35,24 @@ function getToken() {
   return heroku.auth
 }
 
-const rollbar = new Rollbar({
-  accessToken: '20783109b0064dbb85be0b2c5a5a5f79',
-  captureUncaught: true,
-  captureUnhandledRejections: true,
-  environment: isDev ? 'development' : 'production',
-  codeVersion: undefined, // will be set later
-})
-
 registerInstrumentations({
   instrumentations: [],
+})
+
+const scrubber = new Scrubber({
+  fields: [...HEROKU_FIELDS, ...GDPR_FIELDS, ...PCI_FIELDS],
+  patterns: [...PII_PATTERNS],
+})
+
+const sentryClient = Sentry.init({
+  dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
+  environment: isDev ? 'development' : 'production',
+  release: version,
+  tracesSampleRate: 1, // needed to ensure we send OTEL data to Honeycomb
+  beforeSend(event) {
+    return scrubber.scrub(event).data
+  },
+  skipOpenTelemetrySetup: true, // needed since we have our own OTEL setup
 })
 
 const resource = Resource
@@ -53,6 +66,7 @@ const resource = Resource
 
 const provider = new NodeTracerProvider({
   resource,
+  sampler: sentryClient ? new SentrySampler(sentryClient) : undefined,
 })
 
 // eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
@@ -92,7 +106,11 @@ interface CLIError extends Error {
 }
 
 export function initializeInstrumentation() {
-  provider.register()
+  provider.register({
+    propagator: new SentryPropagator(),
+    contextManager: new Sentry.SentryContextManager(),
+  })
+  // provider.register()
 }
 
 export function setupTelemetry(config: any, opts: any) {
@@ -161,8 +179,8 @@ export function reportCmdNotFound(config: any) {
   }
 }
 
-export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => void) {
-  // send telemetry to honeycomb and rollbar
+export async function sendTelemetry(currentTelemetry: any) {
+  // send telemetry to honeycomb
   if (isTelemetryDisabled) {
     return
   }
@@ -171,8 +189,8 @@ export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => vo
 
   if (telemetry instanceof Error) {
     await Promise.all([
-      sendToRollbar(telemetry, rollbarCb),
       sendToHoneycomb(telemetry),
+      sendToSentry(telemetry),
     ])
   } else {
     await sendToHoneycomb(telemetry)
@@ -181,7 +199,6 @@ export async function sendTelemetry(currentTelemetry: any,  rollbarCb?: () => vo
 
 export async function sendToHoneycomb(data: Telemetry | CLIError) {
   try {
-    const version = await getVersion()
     const tracer = opentelemetry.trace.getTracer('heroku-cli', version)
     const span = tracer.startSpan('node_app_execution')
 
@@ -206,38 +223,18 @@ export async function sendToHoneycomb(data: Telemetry | CLIError) {
     }
 
     span.end()
-    processor.forceFlush()
+    await processor.forceFlush()
   } catch {
     debug('could not send telemetry')
   }
 }
 
-export async function sendToRollbar(data: CLIError, rollbarCb?: () => void) {
-  // Make this awaitable so we can wait for it to finish before exiting
-  let promiseResolve
-  const rollbarPromise = new Promise((resolve, reject) => {
-    promiseResolve = () => {
-      if (rollbarCb) {
-        try {
-          rollbarCb()
-        } catch (error: any) {
-          reject(error)
-        }
-      }
-
-      resolve(null)
-    }
-  })
-
-  const rollbarError = {name: data.name, message: data.message, stack: data.stack, cli_run_duration: data.cliRunDuration}
+export async function sendToSentry(data: CLIError) {
   try {
-    // send data to rollbar
-    rollbar.error('Failed to complete execution', rollbarError, promiseResolve)
+    Sentry.captureException(data)
+    // ensures all events are sent to Sentry before exiting.
+    await Sentry.flush()
   } catch {
     debug('Could not send error report')
-    // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
-    return Promise.reject()
   }
-
-  return rollbarPromise
 }

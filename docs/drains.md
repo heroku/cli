@@ -24,7 +24,7 @@ DESCRIPTION
   display the log drains of an app
 ```
 
-_See code: [src/commands/drains/index.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/drains/index.ts)_
+_See code: [src/commands/drains/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/drains/index.ts)_
 
 ## `heroku drains:add URL`
 
@@ -45,7 +45,7 @@ DESCRIPTION
   adds a log drain to an app
 ```
 
-_See code: [src/commands/drains/add.ts](https://github.com/heroku/cli/blob/v10.13.2/packages/cli/src/commands/drains/add.ts)_
+_See code: [src/commands/drains/add.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/drains/add.ts)_
 
 ## `heroku drains:remove URL`
 

@@ -15,7 +15,8 @@ export default class Add extends Command {
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     space: Flags.string({char: 's', description: 'space to add a drain to'}),
     signals: Flags.string({default: 'all', description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    transport: Flags.string({default: 'http', options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
+    // If splunk transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk']
+    transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
 
   static args = {
@@ -31,6 +32,15 @@ export default class Add extends Command {
     const {flags, args} = await this.parse(Add)
     const {app, headers, space, signals, transport} = flags
     const {endpoint} = args
+
+    // Allow splunk, but do not show splunk in error message until splunk transport is accepted as a feature
+    // When splunk transport is accepted as a feature, and options are added for the transport flag, this section should be removed
+    const publicTransports = ['http', 'grpc']
+    const validTransports = [...publicTransports, 'splunk']
+    if (!validTransports.includes(transport)) {
+      throw new Error(`Expected --transport=${transport} to be one of: ${publicTransports.join(', ')}`)
+    }
+
     let id
     if (app) {
       const {body: herokuApp} = await this.heroku.get<App>(
@@ -52,7 +62,7 @@ export default class Add extends Command {
       signals: validateAndFormatSignals(signals),
       exporter: {
         endpoint,
-        type: (transport === 'grpc') ? 'otlp' : 'otlphttp',
+        type: this.getExporterType(transport),
         headers: JSON.parse(exporterHeaders),
       },
     }
@@ -65,5 +75,16 @@ export default class Add extends Command {
     })
 
     ux.stdout(`successfully added drain ${drain.exporter.endpoint}`)
+  }
+
+  private getExporterType(transport: string): string {
+    switch (transport) {
+    case 'grpc':
+      return 'otlp'
+    case 'splunk':
+      return 'splunk'
+    default:
+      return 'otlphttp'
+    }
   }
 }

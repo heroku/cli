@@ -4,7 +4,7 @@ import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
-import {ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
 import sinon = require('sinon')
 import * as childProcess from 'node:child_process'
 
@@ -12,7 +12,7 @@ describe('pg:pull', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
-  let db: ConnectionDetailsWithAttachment
+  let db: ConnectionDetails
   let push_pull: unknown
   let Cmd: GenericCmd
   let createDbStub: sinon.SinonStub
@@ -40,7 +40,7 @@ describe('pg:pull', function () {
         config_vars: ['DATABASE_URL'],
         app: {name: 'myapp'},
       },
-    } as ConnectionDetailsWithAttachment
+    } as ConnectionDetails
     sshTunnelStub = sinon.stub().resolves()
     const mockUtils = {
       pg: {
@@ -54,7 +54,7 @@ describe('pg:pull', function () {
           execQuery = sinon.stub().resolves('')
         },
         psql: {
-          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetailsWithAttachment) => {
+          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetails) => {
             return utils.pg.psql.getPsqlConfigs(db)
           }),
           sshTunnel: sshTunnelStub,

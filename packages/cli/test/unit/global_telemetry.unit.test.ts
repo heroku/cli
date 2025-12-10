@@ -2,17 +2,15 @@ import {expect} from '@oclif/test'
 import * as telemetry from '../../src/global_telemetry.js'
 import {identity} from 'lodash'
 import * as os from 'os'
-import * as fs from 'fs'
-import {fileURLToPath} from 'url'
-import * as path from 'path'
+import * as Sentry from '@sentry/node'
+import * as sinon from 'sinon'
+import pkg from '../../../../packages/cli/package.json' with { type: 'json' }
 import nock from 'nock'
+
+const { version } = pkg;
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const {version} = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', '..', 'cli', 'package.json'), 'utf8'))
 
 /*
 describe('telemetry', function () {
@@ -130,15 +128,11 @@ describe('telemetry', function () {
     honeycombAPI.done()
   })
 
-  it('confirms successful request to rollbar', async function () {
-    const mockRollbarError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
-
-    const rollbarAPI = nock('https://api.rollbar.com:443')
-      .post('/api/1/item/', identity)
-      .reply(200)
-
-    await telemetry.sendToRollbar(mockRollbarError)
-    rollbarAPI.done()
+  it('sends error data to sentry', async function () {
+    const mockError = {name: 'testError', message: 'testMessage', stack: 'testStack', cli_run_duration: 1234}
+    const stubCaptureException = sinon.stub(Sentry, 'captureException')
+    await telemetry.sendToSentry(mockError)
+    expect(stubCaptureException.calledWith(mockError)).to.be.true
   })
 })
 
