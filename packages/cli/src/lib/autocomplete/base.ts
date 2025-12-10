@@ -1,10 +1,10 @@
-/*
-import Command from '@heroku-cli/command'
-import {Completion} from '@oclif/core/lib/interfaces/parser'
-import * as fs from 'fs-extra'
+import {Command} from '@heroku-cli/command'
+// @ts-expect-error - type definition may not be available in current TypeScript setup
+import type {Completion} from '@oclif/core/lib/interfaces/parser'
+import fs from 'fs-extra'
 import * as path from 'path'
 
-import {CompletionLookup} from './completions'
+import {CompletionLookup} from './completions.js'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
@@ -49,4 +49,3 @@ export abstract class AutocompleteBase extends Command {
     return new CompletionLookup(cmdId, name, description).run()
   }
 }
-*/
