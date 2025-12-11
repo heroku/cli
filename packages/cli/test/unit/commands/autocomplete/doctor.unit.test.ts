@@ -1,7 +1,6 @@
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import {hux} from '@heroku/heroku-cli-util'
-import fs from 'fs-extra'
 import * as path from 'path'
 import * as sinon from 'sinon'
 import {fileURLToPath} from 'url'

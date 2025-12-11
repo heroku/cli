@@ -44,9 +44,15 @@ export default class Doctor extends AutocompleteBase {
     // check shell shim source env var
     // i.e. HEROKU_AC_<shell>_SETUP_PATH
     const shellProfilePath = path.join(process.env.HOME || '', shell === 'zsh' ? '.zshrc' : '.bashrc')
-    const shellProfile = await fs.readFile(shellProfilePath)
-    const regex = /AC_\w+_SETUP_PATH/
-    const shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+    let shimValue = 'missing'
+    try {
+      const shellProfile = await fs.readFile(shellProfilePath)
+      const regex = /AC_\w+_SETUP_PATH/
+      shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+    } catch {
+      // File doesn't exist or can't be read
+      shimValue = 'missing'
+    }
     data.push({name: `~/${shell === 'zsh' ? '.zshrc' : '.bashrc'} shimmed`, value: shimValue})
 
     // check shell shim
@@ -95,7 +101,7 @@ export default class Doctor extends AutocompleteBase {
           if (c.hidden) {
             this.log(`${c.id} (hidden)`)
           } else {
-            const results = Object.keys(c.flags).map((f: string) => {
+            const results = Object.keys(c.flags || {}).map((f: string) => {
               let out = `--${f}`
               const flag = c.flags[f]
               if (flag.type === 'option') out += '='
