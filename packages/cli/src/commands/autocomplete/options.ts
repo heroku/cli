@@ -235,4 +235,3 @@ export default class Options extends AutocompleteBase {
     return [argsIndex, argIsFlag, argIsFlagValue]
   }
 }
-

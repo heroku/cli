@@ -122,4 +122,3 @@ export default class Doctor extends AutocompleteBase {
     })
   }
 }
-

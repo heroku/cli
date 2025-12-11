@@ -36,7 +36,8 @@ export default class Index extends AutocompleteBase {
     this.errorIfNotSupportedShell(shell)
 
     ux.action.start(`${color.bold('Building the autocomplete cache')}`)
-    await Create.run([], this.config)
+    const create = new Create([], this.config)
+    await create.run()
     await this.updateCache(AppCompletion, 'app')
     await this.updateCache(PipelineCompletion, 'pipeline')
     await this.updateCache(SpaceCompletion, 'space')

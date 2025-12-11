@@ -254,4 +254,3 @@ bindkey "^I" expand-or-complete-with-dots`
     ].includes(flag)
   }
 }
-
