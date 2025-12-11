@@ -69,7 +69,7 @@ export default class Create extends AutocompleteBase {
   private get commands(): Command.Loadable[] {
     if (this._commands) return this._commands
 
-    const plugins = this.config.plugins
+    const {plugins} = this.config
     const commands: Command.Loadable[] = []
 
     plugins.forEach(p => {
@@ -80,7 +80,7 @@ export default class Create extends AutocompleteBase {
         } catch (error: any) {
           debugLog(`Error creating completions for command ${c.id}`)
           debugLog(error.message)
-          void this.writeLogFile(error.message)
+          this.writeLogFile(error.message).catch(() => {})
         }
       })
     })
@@ -97,7 +97,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating bash completion for command ${c.id}, moving on...`)
         debugLog(error.message)
-        void this.writeLogFile(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     }).join('\n')
@@ -116,7 +116,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        void this.writeLogFile(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     })
@@ -131,7 +131,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        void this.writeLogFile(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     }).join('\n')
@@ -156,11 +156,11 @@ export default class Create extends AutocompleteBase {
   }
 
   private genZshCmdFlagsSetter(command: Command.Loadable): string {
-    const id = command.id
-    const flagscompletions = Object.keys(command.flags || {})
-      .filter(flag => command.flags && !command.flags[flag].hidden)
+    const {id, flags: commandFlags = {}} = command
+    const flagscompletions = Object.keys(commandFlags)
+      .filter(flag => !commandFlags[flag].hidden)
       .map(flag => {
-        const f = (command.flags && command.flags[flag]) || {description: ''}
+        const f = commandFlags[flag] || {description: ''}
         const isBoolean = f.type === 'boolean'
         const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
         const name = isBoolean ? flag : `${flag}=-`

@@ -53,6 +53,7 @@ export default class Doctor extends AutocompleteBase {
       // File doesn't exist or can't be read
       shimValue = 'missing'
     }
+
     data.push({name: `~/${shell === 'zsh' ? '.zshrc' : '.bashrc'} shimmed`, value: shimValue})
 
     // check shell shim
@@ -70,7 +71,7 @@ export default class Doctor extends AutocompleteBase {
     let appsCacheValue
     if (await fs.pathExists(appsCache)) {
       const cacheData = await fs.readJSON(appsCache)
-      const length = cacheData.length
+      const {length} = cacheData
       appsCacheValue = length || 'empty'
     } else {
       appsCacheValue = 'missing'

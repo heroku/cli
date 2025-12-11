@@ -45,7 +45,7 @@ export default class Index extends AutocompleteBase {
     ux.action.stop()
 
     if (!flags['refresh-cache']) {
-      const bin = this.config.bin
+      const {bin} = this.config
       const bashNote = 'If your terminal starts as a login shell you may need to print the init script into ~/.bash_profile or ~/.profile.'
       const zshNote = `After sourcing, you can run \`${color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present`
       const note = shell === 'zsh' ? zshNote : bashNote
