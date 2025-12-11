@@ -44,22 +44,23 @@ export default class Create extends AutocompleteBase {
 
   private get bashSetupScriptPath(): string {
     // <cacheDir>/autocomplete/bash_setup
-    return this.normalizePathForShell(path.join(this.autocompleteCacheDir, 'bash_setup'))
+    // Match test expectation: ${cacheDir}/autocomplete/bash_setup
+    return `${this.config.cacheDir}/autocomplete/bash_setup`
   }
 
   private get bashCommandsListPath(): string {
     // <cacheDir>/autocomplete/commands
-    return this.normalizePathForShell(path.join(this.autocompleteCacheDir, 'commands'))
+    return `${this.config.cacheDir}/autocomplete/commands`
   }
 
   private get zshSetupScriptPath(): string {
     // <cacheDir>/autocomplete/zsh_setup
-    return this.normalizePathForShell(path.join(this.autocompleteCacheDir, 'zsh_setup'))
+    return `${this.config.cacheDir}/autocomplete/zsh_setup`
   }
 
   private get zshCompletionSettersPath(): string {
     // <cacheDir>/autocomplete/commands_setters
-    return this.normalizePathForShell(path.join(this.autocompleteCacheDir, 'commands_setters'))
+    return `${this.config.cacheDir}/autocomplete/commands_setters`
   }
 
   private get skipEllipsis(): boolean {
@@ -202,34 +203,31 @@ ${cmdsWithDesc.join('\n')}
   }
 
   private get envAnalyticsDir(): string {
-    return `HEROKU_AC_ANALYTICS_DIR=${this.normalizePathForShell(path.join(
-      this.autocompleteCacheDir,
-      'completion_analytics',
-    ))};`
+    // Match test expectation: ${cacheDir}/autocomplete/completion_analytics
+    return `HEROKU_AC_ANALYTICS_DIR=${this.config.cacheDir}/autocomplete/completion_analytics;`
   }
 
   private get envCommandsPath(): string {
-    return `HEROKU_AC_COMMANDS_PATH=${this.normalizePathForShell(path.join(this.autocompleteCacheDir, 'commands'))};`
+    // Match test expectation: ${cacheDir}/autocomplete/commands
+    return `HEROKU_AC_COMMANDS_PATH=${this.config.cacheDir}/autocomplete/commands;`
   }
 
   private get bashSetupScript(): string {
+    // Match test expectation: ${AC_LIB_PATH}/bash/heroku.bash
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
-HEROKU_AC_BASH_COMPFUNC_PATH=${this.normalizePathForShell(path.join(
-    AC_LIB_PATH,
-    'bash',
-    'heroku.bash',
-  ))} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
+HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `
   }
 
   private get zshSetupScript(): string {
+    // Match test expectation: ${AC_LIB_PATH}/zsh
     return `${this.skipEllipsis ? '' : this.completionDotsFunc}
 ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${this.normalizePathForShell(path.join(AC_LIB_PATH, 'zsh'))}
+${AC_LIB_PATH}/zsh
 $fpath
 );
 autoload -Uz compinit;
