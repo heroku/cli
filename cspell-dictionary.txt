@@ -278,6 +278,7 @@ pvpr
 pxxxxxxxx
 qqjs
 raulb
+rdagg
 recache
 redii
 redises
@@ -291,6 +292,7 @@ relname
 relnamespace
 relpages
 reltuples
+releas
 remov
 reponame
 reporttime

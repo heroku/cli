@@ -1,19 +1,18 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {stream} from '../../lib/releases/output'
-import {findByLatestOrId} from '../../lib/releases/releases'
+import {stream} from '../../lib/releases/output.js'
+import {findByLatestOrId} from '../../lib/releases/releases.js'
 
 export default class Retry extends Command {
-  static topic = 'releases';
-  static description = 'retry the latest release-phase command';
+  static topic = 'releases'
+  static description = 'retry the latest release-phase command'
   static examples = ['heroku releases:retry --app happy-samurai-42']
   static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
   static flags = {
     app: flags.app({required: true}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Retry)
@@ -42,7 +41,7 @@ export default class Retry extends Command {
     ux.action.stop(`done, ${color.green('v' + retry.version)}`)
 
     if (retry.output_stream_url) {
-      ux.log('Running release command...')
+      ux.stdout('Running release command...')
       await stream(retry.output_stream_url)
         .catch(error => {
           if (error.statusCode === 404 || error.response?.statusCode === 404) {
@@ -55,4 +54,4 @@ export default class Retry extends Command {
     }
   }
 }
-*/
+
