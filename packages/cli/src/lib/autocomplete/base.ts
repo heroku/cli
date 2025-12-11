@@ -45,4 +45,8 @@ export abstract class AutocompleteBase extends Command {
   protected findCompletion(cmdId: string, name: string, description = ''): Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
+
+  protected normalizePathForShell(p: string): string {
+    return p.replace(/\\/g, '/')
+  }
 }
