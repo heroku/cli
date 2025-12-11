@@ -5,7 +5,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import type {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import fs from 'fs-extra'
 import * as path from 'path'
-import {fileURLToPath} from 'url'
+import {fileURLToPath} from 'node:url'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 

@@ -36,13 +36,10 @@ export abstract class AutocompleteBase extends Command {
     return path.join(this.config.cacheDir, 'autocomplete.log')
   }
 
-  writeLogFile(msg: string) {
+  async writeLogFile(msg: string) {
     const now = new Date()
     const entry = `[${now}] ${msg}\n`
-    const fd = fs.openSync(this.acLogfilePath, 'a')
-    // eslint-disable-next-line
-    // @ts-ignore
-    fs.write(fd, entry)
+    await fs.appendFile(this.acLogfilePath, entry)
   }
 
   protected findCompletion(cmdId: string, name: string, description = ''): Completion | undefined {

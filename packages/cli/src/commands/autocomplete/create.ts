@@ -1,7 +1,7 @@
 import {Command} from '@oclif/core'
 import fs from 'fs-extra'
 import * as path from 'path'
-import {fileURLToPath} from 'url'
+import {fileURLToPath} from 'node:url'
 import debug from 'debug'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
@@ -80,7 +80,7 @@ export default class Create extends AutocompleteBase {
         } catch (error: any) {
           debugLog(`Error creating completions for command ${c.id}`)
           debugLog(error.message)
-          this.writeLogFile(error.message)
+          void this.writeLogFile(error.message)
         }
       })
     })
@@ -97,7 +97,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating bash completion for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message)
+        void this.writeLogFile(error.message)
         return ''
       }
     }).join('\n')
@@ -116,7 +116,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message)
+        void this.writeLogFile(error.message)
         return ''
       }
     })
@@ -131,7 +131,7 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message)
+        void this.writeLogFile(error.message)
         return ''
       }
     }).join('\n')

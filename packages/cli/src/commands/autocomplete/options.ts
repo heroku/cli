@@ -42,7 +42,7 @@ export default class Options extends AutocompleteBase {
       if (options) this.log(options)
     } catch (error: any) {
       // write to ac log
-      this.writeLogFile(error.message)
+      await this.writeLogFile(error.message)
     }
   }
 

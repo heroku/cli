@@ -107,14 +107,14 @@ runtest('autocomplete:doctor', () => {
 
       expect(logStub.called).to.be.true
       const calls = logStub.getCalls()
-      expect(calls.some((call: any) => call.args[0].includes('Completable Commands'))).to.be.true
+      expect(calls.some((call: any) => call.args[0] && typeof call.args[0] === 'string' && call.args[0].includes('Completable Commands'))).to.be.true
     })
 
     it('includes hidden commands', function () {
       ;(cmd as any).printList()
 
       const calls = logStub.getCalls()
-      const output = calls.map((c: any) => c.args[0]).join('\n')
+      const output = calls.map((c: any) => c.args[0] || '').join('\n')
       expect(output).to.include('hidden:command (hidden)')
     })
   })
