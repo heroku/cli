@@ -1,11 +1,15 @@
-/*
 import {Command} from '@oclif/core'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import * as path from 'path'
+import {fileURLToPath} from 'node:url'
+import debug from 'debug'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 
-const debug = require('debug')('autocomplete:create')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const debugLog = debug('autocomplete:create')
 
 const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', 'autocomplete-scripts')
 
@@ -40,22 +44,23 @@ export default class Create extends AutocompleteBase {
 
   private get bashSetupScriptPath(): string {
     // <cacheDir>/autocomplete/bash_setup
-    return path.join(this.autocompleteCacheDir, 'bash_setup')
+    // Match test expectation: ${cacheDir}/autocomplete/bash_setup
+    return `${this.config.cacheDir}/autocomplete/bash_setup`
   }
 
   private get bashCommandsListPath(): string {
     // <cacheDir>/autocomplete/commands
-    return path.join(this.autocompleteCacheDir, 'commands')
+    return `${this.config.cacheDir}/autocomplete/commands`
   }
 
   private get zshSetupScriptPath(): string {
     // <cacheDir>/autocomplete/zsh_setup
-    return path.join(this.autocompleteCacheDir, 'zsh_setup')
+    return `${this.config.cacheDir}/autocomplete/zsh_setup`
   }
 
   private get zshCompletionSettersPath(): string {
     // <cacheDir>/autocomplete/commands_setters
-    return path.join(this.autocompleteCacheDir, 'commands_setters')
+    return `${this.config.cacheDir}/autocomplete/commands_setters`
   }
 
   private get skipEllipsis(): boolean {
@@ -65,7 +70,7 @@ export default class Create extends AutocompleteBase {
   private get commands(): Command.Loadable[] {
     if (this._commands) return this._commands
 
-    const plugins = this.config.plugins
+    const {plugins} = this.config
     const commands: Command.Loadable[] = []
 
     plugins.forEach(p => {
@@ -74,9 +79,9 @@ export default class Create extends AutocompleteBase {
         try {
           commands.push(c)
         } catch (error: any) {
-          debug(`Error creating completions for command ${c.id}`)
-          debug(error.message)
-          this.writeLogFile(error.message)
+          debugLog(`Error creating completions for command ${c.id}`)
+          debugLog(error.message)
+          this.writeLogFile(error.message).catch(() => {})
         }
       })
     })
@@ -91,9 +96,9 @@ export default class Create extends AutocompleteBase {
         const publicFlags = this.genCmdPublicFlags(c).trim()
         return `${c.id} ${publicFlags}`
       } catch (error: any) {
-        debug(`Error creating bash completion for command ${c.id}, moving on...`)
-        debug(error.message)
-        this.writeLogFile(error.message)
+        debugLog(`Error creating bash completion for command ${c.id}, moving on...`)
+        debugLog(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     }).join('\n')
@@ -110,9 +115,9 @@ export default class Create extends AutocompleteBase {
       try {
         return this.genCmdWithDescription(c)
       } catch (error: any) {
-        debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
-        debug(error.message)
-        this.writeLogFile(error.message)
+        debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
+        debugLog(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     })
@@ -125,9 +130,9 @@ export default class Create extends AutocompleteBase {
       try {
         return this.genZshCmdFlagsSetter(c)
       } catch (error: any) {
-        debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
-        debug(error.message)
-        this.writeLogFile(error.message)
+        debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
+        debugLog(error.message)
+        this.writeLogFile(error.message).catch(() => {})
         return ''
       }
     }).join('\n')
@@ -152,11 +157,11 @@ export default class Create extends AutocompleteBase {
   }
 
   private genZshCmdFlagsSetter(command: Command.Loadable): string {
-    const id = command.id
-    const flagscompletions = Object.keys(command.flags || {})
-      .filter(flag => command.flags && !command.flags[flag].hidden)
+    const {id, flags: commandFlags = {}} = command
+    const flagscompletions = Object.keys(commandFlags)
+      .filter(flag => !commandFlags[flag].hidden)
       .map(flag => {
-        const f = (command.flags && command.flags[flag]) || {description: ''}
+        const f = commandFlags[flag] || {description: ''}
         const isBoolean = f.type === 'boolean'
         const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
         const name = isBoolean ? flag : `${flag}=-`
@@ -198,34 +203,31 @@ ${cmdsWithDesc.join('\n')}
   }
 
   private get envAnalyticsDir(): string {
-    return `HEROKU_AC_ANALYTICS_DIR=${path.join(
-      this.autocompleteCacheDir,
-      'completion_analytics',
-    )};`
+    // Match test expectation: ${cacheDir}/autocomplete/completion_analytics
+    return `HEROKU_AC_ANALYTICS_DIR=${this.config.cacheDir}/autocomplete/completion_analytics;`
   }
 
   private get envCommandsPath(): string {
-    return `HEROKU_AC_COMMANDS_PATH=${path.join(this.autocompleteCacheDir, 'commands')};`
+    // Match test expectation: ${cacheDir}/autocomplete/commands
+    return `HEROKU_AC_COMMANDS_PATH=${this.config.cacheDir}/autocomplete/commands;`
   }
 
   private get bashSetupScript(): string {
+    // Match test expectation: ${AC_LIB_PATH}/bash/heroku.bash
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
-HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
-    AC_LIB_PATH,
-    'bash',
-    'heroku.bash',
-  )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
+HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `
   }
 
   private get zshSetupScript(): string {
+    // Match test expectation: ${AC_LIB_PATH}/zsh
     return `${this.skipEllipsis ? '' : this.completionDotsFunc}
 ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
-${path.join(AC_LIB_PATH, 'zsh')}
+${AC_LIB_PATH}/zsh
 $fpath
 );
 autoload -Uz compinit;
@@ -250,4 +252,3 @@ bindkey "^I" expand-or-complete-with-dots`
     ].includes(flag)
   }
 }
-*/

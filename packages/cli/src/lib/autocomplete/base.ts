@@ -1,10 +1,10 @@
-/*
-import Command from '@heroku-cli/command'
-import {Completion} from '@oclif/core/lib/interfaces/parser'
-import * as fs from 'fs-extra'
+import {Command} from '@heroku-cli/command'
+// @ts-expect-error - type definition may not be available in current TypeScript setup
+import type {Completion} from '@oclif/core/lib/interfaces/parser'
+import fs from 'fs-extra'
 import * as path from 'path'
 
-import {CompletionLookup} from './completions'
+import {CompletionLookup} from './completions.js'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
@@ -36,17 +36,17 @@ export abstract class AutocompleteBase extends Command {
     return path.join(this.config.cacheDir, 'autocomplete.log')
   }
 
-  writeLogFile(msg: string) {
+  async writeLogFile(msg: string) {
     const now = new Date()
     const entry = `[${now}] ${msg}\n`
-    const fd = fs.openSync(this.acLogfilePath, 'a')
-    // eslint-disable-next-line
-    // @ts-ignore
-    fs.write(fd, entry)
+    await fs.appendFile(this.acLogfilePath, entry)
   }
 
   protected findCompletion(cmdId: string, name: string, description = ''): Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
+
+  protected normalizePathForShell(p: string): string {
+    return p.replace(/\\/g, '/')
+  }
 }
-*/

@@ -1,8 +1,7 @@
-/*
 import {Args} from '@oclif/core'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 
 export default class Script extends AutocompleteBase {
   static description = 'display autocomplete setup script for shell'
@@ -20,10 +19,10 @@ export default class Script extends AutocompleteBase {
 
     const shellUpcase = shell.toUpperCase()
     this.log(
-      `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${path.join(
+      `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${this.normalizePathForShell(path.join(
         this.autocompleteCacheDir,
         `${shell}_setup`,
-      )} && test -f $HEROKU_AC_${shellUpcase}_SETUP_PATH && source $HEROKU_AC_${shellUpcase}_SETUP_PATH;`,
+      ))} && test -f $HEROKU_AC_${shellUpcase}_SETUP_PATH && source $HEROKU_AC_${shellUpcase}_SETUP_PATH;`,
     )
   }
 
@@ -31,4 +30,4 @@ export default class Script extends AutocompleteBase {
     return `\n# ${this.config.bin} autocomplete setup\n`
   }
 }
-*/
+

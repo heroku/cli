@@ -1,10 +1,9 @@
-/*
 import {flags} from '@heroku-cli/command'
 import {Args, Command} from '@oclif/core'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
-import {fetchCache} from '../../lib/autocomplete/cache'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
+import {fetchCache} from '../../lib/autocomplete/cache.js'
 
 export default class Options extends AutocompleteBase {
   static hidden = true
@@ -43,7 +42,7 @@ export default class Options extends AutocompleteBase {
       if (options) this.log(options)
     } catch (error: any) {
       // write to ac log
-      this.writeLogFile(error.message)
+      await this.writeLogFile(error.message)
     }
   }
 
@@ -236,4 +235,3 @@ export default class Options extends AutocompleteBase {
     return [argsIndex, argIsFlag, argIsFlagValue]
   }
 }
-*/
