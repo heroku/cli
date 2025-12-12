@@ -58,9 +58,9 @@ export default class Index extends Command {
     // Once the API always includes the applied field (W-19525612), this can be simplified to:
     //   if (ruleset.applied) { ... } else { ... }
     if (ruleset.applied === true) {
-      ux.log('Trusted IP rules are applied to this space.')
+      ux.stdout('Trusted IP rules are applied to this space.')
     } else if (ruleset.applied === false) {
-      ux.log('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+      ux.stdout('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     }
   }
 }

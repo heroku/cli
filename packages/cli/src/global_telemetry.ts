@@ -21,15 +21,18 @@ import {promises as fs} from 'fs'
 import {fileURLToPath} from 'url'
 import debug from 'debug'
 
-// @ts-expect-error - TS requires import attributes for JSON in NodeNext, but our version doesn't support them.
-import pkg from '../package.json'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
-const version = pkg.version
+
+async function getVersion() {
+  const pkg = JSON.parse(await fs.readFile(root, 'utf8'))
+  return pkg.version
+}
+
+const version = await getVersion()
 
 function getToken() {
   const config = new Config({root})
