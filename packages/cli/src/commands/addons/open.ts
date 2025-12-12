@@ -90,8 +90,8 @@ export default class Open extends Command {
   }
 
   public async run(): Promise<void> {
-    const { flags, args: { addon } } = await this.parse(Open)
-    const { app } = flags
+    const {flags, args: {addon}} = await this.parse(Open)
+    const {app} = flags
 
     if (process.env.HEROKU_SUDO) {
       return this.sudo(app, addon)

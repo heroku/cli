@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../../../../packages/cli/package.json')
 const pkg = JSON.parse(await fs.readFile(root, 'utf8'))
-const { version } = pkg;
+const {version} = pkg
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 nock.disableNetConnect()

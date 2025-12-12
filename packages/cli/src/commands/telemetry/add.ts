@@ -79,12 +79,17 @@ export default class Add extends Command {
 
   private getExporterType(transport: string): string {
     switch (transport) {
-    case 'grpc':
+    case 'grpc': {
       return 'otlp'
-    case 'splunk':
+    }
+
+    case 'splunk': {
       return 'splunk'
-    default:
+    }
+
+    default: {
       return 'otlphttp'
+    }
     }
   }
 }
